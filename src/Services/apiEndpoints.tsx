@@ -107,9 +107,10 @@ DELETE_BRMC:`delete-bmcr`,
 GET_ONE_BRMC:`get-a-bmcr`,
 ADD_UNIT:`add-unit`,
 GET_ALL_UNIT:`get-all-unit`,
-UPDATE_UNIT:`edit-unit`,
+UPDATE_UNIT: `edit-unit/:id`,
 DELETE_UNIT:`delete-unit`,
 GET_ONE_UNIT:`/get-one-unit`,
+
 
 
 
