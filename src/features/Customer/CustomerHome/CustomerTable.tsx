@@ -1,13 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import Button from "../../../Components/Button";
 import { Link } from "react-router-dom";
-import useApi from "../../../Hooks/useApi";
-import { endponits } from "../../../Services/apiEndpoints";
 import SearchBar from "../../../Components/SearchBar";
 import SortBy from "./SortBy";
 import Print from "../../sales/salesOrder/Print";
-import { CustomerResponseContext } from "../../../context/ContextShare";
 
 interface Column {
   id: string;
@@ -15,7 +12,13 @@ interface Column {
   visible: boolean;
 }
 
-const Table = () => {
+interface CustomerTableProps {
+  customerData: any[];
+  searchValue: string;
+  setSearchValue: (value: string) => void;
+}
+
+const CustomerTable: React.FC<CustomerTableProps> = ({ customerData, searchValue, setSearchValue }) => {
   const initialColumns: Column[] = [
     { id: "customerDisplayName", label: "Name", visible: true },
     { id: "companyName", label: "Company Name", visible: true },
@@ -27,37 +30,12 @@ const Table = () => {
   ];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
-  const [customerData, setCustomerData] = useState<any[]>([]);
-  const [searchValue, setSearchValue] = useState<string>("");
-  const { customerResponse } = useContext(CustomerResponseContext)!;
-  const { request: AllCustomers } = useApi("get", 5002);
-
-  const fetchAllCustomers = async () => {
-    try {
-      const url = `${endponits.GET_ALL_CUSTOMER}`;
-      const { response, error } = await AllCustomers(url);
-      if (!error && response) {
-        setCustomerData(response.data);
-        console.log(response, "all customers");
-      } else {
-        console.log(error, "all customers error");
-      }
-    } catch (error) {
-      console.error("Error fetching accounts:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchAllCustomers();
-  }, [customerResponse]);
 
   const filteredAccounts = customerData.filter((account) => {
     const searchValueLower = searchValue.toLowerCase();
     return (
       account?.billingAttention?.toLowerCase().startsWith(searchValueLower) ||
-      account?.customerDisplayName
-        ?.toLowerCase()
-        .startsWith(searchValueLower) ||
+      account?.customerDisplayName?.toLowerCase().startsWith(searchValueLower) ||
       account?.companyName?.toLowerCase().startsWith(searchValueLower) ||
       account?.mobile?.toLowerCase().startsWith(searchValueLower) ||
       account?.customerEmail?.toLowerCase().startsWith(searchValueLower) ||
@@ -92,6 +70,7 @@ const Table = () => {
     }
     return item[colId as keyof typeof item];
   };
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -156,4 +135,4 @@ const Table = () => {
   );
 };
 
-export default Table;
+export default CustomerTable;
