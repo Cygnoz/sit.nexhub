@@ -12,14 +12,16 @@ import { SalesQuote } from "../../../Types/SalesQuote";
 import toast from "react-hot-toast";
 import Upload from "../../../assets/icons/Upload";
 import NewSalesQuoteTable from "./NewSalesQuoteTable"
- 
+import Button from "../../../Components/Button";
+import { PrinterIcon } from "@heroicons/react/20/solid";
+
 type Props = {};
- 
+
 interface Customer {
   taxType: string;
- 
+
 }
- 
+
 const NewSalesQuote = ({ }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(null);
@@ -31,13 +33,13 @@ const NewSalesQuote = ({ }: Props) => {
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
   const [prefix, setPrifix] = useState("")
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
- 
- 
+
+
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: AllCustomer } = useApi("get", 5002);
   const { request: getPrfix } = useApi("get", 5007);
- 
+
   const [salesQuoteState, setSalesQuoteState] = useState<SalesQuote>({
     customerId: "",
     customerName: "",
@@ -46,7 +48,7 @@ const NewSalesQuote = ({ }: Props) => {
     salesQuoteDate: "",
     expiryDate: "",
     subject: "",
- 
+
     items: [
       {
         itemId: "",
@@ -69,17 +71,16 @@ const NewSalesQuote = ({ }: Props) => {
       },
     ],
     totalItemDiscount: "",
+    subtotalTotal:"",
     note: "",
     tc: "",
     totalDiscount: "",
-    // discountType: "",
-    discountTransactionType: "percentage",
+    discountTransactionType: "Percentage",
     discountTransactionAmount: "",
-    // discountTax: "",
     transactionDiscount: "",
     subTotal: "",
     totalItem: "",
- 
+
     cgst: "",
     sgst: "",
     igst: "",
@@ -87,9 +88,12 @@ const NewSalesQuote = ({ }: Props) => {
     totalTax: "",
     totalAmount: ""
   });
- 
-console.log(salesQuoteState,"dfghjklkjhgfkl");
- 
+  console.log(salesQuoteState);
+  console.log(salesQuoteState.items.map((i)=>
+  i.itemTotaltax));
+  
+
+
   const fetchData = async (
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
@@ -104,14 +108,14 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
       console.error("Error fetching data:", error);
     }
   };
- 
+
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
- 
+
     fetchData(customerUrl, setCustomerData, AllCustomer);
   };
- 
+
   const handleClickOutside = (event: MouseEvent) => {
     if (
       dropdownRef.current &&
@@ -120,7 +124,7 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
       setOpenDropdownIndex(null);
     }
   };
- 
+
   const fetchCountries = async () => {
     try {
       const url = `${endponits.GET_COUNTRY_DATA}`;
@@ -132,13 +136,13 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
       console.log("Error in fetching Country", error);
     }
   };
- 
- 
+
+
   const getSalesQuotePrefix = async () => {
     try {
       const prefixUrl = `${endponits.GET_LAST_SALES_QUOTE_PREFIX}`;
       const { response, error } = await getPrfix(prefixUrl);
- 
+
       if (!error && response) {
         setPrifix(response.data)
       } else {
@@ -148,57 +152,58 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
       console.log("Error in fetching Purchase Order Prefix", error);
     }
   };
- 
+
+  // const totalTaxAmount = isIntraState ? salesQuoteState?.igst : salesQuoteState?.sgst + salesQuoteState?.cgst;
+
   const calculateTotal = () => {
     const {
-      subTotal,
-      sgst,
-      cgst,
-      igst,
-      totalDiscount,
-      discountTransactionType,
-      transactionDiscount,
+      totalItemDiscount,
+      subtotalTotal ,
+      totalTax,
     } = salesQuoteState;
- 
- 
-    const subTotalValue = parseFloat(subTotal) || 0;
-    const sgstValue = parseFloat(sgst) || 0;
-    const cgstValue = parseFloat(cgst) || 0;
-    const igstValue = parseFloat(igst) || 0;
-    const totalDiscountValue = parseFloat(totalDiscount) || 0;
- 
- 
-    const taxAmount = isIntraState ? igstValue : sgstValue + cgstValue;
-    // console.log(taxAmount, "tax amount");
- 
-    let totalTaxedAmount = 0;
-    let transactionDiscountValue = 0;
- 
- 
-    const totalBeforeTax =
-      subTotalValue;
- 
- 
-    transactionDiscountValue =
-      discountTransactionType === "percentage"
-        ? ((parseFloat(transactionDiscount) || 0) / 100) * totalBeforeTax
-        : parseFloat(transactionDiscount) || 0;
-    if (salesQuoteState.discountTransactionAmount !== transactionDiscountValue.toFixed(2)) {
-      setSalesQuoteState(prevState => ({
+
+    // Convert string values to numbers
+    const totalAmount =
+      Number(subtotalTotal) +
+      Number(totalTax) -
+      Number(totalItemDiscount);
+
+    return totalAmount.toFixed(2);
+  };
+
+  useEffect(() => {
+    const newGrandTotal = calculateTotal();
+    const {
+      discountTransactionType,
+      transactionDiscount = "0",
+      discountTransactionAmount = "0",
+    } = salesQuoteState;
+
+    // Calculate transaction discount value based on type
+    const transactionDiscountValueAMT =
+      discountTransactionType === "Percentage"
+        ? (Number(transactionDiscount) / 100) * Number(newGrandTotal)
+        : Number(transactionDiscount);
+
+    const roundedDiscountValue = Math.round(transactionDiscountValueAMT * 100) / 100;
+    const updatedGrandTotal = Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
+    if (Number(discountTransactionAmount) !== roundedDiscountValue || Number(salesQuoteState.totalAmount) !== updatedGrandTotal) {
+      setSalesQuoteState((prevState) => ({
         ...prevState,
-        discountTransactionAmount: transactionDiscountValue.toFixed(2),
+        discountTransactionAmount: roundedDiscountValue.toFixed(2),
+        totalAmount: updatedGrandTotal.toFixed(2),
       }));
     }
- 
-    // console.log(transactionDiscountValue, "transaction discount before tax");
- 
-    totalTaxedAmount = totalBeforeTax + taxAmount - totalDiscountValue;
-    // console.log(totalTaxedAmount, "Before tax calculation with discount");
- 
-    salesQuoteState.totalTax = totalTaxedAmount.toFixed(2);
-    return totalTaxedAmount.toFixed(2)
-  };
- 
+  }, [
+    salesQuoteState.transactionDiscount,
+    salesQuoteState.discountTransactionType,
+    salesQuoteState.subtotalTotal,
+    salesQuoteState.totalTax,
+    salesQuoteState.totalItemDiscount,
+  ]);
+
+
+
   const handleplaceofSupply = () => {
     if (oneOrganization.organizationCountry) {
       const country = countryData.find(
@@ -222,41 +227,87 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
       console.log("No country selected");
     }
   };
-  console.log(customerData, "cd");
- 
+  // console.log(customerData, "cd");
+
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
- 
- 
-    if (name === "transactionDiscount") {
-      let discountValue = parseFloat(value) || 0;
-      const totalAmount = parseFloat(salesQuoteState.subTotal) || 0;
- 
-      if (salesQuoteState.discountTransactionType === "percentage") {
-        if (discountValue > 100) {
-          discountValue = 100;
+    const totalTax = parseFloat(salesQuoteState?.totalTax)
+    let discountValue = parseFloat(salesQuoteState.transactionDiscount) || 0;
+    const totalAmount = parseFloat(salesQuoteState.subtotalTotal + totalTax) || 0;
+
+    // Update transaction discount type (Percentage/currency)
+    if (name === "transactionDiscountType") {
+      setSalesQuoteState((prevState: any) => ({
+        ...prevState,
+        discountTransactionType: value, // Update the discount type
+      }));
+
+      // After setting the type, calculate based on the new type
+      if (value === "Percentage") {
+        const PercentageDiscount = (discountValue / totalAmount) * 100;
+        if (PercentageDiscount > 100) {
           toast.error("Discount cannot exceed 100%");
         }
+
+        setSalesQuoteState((prevState: any) => ({
+          ...prevState,
+          transactionDiscount: PercentageDiscount ? PercentageDiscount.toFixed(2) : '0', // Display 0 for no value
+        }));
       } else {
+        const currencyDiscount = (discountValue / 100) * totalAmount;
+        setSalesQuoteState((prevState: any) => ({
+          ...prevState,
+          transactionDiscount: currencyDiscount ? currencyDiscount.toFixed(2) : '0', // Display 0 for no value
+        }));
+      }
+    }
+
+    // Handle discount value (transactionDiscount)
+    if (name === "transactionDiscount") {
+      discountValue = parseFloat(value) || 0;
+
+      if (salesQuoteState.discountTransactionType === "Percentage") {
+        // Handle Percentage input
+        if (discountValue > 99) {
+          discountValue = 0;
+          toast.error("Discount cannot exceed 100%");
+        }
+        const discountAmount = (discountValue / 100) * totalAmount;
+
+        setSalesQuoteState((prevState: any) => ({
+          ...prevState,
+          transactionDiscount: discountValue ? discountValue.toString() : '0', // Display 0 for no value
+          discountTransactionAmount: discountAmount ? discountAmount.toFixed(2) : '0',
+        }));
+      } else {
+        // Handle currency input
         if (discountValue > totalAmount) {
           discountValue = totalAmount;
           toast.error("Discount cannot exceed the subtotal amount");
+
         }
+
+        setSalesQuoteState((prevState: any) => ({
+          ...prevState,
+          transactionDiscount: discountValue ? discountValue.toString() : '0', // Display 0 for no value
+          discountTransactionAmount: discountValue ? discountValue.toFixed(2) : '0',
+        }));
       }
- 
-      setSalesQuoteState((prevState: any) => ({
-        ...prevState,
-        [name]: discountValue.toString(),
-      }));
-    } else {
+    }
+
+    // Handle other fields
+    if (name !== "transactionDiscount" && name !== "transactionDiscountType") {
       setSalesQuoteState((prevState: any) => ({
         ...prevState,
         [name]: value,
       }));
     }
   };
+
+
   const filterByDisplayName = (
     data: any[],
     displayNameKey: string,
@@ -266,14 +317,14 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
       item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
     );
   };
- 
+
   const filteredCustomer = filterByDisplayName(
     customerData,
     "customerDisplayName",
     searchValue
   );
   useEffect(() => {
- 
+
     if (
       salesQuoteState?.placeOfSupply !==
       oneOrganization.state
@@ -281,27 +332,27 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
       setIsIntraState(true);
     } else {
       setIsIntraState(false);
- 
+
     }
   }, [
     salesQuoteState?.placeOfSupply,
   ]);
- 
+
   useEffect(() => {
     setSalesQuoteState((prevState: any) => ({
       ...prevState,
       totalDiscount: (parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.discountTransactionAmount) || 0),
     }));
   }, [salesQuoteState.discountTransactionAmount, salesQuoteState.totalItemDiscount]);
- 
- 
+
+
   useEffect(() => {
     if (openDropdownIndex !== null) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
- 
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -311,16 +362,16 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
     fetchCountries();
     getSalesQuotePrefix()
   }, [oneOrganization]);
- 
+
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
- 
+
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
-    console.log(oneOrganization.state);
- 
+    // console.log(oneOrganization.state);
+
   }, []);
   const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(false);
- 
+
   const checkTaxType = (customer: Customer) => {
     if (customer.taxType === "GST") {
       setIsPlaceOfSupplyVisible(true);
@@ -328,14 +379,32 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
       setIsPlaceOfSupplyVisible(false); // Hide the Place of Supply field
     }
   };
- 
+
   useEffect(() => {
     if (selectedCustomer) {
       checkTaxType(selectedCustomer);
     }
   }, [selectedCustomer]);
- 
- 
+
+  const { request: newSalesQuoteApi } = useApi("post", 5007);
+  const handleSave = async () => {
+    try {
+      const url = `${endponits.ADD_SALES_QUOTE}`;
+      const { response, error } = await newSalesQuoteApi(
+        url,
+        salesQuoteState
+      );
+      if (!error && response) {
+        // console.log(response);
+        
+        toast.success(response.data.message);
+      } else {
+        toast.error(error?.response.data.message);
+      }
+    } catch (error) {}
+  };
+
+
   return (
     <div className="px-8">
       <div className="flex gap-5">
@@ -350,13 +419,13 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
           </h4>
         </div>
       </div>
- 
+
       <div className="grid grid-cols-12 gap-4 py-5 rounded-lg">
         <div className="col-span-8">
           <div className="bg-[#FFFFFF] p-5 min-h-max rounded-xl relative ">
             <div className=" mt-5 space-y-4">
               <div className="grid grid-cols-12 gap-4">
-              <div className={`col-span-${isPlaceOfSupplyVisible ? "5" : "7"}`}>
+                <div className={`col-span-${isPlaceOfSupplyVisible ? "5" : "7"}`}>
                   <label className="text-sm mb-1 text-labelColor">
                     Customer Name
                   </label>
@@ -459,15 +528,15 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                     </div>
                   </div>
                 )}
- 
- 
- 
+
+
+
                 <div className={`col-span-${isPlaceOfSupplyVisible ? "5" : "5"}`}>
                   <label className="block text-sm mb-1 text-labelColor">
                     Quote#
                   </label>
                   <div className=" flex items-center border rounded-lg border-inputBorder">
- 
+
                     <input
                       readOnly
                       value={prefix}
@@ -479,13 +548,13 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                     </div>
                   </div>
                 </div>
- 
+
                 <div className="col-span-7">
                   <label className="block text-sm mb-1 text-labelColor">
                     Reference#
                   </label>
                   <input
-                  name="reference"
+                    name="reference"
                     placeholder="reference"
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
@@ -493,39 +562,48 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                     value={salesQuoteState.reference}
                   />
                 </div>
- 
- 
+
+
                 <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Quote Date
                   </label>
                   <div className="relative w-full">
                     <input
+                    name="salesQuoteDate"
+                    onChange={handleChange}
+                    value={salesQuoteState?.salesQuoteDate}
                       type="date"
                       className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
                     />
                   </div>
                 </div>
- 
- 
- 
+
+
+
                 <div className="col-span-7 relative">
                   <label className="block text-sm mb-1 text-labelColor">
                     Expiry Date
                   </label>
                   <div className="relative w-full">
                     <input
+                     name="expiryDate"
+                    onChange={handleChange}
+                    value={salesQuoteState?.expiryDate}
                       type="date"
                       className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
                     />
                   </div>
                 </div>
- 
+
                 <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Subject
                   </label>
                   <input
+                  name="subject"
+                  value={salesQuoteState?.subject}
+                  onChange={handleChange}
                     placeholder="subject"
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
@@ -576,10 +654,10 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                   )}
                 </div>
               </div>
- 
- 
- 
- 
+
+
+
+
               <p className="font-bold">Add Item</p>
               <NewSalesQuoteTable
                 salesQuoteState={salesQuoteState}
@@ -587,9 +665,9 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                 oneOrganization={oneOrganization}
                 isIntraState={isIntraState}
               />
- 
+
               <br />
- 
+
             </div>
           </div>
         </div>
@@ -600,7 +678,8 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                 Add Note
                 <input
                   onChange={handleChange}
-                  name="addNotes"
+                  value={salesQuoteState?.note}
+                  name="note"
                   id=""
                   placeholder="Note"
                   className="border-inputBorder w-full text-sm border rounded  p-2 h-[57px] mt-2 "
@@ -612,7 +691,8 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                 Terms & Conditions
                 <input
                   onChange={handleChange}
-                  name="termsAndConditions"
+                  value={salesQuoteState?.tc}
+                  name="tc"
                   id="termsAndConditions"
                   placeholder="Add Terms & Conditions of your business"
                   className="border-inputBorder w-full text-sm border rounded p-2 h-[57px] mt-2"
@@ -624,7 +704,7 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                 Documents
                 <div className="border-dashed border border-neutral-300 p-2 rounded  gap-2 text-center h-[68px] mt-2">
                   <div className="flex gap-1 justify-center">
-                    <Upload />
+                    <Upload/>
                     <span>Upload File</span>
                   </div>
                   <p className="text-xs mt-1 text-gray-600">
@@ -634,9 +714,9 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                 <input type="file" className="hidden" name="documents" />
               </label>
             </div>
- 
+
             <div className=" pb-4  text-dropdownText border-b-2 border-slate-200 space-y-2">
- 
+
               <div className="flex ">
                 <div className="w-[75%]">
                   {" "}
@@ -646,13 +726,13 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                   {" "}
                   <p className="text-end">
                     Rs{" "}
-                    {salesQuoteState.subTotal
-                      ? salesQuoteState.subTotal
+                    {salesQuoteState.subtotalTotal
+                      ? salesQuoteState.subtotalTotal
                       : "0.00"}{" "}
                   </p>
                 </div>
               </div>
- 
+
               <div className="flex ">
                 <div className="w-[75%]">
                   {" "}
@@ -667,36 +747,40 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                   </p>
                 </div>
               </div>
- 
+
               <div className="flex ">
                 <div className="w-[150%]">
                   {" "}
                   <p>Bill Discount</p>
                 </div>
- 
+
                 <div className=" ">
                   <div className="border border-inputBorder rounded-lg flex items-center justify-center p-1 gap-1">
                     <input
                       onChange={handleChange}
+                      value={salesQuoteState?.transactionDiscount}
                       name="transactionDiscount"
-                      type="text"
+                      type="number"
+                      step="0.01"
                       placeholder="0"
-                      className="w-[30px]  focus:outline-none text-center"
+                      className="w-[60px] focus:outline-none text-center"
                     />
                     <select
-                      className="text-xs   text-zinc-400 bg-white relative"
+                      className="text-xs text-zinc-400 bg-white relative"
                       onChange={handleChange}
+                      value={salesQuoteState?.discountTransactionType}
                       name="transactionDiscountType"
                     >
-                      <option value="percentage">%</option>
-                      <option value="currency">
+                      <option value="Percentage">%</option>
+                      <option value="Currency">
                         {oneOrganization.baseCurrency}
                       </option>
                     </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center  text-gray-700 ms-1">
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700 ms-1">
                       <CehvronDown color="gray" height={15} width={15} />
                     </div>
                   </div>
+
                 </div>
                 <div className="w-full text-end">
                   {" "}
@@ -705,12 +789,12 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                       {oneOrganization.baseCurrency}{" "}
                       {salesQuoteState.discountTransactionAmount
                         ? salesQuoteState.discountTransactionAmount
-                        : "0111.00"}
+                        : "0.00"}
                     </p>
                   </p>
                 </div>
               </div>
- 
+
               <div className="flex ">
                 <div className="w-[75%]">
                   <p> Total Discount</p>
@@ -722,8 +806,8 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                   </p>
                 </div>
               </div>
- 
- 
+
+
               {isIntraState ? (
                 <div className="flex ">
                   <div className="w-[75%]">
@@ -757,7 +841,7 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                       </p>
                     </div>
                   </div>
- 
+
                   <div className="flex ">
                     <div className="w-[75%]">
                       {" "}
@@ -775,7 +859,7 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                   </div>
                 </>
               )}
- 
+
               <div className="flex ">
                 <div className="w-[75%]">
                   {" "}
@@ -786,56 +870,10 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
                   <p className="text-end">
                     {" "}
                     {oneOrganization.baseCurrency}{" "}
-                    {calculateTotal()}
+                    {salesQuoteState?.totalTax}
                   </p>
                 </div>
               </div>
-              {/* <div className="flex ">
-                <div className="w-[75%]">
-                  {" "}
-                  <p>Other Expense</p>
-                </div>
-                <div className="w-full text-end">
-                  {" "}
-                  <p className="text-end">
-                    Rs{" "}
-                    {purchaseOrderState.otherExpense
-                      ? purchaseOrderState.otherExpense
-                      : "0.00"}
-                  </p>
-                </div>
-              </div> */}
-              {/* <div className="flex ">
-                <div className="w-[75%]">
-                  {" "}
-                  <p>Fright</p>
-                </div>
-                <div className="w-full text-end">
-                  {" "}
-                  <p className="text-end">
-                    Rs{" "}
-                    {purchaseOrderState.freight
-                      ? purchaseOrderState.freight
-                      : "0.00"}
-                  </p>
-                </div>
-              </div> */}
- 
-              {/* <div className="flex ">
-                <div className="w-[75%]">
-                  {" "}
-                  <p>Rount Off Amount</p>
-                </div>
-                <div className="w-full text-end">
-                  {" "}
-                  <p className="text-end">
-                    {oneOrganization.baseCurrency}{" "}
-                    {purchaseOrderState.roundOff
-                      ? purchaseOrderState.roundOff
-                      : "0.00"}
-                  </p>
-                </div>
-              </div> */}
             </div>
             <div className="flex text-black">
               <div className="w-[75%] font-bold">
@@ -845,19 +883,36 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
               <div className="w-full text-end font-bold text-base">
                 {" "}
                 <p className="text-end">
-                  {" "}
-                  {oneOrganization.baseCurrency}{" "} {calculateTotal()}
+                  {salesQuoteState?.totalAmount &&
+                    `${oneOrganization.baseCurrency} ${salesQuoteState.totalAmount}`
+                  }
                 </p>
+
               </div>
             </div>
- 
- 
+
+
           </div>
         </div>
+      
+      </div>
+      <div>
+      <div className="flex gap-4 my-5 -mt-14 justify-end">
+                {" "}
+                <Button variant="secondary" size="sm">
+                  Cancel
+                </Button>
+                <Button variant="secondary" size="sm">
+                  <PrinterIcon height={18} width={18} color="currentColor" />
+                  Print
+                </Button>
+                <Button variant="primary" size="sm" type="submit" onClick={handleSave} >
+                  Save & Send
+                </Button>{" "}
+              </div>
       </div>
     </div>
   );
 };
- 
+
 export default NewSalesQuote;
- 
