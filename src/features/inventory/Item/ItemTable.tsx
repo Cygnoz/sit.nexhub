@@ -9,7 +9,6 @@ import Modal from "../../../Components/model/Modal";
 import Button from "../../../Components/Button";
 import Pen from "../../../assets/icons/Pen";
 import Trash2 from "../../../assets/icons/Trash2";
-import Ellipsis from "../../../assets/icons/Ellipsis";
 import FileSearchIcon from "../../../assets/icons/FileSearchIcon";
 import { useNavigate } from "react-router-dom";
 
@@ -23,6 +22,10 @@ const ItemTable = () => {
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const { request: get_currencies } = useApi("get", 5004);
+  const [currenciesData, setCurrenciesData] = useState<any[]>([]);
+  const currencySymbol = currenciesData.map((i) => i.currencySymbol)
+
 
   const openModal = (item: any) => {
     setSelectedItem(item);
@@ -37,7 +40,7 @@ const ItemTable = () => {
   const initialColumns: Column[] = [
     { id: "itemName", label: "Name", visible: true },
     { id: "sku", label: "SKU", visible: true },
-    { id: "purchaseDescription", label: "Description", visible: true },
+    // { id: "purchaseDescription", label: "Description", visible: true },
     { id: "sellingPrice", label: "Sales Rate", visible: true },
     { id: "itemDetail", label: "Item Details", visible: true },
     { id: "costPrice", label: "Purchase Rate", visible: true },
@@ -65,8 +68,22 @@ const ItemTable = () => {
     }
   };
 
+  const getHandleCurrencies = async () => {
+    try {
+      const url = `${endponits.GET_CURRENCIES}`;
+      const { response, error } = await get_currencies(url);
+      if (!error && response) {
+        setCurrenciesData(response.data);
+
+      }
+    } catch (error) {
+      console.log("Error in fetching currency data", error);
+    }
+  };
+
   useEffect(() => {
     fetchAllItems();
+    getHandleCurrencies()
   }, []);
 
   const filteredItems = itemsData.filter((item) => {
@@ -200,7 +217,7 @@ const ItemTable = () => {
               <div className="w-full">
                 {/* Item Details */}
                 <div className="p-3 bg-[#F3F3F3] rounded-lg">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center px-3">
                     <div>
                       <p className="font-bold text-textColor text-2xl">
                         {selectedItem.itemName || "N/A"}
@@ -217,7 +234,6 @@ const ItemTable = () => {
                       >
                         <Pen color="#585953" /> Edit
                       </Button>
-                      <Ellipsis />
                     </div>
                   </div>
                 </div>
@@ -268,8 +284,12 @@ const ItemTable = () => {
                     <div className="grid grid-cols-2 gap-y-4">
                       <p className="text-dropdownText text-sm">Cost Price</p>
                       <p className="text-dropdownText font-semibold text-sm">
-                        Rs. {selectedItem?.costPrice || "N/A"}
+                        {currencySymbol[0]?.length === 1
+                          ? `${currencySymbol[0]} ${selectedItem?.costPrice || "N/A"}`  
+                          : `${selectedItem?.costPrice || "N/A"} ${currencySymbol[0]}`}  
                       </p>
+
+
                       {/* <p className="text-dropdownText text-sm">Purchase Account</p>
                       <p className="text-dropdownText font-semibold text-sm">
                         {selectedItem?.purchaseAccount || "N/A"}
@@ -285,7 +305,9 @@ const ItemTable = () => {
                     <div className="grid grid-cols-2 gap-y-4">
                       <p className="text-dropdownText text-sm">Selling Price</p>
                       <p className="text-dropdownText font-semibold text-sm">
-                        Rs. {selectedItem?.sellingPrice || "N/A"}
+                        {currencySymbol[0]?.length === 1
+                          ? `${currencySymbol[0]} ${selectedItem?.sellingPrice || "N/A"}`  
+                          : `${selectedItem?.sellingPrice || "N/A"} ${currencySymbol[0]}`}  
                       </p>
                       {/* <p className="text-dropdownText text-sm">Sales Account</p>
                       <p className="text-dropdownText font-semibold text-sm">

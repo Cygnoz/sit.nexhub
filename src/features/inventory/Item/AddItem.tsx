@@ -1341,6 +1341,7 @@ const AddItem = ({}: Props) => {
                 name="costPrice"
                 value={initialItemData.costPrice}
                 onChange={handleInputChange}
+                onWheel={(e) => e.currentTarget.blur()}
               />
             </div>
           </div>
