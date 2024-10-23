@@ -5,7 +5,7 @@ import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
 import Ellipsis from "../../../assets/icons/Ellipsis";
 import PlusCircle from "../../../assets/icons/PlusCircle";
-import PurchaseOrderCards from "./PurchaseOrderCards";
+// import PurchaseOrderCards from "./PurchaseOrderCards";
 import PurchaseFilterCards from "./PurchaseFilterCards";
 import { Link } from "react-router-dom";
 import PurchaseOrderTable from "./PurchaseOrderTable";
@@ -66,11 +66,11 @@ const PurchaseOrder = ({}: Props) => {
   return (
     <>
       <div className="mx-5 my-4 flex items-center relative">
-        <div>
+        <div className="mx-4">
           <h3 className="font-bold text-xl text-textColor">Create Purchase Order</h3>
           <p className="text-sm text-gray mt-1">
-            Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla egestas consectetur amet.
-          </p>
+          A formal document outlining the details of a purchase
+                    </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">
           <Link to={"/purchase/purchase-order/new"}>
@@ -104,9 +104,9 @@ const PurchaseOrder = ({}: Props) => {
       )}
         </div>
       </div>
-      <div className="px-7 w-[100%] mt-4">
+      {/* <div className="px-7 w-[100%] mt-4">
         <PurchaseOrderCards/>
-      </div>
+      </div> */}
 
       <div className="px-7 mt-4">
       <div className="bg-white p-5 rounded-xl ">

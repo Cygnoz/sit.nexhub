@@ -88,7 +88,7 @@ const NewSalesQuote = ({ }: Props) => {
     totalAmount: ""
   });
  
-console.log(salesQuoteState,"dfghjklkjhgfkl");
+// console.log(salesQuoteState,"dfghjklkjhgfkl");
  
   const fetchData = async (
     url: string,
@@ -222,7 +222,7 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
       console.log("No country selected");
     }
   };
-  console.log(customerData, "cd");
+  // console.log(customerData, "cd");
  
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -316,7 +316,7 @@ console.log(salesQuoteState,"dfghjklkjhgfkl");
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
  
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
-    console.log(oneOrganization.state);
+    // console.log(oneOrganization.state);
  
   }, []);
   const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(false);

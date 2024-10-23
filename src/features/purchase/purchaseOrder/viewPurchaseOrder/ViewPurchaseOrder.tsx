@@ -1,27 +1,58 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
 import Button from "../../../../Components/Button";
 import Pen from "../../../../assets/icons/Pen";
 import MailIcon from "../../../../assets/icons/MailIcon";
 import PdfView from "./PdfView";
 import OrderView from "./OderView";
+import { endponits } from "../../../../Services/apiEndpoints";
+import useApi from "../../../../Hooks/useApi";
+
 
 type Props = {};
 
 function ViewPurchaseOrder({ }: Props) {
     const [isPdfView, setIsPdfView] = useState(false);
+    const [purchaseOrder,setPurchaseOrder]=useState<[] | any>([])
+    const { request: getPurchaseOrder } = useApi("get", 5005);
+const param =useParams()
 
     const handleToggle = () => {
         setIsPdfView(!isPdfView);
     };
+
+    const POid=param.id
+
+    console.log(POid);
+    
+
+    const getPO = async () => {
+        try {
+          const url = `${endponits.GET_ONE_PURCHASE_ORDER}/${POid}`;
+          const { response, error } = await getPurchaseOrder(url);
+          if (!error && response) {
+            setPurchaseOrder(response.data);
+    console.log(response.data,"reponse");
+    
+          } else {
+            console.log(error.response, "error in fetching purchase order");
+          }
+        } catch (error) {
+          console.error("Error in getItemTracking", error);
+        }
+      };
+
+      useEffect(()=>{
+getPO()
+      },[])
 
     return (
         <>
             <div className="px-6">
                 <div className="bg-white rounded-md p-5 mb-32">
                     <div className="flex items-center gap-5">
-                        <Link to={"/purchase/debitnote"}>
+                        <Link to={"/purchase/purchase-order"}>
                             <div
                                 style={{ borderRadius: "50%" }}
                                 className="w-[40px] h-[40px] flex items-center justify-center bg-backButton"
@@ -36,7 +67,7 @@ function ViewPurchaseOrder({ }: Props) {
                     <div className="flex justify-between">
                         <div className="flex gap-3 items-center">
                             <p className="text-lg text-textColor font-bold pr-4 border-r-[1px] border-borderRight">Purchase Order</p>
-                            <p className="text-lg text-textColor font-bold pr-4 border-r-[1px] border-borderRight">Purchase Order#S0001</p>
+                            <p className="text-lg text-textColor font-bold pr-4 border-r-[1px] border-borderRight">Purchase Order{" "} {purchaseOrder.purchaseOrder}</p>
                             <p className="text-sm font-semibold text-textColor bg-cuscolumnbg p-1 text-center rounded-sm">Draft</p>
                         </div>
                         <div className="flex gap-3 items-center">
@@ -45,7 +76,6 @@ function ViewPurchaseOrder({ }: Props) {
                             <select name="" id="" className="border-outlineButton border rounded-md px-[0.625rem] py-2 text-sm font-medium text-outlineButton ">
                                 <option value="">More Action</option>
                             </select>
-                            {/* toggle button */}
                             <label className="flex items-center cursor-pointer">
                                 <div className="relative">
                                     <input type="checkbox" className="sr-only" checked={isPdfView} onChange={handleToggle} />
@@ -59,11 +89,11 @@ function ViewPurchaseOrder({ }: Props) {
                     <hr className="border-t border-inputBorder mt-4" />
                     {isPdfView ? (
                         <div className="pdf-view-component">
-                            <PdfView />
+                            <PdfView purchaseOrder={purchaseOrder} />
                         </div>
                     ) : (
                         <div className="other-component">
-                            <OrderView />
+                            <OrderView  purchaseOrder={purchaseOrder}/>
                         </div>
                     )}
                 </div>
