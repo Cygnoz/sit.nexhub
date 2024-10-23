@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-// import ArrowRightLeft from "../../../../assets/icons/ArrowRightLeft";
+import ArrowRightLeft from "../../../../assets/icons/ArrowRightLeft";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
 import Info from "../../../../assets/icons/Info";
 // import MessageCircle from "../../../../assets/icons/MessageCircle";
@@ -11,6 +11,7 @@ import { endponits } from "../../../../Services/apiEndpoints";
 import { SupplierData } from "../../../../Types/Supplier";
 // import Comment from "./Comment";
 import Overview from "./Overview";
+import Transaction from "./Transaction";
 // import Statement from "./Statement";
 // import Transaction from "./Transaction";
 
@@ -20,7 +21,7 @@ interface Status {
   status: string;
 }
 
-function SeeSupplierDetails({}: Props) {
+function SeeSupplierDetails({ }: Props) {
   const { request: getOneSupplier } = useApi("get", 5009);
   const { id } = useParams<{ id: string }>();
   const [supplier, setSupplier] = useState<SupplierData | null>(null);
@@ -89,14 +90,14 @@ function SeeSupplierDetails({}: Props) {
             className={`text-[14px] font-semibold ${tabSwitch === "comment" ? "bg-[#F7E7CE]" : ""} w-[187px] py-2 justify-center flex gap-2 items-center rounded-[8px] cursor-pointer`}
           >
             <MessageCircle size={20} color="#303F58" /> Comments
-          </div>
+          </div> */}
           <div
             onClick={() => handleTabSwitch("transaction")}
             className={`text-[14px] font-semibold ${tabSwitch === "transaction" ? "bg-[#F7E7CE]" : ""} w-[187px] py-2 justify-center flex gap-2 items-center rounded-[8px] cursor-pointer`}
           >
             <ArrowRightLeft size={20} color="#303F58" /> Transaction
           </div>
-          <div
+          {/* <div
             onClick={() => handleTabSwitch("statement")}
             className={`text-[14px] font-semibold ${tabSwitch === "statement" ? "bg-[#F7E7CE]" : ""} w-[187px] py-2 justify-center flex gap-2 items-center rounded-[8px] cursor-pointer`}
           >
@@ -105,12 +106,16 @@ function SeeSupplierDetails({}: Props) {
         </div>
 
         {tabSwitch === "overview" && (
-  <Overview
-    supplier={supplier}
-    statusData={statusData}
-    setStatusData={setStatusData}
-  />
-)}
+          <Overview
+            supplier={supplier}
+            statusData={statusData}
+            setStatusData={setStatusData}
+          />
+        )}
+        {tabSwitch === "transaction" && (
+          <Transaction
+          />
+        )}
 
       </div>
     </div>

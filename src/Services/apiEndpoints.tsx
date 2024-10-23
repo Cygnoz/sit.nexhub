@@ -62,6 +62,7 @@ GET_ALL_ITEMS_Dropdown: `get-itemDropdown`,
   EDIT_CUSTOMER:`edit-customer`,
   UPDATE_CUSTOMER_STATUS:`update-customer-status`,
   GET_CUSTOMER_HISTORY:`get-one-customer-history`,
+  GET_CUSTOMER_TRANSACTIONS:`get-Customer-Trandactions` ,
 
  
   // Supplier
