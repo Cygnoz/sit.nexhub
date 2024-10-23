@@ -11,6 +11,7 @@ import Pen from "../../../assets/icons/Pen";
 import Trash2 from "../../../assets/icons/Trash2";
 import FileSearchIcon from "../../../assets/icons/FileSearchIcon";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 interface Column {
   id: string;
@@ -19,13 +20,13 @@ interface Column {
 }
 
 const ItemTable = () => {
-
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isDeleteImageModalOpen, setDeleteImageModalOpen] = useState(false); // New state for delete confirmation modal
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const { request: get_currencies } = useApi("get", 5004);
+  const { request: UpdateItem } = useApi("put", 5003); // For updating the item
   const [currenciesData, setCurrenciesData] = useState<any[]>([]);
-  const currencySymbol = currenciesData.map((i) => i.currencySymbol)
-
+  const currencySymbol = currenciesData.map((i) => i.currencySymbol);
 
   const openModal = (item: any) => {
     setSelectedItem(item);
@@ -40,7 +41,6 @@ const ItemTable = () => {
   const initialColumns: Column[] = [
     { id: "itemName", label: "Name", visible: true },
     { id: "sku", label: "SKU", visible: true },
-    // { id: "purchaseDescription", label: "Description", visible: true },
     { id: "sellingPrice", label: "Sales Rate", visible: true },
     { id: "itemDetail", label: "Item Details", visible: true },
     { id: "costPrice", label: "Purchase Rate", visible: true },
@@ -58,8 +58,6 @@ const ItemTable = () => {
 
       if (!error && response) {
         setItemsData(response.data);
-        console.log(response.data);
-
       } else {
         console.error("Error in response:", error);
       }
@@ -74,7 +72,6 @@ const ItemTable = () => {
       const { response, error } = await get_currencies(url);
       if (!error && response) {
         setCurrenciesData(response.data);
-
       }
     } catch (error) {
       console.log("Error in fetching currency data", error);
@@ -83,18 +80,49 @@ const ItemTable = () => {
 
   useEffect(() => {
     fetchAllItems();
-    getHandleCurrencies()
+    getHandleCurrencies();
   }, []);
 
   const filteredItems = itemsData.filter((item) => {
     const searchValueLower = searchValue.toLowerCase();
     return item.itemName?.toLowerCase().includes(searchValueLower);
   });
+
   const navigate = useNavigate();
 
   const handleEdit = () => {
     navigate("/inventory/Item/new", { state: { item: selectedItem } });
   };
+
+  const handleDeleteImage = async () => {
+    if (selectedItem) {
+      const updatedItem = { ...selectedItem, itemImage: "" }; 
+
+      try {
+        const url = `${endponits.UPDATE_ITEM}/${updatedItem._id}`;
+        const { response, error } = await UpdateItem(url, updatedItem);
+
+        if (!error && response) {
+          toast.success("Image removed and item updated successfully.");
+          setSelectedItem(updatedItem);
+          fetchAllItems();
+        } else {
+          toast.error("Error updating item: " + error.response.data.message);
+        }
+      } catch (error) {
+        console.error("Error updating item:", error);
+        toast.error("Failed to update item.");
+      }
+    }
+  };
+
+  const confirmDeleteImage = () => {
+    setDeleteImageModalOpen(true);
+  };
+  const closeDeleteImageModal = () => {
+    setDeleteImageModalOpen(false);
+  };
+
   const renderColumnContent = (colId: string, item: any) => {
     if (colId === "itemDetail") {
       return (
@@ -127,7 +155,7 @@ const ItemTable = () => {
           <Print />
         </div>
       </div>
-      <div className="mt-3 max-h-[25rem] overflow-y-auto " style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+      <div className="mt-3 max-h-[25rem] overflow-y-auto" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }} className="sticky top-0 z-10">
@@ -137,10 +165,7 @@ const ItemTable = () => {
               {columns.map(
                 (col) =>
                   col.visible && (
-                    <th
-                      className="py-2 px-4 font-medium border-b border-tableBorder"
-                      key={col.id}
-                    >
+                    <th className="py-2 px-4 font-medium border-b border-tableBorder" key={col.id}>
                       {col.label}
                     </th>
                   )
@@ -159,10 +184,7 @@ const ItemTable = () => {
                 {columns.map(
                   (col) =>
                     col.visible && (
-                      <td
-                        key={col.id}
-                        className="py-2.5 px-4 border-y border-tableBorder"
-                      >
+                      <td key={col.id} className="py-2.5 px-4 border-y border-tableBorder">
                         {renderColumnContent(col.id, item)}
                       </td>
                     )
@@ -173,47 +195,36 @@ const ItemTable = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Modal for showing item details */}
       <Modal open={isModalOpen} onClose={closeModal} style={{ width: "80%" }}>
         {selectedItem ? (
           <div className="px-8 py-6 bg-white rounded-lg">
-            {/* Modal Header */}
             <div className="flex justify-between mb-2">
               <p className="text-textColor font-bold text-xl">Item Info</p>
-              <div
-                className="text-3xl font-light cursor-pointer relative z-10"
-                onClick={closeModal}
-              >
+              <div className="text-3xl font-light cursor-pointer relative z-10" onClick={closeModal}>
                 &times;
               </div>
             </div>
-
             <div className="flex gap-6">
-              {/* Left Section (Image and Actions) */}
               <div className="p-6 rounded-lg bg-[#F3F3F3] w-[35%] h-[50%] flex flex-col items-center justify-center">
                 <img
-                  src={
-                    selectedItem?.itemImage ||
-                    "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"
-                  }
+                  src={selectedItem?.itemImage || "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"}
                   alt="Item image"
                   className="rounded-lg text-xs"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"; // Fallback in case image fails to load
+                    (e.target as HTMLImageElement).src = "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png";
                   }}
                 />
-
                 <div className="mt-6 flex gap-2">
                   <Button onClick={handleEdit} variant="tertiary" className="text-xs font-medium h-[32px]">
                     <Pen color="#585953" /> Change image
                   </Button>
-                  <Button variant="tertiary" className="text-xs font-medium h-[32px]">
+                  <Button onClick={confirmDeleteImage} variant="tertiary" className="text-xs font-medium h-[32px]">
                     <Trash2 color="#585953" /> Delete
                   </Button>
                 </div>
               </div>
-
-              {/* Right Section (Item Info) */}
               <div className="w-full">
                 {/* Item Details */}
                 <div className="p-3 bg-[#F3F3F3] rounded-lg">
@@ -322,9 +333,40 @@ const ItemTable = () => {
         ) : (
           <p>No item selected</p>
         )}
+        <Toaster position="top-center" reverseOrder={false} />
       </Modal>
 
-
+      {/* Confirmation modal for deleting image */}
+      {isDeleteImageModalOpen && (
+        <Modal
+          open
+          onClose={closeDeleteImageModal} 
+          className="rounded-lg p-8 w-[546px] h-[160px] text-[#303F58] space-y-8 shadow-xl"
+        >
+          <p className="text-sm">
+            Are you sure you want to remove the image?
+          </p>
+          <div className="flex justify-end gap-2 mb-3">
+            <Button
+              onClick={closeDeleteImageModal} 
+              variant="secondary"
+              className="pl-8 pr-8 text-sm h-10"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                handleDeleteImage();
+                closeDeleteImageModal(); // Close the modal after confirming
+              }} 
+              variant="primary"
+              className="pl-8 pr-8 text-sm h-10"
+            >
+              Ok
+            </Button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
