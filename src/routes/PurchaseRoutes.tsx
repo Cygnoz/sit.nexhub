@@ -28,7 +28,7 @@ const PurchaseRoutes: RouteObject[] = [
   { path: "/purchase/payment-made/view", element: <PaymentView /> },
   { path: "/purchase/purchase-order", element: <PurchaseOrder /> },
   { path: "/purchase/purchase-order/new", element: <NewPurchaseOrder /> },
-  { path: "/purchase/viewpurchaseorder", element: <ViewPurchaseOrder /> },
+  { path: "/purchase/viewpurchaseorder/:id", element: <ViewPurchaseOrder /> },
   { path: "/purchase/payment-made/new-payment-made", element: <AddPaymentMade /> },
 ];
 

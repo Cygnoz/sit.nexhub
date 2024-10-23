@@ -191,7 +191,6 @@ const calculateTax = (
   isInterState: boolean
 ) => { 
   
-  // Define tax percentages based on whether it's intra or inter-state
   const cgstPercentage = item.itemCgst || 0;
   const sgstPercentage = item.itemSgst || 0;
   const igstPercentage = item.itemIgst || 0;
@@ -202,11 +201,9 @@ const calculateTax = (
   let igstAmount = 0;
 
   if (!isInterState) {
-    // Intra-state: Apply both CGST and SGST
     cgstAmount = (discountedPrice * cgstPercentage) / 100;
     sgstAmount = (discountedPrice * sgstPercentage) / 100;
   } else {
-    // Inter-state: Apply only IGST
     igstAmount = (discountedPrice * igstPercentage) / 100;
   }
 

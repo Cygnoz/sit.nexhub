@@ -24,6 +24,10 @@ export const endponits = {
   EDIT_PAYMENT_TERMS: `edit-payment-terms/:id`,
   DELETE_PAYMENT_TERMS: `delete-payment-terms`,
   GET_PAYMENT_TERMS: `get-all-payment-terms`,
+
+  // Accounts > setting
+  ADD_DEFUALT_ACCOUNT:`add-default-account`,
+  GET_DEFUALT_ACCOUNT:`get-default-account`,
  
  // items settings
 
@@ -117,6 +121,8 @@ GET_ONE_UNIT:`/get-one-unit`,
 // Purchase order
   ADD_PURCHASE_ORDER:`add-purchaseOrder`,
   GET_LAST_PURCHASE_ORDER_PREFIX: `get-last-purchase-order-prefix`,
+  GET_ALL_PURCHASE_ORDER:`get-all-purchaseOrders`,
+  GET_ONE_PURCHASE_ORDER:`get-purchaseOrder`,
  
  
   // Login
