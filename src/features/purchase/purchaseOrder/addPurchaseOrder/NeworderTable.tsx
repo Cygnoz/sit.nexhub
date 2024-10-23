@@ -31,7 +31,7 @@ type Row = {
 };
 
 type Props = {
-  purchaseOrderState?: PurchaseOrder;
+  purchaseOrderState?: any;
   isInterState?: Boolean;
   setPurchaseOrderState?: (value: any) => void;
   oneOrganization?: any;
