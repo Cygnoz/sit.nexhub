@@ -6,7 +6,7 @@ import Button from "../../../Components/Button";
 import Ellipsis from "../../../assets/icons/Ellipsis";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 // import PurchaseOrderCards from "./PurchaseOrderCards";
-import PurchaseFilterCards from "./PurchaseFilterCards";
+// import PurchaseFilterCards from "./PurchaseFilterCards";
 import { Link } from "react-router-dom";
 import PurchaseOrderTable from "./PurchaseOrderTable";
 type Props = {};
@@ -111,7 +111,7 @@ const PurchaseOrder = ({}: Props) => {
       <div className="px-7 mt-4">
       <div className="bg-white p-5 rounded-xl ">
       <div className="w-[100%] p-3 bg-gray-100">
-        <PurchaseFilterCards/>
+        {/* <PurchaseFilterCards/> */}
       </div>
       <div className="pl-5 pr-5 mt-2">
             <PurchaseOrderTable/>

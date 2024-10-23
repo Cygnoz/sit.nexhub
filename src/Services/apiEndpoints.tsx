@@ -115,7 +115,11 @@ UPDATE_UNIT: `edit-unit/:id`,
 DELETE_UNIT:`delete-unit`,
 GET_ONE_UNIT:`/get-one-unit`,
 
+// PURCHASE
 
+// bill
+ADD_BILL:`/add-Bills`,
+GET_ALL_BILLS:``,
 
 
 // Purchase order

@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomiseColmn from "../../../Components/CustomiseColum";
+import { endponits } from "../../../Services/apiEndpoints";
+import useApi from "../../../Hooks/useApi";
+
+
 
 interface Column {
   id: string;
@@ -20,20 +24,34 @@ const Table = () => {
   ];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
+  const [allBill, setAllBill] = useState<any[]>([]);
 
-  const data = [
-    {
-      id: "1",
-      bill: "232453",
-      billDate: "24-07-2024",
-      reference: "134267",
-      supplierName: "JustinDoe",
-      amount: "60.00",
-      dueDate: "24-08-2024",
-    },
-  ];
+  const { request: getBills } = useApi("get", 5005);
 
-  // Handle column changes from CustomiseColmn
+  const getAllBill = async () => {
+    try {
+      const url = `${endponits.GET_ALL_BILLS}`;
+      const { response, error } = await getBills(url);
+      if (!error && response) {
+        setAllBill(response.data.PurchaseOrders); 
+      } else {
+        console.log(error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+
+  useEffect(()=>{
+getAllBill()
+  },[])
+
+
+
+
+
   const handleColumnChange = (newColumns: Column[]) => {
     setColumns(newColumns);
   };
@@ -67,7 +85,7 @@ const Table = () => {
           </tr>
         </thead>
         <tbody className="text-dropdownText text-center text-[13px]">
-          {data.map((item) => (
+          {allBill.map((item) => (
             <tr key={item.id} className="relative">
               <td className="py-2.5 px-4 border-y border-tableBorder">
                 <input type="checkbox" className="form-checkbox w-4 h-4" />
