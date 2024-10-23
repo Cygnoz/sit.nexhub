@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
 import CehvronDown from "../../../../assets/icons/CehvronDown";
 import NeworderTable from "./NeworderTable";
@@ -14,6 +14,8 @@ import { PurchaseOrder } from "./PurchaseOrderBody";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
 import toast, { Toaster } from "react-hot-toast";
+
+
 
 type Props = {};
 
@@ -39,6 +41,7 @@ const NewPurchaseOrder = ({}: Props) => {
   const { request: newPurchaseOrderApi } = useApi("post", 5005);
   // const { request: getPrfix } = useApi("get", 5005);
 
+  const navigate =useNavigate()
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
   );
@@ -344,6 +347,9 @@ const NewPurchaseOrder = ({}: Props) => {
         // console.log(response);
 
         toast.success(response.data.message);
+        setTimeout(() => {
+          navigate("/purchase/purchase-order")
+        }, 1000);
       } else {
         toast.error(error?.response.data.message);
       }
@@ -472,16 +478,16 @@ const NewPurchaseOrder = ({}: Props) => {
                                   alt=""
                                 />
                               </div>
-                              <div className="col-span-10 flex">
-                                <div
-                                  onClick={() => {
+                              <div className="col-span-10 flex cursor-pointer "  onClick={() => {
                                     setPurchaseOrderState((prevState) => ({
                                       ...prevState,
                                       supplierId: supplier._id,
                                     }));
                                     setOpenDropdownIndex(null);
                                     setSelecetdSupplier(supplier);
-                                  }}
+                                  }}>
+                                <div
+                                 
                                 >
                                   <p className="font-bold text-sm">
                                     {supplier.supplierDisplayName}
@@ -825,6 +831,9 @@ const NewPurchaseOrder = ({}: Props) => {
                     >
                       <option value="" className="text-gray">
                         Select Shipment Preference
+                      </option>
+                      <option value="Road" className="text-gray">
+                        Road
                       </option>
                       <option value="Rail" className="text-gray">
                         Rail

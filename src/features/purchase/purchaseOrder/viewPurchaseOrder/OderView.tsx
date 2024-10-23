@@ -1,17 +1,44 @@
+import { useEffect, useState } from "react";
 import PrinterIcon from "../../../../assets/icons/PrinterIcon";
 import Button from "../../../../Components/Button";
+import useApi from "../../../../Hooks/useApi";
+import { endponits } from "../../../../Services/apiEndpoints";
 
-type Props = {}
 
-function OrderView({ }: Props) {
+type Props = {purchaseOrder?:any}
+
+function OrderView({purchaseOrder }: Props) {
+    const [supplier,setSupplier]=useState<[] | any>([])
+    const {request:getSupplier}=useApi("get",5009)
+
+const getSupplierAddress=async()=>{
+try {
+    const url =`${endponits.GET_ONE_SUPPLIER}/${purchaseOrder.supplierId}`
+    const {response, error}= await getSupplier(url)
+    if(!error && response){
+        setSupplier(response.data)
+    }
+    else{
+        console.log("Error in fetching Supplier ," ,error)
+        
+    }
+} catch (error) {
+    console.log("Error in fetching Supplier ," ,error)
+}
+}
+useEffect(()=>{
+        getSupplierAddress()
+},[purchaseOrder])
+console.log(supplier)
+
     return (
         <div className="mt-4">
             <div className="flex items-center justify-start mb-4">
                 <p className="text-textColor border-r-[1px] border-borderRight pr-4 text-sm font-normal">
-                    Order Date: <span className="ms-3 text-dropdownText text-sm font-semibold">24/06/2024</span>
+                    Order Date: <span className="ms-3 text-dropdownText text-sm font-semibold">{purchaseOrder?.purchaseOrderDate}</span>
                 </p>
                 <p className="text-textColor pl-4 text-sm font-normal">
-                    Expected Shipment: <span className="ms-3 text-dropdownText text-sm font-semibold">24/06/2024</span>
+                    Expected Shipment: <span className="ms-3 text-dropdownText text-sm font-semibold">{purchaseOrder.expectedShipmentDate}</span>
                 </p>
             </div>
             {/* send purchase order */}
@@ -27,19 +54,19 @@ function OrderView({ }: Props) {
             </div>
 
             {/* item details */}
-            <div className="mt-6 p-4 rounded-lg flex items-center" style={{ background: 'linear-gradient(89.66deg, #E3E6D5 -0.9%, #F7E7CE 132.22%)' }}>
+           {purchaseOrder?.itemTable?.map((item:any)=>( <div className="mt-6 p-4 rounded-lg flex items-center" style={{ background: 'linear-gradient(89.66deg, #E3E6D5 -0.9%, #F7E7CE 132.22%)' }}>
                 <div className="flex items-center border-r border-borderRight pr-4">
-                    <img src="https://s3-alpha-sig.figma.com/img/d280/d28b/ae738328489af5e587e95fe2105955cf?Expires=1722211200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=p~s4Pd6Qn~p7F2xhOj69kvQuS37jfaVfI~EPvWb3T0GRZszU5IMeNwTmqxKJYVaPzM49ClHtCjva1VuSGl5111Wlfbzit1xe4LSjDywVLhQIlVB2nuy5~7fZOYUdnuVXb2ZtDTL0D3JJCpHURXzepy1njjkZQZtCsMILKWthxm8qryLy-rW7uS870zgh8jX~a1rgig7zSqzVqfolspoo-dnLzhajoPQQuw3LOSOhvAmnpKGjxJsXe6pxQC6XCDHhZjYgyM2bd6MAt6Q1iOBBmy0PDSce0Fyz-wX9mIjfg-KO6wvrCeVpw11e-rG6MvmipkKu9HW10oR2-y~9mAkRcg__" alt="Item" className="w-[78px] h-[62px] object-cover rounded mr-4" />
+                    <img src="" />
                     <div>
                         <p className="text-dropdownText text-sm">Item</p>
-                        <p className="font-semibold text-sm text-blk">Boat Airdopes 171, Black</p>
+                        <p className="font-semibold text-sm text-blk"></p>
                     </div>
                 </div>
 
                 <div className="border-r flex items-center border-borderRight pr-[28px] h-[62px] pl-6">
                     <div>
                         <p className="text-dropdownText text-sm">Ordered</p>
-                        <p className="font-semibold text-sm text-textColor">10 PCS</p>
+                        <p className="font-semibold text-sm text-textColor">{item.itemQuantity}PCS</p>
                     </div>
                 </div>
                 <div className="border-r flex items-center border-borderRight pr-[28px] h-[62px] pl-6">
@@ -51,23 +78,23 @@ function OrderView({ }: Props) {
                 <div className="border-r flex items-center border-borderRight pr-[28px] h-[62px] pl-6">
                     <div>
                         <p className="text-dropdownText text-sm">Rate</p>
-                        <p className="font-bold text-sm text-textColor">RS. 50,000.00</p>
+                        <p className="font-bold text-sm text-textColor">RS. {item.itemCostPrice}</p>
                     </div>
                 </div>
                 <div className="border-r flex items-center border-borderRight pr-[28px] h-[62px] pl-6">
                     <div>
                         <p className="text-dropdownText text-sm">Discount</p>
-                        <p className="font-bold text-sm text-textColor">0</p>
+                        <p className="font-bold text-sm text-textColor">{item.itemDiscountType=="percentage"? item.itemCostPrice|| 0 *item.itemDiscount/100 : item.itemDiscount|| 0}</p>
                     </div>
                 </div>
                 <div className=" flex items-center  h-[62px] pl-6">
                     <div>
                         <p className="text-dropdownText text-sm">Amount</p>
-                        <p className="font-bold text-sm text-textColor">Rs. 50,000.00</p>
+                        <p className="font-bold text-sm text-textColor">Rs. {item.itemAmount}</p>
                     </div>
                 </div>
 
-            </div>
+            </div>))}
             <hr className="mt-6 border-t border-inputBorder" />
 
             {/* billing address */}
@@ -75,12 +102,12 @@ function OrderView({ }: Props) {
                 <div className="p-6 rounded-lg border border-billingBorder w-[50%]">
                     <p className="text-base font-bold text-textColor">Billing Address</p>
                     <div className="mt-4 text-base mb-[70px] text-dropdownText">
-                        <p>Dheeraj k</p>
-                        <p>Smart World</p>
-                        <p className="text-textColor">2972 Westheimer Rd. Santa Ana, Illinois 85486 </p>
-                        <p className="mt-4">Kochi</p>
-                        <p>India - 670008</p>
-                        <p className="text-textColor">987867566778</p>
+                        <p>{supplier?.supplierDisplayName}</p>
+                        <p>{supplier?.companyName}</p>
+                        <p className="text-textColor">{supplier?.billingAddressStreet1}, {supplier?.billingAddressStreet2} </p>
+                        <p className="mt-4">{supplier?.billingCity}</p>
+                        <p>{supplier?.billingCountry} - {supplier?.billingPinCode}</p>
+                        <p className="text-textColor">{supplier?.billingPhone}</p>
                     </div>
                 </div>
                 <div className="p-6 rounded-lg border border-billingBorder w-[50%]">
@@ -88,19 +115,32 @@ function OrderView({ }: Props) {
                     <div className="mt-[18.5px]">
                         <div className="flex justify-between items-center">
                             <p>Untaxed Amount</p>
-                            <p>RS 0.00</p>
+                            <p>
+  RS { 
+    (purchaseOrder?.grandTotal || 0) -
+    (purchaseOrder?.totalTaxAmount || 0)   }
+</p>
                         </div>
-                        <div className="mt-4 flex justify-between items-center">
-                            <p>SGST</p>
-                            <p>RS 0.00</p>
-                        </div>
-                        <div className="mt-4 flex justify-between items-center">
-                            <p>CGST</p>
-                            <p>RS 0.00</p>
-                        </div>
+                      { purchaseOrder.igst && purchaseOrder.sgst &&  
+                      <>
+                          <div className="mt-4 flex justify-between items-center">
+                                <p>SGST</p>
+                                <p>RS {purchaseOrder.sgst}</p>
+                            </div>
+                            <div className="mt-4 flex justify-between items-center">
+                                <p>CGST</p>
+                                <p>RS {purchaseOrder.cgst}</p>
+                            </div>
+                      </>}
+                      {
+                          <div className="mt-4 flex justify-between items-center">
+                          <p>IGST</p>
+                          <p>RS {purchaseOrder.igst}</p>
+                      </div>
+                      }
                         <div className="mt-4 flex justify-between items-center">
                             <p>Total</p>
-                            <p>RS 0.00</p>
+                            <p>RS {purchaseOrder.grandTotal}</p>
                         </div>
                         <hr className="mt-4 border-t border-[#CCCCCC]" />
                         <div className="flex justify-end gap-2 mt-6 mb-2">
