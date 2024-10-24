@@ -7,7 +7,7 @@ import CurrencyBro from "../../../../assets/Images/Currency-bro 1.png";
 import topImg from "../../../../assets/Images/14.png";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 interface InputCurrencyData {
   currencyCode: string;
@@ -85,8 +85,6 @@ const EditCurrencyModal = ({ selectedCurrency }: { selectedCurrency: any }) => {
         <Pen color={"blue"} />
       </div>
 
-      <Toaster position="top-center" reverseOrder={true} />
-
       <Modal open={isModalOpen} onClose={closeModal} className="w-[68%]">
         <div className="p-5 mt-3 text-start">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
@@ -98,7 +96,9 @@ const EditCurrencyModal = ({ selectedCurrency }: { selectedCurrency: any }) => {
               }}
             ></div>
             <div className="relative">
-              <h3 className="text-xl font-bold text-textColor">Edit Currency</h3>
+              <h3 className="text-xl font-bold text-textColor">
+                Edit Currency
+              </h3>
               <p className="text-dropdownText font-semibold text-sm mt-2">
                 Open a new bank account swiftly and securely.
               </p>

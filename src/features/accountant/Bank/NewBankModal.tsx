@@ -5,7 +5,7 @@ import savings from "../../../assets/Images/Savings.png";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import Modal from "../../../Components/model/Modal";
 import PlusCircle from "../../../assets/icons/PlusCircle";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 // import BankHome from "./BankHome";
@@ -217,7 +217,6 @@ const NewBankModal = ({}: Props) => {
           </form>
         </div>
       </Modal>
-      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 };

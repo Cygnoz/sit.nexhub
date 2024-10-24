@@ -7,7 +7,7 @@ import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import { Link } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { SalesQuote } from "../../../Types/SalesQuote";
 
 type Row = {
@@ -29,6 +29,7 @@ type Row = {
   discountType: string;
   discountAmount: string;
   amount: string;
+  itemAmount:string;
   itemStock: string;
 };
 
@@ -37,6 +38,7 @@ type Props = {
   isIntraState?: Boolean;
   setSalesQuoteState?: (value: any) => void;
   oneOrganization?: any;
+  isPlaceOfSupplyVisible?: boolean
 };
 
 
@@ -45,12 +47,12 @@ const NewSalesQuoteTable = ({
   setSalesQuoteState,
   isIntraState,
   oneOrganization,
+  isPlaceOfSupplyVisible,
 }: Props) => {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<any>([]);
-  
   const { request: getAllItemsRequest } = useApi("get", 5003);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -74,11 +76,13 @@ const NewSalesQuoteTable = ({
       discountType: "Percentage",
       discountAmount: "",
       amount: "",
+      itemAmount:"",
       itemStock: "",
     },
   ]);
 
-
+  console.log(rows.map((i)=>i.itemAmount));
+  
 
   const toggleDropdown = (id: number | null, type: string | null, row: Row) => {
     if (!row.itemName) {
@@ -128,21 +132,23 @@ const NewSalesQuoteTable = ({
       discountType: "Percentage",
       discountAmount: "",
       amount: "",
+      itemAmount:"",
       itemStock: "",
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
   };
-  
+
 
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
     const newRows = [...rows];
+  
     newRows[index].itemName = item.itemName;
     newRows[index].itemImage = item.itemImage;
     newRows[index].sellingPrice = item.sellingPrice || "0";
-    newRows[index].quantity = "1"; // Default quantity
+    newRows[index].quantity = "1"; 
     newRows[index].itemId = item._id;
     newRows[index].cgst = item.cgst;
     newRows[index].sgst = item.sgst;
@@ -162,11 +168,20 @@ const NewSalesQuoteTable = ({
       newRows[index],
       isIntraState as boolean
     );
- 
+  
     newRows[index].amount = itemAmount;
-    newRows[index].cgstAmount = cgstAmount;
-    newRows[index].sgstAmount = sgstAmount;
-    newRows[index].igstAmount = igstAmount;
+    if (isPlaceOfSupplyVisible) {
+      newRows[index].cgstAmount = cgstAmount;
+      newRows[index].sgstAmount = sgstAmount;
+      newRows[index].igstAmount = igstAmount; 
+    } else {
+      newRows[index].cgstAmount = "0"; 
+      newRows[index].sgstAmount = "0"; 
+      newRows[index].igstAmount = igstAmount; 
+    }
+
+    newRows[index].itemAmount = (parseFloat(itemAmount) + (parseFloat(cgstAmount) + parseFloat(sgstAmount))).toFixed(2); 
+
   
     setRows(newRows);
   
@@ -179,32 +194,33 @@ const NewSalesQuoteTable = ({
       }),
     }));
   };
+  
 
   const calculateDiscountPrice = (
     totalSellingPrice: number,
     discountAmount: string,
     discountType: string
-): number => {
-  let discount = parseFloat(discountAmount) || 0;
+  ): number => {
+    let discount = parseFloat(discountAmount) || 0;
     if (discount < 0) {
-        toast.error("Discount cannot be negative");
-        return totalSellingPrice;
+      toast.error("Discount cannot be negative");
+      return totalSellingPrice;
     }
- 
+
     if (discountType === "Percentage") {
-        if (discount > 100) {
-            discount = 100;
-            toast.error("Discount cannot exceed 100%");
-        }
-        return totalSellingPrice - (totalSellingPrice * discount) / 100;
+      if (discount > 100) {
+        discount = 100;
+        toast.error("Discount cannot exceed 100%");
+      }
+      return totalSellingPrice - (totalSellingPrice * discount) / 100;
     } else {
-        if (discount > totalSellingPrice) {
-            discount = totalSellingPrice;
-            toast.error("Discount cannot exceed the selling price");
-        }
-        return totalSellingPrice - discount;
+      if (discount > totalSellingPrice) {
+        discount = totalSellingPrice;
+        toast.error("Discount cannot exceed the selling price");
+      }
+      return totalSellingPrice - discount;
     }
-};
+  };
 
   const calculateTax = (
     discountedPrice: number,
@@ -212,11 +228,11 @@ const NewSalesQuoteTable = ({
     isIntraState: boolean
   ) => {
 
-    
+
     const cgstPercentage = parseFloat(item?.cgst || "0");
     const sgstPercentage = parseFloat(item?.sgst || "0");
     const igstPercentage = parseFloat(item?.igst || "0");
-    
+
     if (!isIntraState) {
       const cgstAmount = ((discountedPrice * cgstPercentage) / 100).toFixed(2);
       const sgstAmount = ((discountedPrice * sgstPercentage) / 100).toFixed(2);
@@ -240,32 +256,37 @@ const NewSalesQuoteTable = ({
   const handleRowChange = (index: number, field: keyof Row, value: string) => {
     const newRows = [...rows];
     newRows[index] = { ...newRows[index], [field]: value };
-   
+
     const quantity = parseFloat(newRows[index].quantity) || 0;
-      const sellingPrice = parseFloat(newRows[index].sellingPrice) || 0;
+    const sellingPrice = parseFloat(newRows[index].sellingPrice) || 0;
     const totalSellingPrice = quantity * sellingPrice;
-   
+
     const discountedPrice = calculateDiscountPrice(
       totalSellingPrice,
       newRows[index].discountAmount,
       newRows[index].discountType
     );
-   
-    // Pass the individual item to calculateTax
+
     const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
       discountedPrice,
       newRows[index],
       isIntraState as boolean
     );
 
-  
+
     newRows[index].amount = itemAmount;
-    newRows[index].cgstAmount = cgstAmount;
-    newRows[index].sgstAmount = sgstAmount;
-    newRows[index].igstAmount = igstAmount;
-   
+    if (isPlaceOfSupplyVisible) {
+      newRows[index].cgstAmount = cgstAmount;
+      newRows[index].sgstAmount = sgstAmount;
+      newRows[index].igstAmount = igstAmount; 
+    } else {
+      newRows[index].cgstAmount = "0"; 
+      newRows[index].sgstAmount = "0"; 
+      newRows[index].igstAmount = igstAmount;
+    }
+    newRows[index].itemAmount = (parseFloat(itemAmount) + (parseFloat(cgstAmount) + parseFloat(sgstAmount))).toFixed(2); 
     setRows(newRows);
-   
+
     setSalesQuoteState?.((prevData: any) => ({
       ...prevData,
       items: newRows.map((row) => {
@@ -275,12 +296,58 @@ const NewSalesQuoteTable = ({
       }),
     }));
   };
+  useEffect(() => {
+    const updateTaxForRows = (rows: any[], isIntraState: boolean, isPlaceOfSupplyVisible: boolean) => {
+      return rows.map((row) => {
+        const s = parseFloat(row.sellingPrice);
+        const q = parseFloat(row.quantity);
+    
+        const discountedPrice = calculateDiscountPrice(
+          s * q,
+          row.discountAmount,
+          row.discountType
+        );
+    
+        const taxDetails = calculateTax(discountedPrice, row, isIntraState);
+        return {
+          ...row,
+          amount: taxDetails.itemAmount,
+          cgstAmount: isPlaceOfSupplyVisible ? taxDetails.cgstAmount : "0", 
+          sgstAmount: isPlaceOfSupplyVisible ? taxDetails.sgstAmount : "0", 
+          igstAmount: taxDetails.igstAmount,
+        };
+      });
+    };
+    const updatedRows = updateTaxForRows(rows, isIntraState as boolean, isPlaceOfSupplyVisible as boolean);
+  
+    // Only update state if rows have changed
+    if (JSON.stringify(rows) !== JSON.stringify(updatedRows)) {
+      setRows(updatedRows);
+      
+      setSalesQuoteState?.((prevData: any) => ({
+        ...prevData,
+        items: updatedRows.map((row) => {
+          const updatedItem = { ...row };
+          delete updatedItem.itemImage;
+          return updatedItem;
+        }),
+        // Resetting or updating the total tax state
+        totalTax: updatedRows.reduce((total, row) => {
+          return total + parseFloat(row.cgstAmount) + parseFloat(row.sgstAmount) + parseFloat(row.igstAmount);
+        }, 0).toFixed(2),
+      }));
+    }
+  }, [isPlaceOfSupplyVisible, rows, isIntraState, setSalesQuoteState]);
+  
+  
+
 
 
   useEffect(() => {
     const updatedRows = rows.map((row) => {
-      const s=parseFloat(row.sellingPrice)
-      const q=parseFloat(row.quantity)
+      const s = parseFloat(row.sellingPrice);
+      const q = parseFloat(row.quantity);
+  
       const discountedPrice = calculateDiscountPrice(
         s * q,
         row.discountAmount,
@@ -292,21 +359,34 @@ const NewSalesQuoteTable = ({
         row,
         isIntraState as boolean
       );
-  
-      return {
-        ...row,
-        amount: taxDetails.itemAmount,
-        cgstAmount: taxDetails.cgstAmount,
-        sgstAmount: taxDetails.sgstAmount,
-        igstAmount: taxDetails.igstAmount,
-      };
+      if (isPlaceOfSupplyVisible) {
+        return {
+          ...row,
+          amount: taxDetails.itemAmount,
+          cgstAmount: taxDetails.cgstAmount,
+          sgstAmount: taxDetails.sgstAmount,
+          igstAmount: taxDetails.igstAmount,
+        };
+      } else {
+        return {
+          ...row,
+          amount: taxDetails.itemAmount,
+          cgstAmount: "0", 
+          sgstAmount: "0", 
+          igstAmount: taxDetails.igstAmount,
+        };
+      }
     });
   
-    setRows(updatedRows);
+    if (JSON.stringify(rows) !== JSON.stringify(updatedRows)) {
+      setRows(updatedRows); // Update rows only if there's an actual change
+    }
   }, [
-    salesQuoteState?.placeOfSupply,
-    isIntraState,
+    salesQuoteState?.placeOfSupply, 
+    isIntraState,                   
+    isPlaceOfSupplyVisible,         
   ]);
+  
 
   const getAllItems = async () => {
     try {
@@ -351,6 +431,7 @@ const NewSalesQuoteTable = ({
           discountType: "Percentage",
           discountAmount: "",
           amount: "0",
+          itemAmount:"0",
           itemStock: "",
         },
       ];
@@ -419,37 +500,36 @@ const NewSalesQuoteTable = ({
     }, 0);
   };
 
-  
-  useEffect(() => {
-    const totalQuantity = calculateTotalQuantity();
-    const totalSGST = calculateTotalSGST();
-    const totalCGST = calculateTotalCGST();
-    const totalIGST = calculateTotalIGST();
-    const totalSellingPrice = calculateTotalSubtotal();
-    const totalDiscount = calculateDiscount();
+useEffect(() => {
+  const totalQuantity = calculateTotalQuantity();
+  const totalSGST = calculateTotalSGST();
+  const totalCGST = calculateTotalCGST();
+  const totalIGST = calculateTotalIGST();
+  const totalSellingPrice = calculateTotalSubtotal();
+  const totalDiscount = calculateDiscount();
 
-  
-    const updatedItems = salesQuoteState?.items.map((item) => {
-      const itemCGST = parseFloat(item.cgstAmount) || 0;
-      const itemSGST = parseFloat(item.sgstAmount) || 0;
-      const itemIGST = parseFloat(item.igstAmount) || 0;
-  
-      const itemTotaltax = isIntraState ? itemIGST : itemCGST + itemSGST;
-  
-      return {
-        ...item,
-        itemTotaltax: itemTotaltax.toFixed(2), 
-      };
-    });
-  
-    // Update the salesQuoteState with new totals and updated items
+  const updatedItems = salesQuoteState?.items.map((item) => {
+    const itemCGST = parseFloat(item.cgstAmount) || 0;
+    const itemSGST = parseFloat(item.sgstAmount) || 0;
+    const itemIGST = parseFloat(item.igstAmount) || 0;
+
+    const itemTotaltax = isIntraState ? itemIGST : itemCGST + itemSGST;
+    // const totalAmount = (parseFloat(item.amount) || 0) + (itemTotaltax) || 0;
+    // console.log(totalAmount);
+    
+    return {
+      ...item,
+      itemTotaltax: itemTotaltax.toFixed(2),   
+      // itemAmount: totalAmount.toFixed(2),
+    };
+  });
     setSalesQuoteState?.((prevData: SalesQuote) => ({
       ...prevData,
       totalItem: totalQuantity,
       sgst: totalSGST,
       cgst: totalCGST,
       igst: totalIGST,
-      subtotalTotal:totalSellingPrice,
+      subtotalTotal: totalSellingPrice,
       totalItemDiscount: totalDiscount,
       totalTax: isIntraState
         ? totalIGST
@@ -457,14 +537,14 @@ const NewSalesQuoteTable = ({
       itemTotaltax: isIntraState
         ? totalIGST
         : totalSGST + totalCGST,
-      items: updatedItems, 
-      subTotal: totalSellingPrice +  (isIntraState
-      ? totalIGST
-      : totalSGST + totalCGST) - totalDiscount,
+      items: updatedItems,
+      subTotal: totalSellingPrice + (isIntraState
+        ? totalIGST
+        : totalSGST + totalCGST) - totalDiscount,
     }));
   }, [rows]);
-  
-  
+
+
 
 
   const filteredItems = () => {
@@ -477,7 +557,7 @@ const NewSalesQuoteTable = ({
     });
   };
 
- 
+
   useEffect(() => {
     setRows((prevData: any) => {
       if (Array.isArray(prevData)) {
@@ -489,8 +569,8 @@ const NewSalesQuoteTable = ({
       }
       return [];
     });
-  
-}, []);
+
+  }, []);
 
   useEffect(() => {
     getAllItems();
@@ -630,19 +710,21 @@ const NewSalesQuoteTable = ({
                   />
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input
+                <input
                     disabled
                     type="number"
                     placeholder="0"
                     className="w-[50px] focus:outline-none text-center"
                     value={
-                      !isIntraState
-                        ? parseFloat(row.cgstAmount || "0") + parseFloat(row.sgstAmount || "0") === 0
-                          ? "nil"
-                          : (parseFloat(row.cgstAmount || "0") + parseFloat(row.sgstAmount || "0")).toFixed(2)
-                        : parseFloat(row.igstAmount || "0") === 0
-                          ? "nil"
-                          : parseFloat(row.igstAmount || "0").toFixed(2)
+                      !isPlaceOfSupplyVisible
+                        ? "0" // Set to 0 if place of supply is not visible
+                        : !isIntraState
+                          ? parseFloat(row.cgstAmount || "0") + parseFloat(row.sgstAmount || "0") === 0
+                            ? "nil"
+                            : (parseFloat(row.cgstAmount || "0") + parseFloat(row.sgstAmount || "0")).toFixed(2)
+                          : parseFloat(row.igstAmount || "0") === 0
+                            ? "nil"
+                            : parseFloat(row.igstAmount || "0").toFixed(2)
                     }
                   />
 
@@ -718,7 +800,6 @@ const NewSalesQuoteTable = ({
           Add Item
         </button>
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };

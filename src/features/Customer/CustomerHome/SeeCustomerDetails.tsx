@@ -4,7 +4,7 @@ import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { CustomerEditResponseContext } from "../../../context/ContextShare";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Overview from "./viewCustomerDetails/Overview";
 import SalesHistory from "./viewCustomerDetails/SalesHistory";
 import cardBg from "../../../assets/Images/Card 3 Mask.png";
@@ -203,7 +203,6 @@ function SeeCustomerDetails() {
           )}
         </div>
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 }

@@ -7,7 +7,7 @@ import TaxImage from "../../../../assets/Images/Tax-bro 1.png";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import { GstResponseContext } from "../../../../context/ContextShare";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 // import BookIcon from "../../../../assets/icons/BookIcon";
 // import OpenedBookIcon from "../../../../assets/icons/OpenedBookIcon";
 // import BookXIcon from "../../../../assets/icons/BookXIcon";
@@ -444,7 +444,6 @@ function TaxRate({ }: Props) {
           </div>
         </form>
       </Modal>
-      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }

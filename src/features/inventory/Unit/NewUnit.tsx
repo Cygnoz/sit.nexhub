@@ -6,7 +6,7 @@ import bgImage from "../../../assets/Images/12.png";
 import Modal from "../../../Components/model/Modal";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { UnitResponseContext } from "../../../context/ContextShare";
 
 type Props = {};
@@ -221,7 +221,6 @@ name= "precision"
           </div>
         </Modal>
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };

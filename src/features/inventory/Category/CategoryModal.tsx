@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Button from "../../../Components/Button";
 import Modal from "../../../Components/model/Modal";
 import bgImage from "../../../assets/Images/Frame 6.png";
@@ -138,7 +138,6 @@ function Category({ isOpen, onClose, page }: Props) {
 
   return (
     <Modal open={isOpen} onClose={onClose} className="w-[65%]">
-      <Toaster position="top-center" reverseOrder={false} />
       <div className="p-5 mt-3">
         <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden h-24">
           <div
