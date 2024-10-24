@@ -21,6 +21,55 @@ interface Customer {
   taxType: string;
 
 }
+const initialSalesQuoteState: SalesQuote = {
+  customerId: "",
+  customerName: "",
+  placeOfSupply: "",
+  reference: "",
+  salesQuoteDate: "",
+  expiryDate: "",
+  subject: "",
+
+  items: [
+    {
+      itemId: "",
+      itemName: "",
+      quantity: "",
+      sellingPrice: "",
+      taxPreference: "",
+      taxGroup: "",
+      cgst: "",
+      sgst: "",
+      igst: "",
+      cgstAmount: "",
+      sgstAmount: "",
+      igstAmount: "",
+      vatAmount: "",
+      itemTotaltax: "",
+      discountType: "",
+      discountAmount: "",
+      amount: ""
+    },
+  ],
+
+  totalItemDiscount: "",
+  subtotalTotal: "",
+  note: "",
+  tc: "",
+  totalDiscount: "",
+  discountTransactionType: "Percentage",
+  discountTransactionAmount: "",
+  transactionDiscount: "",
+  subTotal: "",
+  totalItem: "",
+
+  cgst: "",
+  sgst: "",
+  igst: "",
+  vat: "",
+  totalTax: "",
+  totalAmount: ""
+};
 
 const NewSalesQuote = ({ }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
@@ -40,58 +89,7 @@ const NewSalesQuote = ({ }: Props) => {
   const { request: AllCustomer } = useApi("get", 5002);
   const { request: getPrfix } = useApi("get", 5007);
 
-  const [salesQuoteState, setSalesQuoteState] = useState<SalesQuote>({
-    customerId: "",
-    customerName: "",
-    placeOfSupply: "",
-    reference: "",
-    salesQuoteDate: "",
-    expiryDate: "",
-    subject: "",
-
-    items: [
-      {
-        itemId: "",
-        itemName: "",
-        quantity: "",
-        sellingPrice: "",
-        taxPreference: "",
-        taxGroup: "",
-        cgst: "",
-        sgst: "",
-        igst: "",
-        cgstAmount: "",
-        sgstAmount: "",
-        igstAmount: "",
-        vatAmount: "",
-        itemTotaltax: "",
-        discountType: "",
-        discountAmount: "",
-        amount: ""
-      },
-    ],
-    totalItemDiscount: "",
-    subtotalTotal:"",
-    note: "",
-    tc: "",
-    totalDiscount: "",
-    discountTransactionType: "Percentage",
-    discountTransactionAmount: "",
-    transactionDiscount: "",
-    subTotal: "",
-    totalItem: "",
-
-    cgst: "",
-    sgst: "",
-    igst: "",
-    vat: "",
-    totalTax: "",
-    totalAmount: ""
-  });
-  console.log(salesQuoteState);
-  console.log(salesQuoteState.items.map((i)=>
-  i.itemTotaltax));
-  
+  const [salesQuoteState, setSalesQuoteState] = useState<SalesQuote>(initialSalesQuoteState);
 
 
   const fetchData = async (

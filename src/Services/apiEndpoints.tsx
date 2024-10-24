@@ -24,6 +24,10 @@ export const endponits = {
   EDIT_PAYMENT_TERMS: `edit-payment-terms/:id`,
   DELETE_PAYMENT_TERMS: `delete-payment-terms`,
   GET_PAYMENT_TERMS: `get-all-payment-terms`,
+
+  // Accounts > setting
+  ADD_DEFUALT_ACCOUNT:`add-default-account`,
+  GET_DEFUALT_ACCOUNT:`get-default-account`,
  
  // items settings
 
@@ -58,6 +62,7 @@ GET_ALL_ITEMS_Dropdown: `get-itemDropdown`,
   EDIT_CUSTOMER:`edit-customer`,
   UPDATE_CUSTOMER_STATUS:`update-customer-status`,
   GET_CUSTOMER_HISTORY:`get-one-customer-history`,
+  GET_CUSTOMER_TRANSACTIONS:`get-Customer-Trandactions` ,
 
  
   // Supplier
@@ -107,16 +112,22 @@ DELETE_BRMC:`delete-bmcr`,
 GET_ONE_BRMC:`get-a-bmcr`,
 ADD_UNIT:`add-unit`,
 GET_ALL_UNIT:`get-all-unit`,
-UPDATE_UNIT: `edit-unit/:id`,
+UPDATE_UNIT: `edit-unit`,
 DELETE_UNIT:`delete-unit`,
 GET_ONE_UNIT:`/get-one-unit`,
 
+// PURCHASE
 
+// bill
+ADD_BILL:`/add-Bills`,
+GET_ALL_BILLS:``,
 
 
 // Purchase order
   ADD_PURCHASE_ORDER:`add-purchaseOrder`,
   GET_LAST_PURCHASE_ORDER_PREFIX: `get-last-purchase-order-prefix`,
+  GET_ALL_PURCHASE_ORDER:`get-all-purchaseOrders`,
+  GET_ONE_PURCHASE_ORDER:`get-purchaseOrder`,
  
  
   // Login
