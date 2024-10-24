@@ -48,7 +48,8 @@ const initialSalesQuoteState: SalesQuote = {
       itemTotaltax: "",
       discountType: "",
       discountAmount: "",
-      amount: ""
+      amount: "",
+      itemAmount:""
     },
   ],
 
@@ -368,13 +369,14 @@ const NewSalesQuote = ({ }: Props) => {
     // console.log(oneOrganization.state);
 
   }, []);
-  const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(false);
+
+  const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(true);
 
   const checkTaxType = (customer: Customer) => {
     if (customer.taxType === "GST") {
       setIsPlaceOfSupplyVisible(true);
     } else {
-      setIsPlaceOfSupplyVisible(false); // Hide the Place of Supply field
+      setIsPlaceOfSupplyVisible(false); 
     }
   };
 
@@ -662,6 +664,7 @@ const NewSalesQuote = ({ }: Props) => {
                 setSalesQuoteState={setSalesQuoteState}
                 oneOrganization={oneOrganization}
                 isIntraState={isIntraState}
+                isPlaceOfSupplyVisible={isPlaceOfSupplyVisible}
               />
 
               <br />
