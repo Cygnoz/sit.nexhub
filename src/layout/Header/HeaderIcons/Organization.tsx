@@ -15,12 +15,6 @@ const Organization = ({ organizationData }: Props) => {
   const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!organizationData) {
-  //     handleLogout();
-  //   }
-  // }, [organizationData]);
-
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
   };
