@@ -40,6 +40,8 @@ type CustomerData = {
   designation: string;
   websiteURL: string;
   taxType: string;
+  exemptionReason:string;
+  taxPreference:string;
   gstTreatment: string;
   gstin_uin: string;
   placeOfSupply: string;
@@ -138,6 +140,8 @@ const NewCustomerModal = ({ page }: Props) => {
     designation: "",
     websiteURL: "",
     taxType: "",
+    exemptionReason:"",
+  taxPreference:"",
     gstTreatment: "",
     gstin_uin: "",
     placeOfSupply: "",
@@ -457,6 +461,8 @@ const NewCustomerModal = ({ page }: Props) => {
           designation: "",
           websiteURL: "",
           taxType: "",
+          taxPreference:"",
+          exemptionReason:"",
           gstTreatment: "",
           gstin_uin: "",
           placeOfSupply: "",
@@ -507,12 +513,21 @@ const NewCustomerModal = ({ page }: Props) => {
       console.error("Unexpected error:");
     }
   };
-
+console.log(customerdata)
   useEffect(() => {
     if (taxPreference === "Tax Exempt") {
       setCustomerData((prevData: any) => ({
         ...prevData,
-        taxType: "none",
+        taxType: "Non-Tax",
+        taxPreference:"Tax Exepmt",
+        exemptionReason:""
+      }));
+    }
+    else{
+      setCustomerData((prevData: any) => ({
+        ...prevData,
+        taxType: gstOrVat.taxType,
+        taxPreference:"Taxable"
       }));
     }
   }, [taxPreference]);
@@ -1432,9 +1447,9 @@ const NewCustomerModal = ({ page }: Props) => {
                             type="text"
                             className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                             placeholder="Value"
-                            //  name="billingAttention"
-                            //  value={customerdata.billingAttention}
-                            //  onChange={handleChange}
+                             name="exemptionReason"
+                             value={customerdata.exemptionReason}
+                             onChange={handleChange}
                           />
                         </div>
                       )}

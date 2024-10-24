@@ -46,7 +46,5 @@ export interface Bill {
     roundOff: number;
     paidStatus: string;
     shipmentPreference: string;
-    paidAmount: number;
-    balanceAmount: number;
     grandTotal: number;
 }
