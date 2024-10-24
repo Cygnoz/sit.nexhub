@@ -518,7 +518,7 @@ console.log(customerdata)
     if (taxPreference === "Tax Exempt") {
       setCustomerData((prevData: any) => ({
         ...prevData,
-        taxType: "None",
+        taxType: "Non-Tax",
         taxPreference:"Tax Exepmt",
         exemptionReason:""
       }));
