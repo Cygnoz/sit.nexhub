@@ -90,14 +90,15 @@ const NewBills = ({}: Props) => {
     roundOff: 0,
     paidStatus: "",
     shipmentPreference: "",
-    paidAmount: 0,
-    balanceAmount: 0,
     grandTotal: 0,
   });
 
-  console.log(bill, "bill state");
+  // console.log(bill, "bill state");
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
+    const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
+    fetchData(supplierUrl, setSupplierData, AllSuppliers);
+
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -272,22 +273,6 @@ const NewBills = ({}: Props) => {
     } catch (error) {}
   };
 
-  useEffect(() => {
-    if (
-      bill.paidAmount !== null &&
-      bill.paidAmount !== undefined &&
-      !isNaN(bill.paidAmount)
-    ) {
-      const balance = Math.max(
-        0,
-        (bill.grandTotal || 0) - (bill.paidAmount || 0)
-      );
-      setBill((prevData) => ({
-        ...prevData,
-        balanceAmount: balance,
-      }));
-    }
-  }, [bill.paidAmount, bill.grandTotal]);
 
   useEffect(() => {
     const newGrandTotal = calculateTotalAmount();
@@ -1071,7 +1056,7 @@ const NewBills = ({}: Props) => {
               </div>
             </div>
 
-            <div className="flex gap-4 items-center justify-center">
+            {/* <div className="flex gap-4 items-center justify-center">
               <label
                 className="block text-sm mb-1 text-labelColor max-w-fit"
                 htmlFor="paidAmount"
@@ -1108,7 +1093,7 @@ const NewBills = ({}: Props) => {
                   className="border-inputBorder  text-sm border rounded-lg text-dropdownText  p-2 h-9 mt-2 "
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}

@@ -85,7 +85,7 @@ getAllBill()
           </tr>
         </thead>
         <tbody className="text-dropdownText text-center text-[13px]">
-          {allBill.map((item) => (
+          {allBill?.map((item) => (
             <tr key={item.id} className="relative">
               <td className="py-2.5 px-4 border-y border-tableBorder">
                 <input type="checkbox" className="form-checkbox w-4 h-4" />
