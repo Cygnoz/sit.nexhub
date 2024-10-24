@@ -22,7 +22,7 @@ const LayoutSkeleton = () => {
           </div>
           <div className="flex items-center gap-4 ml-auto"></div>
         </div>
-        <div className="bg-BgSubhead flex mx-7 justify-between px-7 py-5 my-4  items-center rounded-full">
+        <div className="bg-BgSubhead flex mx-7 justify-between px-5 py-3 my-4  items-center rounded-full">
           <div className="bg-gray-300 h-8 rounded w-1/4 mb-4"></div>
           <div className="bg-gray-300 h-4 rounded w-1/2 mb-2"></div>
           <div className="bg-gray-300 h-4 rounded w-1/2 mb-2"></div>

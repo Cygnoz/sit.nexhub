@@ -3,11 +3,11 @@ import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
-import Ellipsis from "../../../assets/icons/Ellipsis";
+// import Ellipsis from "../../../assets/icons/Ellipsis";
 import Print from "../../../Components/PrintButton";
-import SortBy from "./SortBy";
+// import SortBy from "./SortBy";
 import PlusCircle from "../../../assets/icons/PlusCircle";
-import QuoteCustomers from "./QuoteCustomers";
+// import QuoteCustomers from "./QuoteCustomers";
 import QuoteTable from "./QuoteTable";
 import SearchBar from "../../../Components/SearchBar";
 import { useNavigate } from "react-router-dom";
@@ -75,7 +75,7 @@ const QuoteHome = ({}: Props) => {
   ];
 
   return (
-    <div className="mx-12 my-4 overflow-x-hidden">
+    <div className="mx-4 my-4 overflow-x-hidden">
       <div className="flex items-center relative">
         <div>
           <h3 className="font-bold text-xl text-textColor">
@@ -101,7 +101,7 @@ const QuoteHome = ({}: Props) => {
             className="cursor-pointer"
             ref={ellipsisRef}
           >
-            <Ellipsis />
+            {/* <Ellipsis /> */}
           </div>
 
           {isDropdownOpen && (
@@ -134,7 +134,7 @@ const QuoteHome = ({}: Props) => {
 
       <div className="bg-white p-5 rounded-xl px-5 mt-4">
         <div className="w-full p-3 bg-gray-100 overflow-x-hidden">
-          <QuoteCustomers />
+          {/* <QuoteCustomers /> */}
         </div>
         <div className="flex pl-3 pr-3 items-center gap-5">
           <div className="w-[90%]">
@@ -144,7 +144,7 @@ const QuoteHome = ({}: Props) => {
               placeholder="Search Quote"
             />
           </div>
-          <SortBy />
+          {/* <SortBy /> */}
           <Print />
         </div>
         <div className="p-3">

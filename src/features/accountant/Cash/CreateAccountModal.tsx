@@ -6,7 +6,7 @@ import PlusCircle from "../../../assets/icons/PlusCircle";
 import Modal from "../../../Components/model/Modal";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useContext } from "react";
 import { cashResponseContext } from "../../../context/ContextShare"; 
 type Props = {};
@@ -166,7 +166,6 @@ const CreateAccountModal = ({}: Props) => {
           </form>
         </div>
       </Modal>
-      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 };

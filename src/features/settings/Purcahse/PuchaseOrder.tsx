@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Banner from "../banner/Banner";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
@@ -181,7 +181,6 @@ function PurchaseOrders({}: Props) {
             </Button>
           </div>
         </form>
-      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }

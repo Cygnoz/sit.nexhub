@@ -24,11 +24,13 @@ export interface SalesQuote {
     discountType: string;
     discountAmount: string;
     amount: string;
+    itemAmount:string;
    
   }[];
   totalItemDiscount:string;
   note: string;
   tc: string;
+  subtotalTotal:string;
   totalDiscount:string;
   // discountType: string;
   discountTransactionType: string;

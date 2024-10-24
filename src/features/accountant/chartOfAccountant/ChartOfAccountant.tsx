@@ -5,7 +5,7 @@ import Table from "./Table";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { Account } from "../../../Types/Accountant";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type Props = {};
 
@@ -38,7 +38,6 @@ const ChartOfAccountant = ({}: Props) => {
 
   return (
     <div className="mx-5 my-4">
-      <Toaster/>
       <div className="top-side flex items-center justify-between">
         <div className="head-frame">
           <h1>Chart Of Account</h1>

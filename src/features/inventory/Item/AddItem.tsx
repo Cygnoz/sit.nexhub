@@ -12,7 +12,7 @@ import RackModal from "../Rack/RackModal";
 import NewManufacture from "../Manufature/NewManufacture";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import CategoryModal from "../Category/CategoryModal"
 
 
@@ -1341,6 +1341,7 @@ const AddItem = ({}: Props) => {
                 name="costPrice"
                 value={initialItemData.costPrice}
                 onChange={handleInputChange}
+                onWheel={(e) => e.currentTarget.blur()}
               />
             </div>
           </div>
@@ -1618,7 +1619,6 @@ const AddItem = ({}: Props) => {
         >
           Save
         </Button>
-        <Toaster position="top-center" reverseOrder={false} />
       </div>
       {isBrandModalOpen && (
         <BrandModal ref={modalRef} onClose={() => setIsBrandModalOpen(false)} />

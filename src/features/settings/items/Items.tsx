@@ -4,7 +4,7 @@ import Banner from "../banner/Banner";
 import Button from "../../../Components/Button";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { settingsdataResponseContext } from "../../../context/ContextShare"
 
 type Props = {};
@@ -457,7 +457,6 @@ function Items({}: Props) {
           <p className="text-sm">Save</p>
         </Button>
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 }

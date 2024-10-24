@@ -8,7 +8,7 @@ import Button from "../../../../Components/Button";
 import PlusIcon from "../../../../assets/icons/PlusIcon";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
-import { toast, Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 type Props = {};
 
 function NewJournal({}: Props) {
@@ -686,8 +686,6 @@ function NewJournal({}: Props) {
           </Button>
         </div>
       </div>
-
-      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }

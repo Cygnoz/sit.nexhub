@@ -8,7 +8,7 @@ import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
 import PlusCircle from "../../../../assets/icons/PlusCircle";
 import { Link } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type Row = {
   itemImage?: string;
@@ -31,7 +31,7 @@ type Row = {
 };
 
 type Props = {
-  purchaseOrderState?: PurchaseOrder;
+  purchaseOrderState?: any;
   isInterState?: Boolean;
   setPurchaseOrderState?: (value: any) => void;
   oneOrganization?: any;
@@ -191,7 +191,6 @@ const calculateTax = (
   isInterState: boolean
 ) => { 
   
-  // Define tax percentages based on whether it's intra or inter-state
   const cgstPercentage = item.itemCgst || 0;
   const sgstPercentage = item.itemSgst || 0;
   const igstPercentage = item.itemIgst || 0;
@@ -202,11 +201,9 @@ const calculateTax = (
   let igstAmount = 0;
 
   if (!isInterState) {
-    // Intra-state: Apply both CGST and SGST
     cgstAmount = (discountedPrice * cgstPercentage) / 100;
     sgstAmount = (discountedPrice * sgstPercentage) / 100;
   } else {
-    // Inter-state: Apply only IGST
     igstAmount = (discountedPrice * igstPercentage) / 100;
   }
 
@@ -706,7 +703,6 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
           Add Item
         </button>
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };
