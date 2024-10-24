@@ -31,7 +31,6 @@ function AccountsSettings({}: Props) {
   const [tax, setTax] = useState<any>([]);
   const [accounts, setAccounts] = useState<any>([]);
 
-
   const { request: getAccounts } = useApi("get", 5001);
   const { request: addaccount } = useApi("post", 5004);
   const { request: getAccountData } = useApi("get", 5004);
@@ -62,8 +61,6 @@ function AccountsSettings({}: Props) {
     const { name, value } = e.target;
     setInputData({ ...inputData, [name]: value });
   };
-
-
 
   const handleSave = async () => {
     try {
@@ -96,31 +93,30 @@ function AccountsSettings({}: Props) {
       console.error("Error fetching data:", error);
     }
   };
-  
+
   useEffect(() => {
     const taxUrl = `${endponits.GET_ALL_TAX}`;
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
     const getAccountUrl = `${endponits.GET_DEFUALT_ACCOUNT}`;
-  
+
     const fetchAllData = async () => {
       await fetchData(taxUrl, setTax, getTax);
       await fetchData(allAccountsUrl, setAllAccounts, getAccounts);
       await fetchData(getAccountUrl, setAccounts, getAccountData);
     };
-  
+
     fetchAllData();
   }, []);
-  
+
   // Single useEffect for setting input data based on accounts
   useEffect(() => {
     if (accounts) {
       setInputData((prevData: any) => ({
         ...prevData,
-        ...accounts, 
+        ...accounts,
       }));
     }
   }, [accounts]);
-  
 
   return (
     <>
@@ -137,7 +133,7 @@ function AccountsSettings({}: Props) {
                   type="checkbox"
                   className="sr-only"
                   checked={isVat}
-                  onChange={handleToggle} 
+                  onChange={handleToggle}
                 />
                 <div
                   className={`w-11 h-6 rounded-full shadow-inner transition-colors ${

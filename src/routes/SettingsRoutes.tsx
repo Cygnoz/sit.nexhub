@@ -23,22 +23,6 @@ import TransactionNumber from "../features/settings/customization/TransactionNum
 import CustomerAndSupplier from "../features/settings/Preferences/CustomerAndSupplier";
 import AccountsSettings from "../features/settings/organisation/Accounts/AccountsSettings";
 
-// Example: Mock data and handler for AccountsSettings component
-const inputData = {
-  organizationCountry: '',
-  organizationIndustry: ''
-};
-
-const additionalData = {
-  countryData: [{ name: 'USA' }, { name: 'Canada' }],
-  industry: ['Technology', 'Finance']
-};
-
-const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  console.log(e.target.name, e.target.value);
-  // Your logic for handling the change event
-};
-
 // Define Routes
 const SettingsRoutes: RouteObject[] = [
   { path: "/settings", element: <Settings /> },
@@ -48,17 +32,14 @@ const SettingsRoutes: RouteObject[] = [
   },
   {
     path: "/settings/organization/accounts",
-    element: (
-      <AccountsSettings
-        inputData={inputData}
-        additionalData={additionalData}
-        handleInputChange={handleInputChange}
-      />
-    )
+    element: <AccountsSettings />,
   },
   { path: "/settings/organization/invoice", element: <InvoiceSettings /> },
   { path: "/settings/organization/currencies", element: <Currencies /> },
-  { path: "/settings/currencies/exchange-rates/:_id", element: <ExchangeRates /> },
+  {
+    path: "/settings/currencies/exchange-rates/:_id",
+    element: <ExchangeRates />,
+  },
   { path: "/settings/taxes", element: <Taxes /> },
   { path: "/settings/taxes/GST", element: <GSTComponent /> },
   { path: "/settings/taxes/VAT", element: <VATComponent /> },
@@ -74,8 +55,14 @@ const SettingsRoutes: RouteObject[] = [
   { path: "/settings/sales/CreditNotes", element: <CreditNotes /> },
   { path: "/settings/purchases/expenses", element: <ExpensesHome /> },
   { path: "/settings/purchase/puschaseOrder", element: <PurchaseOrders /> },
-  { path: "/settings/transaction-number-series", element: <TransactionNumber /> },
-  { path: "/settings/preferences/CustomerAndSupplier", element: <CustomerAndSupplier /> },
+  {
+    path: "/settings/transaction-number-series",
+    element: <TransactionNumber />,
+  },
+  {
+    path: "/settings/preferences/CustomerAndSupplier",
+    element: <CustomerAndSupplier />,
+  },
 ];
 
 export default SettingsRoutes;
