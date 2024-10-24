@@ -48,10 +48,16 @@ interface unitResponseContextType{
  setUnitResponse: React.Dispatch<React.SetStateAction<any>>;
 }
 
+interface unitEditResponseContextType{
+  unitEditResponse:any;   
+ setEditUnitResponse: React.Dispatch<React.SetStateAction<any>>;
+}
+
 interface SettingsResponseType {
   settingsResponse: any;
   getSettingsData: () => void;
 }
+
 
 export const cashResponseContext = createContext<CashResponseContextType | undefined>(undefined);
 export const BankResponseContext = createContext<BankResponseContextType | undefined>(undefined);
@@ -63,7 +69,7 @@ export const SupplierResponseContext = createContext<SupplierResponseContextType
 export const CustomerResponseContext = createContext<CustomerResponseContextType | undefined>(undefined);
 export const CustomerEditResponseContext = createContext<CustomerEditResponseContextType | undefined>(undefined);
 export const UnitResponseContext=createContext<unitResponseContextType | undefined>(undefined);
-
+export const UnitEditResponseContext=createContext<unitEditResponseContextType | undefined>(undefined);
 interface ContextShareProps {
   children: ReactNode;
 }
@@ -81,6 +87,7 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
   const [customerResponse, setcustomerResponse] = useState<any>({});
   const [customerEditResponse, setcustomereditResponse] = useState<any>({});
   const [unitResponse, setUnitResponse] =useState<any>({});
+  const [unitEditResponse, setEditUnitResponse] =useState<any>({});
 
   const getSettingsData = async () => {
     try {
@@ -98,6 +105,7 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
   };
   
   return (
+    <UnitEditResponseContext.Provider value={{unitEditResponse,setEditUnitResponse }}>
     <UnitResponseContext.Provider value={{unitResponse,setUnitResponse }}>
     <cashResponseContext.Provider value={{ cashResponse, setCashResponse }}>
       <BankResponseContext.Provider value={{ bankResponse, setBankResponse }}>
@@ -119,6 +127,7 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
       </BankResponseContext.Provider>
     </cashResponseContext.Provider>
     </UnitResponseContext.Provider>
+    </UnitEditResponseContext.Provider>
   );
 };
 
