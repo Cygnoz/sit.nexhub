@@ -80,6 +80,12 @@ const NewUnit = ({}: Props) => {
             ...prevUnitResponse,
             ...body,
           }));
+          setInitialUnitData({
+            unitName: "",
+            symbol: "",
+            quantityCode: "",
+            precision: "",
+          })
         
 
 
