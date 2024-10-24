@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import ChevronRight from "../../../../assets/icons/ChevronRight";
 import CirclePlus from "../../../../assets/icons/circleplus";
 import Plus from "../../../../assets/icons/Plus";
@@ -859,7 +859,6 @@ function InvoiceSettings({}: Props) {
           </Button>
         </div>
       </form>
-      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }

@@ -51,8 +51,8 @@ function Transaction({}: Props) {
 
   ];
   return (
-    <div className="px-6">
-      <h1 className="text-md">Transaction</h1>
+    <div className="">
+      <h1 className="text-md text-xl">Transaction</h1>
       <div className=" gap-3 mt-4 text-xs  grid-flow-col grid">
         {filterList.map((item) => (
           <button

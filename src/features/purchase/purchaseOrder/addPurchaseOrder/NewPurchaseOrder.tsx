@@ -13,7 +13,7 @@ import NewCustomerModal from "../../../Customer/CustomerHome/NewCustomerModal";
 import { PurchaseOrder } from "./PurchaseOrderBody";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast  from "react-hot-toast";
 import { SupplierResponseContext } from "../../../../context/ContextShare";
 
 
@@ -1233,7 +1233,6 @@ console.log(supplierResponse),"SResponse"
           Save & Send
         </Button>{" "}
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };

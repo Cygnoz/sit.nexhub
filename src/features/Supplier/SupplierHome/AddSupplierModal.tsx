@@ -6,7 +6,7 @@ import PlusCircle from "../../../assets/icons/PlusCircle";
 import CirclePlus from "../../../assets/icons/circleplus";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import { endponits } from "../../../Services/apiEndpoints";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import useApi from "../../../Hooks/useApi";
 import { SupplierResponseContext } from "../../../context/ContextShare";
 import PhoneInput from "react-phone-input-2";
@@ -2135,7 +2135,6 @@ const AddSupplierModal = ({ page }: Props) => {
           </div>
         </>
       </Modal>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };

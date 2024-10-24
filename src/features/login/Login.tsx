@@ -7,7 +7,7 @@ import bgImage from "../../assets/Images/Group 2506.png";
 import { useNavigate } from 'react-router-dom';
 import useApi from '../../Hooks/useApi';
 import { endponits } from '../../Services/apiEndpoints';
-import { Toaster, toast } from 'react-hot-toast';
+import toast  from 'react-hot-toast';
 import axios from 'axios';
 
 type Props = {}
@@ -137,7 +137,6 @@ function Login({}: Props) {
           <img src={bgImage} alt="Dashboard preview" className=" w-full"/>
         </div>
       </div>
-      <Toaster/>
     </div>
   )
 }

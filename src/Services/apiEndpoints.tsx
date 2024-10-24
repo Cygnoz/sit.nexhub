@@ -62,6 +62,7 @@ GET_ALL_ITEMS_Dropdown: `get-itemDropdown`,
   EDIT_CUSTOMER:`edit-customer`,
   UPDATE_CUSTOMER_STATUS:`update-customer-status`,
   GET_CUSTOMER_HISTORY:`get-one-customer-history`,
+  GET_CUSTOMER_TRANSACTIONS:`get-Customer-Trandactions` ,
 
  
   // Supplier
@@ -111,7 +112,7 @@ DELETE_BRMC:`delete-bmcr`,
 GET_ONE_BRMC:`get-a-bmcr`,
 ADD_UNIT:`add-unit`,
 GET_ALL_UNIT:`get-all-unit`,
-UPDATE_UNIT: `edit-unit/:id`,
+UPDATE_UNIT: `edit-unit`,
 DELETE_UNIT:`delete-unit`,
 GET_ONE_UNIT:`/get-one-unit`,
 

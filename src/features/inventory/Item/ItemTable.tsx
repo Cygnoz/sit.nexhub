@@ -11,7 +11,7 @@ import Pen from "../../../assets/icons/Pen";
 import Trash2 from "../../../assets/icons/Trash2";
 import FileSearchIcon from "../../../assets/icons/FileSearchIcon";
 import { useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 interface Column {
   id: string;
@@ -333,7 +333,6 @@ const ItemTable = () => {
         ) : (
           <p>No item selected</p>
         )}
-        <Toaster position="top-center" reverseOrder={false} />
       </Modal>
 
       {/* Confirmation modal for deleting image */}

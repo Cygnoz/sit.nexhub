@@ -8,7 +8,7 @@ import CirclePlus from "../../../assets/icons/circleplus";
 import Globe from "../../../assets/icons/Globe";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import PhoneInput from "react-phone-input-2";
 import { CustomerResponseContext } from "../../../context/ContextShare";
 import Pen from "../../../assets/icons/Pen";
@@ -2012,7 +2012,6 @@ console.log(customerdata)
           </div>
         </>
       </Modal>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };
