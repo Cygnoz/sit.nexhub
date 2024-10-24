@@ -1,44 +1,124 @@
-import Cards from "./Cards"
-import Dropdown from "./Dropdown"
-import NewCustomerModal from "./NewCustomerModal"
-import CustomerTable from "./CustomerTable"
-import Customers from "./Customers"
+import { useContext, useEffect, useState } from "react";
+import Cards from "./Cards";
+import Dropdown from "./Dropdown";
+import NewCustomerModal from "./NewCustomerModal";
+import CustomerTable from "./CustomerTable";
+// import Customers from "./Customers";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
+import { CustomerResponseContext } from "../../../context/ContextShare";
 
+interface Customer {
+  _id: string;
+  billingAttention: string;
+  companyName: string;
+  mobile: string;
+  customerEmail: string;
+  skypeNameNumber?: string;
+  billingPhone: string;
+  billingCity: string;
+  status: string;
+  customerDisplayName: string;
+  [key: string]: any;
+}
 
-type Props = {}
+type Props = {};
 
 function CustomerHome({}: Props) {
+  const [customerData, setCustomerData] = useState<Customer[]>([]);
+  const { customerResponse } = useContext(CustomerResponseContext)!;
+  const { request: AllCustomers } = useApi("get", 5002);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
+
+  const fetchAllCustomers = async () => {
+    try {
+      const url = `${endponits.GET_ALL_CUSTOMER}`;
+      const { response, error } = await AllCustomers(url);
+      if (!error && response) {
+        setCustomerData(response.data);
+        console.log(response, "all customers");
+      } else {
+        console.log(error, "all customers error");
+      }
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllCustomers();
+  }, [customerResponse]);
+
+  const activeCustomers = customerData.filter(customer => customer.status === "Active").length;
+  const inactiveCustomers = customerData.filter(customer => customer.status === "Inactive").length;
+
+  // Find duplicate customers
+  const findDuplicateCustomers = (customers: Customer[]) => {
+    const duplicates: Customer[] = [];
+    const seen = new Set<string>();
+    const seenDuplicates = new Set<string>();
+
+    customers.forEach(customer => {
+      if (seen.has(customer.customerDisplayName)) {
+        if (!seenDuplicates.has(customer.customerDisplayName)) {
+          duplicates.push(customer);
+          seenDuplicates.add(customer.customerDisplayName);
+        }
+      } else {
+        seen.add(customer.customerDisplayName);
+      }
+    });
+
+    return duplicates;
+  };
+
+  const duplicateCustomers = findDuplicateCustomers(customerData).length;
+
+  const handleCardClick = (filter: string | null) => {
+    setActiveFilter(filter);
+  };
+
+  const filteredCustomers = customerData.filter(customer => {
+    if (activeFilter === "Active") return customer.status === "Active";
+    if (activeFilter === "Inactive") return customer.status === "Inactive";
+    if (activeFilter === "Duplicate") {
+      return findDuplicateCustomers(customerData).some(dup => dup._id === customer._id);
+    }
+    return true;
+  });
+
   return (
     <>
       <div className="mx-5 my-4 space-y-8 flex items-center relative">
         <div>
           <h3 className="font-bold text-2xl text-textColor">Customer</h3>
           <p className="text-sm text-gray mt-1">
-          A customer is a compiled record of all individuals or entities who have purchased or interacted with business
+            A customer is a compiled record of all individuals or entities who
+            have purchased or interacted with business
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">
-          <NewCustomerModal page=""/>
+          <NewCustomerModal page="" />
           <Dropdown />
         </div>
       </div>
       <div>
-        <Cards />
+        <Cards
+          all={customerData.length}
+          active={activeCustomers}
+          inactive={inactiveCustomers}
+          duplicate={duplicateCustomers}
+          onCardClick={handleCardClick}
+        />
       </div>
       <div className="px-6 mt-3">
         <div className="bg-white p-5">
-          <div className="w-[100%] p-3">
-            <Customers />
-          </div>
-          
-          <div className="pl-5 pr-5 mt-2">
-            {/* table */}
-            <CustomerTable/>
-            </div>
+          <CustomerTable customerData={filteredCustomers} searchValue={searchValue} setSearchValue={setSearchValue} />
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default CustomerHome
+export default CustomerHome;

@@ -1,16 +1,43 @@
+import { useEffect, useState } from "react";
 import companyLogo from "../../../../assets/Images/Vector@2x.png";
+import { endponits } from "../../../../Services/apiEndpoints";
+import useApi from "../../../../Hooks/useApi";
 
-type Props = {};
 
-function CreditPdfView({ }: Props) {
+type Props = {purchaseOrder?:any};
+
+function CreditPdfView({purchaseOrder }: Props) {
+    const [supplier,setSupplier]=useState<[] | any>([])
+    const {request:getSupplier}=useApi("get",5009)
+
+const getSupplierAddress=async()=>{
+try {
+    const url =`${endponits.GET_ONE_SUPPLIER}/${purchaseOrder.supplierId}`
+    const {response, error}= await getSupplier(url)
+    if(!error && response){
+        setSupplier(response.data)
+    }
+    else{
+        console.log("Error in fetching Supplier ," ,error)
+        
+    }
+} catch (error) {
+    console.log("Error in fetching Supplier ," ,error)
+}
+}
+useEffect(()=>{
+        getSupplierAddress()
+},[purchaseOrder])
+console.log(supplier)
+
     return (
         <div className="mt-4">
             <div className="flex items-center justify-center mb-4">
                 <p className="text-textColor border-r-[1px] border-borderRight pr-4 text-sm font-medium">
-                    Order Date: <span className="ms-3 text-dropdownText text-base font-bold">24/06/2024</span>
+                    Order Date: <span className="ms-3 text-dropdownText text-base font-bold">{purchaseOrder?.purchaseOrderDate}</span>
                 </p>
                 <p className="text-textColor pl-4 text-sm font-medium">
-                    Expected Shipment: <span className="ms-3 text-dropdownText text-base font-bold">24/06/2024</span>
+                    Expected Shipment: <span className="ms-3 text-dropdownText text-base font-bold">{purchaseOrder.expectedShipmentDate}</span>
                 </p>
             </div>
             <div className="flex justify-center items-center">
@@ -21,7 +48,7 @@ function CreditPdfView({ }: Props) {
                         </div>
                         <div className="text-right">
                             <h2 className="text-xl font-bold text-textColor">PURCHASE ORDER</h2>
-                            <p className="text-sm font-bold text-dropdownText mt-[5px]">Purchase Order# PO-00002</p>
+                            <p className="text-sm font-bold text-dropdownText mt-[5px]">Purchase Order# {purchaseOrder.purchaseOrder}</p>
                             <h3 className="font-normal text-xs mt-[14px] text-pdftext">ElectroTech Solution</h3>
                             <p className="font-normal text-xs text-pdftext">electrotech@gmail.com | +91 9654675465</p>
                         </div>
