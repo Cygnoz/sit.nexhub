@@ -759,7 +759,7 @@ const NewSalesQuote = ({ }: Props) => {
                   <div className="border border-inputBorder rounded-lg flex items-center justify-center p-1 gap-1">
                     <input
                       onChange={handleChange}
-                      value={salesQuoteState?.transactionDiscount}
+                      value={salesQuoteState?.discountTransactionAmount}
                       name="transactionDiscount"
                       type="number"
                       step="0.01"

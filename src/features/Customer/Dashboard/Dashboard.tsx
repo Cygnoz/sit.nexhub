@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import ArrowDownIcon from '../../../assets/icons/ArrowDownIcon'
 import ArrowUpIcon from '../../../assets/icons/ArrowUpIcon'
-import Ellipsis from '../../../assets/icons/Ellipsis'
+// import Ellipsis from '../../../assets/icons/Ellipsis'
 import RefreshIcon from '../../../assets/icons/RefreshIcon'
 import AvaragePurchase from './AvaragePurchase'
 import Cards from './Cards'
 import CustomersRetentionRate from './CustomersRetentionRate'
 import RepeatPurchaseRate from './RepeatPurchaseRate'
 import TopCustomers from './TopCustomers'
-import NewCustomerModal from '../CustomerHome/NewCustomerModal'
 type Props = {}
 
 function Dashboard({}: Props) {
@@ -77,11 +76,8 @@ function Dashboard({}: Props) {
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">
-          <NewCustomerModal page=''/>
-
-
             <div onClick={toggleDropdown} className="cursor-pointer">
-              <Ellipsis />
+              {/* <Ellipsis /> */}
             </div>
 
             {isDropdownOpen && (
