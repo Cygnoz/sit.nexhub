@@ -7,7 +7,7 @@ import PlusCircle from "../../../assets/icons/PlusCircle";
 import Globe from "../../../assets/icons/Globe";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import PhoneInput from "react-phone-input-2";
 import Pen from "../../../assets/icons/Pen";
 import { useParams } from "react-router-dom";
@@ -1921,7 +1921,6 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
           </div>
         </>
       </Modal>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };

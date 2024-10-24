@@ -3,7 +3,7 @@ import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
 import CehvronDown from "../../../../assets/icons/CehvronDown";
 import NeworderTable from "./NeworderTable";
 import Button from "../../../../Components/Button";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import SearchBar from "../../../../Components/SearchBar";
 import PrinterIcon from "../../../../assets/icons/PrinterIcon";
 import AddSupplierModal from "../../../Supplier/SupplierHome/AddSupplierModal";
@@ -13,7 +13,8 @@ import NewCustomerModal from "../../../Customer/CustomerHome/NewCustomerModal";
 import { PurchaseOrder } from "./PurchaseOrderBody";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast  from "react-hot-toast";
+import { SupplierResponseContext } from "../../../../context/ContextShare";
 
 
 
@@ -40,7 +41,7 @@ const NewPurchaseOrder = ({}: Props) => {
   const { request: getCountries } = useApi("get", 5004);
   const { request: newPurchaseOrderApi } = useApi("post", 5005);
   // const { request: getPrfix } = useApi("get", 5005);
-
+  const { supplierResponse } = useContext(SupplierResponseContext)!;
   const navigate =useNavigate()
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
@@ -111,6 +112,9 @@ const NewPurchaseOrder = ({}: Props) => {
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
+    const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
+    fetchData(supplierUrl, setSupplierData, AllSuppliers);
+
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -374,6 +378,8 @@ const NewPurchaseOrder = ({}: Props) => {
     purchaseOrderState?.destinationOfSupply,
   ]);
 
+
+
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
@@ -385,8 +391,8 @@ const NewPurchaseOrder = ({}: Props) => {
     fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
   }, []);
-
-  useEffect(() => {
+console.log(supplierResponse),"SResponse"
+  useEffect(() => {supplierResponse
     handleDestination();
     handleplaceofSupply();
     fetchCountries();
@@ -1227,7 +1233,6 @@ const NewPurchaseOrder = ({}: Props) => {
           Save & Send
         </Button>{" "}
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };

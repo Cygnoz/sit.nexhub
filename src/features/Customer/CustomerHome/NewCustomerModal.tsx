@@ -8,7 +8,7 @@ import CirclePlus from "../../../assets/icons/circleplus";
 import Globe from "../../../assets/icons/Globe";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import PhoneInput from "react-phone-input-2";
 import { CustomerResponseContext } from "../../../context/ContextShare";
 import Pen from "../../../assets/icons/Pen";
@@ -40,6 +40,8 @@ type CustomerData = {
   designation: string;
   websiteURL: string;
   taxType: string;
+  exemptionReason:string;
+  taxPreference:string;
   gstTreatment: string;
   gstin_uin: string;
   placeOfSupply: string;
@@ -138,6 +140,8 @@ const NewCustomerModal = ({ page }: Props) => {
     designation: "",
     websiteURL: "",
     taxType: "",
+    exemptionReason:"",
+  taxPreference:"",
     gstTreatment: "",
     gstin_uin: "",
     placeOfSupply: "",
@@ -457,6 +461,8 @@ const NewCustomerModal = ({ page }: Props) => {
           designation: "",
           websiteURL: "",
           taxType: "",
+          taxPreference:"",
+          exemptionReason:"",
           gstTreatment: "",
           gstin_uin: "",
           placeOfSupply: "",
@@ -507,12 +513,21 @@ const NewCustomerModal = ({ page }: Props) => {
       console.error("Unexpected error:");
     }
   };
-
+console.log(customerdata)
   useEffect(() => {
     if (taxPreference === "Tax Exempt") {
       setCustomerData((prevData: any) => ({
         ...prevData,
-        taxType: "none",
+        taxType: "Non-Tax",
+        taxPreference:"Tax Exepmt",
+        exemptionReason:""
+      }));
+    }
+    else{
+      setCustomerData((prevData: any) => ({
+        ...prevData,
+        taxType: gstOrVat.taxType,
+        taxPreference:"Taxable"
       }));
     }
   }, [taxPreference]);
@@ -1432,9 +1447,9 @@ const NewCustomerModal = ({ page }: Props) => {
                             type="text"
                             className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                             placeholder="Value"
-                            //  name="billingAttention"
-                            //  value={customerdata.billingAttention}
-                            //  onChange={handleChange}
+                             name="exemptionReason"
+                             value={customerdata.exemptionReason}
+                             onChange={handleChange}
                           />
                         </div>
                       )}
@@ -1997,7 +2012,6 @@ const NewCustomerModal = ({ page }: Props) => {
           </div>
         </>
       </Modal>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };

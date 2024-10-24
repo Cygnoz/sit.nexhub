@@ -48,7 +48,8 @@ const initialSalesQuoteState: SalesQuote = {
       itemTotaltax: "",
       discountType: "",
       discountAmount: "",
-      amount: ""
+      amount: "",
+      itemAmount: ""
     },
   ],
 
@@ -156,7 +157,7 @@ const NewSalesQuote = ({ }: Props) => {
   const calculateTotal = () => {
     const {
       totalItemDiscount,
-      subtotalTotal ,
+      subtotalTotal,
       totalTax,
     } = salesQuoteState;
 
@@ -173,27 +174,27 @@ const NewSalesQuote = ({ }: Props) => {
     const newGrandTotal = calculateTotal();
     const {
       discountTransactionType,
-      transactionDiscount = "0",
-      discountTransactionAmount = "0",
+      discountTransactionAmount = "0", // Previously `transactionDiscount`
+      transactionDiscount = "0", // Previously `discountTransactionAmount`
     } = salesQuoteState;
-
-    // Calculate transaction discount value based on type
+  
     const transactionDiscountValueAMT =
       discountTransactionType === "Percentage"
-        ? (Number(transactionDiscount) / 100) * Number(newGrandTotal)
-        : Number(transactionDiscount);
-
+        ? (Number(discountTransactionAmount) / 100) * Number(newGrandTotal) // Use `discountTransactionAmount` here
+        : Number(discountTransactionAmount); // Use `discountTransactionAmount`
+  
     const roundedDiscountValue = Math.round(transactionDiscountValueAMT * 100) / 100;
     const updatedGrandTotal = Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
-    if (Number(discountTransactionAmount) !== roundedDiscountValue || Number(salesQuoteState.totalAmount) !== updatedGrandTotal) {
+  
+    if (Number(transactionDiscount) !== roundedDiscountValue || Number(salesQuoteState.totalAmount) !== updatedGrandTotal) {
       setSalesQuoteState((prevState) => ({
         ...prevState,
-        discountTransactionAmount: roundedDiscountValue.toFixed(2),
+        transactionDiscount: roundedDiscountValue.toFixed(2), // Set `transactionDiscount`
         totalAmount: updatedGrandTotal.toFixed(2),
       }));
     }
   }, [
-    salesQuoteState.transactionDiscount,
+    salesQuoteState.discountTransactionAmount, // Previously `transactionDiscount`
     salesQuoteState.discountTransactionType,
     salesQuoteState.subtotalTotal,
     salesQuoteState.totalTax,
@@ -227,83 +228,77 @@ const NewSalesQuote = ({ }: Props) => {
   };
   // console.log(customerData, "cd");
 
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    const totalTax = parseFloat(salesQuoteState?.totalTax)
-    let discountValue = parseFloat(salesQuoteState.transactionDiscount) || 0;
+    const totalTax = parseFloat(salesQuoteState?.totalTax);
+    let discountValue = parseFloat(salesQuoteState.discountTransactionAmount) || 0; // Use `discountTransactionAmount`
     const totalAmount = parseFloat(salesQuoteState.subtotalTotal + totalTax) || 0;
-
-    // Update transaction discount type (Percentage/currency)
+  
     if (name === "transactionDiscountType") {
       setSalesQuoteState((prevState: any) => ({
         ...prevState,
-        discountTransactionType: value, // Update the discount type
+        discountTransactionType: value,
       }));
-
-      // After setting the type, calculate based on the new type
+  
       if (value === "Percentage") {
         const PercentageDiscount = (discountValue / totalAmount) * 100;
         if (PercentageDiscount > 100) {
           toast.error("Discount cannot exceed 100%");
         }
-
+  
         setSalesQuoteState((prevState: any) => ({
           ...prevState,
-          transactionDiscount: PercentageDiscount ? PercentageDiscount.toFixed(2) : '0', // Display 0 for no value
+          discountTransactionAmount: PercentageDiscount ? PercentageDiscount.toFixed(2) : '0', // Set `discountTransactionAmount`
         }));
       } else {
         const currencyDiscount = (discountValue / 100) * totalAmount;
         setSalesQuoteState((prevState: any) => ({
           ...prevState,
-          transactionDiscount: currencyDiscount ? currencyDiscount.toFixed(2) : '0', // Display 0 for no value
+          discountTransactionAmount: currencyDiscount ? currencyDiscount.toFixed(2) : '0', // Set `discountTransactionAmount`
         }));
       }
     }
-
-    // Handle discount value (transactionDiscount)
-    if (name === "transactionDiscount") {
+  
+    if (name === "discountTransactionAmount") { // Previously `transactionDiscount`
       discountValue = parseFloat(value) || 0;
-
+  
       if (salesQuoteState.discountTransactionType === "Percentage") {
-        // Handle Percentage input
-        if (discountValue > 99) {
+        if (discountValue > 100) {
           discountValue = 0;
           toast.error("Discount cannot exceed 100%");
         }
         const discountAmount = (discountValue / 100) * totalAmount;
-
+  
         setSalesQuoteState((prevState: any) => ({
           ...prevState,
-          transactionDiscount: discountValue ? discountValue.toString() : '0', // Display 0 for no value
-          discountTransactionAmount: discountAmount ? discountAmount.toFixed(2) : '0',
+          discountTransactionAmount: discountValue ? discountValue.toString() : '0', // Set `discountTransactionAmount`
+          transactionDiscount: discountAmount ? discountAmount.toFixed(2) : '0', // Set `transactionDiscount`
         }));
       } else {
-        // Handle currency input
         if (discountValue > totalAmount) {
           discountValue = totalAmount;
           toast.error("Discount cannot exceed the subtotal amount");
-
         }
-
+  
         setSalesQuoteState((prevState: any) => ({
           ...prevState,
-          transactionDiscount: discountValue ? discountValue.toString() : '0', // Display 0 for no value
-          discountTransactionAmount: discountValue ? discountValue.toFixed(2) : '0',
+          discountTransactionAmount: discountValue ? discountValue.toString() : '0', // Set `discountTransactionAmount`
+          transactionDiscount: discountValue ? discountValue.toFixed(2) : '0', // Set `transactionDiscount`
         }));
       }
     }
-
-    // Handle other fields
-    if (name !== "transactionDiscount" && name !== "transactionDiscountType") {
+  
+    if (name !== "discountTransactionAmount" && name !== "transactionDiscountType") {
       setSalesQuoteState((prevState: any) => ({
         ...prevState,
         [name]: value,
       }));
     }
   };
+  
+  
 
 
   const filterByDisplayName = (
@@ -339,9 +334,10 @@ const NewSalesQuote = ({ }: Props) => {
   useEffect(() => {
     setSalesQuoteState((prevState: any) => ({
       ...prevState,
-      totalDiscount: (parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.discountTransactionAmount) || 0),
+      totalDiscount: (parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.transactionDiscount) || 0),
     }));
-  }, [salesQuoteState.discountTransactionAmount, salesQuoteState.totalItemDiscount]);
+  }, [salesQuoteState.transactionDiscount, salesQuoteState.totalItemDiscount]);
+console.log(customerData);
 
 
   useEffect(() => {
@@ -368,13 +364,14 @@ const NewSalesQuote = ({ }: Props) => {
     // console.log(oneOrganization.state);
 
   }, []);
-  const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(false);
+
+  const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(true);
 
   const checkTaxType = (customer: Customer) => {
     if (customer.taxType === "GST") {
       setIsPlaceOfSupplyVisible(true);
     } else {
-      setIsPlaceOfSupplyVisible(false); // Hide the Place of Supply field
+      setIsPlaceOfSupplyVisible(false);
     }
   };
 
@@ -394,12 +391,12 @@ const NewSalesQuote = ({ }: Props) => {
       );
       if (!error && response) {
         // console.log(response);
-        
+
         toast.success(response.data.message);
       } else {
         toast.error(error?.response.data.message);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
 
@@ -568,9 +565,9 @@ const NewSalesQuote = ({ }: Props) => {
                   </label>
                   <div className="relative w-full">
                     <input
-                    name="salesQuoteDate"
-                    onChange={handleChange}
-                    value={salesQuoteState?.salesQuoteDate}
+                      name="salesQuoteDate"
+                      onChange={handleChange}
+                      value={salesQuoteState?.salesQuoteDate}
                       type="date"
                       className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
                     />
@@ -585,9 +582,9 @@ const NewSalesQuote = ({ }: Props) => {
                   </label>
                   <div className="relative w-full">
                     <input
-                     name="expiryDate"
-                    onChange={handleChange}
-                    value={salesQuoteState?.expiryDate}
+                      name="expiryDate"
+                      onChange={handleChange}
+                      value={salesQuoteState?.expiryDate}
                       type="date"
                       className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
                     />
@@ -599,9 +596,9 @@ const NewSalesQuote = ({ }: Props) => {
                     Subject
                   </label>
                   <input
-                  name="subject"
-                  value={salesQuoteState?.subject}
-                  onChange={handleChange}
+                    name="subject"
+                    value={salesQuoteState?.subject}
+                    onChange={handleChange}
                     placeholder="subject"
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
@@ -662,6 +659,7 @@ const NewSalesQuote = ({ }: Props) => {
                 setSalesQuoteState={setSalesQuoteState}
                 oneOrganization={oneOrganization}
                 isIntraState={isIntraState}
+                isPlaceOfSupplyVisible={isPlaceOfSupplyVisible}
               />
 
               <br />
@@ -702,7 +700,7 @@ const NewSalesQuote = ({ }: Props) => {
                 Documents
                 <div className="border-dashed border border-neutral-300 p-2 rounded  gap-2 text-center h-[68px] mt-2">
                   <div className="flex gap-1 justify-center">
-                    <Upload/>
+                    <Upload />
                     <span>Upload File</span>
                   </div>
                   <p className="text-xs mt-1 text-gray-600">
@@ -748,7 +746,6 @@ const NewSalesQuote = ({ }: Props) => {
 
               <div className="flex ">
                 <div className="w-[150%]">
-                  {" "}
                   <p>Bill Discount</p>
                 </div>
 
@@ -756,8 +753,8 @@ const NewSalesQuote = ({ }: Props) => {
                   <div className="border border-inputBorder rounded-lg flex items-center justify-center p-1 gap-1">
                     <input
                       onChange={handleChange}
-                      value={salesQuoteState?.transactionDiscount}
-                      name="transactionDiscount"
+                      value={salesQuoteState?.discountTransactionAmount} // Previously `transactionDiscount`
+                      name="discountTransactionAmount" // Previously `transactionDiscount`
                       type="number"
                       step="0.01"
                       placeholder="0"
@@ -778,17 +775,14 @@ const NewSalesQuote = ({ }: Props) => {
                       <CehvronDown color="gray" height={15} width={15} />
                     </div>
                   </div>
-
                 </div>
+
                 <div className="w-full text-end">
-                  {" "}
                   <p className="text-end">
-                    <p className="text-end">
-                      {oneOrganization.baseCurrency}{" "}
-                      {salesQuoteState.discountTransactionAmount
-                        ? salesQuoteState.discountTransactionAmount
-                        : "0.00"}
-                    </p>
+                    {oneOrganization.baseCurrency}{" "}
+                    {salesQuoteState.transactionDiscount // Previously `discountTransactionAmount`
+                      ? salesQuoteState.transactionDiscount
+                      : "0.00"}
                   </p>
                 </div>
               </div>
@@ -892,22 +886,22 @@ const NewSalesQuote = ({ }: Props) => {
 
           </div>
         </div>
-      
+
       </div>
       <div>
-      <div className="flex gap-4 my-5 -mt-14 justify-end">
-                {" "}
-                <Button variant="secondary" size="sm">
-                  Cancel
-                </Button>
-                <Button variant="secondary" size="sm">
-                  <PrinterIcon height={18} width={18} color="currentColor" />
-                  Print
-                </Button>
-                <Button variant="primary" size="sm" type="submit" onClick={handleSave} >
-                  Save & Send
-                </Button>{" "}
-              </div>
+        <div className="flex gap-4 my-5 -mt-14 justify-end">
+          {" "}
+          <Button variant="secondary" size="sm">
+            Cancel
+          </Button>
+          <Button variant="secondary" size="sm">
+            <PrinterIcon height={18} width={18} color="currentColor" />
+            Print
+          </Button>
+          <Button variant="primary" size="sm" type="submit" onClick={handleSave} >
+            Save & Send
+          </Button>{" "}
+        </div>
       </div>
     </div>
   );

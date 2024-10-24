@@ -4,7 +4,7 @@ import Button from "../../../../Components/Button";
 import Banner from "../../banner/Banner";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 interface AccountDetails {
   salesAccount: string;
@@ -30,7 +30,6 @@ function AccountsSettings({}: Props) {
   const [allAccounts, setAllAccounts] = useState<any>([]);
   const [tax, setTax] = useState<any>([]);
   const [accounts, setAccounts] = useState<any>([]);
-
 
   const { request: getAccounts } = useApi("get", 5001);
   const { request: addaccount } = useApi("post", 5004);
@@ -63,8 +62,6 @@ function AccountsSettings({}: Props) {
     setInputData({ ...inputData, [name]: value });
   };
 
-
-
   const handleSave = async () => {
     try {
       const url = `${endponits.ADD_DEFUALT_ACCOUNT}`;
@@ -96,31 +93,30 @@ function AccountsSettings({}: Props) {
       console.error("Error fetching data:", error);
     }
   };
-  
+
   useEffect(() => {
     const taxUrl = `${endponits.GET_ALL_TAX}`;
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
     const getAccountUrl = `${endponits.GET_DEFUALT_ACCOUNT}`;
-  
+
     const fetchAllData = async () => {
       await fetchData(taxUrl, setTax, getTax);
       await fetchData(allAccountsUrl, setAllAccounts, getAccounts);
       await fetchData(getAccountUrl, setAccounts, getAccountData);
     };
-  
+
     fetchAllData();
   }, []);
-  
+
   // Single useEffect for setting input data based on accounts
   useEffect(() => {
     if (accounts) {
       setInputData((prevData: any) => ({
         ...prevData,
-        ...accounts, 
+        ...accounts,
       }));
     }
   }, [accounts]);
-  
 
   return (
     <>
@@ -137,7 +133,7 @@ function AccountsSettings({}: Props) {
                   type="checkbox"
                   className="sr-only"
                   checked={isVat}
-                  onChange={handleToggle} 
+                  onChange={handleToggle}
                 />
                 <div
                   className={`w-11 h-6 rounded-full shadow-inner transition-colors ${
@@ -608,7 +604,6 @@ function AccountsSettings({}: Props) {
           Save
         </Button>
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
     </>
   );
 }

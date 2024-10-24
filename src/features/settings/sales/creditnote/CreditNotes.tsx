@@ -9,7 +9,7 @@ import topImg from "../../../../assets/Images/14.png";
 import CirclePlus from "../../../../assets/icons/circleplus";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { settingsdataResponseContext } from "../../../../context/ContextShare";
 type Props = {};
 
@@ -535,7 +535,6 @@ function CreditNotes({}: Props) {
           Save
         </Button>
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 }

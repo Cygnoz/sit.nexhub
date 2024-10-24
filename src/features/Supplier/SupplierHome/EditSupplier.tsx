@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import PhoneInput from "react-phone-input-2";
 import Button from "../../../Components/Button";
 import Modal from "../../../Components/model/Modal";
@@ -1937,7 +1937,6 @@ useEffect(()=>{
           </div>
         </>
       </Modal>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };
