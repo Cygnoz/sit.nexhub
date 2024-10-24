@@ -1,38 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import OrganizationIcon from "../../../assets/icons/OrganizationIcon";
 import SettingsIcons from "../../../assets/icons/SettingsIcon";
-import Drawer from "../../../Components/drawer/drawer";
 import Button from "../../../Components/Button";
+import Drawer from "../../../Components/drawer/drawer";
 import Modal from "../../../Components/model/Modal";
-import { endponits } from "../../../Services/apiEndpoints";
-import useApi from "../../../Hooks/useApi";
-import toast from "react-hot-toast";
 
-type Props = {};
+type Props = {
+  organizationData: any;
+};
 
-const Organization = ({}: Props) => {
+const Organization = ({ organizationData }: Props) => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
-  const [organizationData, setOrganizationData] = useState<any>(null);
-  const { request: getOneOrganization } = useApi("get", 5004);
-
   const navigate = useNavigate();
 
-  useEffect(() => {
-    getOrganization();
-  }, []);
-
-  const getOrganization = async () => {
-    try {
-      const url = `${endponits.GET_ONE_ORGANIZATION}`;
-      const apiResponse = await getOneOrganization(url);
-      setOrganizationData(apiResponse.response?.data);
-    } catch (error) {
-      toast.error("Error fetching organization");
-      console.error("Error fetching organization:", error);
-    }
-  };
+  // useEffect(() => {
+  //   if (!organizationData) {
+  //     handleLogout();
+  //   }
+  // }, [organizationData]);
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
@@ -75,7 +62,7 @@ const Organization = ({}: Props) => {
           {organizationData ? (
             <div className="flex flex-col border border-slate-200 p-4 rounded-md shadow-sm">
               <div className="flex items-center mb-4">
-                <OrganizationIcon  />
+                <OrganizationIcon />
                 <div className="flex-grow">
                   <h5 className="font-bold text-sm text-gray-700">{organizationData.organizationName}</h5>
                   <p className="text-xs text-gray-700">Organization ID: {organizationData.organizationId}</p>
@@ -91,13 +78,6 @@ const Organization = ({}: Props) => {
               <p className="text-xs text-gray-700">Primary Contact Number: {organizationData.primaryContactNum}</p>
               <p className="text-xs text-gray-700">Phone Number: {organizationData.organizationPhNum}</p>
               <p className="text-xs text-gray-700">Industry: {organizationData.organizationIndustry}</p>
-              <p className="text-xs text-gray-700">Base Currency: {organizationData.baseCurrency}</p>
-              <p className="text-xs text-gray-700">Date Format: {organizationData.dateFormat}</p>
-              <p className="text-xs text-gray-700">Date Format Example: {organizationData.dateFormatExp}</p>
-              <p className="text-xs text-gray-700">Date Split: {organizationData.dateSplit}</p>
-              <p className="text-xs text-gray-700">Fiscal Year: {organizationData.fiscalYear}</p>
-              <p className="text-xs text-gray-700">Time Zone: {organizationData.timeZone}</p>
-              <p className="text-xs text-gray-700">Time Zone Example: {organizationData.timeZoneExp}</p>
             </div>
           ) : (
             <p className="text-xs text-gray-700">Loading...</p>
