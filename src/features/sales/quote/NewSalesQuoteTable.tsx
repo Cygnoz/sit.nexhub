@@ -180,7 +180,13 @@ const NewSalesQuoteTable = ({
       newRows[index].igstAmount = igstAmount; 
     }
 
-    newRows[index].itemAmount = (parseFloat(itemAmount) + (parseFloat(cgstAmount) + parseFloat(sgstAmount))).toFixed(2); 
+    newRows[index].itemAmount = 
+    !isPlaceOfSupplyVisible
+      ? parseFloat(itemAmount).toFixed(2)
+      : !isIntraState
+        ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+        : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
+  
 
   
     setRows(newRows);
@@ -284,7 +290,13 @@ const NewSalesQuoteTable = ({
       newRows[index].sgstAmount = "0"; 
       newRows[index].igstAmount = igstAmount;
     }
-    newRows[index].itemAmount = (parseFloat(itemAmount) + (parseFloat(cgstAmount) + parseFloat(sgstAmount))).toFixed(2); 
+    newRows[index].itemAmount = 
+    !isPlaceOfSupplyVisible
+      ? parseFloat(itemAmount).toFixed(2)
+      : !isIntraState
+        ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+        : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
+  
     setRows(newRows);
 
     setSalesQuoteState?.((prevData: any) => ({
