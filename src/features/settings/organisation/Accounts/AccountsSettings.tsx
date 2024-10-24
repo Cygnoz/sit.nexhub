@@ -4,7 +4,7 @@ import Button from "../../../../Components/Button";
 import Banner from "../../banner/Banner";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 interface AccountDetails {
   salesAccount: string;
@@ -604,7 +604,6 @@ function AccountsSettings({}: Props) {
           Save
         </Button>
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
     </>
   );
 }

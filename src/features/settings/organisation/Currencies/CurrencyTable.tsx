@@ -5,8 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { endponits } from "../../../../Services/apiEndpoints";
 import { CurrencyResponseContext } from "../../../../context/ContextShare";
 import EditCurrencyModal from "./EditCurrencyModal";
-import toast, { Toaster } from "react-hot-toast";
-
+import toast from "react-hot-toast";
 
 const CurrencyTable = () => {
   const { request: get_currencies } = useApi("get", 5004);
@@ -23,8 +22,7 @@ const CurrencyTable = () => {
       const { response, error } = await get_currencies(url);
       if (!error && response) {
         setCurrenciesData(response.data);
-        console.log(response,"currencyData");
-        
+        console.log(response, "currencyData");
       }
     } catch (error) {
       console.log("Error in fetching currency data", error);
@@ -35,8 +33,7 @@ const CurrencyTable = () => {
     try {
       const url = `${endponits.DELETE_CURRENCIES(currencyId)}`;
       const { response, error } = await deleteCurrencyRequest(url);
-   
-      
+
       if (!error && response) {
         toast.success(response.data.message);
         getHandleCurrencies();
@@ -72,16 +69,14 @@ const CurrencyTable = () => {
             {currenciesData.map((item: any, index: number) => (
               <tr className="relative" key={index}>
                 <td className="py-4 px-4 border-y border-tableBorder">
-               
-                    <p>
-                      {item.currencyCode}-{item.currencyName}{" "}
-                      {item.baseCurrency && (
-                        <span className="px-2 py-1 bg-[#6FC7A2] text-white">
-                          Base Currency
-                        </span>
-                      )}
-                    </p>
-                
+                  <p>
+                    {item.currencyCode}-{item.currencyName}{" "}
+                    {item.baseCurrency && (
+                      <span className="px-2 py-1 bg-[#6FC7A2] text-white">
+                        Base Currency
+                      </span>
+                    )}
+                  </p>
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   {item.currencySymbol}
@@ -91,7 +86,9 @@ const CurrencyTable = () => {
                     <div className="h-[26px] justify-start items-start inline-flex">
                       <div className="#fefdfa">
                         <div className="#565148 border px-[10px] py-1 rounded-lg">
-                          <Link to={`/settings/currencies/exchange-rates/${item._id}`}>
+                          <Link
+                            to={`/settings/currencies/exchange-rates/${item._id}`}
+                          >
                             View Exchange Rate
                           </Link>
                         </div>
@@ -100,9 +97,11 @@ const CurrencyTable = () => {
                     <div onClick={() => setSelectedCurrency(item)}>
                       <EditCurrencyModal selectedCurrency={selectedCurrency} />
                     </div>
-                   { item.baseCurrency==false && <div onClick={() => handleDelete(item._id)}>
-                      <TrashCan color={"red"} />
-                    </div>}
+                    {item.baseCurrency == false && (
+                      <div onClick={() => handleDelete(item._id)}>
+                        <TrashCan color={"red"} />
+                      </div>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -110,8 +109,6 @@ const CurrencyTable = () => {
           </tbody>
         </table>
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
-
     </div>
   );
 };

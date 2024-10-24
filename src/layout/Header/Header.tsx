@@ -40,12 +40,7 @@ const Header = ({}: Props) => {
         }
       } catch (error: any) {
         const errorMessage = error.response?.data?.message || "Error fetching organization data";
-        if (errorMessage.toLowerCase().includes("token expired")) {
-          handleLogout();
-        } else {
-          toast.error(errorMessage);
-        }
-        console.error("Error fetching organization:", error);
+       toast.error(errorMessage)
       }
     };
 
@@ -57,7 +52,7 @@ const Header = ({}: Props) => {
       className="p-4 flex items-center gap-2 w-full border-b-slate-400 border-y-orange-200"
       style={{ borderBottom: "1.5px solid rgba(28, 28, 28, 0.1)" }}
     >
-      <Toaster position="top-right" reverseOrder={false} />
+      <Toaster reverseOrder={false} />
       <div className="w-[68%]">
         <SearchBar
           placeholder="Search"

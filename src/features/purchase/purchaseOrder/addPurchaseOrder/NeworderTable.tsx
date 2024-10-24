@@ -8,7 +8,7 @@ import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
 import PlusCircle from "../../../../assets/icons/PlusCircle";
 import { Link } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type Row = {
   itemImage?: string;
@@ -703,7 +703,6 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
           Add Item
         </button>
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };

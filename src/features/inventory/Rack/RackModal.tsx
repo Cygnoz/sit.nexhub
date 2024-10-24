@@ -1,5 +1,5 @@
 import { forwardRef, useState, useEffect, ChangeEvent } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import PencilEdit from "../../../assets/icons/PencilEdit";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import TrashCan from "../../../assets/icons/TrashCan";
@@ -129,7 +129,6 @@ const RackModal = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
 
   return (
     <div ref={ref}>
-      <Toaster position="top-center" reverseOrder={false} />
       <Modal open={true} onClose={onClose}>
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden h-24">

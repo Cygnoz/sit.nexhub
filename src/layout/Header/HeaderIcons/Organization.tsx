@@ -41,7 +41,9 @@ const Organization = ({ organizationData }: Props) => {
 
       <Drawer onClose={toggleDrawer} open={isDrawerOpen} position="right">
         <div className="flex items-center justify-between p-5">
-          <h5 className="text-md font-semibold text-gray-700">My Organizations</h5>
+          <h5 className="text-md font-semibold text-gray-700">
+            My Organizations
+          </h5>
           <div className="flex gap-2 items-center">
             <SettingsIcons size="sm" />
             <button
@@ -58,26 +60,53 @@ const Organization = ({ organizationData }: Props) => {
               <div className="flex items-center mb-4">
                 <OrganizationIcon />
                 <div className="flex-grow">
-                  <h5 className="font-bold text-sm text-gray-700">{organizationData.organizationName}</h5>
-                  <p className="text-xs text-gray-700">Organization ID: {organizationData.organizationId}</p>
+                  <h5 className="font-bold text-sm text-gray-700">
+                    {organizationData.organizationName}
+                  </h5>
+                  <p className="text-xs text-gray-700">
+                    Organization ID: {organizationData.organizationId}
+                  </p>
                 </div>
               </div>
-              <p className="text-xs text-gray-700">Address Line 1: {organizationData.addline1}</p>
-              <p className="text-xs text-gray-700">Address Line 2: {organizationData.addline2}</p>
-              <p className="text-xs text-gray-700">City: {organizationData.city}</p>
-              <p className="text-xs text-gray-700">State: {organizationData.state}</p>
-              <p className="text-xs text-gray-700">Country: {organizationData.organizationCountry}</p>
-              <p className="text-xs text-gray-700">Pincode: {organizationData.pincode}</p>
-              <p className="text-xs text-gray-700">Primary Contact Name: {organizationData.primaryContactName}</p>
-              <p className="text-xs text-gray-700">Primary Contact Number: {organizationData.primaryContactNum}</p>
-              <p className="text-xs text-gray-700">Phone Number: {organizationData.organizationPhNum}</p>
-              <p className="text-xs text-gray-700">Industry: {organizationData.organizationIndustry}</p>
+              <p className="text-xs text-gray-700">
+                Address Line 1: {organizationData.addline1}
+              </p>
+              <p className="text-xs text-gray-700">
+                Address Line 2: {organizationData.addline2}
+              </p>
+              <p className="text-xs text-gray-700">
+                City: {organizationData.city}
+              </p>
+              <p className="text-xs text-gray-700">
+                State: {organizationData.state}
+              </p>
+              <p className="text-xs text-gray-700">
+                Country: {organizationData.organizationCountry}
+              </p>
+              <p className="text-xs text-gray-700">
+                Pincode: {organizationData.pincode}
+              </p>
+              <p className="text-xs text-gray-700">
+                Primary Contact Name: {organizationData.primaryContactName}
+              </p>
+              <p className="text-xs text-gray-700">
+                Primary Contact Number: {organizationData.primaryContactNum}
+              </p>
+              <p className="text-xs text-gray-700">
+                Phone Number: {organizationData.organizationPhNum}
+              </p>
+              <p className="text-xs text-gray-700">
+                Industry: {organizationData.organizationIndustry}
+              </p>
             </div>
           ) : (
             <p className="text-xs text-gray-700">Loading...</p>
           )}
           <div className="flex justify-end">
-            <Button className="pl-10 pr-10 h-[34px] text-sm" onClick={confirmLogout}>
+            <Button
+              className="pl-10 pr-10 h-[34px] text-sm"
+              onClick={confirmLogout}
+            >
               Logout
             </Button>
           </div>
@@ -92,10 +121,18 @@ const Organization = ({ organizationData }: Props) => {
         >
           <p className="text-sm">Are you sure you want to log out?</p>
           <div className="flex justify-end gap-2 mb-3">
-            <Button onClick={closeModal} variant="secondary" className="pl-8 pr-8 text-sm h-10">
+            <Button
+              onClick={closeModal}
+              variant="secondary"
+              className="pl-8 pr-8 text-sm h-10"
+            >
               Cancel
             </Button>
-            <Button onClick={handleLogout} variant="primary" className="pl-8 pr-8 text-sm h-10">
+            <Button
+              onClick={handleLogout}
+              variant="primary"
+              className="pl-8 pr-8 text-sm h-10"
+            >
               Ok
             </Button>
           </div>

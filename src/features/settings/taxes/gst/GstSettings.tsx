@@ -3,7 +3,7 @@ import CalenderIcon from "../../../../assets/icons/CalenderIcon";
 import Button from "../../../../Components/Button";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type GstSettingsProps = {};
 
@@ -259,7 +259,6 @@ function GstSettings({ }: GstSettingsProps) {
           </div>
         )}
       </div>
-      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }

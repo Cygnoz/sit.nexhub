@@ -2,7 +2,7 @@ import { ChangeEvent, useContext, useEffect, useState } from "react";
 import Button from "../../../../Components/Button";
 import bgimage from "../../../../assets/Images/Organization-banner.png";
 import useApi from "../../../../Hooks/useApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { endponits } from "../../../../Services/apiEndpoints";
 import { settingsdataResponseContext } from "../../../../context/ContextShare";
 
@@ -100,7 +100,6 @@ function DeliveryChallans({}: Props) {
           Save
         </Button>
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 }

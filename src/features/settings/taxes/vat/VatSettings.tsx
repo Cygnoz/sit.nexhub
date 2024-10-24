@@ -3,7 +3,7 @@ import Button from "../../../../Components/Button";
 import CalenderIcon from "../../../../assets/icons/CalenderIcon";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 type Props = {};
  
 function VatSettings({}: Props) {
@@ -192,7 +192,6 @@ function VatSettings({}: Props) {
           </div>
         )}
       </div>
-      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }

@@ -9,7 +9,7 @@ import TaxImage from "../../../../assets/Images/Tax-bro 1.png";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import { VatResponseContext } from "../../../../context/ContextShare";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import SearchBar from "../../../../Components/SearchBar";
 import ViewTaxDetailsVat from "./ViewTaxDetailsVat";
 import ListIcon from "../../../../assets/icons/ListIcon";
@@ -308,7 +308,6 @@ function TaxRateVat({}: Props) {
           </div>
         </form>
       </Modal>
-      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }
