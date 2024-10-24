@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import { useNavigate } from "react-router-dom";
 import DotIcon from "../../../assets/icons/DotIcon";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
 
 interface Column {
     id: string;
@@ -15,6 +17,23 @@ const QuoteTable = () => {
     const handleRowClick = () => {
         navigate("/sales/quote/view");
     };
+
+    const { request: getAllQuotes } = useApi("get", 5007);
+    const fetchAllQuotes = async () => {
+        try {
+          const url = `${endponits.GET_ALL_QUOTES}`;
+          const { response, error } = await getAllQuotes(url);
+          if (!error && response) {
+            console.log(response.data);
+        }
+        } catch (error) {
+          console.log("Error in fetching", error);
+        }
+      };
+      useEffect(()=>{
+        fetchAllQuotes()
+      },[])
+    
 
     const initialColumns: Column[] = [
         { id: "CustomerName", label: "Customer Name", visible: true },

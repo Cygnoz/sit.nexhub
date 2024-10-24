@@ -16,6 +16,7 @@ export const endponits = {
    STATUS_PREFIX:'status-prefix',
    ADD_SALES_QUOTE:"add-sales-quotes",
    GET_LAST_SALES_QUOTE_PREFIX:"get-last-sales-quotes-prefix",
+   GET_ALL_QUOTES:"get-all-sales-quotes",
  
   // Organisation Invoices
   ADD_INVOICE_SETTINGS: "add-invoice-settings",
