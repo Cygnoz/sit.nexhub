@@ -6,6 +6,11 @@ export interface SalesOrder {
   salesOrderDate: string;
   expiryDate: string;
   subject: string;
+
+  paymentMode:string;
+  paymentTerms:string;
+  deliveryMethod:string;
+  expectedShipmentDate:string;
   
   items: Array<{
     itemId: string;

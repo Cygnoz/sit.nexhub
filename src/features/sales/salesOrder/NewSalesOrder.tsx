@@ -11,10 +11,10 @@ import Upload from "../../../assets/icons/Upload";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { SalesOrder } from "../../../Types/SalesOrder";
-import ViewDetails from "../../purchase/purchaseOrder/addPurchaseOrder/ViewDetails";
 import UserRound from "../../../assets/icons/user-round";
 import toast from "react-hot-toast";
 import NewSalesQuoteTable from "../quote/NewSalesQuoteTable";
+import ViewMoreOrder from "./ViewMoreOrder";
 
 
 
@@ -32,6 +32,11 @@ const initialSalesQuoteState: SalesOrder ={
   salesOrderDate: "",
   expiryDate: "",
   subject: "",
+
+  paymentMode:"",
+  paymentTerms:"",
+  deliveryMethod:"",
+  expectedShipmentDate:"",
 
   items: [
     {
@@ -82,8 +87,6 @@ const initialSalesQuoteState: SalesOrder ={
   totalAmount: ""
 };
 
-
-
 const NewSalesOrder = ({ }: Props) => {
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -94,6 +97,7 @@ const NewSalesOrder = ({ }: Props) => {
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
   const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(true);
+  const [prefix, setPrifix] = useState("")
 
 
   const [salesOrderState, setSalesOrderState] = useState<SalesOrder>(initialSalesQuoteState);
@@ -103,6 +107,7 @@ const NewSalesOrder = ({ }: Props) => {
   const { request: AllCustomer } = useApi("get", 5002);
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
+  const { request: getPrfix } = useApi("get", 5007);
 
 
 
@@ -177,6 +182,71 @@ const NewSalesOrder = ({ }: Props) => {
     }
   };
 
+  const calculateTotal = () => {
+    const {
+      totalItemDiscount,
+      subtotalTotal,
+      totalTax,
+      roundOffAmount,
+      otherExpenseAmount,
+      freightAmount,
+    } = salesOrderState;
+  
+    // Calculate total with all components
+    const totalAmount =
+      Number(subtotalTotal) +
+      Number(otherExpenseAmount) +
+      Number(totalTax) +
+      Number(freightAmount) -
+      (Number(totalItemDiscount) + Number(roundOffAmount));
+  
+    return totalAmount.toFixed(2);
+  };
+  
+
+  useEffect(() => {
+    const newGrandTotal = calculateTotal();
+    const {
+      discountTransactionType,
+      discountTransactionAmount = "0",
+      transactionDiscount = "0", 
+    } = salesOrderState;
+  
+    const transactionDiscountValueAMT =
+      discountTransactionType === "Percentage"
+        ? (Number(discountTransactionAmount) / 100) * Number(newGrandTotal)
+        : Number(discountTransactionAmount);
+  
+    const roundedDiscountValue = Math.round(transactionDiscountValueAMT * 100) / 100;
+    const updatedGrandTotal = Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
+  
+    if (Number(transactionDiscount) !== roundedDiscountValue || Number(salesOrderState.totalAmount) !== updatedGrandTotal) {
+      setSalesOrderState((prevState) => ({
+        ...prevState,
+        transactionDiscount: roundedDiscountValue.toFixed(2),
+        totalAmount: updatedGrandTotal.toFixed(2),
+      }));
+    }
+  }, [
+    salesOrderState.discountTransactionAmount,
+    salesOrderState.discountTransactionType,
+    salesOrderState.subtotalTotal,
+    salesOrderState.totalTax,
+    salesOrderState.totalItemDiscount,
+    salesOrderState.roundOffAmount,
+    salesOrderState.otherExpenseAmount,
+    salesOrderState.freightAmount,
+  ]);
+  
+
+
+  useEffect(() => {
+    setSalesOrderState((prevState: any) => ({
+      ...prevState,
+      totalDiscount:( (parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.transactionDiscount) || 0)).toFixed(2),
+    }));
+  }, [salesOrderState.transactionDiscount, salesOrderState.totalItemDiscount]);
+console.log(customerData);
 
   const checkTaxType = (customer: Customer) => {
     if (customer.taxType === "GST") {
@@ -196,6 +266,21 @@ const NewSalesOrder = ({ }: Props) => {
       console.log("Error in fetching Country", error);
     }
   };
+  const getSalesQuotePrefix = async () => {
+    try {
+      const prefixUrl = `${endponits.GET_LAST_SALES_ORDER_PREFIX}`;
+      const { response, error } = await getPrfix(prefixUrl);
+
+      if (!error && response) {
+        setPrifix(response.data)
+      } else {
+        console.log(error);
+      }
+    } catch (error) {
+      console.log("Error in fetching Purchase Order Prefix", error);
+    }
+  };
+console.log(prefix,"prefix");
 
   const handleplaceofSupply = () => {
     if (oneOrganization.organizationCountry) {
@@ -255,6 +340,7 @@ const NewSalesOrder = ({ }: Props) => {
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
     handleplaceofSupply();
     fetchCountries();
+    getSalesQuotePrefix();
     if (selectedCustomer) {
       checkTaxType(selectedCustomer);
     }
@@ -307,6 +393,22 @@ const NewSalesOrder = ({ }: Props) => {
     };
   }, [openDropdownIndex]);
 
+  const { request: newSalesOrdereApi } = useApi("post", 5007);
+  const handleSave = async () => {
+    try {
+      const url = `${endponits.ADD_SALES_ORDER}`;
+      const { response, error } = await newSalesOrdereApi(
+        url,
+        salesOrderState
+      );
+      if (!error && response) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(error?.response.data.message);
+      }
+    } catch (error) { }
+  };
+
   return (
     <div className="px-8">
       <div className="flex gap-5">
@@ -336,8 +438,8 @@ const NewSalesOrder = ({ }: Props) => {
                     Sales Order#
                   </label>
                   <input
-                    placeholder=""
-                    value={"SO0001"}
+                  readOnly
+                    value={prefix}
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />
@@ -466,45 +568,43 @@ const NewSalesOrder = ({ }: Props) => {
 
 
                 <div className={`col-span-${isPlaceOfSupplyVisible ? "7" : "5"} relative`}>
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Shipment Preference
+                <label className="block text-sm mb-1 text-labelColor">
+                    Reference#
                   </label>
-                  <select className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                    <option value="" disabled hidden selected className="text-gray">
-                      Select Shipment Preference
-                    </option>
-                    <option value="Road">Road</option>
-                    <option value="Rail">Rail</option>
-                    <option value="Air">Air</option>
-                    <option value="Sea">Sea</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 mt-5">
-                    <CehvronDown color="gray" />
-                  </div>
+                  <input
+                    placeholder="reference"
+                    type="text"
+                    onChange={handleChange}
+                    value={salesOrderState?.reference}
+                    className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
+                  />
                 </div>
 
               </div>
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
-                    Reference#
-                  </label>
-
-                  <input
-                    placeholder="reference"
-                    type="text"
-                    className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
-                  />
-                </div>
-                <div className="col-span-7">
-                  <label className="block text-sm mb-1 text-labelColor">
                     Sales Order Date
                   </label>
                   <div className="relative w-full">
                     <input
                       type="date"
+                      onChange={handleChange}
                       className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
-                      value="2024-12-31"
+                      value={salesOrderState.salesOrderDate}
+                    />
+                  </div>
+                </div>
+                <div className="col-span-7">
+                  <label className="block text-sm mb-1 text-labelColor">
+                  Expected Shipment Date
+                  </label>
+                  <div className="relative w-full">
+                    <input
+                      type="date"
+                      onChange={handleChange}
+                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
+                      value={salesOrderState?.expectedShipmentDate}
                     />
                   </div>
                 </div>
@@ -560,11 +660,15 @@ const NewSalesOrder = ({ }: Props) => {
                     Delivery Method
                   </label>
                   <div className="relative w-full">
-                    <select className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <option value="" className="text-gray">
-                        Select Delivery Method
-                      </option>
-                    </select>
+                  <select className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                    <option value="" disabled hidden selected className="text-gray">
+                      Select Shipment Preference
+                    </option>
+                    <option value="Road">Road</option>
+                    <option value="Rail">Rail</option>
+                    <option value="Air">Air</option>
+                    <option value="Sea">Sea</option>
+                  </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <CehvronDown color="gray" />
                     </div>
@@ -594,26 +698,6 @@ const NewSalesOrder = ({ }: Props) => {
                     </div>
                   )}
                 </div>
-                <div className="col-span-5">
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Expected Shipment Date
-                  </label>
-
-
-                  <div className="relative w-full">
-                    <select className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <input
-                        type="date"
-                        className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
-                        value="2024-12-31"
-                      />
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
-                  </div>
-
-                </div>
               </div>
 
               <div className="mt-9">
@@ -627,9 +711,9 @@ const NewSalesOrder = ({ }: Props) => {
                 />
               </div>
 
-              <ViewDetails
-                purchaseOrderState={salesOrderState}
-                setPurchaseOrderState={setSalesOrderState}
+              <ViewMoreOrder
+                salesOrderState={salesOrderState}
+                setSalesOrderState={setSalesOrderState}
               />
             </div>
           </div>
@@ -727,7 +811,6 @@ const NewSalesOrder = ({ }: Props) => {
                 </div>
               </div>
 
-              <div>
                 {isIntraState ? (
                   <div className="flex ">
                     <div className="w-[75%]">
@@ -779,7 +862,6 @@ const NewSalesOrder = ({ }: Props) => {
                     </div>
                   </>
                 )}
-              </div>
 
               {/* {!isIntraState && ( */}
                 <div className="flex ">
@@ -804,11 +886,14 @@ const NewSalesOrder = ({ }: Props) => {
                   <p>Other Expense</p>
                 </div>
                 <div className="w-full text-end">
-                  {" "}
-                  <p className="text-end">
-                    0.00
-                  </p>
-                </div>
+                    {" "}
+                    <p className="text-end">
+                      {oneOrganization?.baseCurrency}{" "}
+                      {salesOrderState.otherExpenseAmount
+                        ? salesOrderState.otherExpenseAmount
+                        : "0.00"}
+                    </p>
+                  </div>
               </div>
               <div className="flex ">
                 <div className="w-[75%]">
@@ -816,11 +901,14 @@ const NewSalesOrder = ({ }: Props) => {
                   <p>Fright</p>
                 </div>
                 <div className="w-full text-end">
-                  {" "}
-                  <p className="text-end">
-                    0.00
-                  </p>
-                </div>
+                    {" "}
+                    <p className="text-end">
+                      {oneOrganization?.baseCurrency}{" "}
+                      {salesOrderState.freightAmount
+                        ? salesOrderState.freightAmount
+                        : "0.00"}
+                    </p>
+                  </div>
               </div>
 
               <div className="flex ">
@@ -829,11 +917,14 @@ const NewSalesOrder = ({ }: Props) => {
                   <p>Rount Off Amount</p>
                 </div>
                 <div className="w-full text-end">
-                  {" "}
-                  <p className="text-end">
-                    0.00
-                  </p>
-                </div>
+                    {" "}
+                    <p className="text-end">
+                      {oneOrganization.baseCurrency}{" "}
+                      {salesOrderState.roundOffAmount
+                        ? salesOrderState.roundOffAmount
+                        : "0.00"}
+                    </p>
+                  </div>
               </div>
               <div className="flex ">
                 <div className="w-[150%]">
@@ -886,11 +977,14 @@ const NewSalesOrder = ({ }: Props) => {
               </div>
               <div className="w-full text-end font-bold text-base">
                 {" "}
-                <p className="text-end">0.00
-
+                <p className="text-end">
+                  {salesOrderState?.totalAmount &&
+                    `${oneOrganization.baseCurrency} ${salesOrderState.totalAmount}`
+                  }
                 </p>
+
               </div>
-            </div>
+            </div> 
 
 
 
@@ -903,7 +997,7 @@ const NewSalesOrder = ({ }: Props) => {
                 <PrinterIcon height={18} width={18} color="currentColor" />
                 Print
               </Button>
-              <Button variant="primary" size="sm">
+              <Button variant="primary" size="sm" onClick={handleSave}>
                 Save & send
               </Button>{" "}
             </div>
