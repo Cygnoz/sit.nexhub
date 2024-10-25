@@ -334,7 +334,7 @@ const NewSalesQuote = ({ }: Props) => {
   useEffect(() => {
     setSalesQuoteState((prevState: any) => ({
       ...prevState,
-      totalDiscount: (parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.transactionDiscount) || 0),
+      totalDiscount:( (parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.transactionDiscount) || 0)).toFixed(2),
     }));
   }, [salesQuoteState.transactionDiscount, salesQuoteState.totalItemDiscount]);
 console.log(customerData);
@@ -390,9 +390,8 @@ console.log(customerData);
         salesQuoteState
       );
       if (!error && response) {
-        // console.log(response);
-
         toast.success(response.data.message);
+        // setSalesQuoteState(initialSalesQuoteState)
       } else {
         toast.error(error?.response.data.message);
       }

@@ -556,9 +556,9 @@ useEffect(() => {
         ? totalIGST
         : totalSGST + totalCGST,
       items: updatedItems,
-      subTotal: totalSellingPrice + (isIntraState
+      subTotal: (totalSellingPrice + (isIntraState
         ? totalIGST
-        : totalSGST + totalCGST) - totalDiscount,
+        : totalSGST + totalCGST) - totalDiscount).toFixed(2),
     }));
   }, [rows]);
 
