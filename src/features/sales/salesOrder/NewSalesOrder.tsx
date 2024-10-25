@@ -96,6 +96,7 @@ const NewSalesOrder = ({ }: Props) => {
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
+  const [paymentTerms, setPaymentTerms] = useState<[]>([]);
   const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(true);
   const [prefix, setPrifix] = useState("")
 
@@ -108,6 +109,7 @@ const NewSalesOrder = ({ }: Props) => {
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: getPrfix } = useApi("get", 5007);
+  const { request: allPyamentTerms } = useApi("get", 5004);
 
 
 
@@ -246,7 +248,6 @@ const NewSalesOrder = ({ }: Props) => {
       totalDiscount:( (parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.transactionDiscount) || 0)).toFixed(2),
     }));
   }, [salesOrderState.transactionDiscount, salesOrderState.totalItemDiscount]);
-console.log(customerData);
 
   const checkTaxType = (customer: Customer) => {
     if (customer.taxType === "GST") {
@@ -280,7 +281,6 @@ console.log(customerData);
       console.log("Error in fetching Purchase Order Prefix", error);
     }
   };
-console.log(prefix,"prefix");
 
   const handleplaceofSupply = () => {
     if (oneOrganization.organizationCountry) {
@@ -337,6 +337,8 @@ console.log(prefix,"prefix");
 
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
+    const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
+    fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
     handleplaceofSupply();
     fetchCountries();
@@ -576,6 +578,7 @@ console.log(prefix,"prefix");
                     type="text"
                     onChange={handleChange}
                     value={salesOrderState?.reference}
+                    name="reference"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />
                 </div>
@@ -590,6 +593,7 @@ console.log(prefix,"prefix");
                     <input
                       type="date"
                       onChange={handleChange}
+                      name="salesOrderDate"
                       className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
                       value={salesOrderState.salesOrderDate}
                     />
@@ -603,6 +607,7 @@ console.log(prefix,"prefix");
                     <input
                       type="date"
                       onChange={handleChange}
+                      name="expectedShipmentDate"
                       className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
                       value={salesOrderState?.expectedShipmentDate}
                     />
@@ -616,7 +621,11 @@ console.log(prefix,"prefix");
                     Payment Mode
                   </label>
                   <div className="relative w-full">
-                    <select className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                    <select
+                    value={salesOrderState?.paymentMode}
+                    onChange={handleChange}
+                    name="paymentMode"
+                    className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                       <option value="" disabled hidden selected className="text-gray">
                         Select Payment Mode
                       </option>
@@ -639,10 +648,20 @@ console.log(prefix,"prefix");
                     Payment Terms
                   </label>
                   <div className="relative w-full">
-                    <select className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <option value="" className="text-gray">
-                        Due on Receipt
+                    <select 
+                    value={salesOrderState.paymentTerms}
+                    onChange={handleChange}
+                    name="paymentTerms"
+                    className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                    <option value="" disabled selected hidden className="text-gray">
+                        Select Payment Terms
                       </option>
+                      {paymentTerms.length > 0 &&
+                        paymentTerms.map((item: any) => (
+                          <option value={item.name} className="text-gray">
+                            {item.name}
+                          </option>
+                        ))}
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <CehvronDown color="gray" />
@@ -660,7 +679,11 @@ console.log(prefix,"prefix");
                     Delivery Method
                   </label>
                   <div className="relative w-full">
-                  <select className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                  <select 
+                  value={salesOrderState.deliveryMethod}
+                  name="deliveryMethod"
+                  onChange={handleChange}
+                  className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                     <option value="" disabled hidden selected className="text-gray">
                       Select Shipment Preference
                     </option>
@@ -728,8 +751,8 @@ console.log(prefix,"prefix");
               <label htmlFor="" className="">
                 Add Note
                 <input
-                  // onChange={handleChange}
-                  // value={salesQuoteState?.note}
+                  onChange={handleChange}
+                  value={salesOrderState?.note}
                   name="note"
                   id=""
                   placeholder="Note"
@@ -738,13 +761,13 @@ console.log(prefix,"prefix");
               </label>
             </div>
             <div className="mt-4">
-              <label htmlFor="termsAndConditions" className="">
+              <label htmlFor="tc" className="">
                 Terms & Conditions
                 <input
-                  name="termsAndConditions"
-                  id="termsAndConditions"
-                  // value={bill.termsAndConditions}
-                  // onChange={handleChange}
+                  name="tc"
+                  id="tc"
+                  value={salesOrderState.tc}
+                  onChange={handleChange}
                   placeholder="Add Terms & Conditions of your business"
                   className="border-inputBorder w-full text-sm border rounded p-2 h-[57px] mt-2"
                 />
