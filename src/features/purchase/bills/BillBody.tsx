@@ -1,6 +1,7 @@
 export interface Bill {
     organizationId: string;
     supplierId: string;
+    supplierDisplayName:string;
     billNumber: string;
     sourceOfSupply: string;
     destinationOfSupply: string;

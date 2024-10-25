@@ -40,8 +40,8 @@ type CustomerData = {
   designation: string;
   websiteURL: string;
   taxType: string;
-  exemptionReason:string;
-  taxPreference:string;
+  exemptionReason: string;
+  taxPreference: string;
   gstTreatment: string;
   gstin_uin: string;
   placeOfSupply: string;
@@ -76,9 +76,73 @@ type CustomerData = {
   remark: string;
 };
 
+const initialCustomerData: CustomerData = {
+  customerType: "Individual",
+  salutation: "Mr.",
+  firstName: "",
+  lastName: "",
+  companyName: "",
+  customerDisplayName: "",
+  customerEmail: "",
+  workPhone: "",
+  mobile: "",
+  dob: "",
+  cardNumber: "",
+  pan: "",
+  currency: "",
+  creditOpeningBalance: "",
+  debitOpeningBalance: "",
+  paymentTerms: "",
+  enablePortal: false,
+  creditDays: "",
+  creditLimit: "",
+  interestPercentage: "",
+  documents: "",
+  department: "",
+  designation: "",
+  websiteURL: "",
+  taxType: "",
+  exemptionReason: "",
+  taxPreference: "",
+  gstTreatment: "",
+  gstin_uin: "",
+  placeOfSupply: "",
+  businessLegalName: "",
+  businessTradeName: "",
+  vatNumber: "",
+  billingAttention: "",
+  billingCountry: "",
+  billingAddressLine1: "",
+  billingAddressLine2: "",
+  billingCity: "",
+  billingState: "",
+  billingPinCode: "",
+  billingPhone: "",
+  billingFaxNumber: "",
+  shippingAttention: "",
+  shippingCountry: "",
+  shippingAddress1: "",
+  shippingAddress2: "",
+  shippingCity: "",
+  shippingState: "",
+  shippingPinCode: "",
+  shippingPhone: "",
+  shippingFaxNumber: "",
+  contactPerson: [
+    {
+      salutation: "Mr.",
+      firstName: "",
+      lastName: "",
+      email: "",
+      mobile: "",
+    },
+  ],
+  remark: "",
+};
+
 const NewCustomerModal = ({ page }: Props) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>("Individual");
   const [currencyData, setcurrencyData] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | []>([]);
   const [stateList, setStateList] = useState<any | []>([]);
@@ -103,6 +167,11 @@ const NewCustomerModal = ({ page }: Props) => {
     lastName: false,
     companyName: false,
     customerDisplayName: false,
+    customerEmail:false,
+    websiteURL:false,
+pan:false,
+creditLimit:false,
+creditDays:false,
   });
 
   const [rows, setRows] = useState([
@@ -114,74 +183,18 @@ const NewCustomerModal = ({ page }: Props) => {
       { salutation: "", firstName: "", lastName: "", email: "", mobile: "" },
     ]);
   };
-  const [customerdata, setCustomerData] = useState<CustomerData>({
-    customerType: "",
-    salutation: "Mr.",
-    firstName: "",
-    lastName: "",
-    companyName: "",
-    customerDisplayName: "",
-    customerEmail: "",
-    workPhone: "",
-    mobile: "",
-    dob: "",
-    cardNumber: "",
-    pan: "",
-    currency: "",
-    creditOpeningBalance: "",
-    debitOpeningBalance: "",
-    paymentTerms: "",
-    enablePortal: false,
-    creditDays: "",
-    creditLimit: "",
-    interestPercentage: "",
-    documents: "",
-    department: "",
-    designation: "",
-    websiteURL: "",
-    taxType: "",
-    exemptionReason:"",
-  taxPreference:"",
-    gstTreatment: "",
-    gstin_uin: "",
-    placeOfSupply: "",
-    businessLegalName: "",
-    businessTradeName: "",
-    vatNumber: "",
-    billingAttention: "",
-    billingCountry: "",
-    billingAddressLine1: "",
-    billingAddressLine2: "",
-    billingCity: "",
-    billingState: "",
-    billingPinCode: "",
-    billingPhone: "",
-    billingFaxNumber: "",
-    shippingAttention: "",
-    shippingCountry: "",
-    shippingAddress1: "",
-    shippingAddress2: "",
-    shippingCity: "",
-    shippingState: "",
-    shippingPinCode: "",
-    shippingPhone: "",
-    shippingFaxNumber: "",
-    contactPerson: [
-      {
-        salutation: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        mobile: "",
-      },
-    ],
-    remark: "",
-  });
+  const [customerdata, setCustomerData] =
+    useState<CustomerData>(initialCustomerData);
 
   const getTabClassName = (tabName: string) => {
     return activeTab === tabName
       ? "cursor-pointer font-bold text-darkRed border-darkRed"
       : "cursor-pointer font-bold border-neutral-300";
+  };
+
+  const handleCancel = () => {
+    setCustomerData(initialCustomerData);
+    setModalOpen(false);
   };
 
   // input -----------------------------------------------------
@@ -298,7 +311,7 @@ const NewCustomerModal = ({ page }: Props) => {
         setcurrencyData(response?.data);
         // console.log(response,"currency");
       } else {
-        console.log(error.response.data, "currency");
+        console.log(error?.response.data, "currency");
       }
 
       // fetching payment terms
@@ -435,69 +448,7 @@ const NewCustomerModal = ({ page }: Props) => {
           ...prevCustomerResponse,
           customerdata,
         }));
-        setCustomerData({
-          customerType: "",
-          salutation: "",
-          firstName: "",
-          lastName: "",
-          companyName: "",
-          customerDisplayName: "",
-          customerEmail: "",
-          workPhone: "",
-          mobile: "",
-          dob: "",
-          cardNumber: "",
-          pan: "",
-          currency: "",
-          creditOpeningBalance: "",
-          debitOpeningBalance: "",
-          paymentTerms: "",
-          creditDays: "",
-          creditLimit: "",
-          interestPercentage: "",
-          enablePortal: false,
-          documents: "",
-          department: "",
-          designation: "",
-          websiteURL: "",
-          taxType: "",
-          taxPreference:"",
-          exemptionReason:"",
-          gstTreatment: "",
-          gstin_uin: "",
-          placeOfSupply: "",
-          businessLegalName: "",
-          businessTradeName: "",
-          vatNumber: "",
-          billingAttention: "",
-          billingCountry: "",
-          billingAddressLine1: "",
-          billingAddressLine2: "",
-          billingCity: "",
-          billingState: "",
-          billingPinCode: "",
-          billingPhone: "",
-          billingFaxNumber: "",
-          shippingAttention: "",
-          shippingCountry: "",
-          shippingAddress1: "",
-          shippingAddress2: "",
-          shippingCity: "",
-          shippingState: "",
-          shippingPinCode: "",
-          shippingPhone: "",
-          shippingFaxNumber: "",
-          contactPerson: [
-            {
-              salutation: "",
-              firstName: "",
-              lastName: "",
-              email: "",
-              mobile: "",
-            },
-          ],
-          remark: "",
-        });
+        setCustomerData(initialCustomerData);
       } else {
         console.log(error);
 
@@ -513,21 +464,20 @@ const NewCustomerModal = ({ page }: Props) => {
       console.error("Unexpected error:");
     }
   };
-console.log(customerdata)
+  console.log(customerdata);
   useEffect(() => {
     if (taxPreference === "Tax Exempt") {
       setCustomerData((prevData: any) => ({
         ...prevData,
         taxType: "Non-Tax",
-        taxPreference:"Tax Exepmt",
-        exemptionReason:""
+        taxPreference: "Tax Exepmt",
+        exemptionReason: "",
       }));
-    }
-    else{
+    } else {
       setCustomerData((prevData: any) => ({
         ...prevData,
         taxType: gstOrVat.taxType,
-        taxPreference:"Taxable"
+        taxPreference: "Taxable",
       }));
     }
   }, [taxPreference]);
@@ -793,7 +743,7 @@ console.log(customerdata)
                     onChange={(e) => {
                       const value = e.target.value;
                       handleChange(e);
-                      if (value && !/^[A-Za-z\s]+$/.test(value)) {
+                      if (!value || !/^[A-Za-z0-9\s\W]+$/.test(value)) {
                         setErrors((prevErrors) => ({
                           ...prevErrors,
                           companyName: true,
@@ -827,7 +777,7 @@ console.log(customerdata)
                       const value = e.target.value;
                       handleChange(e);
 
-                      if (!value || !/^[A-Za-z\s]+$/.test(value)) {
+                      if (!value || !/^[A-Za-z0-9\s\W]+$/.test(value)) {
                         setErrors((prevErrors) => ({
                           ...prevErrors,
                           customerDisplayName: true,
@@ -843,22 +793,47 @@ console.log(customerdata)
 
                   {errors.customerDisplayName && (
                     <div className="text-red-800 text-xs ms-2 mt-1">
-                      Please enter a valid Customer Display Name (letters only).
+                      Please enter a Customer Display Name.
                     </div>
                   )}
                 </div>
 
                 <div>
-                  <label htmlFor="">Customer Email</label>
-                  <input
-                    type="text"
-                    name="customerEmail"
-                    className="pl-2 text-sm w-[100%] mt-1  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                    placeholder="Enter Email"
-                    onChange={handleChange}
-                    value={customerdata.customerEmail}
-                  />
-                </div>
+  <label htmlFor="customerEmail">Customer Email</label>
+  <input
+  type="email"
+  name="customerEmail"
+  className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+  placeholder="Enter Email"
+  value={customerdata.customerEmail}
+  onChange={handleChange}
+  onBlur={(e) => {
+    const value = e.target.value;
+
+    // Email validation regex
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    // Only validate if the field is not empty
+    if (value && !emailRegex.test(value)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        customerEmail: true,
+      }));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        customerEmail: false,
+      }));
+    }
+  }}
+/>
+
+  {errors.customerEmail && (
+    <div className="text-red-800 text-xs ms-2 mt-1">
+      Please enter a valid email address.
+    </div>
+  )}
+</div>
                 <div>
                   <label htmlFor="cardNumber">Membership Card Number</label>
                   <input
@@ -977,30 +952,74 @@ console.log(customerdata)
                               </div>
                             </div>
                             <input
-                              type="text"
-                              className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                              placeholder={`Enter ${openingType} Opening Balance`}
-                              onChange={handleChange}
-                              name="openingBalance"
-                              value={
-                                openingType === "Debit"
-                                  ? customerdata.debitOpeningBalance
-                                  : customerdata.creditOpeningBalance
-                              }
-                            />
+  type="text"
+  className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+  placeholder={`Enter ${openingType} Opening Balance`}
+  onChange={(e) => {
+    const value = e.target.value;
+
+    if (/^\d*$/.test(value)) {
+      handleChange(e); 
+
+      if (openingType === "Debit") {
+        setCustomerData((prevData) => ({
+          ...prevData,
+          debitOpeningBalance: value,
+        }));
+      } else {
+        setCustomerData((prevData) => ({
+          ...prevData,
+          creditOpeningBalance: value,
+        }));
+      }
+    }
+  }}
+  name="openingBalance"
+  value={
+    openingType === "Debit"
+      ? customerdata.debitOpeningBalance
+      : customerdata.creditOpeningBalance
+  }
+/>
+
                           </div>
                         </div>
                         <div>
-                          <label className="block mb-1">PAN</label>
-                          <input
-                            type="text"
-                            className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                            placeholder="Enter PAN Number"
-                            name="pan"
-                            value={customerdata.pan}
-                            onChange={handleChange}
-                          />
-                        </div>
+  <label className="block mb-1">PAN</label>
+  <div>
+  <input
+    type="text"
+    className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+    placeholder="Enter PAN Number"
+    name="pan"
+    value={customerdata.pan}
+    onChange={(e) => {
+      const value = e.target.value;
+
+      if (value === "" || /^[a-zA-Z0-9]*$/.test(value)) {
+        handleChange(e);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          pan: false,
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          pan: true,
+        }));
+      }
+    }}
+  />
+
+  {errors.pan && (
+    <div className="text-red-800 text-xs mt-1">
+      Only alphanumeric characters are allowed for PAN.
+    </div>
+  )}
+</div>
+
+</div>
+
 
                         <div>
                           <div className="">
@@ -1068,41 +1087,90 @@ console.log(customerdata)
                         </div>
                       </div>
                       <div className="grid grid-cols-3 gap-4">
-                        <div>
-                          <label className="block mb-1">Credit Days</label>
-                          <input
-                            type="text"
-                            className=" text-sm w-[100%]  rounded-md text-start bg-white border border-slate-300  h-p p-2 text-[#818894] "
-                            placeholder="Enter Credit Days"
-                            name="creditDays"
-                            value={customerdata.creditDays}
-                            onChange={handleChange}
-                          />
-                        </div>
+                      <div>
+  <label className="block mb-1">Credit Days</label>
+  <input
+    type="text"
+    className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-p p-2 text-[#818894]"
+    placeholder="Enter Credit Days"
+    name="creditDays"
+    value={customerdata.creditDays}
+    onChange={(e) => {
+      const value = e.target.value;
 
-                        <div>
-                          <label className="block mb-1">Credit Limit</label>
-                          <input
-                            type="text"
-                            className=" text-sm w-[100%]  rounded-md text-start bg-white border border-slate-300  h-p p-2 text-[#818894] "
-                            placeholder="Enter Credit Limit"
-                            name="creditLimit"
-                            value={customerdata.creditLimit}
-                            onChange={handleChange}
-                          />
-                        </div>
+      if (value === "" || /^[0-9]+$/.test(value)) {
+        handleChange(e);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          creditDays: false,
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          creditDays: true,
+        }));
+      }
+    }}
+  />
+  {errors.creditDays && (
+    <div className="text-red-800 text-xs mt-1">
+      Please enter a valid number for Credit Days.
+    </div>
+  )}
+</div>
+
+<div>
+  <label className="block mb-1">Credit Limit</label>
+  <input
+    type="text"
+    className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-p p-2 text-[#818894]"
+    placeholder="Enter Credit Limit"
+    name="creditLimit"
+    value={customerdata.creditLimit}
+    onChange={(e) => {
+      const value = e.target.value;
+
+      if (value === "" || /^[0-9]+$/.test(value)) {
+        handleChange(e);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          creditLimit: false,
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          creditLimit: true,
+        }));
+      }
+    }}
+  />
+  {errors.creditLimit && (
+    <div className="text-red-800 text-xs mt-1">
+      Please enter a valid number for Credit Limit.
+    </div>
+  )}
+</div>
+
                         <div>
                           <label className="block mb-1">
                             Interest Percentage
                           </label>
                           <input
-                            type="text"
-                            className=" text-sm w-[100%]  rounded-md text-start bg-white border border-slate-300  h-p p-2 text-[#818894] "
-                            placeholder="%"
-                            name="interestPercentage"
-                            value={customerdata.interestPercentage}
-                            onChange={handleChange}
-                          />
+  type="text"
+  inputMode="numeric" 
+  pattern="[0-9]*"
+  className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-p p-2 text-[#818894]"
+  placeholder="%"
+  name="interestPercentage"
+  value={customerdata.interestPercentage}
+  onChange={handleChange}
+  onKeyPress={(e) => {
+    if (!/[0-9]/.test(e.key)) {
+      e.preventDefault();
+    }
+  }}
+/>
+
                         </div>
                       </div>
 
@@ -1206,8 +1274,29 @@ console.log(customerdata)
                             placeholder="Value"
                             name="websiteURL"
                             value={customerdata.websiteURL}
-                            onChange={handleChange}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              const urlPattern = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/;
+                        
+                              if (value === "" || urlPattern.test(value)) {
+                                handleChange(e);
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  websiteURL: false,
+                                }));
+                              } else {
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  websiteURL: true,
+                                }));
+                              }
+                            }}
                           />
+                           {errors.websiteURL && (
+    <div className="text-red-800 text-xs mt-1">
+      Please enter a valid website URL (e.g., https://example.com).
+    </div>
+  )}
                         </div>
                       </div>
                     </div>
@@ -1447,9 +1536,9 @@ console.log(customerdata)
                             type="text"
                             className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                             placeholder="Value"
-                             name="exemptionReason"
-                             value={customerdata.exemptionReason}
-                             onChange={handleChange}
+                            name="exemptionReason"
+                            value={customerdata.exemptionReason}
+                            onChange={handleChange}
                           />
                         </div>
                       )}
@@ -1846,10 +1935,10 @@ console.log(customerdata)
                                 Salutation
                               </th>
                               <th className="py-2 px-5 font-medium border-b border-tableBorder relative">
-                                FirstName
+                                First Name
                               </th>
                               <th className="py-2 px-4 font-medium border-b border-tableBorder relative">
-                                LastName
+                                Last Name
                               </th>
                               <th className="py-2 px-4 font-medium border-b border-tableBorder relative">
                                 Email Address
@@ -1863,9 +1952,9 @@ console.log(customerdata)
                             {rows.map((row, index) => (
                               <tr className="relative text-center" key={index}>
                                 <td className="py-2.5 px- border-y border-tableBorder justify-center mt-4 gap-2 items-center flex-1">
-                                  <div className="relative w-full">
+                                  <div className="relative w-full text-center ms-3">
                                     <select
-                                      className="block relative appearance-none w-full h-9 text-[#818894] focus:border-none  bg-white text-sm text-center border-none rounded-md leading-tight"
+                                      className="block appearance-none w-full h-9  text-zinc-400 bg-white  text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                       value={row.salutation}
                                       onChange={(e) =>
                                         handleRowChange(
@@ -1878,23 +1967,23 @@ console.log(customerdata)
                                       <option value="" className="text-gray">
                                         Select
                                       </option>
-                                      <option value="Mr" className="text-gray">
-                                        Mr
-                                      </option>
-                                      <option value="Mrs" className="text-gray">
-                                        Mrs
+                                      <option value="Mr." className="text-gray">
+                                        Mr.
                                       </option>
                                       <option
-                                        value="Miss"
+                                        value="Mrs."
                                         className="text-gray"
                                       >
-                                        Miss
+                                        Mrs.
                                       </option>
-                                      <option value="Dr" className="text-gray">
-                                        Dr
+                                      <option value="Ms." className="text-gray">
+                                        Ms.
+                                      </option>
+                                      <option value="Dr." className="text-gray">
+                                        Dr.
                                       </option>
                                     </select>
-                                    <div className="pointer-events-none absolute inset-y-0 -right-8 flex items-center px-2 text-gray-700">
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                                       <CehvronDown color="gray" />
                                     </div>
                                   </div>
@@ -1904,7 +1993,7 @@ console.log(customerdata)
                                     type="text"
                                     value={row.firstName}
                                     className="text-sm w-[100%] text-center rounded-md bg-white h-9 p-2 mx-4 text-[#818894]"
-                                    placeholder="Value"
+                                    placeholder="Enter Fist Name"
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -1919,7 +2008,7 @@ console.log(customerdata)
                                     type="text"
                                     value={row.lastName}
                                     className="text-sm w-[100%] rounded-md text-center bg-white h-9 p-2 text-[#818894]"
-                                    placeholder="Value"
+                                    placeholder="Enter Last Name"
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -1934,7 +2023,7 @@ console.log(customerdata)
                                     type="text"
                                     value={row.email}
                                     className="text-sm w-[100%] rounded-md text-center bg-white h-9 p-2 text-[#818894]"
-                                    placeholder="Value"
+                                    placeholder="Enter Email"
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -1949,7 +2038,7 @@ console.log(customerdata)
                                     type="text"
                                     value={row.mobile}
                                     className="text-sm w-[100%] rounded-md text-center bg-white h-9 p-2 text-[#818894]"
-                                    placeholder="Value"
+                                    placeholder="Enter Mobile"
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -1994,11 +2083,7 @@ console.log(customerdata)
           </div>
 
           <div className="flex justify-end gap-2 mb-3 m-5">
-            <Button
-              onClick={() => setModalOpen(false)}
-              variant="secondary"
-              size="sm"
-            >
+            <Button onClick={handleCancel} variant="secondary" size="sm">
               Cancel
             </Button>
             <Button

@@ -17,7 +17,7 @@ const PurchaseOrderTable = () => {
   const navigate = useNavigate();
 
   const handleRowClick = (id: string) => {
-    navigate(`/purchase/viewpurchaseorder/${id}`); 
+    navigate(`/purchase/viewpurchaseorder/${id}`);
   };
 
   const initialColumns: Column[] = [
@@ -42,7 +42,7 @@ const PurchaseOrderTable = () => {
       const url = `${endponits.GET_ALL_PURCHASE_ORDER}`;
       const { response, error } = await getPO(url);
       if (!error && response) {
-        setAllPOData(response.data.PurchaseOrders); 
+        setAllPOData(response.data.PurchaseOrders);
       } else {
         console.log(error);
       }
@@ -53,7 +53,10 @@ const PurchaseOrderTable = () => {
 
   const filteredAccounts = allPoData.filter((PO) => {
     const searchValueLower = searchValue.toLowerCase().trim();
-    return PO.purchaseOrder.toLowerCase().trim().startsWith(searchValueLower);
+    return (
+      PO.purchaseOrder.toLowerCase().trim().startsWith(searchValueLower) ||
+      PO.supplierDisplayName.toLowerCase().trim().startsWith(searchValueLower)
+    );
   });
 
   useEffect(() => {
@@ -61,13 +64,14 @@ const PurchaseOrderTable = () => {
   }, []);
 
   const renderColumnContent = (colId: string, item: any) => {
-    
     if (colId === "Status") {
       return (
         <div className="flex justify-center items-center">
           <div className="flex justify-center items-center gap-1.5 bg-BgSubhead rounded-2xl px-2 pt-0.5 pb-0.5">
             <DotIcon color="#495160" />
-            <p className="text-outlineButton text-xs font-medium">{item.status}</p>
+            <p className="text-outlineButton text-xs font-medium">
+              {item.status}
+            </p>
           </div>
         </div>
       );
@@ -114,31 +118,40 @@ const PurchaseOrderTable = () => {
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts? filteredAccounts.map((item) => (
-              <tr
-                key={item._id} 
-                className="relative cursor-pointer"
-                onClick={() => handleRowClick(item._id)} 
-              >
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input type="checkbox" className="form-checkbox w-4 h-4" />
+            {filteredAccounts && filteredAccounts.length > 0 ? (
+              filteredAccounts.map((item) => (
+                <tr
+                  key={item._id}
+                  className="relative cursor-pointer"
+                  onClick={() => handleRowClick(item._id)}
+                >
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    <input type="checkbox" className="form-checkbox w-4 h-4" />
+                  </td>
+                  {columns.map(
+                    (col) =>
+                      col.visible && (
+                        <td
+                          key={col.id}
+                          className="py-2.5 px-4 border-y border-tableBorder"
+                        >
+                          {renderColumnContent(col.id, item)}
+                        </td>
+                      )
+                  )}
+                  <td className="py-3 px-4 border-b border-tableBorder"></td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={columns.length + 2}
+                  className="text-center py-4 border-y border-tableBorder"
+                >
+                  <p className="text-red-500">No Data Found!</p>
                 </td>
-                {columns.map(
-                  (col) =>
-                    col.visible && (
-                      <td
-                        key={col.id}
-                        className="py-2.5 px-4 border-y border-tableBorder"
-                      >
-                        {renderColumnContent(col.id, item)}
-                      </td>
-                      
-                    )
-                )}
-                            <td  className="py-3 px-4 border-b border-tableBorder"></td>
-
               </tr>
-            )): <div className="flex items-center">   <p className="text-[red]">Purchase order not available!</p></div>}
+            )}
           </tbody>
         </table>
       </div>

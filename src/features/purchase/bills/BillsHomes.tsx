@@ -6,10 +6,7 @@ import Ellipsis from "../../../assets/icons/Ellipsis";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
-import PrintButton from "../../../Components/PrintButton";
-import SearchBar from "../../../Components/SearchBar";
 import BillsType from "./BillsType";
-import SortBy from "./SortBy";
 import Table from "./Table";
 
 type Props = {};
@@ -17,7 +14,6 @@ type Props = {};
 function BillsHomes({}: Props) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState<string>("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
@@ -120,17 +116,7 @@ function BillsHomes({}: Props) {
           <div className="w-[100%] p-3 bg-gray-100">
             <BillsType />
           </div>
-          <div className="flex w-full pl-3 pr-3 items-center gap-6">
-            <div className="w-[85%]">
-              <SearchBar
-                onSearchChange={setSearchValue}
-                searchValue={searchValue}
-                placeholder="Search Bills"
-              />
-            </div>
-            <SortBy />
-            <PrintButton />
-          </div>
+         
           <div className="p-3">
             {/* table */}
             <Table />
