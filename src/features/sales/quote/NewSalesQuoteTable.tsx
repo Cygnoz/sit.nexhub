@@ -34,7 +34,7 @@ type Row = {
 };
 
 type Props = {
-  salesQuoteState?: SalesQuote;
+  salesQuoteState?: any;
   isIntraState?: Boolean;
   setSalesQuoteState?: (value: any) => void;
   oneOrganization?: any;
@@ -285,8 +285,6 @@ const NewSalesQuoteTable = ({
       newRows[index].sgstAmount = "0";
       newRows[index].igstAmount = igstAmount; // IGST is still included when intra-state
     }
-  
-    // Recalculate itemAmount based on isIntraState and isPlaceOfSupplyVisible
     newRows[index].itemAmount = !isPlaceOfSupplyVisible
       ? parseFloat(itemAmount).toFixed(2)
       : !isIntraState
@@ -526,7 +524,7 @@ useEffect(() => {
   const totalSellingPrice = calculateTotalSubtotal();
   const totalDiscount = calculateDiscount();
 
-  const updatedItems = salesQuoteState?.items.map((item) => {
+  const updatedItems = salesQuoteState?.items.map((item:any) => {
     const itemCGST = parseFloat(item.cgstAmount) || 0;
     const itemSGST = parseFloat(item.sgstAmount) || 0;
     const itemIGST = parseFloat(item.igstAmount) || 0;
@@ -544,17 +542,17 @@ useEffect(() => {
     setSalesQuoteState?.((prevData: SalesQuote) => ({
       ...prevData,
       totalItem: totalQuantity,
-      sgst: totalSGST,
-      cgst: totalCGST,
-      igst: totalIGST,
-      subtotalTotal: totalSellingPrice,
-      totalItemDiscount: totalDiscount,
-      totalTax: isIntraState
+      sgst: totalSGST.toFixed(2),
+      cgst: totalCGST.toFixed(2),
+      igst: totalIGST.toFixed(2),
+      subtotalTotal: totalSellingPrice.toFixed(2),
+      totalItemDiscount: totalDiscount.toFixed(2),
+      totalTax: (isIntraState
         ? totalIGST
-        : totalSGST + totalCGST,
-      itemTotaltax: isIntraState
+        : totalSGST + totalCGST).toFixed(2),
+      itemTotaltax: (isIntraState
         ? totalIGST
-        : totalSGST + totalCGST,
+        : totalSGST + totalCGST).toFixed(2),
       items: updatedItems,
       subTotal: (totalSellingPrice + (isIntraState
         ? totalIGST
