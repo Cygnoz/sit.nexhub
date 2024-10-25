@@ -1,9 +1,8 @@
 import { useState } from "react";
 import ScanEye from "../../../../assets/icons/ScanEye";
-import { PurchaseOrder } from "./PurchaseOrderBody";
 
 type Props = {
-  purchaseOrderState: PurchaseOrder;
+  purchaseOrderState: any;
   setPurchaseOrderState: (value: any) => void;
 };
 

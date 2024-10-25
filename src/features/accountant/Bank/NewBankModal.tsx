@@ -25,11 +25,14 @@ const initialBankAccount = {
   bankAccNum: "",
   bankIfsc: "",
   bankCurrency: "",
+  debitOpeningBalance: "",
+  creditOpeningBalance: "",
 };
 
 const NewBankModal = ({}: Props) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [bankAccount, setBankAccount] = useState(initialBankAccount);
+  const [openingType, setOpeningType] = useState("Debit");
   const { setBankResponse } = useContext(BankResponseContext)!;
   const { request: CreateAccount } = useApi("post", 5001);
 
@@ -45,11 +48,30 @@ const NewBankModal = ({}: Props) => {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setBankAccount((prevBankAccount) => ({
-      ...prevBankAccount,
-      [name]: value,
-    }));
+  
+    // Update openingType and related balances accordingly
+    if (name === "openingType") {
+      setOpeningType(value);
+      setBankAccount((prevFormValues) => ({
+        ...prevFormValues,
+        debitOpeningBalance: value === "Debit" ? prevFormValues.openingBalance : "",
+        creditOpeningBalance: value === "Credit" ? prevFormValues.openingBalance : "",
+      }));
+    } else if (name === "openingBalance") {
+      setBankAccount((prevFormValues) => ({
+        ...prevFormValues,
+        debitOpeningBalance: openingType === "Debit" ? value : prevFormValues.debitOpeningBalance,
+        creditOpeningBalance: openingType === "Credit" ? value : prevFormValues.creditOpeningBalance,
+      }));
+    } else {
+      // Update any other fields normally
+      setBankAccount((prevBankAccount) => ({
+        ...prevBankAccount,
+        [name]: value,
+      }));
+    }
   };
+  
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -137,6 +159,39 @@ const NewBankModal = ({}: Props) => {
                   placeholder="Value"
                   className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
                 />
+              </div>
+              <div className="mb-4">
+                <label className="block mb-1 text-labelColor text-sm">Opening Balance</label>
+                <div className="flex">
+                  <div className="relative w-20 ">
+                    <select
+                      className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder 
+                                   text-sm pl-2 pr-2 rounded-l-md leading-tight 
+                                   focus:outline-none focus:bg-white focus:border-gray-500"
+                      name="openingType"
+                      value={openingType}
+                      onChange={handleChange}
+                    >
+                      <option value="Debit">Dr</option>
+                      <option value="Credit">Cr</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2"
+                    placeholder="Enter Opening Balance"
+                    name="openingBalance"
+                    value={
+                      openingType === "Debit"
+                        ? bankAccount.debitOpeningBalance
+                        : bankAccount.creditOpeningBalance
+                    }
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>

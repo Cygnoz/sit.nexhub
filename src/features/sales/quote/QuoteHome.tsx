@@ -4,19 +4,16 @@ import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
 // import Ellipsis from "../../../assets/icons/Ellipsis";
-import Print from "../../../Components/PrintButton";
 // import SortBy from "./SortBy";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 // import QuoteCustomers from "./QuoteCustomers";
 import QuoteTable from "./QuoteTable";
-import SearchBar from "../../../Components/SearchBar";
 import { useNavigate } from "react-router-dom";
 
 type Props = {};
 
 const QuoteHome = ({}: Props) => {
   const navigate = useNavigate();
-  const [searchValue, setSearchValue] = useState<string>("");
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const ellipsisRef = useRef<HTMLDivElement>(null);
@@ -133,20 +130,10 @@ const QuoteHome = ({}: Props) => {
       </div>
 
       <div className="bg-white p-5 rounded-xl px-5 mt-4">
-        <div className="w-full p-3 bg-gray-100 overflow-x-hidden">
+        <div className="w-full  bg-gray-100 overflow-x-hidden">
           {/* <QuoteCustomers /> */}
         </div>
-        <div className="flex pl-3 pr-3 items-center gap-5">
-          <div className="w-[90%]">
-            <SearchBar
-              onSearchChange={setSearchValue}
-              searchValue={searchValue}
-              placeholder="Search Quote"
-            />
-          </div>
-          {/* <SortBy /> */}
-          <Print />
-        </div>
+       
         <div className="p-3">
           {/* table */}
           <QuoteTable />

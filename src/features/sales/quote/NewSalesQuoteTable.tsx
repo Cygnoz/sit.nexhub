@@ -34,7 +34,7 @@ type Row = {
 };
 
 type Props = {
-  salesQuoteState?: SalesQuote;
+  salesQuoteState?: any;
   isIntraState?: Boolean;
   setSalesQuoteState?: (value: any) => void;
   oneOrganization?: any;
@@ -170,18 +170,17 @@ const NewSalesQuoteTable = ({
     );
   
     newRows[index].amount = itemAmount;
-    if (isPlaceOfSupplyVisible) {
-      newRows[index].cgstAmount = cgstAmount;
-      newRows[index].sgstAmount = sgstAmount;
-      newRows[index].igstAmount = igstAmount; 
-    } else {
-      newRows[index].cgstAmount = "0"; 
-      newRows[index].sgstAmount = "0"; 
-      newRows[index].igstAmount = igstAmount; 
-    }
-
-    newRows[index].itemAmount = (parseFloat(itemAmount) + (parseFloat(cgstAmount) + parseFloat(sgstAmount))).toFixed(2); 
-
+  
+    newRows[index].cgstAmount = isPlaceOfSupplyVisible ? cgstAmount : "0";
+    newRows[index].sgstAmount = isPlaceOfSupplyVisible ? sgstAmount : "0";
+    newRows[index].igstAmount = isPlaceOfSupplyVisible ? igstAmount : igstAmount;
+  
+    newRows[index].itemAmount = 
+      !isPlaceOfSupplyVisible
+        ? parseFloat(itemAmount).toFixed(2)
+        : !isIntraState
+          ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+          : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
   
     setRows(newRows);
   
@@ -256,37 +255,44 @@ const NewSalesQuoteTable = ({
   const handleRowChange = (index: number, field: keyof Row, value: string) => {
     const newRows = [...rows];
     newRows[index] = { ...newRows[index], [field]: value };
-
+  
     const quantity = parseFloat(newRows[index].quantity) || 0;
     const sellingPrice = parseFloat(newRows[index].sellingPrice) || 0;
     const totalSellingPrice = quantity * sellingPrice;
-
+  
     const discountedPrice = calculateDiscountPrice(
       totalSellingPrice,
       newRows[index].discountAmount,
       newRows[index].discountType
     );
-
+  
     const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
       discountedPrice,
       newRows[index],
       isIntraState as boolean
     );
-
-
+  
     newRows[index].amount = itemAmount;
+  
+    // Handle tax values and set itemAmount correctly
     if (isPlaceOfSupplyVisible) {
       newRows[index].cgstAmount = cgstAmount;
       newRows[index].sgstAmount = sgstAmount;
-      newRows[index].igstAmount = igstAmount; 
-    } else {
-      newRows[index].cgstAmount = "0"; 
-      newRows[index].sgstAmount = "0"; 
       newRows[index].igstAmount = igstAmount;
+    } else {
+      // Set CGST and SGST to "0" if isPlaceOfSupplyVisible is false
+      newRows[index].cgstAmount = "0";
+      newRows[index].sgstAmount = "0";
+      newRows[index].igstAmount = igstAmount; // IGST is still included when intra-state
     }
-    newRows[index].itemAmount = (parseFloat(itemAmount) + (parseFloat(cgstAmount) + parseFloat(sgstAmount))).toFixed(2); 
+    newRows[index].itemAmount = !isPlaceOfSupplyVisible
+      ? parseFloat(itemAmount).toFixed(2)
+      : !isIntraState
+        ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+        : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
+  
     setRows(newRows);
-
+  
     setSalesQuoteState?.((prevData: any) => ({
       ...prevData,
       items: newRows.map((row) => {
@@ -296,34 +302,45 @@ const NewSalesQuoteTable = ({
       }),
     }));
   };
+  
   useEffect(() => {
-    const updateTaxForRows = (rows: any[], isIntraState: boolean, isPlaceOfSupplyVisible: boolean) => {
+    const updateItemAmounts = (rows: any[], isIntraState: boolean, isPlaceOfSupplyVisible: boolean) => {
       return rows.map((row) => {
-        const s = parseFloat(row.sellingPrice);
-        const q = parseFloat(row.quantity);
-    
+        const sellingPrice = parseFloat(row.sellingPrice) || 0;
         const discountedPrice = calculateDiscountPrice(
-          s * q,
+          sellingPrice,
           row.discountAmount,
           row.discountType
         );
     
-        const taxDetails = calculateTax(discountedPrice, row, isIntraState);
+        const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+          discountedPrice,
+          row,
+          isIntraState
+        );
+  
+        let finalItemAmount = !isPlaceOfSupplyVisible
+          ? parseFloat(itemAmount).toFixed(2)
+          : !isIntraState
+            ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+            : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
+    
         return {
           ...row,
-          amount: taxDetails.itemAmount,
-          cgstAmount: isPlaceOfSupplyVisible ? taxDetails.cgstAmount : "0", 
-          sgstAmount: isPlaceOfSupplyVisible ? taxDetails.sgstAmount : "0", 
-          igstAmount: taxDetails.igstAmount,
+          amount: itemAmount,
+          cgstAmount: isPlaceOfSupplyVisible ? cgstAmount : "0",
+          sgstAmount: isPlaceOfSupplyVisible ? sgstAmount : "0",
+          igstAmount: isPlaceOfSupplyVisible ? igstAmount : igstAmount, // Keep igstAmount but set others to 0
+          itemAmount: finalItemAmount,
         };
       });
     };
-    const updatedRows = updateTaxForRows(rows, isIntraState as boolean, isPlaceOfSupplyVisible as boolean);
   
-    // Only update state if rows have changed
+    const updatedRows = updateItemAmounts(rows, isIntraState as boolean, isPlaceOfSupplyVisible as boolean);
+  
     if (JSON.stringify(rows) !== JSON.stringify(updatedRows)) {
       setRows(updatedRows);
-      
+    
       setSalesQuoteState?.((prevData: any) => ({
         ...prevData,
         items: updatedRows.map((row) => {
@@ -331,61 +348,60 @@ const NewSalesQuoteTable = ({
           delete updatedItem.itemImage;
           return updatedItem;
         }),
-        // Resetting or updating the total tax state
         totalTax: updatedRows.reduce((total, row) => {
           return total + parseFloat(row.cgstAmount) + parseFloat(row.sgstAmount) + parseFloat(row.igstAmount);
         }, 0).toFixed(2),
       }));
     }
-  }, [isPlaceOfSupplyVisible, rows, isIntraState, setSalesQuoteState]);
+  }, [isIntraState, isPlaceOfSupplyVisible, rows]);
   
   
 
 
 
-  useEffect(() => {
-    const updatedRows = rows.map((row) => {
-      const s = parseFloat(row.sellingPrice);
-      const q = parseFloat(row.quantity);
+  // useEffect(() => {
+  //   const updatedRows = rows.map((row) => {
+  //     const s = parseFloat(row.sellingPrice);
+  //     const q = parseFloat(row.quantity);
   
-      const discountedPrice = calculateDiscountPrice(
-        s * q,
-        row.discountAmount,
-        row.discountType
-      );
+  //     const discountedPrice = calculateDiscountPrice(
+  //       s * q,
+  //       row.discountAmount,
+  //       row.discountType
+  //     );
   
-      const taxDetails = calculateTax(
-        discountedPrice,
-        row,
-        isIntraState as boolean
-      );
-      if (isPlaceOfSupplyVisible) {
-        return {
-          ...row,
-          amount: taxDetails.itemAmount,
-          cgstAmount: taxDetails.cgstAmount,
-          sgstAmount: taxDetails.sgstAmount,
-          igstAmount: taxDetails.igstAmount,
-        };
-      } else {
-        return {
-          ...row,
-          amount: taxDetails.itemAmount,
-          cgstAmount: "0", 
-          sgstAmount: "0", 
-          igstAmount: taxDetails.igstAmount,
-        };
-      }
-    });
+  //     const taxDetails = calculateTax(
+  //       discountedPrice,
+  //       row,
+  //       isIntraState as boolean
+  //     );
+  //     if (isPlaceOfSupplyVisible) {
+  //       return {
+  //         ...row,
+  //         amount: taxDetails.itemAmount,
+  //         cgstAmount: taxDetails.cgstAmount,
+  //         sgstAmount: taxDetails.sgstAmount,
+  //         igstAmount: taxDetails.igstAmount,
+  //       };
+  //     } else {
+  //       return {
+  //         ...row,
+  //         amount: taxDetails.itemAmount,
+  //         cgstAmount: "0", 
+  //         sgstAmount: "0", 
+  //         igstAmount: taxDetails.igstAmount,
+  //       };
+  //     }
+  //   });
   
-    if (JSON.stringify(rows) !== JSON.stringify(updatedRows)) {
-      setRows(updatedRows); // Update rows only if there's an actual change
-    }
-  }, [
-    salesQuoteState?.placeOfSupply, 
-    isIntraState,                   
-    isPlaceOfSupplyVisible,         
-  ]);
+  //   if (JSON.stringify(rows) !== JSON.stringify(updatedRows)) {
+  //     setRows(updatedRows); // Update rows only if there's an actual change
+  //   }
+  // }, [
+  //   salesQuoteState?.placeOfSupply, 
+  //   isIntraState,                   
+  //   isPlaceOfSupplyVisible,         
+  // ]);
   
 
   const getAllItems = async () => {
@@ -508,7 +524,7 @@ useEffect(() => {
   const totalSellingPrice = calculateTotalSubtotal();
   const totalDiscount = calculateDiscount();
 
-  const updatedItems = salesQuoteState?.items.map((item) => {
+  const updatedItems = salesQuoteState?.items.map((item:any) => {
     const itemCGST = parseFloat(item.cgstAmount) || 0;
     const itemSGST = parseFloat(item.sgstAmount) || 0;
     const itemIGST = parseFloat(item.igstAmount) || 0;
@@ -526,21 +542,21 @@ useEffect(() => {
     setSalesQuoteState?.((prevData: SalesQuote) => ({
       ...prevData,
       totalItem: totalQuantity,
-      sgst: totalSGST,
-      cgst: totalCGST,
-      igst: totalIGST,
-      subtotalTotal: totalSellingPrice,
-      totalItemDiscount: totalDiscount,
-      totalTax: isIntraState
+      sgst: totalSGST.toFixed(2),
+      cgst: totalCGST.toFixed(2),
+      igst: totalIGST.toFixed(2),
+      subtotalTotal: totalSellingPrice.toFixed(2),
+      totalItemDiscount: totalDiscount.toFixed(2),
+      totalTax: (isIntraState
         ? totalIGST
-        : totalSGST + totalCGST,
-      itemTotaltax: isIntraState
+        : totalSGST + totalCGST).toFixed(2),
+      itemTotaltax: (isIntraState
         ? totalIGST
-        : totalSGST + totalCGST,
+        : totalSGST + totalCGST).toFixed(2),
       items: updatedItems,
-      subTotal: totalSellingPrice + (isIntraState
+      subTotal: (totalSellingPrice + (isIntraState
         ? totalIGST
-        : totalSGST + totalCGST) - totalDiscount,
+        : totalSGST + totalCGST) - totalDiscount).toFixed(2),
     }));
   }, [rows]);
 
