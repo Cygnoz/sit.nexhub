@@ -4,7 +4,6 @@ import { endponits } from "../../../Services/apiEndpoints";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import SearchBar from "../../../Components/SearchBar";
 import Print from "../../sales/salesOrder/Print";
-import ItemSort from "./ItemSort";
 import Modal from "../../../Components/model/Modal";
 import Button from "../../../Components/Button";
 import Pen from "../../../assets/icons/Pen";
@@ -96,7 +95,7 @@ const ItemTable = () => {
 
   const handleDeleteImage = async () => {
     if (selectedItem) {
-      const updatedItem = { ...selectedItem, itemImage: "" }; 
+      const updatedItem = { ...selectedItem, itemImage: "" };
 
       try {
         const url = `${endponits.UPDATE_ITEM}/${updatedItem._id}`;
@@ -142,8 +141,8 @@ const ItemTable = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div className="w-[82.5%]">
+      <div className="flex items-center justify-between gap-4">
+        <div className="w-full ">
           <SearchBar
             placeholder="Search"
             searchValue={searchValue}
@@ -151,21 +150,30 @@ const ItemTable = () => {
           />
         </div>
         <div className="flex gap-4">
-          <ItemSort />
+          {/* <ItemSort/> */}
           <Print />
         </div>
       </div>
-      <div className="mt-3 max-h-[25rem] overflow-y-auto" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+      <div
+        className="mt-3 max-h-[25rem] overflow-y-auto"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
-            <tr style={{ backgroundColor: "#F9F7F0" }} className="sticky top-0 z-10">
+            <tr
+              style={{ backgroundColor: "#F9F7F0" }}
+              className="sticky top-0 z-10"
+            >
               <th className="py-3 px-4 border-b border-tableBorder">
                 <input type="checkbox" className="form-checkbox w-4 h-4" />
               </th>
               {columns.map(
                 (col) =>
                   col.visible && (
-                    <th className="py-2 px-4 font-medium border-b border-tableBorder" key={col.id}>
+                    <th
+                      className="py-2 px-4 font-medium border-b border-tableBorder"
+                      key={col.id}
+                    >
                       {col.label}
                     </th>
                   )
@@ -176,22 +184,36 @@ const ItemTable = () => {
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredItems.map((item) => (
-              <tr key={item.id} className="relative">
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input type="checkbox" className="form-checkbox w-4 h-4" />
+            {filteredItems && filteredItems.length > 0 ? (
+              filteredItems.map((item) => (
+                <tr key={item.id} className="relative">
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    <input type="checkbox" className="form-checkbox w-4 h-4" />
+                  </td>
+                  {columns.map(
+                    (col) =>
+                      col.visible && (
+                        <td
+                          key={col.id}
+                          className="py-2.5 px-4 border-y border-tableBorder"
+                        >
+                          {renderColumnContent(col.id, item)}
+                        </td>
+                      )
+                  )}
+                  <td className="py-2.5 px-4 border-y border-tableBorder"></td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={7}
+                  className="text-center py-4 border-y border-tableBorder"
+                >
+                  <p className="text-red-500">No Data Found!</p>
                 </td>
-                {columns.map(
-                  (col) =>
-                    col.visible && (
-                      <td key={col.id} className="py-2.5 px-4 border-y border-tableBorder">
-                        {renderColumnContent(col.id, item)}
-                      </td>
-                    )
-                )}
-                <td className="py-2.5 px-4 border-y border-tableBorder"></td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
@@ -202,25 +224,40 @@ const ItemTable = () => {
           <div className="px-8 py-6 bg-white rounded-lg">
             <div className="flex justify-between mb-2">
               <p className="text-textColor font-bold text-xl">Item Info</p>
-              <div className="text-3xl font-light cursor-pointer relative z-10" onClick={closeModal}>
+              <div
+                className="text-3xl font-light cursor-pointer relative z-10"
+                onClick={closeModal}
+              >
                 &times;
               </div>
             </div>
             <div className="flex gap-6">
               <div className="p-6 rounded-lg bg-[#F3F3F3] w-[35%] h-[50%] flex flex-col items-center justify-center">
                 <img
-                  src={selectedItem?.itemImage || "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"}
+                  src={
+                    selectedItem?.itemImage ||
+                    "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"
+                  }
                   alt="Item image"
                   className="rounded-lg text-xs"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png";
+                    (e.target as HTMLImageElement).src =
+                      "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png";
                   }}
                 />
                 <div className="mt-6 flex gap-2">
-                  <Button onClick={handleEdit} variant="tertiary" className="text-xs font-medium h-[32px]">
+                  <Button
+                    onClick={handleEdit}
+                    variant="tertiary"
+                    className="text-xs font-medium h-[32px]"
+                  >
                     <Pen color="#585953" /> Change image
                   </Button>
-                  <Button onClick={confirmDeleteImage} variant="tertiary" className="text-xs font-medium h-[32px]">
+                  <Button
+                    onClick={confirmDeleteImage}
+                    variant="tertiary"
+                    className="text-xs font-medium h-[32px]"
+                  >
                     <Trash2 color="#585953" /> Delete
                   </Button>
                 </div>
@@ -277,12 +314,13 @@ const ItemTable = () => {
                     <div className="text-dropdownText font-semibold text-sm space-y-4">
                       <p>
                         {selectedItem?.itemType
-                          ? selectedItem.itemType.charAt(0).toUpperCase() + selectedItem.itemType.slice(1)
+                          ? selectedItem.itemType.charAt(0).toUpperCase() +
+                            selectedItem.itemType.slice(1)
                           : "N/A"}
                       </p>
                       <p>{selectedItem?.sku || "N/A"}</p>
                       <p>{selectedItem?.unit || "N/A"}</p>
-                      <p>{selectedItem?.createdDate.split(' ')[0] || "N/A"}</p>
+                      <p>{selectedItem?.createdDate.split(" ")[0] || "N/A"}</p>
                       <p>{selectedItem?.returnableItem ? "Yes" : "No"}</p>
                     </div>
                   </div>
@@ -296,10 +334,13 @@ const ItemTable = () => {
                       <p className="text-dropdownText text-sm">Cost Price</p>
                       <p className="text-dropdownText font-semibold text-sm">
                         {currencySymbol[0]?.length === 1
-                          ? `${currencySymbol[0]} ${selectedItem?.costPrice || "N/A"}`  
-                          : `${selectedItem?.costPrice || "N/A"} ${currencySymbol[0]}`}  
+                          ? `${currencySymbol[0]} ${
+                              selectedItem?.costPrice || "N/A"
+                            }`
+                          : `${selectedItem?.costPrice || "N/A"} ${
+                              currencySymbol[0]
+                            }`}
                       </p>
-
 
                       {/* <p className="text-dropdownText text-sm">Purchase Account</p>
                       <p className="text-dropdownText font-semibold text-sm">
@@ -317,8 +358,12 @@ const ItemTable = () => {
                       <p className="text-dropdownText text-sm">Selling Price</p>
                       <p className="text-dropdownText font-semibold text-sm">
                         {currencySymbol[0]?.length === 1
-                          ? `${currencySymbol[0]} ${selectedItem?.sellingPrice || "N/A"}`  
-                          : `${selectedItem?.sellingPrice || "N/A"} ${currencySymbol[0]}`}  
+                          ? `${currencySymbol[0]} ${
+                              selectedItem?.sellingPrice || "N/A"
+                            }`
+                          : `${selectedItem?.sellingPrice || "N/A"} ${
+                              currencySymbol[0]
+                            }`}
                       </p>
                       {/* <p className="text-dropdownText text-sm">Sales Account</p>
                       <p className="text-dropdownText font-semibold text-sm">
@@ -339,15 +384,13 @@ const ItemTable = () => {
       {isDeleteImageModalOpen && (
         <Modal
           open
-          onClose={closeDeleteImageModal} 
+          onClose={closeDeleteImageModal}
           className="rounded-lg p-8 w-[546px] h-[160px] text-[#303F58] space-y-8 shadow-xl"
         >
-          <p className="text-sm">
-            Are you sure you want to remove the image?
-          </p>
+          <p className="text-sm">Are you sure you want to remove the image?</p>
           <div className="flex justify-end gap-2 mb-3">
             <Button
-              onClick={closeDeleteImageModal} 
+              onClick={closeDeleteImageModal}
               variant="secondary"
               className="pl-8 pr-8 text-sm h-10"
             >
@@ -357,7 +400,7 @@ const ItemTable = () => {
               onClick={() => {
                 handleDeleteImage();
                 closeDeleteImageModal(); // Close the modal after confirming
-              }} 
+              }}
               variant="primary"
               className="pl-8 pr-8 text-sm h-10"
             >

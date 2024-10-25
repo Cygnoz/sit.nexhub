@@ -43,6 +43,7 @@ const NewBills = ({}: Props) => {
   const [bill, setBill] = useState<Bill>({
     organizationId: "INDORG0006",
     supplierId: "",
+    supplierDisplayName:"",
     billNumber: "",
     sourceOfSupply: "",
     destinationOfSupply: "",
@@ -163,6 +164,7 @@ const NewBills = ({}: Props) => {
         setBill((preData: any) => ({
           ...preData,
           destinationOfSupply: selecteSupplier.billingState,
+          supplierDisplayName: selecteSupplier.supplierDisplayName,
         }));
       }
 
@@ -265,7 +267,7 @@ const NewBills = ({}: Props) => {
       if (!error && response) {
         toast.success(response.data.message);
         setTimeout(() => {
-          navigate("/purchase/purchase-order");
+          navigate("/purchase/bills");
         }, 1000);
       } else {
         toast.error(error?.response.data.message);
@@ -439,7 +441,7 @@ const NewBills = ({}: Props) => {
                       </p>
                     </div>
                   )}
-                  <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
+                  <div  className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
                     <AddSupplierModal page="purchase" />
                   </div>
                 </div>
