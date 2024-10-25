@@ -121,7 +121,7 @@ GET_ONE_UNIT:`/get-one-unit`,
 
 // bill
 ADD_BILL:`/add-Bills`,
-GET_ALL_BILLS:`get-all-Bills`,
+GET_ALL_BILLS:`/get-all-Bills`,
 
 
 // Purchase order

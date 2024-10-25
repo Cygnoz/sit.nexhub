@@ -3,7 +3,6 @@ import CustomiseColmn from "../../../Components/CustomiseColum";
 import Button from "../../../Components/Button";
 import { Link } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
-import SortBy from "./SortBy";
 import Print from "../../sales/salesOrder/Print";
 
 interface Column {
@@ -73,8 +72,8 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customerData, searchValue
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div className="w-[82.5%]">
+      <div className="flex items-center justify-between gap-4">
+        <div className="w-full">
           <SearchBar
             placeholder="Search"
             searchValue={searchValue}
@@ -82,7 +81,6 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customerData, searchValue
           />
         </div>
         <div className="flex gap-4">
-          <SortBy />
           <Print />
         </div>
       </div>
@@ -110,24 +108,36 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customerData, searchValue
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts.map((item) => (
-              <tr key={item._id} className="relative">
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input type="checkbox" className="form-checkbox w-4 h-4" />
-                </td>
-                {columns.map(
-                  (col) =>
-                    col.visible && (
-                      <td
-                        key={col.id}
-                        className="py-2.5 px-4 border-y border-tableBorder"
-                      >
-                        {renderColumnContent(col.id, item)}
-                      </td>
-                    )
-                )}
-              </tr>
-            ))}
+          {filteredAccounts && filteredAccounts.length > 0 ? (
+  filteredAccounts.map((item) => (
+    <tr key={item._id} className="relative">
+      <td className="py-2.5 px-4 border-y border-tableBorder">
+        <input type="checkbox" className="form-checkbox w-4 h-4" />
+      </td>
+      {columns.map(
+        (col) =>
+          col.visible && (
+            <td
+              key={col.id}
+              className="py-2.5 px-4 border-y border-tableBorder"
+            >
+              {renderColumnContent(col.id, item)}
+            </td>
+          )
+      )}
+    </tr>
+  ))
+) : (
+  <tr>
+    <td
+      colSpan={columns.length + 2}
+      className="text-center py-4 border-y border-tableBorder"
+    >
+      <p className="text-red-500">No Data Found!</p>
+    </td>
+  </tr>
+)}
+
           </tbody>
         </table>
       </div>

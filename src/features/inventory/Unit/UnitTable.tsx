@@ -52,7 +52,7 @@ const UnitTable = ({}: Props) => {
         console.log(response);
       } else {
         console.log(error);
-        toast.error(error.response.data.message);
+        // toast.error(error.response.data.message);
       }
     } catch (error) {
       console.error(error);
@@ -104,7 +104,7 @@ const UnitTable = ({}: Props) => {
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px] relative">
-            {store.map((item: any, index: number) => (
+            {store && store.length>0?store.map((item: any, index: number) => (
               <tr className="relative" key={index}>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   {index + 1}
@@ -146,7 +146,14 @@ const UnitTable = ({}: Props) => {
                   </div>
                 )}
               </tr>
-            ))}
+            )):( <tr>
+              <td
+                colSpan={5} 
+                className="text-center py-4 border-y border-tableBorder"
+              >
+                <p className="text-red-500">No Data Found!</p>
+              </td>
+            </tr>)}
           </tbody>
         </table>
       </div>
