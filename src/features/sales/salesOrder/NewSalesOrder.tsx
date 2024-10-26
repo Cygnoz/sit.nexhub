@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../../../Components/Button";
 import SearchBar from "../../../Components/SearchBar";
 import CehvronDown from "../../../assets/icons/CehvronDown";
@@ -112,7 +112,11 @@ const NewSalesOrder = ({ }: Props) => {
   const { request: allPyamentTerms } = useApi("get", 5004);
 
 
-
+const navigate=useNavigate()
+const handleGoBack =()=>{
+  navigate(-1)
+  setSalesOrderState(initialSalesQuoteState)
+}
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -1013,7 +1017,7 @@ const NewSalesOrder = ({ }: Props) => {
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}
-              <Button variant="secondary" size="sm">
+              <Button variant="secondary" size="sm" onClick={handleGoBack}>
                 Cancel
               </Button>
               <Button variant="secondary" size="sm">
