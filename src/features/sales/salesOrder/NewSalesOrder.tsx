@@ -11,10 +11,10 @@ import Upload from "../../../assets/icons/Upload";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { SalesOrder } from "../../../Types/SalesOrder";
-import UserRound from "../../../assets/icons/user-round";
 import toast from "react-hot-toast";
 import NewSalesQuoteTable from "../quote/NewSalesQuoteTable";
 import ViewMoreOrder from "./ViewMoreOrder";
+import CustomerModal from "./CustomerModal";
 
 
 
@@ -524,23 +524,9 @@ const handleGoBack =()=>{
                       </div>
                     </div>
                   )}
-                   <div>
-                    <p
-                      className="mt-3 text-bold"
-                      style={{
-                        color: '#820000',
-                        display: 'flex',
-                        fontWeight: 'bold',
-                        alignItems: 'center',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <UserRound color='#820000' />
-                      <span style={{ marginLeft: '5px', fontWeight: 'bold' }}>
-                        See customer details
-                      </span>
-                    </p>
-                  </div>
+                 <CustomerModal
+                  selectedCustomer={selectedCustomer}
+                 />
                 </div>
 
                 {isPlaceOfSupplyVisible && (

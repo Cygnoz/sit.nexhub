@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
@@ -92,6 +92,13 @@ const NewSalesQuote = ({ }: Props) => {
 
   const [salesQuoteState, setSalesQuoteState] = useState<SalesQuote>(initialSalesQuoteState);
 
+
+  
+const navigate=useNavigate()
+const handleGoBack =()=>{
+  navigate(-1)
+  setSalesQuoteState(initialSalesQuoteState)
+}
 
   const fetchData = async (
     url: string,
@@ -890,7 +897,7 @@ console.log(customerData);
       <div>
         <div className="flex gap-4 my-5 -mt-14 justify-end">
           {" "}
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm"  onClick={handleGoBack}>
             Cancel
           </Button>
           <Button variant="secondary" size="sm">
