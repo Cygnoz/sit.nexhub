@@ -7,7 +7,7 @@ import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import NewCustomerModal from "../../Customer/CustomerHome/NewCustomerModal";
 import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
-import NewInvoiceTable from "./NewSalesOrderTable";
+import NewSalesOrderTable from "./NewSalesOrderTable";
 import ScanEye from "../../../assets/icons/ScanEye";
 import UserRound from "../../../assets/icons/UserRound";
 
@@ -378,7 +378,7 @@ const NewSalesOrder = ({}: Props) => {
 
           <div className="mt-9">
             <p className="font-bold text-base">Add Item</p>
-            <NewInvoiceTable />
+           <NewSalesOrderTable/>
           </div>
 
           <div>
@@ -493,8 +493,9 @@ const NewSalesOrder = ({}: Props) => {
             )}
           </div>
 
-          <br />
+        
         </div>
+        
         <div className="col-span-4">
           <div className="bg-secondary_main p-5 min-h-max rounded-xl relative  mt-0">
             <div className="mt-5">
