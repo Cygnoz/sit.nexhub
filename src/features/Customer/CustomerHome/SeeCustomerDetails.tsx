@@ -8,11 +8,11 @@ import toast from "react-hot-toast";
 import Overview from "./viewCustomerDetails/Overview";
 import SalesHistory from "./viewCustomerDetails/SalesHistory";
 import cardBg from "../../../assets/Images/Card 3 Mask.png";
-import walletImage from "../../../assets/Images/Frame 629221.png";
-import walletCashImage from "../../../assets/Images/Frame 629221 (1).png";
+// import walletImage from "../../../assets/Images/Frame 629221.png";
+// import walletCashImage from "../../../assets/Images/Frame 629221 (1).png";
 import revenueImage from "../../../assets/Images/Frame 629221 (2).png";
 import salesImage from "../../../assets/Images/Frame 629221 (3).png";
-import cardBackground from "../../../assets/Images/Frame 629314.png";
+// import cardBackground from "../../../assets/Images/Frame 629314.png";
 
 interface Status {
   status: string;
@@ -104,15 +104,15 @@ function SeeCustomerDetails() {
           >
             <div className="absolute inset-0 bg-gradient-to-br from-[#6B0F1A] to-[#200122] opacity-75 rounded-2xl"></div>
             <div className="relative z-10">
-              <p className="text-membershipText text-sm mt-1">
+              {/* <p className="text-membershipText text-sm mt-1">
                 Privilege Membership Card
-              </p>
+              </p> */}
               <div className="flex items-center mt-3">
-                <img
+                {/* <img
                 src="https://i.postimg.cc/05XQMpkS/Ellipse-2.png"
                   alt="Profile"
                   className="w-8 h-8 object-cover rounded-full mr-3"
-                />
+                /> */}
                 <div>
                   <p className="text-white text-sm font-semibold mt-1">
                     Jancy Philip
@@ -124,14 +124,14 @@ function SeeCustomerDetails() {
           </div>
 
           {/* 2nd card */}
-          <div className="w-[7.7%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
+          {/* <div className="w-[7.7%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
             <img src={walletImage} alt="" className="object-cover" />
             <p className="mt-2 text-sm font-semibold text-textColor">Wallet</p>
             <p className="mt-1 text-lg font-bold text-textColor">0.00</p>
-          </div>
+          </div> */}
 
           {/* 3rd card */}
-          <div className="w-[13.4%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
+          {/* <div className="w-[13.4%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
             <div className="items-center flex justify-center">
               <img src={walletCashImage} alt="" className="object-cover" />
             </div>
@@ -139,10 +139,10 @@ function SeeCustomerDetails() {
               Redeemed Wallet
             </p>
             <p className="mt-1 text-lg font-bold text-textColor">0.00</p>
-          </div>
+          </div> */}
 
           {/* 4th card */}
-          <div className="w-[11.6%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
+          <div className="w-[30%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
             <div className="items-center flex justify-center">
               <img src={revenueImage} alt="" className="object-cover" />
             </div>
@@ -153,7 +153,7 @@ function SeeCustomerDetails() {
           </div>
 
           {/* 5th card */}
-          <div className="w-[12.8%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
+          <div className="w-[33%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
             <div className="items-center flex justify-center">
               <img src={salesImage} alt="" className="object-cover" />
             </div>
@@ -164,10 +164,10 @@ function SeeCustomerDetails() {
           </div>
 
           {/* 6th card */}
-          <div
+          {/* <div
             className="w-[20.65%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center"
             style={{ backgroundImage: `url(${cardBackground})` }}
-          ></div>
+          ></div> */}
         </div>
       </div>
 

@@ -64,14 +64,15 @@ const ReceiptHome = ({}: Props) => {
           </p>
         </div>
         <div className="ml-auto flex items-center justify-center gap-4">
-          <Link to={"/slaes/receipt/new"}>
-            <Button variant="primary" size="sm">
-              <PlusCircle color={"white"} />
-              New Receipt
-            </Button>
-          </Link>
-          <Ellipsis />
-        </div>
+  <Link to="/sales/receipt/new">
+    <Button variant="primary" size="sm">
+      <PlusCircle color={"white"} />
+      New Receipt
+    </Button>
+  </Link>
+  <Ellipsis />
+</div>
+
       </div>
 
       <div className="bg-white rounded-lg p-4 space-y-4 mt-6">

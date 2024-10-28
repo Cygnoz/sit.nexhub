@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
+import PrintButton from "../../../Components/PrintButton";
+import SearchBar from "../../../Components/SearchBar";
 
 
 
@@ -15,15 +17,16 @@ interface Column {
 const Table = () => {
   const navigate = useNavigate();
   const initialColumns: Column[] = [
-    { id: "bill", label: "Bill#", visible: true },
+    { id: "billNumber", label: "Bill#", visible: true },
     { id: "billDate", label: "Bill Date", visible: true },
-    { id: "reference", label: "Reference", visible: true },
-    { id: "supplierName", label: "Supplier Name", visible: true },
-    { id: "amount", label: "Amount", visible: true },
+    // { id: "reference", label: "Reference", visible: true },
+    { id: "supplierDisplayName", label: "Supplier Name", visible: true },
+    { id: "grandTotal", label: "Amount", visible: true },
     { id: "dueDate", label: "Due Date", visible: true },
   ];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
+  const [searchValue, setSearchValue] = useState<string>("");
   const [allBill, setAllBill] = useState<any[]>([]);
 
   const { request: getBills } = useApi("get", 5005);
@@ -33,7 +36,7 @@ const Table = () => {
       const url = `${endponits.GET_ALL_BILLS}`;
       const { response, error } = await getBills(url);
       if (!error && response) {
-        setAllBill(response.data.PurchaseOrders); 
+        setAllBill(response.data.PurchaseBills); 
       } else {
         console.log(error);
       }
@@ -50,6 +53,13 @@ getAllBill()
 
 
 
+  const filteredAccounts = allBill?.filter((bill) => {
+    const searchValueLower = searchValue.toLowerCase().trim();
+    return bill.billDate.toLowerCase().trim().startsWith(searchValueLower) ||
+    bill.supplierDisplayName.toLowerCase().trim().startsWith(searchValueLower)
+    ;
+  });
+
 
 
   const handleColumnChange = (newColumns: Column[]) => {
@@ -57,59 +67,79 @@ getAllBill()
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white mb-5 w-full">
-        <thead className="text-[12px] text-center text-dropdownText">
-          <tr style={{ backgroundColor: "#F9F7F0" }}>
-            <th className="py-3 px-4 border-b border-tableBorder">
-              <input type="checkbox" className="form-checkbox w-4 h-4" />
-            </th>
-            {columns.map(
-              (col) =>
-                col.visible && (
-                  <th
-                    key={col.id}
-                    className="py-2 px-4 font-medium border-b border-tableBorder"
-                  >
-                    {col.label}
-                  </th>
-                )
-            )}
-            <th className="py-2.5 px-4 border-y border-tableBorder">
-              {/* Add CustomiseColmn component here */}
-              <CustomiseColmn
-                columns={columns}
-                setColumns={handleColumnChange}
+
+    <>
+     <div className="flex w-full items-center gap-6">
+            <div className="w-full">
+              <SearchBar
+                onSearchChange={setSearchValue}
+                searchValue={searchValue}
+                placeholder="Search Bills"
               />
-            </th>
-          </tr>
-        </thead>
-        <tbody className="text-dropdownText text-center text-[13px]">
-          {allBill?.map((item) => (
-            <tr key={item.id} className="relative">
-              <td className="py-2.5 px-4 border-y border-tableBorder">
+            </div>
+            <PrintButton />
+          </div>
+      
+      <div className="overflow-x-auto mt-4">
+        <table className="min-w-full bg-white mb-5 w-full">
+          <thead className="text-[12px] text-center text-dropdownText">
+            <tr style={{ backgroundColor: "#F9F7F0" }}>
+              <th className="py-3 px-4 border-b border-tableBorder">
                 <input type="checkbox" className="form-checkbox w-4 h-4" />
-              </td>
+              </th>
               {columns.map(
                 (col) =>
                   col.visible && (
-                    <td
+                    <th
                       key={col.id}
-                      className="py-2.5 px-4 border-y border-tableBorder cursor-pointer"
-                      onClick={() => navigate("/purchase/bills/view")}
+                      className="py-2 px-4 font-medium border-b border-tableBorder"
                     >
-                      {item[col.id as keyof typeof item]}
-                    </td>
+                      {col.label}
+                    </th>
                   )
               )}
-              <td className="py-2.5 px-4 border-y border-tableBorder">
-                {/* Ensure this td has the same border styling */}
-              </td>
+              <th className="py-2.5 px-4 border-y border-tableBorder">
+                {/* Add CustomiseColmn component here */}
+                <CustomiseColmn
+                  columns={columns}
+                  setColumns={handleColumnChange}
+                />
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody className="text-dropdownText text-center text-[13px]">
+          {filteredAccounts && filteredAccounts.length > 0 ? (
+  filteredAccounts.map((item) => (
+    <tr key={item.id} className="relative">
+      <td className="py-2.5 px-4 border-y border-tableBorder">
+        <input type="checkbox" className="form-checkbox w-4 h-4" />
+      </td>
+      {columns.map(
+        (col) =>
+          col.visible && (
+            <td
+              key={col.id}
+              className="py-2.5 px-4 border-y border-tableBorder cursor-pointer"
+              onClick={() => navigate("/purchase/bills/view")}
+            >
+              {item[col.id as keyof typeof item]}
+            </td>
+          )
+      )}
+      <td className="py-2.5 px-4 border-y border-tableBorder"></td>
+    </tr>
+  ))
+) : (
+  <tr>
+    <td colSpan={columns.length + 2} className="text-center py-4 border-y border-tableBorder">
+      <p className="text-red-500">No Data Found!</p>
+    </td>
+  </tr>
+)}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 

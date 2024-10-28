@@ -93,7 +93,7 @@ const SupplierTable = ({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <div className="w-[82.5%] ">
+        <div className="w-full ">
           <SearchBar
             placeholder="Search"
             searchValue={searchValue}
@@ -128,7 +128,7 @@ const SupplierTable = ({
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts.reverse().map((item) => (
+            {filteredAccounts && filteredAccounts.length>0?filteredAccounts.reverse().map((item) => (
               <tr key={item._id} className="relative">
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input type="checkbox" className="form-checkbox w-4 h-4" />
@@ -146,7 +146,14 @@ const SupplierTable = ({
                 )}
                 <td className="py-2.5 px-4 border-y border-tableBorder"></td>
               </tr>
-            ))}
+            )): <tr>
+            <td
+              colSpan={columns.length + 2}
+              className="text-center py-4 border-y border-tableBorder"
+            >
+              <p className="text-red-500">No Data Found!</p>
+            </td>
+          </tr>}
           </tbody>
         </table>
       </div>

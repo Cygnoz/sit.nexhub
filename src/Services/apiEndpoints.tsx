@@ -16,6 +16,10 @@ export const endponits = {
    STATUS_PREFIX:'status-prefix',
    ADD_SALES_QUOTE:"add-sales-quotes",
    GET_LAST_SALES_QUOTE_PREFIX:"get-last-sales-quotes-prefix",
+   GET_ALL_QUOTES:"get-all-sales-quotes",
+   //sales order
+   GET_LAST_SALES_ORDER_PREFIX:"get-last-sales-order-prefix",
+   ADD_SALES_ORDER:"add-sales-order",
  
   // Organisation Invoices
   ADD_INVOICE_SETTINGS: "add-invoice-settings",
@@ -120,7 +124,7 @@ GET_ONE_UNIT:`/get-one-unit`,
 
 // bill
 ADD_BILL:`/add-Bills`,
-GET_ALL_BILLS:`get-all-Bills`,
+GET_ALL_BILLS:`/get-all-Bills`,
 
 
 // Purchase order
