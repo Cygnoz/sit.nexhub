@@ -1,26 +1,25 @@
 import { useState } from "react";
 import ScanEye from "../../../../assets/icons/ScanEye";
-import { PurchaseOrder } from "./PurchaseOrderBody";
 
 type Props = {
-  purchaseOrderState: PurchaseOrder;
+  purchaseOrderState: any;
   setPurchaseOrderState: (value: any) => void;
 };
 
 const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState }: Props) => {
   const [viewDetails, setViewDetails] = useState<boolean>(false);
 
-  const handleChange = (event:any) => {
+  const handleChange = (event: any) => {
     const { name, value } = event.target;
 
-    const numericFields = ['otherExpense', 'roundOff','freight',];
+    const numericFields = ['otherExpense', 'roundOff', 'freight',];
     const stringFields = ['vehicleNo', 'otherExpenseReason'];
 
     const numericValue = numericFields.includes(name) ? Number(value) : value;
 
     const newValue = stringFields.includes(name) ? value : numericValue;
 
-    setPurchaseOrderState((prevState:any) => ({
+    setPurchaseOrderState((prevState: any) => ({
       ...prevState,
       [name]: newValue,
     }));
@@ -42,14 +41,14 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState }: Props) => {
               <label htmlFor="otherExpense" className="">
                 Other Expense Amount
                 <input
-  type="number"
-  step="0.01"
-  value={purchaseOrderState.otherExpense || ''} 
-  name="otherExpense"
-  onChange={handleChange}
-  placeholder="Enter expense amount"
-  className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-2"
-/>
+                  type="number"
+                  step="0.01"
+                  value={purchaseOrderState.otherExpense || ''}
+                  name="otherExpense"
+                  onChange={handleChange}
+                  placeholder="Enter expense amount"
+                  className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-2"
+                />
 
               </label>
             </div>
@@ -57,7 +56,7 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState }: Props) => {
               <label htmlFor="otherExpenseReason" className="">
                 Other Expense Reason
                 <input
-                  value={purchaseOrderState.otherExpenseReason }
+                  value={purchaseOrderState.otherExpenseReason}
                   name="otherExpenseReason"
                   onChange={handleChange}
                   placeholder="Enter reason"
@@ -69,8 +68,8 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState }: Props) => {
               <label htmlFor="freight" className="">
                 Freight Amount
                 <input
-                 type="number" 
-                 step="0.01" 
+                  type="number"
+                  step="0.01"
                   value={purchaseOrderState.freight || ""}
                   name="freight"
                   onChange={handleChange}
@@ -83,8 +82,8 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState }: Props) => {
               <label htmlFor="roundOff" className="">
                 Round Off Amount
                 <input
-         type="number" 
-         step="0.01" 
+                  type="number"
+                  step="0.01"
                   value={purchaseOrderState.roundOff || ""}
                   name="roundOff"
                   onChange={handleChange}

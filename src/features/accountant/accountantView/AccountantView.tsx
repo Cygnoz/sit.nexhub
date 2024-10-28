@@ -59,12 +59,18 @@ function AccountantView() {
     }
   }, [id]);
 
-  // Function to calculate total balance
   const calculateTotal = () => {
-    const totalCredit = trialBalance.reduce((sum, item) => sum + item.creditAmount, 0);
-    const totalDebit = trialBalance.reduce((sum, item) => sum + item.debitAmount, 0);
+    const totalCredit = trialBalance.reduce(
+      (sum, item) => sum + (Number(item.creditAmount) || 0),
+      0
+    );
+    const totalDebit = trialBalance.reduce(
+      (sum, item) => sum + (Number(item.debitAmount) || 0),
+      0
+    );
     return totalCredit - totalDebit;
   };
+  
 
   return (
     <div className="px-6">
@@ -132,7 +138,7 @@ function AccountantView() {
 
           <div className="mt-4 text-end">
             <p className="text-textColor font-bold me-36">
-              Total : <span> {calculateTotal().toFixed(2)}</span>
+              Total : <span> {calculateTotal().toFixed(2)} ({oneOrganization.baseCurrency})</span>
             </p>
           </div>
         </div>

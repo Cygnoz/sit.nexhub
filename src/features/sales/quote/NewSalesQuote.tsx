@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
@@ -92,6 +92,13 @@ const NewSalesQuote = ({ }: Props) => {
 
   const [salesQuoteState, setSalesQuoteState] = useState<SalesQuote>(initialSalesQuoteState);
 
+
+  
+const navigate=useNavigate()
+const handleGoBack =()=>{
+  navigate(-1)
+  setSalesQuoteState(initialSalesQuoteState)
+}
 
   const fetchData = async (
     url: string,
@@ -744,49 +751,6 @@ console.log(customerData);
               </div>
 
               <div className="flex ">
-                <div className="w-[150%]">
-                  <p>Bill Discount</p>
-                </div>
-
-                <div className=" ">
-                  <div className="border border-inputBorder rounded-lg flex items-center justify-center p-1 gap-1">
-                    <input
-                      onChange={handleChange}
-                      value={salesQuoteState?.discountTransactionAmount} // Previously `transactionDiscount`
-                      name="discountTransactionAmount" // Previously `transactionDiscount`
-                      type="number"
-                      step="0.01"
-                      placeholder="0"
-                      className="w-[60px] focus:outline-none text-center"
-                    />
-                    <select
-                      className="text-xs text-zinc-400 bg-white relative"
-                      onChange={handleChange}
-                      value={salesQuoteState?.discountTransactionType}
-                      name="transactionDiscountType"
-                    >
-                      <option value="Percentage">%</option>
-                      <option value="Currency">
-                        {oneOrganization.baseCurrency}
-                      </option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700 ms-1">
-                      <CehvronDown color="gray" height={15} width={15} />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="w-full text-end">
-                  <p className="text-end">
-                    {oneOrganization.baseCurrency}{" "}
-                    {salesQuoteState.transactionDiscount // Previously `discountTransactionAmount`
-                      ? salesQuoteState.transactionDiscount
-                      : "0.00"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex ">
                 <div className="w-[75%]">
                   <p> Total Discount</p>
                 </div>
@@ -865,6 +829,49 @@ console.log(customerData);
                   </p>
                 </div>
               </div>
+              
+              <div className="flex justify-center items-center ">
+                <div className="w-[150%]">
+                  <p>Bill Discount</p>
+                </div>
+
+                <div className=" ">
+                  <div className="border border-inputBorder rounded-lg flex items-center justify-center p-1 gap-1">
+                    <input
+                      onChange={handleChange}
+                      value={salesQuoteState?.discountTransactionAmount} 
+                      name="discountTransactionAmount" 
+                      type="number"
+                      step="0.01"
+                      placeholder="0"
+                      className="w-[60px] focus:outline-none text-center"
+                    />
+                    <select
+                      className="text-xs text-zinc-400 bg-white relative"
+                      onChange={handleChange}
+                      value={salesQuoteState?.discountTransactionType}
+                      name="transactionDiscountType"
+                    >
+                      <option value="Percentage">%</option>
+                      <option value="Currency">
+                        {oneOrganization.baseCurrency}
+                      </option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700 ms-1">
+                      <CehvronDown color="gray" height={15} width={15} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full text-end">
+                  <p className="text-end">
+                    {oneOrganization.baseCurrency}{" "}
+                    {salesQuoteState.transactionDiscount // Previously `discountTransactionAmount`
+                      ? salesQuoteState.transactionDiscount
+                      : "0.00"}
+                  </p>
+                </div>
+              </div>
             </div>
             <div className="flex text-black">
               <div className="w-[75%] font-bold">
@@ -890,7 +897,7 @@ console.log(customerData);
       <div>
         <div className="flex gap-4 my-5 -mt-14 justify-end">
           {" "}
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm"  onClick={handleGoBack}>
             Cancel
           </Button>
           <Button variant="secondary" size="sm">

@@ -124,7 +124,7 @@ const ItemTable = ({}: Props) => {
               </tr>
             </thead>
             <tbody className="text-dropdownText text-center text-[13px] relative">
-              {filteredItems.map((item: any, index: number) => (
+              {filteredItems && filteredItems.length>0? filteredItems.map((item: any, index: number) => (
                 <tr className="relative" key={index}>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {formatDate(item.date)}
@@ -142,7 +142,14 @@ const ItemTable = ({}: Props) => {
                     {item.stakeholder}
                   </td>
                 </tr>
-              ))}
+              )):  <tr>
+              <td
+                colSpan={5} 
+                className="text-center py-4 border-y border-tableBorder"
+              >
+                <p className="text-red-500">No Data Found!</p>
+              </td>
+            </tr>}
             </tbody>
           </table>
         </div>
