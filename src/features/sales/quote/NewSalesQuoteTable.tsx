@@ -138,6 +138,10 @@ const NewSalesQuoteTable = ({
     setRows(updatedRows);
   };
 
+  console.log(rows.map((i)=>i.amount,"amount"));
+  console.log(rows.map((i)=>i.itemAmount),"ietmamount");
+  
+
 
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
@@ -661,7 +665,8 @@ const NewSalesQuoteTable = ({
                         )}
                         <div>
                           <Link to={"/inventory/Item/new"}>
-                            <button className="bg-darkGreen text-darkRed rounded-lg py-4 px-6 flex items-center text-sm font-bold border-slate-400 border gap-2 w-full hover:bg-lightRed">
+                            <button className="bg-darkGreen text-darkRed rounded-lg py-4 px-6 flex ]
+                            items-center text-sm font-bold border-slate-400 border gap-2 w-full hover:bg-lightRed">
                               <PlusCircle color="darkRed" />
                               <p> Add New Item</p>
                             </button>
@@ -680,7 +685,7 @@ const NewSalesQuoteTable = ({
                       handleRowChange(index, "quantity", e.target.value)
                     }
                   />
-                  <div className="text-start text-[10px]">
+                  <div className="text-center text-[10px]">
                     {" "}
                     <p>
                       Stock OnHand: &nbsp;
