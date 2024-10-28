@@ -7,6 +7,7 @@ import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import NewCustomerModal from "../../Customer/CustomerHome/NewCustomerModal";
 import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
+import NewSalesOrderTable from "./NewSalesOrderTable";
 import Upload from "../../../assets/icons/Upload";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
@@ -731,10 +732,15 @@ const handleGoBack =()=>{
             </div>
           </div>
 
+          <div className="mt-9">
+            <p className="font-bold text-base">Add Item</p>
+           <NewSalesOrderTable/>
+          </div>
 
 
-          <br />
+        
         </div>
+        
         <div className="col-span-4">
           <div className="bg-secondary_main p-5 text-sm rounded-xl space-y-4 text-textColor">
             <div className="text-sm">

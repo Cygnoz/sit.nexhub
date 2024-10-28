@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { PaymentMadeUnpaidBillTable } from "../../../../assets/constants";
+import PlusCircle from "../../../../assets/icons/PlusCircle";
 
 type Props = {};
 
 const NewPaymentMadeOrderTable = ({}: Props) => {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [rows, setRows] = useState<number[]>([0]); 
   // Remove unused state
   // const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
   // const [searchValue, setSearchValue] = useState<string>("");
@@ -28,6 +30,9 @@ const NewPaymentMadeOrderTable = ({}: Props) => {
       setOpenDropdownId(null);
       // setOpenDropdownType(null); // No longer needed
     }
+  };
+  const addNewItemRow = () => {
+    setRows([...rows, rows.length]);
   };
 
   useEffect(() => {
@@ -106,7 +111,14 @@ const NewPaymentMadeOrderTable = ({}: Props) => {
         </table>
       </div>
       <p className="text-right text-textColor text-sm mt-4">Total <span className="ms-20 font-semibold">0.00</span></p>
+      <button onClick={addNewItemRow} className="mt-1">
+              <p className="text-darkRed my-3 text-sm flex gap-2 items-center">
+                <PlusCircle color="darkRed" />
+                <b> Add Item</b>
+              </p>
+        </button>
     </div>
+    
   );
 };
 
