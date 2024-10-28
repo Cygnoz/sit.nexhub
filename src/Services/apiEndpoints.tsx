@@ -17,6 +17,9 @@ export const endponits = {
    ADD_SALES_QUOTE:"add-sales-quotes",
    GET_LAST_SALES_QUOTE_PREFIX:"get-last-sales-quotes-prefix",
    GET_ALL_QUOTES:"get-all-sales-quotes",
+   //sales order
+   GET_LAST_SALES_ORDER_PREFIX:"get-last-sales-order-prefix",
+   ADD_SALES_ORDER:"add-sales-order",
  
   // Organisation Invoices
   ADD_INVOICE_SETTINGS: "add-invoice-settings",

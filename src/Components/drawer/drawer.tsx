@@ -5,9 +5,18 @@ type Props = {
   open: boolean;
   children: React.ReactNode;
   position?: "left" | "right";
+  className?: string; // Custom class name
+  style?: React.CSSProperties; // Custom inline styles
 };
 
-const Drawer = ({ onClose, open, children, position = "right" }: Props) => {
+const Drawer = ({
+  onClose,
+  open,
+  children,
+  position = "right",
+  className = "",
+  style = {},
+}: Props) => {
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -16,7 +25,6 @@ const Drawer = ({ onClose, open, children, position = "right" }: Props) => {
     };
 
     document.addEventListener("keydown", handleEscape);
-
     return () => {
       document.removeEventListener("keydown", handleEscape);
     };
@@ -28,16 +36,24 @@ const Drawer = ({ onClose, open, children, position = "right" }: Props) => {
 
   return (
     <div
-      className={`fixed inset-0 z-20 flex ${position === "right" ? "justify-end" : "justify-start"} items-center bg-black/20 transition-opacity duration-500 ${
+      className={`fixed inset-0 z-20 flex ${
+        position === "right" ? "justify-end" : "justify-start"
+      } items-center bg-black/20 transition-opacity duration-500 ${
         open ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
       onClick={onClose}
     >
       <div
         className={`relative bg-white h-full shadow-xl transform transition-transform duration-500 ${
-          position === "right" ? (open ? "translate-x-0" : "translate-x-full") : (open ? "translate-x-0" : "-translate-x-full")
-        }`}
-        style={{ width: "444px" }}
+          position === "right"
+            ? open
+              ? "translate-x-0"
+              : "translate-x-full"
+            : open
+            ? "translate-x-0"
+            : "-translate-x-full"
+        } ${className}`} // Apply custom class name here
+        style={{ width: "444px", ...style }} // Apply custom styles here
         onClick={handleDrawerClick}
       >
         {children}
