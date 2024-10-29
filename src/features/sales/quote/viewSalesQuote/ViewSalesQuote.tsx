@@ -14,8 +14,8 @@ interface QuoteItem {
   itemName: string;
   quantity: number;
   sellingPrice: number;
-  taxGroup: string;
   amount: number;
+  itemAmount: number;
 }
 
 interface QuoteData {

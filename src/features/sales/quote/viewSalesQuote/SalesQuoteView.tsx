@@ -3,6 +3,9 @@ import PrinterIcon from "../../../../assets/icons/PrinterIcon";
 import Button from "../../../../Components/Button";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
+import { useOrganization } from "../../../../context/OrganizationContext";
+import CheveronDownIcon from "../../../../assets/icons/CheveronDownIcon";
+import CheveronUp from "../../../../assets/icons/CheveronUp";
 
 interface QuoteItem {
   itemId: string;
@@ -10,6 +13,7 @@ interface QuoteItem {
   quantity: number;
   sellingPrice: number;
   amount: number;
+  itemAmount: number;
 }
 
 interface QuoteData {
@@ -22,6 +26,10 @@ interface QuoteData {
   totalAmount: number;
   status: string;
   customerId: number;
+  subTotal: number;
+  totalTax: number;
+  totalDiscount: number;
+  
 }
 
 interface Customer {
@@ -31,6 +39,10 @@ interface Customer {
   mobile: string;
   customerEmail: string;
   skypeNameNumber?: string;
+  billingAddressLine1: string;
+  billingAddressLine2: string;
+  billingPinCode: string;
+  billingState: string;
   billingPhone: string;
   billingCity: string;
   status: string;
@@ -46,6 +58,7 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
   const [openItemId, setOpenItemId] = useState<string | null>(null);
   const { request: getOneCustomer } = useApi("get", 5002);
   const [customerData, setCustomerData] = useState<Customer | null>(null);
+  const { organization } = useOrganization();
 
   const toggleItemDetails = (itemId: string) => {
     setOpenItemId((prev) => (prev === itemId ? null : itemId));
@@ -125,7 +138,7 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
                 openItemId === item.itemId ? "Hide details" : "Show details"
               }
             >
-              {openItemId === item.itemId ? "▲" : "▼"}
+              {openItemId === item.itemId ? <CheveronUp color="black"/> : <CheveronDownIcon color="black"/> }
             </button>
 
             {/* Main Content */}
@@ -153,7 +166,7 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
                   <div>
                     <p className="text-dropdownText text-sm">Rate</p>
                     <p className="font-bold text-sm text-textColor">
-                      RS. {item.sellingPrice}
+                      {organization?.baseCurrency}. {item.sellingPrice}
                     </p>
                   </div>
                 </div>
@@ -163,7 +176,7 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
                   <div>
                     <p className="text-dropdownText text-sm">Amount</p>
                     <p className="font-bold text-sm text-textColor">
-                      RS. {item.amount}
+                      {organization?.baseCurrency}. {item.itemAmount}
                     </p>
                   </div>
                 </div>
@@ -176,7 +189,7 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
       <hr className="mt-6 border-t border-inputBorder" />
 
       {/* Billing Address */}
-      <div className="flex items-center justify-between gap-6 mt-6">
+      <div className="flex justify-between gap-6 mt-6">
         <div className="p-6 rounded-lg border border-billingBorder w-[50%]">
           <p className="text-base font-bold text-textColor">Billing Address</p>
           <div className="mt-4 text-base mb-[70px] text-dropdownText">
@@ -184,7 +197,11 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
               <>
                 <p>{customerData.billingAttention}</p>
                 <p>{customerData.companyName}</p>
-                <p className="text-textColor">{customerData.billingCity}</p>
+                <p>{customerData.billingAddressLine1}</p>
+                <p>{customerData.billingAddressLine2}</p>
+                <p>{customerData.billingPinCode}</p>
+                <p>{customerData.billingCity}</p>
+                <p>{customerData.billingState}</p>
                 <p>{customerData.billingPhone}</p>
               </>
             ) : (
@@ -198,26 +215,34 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
           <p className="text-base font-bold text-textColor">Order Summary</p>
           <div className="mt-[18.5px] text-textColor">
             <div className="flex justify-between items-center">
-              <p className="text-sm">Untaxed Amount</p>
+              <p>Sub Total</p>
               <p className="font-bold text-lg">
-                RS {data?.totalAmount.toFixed(2) || "0.00"}
+                {organization?.baseCurrency} {data?.subTotal}
               </p>
             </div>
             <div className="mt-4 flex justify-between items-center">
-              <p>SGST</p>
-              <p>RS {data?.sgst.toFixed(2) || "0.00"}</p>
+              <p>Total Item</p>
+              <p>{data?.items.length}</p>
             </div>
             <div className="mt-4 flex justify-between items-center">
-              <p>CGST</p>
-              <p>RS {data?.cgst.toFixed(2) || "0.00"}</p>
+              <p>Total Discount</p>
+              <p>
+                {organization?.baseCurrency} {data?.totalDiscount}
+              </p>
             </div>
             <div className="mt-4 flex justify-between items-center">
-              <p className="text-base font-bold text-blk">Total</p>
-              <p className="text-textColor font-bold text-lg">
-                RS {data?.totalAmount.toFixed(2) || "0.00"}
+              <p>Total Taxed Amount</p>
+              <p>
+                {organization?.baseCurrency} {data?.totalTax}
               </p>
             </div>
             <hr className="mt-4 border-t border-[#CCCCCC]" />
+            <div className="mt-4 flex justify-between items-center">
+              <p className="text-base font-bold text-blk">Total</p>
+              <p className="text-textColor font-bold text-lg">
+                {organization?.baseCurrency} {data?.totalAmount}
+              </p>
+            </div>
             <div className="flex justify-end gap-2 mt-6 mb-2">
               <Button variant="secondary" size="sm" className="pl-4 pr-4">
                 <p className="text-sm font-medium">Cancel</p>
