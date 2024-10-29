@@ -21,6 +21,10 @@ export const endponits = {
   //sales order
   GET_LAST_SALES_ORDER_PREFIX: "get-last-sales-order-prefix",
   ADD_SALES_ORDER: "add-sales-order",
+
+  //getall-item-sales
+  GET_ALL_ITEMS_SALES: "get-all-item-xs",
+  //sales order
   GET_ALL_SALES_ORDER: "get-all-sales-order",
 
   // Organisation Invoices
