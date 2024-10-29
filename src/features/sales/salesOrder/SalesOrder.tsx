@@ -3,14 +3,10 @@ import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
-import Ellipsis from "../../../assets/icons/Ellipsis";
+// import Ellipsis from "../../../assets/icons/Ellipsis";
 import SalesOrderCard from "./SalesOrderCard";
-import Print from "./Print";
-import SortBy from "./SortBy";
-import SalesOrderCustomers from "../salesOrder/SalesOrderCustomers";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import SalesTable from "./SalesTable";
-import SearchBar from "./SearchBar";
 import { useNavigate } from "react-router-dom";
 type Props = {};
 
@@ -19,9 +15,9 @@ const Sales = ({}: Props) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  // const toggleDropdown = () => {
+  //   setIsDropdownOpen(!isDropdownOpen);
+  // };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -92,9 +88,9 @@ const Sales = ({}: Props) => {
             <p className="text-sm">New Sales Order</p>
           </Button>
 
-          <div onClick={toggleDropdown} className="cursor-pointer">
+          {/* <div onClick={toggleDropdown} className="cursor-pointer">
             <Ellipsis />
-          </div>
+          </div> */}
 
           {isDropdownOpen && (
             <div
@@ -129,18 +125,10 @@ const Sales = ({}: Props) => {
 
       <div className="px-7 mt-4">
         <div className="bg-white p-5 rounded-xl ">
-          <div className="w-[100%] p-3 bg-gray-100">
+          {/* <div className="w-[100%] p-3 bg-gray-100">
             <SalesOrderCustomers />
-          </div>
-          <div className="flex pl-3 pr-3 items-center gap-5">
-            <div className="w-[80%]">
-              <SearchBar placeholder="Search Sales Order" />
-            </div>
-            <SortBy />
-            <Print />
-          </div>
-          <div className="p-5">
-            {/* table */}
+          </div> */}
+          <div className="p-4">
             <SalesTable />
           </div>
         </div>

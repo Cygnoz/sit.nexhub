@@ -24,7 +24,7 @@ interface Customer {
   taxType: string;
 }
 
-const initialSalesQuoteState: SalesOrder ={
+const initialSalesQuoteState: SalesOrder = {
   customerId: "",
   customerName: "",
   placeOfSupply: "",
@@ -33,10 +33,10 @@ const initialSalesQuoteState: SalesOrder ={
   expiryDate: "",
   subject: "",
 
-  paymentMode:"",
-  paymentTerms:"",
-  deliveryMethod:"",
-  expectedShipmentDate:"",
+  paymentMode: "",
+  paymentTerms: "",
+  deliveryMethod: "",
+  expectedShipmentDate: "",
 
   items: [
     {
@@ -112,11 +112,11 @@ const NewSalesOrder = ({ }: Props) => {
   const { request: allPyamentTerms } = useApi("get", 5004);
 
 
-const navigate=useNavigate()
-const handleGoBack =()=>{
-  navigate(-1)
-  setSalesOrderState(initialSalesQuoteState)
-}
+  const navigate = useNavigate()
+  const handleGoBack = () => {
+    navigate(-1)
+    setSalesOrderState(initialSalesQuoteState)
+  }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -125,19 +125,19 @@ const handleGoBack =()=>{
     const totalTax = parseFloat(salesOrderState?.totalTax);
     let discountValue = parseFloat(salesOrderState.discountTransactionAmount) || 0; // Use `discountTransactionAmount`
     const totalAmount = parseFloat(salesOrderState.subtotalTotal + totalTax) || 0;
-  
+
     if (name === "transactionDiscountType") {
       setSalesOrderState((prevState: any) => ({
         ...prevState,
         discountTransactionType: value,
       }));
-  
+
       if (value === "Percentage") {
         const PercentageDiscount = (discountValue / totalAmount) * 100;
         if (PercentageDiscount > 100) {
           toast.error("Discount cannot exceed 100%");
         }
-  
+
         setSalesOrderState((prevState: any) => ({
           ...prevState,
           discountTransactionAmount: PercentageDiscount ? PercentageDiscount.toFixed(2) : '0', // Set `discountTransactionAmount`
@@ -150,17 +150,17 @@ const handleGoBack =()=>{
         }));
       }
     }
-  
+
     if (name === "discountTransactionAmount") { // Previously `transactionDiscount`
       discountValue = parseFloat(value) || 0;
-  
+
       if (salesOrderState.discountTransactionType === "Percentage") {
         if (discountValue > 100) {
           discountValue = 0;
           toast.error("Discount cannot exceed 100%");
         }
         const discountAmount = (discountValue / 100) * totalAmount;
-  
+
         setSalesOrderState((prevState: any) => ({
           ...prevState,
           discountTransactionAmount: discountValue ? discountValue.toString() : '0', // Set `discountTransactionAmount`
@@ -171,7 +171,7 @@ const handleGoBack =()=>{
           discountValue = totalAmount;
           toast.error("Discount cannot exceed the subtotal amount");
         }
-  
+
         setSalesOrderState((prevState: any) => ({
           ...prevState,
           discountTransactionAmount: discountValue ? discountValue.toString() : '0', // Set `discountTransactionAmount`
@@ -179,7 +179,7 @@ const handleGoBack =()=>{
         }));
       }
     }
-  
+
     if (name !== "discountTransactionAmount" && name !== "transactionDiscountType") {
       setSalesOrderState((prevState: any) => ({
         ...prevState,
@@ -197,7 +197,7 @@ const handleGoBack =()=>{
       otherExpenseAmount,
       freightAmount,
     } = salesOrderState;
-  
+
     // Calculate total with all components
     const totalAmount =
       Number(subtotalTotal) +
@@ -205,27 +205,27 @@ const handleGoBack =()=>{
       Number(totalTax) +
       Number(freightAmount) -
       (Number(totalItemDiscount) + Number(roundOffAmount));
-  
+
     return totalAmount.toFixed(2);
   };
-  
+
 
   useEffect(() => {
     const newGrandTotal = calculateTotal();
     const {
       discountTransactionType,
       discountTransactionAmount = "0",
-      transactionDiscount = "0", 
+      transactionDiscount = "0",
     } = salesOrderState;
-  
+
     const transactionDiscountValueAMT =
       discountTransactionType === "Percentage"
         ? (Number(discountTransactionAmount) / 100) * Number(newGrandTotal)
         : Number(discountTransactionAmount);
-  
+
     const roundedDiscountValue = Math.round(transactionDiscountValueAMT * 100) / 100;
     const updatedGrandTotal = Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
-  
+
     if (Number(transactionDiscount) !== roundedDiscountValue || Number(salesOrderState.totalAmount) !== updatedGrandTotal) {
       setSalesOrderState((prevState) => ({
         ...prevState,
@@ -243,13 +243,13 @@ const handleGoBack =()=>{
     salesOrderState.otherExpenseAmount,
     salesOrderState.freightAmount,
   ]);
-  
+
 
 
   useEffect(() => {
     setSalesOrderState((prevState: any) => ({
       ...prevState,
-      totalDiscount:( (parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.transactionDiscount) || 0)).toFixed(2),
+      totalDiscount: ((parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.transactionDiscount) || 0)).toFixed(2),
     }));
   }, [salesOrderState.transactionDiscount, salesOrderState.totalItemDiscount]);
 
@@ -439,18 +439,7 @@ const handleGoBack =()=>{
 
             <div className="mt-5 space-y-4">
               <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5 relative">
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Sales Order#
-                  </label>
-                  <input
-                  readOnly
-                    value={prefix}
-                    type="text"
-                    className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
-                  />
-                </div>
-                <div className="col-span-7">
+                <div className="col-span-5">
                   <label className="text-sm mb-1 text-labelColor">
                     Select Customer
                   </label>
@@ -524,13 +513,13 @@ const handleGoBack =()=>{
                       </div>
                     </div>
                   )}
-                 <CustomerModal
-                  selectedCustomer={selectedCustomer}
-                 />
+                  <CustomerModal
+                    selectedCustomer={selectedCustomer}
+                  />
                 </div>
 
                 {isPlaceOfSupplyVisible && (
-                  <div className="col-span-5">
+                  <div className="col-span-7">
                     <label className="block text-sm mb-1 text-labelColor">
                       Place Of Supply
                     </label>
@@ -558,9 +547,20 @@ const handleGoBack =()=>{
                   </div>
                 )}
 
+                <div className={`col-span-${isPlaceOfSupplyVisible ? "5" : "7"} relative`}>
+                  <label className="block text-sm mb-1 text-labelColor">
+                    Sales Order#
+                  </label>
+                  <input
+                    readOnly
+                    value={prefix}
+                    type="text"
+                    className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
+                  />
+                </div>
 
                 <div className={`col-span-${isPlaceOfSupplyVisible ? "7" : "5"} relative`}>
-                <label className="block text-sm mb-1 text-labelColor">
+                  <label className="block text-sm mb-1 text-labelColor">
                     Reference#
                   </label>
                   <input
@@ -591,7 +591,7 @@ const handleGoBack =()=>{
                 </div>
                 <div className="col-span-7">
                   <label className="block text-sm mb-1 text-labelColor">
-                  Expected Shipment Date
+                    Expected Shipment Date
                   </label>
                   <div className="relative w-full">
                     <input
@@ -606,7 +606,7 @@ const handleGoBack =()=>{
               </div>
 
               <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5">
+                {/* <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Mode
                   </label>
@@ -631,6 +631,30 @@ const handleGoBack =()=>{
                     </div>
                   </div>
 
+                </div> */}
+                <div className="col-span-5 relative">
+                  <label className="block text-sm mb-1 text-labelColor">
+                    Sales Person
+                  </label>
+                  <div
+                    className="relative w-full"
+                    onClick={() => toggleDropdown("salesperson")}
+                  >
+                    <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                      <p>Select Salesperson</p>
+                    </div>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
+                  {openDropdownIndex === "salesperson" && (
+                    <div
+                      ref={dropdownRef}
+                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-full space-y-1"
+                    >
+                      <ManageSalesPerson />
+                    </div>
+                  )}
                 </div>
 
                 <div className="col-span-7">
@@ -638,12 +662,12 @@ const handleGoBack =()=>{
                     Payment Terms
                   </label>
                   <div className="relative w-full">
-                    <select 
-                    value={salesOrderState.paymentTerms}
-                    onChange={handleChange}
-                    name="paymentTerms"
-                    className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                    <option value="" disabled selected hidden className="text-gray">
+                    <select
+                      value={salesOrderState.paymentTerms}
+                      onChange={handleChange}
+                      name="paymentTerms"
+                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                      <option value="" disabled selected hidden className="text-gray">
                         Select Payment Terms
                       </option>
                       {paymentTerms.length > 0 &&
@@ -669,47 +693,23 @@ const handleGoBack =()=>{
                     Delivery Method
                   </label>
                   <div className="relative w-full">
-                  <select 
-                  value={salesOrderState.deliveryMethod}
-                  name="deliveryMethod"
-                  onChange={handleChange}
-                  className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                    <option value="" disabled hidden selected className="text-gray">
-                      Select Shipment Preference
-                    </option>
-                    <option value="Road">Road</option>
-                    <option value="Rail">Rail</option>
-                    <option value="Air">Air</option>
-                    <option value="Sea">Sea</option>
-                  </select>
+                    <select
+                      value={salesOrderState.deliveryMethod}
+                      name="deliveryMethod"
+                      onChange={handleChange}
+                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                      <option value="" disabled hidden selected className="text-gray">
+                        Select Shipment Preference
+                      </option>
+                      <option value="Road">Road</option>
+                      <option value="Rail">Rail</option>
+                      <option value="Air">Air</option>
+                      <option value="Sea">Sea</option>
+                    </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <CehvronDown color="gray" />
                     </div>
                   </div>
-                </div>
-                <div className="col-span-7 relative">
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Sales Person
-                  </label>
-                  <div
-                    className="relative w-full"
-                    onClick={() => toggleDropdown("salesperson")}
-                  >
-                    <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <p>Select Salesperson</p>
-                    </div>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
-                  </div>
-                  {openDropdownIndex === "salesperson" && (
-                    <div
-                      ref={dropdownRef}
-                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-full space-y-1"
-                    >
-                      <ManageSalesPerson />
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -730,11 +730,8 @@ const handleGoBack =()=>{
               />
             </div>
           </div>
-
-
-
-          <br />
         </div>
+
         <div className="col-span-4">
           <div className="bg-secondary_main p-5 text-sm rounded-xl space-y-4 text-textColor">
             <div className="text-sm">
@@ -775,13 +772,13 @@ const handleGoBack =()=>{
                     Maximum File Size : 1MB
                   </p>
                 </div>
-                <input type="file" className="hidden" name="documents" />
+                {/* <input type="file" className="hidden" name="documents" /> */}
               </label>
             </div>
 
             <div className=" pb-4  text-dropdownText border-b-2 border-slate-200 space-y-2">
-             
-            <div className="flex ">
+
+              <div className="flex ">
                 <div className="w-[75%]">
                   {" "}
                   <p>Sub Total</p>
@@ -824,13 +821,13 @@ const handleGoBack =()=>{
                 </div>
               </div>
 
-                {isIntraState ? (
-                  <div className="flex ">
-                    <div className="w-[75%]">
-                      {" "}
-                      <p> IGST</p>
-                    </div>
-                    <div className="w-full text-end">
+              {isIntraState ? (
+                <div className="flex ">
+                  <div className="w-[75%]">
+                    {" "}
+                    <p> IGST</p>
+                  </div>
+                  <div className="w-full text-end">
                     {" "}
                     <p className="text-end">
                       {oneOrganization.baseCurrency}{" "}
@@ -839,15 +836,15 @@ const handleGoBack =()=>{
                         : "0.00"}
                     </p>
                   </div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex ">
-                      <div className="w-[75%]">
-                        {" "}
-                        <p> SGST</p>
-                      </div>
-                      <div className="w-full text-end">
+                </div>
+              ) : (
+                <>
+                  <div className="flex ">
+                    <div className="w-[75%]">
+                      {" "}
+                      <p> SGST</p>
+                    </div>
+                    <div className="w-full text-end">
                       {" "}
                       <p className="text-end">
                         {oneOrganization.baseCurrency}{" "}
@@ -856,14 +853,14 @@ const handleGoBack =()=>{
                           : "0.00"}
                       </p>
                     </div>
-                    </div>
+                  </div>
 
-                    <div className="flex mt-2">
-                      <div className="w-[75%]">
-                        {" "}
-                        <p> CGST</p>
-                      </div>
-                      <div className="w-full text-end">
+                  <div className="flex mt-2">
+                    <div className="w-[75%]">
+                      {" "}
+                      <p> CGST</p>
+                    </div>
+                    <div className="w-full text-end">
                       {" "}
                       <p className="text-end">
                         {oneOrganization.baseCurrency}{" "}
@@ -872,17 +869,17 @@ const handleGoBack =()=>{
                           : "0.00"}
                       </p>
                     </div>
-                    </div>
-                  </>
-                )}
+                  </div>
+                </>
+              )}
 
               {/* {!isIntraState && ( */}
-                <div className="flex ">
-                  <div className="w-[75%]">
-                    {" "}
-                    <p> Total Tax</p>
-                  </div>
-                  <div className="w-full text-end">
+              <div className="flex ">
+                <div className="w-[75%]">
+                  {" "}
+                  <p> Total Tax</p>
+                </div>
+                <div className="w-full text-end">
                   {" "}
                   <p className="text-end">
                     {" "}
@@ -890,7 +887,7 @@ const handleGoBack =()=>{
                     {salesOrderState?.totalTax}
                   </p>
                 </div>
-                </div>
+              </div>
               {/* )} */}
 
               <div className="flex ">
@@ -899,14 +896,14 @@ const handleGoBack =()=>{
                   <p>Other Expense</p>
                 </div>
                 <div className="w-full text-end">
-                    {" "}
-                    <p className="text-end">
-                      {oneOrganization?.baseCurrency}{" "}
-                      {salesOrderState.otherExpenseAmount
-                        ? salesOrderState.otherExpenseAmount
-                        : "0.00"}
-                    </p>
-                  </div>
+                  {" "}
+                  <p className="text-end">
+                    {oneOrganization?.baseCurrency}{" "}
+                    {salesOrderState.otherExpenseAmount
+                      ? salesOrderState.otherExpenseAmount
+                      : "0.00"}
+                  </p>
+                </div>
               </div>
               <div className="flex ">
                 <div className="w-[75%]">
@@ -914,14 +911,14 @@ const handleGoBack =()=>{
                   <p>Fright</p>
                 </div>
                 <div className="w-full text-end">
-                    {" "}
-                    <p className="text-end">
-                      {oneOrganization?.baseCurrency}{" "}
-                      {salesOrderState.freightAmount
-                        ? salesOrderState.freightAmount
-                        : "0.00"}
-                    </p>
-                  </div>
+                  {" "}
+                  <p className="text-end">
+                    {oneOrganization?.baseCurrency}{" "}
+                    {salesOrderState.freightAmount
+                      ? salesOrderState.freightAmount
+                      : "0.00"}
+                  </p>
+                </div>
               </div>
 
               <div className="flex ">
@@ -930,14 +927,14 @@ const handleGoBack =()=>{
                   <p>Rount Off Amount</p>
                 </div>
                 <div className="w-full text-end">
-                    {" "}
-                    <p className="text-end">
-                      {oneOrganization.baseCurrency}{" "}
-                      {salesOrderState.roundOffAmount
-                        ? salesOrderState.roundOffAmount
-                        : "0.00"}
-                    </p>
-                  </div>
+                  {" "}
+                  <p className="text-end">
+                    {oneOrganization.baseCurrency}{" "}
+                    {salesOrderState.roundOffAmount
+                      ? salesOrderState.roundOffAmount
+                      : "0.00"}
+                  </p>
+                </div>
               </div>
               <div className="flex ">
                 <div className="w-[150%]">
@@ -947,11 +944,11 @@ const handleGoBack =()=>{
                 </div>
 
                 <div className=" ">
-                <div className="border border-inputBorder rounded-lg flex items-center justify-center p-1 gap-1">
+                  <div className="border border-inputBorder rounded-lg flex items-center justify-center p-1 gap-1">
                     <input
                       onChange={handleChange}
-                      value={salesOrderState?.discountTransactionAmount} 
-                      name="discountTransactionAmount" 
+                      value={salesOrderState?.discountTransactionAmount}
+                      name="discountTransactionAmount"
                       type="number"
                       step="0.01"
                       placeholder="0"
@@ -997,7 +994,7 @@ const handleGoBack =()=>{
                 </p>
 
               </div>
-            </div> 
+            </div>
 
 
 
