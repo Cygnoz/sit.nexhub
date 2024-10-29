@@ -1,24 +1,32 @@
 import { useEffect, useRef, useState } from "react";
 import { PaymentMadeUnpaidBillTable } from "../../../../assets/constants";
+import PlusCircle from "../../../../assets/icons/PlusCircle";
 
-type Props = {};
+type Props = { paymentState?: any, setPaymentState?: any };
 
-const NewPaymentMadeOrderTable = ({}: Props) => {
+interface BillData {
+  date: string;
+  dueDate: string;
+  billId: string;
+  billAmount: number;
+  amountDue: number;
+  payment: number;
+}
+
+const NewPaymentMadeOrderTable = ({paymentState, setPaymentState}: Props) => {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
-  // Remove unused state
-  // const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
-  // const [searchValue, setSearchValue] = useState<string>("");
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [data, setData] = useState<BillData[]>([
+    {
+      date: "",
+      dueDate: "",
+      billId: "",
+      billAmount: 0,
+      amountDue: 0,
+      payment: 0,
+    },
+  ]);
 
-  // const toggleDropdown = (id: number | null, type: string | null) => {
-  //   if (openDropdownId === id && openDropdownType === type) {
-  //     setOpenDropdownId(null);
-  //     setOpenDropdownType(null);
-  //   } else {
-  //     setOpenDropdownId(id);
-  //     setOpenDropdownType(type);
-  //   }
-  // };
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -26,7 +34,31 @@ const NewPaymentMadeOrderTable = ({}: Props) => {
       !dropdownRef.current.contains(event.target as Node)
     ) {
       setOpenDropdownId(null);
-      // setOpenDropdownType(null); // No longer needed
+    }
+  };
+
+  const addRow = () => {
+    const newRow: BillData = {
+      date: "",
+      dueDate: "",
+      billId: "",
+      billAmount: 0,
+      amountDue: 0,
+      payment: 0,
+    };
+    setData([...data, newRow]);
+  };
+
+  const handleRowChange = (index: number, field: keyof BillData, value: string | number) => {
+    const newData = [...data];
+    newData[index] = { ...newData[index], [field]: value };
+    setData(newData);
+
+    if (setPaymentState) {
+      setPaymentState((prevData: any) => ({
+        ...prevData,
+        unpaidBills: newData,
+      }));
     }
   };
 
@@ -41,18 +73,6 @@ const NewPaymentMadeOrderTable = ({}: Props) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openDropdownId]);
-
-  const data = [
-    {
-      id: 1,
-      date: "28/06/2024",
-      dueDate: "28/06/2024",
-      billId: "BL-0003",
-      billAmount: "0.00",
-      amountDue: "0.00",
-      payment: 30.0,
-    },
-  ];
 
   return (
     <div>
@@ -71,41 +91,76 @@ const NewPaymentMadeOrderTable = ({}: Props) => {
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {data.map((item) => (
-              <tr key={item.date} className="relative">
-                <td className="flex items-center justify-center mt-0 gap-2">
-                  <br />
-                  {item.date} <br />
+            {data.map((row, index) => (
+              <tr key={index} className="relative">
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    type="date"
+                    placeholder="Date"
+                    className="w-full focus:outline-none text-center"
+                    value={row.date}
+                    onChange={(e) => handleRowChange(index, "date", e.target.value)}
+                  />
                 </td>
-                <td className="justify-start items-start">
-                  <div className="items-center justify-center flex">
-                    <div className="text-start">
-                      <br />
-                      {item.dueDate} <br />
-                      <span className="" style={{ fontSize: "10px" }}>
-                        <br />
-                      </span>
-                    </div>
-                  </div>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    type="date"
+                    placeholder="Due Date"
+                    className="w-full focus:outline-none text-center"
+                    value={row.dueDate}
+                    onChange={(e) => handleRowChange(index, "dueDate", e.target.value)}
+                  />
                 </td>
-                <td>{item.billId}</td>
-                <td className="py-2.5 px-4 border-y border-tableBorder relative">
-                  <div className="flex items-center justify-center gap-2">
-                    {item.billAmount}
-                  </div>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    type="text"
+                    placeholder="Bill ID"
+                    className="w-full focus:outline-none text-center"
+                    value={row.billId}
+                    onChange={(e) => handleRowChange(index, "billId", e.target.value)}
+                  />
                 </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder relative">
-                  <div className="flex items-center justify-center gap-2">
-                    {item.amountDue}
-                  </div>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    type="number"
+                    placeholder="Bill Amount"
+                    className="w-full focus:outline-none text-center"
+                    value={row.billAmount?row.billAmount : ""}
+                    onChange={(e) => handleRowChange(index, "billAmount", parseFloat(e.target.value) || 0)}
+                  />
                 </td>
-                <td className="font-semibold">{item.payment}</td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    type="number"
+                    placeholder="Amount Due"
+                    className="w-full focus:outline-none text-center"
+                    value={row.amountDue? row.amountDue:""}
+                    onChange={(e) => handleRowChange(index, "amountDue", parseFloat(e.target.value) || 0)}
+                  />
+                </td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    type="number"
+                    placeholder="Payment"
+                    className="w-full focus:outline-none text-center"
+                    value={row.payment? row.payment:""}
+                    onChange={(e) => handleRowChange(index, "payment", parseFloat(e.target.value) || 0)}
+                  />
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <p className="text-right text-textColor text-sm mt-4">Total <span className="ms-20 font-semibold">0.00</span></p>
+      <p className="text-right text-textColor text-sm mt-4">
+        Total <span className="ms-20 font-semibold">0.00</span>
+      </p>
+      <button onClick={addRow} className="mt-1">
+        <p className="text-darkRed my-3 text-sm flex gap-2 items-center">
+          <PlusCircle color="darkRed" />
+          <b>Add Item</b>
+        </p>
+      </button>
     </div>
   );
 };

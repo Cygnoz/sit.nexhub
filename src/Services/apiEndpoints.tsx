@@ -100,6 +100,10 @@ DELETE_BRMC:`delete-bmcr`,
 GET_ONE_BRMC:`get-a-bmcr`,
 
 
+// bill
+ADD_BILL:`/add-Bills`,
+GET_ALL_BILLS:`/get-all-Bills`,
+
 // Purchase order
   ADD_PURCHASE_ORDER:`add-purchaseOrder`,
   GET_LAST_PURCHASE_ORDER_PREFIX: `get-last-purchase-order-prefix`,
