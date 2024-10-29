@@ -66,7 +66,7 @@ function ViewSalesQuote() {
 
   return (
     <div className="px-6">
-      <div className="bg-white rounded-md p-5 mb-32">
+      <div className="bg-white rounded-md p-5 mb-3">
         <div className="flex items-center gap-5">
           <Link to={"/sales/quote"}>
             <div
@@ -128,7 +128,7 @@ function ViewSalesQuote() {
         {/* Conditional rendering based on isPdfView */}
         {isPdfView ? (
           <div className="pdf-view-component">
-            <SalesPdfView />
+            <SalesPdfView data = {data}/>
           </div>
         ) : (
           <div className="other-component">

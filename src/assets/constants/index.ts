@@ -317,7 +317,7 @@ export const newPurchaseOrderTableHead = [
 export const PaymentMadeUnpaidBillTable = [
   "Date",
   "Due Date",
-  "Bill ID",
+  "Bill Number",
   "Bill Amount",
   "Amount Due",
   "Payment",
