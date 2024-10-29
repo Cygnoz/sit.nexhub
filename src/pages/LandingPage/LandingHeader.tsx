@@ -11,6 +11,7 @@ import UserRoundCog from '../../assets/icons/UserRoundCog';
 import MenuDropdown from '../../Components/menu/MenuDropdown';
 import Moon from "../../assets/icons/Moon";
 import { useNavigate } from "react-router-dom";
+import OrganizationIcon from "../../assets/icons/OrganizationIcon";
 
 type Props = {
   setMode?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -81,11 +82,7 @@ function LandingHeader({ mode, setMode }: Props) {
           ]}
           backgroundColor={mode ? "bg-white" : "bg-[#3C474D]"}
           textColor={mode ? 'text-[#4B5C79]' : 'text-[#DFE1E2]'}
-          trigger={<img
-            src="https://s3-alpha-sig.figma.com/img/d6a5/cb38/ba962d4fbaa653e17af1f227c70c4af7?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=WzdK8qj6PDfeCazoHR19ElOmfoyDiTeDAWDPyC0OteGNwKEJ2zRnsy4ecNu0fUmMOy5~-EIrXeod2R9s66mW6DddrjIbDzj7PMWxEhNzjILhtnZfvMskCKzkYThb7hMzZ8uBl1mNBoHFXv-giaqjbMQ4jr7obXYANZVEwdwqbA4qv1g4OhO47aFTiB-lWYdwCai1My5xb5Af4ECQNfXM0~Ci9~QlKH2ikl1kphoLmpr3S2D2HJw4hHVfNBQphTd0W03X8ZfKFjO-NHsifN0Ny6ItfIBdYCQ2ZsXTiwoJeHU6E3r1K2KlB3UF6mBsgirW7V8H8D2skeynhVimzr1HGw__"
-            alt="Profile"
-            className="h-[38px] w-[38px] rounded-full"
-          />}
+          trigger={<OrganizationIcon height="10" width="10" />}
           position="center"
           underline
           underlineColor='text-[#DFE1E2]'

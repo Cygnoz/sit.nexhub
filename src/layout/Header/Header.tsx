@@ -12,7 +12,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 type Props = {};
 
-const Header = ({}: Props) => {
+const Header = ({ }: Props) => {
   const navigate = useNavigate();
   const handleNavigate = () => {
     navigate("/landing");
@@ -40,7 +40,7 @@ const Header = ({}: Props) => {
         }
       } catch (error: any) {
         const errorMessage = error.response?.data?.message || "Error fetching organization data";
-       toast.error(errorMessage)
+        toast.error(errorMessage);
       }
     };
 
@@ -61,7 +61,7 @@ const Header = ({}: Props) => {
         />
       </div>
       <div
-        className="flex ms-8 justify-center items-center gap-2 cursor-pointer"
+        className="flex ms-14 justify-center items-center gap-2 cursor-pointer"
         onClick={handleNavigate}
       >
         <img src={viewAppsIcon} alt="View Apps Icon" />
@@ -69,16 +69,21 @@ const Header = ({}: Props) => {
           View Apps
         </span>
       </div>
-      <div className="flex items-center gap-4 ml-auto">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 ml-auto">
+        <div className="tooltip" data-tooltip="Notifications">
           <Notification />
+        </div>
+        <div className="tooltip" data-tooltip="Refer & Earn">
           <RefferEarn />
-          <Link to="/settings">
-            <SettingsIcons size="md" />
-          </Link>
+        </div>
+        <Link to="/settings" className="tooltip" data-tooltip="Settings">
+          <SettingsIcons size="md" />
+        </Link>
+        <div className="tooltip" data-tooltip="Organization">
           <Organization organizationData={organizationData} />
         </div>
       </div>
+
     </div>
   );
 };
