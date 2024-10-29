@@ -8,6 +8,7 @@ import Modal from "../../../Components/model/Modal";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import toast from 'react-hot-toast'; // Import react-hot-toast
+import CehvronDown from "../../../assets/icons/CehvronDown";
 
 interface NewAccountModalProps {
   fetchAllAccounts: () => void;
@@ -16,6 +17,7 @@ interface NewAccountModalProps {
 function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
   const [isModalOpen, setModalOpen] = useState(false);
   const { request: NewAccount } = useApi("post", 5001);
+  const [openingType, setOpeningType] = useState("Debit"); // Ensure openingType is a string
   const [formValues, setFormValues] = useState({
     accountName: "",
     accountCode: "",
@@ -26,6 +28,8 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
     bankAccNum: "",
     bankIfsc: "",
     bankCurrency: "",
+    debitOpeningBalance: "",
+    creditOpeningBalance: "",
   });
 
   const openModal = () => {
@@ -55,7 +59,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
         closeModal();
         fetchAllAccounts(); // Fetch updated data
       } else {
-        throw new Error(response?.data?.message || 'Something went wrong');
+        throw new Error(error?.response?.data?.message || 'Something went wrong');
       }
     } catch (error: any) {
       toast.dismiss(toastId); // Dismiss the loading toast
@@ -108,6 +112,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
     >
   ) => {
     const { name, value } = e.target;
+  
     if (name === "accountSubhead") {
       const result = headGroup(value);
       if (result) {
@@ -125,6 +130,21 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
           accountGroup: "",
         }));
       }
+    } else if (name === "openingType") {
+      setOpeningType(value);
+      setFormValues((prevFormValues) => ({
+        ...prevFormValues,
+        debitOpeningBalance: value === "Debit" ? prevFormValues.debitOpeningBalance : "",
+        creditOpeningBalance: value === "Credit" ? prevFormValues.creditOpeningBalance : "",
+      }));
+    } else if (name === "openingBalance") {
+      setFormValues((prevFormValues) => ({
+        ...prevFormValues,
+        debitOpeningBalance:
+          openingType === "Debit" ? value : prevFormValues.debitOpeningBalance,
+        creditOpeningBalance:
+          openingType === "Credit" ? value : prevFormValues.creditOpeningBalance,
+      }));
     } else {
       setFormValues((prevFormValues) => ({
         ...prevFormValues,
@@ -132,7 +152,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
       }));
     }
   };
-
+  
   return (
     <div>
       <Button onClick={openModal} variant="primary">
@@ -175,8 +195,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
                   onChange={handleChange}
                   className="w-full border border-inputBorder rounded p-1.5 pl-2 text-sm"
                 >
-                  {/* Default option "Select type" */}
-                  <option disabled hidden selected value="">Select type</option>
+                  <option disabled hidden value="">Select type</option>
                   {chartOfAcc.map((item, index) => (
                     <optgroup
                       className="text-maroon"
@@ -211,6 +230,39 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
                 />
               </div>
 
+              <div className="mb-4">
+                <label className="block mb-1 text-labelColor text-sm">Opening Balance</label>
+                <div className="flex">
+                  <div className="relative w-20 ">
+                    <select
+                      className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder 
+                                   text-sm pl-2 pr-2 rounded-l-md leading-tight 
+                                   focus:outline-none focus:bg-white focus:border-gray-500"
+                      name="openingType"
+                      value={openingType}
+                      onChange={handleChange}
+                    >
+                      <option value="Debit">Dr</option>
+                      <option value="Credit">Cr</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2"
+                    placeholder="Enter Opening Balance"
+                    name="openingBalance"
+                    value={
+                      openingType === "Debit"
+                        ? formValues.debitOpeningBalance
+                        : formValues.creditOpeningBalance
+                    }
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
               <div className="mb-4">
                 <label className="block text-sm mb-1 text-labelColor">
                   Description

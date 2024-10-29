@@ -1,20 +1,16 @@
-import { useContext, useEffect, useState } from "react";
-import SupplierColumn from "./SupplierColumn";
-import Button from "../../../Components/Button";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import useApi from "../../../Hooks/useApi";
+import Button from "../../../Components/Button";
+import CustomiseColmn from "../../../Components/CustomiseColum";
 import SearchBar from "../../../Components/SearchBar";
-import SortBy from "./SortBy";
 import Print from "../../sales/salesOrder/Print";
-import { endponits } from "../../../Services/apiEndpoints";
-import { SupplierResponseContext } from "../../../context/ContextShare";
- 
+
 interface Column {
   id: string;
   label: string;
   visible: boolean;
 }
- 
+
 interface Supplier {
   _id: string;
   billingAttention: string;
@@ -24,10 +20,22 @@ interface Supplier {
   skypeNameNumber?: string;
   billingPhone: string;
   billingCity: string;
+  status: string;
+  supplierDisplayName: string;
   [key: string]: any;
 }
- 
-const SupplierTable = () => {
+
+interface SupplierTableProps {
+  supplierData: Supplier[];
+  searchValue: string;
+  setSearchValue: (value: string) => void;
+}
+
+const SupplierTable = ({
+  supplierData,
+  searchValue,
+  setSearchValue,
+}: SupplierTableProps) => {
   const initialColumns: Column[] = [
     { id: "supplierDisplayName", label: "Name", visible: true },
     { id: "companyName", label: "Company Name", visible: true },
@@ -40,50 +48,12 @@ const SupplierTable = () => {
     { id: "payables", label: "Payables(BCY)", visible: false },
     { id: "unused", label: "Unused Credit(BCY)", visible: false },
   ];
- 
-  const [columns, setColumns] = useState<Column[]>(initialColumns);
-  const [supplierData, setSupplierData] = useState<Supplier[]>([]);
-  const [searchValue, setSearchValue] = useState<string>("");
-  const { request: AllSuppliers } = useApi("get", 5009);
-  const {supplierResponse}=useContext(SupplierResponseContext)!;
 
-  const fetchAllSuppliers = async () => {
-    try {
-      const url = `${endponits.GET_ALL_SUPPLIER}`;
-      const { response, error } = await AllSuppliers(url);
-      if (!error && response) {
-        console.log(response.data);
-        
-        setSupplierData(response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching suppliers:", error);
-    }
-  };
-  // const activeSort=()=>{
-  //   setSupplierData(supplierData.filter((item:any)=>(
-  //     item.status=='Active'
-  //   )))
-  // }
-  useEffect(() => {
-    fetchAllSuppliers();
-  }, [supplierResponse]);
- 
-  // const filteredAccounts = supplierData.filter((account) => {
-  //   const searchValueLower = searchValue.toLowerCase();
-  //   return (
-  //     // account.billingAttention.toLowerCase().startsWith(searchValueLower) ||
-  //     account.companyName.toLowerCase().startsWith(searchValueLower) ||
-  //     account.mobile.toLowerCase().startsWith(searchValueLower) ||
-  //     account.supplierEmail.toLowerCase().startsWith(searchValueLower) ||
-  //     (account.skypeNameNumber &&
-  //       account.skypeNameNumber.toLowerCase().startsWith(searchValueLower))
-  //   );
-  // });
+  const [columns, setColumns] = useState<Column[]>(initialColumns);
+
   const filteredAccounts = supplierData.filter((account) => {
     const searchValueLower = searchValue.toLowerCase();
     return (
-      // account.billingAttention.toLowerCase().startsWith(searchValueLower) ||
       account?.companyName?.toLowerCase().startsWith(searchValueLower) ||
       account?.mobile?.toLowerCase().startsWith(searchValueLower) ||
       account?.supplierEmail?.toLowerCase().startsWith(searchValueLower) ||
@@ -91,6 +61,7 @@ const SupplierTable = () => {
         account?.skypeNameNumber?.toLowerCase().startsWith(searchValueLower))
     );
   });
+
   const renderColumnContent = (colId: string, item: Supplier) => {
     if (colId === "supplierDetails") {
       return (
@@ -105,18 +76,24 @@ const SupplierTable = () => {
           </Link>
         </div>
       );
-    }else if(colId=="status"){
+    } else if (colId === "status") {
       return (
-        <p className={`${item.status=='Active'?"bg-[#78AA86]": "bg-zinc-400"} text-[13px] rounded items-center ms-auto text-white  h-[18px] flex justify-center`}>{item.status}</p>
+        <p
+          className={`${
+            item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400"
+          } text-[13px] rounded items-center ms-auto text-white h-[18px] flex justify-center`}
+        >
+          {item.status}
+        </p>
       );
     }
     return item[colId as keyof Supplier];
   };
- 
+
   return (
     <div>
       <div className="flex items-center justify-between">
-        <div className="w-[82.5%]">
+        <div className="w-full ">
           <SearchBar
             placeholder="Search"
             searchValue={searchValue}
@@ -124,13 +101,12 @@ const SupplierTable = () => {
           />
         </div>
         <div className="flex gap-4">
-          <SortBy />
           <Print />
         </div>
       </div>
-      <div className="overflow-x-auto mt-3">
+      <div className="mt-3 overflow-y-scroll max-h-[25rem]">
         <table className="min-w-full bg-white mb-5">
-          <thead className="text-[12px] text-center sticky text-dropdownText">
+          <thead className="text-[12px] text-center  text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
               <th className="py-3 px-4 border-b border-tableBorder">
                 <input type="checkbox" className="form-checkbox w-4 h-4" />
@@ -146,14 +122,14 @@ const SupplierTable = () => {
                     </th>
                   )
               )}
-              <th className="py-2 px-4 font-medium border-b border-tableBorder">
-                <SupplierColumn columns={columns} setColumns={setColumns} />
+              <th className="py-2 px-4 font-medium border-b border-tableBorder relative">
+                <CustomiseColmn columns={columns} setColumns={setColumns} />
               </th>
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts.reverse().map((item) => (
-              <tr key={item.id} className="relative">
+            {filteredAccounts && filteredAccounts.length>0?filteredAccounts.reverse().map((item) => (
+              <tr key={item._id} className="relative">
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input type="checkbox" className="form-checkbox w-4 h-4" />
                 </td>
@@ -170,12 +146,19 @@ const SupplierTable = () => {
                 )}
                 <td className="py-2.5 px-4 border-y border-tableBorder"></td>
               </tr>
-            ))}
+            )): <tr>
+            <td
+              colSpan={columns.length + 2}
+              className="text-center py-4 border-y border-tableBorder"
+            >
+              <p className="text-red-500">No Data Found!</p>
+            </td>
+          </tr>}
           </tbody>
         </table>
       </div>
     </div>
   );
 };
- 
+
 export default SupplierTable;

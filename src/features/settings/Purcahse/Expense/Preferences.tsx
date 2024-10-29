@@ -7,7 +7,7 @@ import CirclePlus from "../../../../assets/icons/circleplus";
 type Props = {};
 
 const tableHeaders=[
-    "Satart Date",
+    "Start Date",
     "Mileage Rate",
     "Actions"
 ]

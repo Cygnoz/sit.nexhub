@@ -407,13 +407,16 @@ console.log(allBillsData)
                     Upload File
                   </span>
                   <div className="text-center">Maximum File Size: 1 MB</div>
+                  <div className="text-center">Maximum File Size: 1 MB</div>
                 </div>
+                <p className="text-xs mt-1 text-gray-600"></p>
                 <p className="text-xs mt-1 text-gray-600"></p>
                 <input
                   type="file"
                   className="hidden"
                   value=""
                   name="documents"
+                  // onChange={(e)=>handleFileChange(e)}
                   // onChange={(e)=>handleFileChange(e)}
                 />
               </label>

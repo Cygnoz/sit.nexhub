@@ -2,12 +2,11 @@ import { ChangeEvent, useEffect, useState } from "react";
 import Button from "../../../Components/Button";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import { toast, Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import Plus from "../../../assets/icons/Plus";
 import Banner from "../banner/Banner";
 import TrashCan from "../../../assets/icons/TrashCan";
-import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Info from "../../../assets/icons/Info";
 import Tooltip from "../../../Components/tooltip/Tooltip";
@@ -36,8 +35,9 @@ interface InputData {
 
 const CreateOrganizationForm = () => {
   const [additionalData, setAdditionalData] = useState<any | null>([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState<any>(null);
 
-  // const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | []>([]);
   const [currencyData, setcurrencyData] = useState<any | []>([]);
   const [stateList, setStateList] = useState<any | []>([]);
@@ -73,7 +73,6 @@ const CreateOrganizationForm = () => {
     phoneNumberCode: "",
   });
 
-
   const getDropdownList = async () => {
     try {
       const url = `${endponits.GET_ADDITIONAL_DATA}`;
@@ -93,7 +92,7 @@ const CreateOrganizationForm = () => {
       const { response, error } = await getAdditionalData(url);
       if (!error && response) {
         setcountryData(response.data[0].countries);
-        // console.log(response.data[0].countries, "CountryData");
+        console.log(response.data[0].countries, "CountryData");
       }
     } catch (error) {
       console.log("Error in fetching country data", error);
@@ -123,8 +122,34 @@ const CreateOrganizationForm = () => {
         setInputData((prevData: any) => ({
           ...prevData,
           organizationName: response.data.organizationName,
-          organizationPhNum: Number(response.data.organizationPhNum),
+          
         }));
+        if (response.data.organizationPhNum) {
+          const organizationPhNum = response.data.organizationPhNum;
+          let matchingCountry = null;
+          let longestCodeLength = 0;
+  
+          countryData.forEach((country: any) => {
+            const countryCode = country.phoneNumberCode;
+            
+            if (organizationPhNum.startsWith(countryCode)) {
+              if (countryCode.length > longestCodeLength) {
+                matchingCountry = country;
+                longestCodeLength = countryCode.length;
+                console.log(matchingCountry,"Mcountry");
+                console.log(longestCodeLength,"longestCodeLength");
+              }
+            }
+          });
+  
+          if (matchingCountry) {
+            setSelectedCountry(matchingCountry);
+            setInputData((prevData: any) => ({
+              ...prevData,
+              organizationPhNum: organizationPhNum, 
+            }));
+          }
+        }
       } else {
         toast.error(
           error.response.data.message || "Error fetching organization"
@@ -136,12 +161,27 @@ const CreateOrganizationForm = () => {
     }
   };
 
-  const handlePhoneChange = (value: string) => {
+  const handleInputPhoneChange = (e: any) => {
+    const rawInput = e.target.value.trim();
+    const phoneNumberLimit = selectedCountry?.phoneNumberLimit || 0; 
+  
+    let phoneNumber = rawInput.replace(selectedCountry?.phoneNumberCode, '').trim(); 
+  
+    if (phoneNumber.length > phoneNumberLimit) {
+      phoneNumber = phoneNumber.slice(0, phoneNumberLimit); 
+    }
+  
+    const enteredPhone = `${selectedCountry?.phoneNumberCode || ''} ${phoneNumber}`;
+  
+    // console.log(enteredPhone, "entered");
+  
     setInputData((prevData) => ({
       ...prevData,
-      organizationPhNum: value,
+      organizationPhNum: enteredPhone
     }));
   };
+  
+  
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -156,13 +196,11 @@ const CreateOrganizationForm = () => {
   ) => {
     const file = e.target.files?.[0];
     if (file) {
-      // if (key === "organizationLogo") setLogo(file);
 
       const reader = new FileReader();
 
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        // console.log("Base64 String:", base64String);
         setInputData((prevDetails: any) => ({
           ...prevDetails,
           [key]: base64String,
@@ -235,10 +273,31 @@ const CreateOrganizationForm = () => {
   };
   useEffect(() => {
     getDropdownList();
-    getOrganization();
     getCountryData();
     getcurrencyData();
   }, []);
+
+  useEffect(()=>{
+    getOrganization()
+  },[countryData])
+
+  useEffect(() => {
+    if (selectedCountry ===null && inputData.organizationCountry) {
+      const matchingCountry = countryData.find((country: any) => country.name === inputData.organizationCountry);
+
+      // If a matching country is found, set it as selectedCountry
+      if (matchingCountry) {
+
+        setSelectedCountry(matchingCountry);
+      }
+      else{
+        const matchingCountry = countryData.find((country: any) => country.name === "India");
+        setSelectedCountry(matchingCountry);
+
+      }
+    }
+  }, [selectedCountry, inputData.organizationCountry, countryData]);
+  
 
   useEffect(() => {
     if (inputData.organizationCountry) {
@@ -270,6 +329,7 @@ const CreateOrganizationForm = () => {
       />
     );
   };
+  console.log(selectedCountry, "selectedCountry");
 
   return (
     <div className=" m-4 overflow-y-scroll hide-scrollbar h-auto">
@@ -522,26 +582,79 @@ const CreateOrganizationForm = () => {
 
             <div>
               <div className="-mt-4">
-                <label className="text-slate-600 " htmlFor="organizationPhNum">
+                <label className="text-slate-600" htmlFor="organizationPhNum">
                   Phone
                 </label>
               </div>
-              <div className="flex">
-                <div className="relative w-24  mt-2 "></div>
-              </div>
+
               <div className="w-full border-0">
-                <PhoneInput
-                inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                inputStyle={{ height: "38px", width: "100%" }}
-                containerStyle={{ width: "100%" }}
-                country={"in"}
-                value={inputData.organizationPhNum ? inputData.organizationPhNum:"" }
-                onChange={handlePhoneChange}
-                />
+                <div className="relative flex">
+                  {/* Flag and Dial Code dropdown */}
+                  <div
+                    className="flex items-center cursor-pointer border border-neutral-300 justify-center h-[39px] mt-2 rounded-l-lg focus:bg-white focus:border-darkRed "
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                  >
+                    {selectedCountry?.flag ? (
+                      <div className="flex items-center justify-center px-3 ">
+                        <img
+                          src={selectedCountry.flag}
+                          alt={`${selectedCountry.name} flag`}
+                          className="h-4 w-4 mr-2"
+                        />
+                        <CehvronDown color={"currentcolor"} height={10} width={10}/>
+                      </div>
+                    ) : (
+                      <div>
+                        {countryData?.name === "India" && (
+                          <img
+                            src={countryData.flag}
+                            alt="India flag"
+                            className="h-4 w-4 mr-2"
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                 {/* Dropdown list for country selection */}
+{dropdownOpen && (
+  <div className="absolute top-full left-0 mt-1 bg-white shadow-md rounded-md z-10 max-h-60 overflow-y-auto">
+    {countryData.map((country: any, index: number) => (
+      <div
+        onClick={() => {
+          setSelectedCountry(country); 
+          setDropdownOpen(false); 
+          setInputData((prevData) => ({
+            ...prevData,
+            organizationPhNum: country.phoneNumberCode
+          }));
+        }}
+        key={index}
+        className="flex items-center px-2 py-1 hover:bg-red-50 cursor-pointer text-sm border-b border-neutral-300 text-textColor "
+      >
+        <img src={country.flag} className="h-4 w-4 mr-2" />{" "}
+        <span>{country.name}</span>{" "}
+        <span>{country.phoneNumberCode}</span>
+      </div>
+    ))}
+  </div>
+)}
+
+
+                  <input
+                    type="text"
+                    placeholder="Enter Phone Number"
+                    className="pl-3 text-sm w-[100%] placeholder-[#495160] rounded-r-md text-start bg-white border border-inputBorder h-[39px] p-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed mt-2"
+                    value={inputData.organizationPhNum}
+                    name="organizationPhNum"
+                    onChange={handleInputPhoneChange}
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
+
         <p className="mt-4">
           <b>Website Address</b>
         </p>
@@ -796,9 +909,10 @@ const CreateOrganizationForm = () => {
         </div>
       </form>
 
-      <Toaster position="top-center" reverseOrder={true} />
+
     </div>
   );
 };
 
 export default CreateOrganizationForm;
+

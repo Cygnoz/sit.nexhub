@@ -39,8 +39,7 @@ function ItemHome({}: Props) {
         <div>
           <h1>Item</h1>
           <p className="text-sm">
-            Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla
-            egestas consectetur amet.
+          Organize item data effortlessly, monitor stock in real-time, and optimize inventory for smooth operations.
           </p>
         </div>
         <Link to="/inventory/Item/new"

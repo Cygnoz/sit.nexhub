@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "../../../Components/Button";
-import CirclePlus from "../../../assets/icons/circleplus";
+
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import bgImage from "../../../assets/Images/Frame 6.png";
 import Modal from "../../../Components/model/Modal";
@@ -9,23 +9,23 @@ type Props = {};
 const NewUnitConverstion = ({}: Props) => {
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const openModal = () => {
-    setModalOpen(true);
-  };
+  // const openModal = () => {
+  //   setModalOpen(true);
+  // };
 
   const closeModal = () => {
     setModalOpen(false);
   };
   return (
     <div>
-      <Button
+      {/* <Button
         onClick={openModal}
         variant="primary"
         size="xl"
       >
         <CirclePlus color="white" size="28" />{" "}
         <p className="text-sm font-medium">New Unit Conversion</p>
-      </Button>
+      </Button> */}
 
       <Modal open={isModalOpen} onClose={closeModal} style={{ width: "55%" }}>
         <div className="p-5 mt-3">
@@ -38,9 +38,9 @@ const NewUnitConverstion = ({}: Props) => {
               }}
             ></div>
             <div className="relative z-10">
-              <h3 className="text-xl font-bold text-textColor">
+              {/* <h3 className="text-xl font-bold text-textColor">
                 New Unit Conversion
-              </h3>
+              </h3> */}
             </div>
             <div
               className="ms-auto text-3xl cursor-pointer relative z-10"

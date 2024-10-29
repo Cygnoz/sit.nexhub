@@ -1,16 +1,19 @@
-import { RouteObject } from "react-router-dom";
-import BankAccountView from "../features/accountant/Bank/BankAccountView";
-import BankHome from "../features/accountant/Bank/BankHome";
-import Cash from "../features/accountant/Cash/Cash";
-import CashTableView from "../features/accountant/Cash/CashTableView";
-import ChartOfAccountant from "../features/accountant/chartOfAccountant/ChartOfAccountant";
-import ManualHome from "../features/accountant/manualJournel/ManualHome";
-import ManualView from "../features/accountant/manualJournel/ManualView";
-import NewJournal from "../features/accountant/manualJournel/newJournal/NewJournal";
-import Accountant from "../pages/Accountant";
-import AccountantInfo from "../features/accountant/accountantInfo/AccountantInfo";
-import AccountantView from "../features/accountant/accountantView/AccountantView";
-import DayBook from "../features/accountant/DayBook/DayBook";
+import { lazy } from 'react';
+import { RouteObject } from 'react-router-dom';
+
+// Lazy load your components
+const BankAccountView = lazy(() => import('../features/accountant/Bank/BankAccountView'));
+const BankHome = lazy(() => import('../features/accountant/Bank/BankHome'));
+const Cash = lazy(() => import('../features/accountant/Cash/Cash'));
+const CashTableView = lazy(() => import('../features/accountant/Cash/CashTableView'));
+const ChartOfAccountant = lazy(() => import('../features/accountant/chartOfAccountant/ChartOfAccountant'));
+const ManualHome = lazy(() => import('../features/accountant/manualJournel/ManualHome'));
+const ManualView = lazy(() => import('../features/accountant/manualJournel/ManualView'));
+const NewJournal = lazy(() => import('../features/accountant/manualJournel/newJournal/NewJournal'));
+const Accountant = lazy(() => import('../pages/Accountant'));
+const AccountantInfo = lazy(() => import('../features/accountant/accountantInfo/AccountantInfo'));
+const AccountantView = lazy(() => import('../features/accountant/accountantView/AccountantView'));
+const DayBook = lazy(() => import('../features/accountant/DayBook/DayBook'));
 
 const AccountantRoutes: RouteObject[] = [
   { path: "/accountant", element: <Accountant /> },
@@ -24,8 +27,7 @@ const AccountantRoutes: RouteObject[] = [
   { path: "/accountant/chart-OF-accountant", element: <ChartOfAccountant /> },
   { path: "/accountant/info", element: <AccountantInfo /> },
   { path: "/accountant/view/:id", element: <AccountantView /> },
-
-{ path: "/accountant/daybook", element: <DayBook/> },
+  { path: "/accountant/daybook", element: <DayBook /> },
 ];
 
 export default AccountantRoutes;

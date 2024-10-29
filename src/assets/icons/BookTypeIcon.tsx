@@ -1,5 +1,3 @@
-
-
 function BookTypeIcon() {
   return (
     <div>

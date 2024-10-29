@@ -7,16 +7,16 @@ import TaxImage from "../../../../assets/Images/Tax-bro 1.png";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import { GstResponseContext } from "../../../../context/ContextShare";
-import toast, { Toaster } from "react-hot-toast";
-import BookIcon from "../../../../assets/icons/BookIcon";
-import OpenedBookIcon from "../../../../assets/icons/OpenedBookIcon";
-import BookXIcon from "../../../../assets/icons/BookXIcon";
-import NewspaperIcon from "../../../../assets/icons/NewspaperIcon";
+import toast from "react-hot-toast";
+// import BookIcon from "../../../../assets/icons/BookIcon";
+// import OpenedBookIcon from "../../../../assets/icons/OpenedBookIcon";
+// import BookXIcon from "../../../../assets/icons/BookXIcon";
+// import NewspaperIcon from "../../../../assets/icons/NewspaperIcon";
 import SearchBar from "../../../../Components/SearchBar";
-import ListIcon from "../../../../assets/icons/ListIcon";
+// import ListIcon from "../../../../assets/icons/ListIcon";
 import ViewTaxDetails from "./ViewTaxDetails";
 import PencilIcon from "../../../../assets/icons/PencilIcon";
-import TrashCan from "../../../../assets/icons/TrashCan";
+// import TrashCan from "../../../../assets/icons/TrashCan";
 
 type Props = {}
 type TaxGst = {
@@ -29,25 +29,25 @@ type TaxGst = {
 };
 
 function TaxRate({ }: Props) {
-  const TaxFilter = [
-    {
-      icon: <BookIcon color="#585953" />,
-      title: "All",
-    },
-    {
-      icon: <OpenedBookIcon color="#585953" />,
-      title: "Active",
-    },
-    {
-      icon: <BookXIcon color="#585953" />,
-      title: "Inactive",
-    },
-    {
-      icon: <NewspaperIcon color="#585953" />,
-      title: "Expired",
-    },
-  ];
-  const [selected, setSelected] = useState("All");
+  // const TaxFilter = [
+  //   {
+  //     icon: <BookIcon color="#585953" />,
+  //     title: "All",
+  //   },
+  //   {
+  //     icon: <OpenedBookIcon color="#585953" />,
+  //     title: "Active",
+  //   },
+  //   {
+  //     icon: <BookXIcon color="#585953" />,
+  //     title: "Inactive",
+  //   },
+  //   {
+  //     icon: <NewspaperIcon color="#585953" />,
+  //     title: "Expired",
+  //   },
+  // ];
+  // const [selected, setSelected] = useState("All");
   const initialTaxGst = {
     _id: "",
     taxName: "",
@@ -228,7 +228,7 @@ function TaxRate({ }: Props) {
       </div>
 
       <div className="bg-white rounded-lg p-6 mt-3">
-        <div className="flex gap-3 justify-between">
+        {/* <div className="flex gap-3 justify-between">
           {TaxFilter.map((customer) => (
             <button
               key={customer.title}
@@ -245,28 +245,28 @@ function TaxRate({ }: Props) {
               </span>
             </button>
           ))}
-        </div>
+        </div> */}
         <div className="mt-3">
           <div className="flex justify-between items-center mt-5">
-            <div className="w-[89%]">
+            <div className="w-full">
               <SearchBar
                 placeholder="Search Taxes"
                 onSearchChange={setSearch}
                 searchValue={search}
               />
             </div>
-            <Button variant="secondary" size="sm">
+            {/* <Button variant="secondary" size="sm">
               <ListIcon color="#565148" />{" "}
               <p className="text-sm font-medium text-outlineButton">Sort By</p>
-            </Button>
+            </Button> */}
           </div>
           <div className="max-h-[25rem] overflow-y-auto mt-3">
             <table className="min-w-full bg-white mb-5">
               <thead className="text-[12px] text-center text-textColor sticky top-0 z-10">
                 <tr style={{ backgroundColor: "#F9F7F0" }}>
-                  <th className="py-3 px-4 border-b border-tableBorder">
+                  {/* <th className="py-3 px-4 border-b border-tableBorder">
                     <input type="checkbox" className="form-checkbox w-4 h-4" />
-                  </th>
+                  </th> */}
                   {tableHeaders.map((heading, index) => (
                     <th
                       className="py-2 px-4 font-medium border-b border-tableBorder"
@@ -280,9 +280,9 @@ function TaxRate({ }: Props) {
               <tbody className="text-dropdownText text-center text-[13px]">
                 {filteredTaxData.map((item) => (
                   <tr key={item._id} className="relative">
-                    <td className="border-y border-tableBorder">
+                    {/* <td className="border-y border-tableBorder">
                       <input type="checkbox" className="form-checkbox w-4 h-4" />
-                    </td>
+                    </td> */}
                     <td className="py-2.5 border-y border-tableBorder">
                       {item.taxName}
                     </td>
@@ -306,9 +306,9 @@ function TaxRate({ }: Props) {
                         <div onClick={() => openModal(item)}>
                           <PencilIcon color="#3C7FBC" />
                         </div>
-                        <div>
+                        {/* <div>
                           <TrashCan color="red" />
-                        </div>
+                        </div> */}
                       </div>
                     </td>
                   </tr>
@@ -444,7 +444,6 @@ function TaxRate({ }: Props) {
           </div>
         </form>
       </Modal>
-      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }

@@ -14,8 +14,7 @@ const UnitHome = ({}: Props) => {
               Unit Of Measurement
             </h1>
             <p className="text-sm text-gray mt-1">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi
-              cumque rerum, sequi fugit ullam eius aspernatur
+            Define precise units of measurement to ensure accurate inventory tracking and product management.
             </p>
           </div>
           <div className="ml-auto flex items-center">

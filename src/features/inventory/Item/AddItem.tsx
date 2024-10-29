@@ -12,8 +12,10 @@ import RackModal from "../Rack/RackModal";
 import NewManufacture from "../Manufature/NewManufacture";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import CategoryModal from "../Category/CategoryModal"
+
+
 type Props = {};
 // interface Account {
 //   id: string;
@@ -97,17 +99,20 @@ const initialItemDataState = {
   status: "",
 };
 
-const AddItem = ({ }: Props) => {
+const AddItem = ({}: Props) => {
   const [initialItemData, setInitialItemData] = useState(initialItemDataState);
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
   const [isService, setIsService] = useState<boolean>(false);
   const [isRackModalOpen, setIsRackModalOpen] = useState(false);
-  const [searchValueManufacturer, setSearchValueManufacturer] = useState<string>("");
+  const [searchValueManufacturer, setSearchValueManufacturer] =
+    useState<string>("");
   const [searchValueBrand, setSearchValueBrand] = useState<string>("");
   const [searchValueCategory, setSearchValueCategory] = useState<string>("");
   const [searchValueRack, setSearchValueRack] = useState<string>("");
   const [searchValueTaxRate, setSearchValueTaxRate] = useState<string>("");
-  const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(null);
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
+    null
+  );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -138,13 +143,12 @@ const AddItem = ({ }: Props) => {
       brandNames: [],
       manufacturers: [],
       categories: [],
-      racks: []
+      racks: [],
     },
     taxRate: [],
     unitName: [],
     organization: { baseCurrency: "" },
   });
-
 
   const { request: AllItems } = useApi("get", 5003);
   const fetchAllItems = async () => {
@@ -168,7 +172,9 @@ const AddItem = ({ }: Props) => {
       const url = `${endponits.GET_ALL_ITEM}`;
       const { response, error } = await GetAllItemsName(url);
       if (!error && response) {
-        const itemNames = response.data.map((item: any) => item.itemName).filter(Boolean);
+        const itemNames = response.data
+          .map((item: any) => item.itemName)
+          .filter(Boolean);
         setItemsDataName(itemNames);
       } else {
         console.error("Error in response:", error);
@@ -178,18 +184,25 @@ const AddItem = ({ }: Props) => {
     }
   };
 
-
-
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = event.target;
-
+  
+    // If the input type is "number" and the value is negative, set it to zero
+    if (type === "number" && parseFloat(value) < 0) {
+      return;
+    }
+  
     setInitialItemData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? (event.target as HTMLInputElement).checked : value,
+      [name]:
+        type === "checkbox"
+          ? (event.target as HTMLInputElement).checked
+          : value,
     }));
   };
+  
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -214,7 +227,10 @@ const AddItem = ({ }: Props) => {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
       setOpenDropdownIndex(null);
       setSearchValueManufacturer("");
       setSearchValueBrand("");
@@ -222,6 +238,16 @@ const AddItem = ({ }: Props) => {
       setSearchValueRack("");
       setSearchValueTaxRate("");
     }
+  };
+
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+
+  const handleMouseEnter = () => {
+    setTooltipVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    setTooltipVisible(false);
   };
 
   useEffect(() => {
@@ -273,7 +299,9 @@ const AddItem = ({ }: Props) => {
       }
     }
     try {
-      const url = selectedItem ? `${endponits.UPDATE_ITEM}/${selectedItem._id}` : `${endponits.ADD_ITEM}`;
+      const url = selectedItem
+        ? `${endponits.UPDATE_ITEM}/${selectedItem._id}`
+        : `${endponits.ADD_ITEM}`;
       const body = initialItemData;
       const apiRequest = selectedItem ? UpdateItem : CreateItem;
       const { response, error } = await apiRequest(url, body);
@@ -290,7 +318,6 @@ const AddItem = ({ }: Props) => {
       console.error(error);
     }
   };
-
 
   const location = useLocation();
   const selectedItem = location.state?.item;
@@ -371,8 +398,9 @@ const AddItem = ({ }: Props) => {
             <div>
               <label htmlFor="image">
                 <div
-                  className={`bg-lightPink flex items-center justify-center h-24 w-44 rounded-lg ${initialItemData.itemImage ? "h-[90px] rounded-b-none" : ""
-                    }`}
+                  className={`bg-lightPink flex items-center justify-center h-24 w-44 rounded-lg ${
+                    initialItemData.itemImage ? "h-[90px] rounded-b-none" : ""
+                  }`}
                 >
                   {initialItemData.itemImage ? (
                     <img
@@ -393,7 +421,9 @@ const AddItem = ({ }: Props) => {
                   <p className="text-base font-extrabold text-textColor mt-2">
                     Upload Item Image
                   </p>
-                  <p className="text-xs text-[#818894] mt-1">Support: JPG, PNG</p>
+                  <p className="text-xs text-[#818894] mt-1">
+                    Support: JPG, PNG
+                  </p>
                 </div>
                 <input
                   type="file"
@@ -409,7 +439,10 @@ const AddItem = ({ }: Props) => {
 
           <div className="col-span-10">
             <div>
-              <label className="block text-sm mb-1 text-labelColor" htmlFor="itemType">
+              <label
+                className="block text-sm mb-1 text-labelColor"
+                htmlFor="itemType"
+              >
                 Item Type
               </label>
               <div className="flex items-center space-x-4 text-textColor text-sm">
@@ -429,18 +462,20 @@ const AddItem = ({ }: Props) => {
                       type="radio"
                       name="itemType"
                       value="goods"
-                      className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${initialItemData.itemType === "goods"
-                        ? "border-8 border-[#97998E]"
-                        : "border-1 border-[#97998E]"
-                        }`}
+                      className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                        initialItemData.itemType === "goods"
+                          ? "border-8 border-[#97998E]"
+                          : "border-1 border-[#97998E]"
+                      }`}
                       checked={initialItemData.itemType === "goods"} // "Goods" will be checked by default
                       onChange={handleInputChange}
                     />
                     <div
-                      className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${initialItemData.itemType === "goods"
-                        ? "bg-neutral-50"
-                        : "bg-transparent"
-                        }`}
+                      className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                        initialItemData.itemType === "goods"
+                          ? "bg-neutral-50"
+                          : "bg-transparent"
+                      }`}
                     />
                   </div>
                   <label htmlFor="goods" className="text-start font-medium">
@@ -464,18 +499,20 @@ const AddItem = ({ }: Props) => {
                       type="radio"
                       name="itemType"
                       value="service"
-                      className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${initialItemData.itemType === "service"
-                        ? "border-8 border-[#97998E]"
-                        : "border-1 border-[#97998E]"
-                        }`}
+                      className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                        initialItemData.itemType === "service"
+                          ? "border-8 border-[#97998E]"
+                          : "border-1 border-[#97998E]"
+                      }`}
                       checked={initialItemData.itemType === "service"}
                       onChange={handleInputChange}
                     />
                     <div
-                      className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${initialItemData.itemType === "service"
-                        ? "bg-neutral-50"
-                        : "bg-transparent"
-                        }`}
+                      className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                        initialItemData.itemType === "service"
+                          ? "bg-neutral-50"
+                          : "bg-transparent"
+                      }`}
                     />
                   </div>
                   <label htmlFor="service" className="text-start font-medium">
@@ -485,10 +522,8 @@ const AddItem = ({ }: Props) => {
               </div>
             </div>
 
-
             <div className="grid grid-cols-12 gap-4">
               <div className="grid grid-cols-2 gap-4 mt-3 col-span-9">
-
                 <div>
                   <label className="text-slate-600 text-sm" htmlFor="itemName">
                     Name
@@ -500,12 +535,12 @@ const AddItem = ({ }: Props) => {
                       onChange={handleInputChange}
                     />
                     {errors.itemName && (
-                      <div className="text-red-800 text-xs mt-1.5 ms-1">Item name is required</div>
+                      <div className="text-red-800 text-xs mt-1.5 ms-1">
+                        Item name is required
+                      </div>
                     )}
                   </label>
                 </div>
-
-
 
                 <div className="">
                   <label
@@ -513,18 +548,29 @@ const AddItem = ({ }: Props) => {
                     htmlFor="sku"
                   >
                     SKU
-                    <CircleHelp />
+                    <div
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                      className="relative"
+                    >
+                      <CircleHelp />
+                      {tooltipVisible && (
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 pl-5  w-60 py-1 bg-black text-white text-xs rounded-md">
+                          The stock keeping unit of the item
+                        </div>
+                      )}
+                    </div>
                   </label>
                   <input
-                    className="pl-3 text-sm w-[100%] mt-1.5 rounded-md text-start bg-white  border border-inputBorder  h-[39px]  leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    className="pl-3 text-sm w-[100%] mt-1.5 rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                     placeholder="Enter SKU"
                     name="sku"
                     value={initialItemData.sku}
                     onChange={handleInputChange}
                   />
                   {/* {errors.sku && (
-                    <div className="text-red-800 text-xs mt-1.5 ms-1">SKU is required</div>
-                  )} */}
+        <div className="text-red-800 text-xs mt-1.5 ms-1">SKU is required</div>
+      )} */}
                 </div>
               </div>
 
@@ -533,7 +579,8 @@ const AddItem = ({ }: Props) => {
                   htmlFor="unit-input"
                   className="text-slate-600 flex items-center gap-2"
                 >
-                  Unit <CircleHelp />
+                  Unit 
+                  {/* <CircleHelp /> */}
                 </label>
                 <div className="relative w-full mt-1.5">
                   <input
@@ -567,9 +614,7 @@ const AddItem = ({ }: Props) => {
                           </div>
                         </div>
                       ))}
-                    <div
-                      className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
-                    >
+                    <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold">
                       <SettingsIcons color="darkRed" bold={2} />
                       <p className="mt-0.5">Manage Unit</p>
                     </div>
@@ -598,8 +643,8 @@ const AddItem = ({ }: Props) => {
             )}
 
             <div className="grid grid-cols-2 gap-4  mt-3">
-              {hsnSac && (
-                isService ? (
+              {hsnSac &&
+                (isService ? (
                   <div>
                     <label
                       className="text-slate-600 flex text-sm items-center gap-2"
@@ -613,7 +658,9 @@ const AddItem = ({ }: Props) => {
                       name="sac"
                       value={initialItemData.sac}
                       onChange={handleInputChange}
-                      maxLength={Number(itemsData?.itemSettings?.hsnDigits) || 6}
+                      maxLength={
+                        Number(itemsData?.itemSettings?.hsnDigits) || 6
+                      }
                     />
                   </div>
                 ) : (
@@ -630,13 +677,12 @@ const AddItem = ({ }: Props) => {
                       name="hsnCode"
                       value={initialItemData.hsnCode}
                       onChange={handleInputChange}
-                      maxLength={Number(itemsData?.itemSettings?.hsnDigits) || 6}
+                      maxLength={
+                        Number(itemsData?.itemSettings?.hsnDigits) || 6
+                      }
                     />
                   </div>
-                )
-              )}
-
-
+                ))}
 
               <div className="relative">
                 <label
@@ -675,7 +721,8 @@ const AddItem = ({ }: Props) => {
                   className="text-slate-600 flex text-sm items-center gap-2"
                   htmlFor="productUsage"
                 >
-                  Tax Exempt Reason <span className="text-red-600 font-semibold">*</span>
+                  Tax Exempt Reason{" "}
+                  <span className="text-red-600 font-semibold">*</span>
                 </label>
                 <input
                   className="pl-3 text-sm w-[100%] mt-1.5 rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
@@ -786,10 +833,7 @@ const AddItem = ({ }: Props) => {
                   </div>
                 </div>
                 <div>
-                  <label
-                    className="text-slate-600 text-sm"
-                    htmlFor="weight"
-                  >
+                  <label className="text-slate-600 text-sm" htmlFor="weight">
                     Weight
                     <div className="flex">
                       <input
@@ -855,12 +899,16 @@ const AddItem = ({ }: Props) => {
                     </div>
                     {itemsData.bmcrData.manufacturers
                       .filter((manufacturer: string) =>
-                        manufacturer.toLowerCase().includes(searchValueManufacturer.toLowerCase())
+                        manufacturer
+                          .toLowerCase()
+                          .includes(searchValueManufacturer.toLowerCase())
                       )
                       .map((manufacturer: string, index: number) => (
                         <div
                           key={index}
-                          onClick={() => handleDropdownSelect("manufacturer", manufacturer)}
+                          onClick={() =>
+                            handleDropdownSelect("manufacturer", manufacturer)
+                          }
                           className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
                         >
                           <div className="col-span-10 flex">
@@ -918,7 +966,9 @@ const AddItem = ({ }: Props) => {
                     </div>
                     {itemsData.bmcrData.brandNames
                       .filter((brand: string) =>
-                        brand.toLowerCase().includes(searchValueBrand.toLowerCase())
+                        brand
+                          .toLowerCase()
+                          .includes(searchValueBrand.toLowerCase())
                       )
                       .map((brand: string, index: number) => (
                         <div
@@ -981,12 +1031,16 @@ const AddItem = ({ }: Props) => {
                 </div>
                 {itemsData.bmcrData.categories
                   .filter((category: string) =>
-                    category.toLowerCase().includes(searchValueCategory.toLowerCase())
+                    category
+                      .toLowerCase()
+                      .includes(searchValueCategory.toLowerCase())
                   )
                   .map((category: string, index: number) => (
                     <div
                       key={index}
-                      onClick={() => handleDropdownSelect("categories", category)}
+                      onClick={() =>
+                        handleDropdownSelect("categories", category)
+                      }
                       className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
                     >
                       <div className="col-span-10 flex">
@@ -1051,7 +1105,6 @@ const AddItem = ({ }: Props) => {
                         onClick={() => handleDropdownSelect("rack", rack)}
                         className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
                       >
-
                         <div className="col-span-10 flex">
                           <div>
                             <p className="font-bold text-sm">{rack}</p>
@@ -1188,10 +1241,11 @@ const AddItem = ({ }: Props) => {
                 value={initialItemData.sellingPrice}
                 onChange={handleInputChange}
               />
-
             </div>
             {errors.sellingPrice && (
-              <div className="text-red-800 text-xs mt-1.5 ms-1">Selling price is required</div>
+              <div className="text-red-800 text-xs mt-1.5 ms-1">
+                Selling price is required
+              </div>
             )}
           </div>
 
@@ -1246,7 +1300,6 @@ const AddItem = ({ }: Props) => {
           </div>
            */}
 
-
           <div>
             <label
               className="text-slate-600 flex text-sm gap-2"
@@ -1288,6 +1341,7 @@ const AddItem = ({ }: Props) => {
                 name="costPrice"
                 value={initialItemData.costPrice}
                 onChange={handleInputChange}
+                onWheel={(e) => e.currentTarget.blur()}
               />
             </div>
           </div>
@@ -1348,7 +1402,10 @@ const AddItem = ({ }: Props) => {
           </div>
 
           <div className="relative">
-            <label htmlFor="preferredVendor" className="text-slate-600 text-sm gap-2">
+            <label
+              htmlFor="preferredVendor"
+              className="text-slate-600 text-sm gap-2"
+            >
               Preferred Vendor
             </label>
             <div className="relative w-full">
@@ -1406,12 +1463,16 @@ const AddItem = ({ }: Props) => {
 
                   {itemsData.taxRate
                     .filter((tax: TaxRate) =>
-                      tax.taxName.toLowerCase().includes(searchValueTaxRate.toLowerCase())
+                      tax.taxName
+                        .toLowerCase()
+                        .includes(searchValueTaxRate.toLowerCase())
                     )
                     .map((tax, index) => (
                       <div
                         key={index}
-                        onClick={() => handleDropdownSelect("taxRate", tax.taxName)}
+                        onClick={() =>
+                          handleDropdownSelect("taxRate", tax.taxName)
+                        }
                         className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
                       >
                         <div className="col-span-10 flex">
@@ -1550,10 +1611,14 @@ const AddItem = ({ }: Props) => {
             Cancel
           </Button>
         </Link>
-        <Button onClick={handleSave} variant="primary" size="sm" className="text-sm pl-8 pr-8">
+        <Button
+          onClick={handleSave}
+          variant="primary"
+          size="sm"
+          className="text-sm pl-8 pr-8"
+        >
           Save
         </Button>
-        <Toaster position="top-center" reverseOrder={false} />
       </div>
       {isBrandModalOpen && (
         <BrandModal ref={modalRef} onClose={() => setIsBrandModalOpen(false)} />

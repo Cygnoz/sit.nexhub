@@ -3,20 +3,17 @@ import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
-import Ellipsis from "../../../assets/icons/Ellipsis";
-import Print from "../../../Components/PrintButton";
-import SortBy from "./SortBy";
+// import Ellipsis from "../../../assets/icons/Ellipsis";
+// import SortBy from "./SortBy";
 import PlusCircle from "../../../assets/icons/PlusCircle";
-import QuoteCustomers from "./QuoteCustomers";
+// import QuoteCustomers from "./QuoteCustomers";
 import QuoteTable from "./QuoteTable";
-import SearchBar from "../../../Components/SearchBar";
 import { useNavigate } from "react-router-dom";
 
 type Props = {};
 
 const QuoteHome = ({}: Props) => {
-  const navigate=useNavigate()
-  const [searchValue, setSearchValue] = useState<string>("");
+  const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const ellipsisRef = useRef<HTMLDivElement>(null);
@@ -75,16 +72,23 @@ const QuoteHome = ({}: Props) => {
   ];
 
   return (
-    <div className="mx-12 my-4 overflow-x-hidden">
+    <div className="mx-4 my-4 overflow-x-hidden">
       <div className="flex items-center relative">
         <div>
-          <h3 className="font-bold text-xl text-textColor">Create Sales Quote</h3>
+          <h3 className="font-bold text-xl text-textColor">
+            Create Sales Quote
+          </h3>
           <p className="text-sm text-gray mt-1">
-            Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla egestas consectetur amet.
+            Generate and manage invoices efficiently to ensure timely billing
+            and maintain accurate financial records
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center relative">
-          <Button onClick={()=>navigate("/sales/quote/new")} variant="primary" size="sm">
+          <Button
+            onClick={() => navigate("/sales/quote/new")}
+            variant="primary"
+            size="sm"
+          >
             <PlusCircle color="white" />
             <p className="text-sm">New Quote</p>
           </Button>
@@ -94,7 +98,7 @@ const QuoteHome = ({}: Props) => {
             className="cursor-pointer"
             ref={ellipsisRef}
           >
-            <Ellipsis />
+            {/* <Ellipsis /> */}
           </div>
 
           {isDropdownOpen && (
@@ -126,16 +130,10 @@ const QuoteHome = ({}: Props) => {
       </div>
 
       <div className="bg-white p-5 rounded-xl px-5 mt-4">
-        <div className="w-full p-3 bg-gray-100 overflow-x-hidden">
-          <QuoteCustomers />
+        <div className="w-full  bg-gray-100 overflow-x-hidden">
+          {/* <QuoteCustomers /> */}
         </div>
-        <div className="flex pl-3 pr-3 items-center gap-5">
-          <div className="w-[90%]">
-            <SearchBar onSearchChange={setSearchValue} searchValue={searchValue} placeholder="Search Quote" />
-          </div>
-          <SortBy />
-          <Print />
-        </div>
+       
         <div className="p-3">
           {/* table */}
           <QuoteTable />

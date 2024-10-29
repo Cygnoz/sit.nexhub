@@ -59,19 +59,20 @@ const ReceiptHome = ({}: Props) => {
         <div>
           <h1>Receipt</h1>
           <p className="text-textColor text-sm">
-            Invoice Lorem ipsum dolor sit amet consectetur. Commodo enim odio
-            fringilla egestas consectetur amet.
+            Showing the payment details. Verifies transaction details for record
+            keeping puposes.
           </p>
         </div>
         <div className="ml-auto flex items-center justify-center gap-4">
-        <Link to={"/slaes/receipt/new"}>
-            <Button variant="primary" size="sm">
-              <PlusCircle color={"white"} />
-              New Receipt
-            </Button>
-        </Link>
-          <Ellipsis />
-        </div>
+  <Link to="/sales/receipt/new">
+    <Button variant="primary" size="sm">
+      <PlusCircle color={"white"} />
+      New Receipt
+    </Button>
+  </Link>
+  <Ellipsis />
+</div>
+
       </div>
 
       <div className="bg-white rounded-lg p-4 space-y-4 mt-6">
@@ -122,7 +123,7 @@ const ReceiptHome = ({}: Props) => {
                 </th>
               ))}
               <th className="py-3 px-4 font-medium border-b border-tableBorder">
-                <ListFilter color={"currentColor"}/>
+                <ListFilter color={"currentColor"} />
               </th>
             </tr>
           </thead>
@@ -136,7 +137,7 @@ const ReceiptHome = ({}: Props) => {
                   {item.date}
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
-                 <Link to={"/sales/receipt/view"}> {item.payment}</Link>
+                  <Link to={"/sales/receipt/view"}> {item.payment}</Link>
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   {item.customer}

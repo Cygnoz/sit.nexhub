@@ -1,13 +1,9 @@
-import { useContext, useEffect, useState } from "react";
-import CustomiseColmn from "./CustomiseColmn";
+import { useState } from "react";
+import CustomiseColmn from "../../../Components/CustomiseColum";
 import Button from "../../../Components/Button";
 import { Link } from "react-router-dom";
-import useApi from "../../../Hooks/useApi";
-import { endponits } from "../../../Services/apiEndpoints";
 import SearchBar from "../../../Components/SearchBar";
-import SortBy from "./SortBy";
 import Print from "../../sales/salesOrder/Print";
-import { CustomerResponseContext } from "../../../context/ContextShare";
 
 interface Column {
   id: string;
@@ -15,7 +11,13 @@ interface Column {
   visible: boolean;
 }
 
-const Table = () => {
+interface CustomerTableProps {
+  customerData: any[];
+  searchValue: string;
+  setSearchValue: (value: string) => void;
+}
+
+const CustomerTable: React.FC<CustomerTableProps> = ({ customerData, searchValue, setSearchValue }) => {
   const initialColumns: Column[] = [
     { id: "customerDisplayName", label: "Name", visible: true },
     { id: "companyName", label: "Company Name", visible: true },
@@ -27,31 +29,6 @@ const Table = () => {
   ];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
-  const [customerData, setCustomerData] = useState<any[]>([]);
-  const [searchValue, setSearchValue] = useState<string>("");
-const {customerResponse}=useContext(CustomerResponseContext)!;
-  const { request: AllCustomers } = useApi("get", 5002);
-
-  const fetchAllCustomers = async () => {
-    try {
-      const url = `${endponits.GET_ALL_CUSTOMER}`;
-      const { response, error } = await AllCustomers(url);
-      if (!error && response) {
-        setCustomerData(response.data);
-        console.log(response,"all customers");
-      }
-      else{
-      console.log(error,"all customers error");
-      
-      }
-    } catch (error) {
-      console.error("Error fetching accounts:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchAllCustomers();
-  }, [customerResponse]);
 
   const filteredAccounts = customerData.filter((account) => {
     const searchValueLower = searchValue.toLowerCase();
@@ -79,26 +56,31 @@ const {customerResponse}=useContext(CustomerResponseContext)!;
           </Link>
         </div>
       );
-    }
-    else if(colId=="status"){
+    } else if (colId == "status") {
       return (
-        <p className={`${item.status=='Active'?"bg-[#78AA86]": "bg-zinc-400"} py-1 text-[13px] rounded items-center ms-auto text-white  h-[18px] flex justify-center`}>{item.status}</p>
+        <p
+          className={`${
+            item.status == "Active" ? "bg-[#78AA86]" : "bg-zinc-400"
+          } py-1 text-[13px] rounded items-center ms-auto text-white  h-[18px] flex justify-center`}
+        >
+          {item.status}
+        </p>
       );
     }
-    return item[colId as keyof typeof item];
-  };
+    return item[colId as keyof typeof item];
+  };
+
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <div className="w-[82.5%]">
-        <SearchBar
-        placeholder="Search"
-        searchValue={searchValue}
-        onSearchChange={setSearchValue}
-      />
+      <div className="flex items-center justify-between gap-4">
+        <div className="w-full">
+          <SearchBar
+            placeholder="Search"
+            searchValue={searchValue}
+            onSearchChange={setSearchValue}
+          />
         </div>
         <div className="flex gap-4">
-          <SortBy />
           <Print />
         </div>
       </div>
@@ -126,24 +108,36 @@ const {customerResponse}=useContext(CustomerResponseContext)!;
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts.map((item) => (
-              <tr key={item._id} className="relative">
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input type="checkbox" className="form-checkbox w-4 h-4" />
-                </td>
-                {columns.map(
-                  (col) =>
-                    col.visible && (
-                      <td
-                        key={col.id}
-                        className="py-2.5 px-4 border-y border-tableBorder"
-                      >
-                        {renderColumnContent(col.id, item)}
-                      </td>
-                    )
-                )}
-              </tr>
-            ))}
+          {filteredAccounts && filteredAccounts.length > 0 ? (
+  filteredAccounts.map((item) => (
+    <tr key={item._id} className="relative">
+      <td className="py-2.5 px-4 border-y border-tableBorder">
+        <input type="checkbox" className="form-checkbox w-4 h-4" />
+      </td>
+      {columns.map(
+        (col) =>
+          col.visible && (
+            <td
+              key={col.id}
+              className="py-2.5 px-4 border-y border-tableBorder"
+            >
+              {renderColumnContent(col.id, item)}
+            </td>
+          )
+      )}
+    </tr>
+  ))
+) : (
+  <tr>
+    <td
+      colSpan={columns.length + 2}
+      className="text-center py-4 border-y border-tableBorder"
+    >
+      <p className="text-red-500">No Data Found!</p>
+    </td>
+  </tr>
+)}
+
           </tbody>
         </table>
       </div>
@@ -151,4 +145,4 @@ const {customerResponse}=useContext(CustomerResponseContext)!;
   );
 };
 
-export default Table;
+export default CustomerTable;

@@ -1,4 +1,4 @@
-import toast, { Toaster } from "react-hot-toast";
+import toast  from "react-hot-toast";
 import Button from "../../../../Components/Button";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
@@ -269,7 +269,6 @@ function SalesOrder({}: Props) {
           </Button>
         </div>
       </form>
-      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 }

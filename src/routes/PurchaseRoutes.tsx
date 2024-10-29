@@ -1,17 +1,20 @@
+import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
-import Purchase from "../pages/Purchase";
-import BillsHomes from "../features/purchase/bills/BillsHomes";
-import NewBills from "../features/purchase/bills/NewBills";
-import ViewBills from "../features/purchase/bills/ViewBill/viewDebitNote/ViewBills";
-import DebitNote from "../features/purchase/debitNote/DebitNote";
-import NewDebitNote from "../features/purchase/debitNote/NewDebitNote";
-import ViewDebitNote from "../features/purchase/debitNote/viewDebitNote/ViewDebitNote";
-import PaymentMade from "../features/purchase/paymentMade/PaymentMade";
-import PaymentView from "../features/purchase/paymentMade/PaymentView/PaymentView";
-import PurchaseOrder from "../features/purchase/purchaseOrder/PurchaseOrder";
-import NewPurchaseOrder from "../features/purchase/purchaseOrder/addPurchaseOrder/NewPurchaseOrder";
-import ViewPurchaseOrder from "../features/purchase/purchaseOrder/viewPurchaseOrder/ViewPurchaseOrder";
-import AddPaymentMade from "../features/purchase/paymentMade/addPaymentMade/AddPaymentMade";
+
+// Lazy load your components
+const Purchase = lazy(() => import("../pages/Purchase"));
+const BillsHomes = lazy(() => import("../features/purchase/bills/BillsHomes"));
+const NewBills = lazy(() => import("../features/purchase/bills/NewBills"));
+const ViewBills = lazy(() => import("../features/purchase/bills/ViewBill/viewDebitNote/ViewBills"));
+const DebitNote = lazy(() => import("../features/purchase/debitNote/DebitNote"));
+const NewDebitNote = lazy(() => import("../features/purchase/debitNote/NewDebitNote"));
+const ViewDebitNote = lazy(() => import("../features/purchase/debitNote/viewDebitNote/ViewDebitNote"));
+const PaymentMade = lazy(() => import("../features/purchase/paymentMade/PaymentMade"));
+const PaymentView = lazy(() => import("../features/purchase/paymentMade/PaymentView/PaymentView"));
+const PurchaseOrder = lazy(() => import("../features/purchase/purchaseOrder/PurchaseOrder"));
+const NewPurchaseOrder = lazy(() => import("../features/purchase/purchaseOrder/addPurchaseOrder/NewPurchaseOrder"));
+const ViewPurchaseOrder = lazy(() => import("../features/purchase/purchaseOrder/viewPurchaseOrder/ViewPurchaseOrder"));
+const AddPaymentMade = lazy(() => import("../features/purchase/paymentMade/addPaymentMade/AddPaymentMade"));
 
 const PurchaseRoutes: RouteObject[] = [
   { path: "/purchase", element: <Purchase /> },
@@ -25,7 +28,7 @@ const PurchaseRoutes: RouteObject[] = [
   { path: "/purchase/payment-made/view", element: <PaymentView /> },
   { path: "/purchase/purchase-order", element: <PurchaseOrder /> },
   { path: "/purchase/purchase-order/new", element: <NewPurchaseOrder /> },
-  { path: "/purchase/viewpurchaseorder", element: <ViewPurchaseOrder /> },
+  { path: "/purchase/viewpurchaseorder/:id", element: <ViewPurchaseOrder /> },
   { path: "/purchase/payment-made/new-payment-made", element: <AddPaymentMade /> },
 ];
 

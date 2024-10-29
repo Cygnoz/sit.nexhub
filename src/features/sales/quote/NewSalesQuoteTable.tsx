@@ -1,27 +1,91 @@
 import { useEffect, useRef, useState } from "react";
 import { newPurchaseOrderTableHead } from "../../../assets/constants";
-import Pen from "../../../assets/icons/Pen";
 import TrashCan from "../../../assets/icons/TrashCan";
-import CehvronDown from "../../../assets/icons/CehvronDown";
-import CirclePlus from "../../../assets/icons/circleplus";
+import ChevronDown from "../../../assets/icons/CehvronDown";
 import SearchBar from "../../../Components/SearchBar";
+import { endponits } from "../../../Services/apiEndpoints";
+import useApi from "../../../Hooks/useApi";
 import PlusCircle from "../../../assets/icons/PlusCircle";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { SalesQuote } from "../../../Types/SalesQuote";
 
-type Props = {};
+type Row = {
+  itemId: string;
+  itemImage?: string,
+  itemName: string;
+  quantity: string;
+  sellingPrice: string;
+  taxPreference: string;
+  taxGroup: string;
+  cgst: string;
+  sgst: string;
+  igst: string;
+  cgstAmount: string;
+  sgstAmount: string;
+  igstAmount: string;
+  vatAmount: string;
+  itemTotaltax: string;
+  discountType: string;
+  discountAmount: string;
+  amount: string;
+  itemAmount: string;
+  itemStock: string;
+};
 
-const NewSalesQuoteTable = ({}: Props) => {
+type Props = {
+  salesQuoteState?: any;
+  isIntraState?: Boolean;
+  setSalesQuoteState?: (value: any) => void;
+  oneOrganization?: any;
+  isPlaceOfSupplyVisible?: boolean
+};
+
+
+const NewSalesQuoteTable = ({
+  salesQuoteState,
+  setSalesQuoteState,
+  isIntraState,
+  oneOrganization,
+  isPlaceOfSupplyVisible,
+}: Props) => {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [rows, setRows] = useState<number[]>([0]); // Initialize with one row
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [items, setItems] = useState<any>([]);
+  // const { request: getAllItemsRequest } = useApi("get", 5003);
+  const { request: getallItemSales } = useApi("get", 5003);
 
-  const toggleDropdown = (id: number | null, type: string | null) => {
-    if (openDropdownId === id && openDropdownType === type) {
-      setOpenDropdownId(null);
-      setOpenDropdownType(null);
-    } else {
-      setOpenDropdownId(id);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [rows, setRows] = useState<Row[]>([
+    {
+      itemId: "",
+      itemImage: "",
+      itemName: "",
+      quantity: "",
+      sellingPrice: "",
+      taxPreference: "",
+      taxGroup: "",
+      cgst: "",
+      sgst: "",
+      igst: "",
+      cgstAmount: "",
+      sgstAmount: "",
+      igstAmount: "",
+      vatAmount: "",
+      itemTotaltax: "",
+      discountType: "Percentage",
+      discountAmount: "",
+      amount: "",
+      itemAmount: "",
+      itemStock: "",
+    },
+  ]);
+
+
+  const toggleDropdown = (id: number | null, type: string | null, row: Row) => {
+    if (!row.itemName) {
+      setOpenDropdownId((prevId) => (prevId === id ? null : id));
       setOpenDropdownType(type);
     }
   };
@@ -36,49 +100,483 @@ const NewSalesQuoteTable = ({}: Props) => {
     }
   };
 
-  const data = [
-    {
-      id: 1,
-      product: "Boat Airpodes",
-      qty: "1",
-      stockInHand: "6",
-      rate: "2000.00",
-      tax: "0",
-      discount: "0",
-      amt: "2000.00",
-      img: "https://i.postimg.cc/0yHRXmds/b6d22208932ebdf7dafe3d8b00c5156a.jpg",
-    },
-  ];
-
   useEffect(() => {
     if (openDropdownId !== null) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openDropdownId]);
 
+  const addRow = () => {
+    const newRow: any = {
+      itemId: "",
+      itemImage: "",
+      itemName: "",
+      quantity: "",
+      sellingPrice: "",
+      taxPreference: "",
+      taxGroup: "",
+      cgst: "",
+      sgst: "",
+      igst: "",
+      cgstAmount: "",
+      sgstAmount: "",
+      igstAmount: "",
+      vatAmount: "",
+      itemTotaltax: "",
+      discountType: "Percentage",
+      discountAmount: "",
+      amount: "",
+      itemAmount: "",
+      itemStock: "",
+    };
+    const updatedRows = [...rows, newRow];
+    setRows(updatedRows);
+  };
+
+  console.log(rows.map((i)=>i.amount,"amount"));
+  console.log(rows.map((i)=>i.itemAmount),"ietmamount");
+  
 
 
-  const addNewItemRow = () => {
-    setRows([...rows, rows.length]);
+  const handleItemSelect = (item: any, index: number) => {
+    setOpenDropdownId(null);
+    setOpenDropdownType(null);
+    const newRows = [...rows];
+
+    newRows[index].itemName = item.itemName;
+    newRows[index].itemImage = item.itemImage;
+    newRows[index].sellingPrice = item.sellingPrice || "0";
+    newRows[index].quantity = "1";
+    newRows[index].itemId = item._id;
+    newRows[index].cgst = item.cgst;
+    newRows[index].sgst = item.sgst;
+    newRows[index].igst = item.igst;
+    newRows[index].taxPreference = item.taxPreference;
+    newRows[index].taxGroup = item.taxRate; 
+    newRows[index].itemStock = item.currentStock; 
+
+
+    const sellingPrice = parseFloat(newRows[index].sellingPrice);
+    const discountedPrice = calculateDiscountPrice(
+      sellingPrice,
+      newRows[index].discountAmount,
+      newRows[index].discountType
+    );
+
+    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+      discountedPrice,
+      newRows[index],
+      isIntraState as boolean
+    );
+
+    newRows[index].amount = itemAmount;
+
+    newRows[index].cgstAmount = isPlaceOfSupplyVisible ? cgstAmount : "0";
+    newRows[index].sgstAmount = isPlaceOfSupplyVisible ? sgstAmount : "0";
+    newRows[index].igstAmount = isPlaceOfSupplyVisible ? igstAmount : igstAmount;
+
+    newRows[index].itemAmount =
+      !isPlaceOfSupplyVisible
+        ? parseFloat(itemAmount).toFixed(2)
+        : !isIntraState
+          ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+          : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
+
+    setRows(newRows);
+
+    setSalesQuoteState?.((prevData: any) => ({
+      ...prevData,
+      items: newRows.map((row) => {
+        const updatedItem = { ...row };
+        delete updatedItem.itemImage;
+        return updatedItem;
+      }),
+    }));
   };
-  
-  const deleteRow = (index: number) => {
-    setRows(rows.filter((_, rowIndex) => rowIndex !== index));
+
+
+  const calculateDiscountPrice = (
+    totalSellingPrice: number,
+    discountAmount: string,
+    discountType: string
+  ): number => {
+    let discount = parseFloat(discountAmount) || 0;
+    if (discount < 0) {
+      toast.error("Discount cannot be negative");
+      return totalSellingPrice;
+    }
+
+    if (discountType === "Percentage") {
+      if (discount > 100) {
+        discount = 100;
+        toast.error("Discount cannot exceed 100%");
+      }
+      return totalSellingPrice - (totalSellingPrice * discount) / 100;
+    } else {
+      if (discount > totalSellingPrice) {
+        discount = totalSellingPrice;
+        toast.error("Discount cannot exceed the selling price");
+      }
+      return totalSellingPrice - discount;
+    }
   };
-  
-  
+
+  const calculateTax = (
+    discountedPrice: number,
+    item: any,
+    isIntraState: boolean
+  ) => {
+
+
+    const cgstPercentage = parseFloat(item?.cgst || "0");
+    const sgstPercentage = parseFloat(item?.sgst || "0");
+    const igstPercentage = parseFloat(item?.igst || "0");
+
+    if (!isIntraState) {
+      const cgstAmount = ((discountedPrice * cgstPercentage) / 100).toFixed(2);
+      const sgstAmount = ((discountedPrice * sgstPercentage) / 100).toFixed(2);
+      return {
+        itemAmount: discountedPrice.toFixed(2),
+        cgstAmount,
+        sgstAmount,
+        igstAmount: "0.00",
+      };
+    } else {
+      const igstAmount = ((discountedPrice * igstPercentage) / 100).toFixed(2);
+      return {
+        itemAmount: discountedPrice.toFixed(2),
+        cgstAmount: "0.00",
+        sgstAmount: "0.00",
+        igstAmount,
+      };
+    }
+  };
+
+  const handleRowChange = (index: number, field: keyof Row, value: string) => {
+    const newRows = [...rows];
+    newRows[index] = { ...newRows[index], [field]: value };
+
+    const quantity = parseFloat(newRows[index].quantity) || 0;
+    const sellingPrice = parseFloat(newRows[index].sellingPrice) || 0;
+    const totalSellingPrice = quantity * sellingPrice;
+
+    const discountedPrice = calculateDiscountPrice(
+      totalSellingPrice,
+      newRows[index].discountAmount,
+      newRows[index].discountType
+    );
+
+    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+      discountedPrice,
+      newRows[index],
+      isIntraState as boolean
+    );
+
+    newRows[index].amount = itemAmount;
+
+    // Handle tax values and set itemAmount correctly
+    if (isPlaceOfSupplyVisible) {
+      newRows[index].cgstAmount = cgstAmount;
+      newRows[index].sgstAmount = sgstAmount;
+      newRows[index].igstAmount = igstAmount;
+    } else {
+      // Set CGST and SGST to "0" if isPlaceOfSupplyVisible is false
+      newRows[index].cgstAmount = "0";
+      newRows[index].sgstAmount = "0";
+      newRows[index].igstAmount = igstAmount; // IGST is still included when intra-state
+    }
+    newRows[index].itemAmount = !isPlaceOfSupplyVisible
+      ? parseFloat(itemAmount).toFixed(2)
+      : !isIntraState
+        ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+        : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
+
+    setRows(newRows);
+
+    setSalesQuoteState?.((prevData: any) => ({
+      ...prevData,
+      items: newRows.map((row) => {
+        const updatedItem = { ...row };
+        delete updatedItem.itemImage;
+        return updatedItem;
+      }),
+    }));
+  };
+
+  useEffect(() => {
+    const updateItemAmounts = (rows: any[], isIntraState: boolean, isPlaceOfSupplyVisible: boolean) => {
+      return rows.map((row) => {
+        const sellingPrice = parseFloat(row.sellingPrice) || 0;
+        const discountedPrice = calculateDiscountPrice(
+          sellingPrice,
+          row.discountAmount,
+          row.discountType
+        );
+
+        const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+          discountedPrice,
+          row,
+          isIntraState
+        );
+
+        let finalItemAmount = !isPlaceOfSupplyVisible
+          ? parseFloat(itemAmount).toFixed(2)
+          : !isIntraState
+            ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+            : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
+
+        return {
+          ...row,
+          amount: itemAmount,
+          cgstAmount: isPlaceOfSupplyVisible ? cgstAmount : "0",
+          sgstAmount: isPlaceOfSupplyVisible ? sgstAmount : "0",
+          igstAmount: isPlaceOfSupplyVisible ? igstAmount : igstAmount, // Keep igstAmount but set others to 0
+          itemAmount: finalItemAmount,
+        };
+      });
+    };
+
+    const updatedRows = updateItemAmounts(rows, isIntraState as boolean, isPlaceOfSupplyVisible as boolean);
+
+    if (JSON.stringify(rows) !== JSON.stringify(updatedRows)) {
+      setRows(updatedRows);
+
+      setSalesQuoteState?.((prevData: any) => ({
+        ...prevData,
+        items: updatedRows.map((row) => {
+          const updatedItem = { ...row };
+          delete updatedItem.itemImage;
+          return updatedItem;
+        }),
+        totalTax: updatedRows.reduce((total, row) => {
+          return total + parseFloat(row.cgstAmount) + parseFloat(row.sgstAmount) + parseFloat(row.igstAmount);
+        }, 0).toFixed(2),
+      }));
+    }
+  }, [isIntraState, isPlaceOfSupplyVisible, rows]);
+
+
+
+  // const getAllItems = async () => {
+  //   try {
+  //     const url = `${endponits.GET_ALL_ITEM}`;
+  //     const apiResponse = await getAllItemsRequest(url);
+  //     // console.log(apiResponse, "api response");
+  //     const { response, error } = apiResponse;
+
+  //     if (!error && response) {
+  //       setItems(response.data);
+  //       // console.log(response);
+  //     } else {
+  //       console.log(error);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching items:", error);
+  //   }
+  // };
+
+
+  const getAllItems = async () => {
+    try {
+      const url = `${endponits.GET_ALL_ITEMS_SALES}`;
+      const apiResponse = await getallItemSales(url);
+      const { response, error } = apiResponse;
+
+      if (!error && response) {
+        console.log(response.data, "itemsasales");
+        setItems(response.data);
+      } else {
+        console.log(error);
+      }
+    } catch (error) {
+      console.error("Error fetching items:", error);
+    }
+  };
+  useEffect(() => {
+    getAllItems()
+  }, [])
+
+  const removeRow = (index: number) => {
+    if (rows.length > 1) {
+      const newRows = rows.filter((_, i) => i !== index);
+      setRows(newRows);
+    } else {
+      const newRows = [
+        {
+          itemId: "",
+          itemImage: "",
+          itemName: "",
+          quantity: "",
+          sellingPrice: "",
+          taxPreference: "",
+          taxGroup: "",
+          cgst: "0",
+          sgst: "0",
+          igst: "0",
+          cgstAmount: "",
+          sgstAmount: "",
+          igstAmount: "",
+          vatAmount: "",
+          itemTotaltax: "",
+          discountType: "Percentage",
+          discountAmount: "",
+          amount: "0",
+          itemAmount: "0",
+          itemStock: "",
+        },
+      ];
+      setRows(newRows);
+    }
+  };
+
+  const calculateTotalSGST = () => {
+    return rows.reduce((total, row) => {
+      const sgst = !isIntraState ? parseFloat(row.sgstAmount) || 0 : 0;
+      return total + sgst;
+    }, 0);
+  };
+
+  // Function to calculate total CGST
+  const calculateTotalCGST = () => {
+    return rows.reduce((total, row) => {
+      // console.log(row.itemCgst,"cgst");
+
+      const cgst = !isIntraState ? parseFloat(row.cgstAmount) || 0 : 0;
+      return total + cgst;
+    }, 0);
+  };
+
+  // Function to calculate total IGST
+  const calculateTotalIGST = () => {
+    return rows.reduce((total, row) => {
+      const igst = isIntraState ? parseFloat(row.igstAmount) || 0 : 0;
+      return total + igst;
+    }, 0);
+  };
+
+  // Function to calculate total item quantity
+  const calculateTotalQuantity = () => {
+    return rows.reduce((total, row) => {
+      const quantity = parseFloat(row.quantity) || 0;
+      return total + quantity;
+    }, 0);
+  };
+
+  const calculateDiscount = () => {
+    return rows.reduce((total, row) => {
+      const discount = parseFloat(row.discountAmount) || 0;
+      const quantity = parseFloat(row.quantity) || 0;
+      const sellingPrice = parseFloat(row.sellingPrice) || 0;
+
+      const totalSellingPrice = sellingPrice * quantity;
+
+      if (row.discountType === "Percentage") {
+        return total + (totalSellingPrice * discount) / 100;
+      } else {
+        return total + discount;
+      }
+    }, 0);
+
+    return 0;
+  };
+
+  // Function to calculate the total subtotal
+  const calculateTotalSubtotal = () => {
+    return rows.reduce((total, row) => {
+      const itemQuantity = parseFloat(row.quantity) || 0;
+      const itemPrice = parseFloat(row.sellingPrice) || 0;
+      const subtotal = itemQuantity * itemPrice;
+      return total + subtotal;
+    }, 0);
+  };
+
+  useEffect(() => {
+    const totalQuantity = calculateTotalQuantity();
+    const totalSGST = calculateTotalSGST();
+    const totalCGST = calculateTotalCGST();
+    const totalIGST = calculateTotalIGST();
+    const totalSellingPrice = calculateTotalSubtotal();
+    const totalDiscount = calculateDiscount();
+
+    const updatedItems = salesQuoteState?.items.map((item: any) => {
+      const itemCGST = parseFloat(item.cgstAmount) || 0;
+      const itemSGST = parseFloat(item.sgstAmount) || 0;
+      const itemIGST = parseFloat(item.igstAmount) || 0;
+
+      const itemTotaltax = isIntraState ? itemIGST : itemCGST + itemSGST;
+      // const totalAmount = (parseFloat(item.amount) || 0) + (itemTotaltax) || 0;
+      // console.log(totalAmount);
+
+      return {
+        ...item,
+        itemTotaltax: itemTotaltax.toFixed(2),
+        // itemAmount: totalAmount.toFixed(2),
+      };
+    });
+    setSalesQuoteState?.((prevData: SalesQuote) => ({
+      ...prevData,
+      totalItem: totalQuantity,
+      sgst: totalSGST.toFixed(2),
+      cgst: totalCGST.toFixed(2),
+      igst: totalIGST.toFixed(2),
+      subtotalTotal: totalSellingPrice.toFixed(2),
+      totalItemDiscount: totalDiscount.toFixed(2),
+      totalTax: (isIntraState
+        ? totalIGST
+        : totalSGST + totalCGST).toFixed(2),
+      itemTotaltax: (isIntraState
+        ? totalIGST
+        : totalSGST + totalCGST).toFixed(2),
+      items: updatedItems,
+      subTotal: (totalSellingPrice + (isIntraState
+        ? totalIGST
+        : totalSGST + totalCGST) - totalDiscount).toFixed(2),
+    }));
+  }, [rows]);
+
+
+
+
+  const filteredItems = () => {
+    return items.filter((item: any) => {
+      const isSelected = rows.find((row) => row.itemId === item._id);
+      return (
+        !isSelected &&
+        item.itemName.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    });
+  };
+
+
+  useEffect(() => {
+    setRows((prevData: any) => {
+      if (Array.isArray(prevData)) {
+        return prevData.map((item) => ({
+          ...item,
+          itemDiscountType: "Percentage",
+          itemDiscount: "",
+        }));
+      }
+      return [];
+    });
+
+  }, []);
+
+  // useEffect(() => {
+  //   getAllItems();
+  // }, []);
+
   return (
     <div>
       <div className="rounded-lg border-2 border-tableBorder mt-5">
         <table className="min-w-full bg-white rounded-lg relative pb-4 border-dropdownText">
           <thead className="text-[12px] text-center text-dropdownText">
-            <tr className="bg-lightPink ">
+            <tr className="bg-lightPink">
               {newPurchaseOrderTableHead.map((item, index) => (
                 <th
                   className="py-2 px-4 font-medium border-b border-tableBorder relative"
@@ -87,231 +585,217 @@ const NewSalesQuoteTable = ({}: Props) => {
                   {item}
                 </th>
               ))}
+
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px] ">
-            {data.map((item,index) => (
-              <tr key={index} className="relative">
-                <td className="flex items-center justify-center mt-4 gap-2">
-                  <img src={item.img} alt="" className="h-8" />
-                  {item.product}
-                </td>
-                <td className="justify-start items-start">
-                  <div className="items-center justify-center flex">
-                    <div className="text-start">
-                      {item.qty} <br />
-                      <span className="" style={{ fontSize: "10px" }}>
-                        Stock In Hand:
-                        <br />
-                        <b>{item.stockInHand} Pcs</b>
-                      </span>
-                    </div>
-                  </div>
-                </td>
-                <td>{item.rate}</td>
-                <td className="py-2.5 px-4 border-y border-tableBorder relative">
-                  <div className="flex items-center justify-center gap-2">
-                    {item.tax}
-                    <div className="border border-neutral-300 flex rounded-lg text-xs p-1">
-                      %{" "}
-                      <CehvronDown
-                        color="currentColor"
-                        width={15}
-                        height={15}
-                      />
-                    </div>
-                  </div>
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder relative">
-                  <div className="flex items-center justify-center gap-2">
-                    {item.discount}
-                    <div className="border border-neutral-300 flex rounded-lg text-xs p-1">
-                      %{" "}
-                      <CehvronDown
-                        color="currentColor"
-                        width={15}
-                        height={15}
-                      />
-                    </div>
-                  </div>
-                </td>
-                <td className="font-semibold">{item.amt}</td>
-                <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
-                  <div className="flex items-center justify-center gap-3">
-                    <div onClick={() => toggleDropdown(item.id, "editProduct")}>
-                      <Pen color="green" />
-                    </div>
-                    {openDropdownId === item.id &&
-                      openDropdownType === "editProduct" && (
-                        <div
-                          ref={dropdownRef}
-                          className="absolute bg-white shadow text-start rounded-md mt-1 p-5 w-[35%] space-y-2"
-                          style={{ right: "100px", top: "-28px" }}
-                        >
-                          <div>
-                            <p className="text-zinc-700 font-bold text-lg">
-                              Boat Airdopes 148
-                            </p>
-                            <div className="flex items-center justify-center">
-                              <img
-                                src="https://i.postimg.cc/5tty6rrx/Screenshot-2024-07-19-132938.png"
-                                className="h-23"
-                                alt=""
-                              />
-                            </div>
-                            <p className="text-xs mt-1">Bal Stock</p>
-                            <p className="text-lg font-bold text-textColor">
-                              20{" "}
-                              <span className="text-sm font-normal">Pcs</span>
-                            </p>
-                          </div>
-                          <button className="border w-full rounded-lg py-2 mt-1">
-                            Edit Product
-                          </button>
-                        </div>
-                      )}
-                   
-                    <TrashCan  color="red" />
-                   
-                  </div>
-                </td>
-              </tr>
-            ))}
-
-            {rows.map((row, index) => (
+            {rows.map((row: any, index: number) => (
               <tr key={index}>
-                <td className="border-y border-tableBorder">
+                <td className="border-y py-3 px-2 border-tableBorder">
                   <div
                     className="relative w-full"
-                    onClick={() => toggleDropdown(row, "searchProduct")}
+                    onClick={() => toggleDropdown(index, "searchProduct", row)}
                   >
-                    <div className="cursor-pointer flex appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
-                      <p>Type or click</p>
-                      <CehvronDown color="currentColor" />
-                    </div>
-                  </div>
-                  {openDropdownId === row && openDropdownType === "searchProduct" && (
-                    <div
-                      ref={dropdownRef}
-                      className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2 -m-9 w-[40%] space-y-1"
-                    >
-                      <SearchBar
-                        searchValue={searchValue}
-                        onSearchChange={setSearchValue}
-                        placeholder="Select Supplier"
-                      />
-
-                      <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink">
-                        <div className="col-span-2 flex  justify-center">
+                    {row.itemName ? (
+                      <div className="cursor-pointer gap-2 grid grid-cols-12 appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
+                        <div className="flex items-start col-span-4">
                           <img
-                          className="rounded-full h-10"
-                            src="https://i.postimg.cc/0yHRXmds/b6d22208932ebdf7dafe3d8b00c5156a.jpg"
+                            className="rounded-full h-10 w-10 "
+                            src={row.itemImage}
                             alt=""
                           />
                         </div>
-                        <div className="col-span-10 flex">
-                          <div className="text-start">
-                            <p className="font-bold text-sm text-black">Boat Airpodes 148,Black</p>
-                            <p className="text-xs text-gray-500">
-                              Rate: RS.2000.00
-                            </p>
-                          </div>
-                          <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                            &times;
-                          </div>
+                        <div className="col-span-8  text-start">
+                          <p className="text-textColor">{row.itemName}</p>
                         </div>
                       </div>
-                      <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-2">
-                        <button
-                          className="w-full grid grid-cols-12  px-4  items-center justify-center"
-                        >
-                          <div className="col-span-1 flex">
-                            <CirclePlus color="darkRed" size="18" />
-                          </div>
-                          <div  className="col-span-10  text-sm flex  items-center">
-                            <p className="text-darkRed">
-                              <b>Add new Item</b>
-                            </p>
-                          </div>
-                          <div className=" col-span-1 text-end text-2xl cursor-pointer relative ">
-                            &times;
-                          </div>
-                        </button>
+                    ) : (
+                      <div className="cursor-pointer flex appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
+                        <p>Type or click</p>
+                        <ChevronDown color="currentColor" />
                       </div>
-                    </div>
-                  )}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">0.0</td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">0.00</td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <div className="flex items-center justify-center gap-2">
-                    0
-                    <div className="border border-neutral-300 flex rounded-lg text-xs p-1">
-                      %{" "}
-                      <CehvronDown color="currentColor" width={15} height={15} />
-                    </div>
+                    )}
                   </div>
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <div className="flex items-center justify-center gap-2">
-                    0
-                    <div className="border border-neutral-300 flex rounded-lg text-xs p-1">
-                      %{" "}
-                      <CehvronDown color="currentColor" width={15} height={15} />
-                    </div>
-                  </div>
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder ">0.00</td>
-                <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
-                  <div className="flex items-center justify-center gap-3">
-                    <div onClick={() => toggleDropdown(row, "editProduct")}>
-                      <Pen  color="green" />
-                    </div>
-                    {openDropdownId === row &&
-                      openDropdownType === "editProduct" && (
-                        <div
-                          ref={dropdownRef}
-                          className="absolute bg-white shadow text-start rounded-md mt-1 p-5 w-[35%] space-y-2"
-                          style={{ right: "100px", top: "-28px" }}
-                        >
-                          <div>
-                            <p className="text-zinc-700 font-bold text-lg">
-                              Boat Airdopes 148
-                            </p>
-                            <div className="flex items-center justify-center">
-                              <img
-                                src="https://i.postimg.cc/5tty6rrx/Screenshot-2024-07-19-132938.png"
-                                className="h-23"
-                                alt=""
-                              />
+                  {openDropdownId === index &&
+                    openDropdownType === "searchProduct" && (
+                      <div
+                        ref={dropdownRef}
+                        className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[40%] space-y-1"
+                      >
+                        <SearchBar
+                          searchValue={searchValue}
+                          onSearchChange={setSearchValue}
+                          placeholder="Select Item"
+                        />
+                        {items.length > 0 ? (
+                          filteredItems().map((item: any, idx: number) => (
+                            <div
+                              key={idx}
+                              className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                              onClick={() => handleItemSelect(item, index)}
+                            >
+                              <div className="col-span-2 flex justify-center">
+                                <img
+                                  className="rounded-full h-10"
+                                  src={item.itemImage}
+                                  alt=""
+                                />
+                              </div>
+                              <div className="col-span-10 flex">
+                                <div className="text-start">
+                                  <p className="font-bold text-sm text-black">
+                                    {item.itemName}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    Rate: RS.{item.sellingPrice}
+                                  </p>
+                                </div>
+                                <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
+                                  &times;
+                                </div>
+                              </div>
                             </div>
-                            <p className="text-xs mt-1">Bal Stock</p>
-                            <p className="text-lg font-bold text-textColor">
-                              20 <span className="text-sm font-normal">Pcs</span>
+                          ))
+                        ) : (
+                          <div className="text-center border-slate-400 border rounded-lg">
+                            <p className="text-[red] text-sm py-4">
+                              Items Not Found!
                             </p>
                           </div>
-                          <button className="border w-full rounded-lg py-2 mt-1">
-                            Edit Product
-                          </button>
+                        )}
+                        <div>
+                          <Link to={"/inventory/Item/new"}>
+                            <button className="bg-darkGreen text-darkRed rounded-lg py-4 px-6 flex ]
+                            items-center text-sm font-bold border-slate-400 border gap-2 w-full hover:bg-lightRed">
+                              <PlusCircle color="darkRed" />
+                              <p> Add New Item</p>
+                            </button>
+                          </Link>
                         </div>
-                      )}
-                      <div onClick={()=>deleteRow(index)}> 
-                    <TrashCan color="red" />
+                      </div>
+                    )}
+                </td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    className="w-[50px]  text-center focus:outline-none "
+                    value={row.quantity}
+                    onChange={(e) =>
+                      handleRowChange(index, "quantity", e.target.value)
+                    }
+                  />
+                  <div className="text-center text-[10px]">
+                    {" "}
+                    <p>
+                      Stock OnHand: &nbsp;
+                      <b className="text-[12px]">{row.itemStock}</b>{" "}
+                    </p>
+                  </div>
+                </td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    type="text"
+                    placeholder="0"
+                    className="w-[50px]  focus:outline-none text-center"
+                    value={row.sellingPrice}
+                    onChange={(e) =>
+                      handleRowChange(index, "sellingPrice", e.target.value)
+                    }
+                    disabled
+                  />
+                </td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    disabled
+                    type="number"
+                    placeholder="0"
+                    className="w-[50px] focus:outline-none text-center"
+                    value={
+                      !isPlaceOfSupplyVisible
+                        ? "0" // Set to 0 if place of supply is not visible
+                        : !isIntraState
+                          ? parseFloat(row.cgstAmount || "0") + parseFloat(row.sgstAmount || "0") === 0
+                            ? "nil"
+                            : (parseFloat(row.cgstAmount || "0") + parseFloat(row.sgstAmount || "0")).toFixed(2)
+                          : parseFloat(row.igstAmount || "0") === 0
+                            ? "nil"
+                            : parseFloat(row.igstAmount || "0").toFixed(2)
+                    }
+                  />
+
+
+                </td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <div className="flex items-center justify-center gap-2 w-full">
+                    <input
+                      type="number"
+                      placeholder="0"
+                      className="w-[50px]  focus:outline-none text-center"
+                      value={row.discountAmount}
+                      onChange={(e) =>
+                        handleRowChange(index, "discountAmount", e.target.value)
+                      }
+                    />
+                    <div className="relative">
+                      <select
+                        onChange={(e) =>
+                          handleRowChange(
+                            index,
+                            "discountType",
+                            e.target.value
+                          )
+                        }
+                        value={row.discountType}
+                        className="text-xs appearance-none w-[60px] p-1 text-zinc-400 bg-white border border-inputBorder rounded-lg"
+                      >
+                        <option value="Percentage">%</option>
+                        <option value="Currency">
+                          {oneOrganization?.baseCurrency}
+                        </option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <ChevronDown color="gray" height={15} width={15} />
+                      </div>
                     </div>
+                  </div>
+                </td>
+
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    disabled
+                    type="number"
+                    placeholder="0"
+                    className="w-[50px]  focus:outline-none text-center"
+                    value={row.amount}
+                    onChange={(e) =>
+                      handleRowChange(index, "amount", e.target.value)
+                    }
+                  />
+                </td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <div
+                    className="text-center flex justify-center gap-2"
+                    onClick={() => removeRow(index)}
+                  >
+                    <TrashCan color="darkRed" />
                   </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        
       </div>
-      <button onClick={addNewItemRow} className="mt-1">
-              <p className="text-darkRed my-3 text-sm flex gap-2 items-center">
-                <PlusCircle color="darkRed" />
-                <b> Add Item</b>
-              </p>
+      <div className="w-[60%] mt-0">
+        <button
+          type="button"
+          className="bg-darkGreen text-darkRed rounded-lg py-2 px-1 flex items-center text-sm font-bold"
+          onClick={addRow}
+        >
+          <PlusCircle color="darkRed" />
+          Add Item
         </button>
+      </div>
     </div>
   );
 };

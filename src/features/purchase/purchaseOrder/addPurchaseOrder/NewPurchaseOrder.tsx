@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
 import CehvronDown from "../../../../assets/icons/CehvronDown";
 import NeworderTable from "./NeworderTable";
 import Button from "../../../../Components/Button";
-import {  useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import SearchBar from "../../../../Components/SearchBar";
 import PrinterIcon from "../../../../assets/icons/PrinterIcon";
 import AddSupplierModal from "../../../Supplier/SupplierHome/AddSupplierModal";
@@ -13,15 +13,16 @@ import NewCustomerModal from "../../../Customer/CustomerHome/NewCustomerModal";
 import { PurchaseOrder } from "./PurchaseOrderBody";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
-import toast, { Toaster } from "react-hot-toast";
+import toast  from "react-hot-toast";
+import { SupplierResponseContext } from "../../../../context/ContextShare";
+
+
 
 type Props = {};
-
 
 const NewPurchaseOrder = ({}: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [selected, setSelected] = useState<string | null>("organization");
-  const [discountType, setDiscoutType] = useState<string>("");
   const [supplierData, setSupplierData] = useState<[]>([]);
   const [customerData, setCustomerData] = useState<[]>([]);
   const [paymentTerms, setPaymentTerms] = useState<[]>([]);
@@ -31,8 +32,7 @@ const NewPurchaseOrder = ({}: Props) => {
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [destinationList, setDestinationList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
-  const [isIntraState, setIsIntraState] = useState<boolean>(false);
-  const [beforeTax, setBeforeTax] = useState<boolean>(true);
+  const [isInterState, setIsInterState] = useState<boolean>(false);
 
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: AllCustomer } = useApi("get", 5002);
@@ -40,69 +40,80 @@ const NewPurchaseOrder = ({}: Props) => {
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: newPurchaseOrderApi } = useApi("post", 5005);
-  const { request: getPrfix } = useApi("get", 5005);
-
+  // const { request: getPrfix } = useApi("get", 5005);
+  const { supplierResponse } = useContext(SupplierResponseContext)!;
+  const navigate =useNavigate()
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
   );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [purchaseOrderState, setPurchaseOrderState] = useState<PurchaseOrder>({
-    organizationId: "",
+    organizationId: "INDORG0006",
     supplierId: "",
+    supplierDisplayName: "",
+    supplierBillingCountry: "", 
+    supplierBillingState: "",
     taxMode: "",
     sourceOfSupply: "",
     destinationOfSupply: "",
+    deliveryAddress: "Organization",
     customerId: "",
     reference: "",
-    purchaseOrder: "",
     shipmentPreference: "",
     purchaseOrderDate: "",
     expectedShipmentDate: "",
     paymentTerms: "",
     paymentMode: "",
-    discountType: "",
-    taxType: "",
     itemTable: [
       {
         itemId: "",
-        itemQuantity: "",
-        itemSellingPrice: "",
-        itemDiscount: "",
-        itemDiscountType: "",
-        itemAmount: "",
-        itemSgst: "",
-        itemCgst: "",
-        itemIgst: "",
-        itemVat: "",
+        itemName: "",
+        itemQuantity: 0,
+        itemCostPrice: 0,
+        itemTax: "",
+        itemDiscount: 0,
+        itemDiscountType: "percentage",
+        itemAmount: 0,
+        itemSgst: 0,
+        itemCgst: 0,
+        itemIgst: 0,
+        itemVat: 0,
+        itemSgstAmount: 0,
+        itemCgstAmount: 0,
+        itemIgstAmount: 0,
+        itemVatAmount: 0,
       },
     ],
-    otherExpense: "",
+    otherExpense: 0,
     otherExpenseReason: "",
-    freight: "",
+    freight: 0,
     vehicleNo: "",
     addNotes: "",
     termsAndConditions: "",
     attachFiles: "",
-    subTotal: "",
-    totalItem: "",
-    sgst: "",
-    cgst: "",
-    igst: "",
-    vat: "",
-    totalDiscount: "",
-    transactionDiscount: "",
+    subTotal: 0,
+    totalItem: 0,
+    sgst: 0,
+    cgst: 0,
+    igst: 0,
+    vat: 0,
+    itemTotalDiscount: 0,
+    totalTaxAmount: 0,
+    roundOff: 0,
     transactionDiscountType: "percentage",
-    transactionDiscountAmount:"",
-    totalTaxAmount: "",
-    roundOff: "",
-    grandTotal: "",
-    status: "",
+    transactionDiscount: 0,
+    transactionDiscountAmount: 0,
+    total:0,
+    grandTotal: 0,
   });
 
-
+  // console.log(purchaseOrderState);
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
+    const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
+    fetchData(supplierUrl, setSupplierData, AllSuppliers);
+
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -114,18 +125,6 @@ const NewPurchaseOrder = ({}: Props) => {
     }
   };
 
-  useEffect(() => {
-    if (openDropdownIndex !== null) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [openDropdownIndex]);
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -134,7 +133,7 @@ const NewPurchaseOrder = ({}: Props) => {
     if (name === "transactionDiscount") {
       let discountValue = parseFloat(value) || 0;
 
-      const totalAmount = parseFloat(purchaseOrderState.subTotal) || 0;
+      const totalAmount = purchaseOrderState.subTotal || 0;
 
       if (purchaseOrderState.transactionDiscountType === "percentage") {
         if (discountValue > 100) {
@@ -150,7 +149,7 @@ const NewPurchaseOrder = ({}: Props) => {
 
       setPurchaseOrderState((prevState: any) => ({
         ...prevState,
-        [name]: discountValue.toString(),
+        [name]: discountValue,
       }));
     } else {
       setPurchaseOrderState((prevState: any) => ({
@@ -187,26 +186,25 @@ const NewPurchaseOrder = ({}: Props) => {
     }
   };
 
-  const getPurchaseOrderPrefix = async () => {
-    try {
-      const prefixUrl = `${endponits.GET_LAST_PURCHASE_ORDER_PREFIX}`;
-      const { response, error } = await getPrfix(prefixUrl);
-      
-      if (!error && response) {
-        // console.log(response.data); 
-        
-        setPurchaseOrderState((prevData: any) => ({
-          ...prevData,
-          purchaseOrder: response.data 
-        }));
-      } else {
-        console.log(error);
-      }
-    } catch (error) {
-      console.log("Error in fetching Purchase Order Prefix", error);
-    }
-  };
-  
+  // const getPurchaseOrderPrefix = async () => {
+  //   try {
+  //     const prefixUrl = `${endponits.GET_LAST_PURCHASE_ORDER_PREFIX}`;
+  //     const { response, error } = await getPrfix(prefixUrl);
+
+  //     if (!error && response) {
+  //       // console.log(response.data);
+
+  //       setPurchaseOrderState((prevData: any) => ({
+  //         ...prevData,
+  //         purchaseOrder: response.data
+  //       }));
+  //     } else {
+  //       console.log(error);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error in fetching Purchase Order Prefix", error);
+  //   }
+  // };
 
   const handleplaceofSupply = () => {
     if (oneOrganization.organizationCountry) {
@@ -244,9 +242,11 @@ const NewPurchaseOrder = ({}: Props) => {
         setPurchaseOrderState((preData) => ({
           ...preData,
           destinationOfSupply: selecteSupplier.billingState,
+          supplierDisplayName: selecteSupplier.supplierDisplayName,
+          supplierBillingCountry: selecteSupplier.billingCountry,
+          supplierBillingState: selecteSupplier.billingState,
         }));
       }
-      // console.log(country,"dest");
 
       if (country) {
         const states = country.states;
@@ -258,46 +258,6 @@ const NewPurchaseOrder = ({}: Props) => {
       console.log("No country selected");
     }
   };
-
-  useEffect(() => {
-    if (purchaseOrderState?.destinationOfSupply == "") {
-      setIsIntraState(false);
-    } else {
-      if (
-        purchaseOrderState?.sourceOfSupply !==
-        purchaseOrderState?.destinationOfSupply
-      ) {
-        setIsIntraState(true);
-      } else {
-        setIsIntraState(false);
-      }
-    }
-  }, [
-    purchaseOrderState?.sourceOfSupply,
-    purchaseOrderState?.destinationOfSupply,
-  ]);
-
-  useEffect(() => {
-    const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
-    const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
-    const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
-    const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
-
-    fetchData(supplierUrl, setSupplierData, AllSuppliers);
-    fetchData(customerUrl, setCustomerData, AllCustomer);
-    fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
-    fetchData(organizationUrl, setOneOrganization, getOneOrganization);
-  }, []);
-
-  useEffect(() => {
-    handleDestination();
-    handleplaceofSupply();
-    fetchCountries();
-  }, [oneOrganization, selecteSupplier]);
-
-  useEffect(() => {
-    getPurchaseOrderPrefix();
-  }, []);
 
   const filterByDisplayName = (
     data: any[],
@@ -320,95 +280,64 @@ const NewPurchaseOrder = ({}: Props) => {
     searchValue
   );
 
-  const calculateTotal = () => {
+  const calculateTotalAmount = () => {
     const {
-      otherExpense,
+      roundOff,
+      otherExpense ,
       freight,
-      subTotal,
-      sgst,
-      cgst,
-      igst,
-      totalDiscount,
-      transactionDiscountType,
-      transactionDiscount,
+      itemTotalDiscount,
+      totalTaxAmount,
+      subTotal ,
     } = purchaseOrderState;
 
-    const otherExpenseValue = parseFloat(otherExpense) || 0;
-    const freightValue = parseFloat(freight) || 0;
-    const subTotalValue = parseFloat(subTotal) || 0;
-    const sgstValue = parseFloat(sgst) || 0;
-    const cgstValue = parseFloat(cgst) || 0;
-    const igstValue = parseFloat(igst) || 0;
-    const totalDiscountValue = parseFloat(totalDiscount) || 0;
+    const totalAmount =
+    (  Number(subTotal) +
+      Number(otherExpense) +
+      Number(totalTaxAmount) +
+      Number(freight)) -
+      (Number(itemTotalDiscount) +
+      Number(roundOff))
+          return totalAmount.toFixed(2);
+  };
 
-    // console.log(sgstValue, cgstValue, igstValue, "gst");
+  console.log();
+  
 
-    const taxAmount = isIntraState ? igstValue : sgstValue + cgstValue;
-    // console.log(taxAmount, "tax amount");
-
-    let totalTaxedAmount = 0;
-    let transactionDiscountValue = 0;
-
-    if (beforeTax) {
-      const totalBeforeTax =
-        subTotalValue  ;
-
-      transactionDiscountValue =
-        transactionDiscountType === "percentage"
-          ? ((parseFloat(transactionDiscount) || 0) / 100) * totalBeforeTax
-          : parseFloat(transactionDiscount) || 0;
-          if (purchaseOrderState.transactionDiscountAmount !== transactionDiscountValue.toFixed(2)) {
-            setPurchaseOrderState(prevState => ({
-              ...prevState,
-              transactionDiscountAmount: transactionDiscountValue.toFixed(2)
-            }));
-          }
-      // console.log(transactionDiscountValue, "transaction discount before tax");
-
-      totalTaxedAmount = totalBeforeTax - transactionDiscountValue + taxAmount+ otherExpenseValue + freightValue - totalDiscountValue;
-      // console.log(totalTaxedAmount, "Before tax calculation with discount");
-
-    } else {
-      const totalAfterTax =
-        subTotalValue +
-        taxAmount ;
-      transactionDiscountValue =
-        transactionDiscountType === "percentage"
-          ? ((parseFloat(transactionDiscount) || 0) / 100) * totalAfterTax
-          : parseFloat(transactionDiscount) || 0;
-          if (purchaseOrderState.transactionDiscountAmount !== transactionDiscountValue.toFixed(2)) {
-            setPurchaseOrderState(prevState => ({
-              ...prevState,
-              transactionDiscountAmount: transactionDiscountValue.toFixed(2)
-            }));
-          }
-      // console.log(transactionDiscountValue, "transaction discount after tax");
-
-        
-        totalTaxedAmount = totalAfterTax - transactionDiscountValue -totalDiscountValue + otherExpenseValue +
-        freightValue 
- ;
-
-      // console.log(totalTaxedAmount, "After tax calculation with discount");
+  useEffect(() => {
+    const newGrandTotal = calculateTotalAmount();
+  
+    const {
+      transactionDiscountType,
+      transactionDiscount = 0,
+      transactionDiscountAmount = 0,
+    } = purchaseOrderState;
+  
+    const transactionDiscountValueAMT =
+      transactionDiscountType === "percentage"
+        ? (transactionDiscount / 100) * Number(newGrandTotal)
+        : Number(transactionDiscount); 
+  
+    const roundedDiscountValue = Math.round(transactionDiscountValueAMT * 100) / 100;
+  
+    const updatedGrandTotal = Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
+      if (transactionDiscountAmount !== roundedDiscountValue || purchaseOrderState.grandTotal !== updatedGrandTotal) {
+      setPurchaseOrderState((prevState:any) => ({
+        ...prevState,
+        transactionDiscountAmount: roundedDiscountValue,
+        grandTotal: updatedGrandTotal.toFixed(2), 
+      }));
     }
-
-    purchaseOrderState.totalTaxAmount = totalTaxedAmount.toFixed(2);
-   
-
-    return  totalTaxedAmount.toFixed(2)
-  };
-
-  const calculateTotalAmount = () => {
-    const { roundOff } = purchaseOrderState;
-    const taxedTotalAmount = parseFloat(calculateTotal()) || 0;
-    const roundOffValue = parseFloat(roundOff) || 0;
-
-    const totalAmount = taxedTotalAmount - roundOffValue;
-
-    purchaseOrderState.grandTotal = totalAmount.toFixed(2);
-
-    return totalAmount.toFixed(2);
-  };
+  }, [
+    purchaseOrderState.transactionDiscount,
+    purchaseOrderState.transactionDiscountType,
+    purchaseOrderState.subTotal,
+    purchaseOrderState.otherExpense,
+    purchaseOrderState.totalTaxAmount,
+    purchaseOrderState.freight,
+    purchaseOrderState.itemTotalDiscount,
+    purchaseOrderState.roundOff,
+  ]);
+  
 
   const handleSave = async () => {
     try {
@@ -419,37 +348,77 @@ const NewPurchaseOrder = ({}: Props) => {
       );
       if (!error && response) {
         // console.log(response);
-        
+
         toast.success(response.data.message);
+        setTimeout(() => {
+          navigate("/purchase/purchase-order")
+        }, 1000);
       } else {
         toast.error(error?.response.data.message);
       }
     } catch (error) {}
   };
 
-  const handleDiscountType = () => {
-    if (discountType === "Item Line") {
-      setPurchaseOrderState((prevData: any) => ({
-        ...prevData,
-        transactionDiscount: "",
-        transactionDiscountType:""
-      }));
-    } else if (discountType === "Transaction Line") {
-      setPurchaseOrderState((prevData: any) => ({
-        ...prevData,
-        itemTable: prevData.itemTable.map((item:any) => ({
-          ...item,
-          itemDiscount: "" ,
-          itemDiscountType:""
-        }))
-      }));
+  useEffect(() => {
+    if (purchaseOrderState?.destinationOfSupply == "") {
+      setIsInterState(false);
+    } else {
+      if (
+        purchaseOrderState?.sourceOfSupply !==
+        purchaseOrderState?.destinationOfSupply
+      ) {
+        setIsInterState(true);
+      } else {
+        setIsInterState(false);
+      }
     }
-  };
-  useEffect(()=>{
-    handleDiscountType()
-  },[discountType])
-  
-  // console.log(purchaseOrderState);
+  }, [
+    purchaseOrderState?.sourceOfSupply,
+    purchaseOrderState?.destinationOfSupply,
+  ]);
+
+
+
+  useEffect(() => {
+    const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
+    const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
+    const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
+    const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
+
+    fetchData(supplierUrl, setSupplierData, AllSuppliers);
+    fetchData(customerUrl, setCustomerData, AllCustomer);
+    fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
+    fetchData(organizationUrl, setOneOrganization, getOneOrganization);
+  }, []);
+console.log(supplierResponse),"SResponse"
+  useEffect(() => {supplierResponse
+    handleDestination();
+    handleplaceofSupply();
+    fetchCountries();
+  }, [oneOrganization, selecteSupplier]);
+
+
+
+  useEffect(() => {
+    if (openDropdownIndex !== null) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openDropdownIndex]);
+
+  useEffect(() => {
+    setPurchaseOrderState((prevState: any) => ({
+      ...prevState,
+      totalDiscount:
+        (parseFloat(prevState.totalItemDiscount) || 0) +
+        (parseFloat(prevState.transactionDiscountAmount) || 0),
+    }));
+  }, [purchaseOrderState.transactionDiscountAmount]);
 
   return (
     <div className="px-8">
@@ -466,10 +435,9 @@ const NewPurchaseOrder = ({}: Props) => {
         </div>
       </div>
 
-      <form >
-      <div className="grid grid-cols-12 gap-4 py-5 rounded-lg">
-
-          <div className="col-span-8 h-[70vh] overflow-scroll hide-scrollbar" >
+      <form>
+        <div className="grid grid-cols-12 gap-4 py-5 rounded-lg">
+          <div className="col-span-8 h-[70vh] overflow-scroll hide-scrollbar">
             <div className="bg-secondary_main p-5 min-h-max rounded-xl relative ">
               <p className="text-textColor text-xl font-bold">
                 Enter Purchase details
@@ -486,7 +454,8 @@ const NewPurchaseOrder = ({}: Props) => {
                     >
                       <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                         <p>
-                          {selecteSupplier && selecteSupplier.supplierDisplayName
+                          {selecteSupplier &&
+                          selecteSupplier.supplierDisplayName
                             ? selecteSupplier.supplierDisplayName
                             : "Select Supplier"}
                         </p>
@@ -498,14 +467,14 @@ const NewPurchaseOrder = ({}: Props) => {
                     {openDropdownIndex === "supplier" && (
                       <div
                         ref={dropdownRef}
-                        className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2 -m-9 w-[40%] space-y-1 max-h-72 overflow-y-auto  hide-scrollbar"
+                        className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2 w-[30%] space-y-1 max-h-72 overflow-y-auto  hide-scrollbar"
                       >
                         <SearchBar
                           searchValue={searchValue}
                           onSearchChange={setSearchValue}
                           placeholder="Select Supplier"
                         />
-                        {filteredSupplier.length > 0 &&
+                        {filteredSupplier.length > 0 ? (
                           filteredSupplier.map((supplier: any) => (
                             <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer">
                               <div className="col-span-2 flex items-center justify-center">
@@ -514,16 +483,16 @@ const NewPurchaseOrder = ({}: Props) => {
                                   alt=""
                                 />
                               </div>
-                              <div className="col-span-10 flex">
-                                <div
-                                  onClick={() => {
+                              <div className="col-span-10 flex cursor-pointer "  onClick={() => {
                                     setPurchaseOrderState((prevState) => ({
                                       ...prevState,
                                       supplierId: supplier._id,
                                     }));
                                     setOpenDropdownIndex(null);
                                     setSelecetdSupplier(supplier);
-                                  }}
+                                  }}>
+                                <div
+                                 
                                 >
                                   <p className="font-bold text-sm">
                                     {supplier.supplierDisplayName}
@@ -537,7 +506,14 @@ const NewPurchaseOrder = ({}: Props) => {
                                 </div>
                               </div>
                             </div>
-                          ))}
+                          ))
+                        ) : (
+                          <div className="text-center border-slate-400 border rounded-lg">
+                            <p className="text-[red] text-sm py-4">
+                              Supplier Not Found!
+                            </p>
+                          </div>
+                        )}
                         <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
                           <AddSupplierModal page="purchase" />
                         </div>
@@ -546,62 +522,66 @@ const NewPurchaseOrder = ({}: Props) => {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 mt-2 gap-4">
-                  <div>
-                    <label className="block text-sm mb-1 text-labelColor">
-                      Source Of Supply
-                    </label>
-                    <div className="relative w-full">
-                      <select
-                        onChange={handleChange}
-                        name="sourceOfSupply"
-                        value={purchaseOrderState.sourceOfSupply}
-                        className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                      >
-                        <option value="">Select Source Of Supply</option>
-                        {placeOfSupplyList &&
-                          placeOfSupplyList.map((item: any, index: number) => (
-                            <option
-                              key={index}
-                              value={item}
-                              className="text-gray"
-                            >
-                              {item}
-                            </option>
-                          ))}
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <CehvronDown color="gray" />
+                 {purchaseOrderState.supplierId &&
+                <>
+                    <div>
+                      <label className="block text-sm mb-1 text-labelColor">
+                        Destination Of Supply
+                      </label>
+                      <div className="relative w-full">
+                        <select
+                          onChange={handleChange}
+                          name="destinationOfSupply"
+                          value={purchaseOrderState.destinationOfSupply}
+                          className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        >
+                          <option value="">Select Source Of Supply</option>
+                          {placeOfSupplyList &&
+                            placeOfSupplyList.map((item: any, index: number) => (
+                              <option
+                                key={index}
+                                value={item}
+                                className="text-gray"
+                              >
+                                {item}
+                              </option>
+                            ))}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                          <CehvronDown color="gray" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm mb-1 text-labelColor">
-                      Destination Of Supply
-                    </label>
-                    <div className="relative w-full">
-                      <select
-                        onChange={handleChange}
-                        name="destinationOfSupply"
-                        value={purchaseOrderState.destinationOfSupply}
-                        className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                      >
-                        <option value="">Select Source Of Supply</option>
-                        {destinationList &&
-                          destinationList.map((item: any, index: number) => (
-                            <option
-                              key={index}
-                              value={item}
-                              className="text-gray"
-                            >
-                              {item}
-                            </option>
-                          ))}
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <CehvronDown color="gray" />
+                    <div>
+                      <label className="block text-sm mb-1 text-labelColor">
+                        Source of Supply
+                      </label>
+                      <div className="relative w-full">
+                        <select
+                          onChange={handleChange}
+                          name="sourceOfSupply"
+                          value={purchaseOrderState.sourceOfSupply}
+                          className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        >
+                          <option value="">Select Source Of Supply</option>
+                          {destinationList &&
+                            destinationList.map((item: any, index: number) => (
+                              <option
+                                key={index}
+                                value={item}
+                                className="text-gray"
+                              >
+                                {item}
+                              </option>
+                            ))}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                          <CehvronDown color="gray" />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                </>
+                  }
                 </div>
                 <div className="grid grid-cols-12 gap-4 my-3">
                   <div className="col-span-5 ">
@@ -611,14 +591,14 @@ const NewPurchaseOrder = ({}: Props) => {
                     >
                       Delivery Address
                     </label>
-                    <div className="flex items-center space-x-4 text-textColor text-sm">
+                    <div className="flex items-center  text-textColor text-sm">
                       <div className="flex gap-2 justify-center items-center ">
                         <div className="grid place-items-center mt-1">
                           <input
                             id="customer"
                             type="radio"
                             name="deliveryAddress"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border hidden ${
                               selected === "customer"
                                 ? "border-8 border-neutral-400"
                                 : "border-1 border-neutral-400"
@@ -643,7 +623,7 @@ const NewPurchaseOrder = ({}: Props) => {
                         </div>
                         <label
                           htmlFor="customer"
-                          className="text-start font-medium"
+                          className="text-start font-medium hidden"
                         >
                           Customer
                         </label>
@@ -654,7 +634,7 @@ const NewPurchaseOrder = ({}: Props) => {
                             id="organization"
                             type="radio"
                             name="deliveryAddress"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border  ${
                               selected === "organization"
                                 ? "border-8 border-neutral-400"
                                 : "border-1 border-neutral-400"
@@ -687,7 +667,7 @@ const NewPurchaseOrder = ({}: Props) => {
                     </div>
                   </div>
                 </div>
-  
+
                 {selected === "customer" && (
                   <div className="grid grid-cols-12 gap-4 pb-2">
                     <div className="col-span-6  ">
@@ -701,7 +681,9 @@ const NewPurchaseOrder = ({}: Props) => {
                         <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer">
                           <p>
                             {(
-                              selectedCustomer as { customerDisplayName?: string }
+                              selectedCustomer as {
+                                customerDisplayName?: string;
+                              }
                             )?.customerDisplayName ?? "Select Customer"}
                           </p>
                         </div>
@@ -712,15 +694,15 @@ const NewPurchaseOrder = ({}: Props) => {
                       {openDropdownIndex === "customer" && (
                         <div
                           ref={dropdownRef}
-                          className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2 -m-9  space-y-1 max-w-72 overflow-y-auto  hide-scrollbar"
-                          style={{ width: "80%" }}
+                          className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2  space-y-1 max-w-72 overflow-y-auto  hide-scrollbar"
+                          style={{ width: "50%" }}
                         >
                           <SearchBar
                             searchValue={searchValue}
                             onSearchChange={setSearchValue}
                             placeholder="Serach customer"
                           />
-                          {filteredCustomer ? (
+                          {filteredCustomer.length > 0 ? (
                             filteredCustomer.map((customer: any) => (
                               <div
                                 className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink"
@@ -755,7 +737,11 @@ const NewPurchaseOrder = ({}: Props) => {
                               </div>
                             ))
                           ) : (
-                            <></>
+                            <div className="text-center border-slate-400 border rounded-lg">
+                              <p className="text-[red] text-sm py-4">
+                                Customer Not Found!
+                              </p>
+                            </div>
                           )}
                           <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
                             <NewCustomerModal page="purchase" />
@@ -780,7 +766,7 @@ const NewPurchaseOrder = ({}: Props) => {
                 )}
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="relative w-full">
+                {/* <div className="relative w-full">
                   <label className="text-sm mb-1 text-labelColor">
                     Purchase order#
                   </label>
@@ -793,43 +779,36 @@ const NewPurchaseOrder = ({}: Props) => {
                         type="text"
                         className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9 text-textColor"
                       />
-                </div>
-  
-                {selected === "customer" ? (
-                  <div>
-                    <label className="block text-sm mb-1 text-labelColor">
-                      Payment Mode
-                    </label>
-                    <div className="relative w-full">
-                      <select
-                        value={purchaseOrderState.paymentMode}
-                        name="paymentMode"
-                        onChange={handleChange}
-                        className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                      >
-                        <option value="" className="text-gray">
-                          Select Payment Mode
-                        </option>
-                        <option value="Cash" className="text-gray">
+                </div> */}
+                <div>
+                  <label className="block text-sm mb-1 text-labelColor">
+                    Payment Mode
+                  </label>
+                  <div className="relative w-full">
+                    <select
+                      value={purchaseOrderState.paymentMode}
+                      name="paymentMode"
+                      onChange={handleChange}
+                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    >
+                      <option value="" className="text-gray">
+                        Select Payment Mode
+                      </option>
+                      <option value="Cash" className="text-gray">
                         Cash
-                        </option>
-                        <option value="Credit Card" className="text-gray">
-                        Credit Card
-                        </option>  <option value="Debit Card" className="text-gray">
-                        Debit Card
-                        </option>  <option value="Bank Transfer" className="text-gray">
-                        Bank Transfer
-                        </option>  <option value="PayPal" className="text-gray">
-                        PayPal
-                        </option>
-                       
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <CehvronDown color="gray" />
-                      </div>
+                      </option>
+                      <option value="Credit" className="text-gray">
+                        Credit
+                      </option>{" "}
+                     
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
                     </div>
                   </div>
-                ) : (
+                </div>
+
+                {selected !== "customer" && (
                   <div>
                     <label className="block text-sm mb-1 text-labelColor">
                       Reference#
@@ -844,8 +823,6 @@ const NewPurchaseOrder = ({}: Props) => {
                     />
                   </div>
                 )}
-              </div>
-              <div className="grid grid-cols-2 gap-4  mt-3">
                 <div>
                   <label className="block text-sm mb-1 text-labelColor">
                     Shipment Preference
@@ -860,13 +837,17 @@ const NewPurchaseOrder = ({}: Props) => {
                       <option value="" className="text-gray">
                         Select Shipment Preference
                       </option>
+                      <option value="Road" className="text-gray">
+                        Road
+                      </option>
                       <option value="Rail" className="text-gray">
-                      Rail
+                        Rail
                       </option>
                       <option value="Air" className="text-gray">
-                      Air
-                      </option> <option value="Sea" className="text-gray">
-                      Sea
+                        Air
+                      </option>{" "}
+                      <option value="Sea" className="text-gray">
+                        Sea
                       </option>
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -878,7 +859,7 @@ const NewPurchaseOrder = ({}: Props) => {
                   <label className="block text-sm mb-1 text-labelColor">
                     Purchase Order Date
                   </label>
-  
+
                   <input
                     type="date"
                     value={purchaseOrderState.purchaseOrderDate}
@@ -925,7 +906,7 @@ const NewPurchaseOrder = ({}: Props) => {
                     </div>
                   </div>
                 </div>
-                <div>
+                {/* <div>
                   <label className="block text-sm mb-1 text-labelColor">
                     Tax Type
                   </label>
@@ -939,7 +920,7 @@ const NewPurchaseOrder = ({}: Props) => {
                       <option value="" className="text-gray">
                         Select Tax Type
                       </option>
-                      <option value="GST" className="text-gray">
+                      <option value="GST" className="text-gray" >
                         GST
                       </option>{" "}
                       <option value="Non Taxable" className="text-gray">
@@ -950,70 +931,14 @@ const NewPurchaseOrder = ({}: Props) => {
                       <CehvronDown color="gray" />
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
-              <div className="border-b w-[20%] flex items-center justify-center text-textColor gap-3 my-5 py-2 border-[#EAECF0] text-sm">
-                <p>{discountType === "" ? "Discount Type" : discountType}</p>{" "}
-                <div
-                  className="border border-neutral-300 flex rounded-lg text-xs p-1"
-                  onClick={() => toggleDropdown("discountType")}
-                >
-                  <CehvronDown color="currentColor" width={15} height={15} />
-                </div>
-                {openDropdownIndex === "discountType" && (
-                  <div
-                    ref={dropdownRef}
-                    className="absolute z-10 bg-white  shadow  rounded-md  p-2 mt-36 w-[28%] space-y-1  "
-                  >
-                    <div
-                      className=" p-2 hover:bg-red-50 cursor-pointe  rounded-lg py-3"
-                      onClick={() => {
-                        setDiscoutType("Item Line");
-                        setOpenDropdownIndex(null);
-                        setPurchaseOrderState((prevData: any) => ({
-                          ...prevData,
-                          discountType: "Item Line",
-                        }));
-                      }}
-                    >
-                      Item Line
-                    </div>
-                    <div
-                      className=" p-2 hover:bg-red-50 cursor-pointe   rounded-lg  pt-3"
-                      onClick={() => {
-                        setDiscoutType("Transaction Line");
-                        setOpenDropdownIndex(null);
-                        setPurchaseOrderState((prevData: any) => ({
-                          ...prevData,
-                          discountType: "Transaction Line",
-                        }));
-                      }}
-                    >
-                      Transaction Line
-                    </div>
-  
-                    <div
-                      className=" p-2 hover:bg-red-50 cursor-pointe  rounded-lg py-3"
-                      onClick={() => {
-                        setDiscoutType("Both");
-                        setOpenDropdownIndex(null);
-                        setPurchaseOrderState((prevData: any) => ({
-                          ...prevData,
-                          discountType: "Both",
-                        }));
-                      }}
-                    >
-                      Both
-                    </div>
-                    <div className="h-[.5px] bg-neutral-300"></div>
-                  </div>
-                )}
-              </div>
+
               <p className="font-bold mt-3">Add Item</p>
               <NeworderTable
                 purchaseOrderState={purchaseOrderState}
                 setPurchaseOrderState={setPurchaseOrderState}
-                isIntraState={isIntraState}
+                isInterState={isInterState}
                 oneOrganization={oneOrganization}
               />
               <br />
@@ -1023,7 +948,7 @@ const NewPurchaseOrder = ({}: Props) => {
               />
             </div>
           </div>
-  
+
           <div className="col-span-4 h-[70vh] overflow-scroll hide-scrollbar">
             <div className="bg-secondary_main p-5 text-sm rounded-xl space-y-4 text-textColor">
               <div className="text-sm">
@@ -1067,8 +992,124 @@ const NewPurchaseOrder = ({}: Props) => {
                   <input type="file" className="hidden" name="documents" />
                 </label>
               </div>
-  
+
               <div className=" pb-4  text-dropdownText border-b-2 border-slate-200 space-y-2">
+                <div className="flex ">
+                  <div className="w-[75%]">
+                    {" "}
+                    <p>Sub Total</p>
+                  </div>
+                  <div className="w-full text-end">
+                    {" "}
+                    <p className="text-end">
+                      {oneOrganization?.baseCurrency}{" "}
+                      {purchaseOrderState.subTotal
+                        ? purchaseOrderState.subTotal
+                        : "0.00"}{" "}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex ">
+                  <div className="w-[75%]">
+                    {" "}
+                    <p> Total Quantity</p>
+                  </div>
+                  <div className="w-full text-end">
+                    {" "}
+                    <p className="text-end">
+                      {purchaseOrderState.totalItem
+                        ? purchaseOrderState.totalItem
+                        : "0"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex ">
+                  <div className="w-[75%]">
+                    <p> Total Item Discount</p>
+                  </div>
+                  <div className="w-full text-end">
+                    <p className="text-end">
+                      {oneOrganization.baseCurrency}{" "}
+                      {purchaseOrderState.itemTotalDiscount
+                        ? purchaseOrderState.itemTotalDiscount
+                        : "0.00"}
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  {isInterState ? (
+                    <div className="flex ">
+                      <div className="w-[75%]">
+                        {" "}
+                        <p> IGST</p>
+                      </div>
+                      <div className="w-full text-end">
+                        {" "}
+                        <p className="text-end">
+                          {oneOrganization.baseCurrency}{" "}
+                          {purchaseOrderState.igst
+                            ? purchaseOrderState.igst
+                            : "0.00"}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex ">
+                        <div className="w-[75%]">
+                          {" "}
+                          <p> SGST</p>
+                        </div>
+                        <div className="w-full text-end">
+                          {" "}
+                          <p className="text-end">
+                            {oneOrganization.baseCurrency}{" "}
+                            {purchaseOrderState.sgst
+                              ? purchaseOrderState.sgst
+                              : "0.00"}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex mt-2">
+                        <div className="w-[75%]">
+                          {" "}
+                          <p> CGST</p>
+                        </div>
+                        <div className="w-full text-end">
+                          {" "}
+                          <p className="text-end">
+                            {oneOrganization.baseCurrency}{" "}
+                            {purchaseOrderState.cgst
+                              ? purchaseOrderState.cgst
+                              : "0.00"}
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {!isInterState && (
+                  <div className="flex ">
+                    <div className="w-[75%]">
+                      {" "}
+                      <p> Total Tax</p>
+                    </div>
+                    <div className="w-full text-end">
+                      {" "}
+                      <p className="text-end">
+                        {" "}
+                        {oneOrganization.baseCurrency}{" "}
+                        {purchaseOrderState.totalTaxAmount}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex ">
                   <div className="w-[75%]">
                     {" "}
@@ -1077,7 +1118,7 @@ const NewPurchaseOrder = ({}: Props) => {
                   <div className="w-full text-end">
                     {" "}
                     <p className="text-end">
-                      Rs{" "}
+                      {oneOrganization?.baseCurrency}{" "}
                       {purchaseOrderState.otherExpense
                         ? purchaseOrderState.otherExpense
                         : "0.00"}
@@ -1092,191 +1133,14 @@ const NewPurchaseOrder = ({}: Props) => {
                   <div className="w-full text-end">
                     {" "}
                     <p className="text-end">
-                      Rs{" "}
+                      {oneOrganization?.baseCurrency}{" "}
                       {purchaseOrderState.freight
                         ? purchaseOrderState.freight
                         : "0.00"}
                     </p>
                   </div>
                 </div>
-                <div className="flex ">
-                  <div className="w-[75%]">
-                    {" "}
-                    <p>Sub Total</p>
-                  </div>
-                  <div className="w-full text-end">
-                    {" "}
-                    <p className="text-end">
-                      Rs{" "}
-                      {purchaseOrderState.subTotal
-                        ? purchaseOrderState.subTotal
-                        : "0.00"}{" "}
-                    </p>
-                  </div>
-                </div>
-  
-                <div className="flex ">
-                  <div className="w-[75%]">
-                    {" "}
-                    <p> Total Item</p>
-                  </div>
-                  <div className="w-full text-end">
-                    {" "}
-                    <p className="text-end">
-                      {purchaseOrderState.totalItem
-                        ? purchaseOrderState.totalItem
-                        : "0"}
-                    </p>
-                  </div>
-                </div>
-  
-                {discountType !== "Item Line" && (
-                  <div className="flex ">
-                    <div className="w-[150%]">
-                      {" "}
-                      <p> Discount</p>
-                    </div>
-  
-                    <div className=" ">
-                      <div className="border border-inputBorder rounded-lg flex items-center justify-center p-1 gap-1">
-                        <input
-                          value={purchaseOrderState.transactionDiscount}
-                          onChange={handleChange}
-                          name="transactionDiscount"
-                          type="text"
-                          placeholder="0"
-                          className="w-[30px]  focus:outline-none text-center"
-                        />
-                        <select
-                          className="text-xs   text-zinc-400 bg-white relative"
-                          value={purchaseOrderState.transactionDiscountType}
-                          onChange={handleChange}
-                          name="transactionDiscountType"
-                        >
-                          <option value="percentage">%</option>
-                          <option value={oneOrganization.baseCurrency}>
-                            {oneOrganization.baseCurrency}
-                          </option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center  text-gray-700 ms-1">
-                          <CehvronDown color="gray" height={15} width={15} />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-full text-end">
-                      {" "}
-                      <p className="text-end">
-                        <p className="text-end">
-                          {oneOrganization.baseCurrency}{" "}
-                          {purchaseOrderState.transactionDiscountAmount
-                            ? purchaseOrderState.transactionDiscountAmount
-                            : "0.00"}
-                        </p>
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {discountType !== "Item Line" &&
-                  (beforeTax ? (
-                    <button
-                      className="text-darkRed cursor-pointer"
-                      onClick={() => setBeforeTax(false)}
-                    >
-                      Apply After Tax
-                    </button>
-                  ) : (
-                    <button
-                      className="text-darkRed cursor-pointer"
-                      onClick={() => setBeforeTax(true)}
-                    >
-                      Apply Before Tax
-                    </button>
-                  ))}
-                {discountType !== "Transaction Line" && (
-                  <div className="flex ">
-                    <div className="w-[75%]">
-                      {" "}
-                      <p> Total Discount</p>
-                    </div>
-                    <div className="w-full text-end">
-                      {" "}
-                      <p className="text-end">
-                        {oneOrganization.baseCurrency}{" "}
-                        {purchaseOrderState.totalDiscount
-                          ? purchaseOrderState.totalDiscount
-                          : "0.00"}
-                      </p>
-                    </div>
-                  </div>
-                )}
-  
-                {isIntraState ? (
-                  <div className="flex ">
-                    <div className="w-[75%]">
-                      {" "}
-                      <p> IGST</p>
-                    </div>
-                    <div className="w-full text-end">
-                      {" "}
-                      <p className="text-end">
-                        {oneOrganization.baseCurrency}{" "}
-                        {purchaseOrderState.igst
-                          ? purchaseOrderState.igst
-                          : "0.00"}
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex ">
-                      <div className="w-[75%]">
-                        {" "}
-                        <p> SGST</p>
-                      </div>
-                      <div className="w-full text-end">
-                        {" "}
-                        <p className="text-end">
-                          {oneOrganization.baseCurrency}{" "}
-                          {purchaseOrderState.sgst
-                            ? purchaseOrderState.sgst
-                            : "0.00"}
-                        </p>
-                      </div>
-                    </div>
-  
-                    <div className="flex ">
-                      <div className="w-[75%]">
-                        {" "}
-                        <p> CGST</p>
-                      </div>
-                      <div className="w-full text-end">
-                        {" "}
-                        <p className="text-end">
-                          {oneOrganization.baseCurrency}{" "}
-                          {purchaseOrderState.cgst
-                            ? purchaseOrderState.cgst
-                            : "0.00"}
-                        </p>
-                      </div>
-                    </div>
-                  </>
-                )}
-  
-                <div className="flex ">
-                  <div className="w-[75%]">
-                    {" "}
-                    <p> Total Taxed Amount</p>
-                  </div>
-                  <div className="w-full text-end">
-                    {" "}
-                    <p className="text-end">
-                      {" "}
-                      {oneOrganization.baseCurrency}{" "}
-                      {calculateTotal()}
-                    </p>
-                  </div>
-                </div>
-  
+
                 <div className="flex ">
                   <div className="w-[75%]">
                     {" "}
@@ -1292,6 +1156,51 @@ const NewPurchaseOrder = ({}: Props) => {
                     </p>
                   </div>
                 </div>
+                <div className="flex ">
+                  <div className="w-[150%]">
+                    {" "}
+                    <p>Bill Discount</p>
+                    <div className=""></div>
+                  </div>
+
+                  <div className=" ">
+                    <div className="border border-inputBorder rounded-lg flex items-center justify-center p-1 gap-1">
+                      <input
+                        value={purchaseOrderState.transactionDiscount}
+                        onChange={handleChange}
+                        name="transactionDiscount"
+                        type="text"
+                        placeholder="0"
+                        className="w-[30px]  focus:outline-none text-center"
+                      />
+                      <select
+                        className="text-xs   text-zinc-400 bg-white relative"
+                        value={purchaseOrderState.transactionDiscountType}
+                        onChange={handleChange}
+                        name="transactionDiscountType"
+                      >
+                        <option value="percentage">%</option>
+                        <option value="currency">
+                          {oneOrganization.baseCurrency}
+                        </option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center  text-gray-700 ms-1">
+                        <CehvronDown color="gray" height={15} width={15} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-full text-end ">
+                    {" "}
+                    <p className="text-end">
+                      <p className="text-end">
+                        {oneOrganization.baseCurrency}{" "}
+                        {purchaseOrderState.transactionDiscountAmount
+                          ? purchaseOrderState.transactionDiscountAmount
+                          : "0.00"}
+                      </p>
+                    </p>
+                  </div>
+                </div>
               </div>
               <div className="flex text-black">
                 <div className="w-[75%] font-bold">
@@ -1302,31 +1211,27 @@ const NewPurchaseOrder = ({}: Props) => {
                   {" "}
                   <p className="text-end">
                     {" "}
-                    {oneOrganization.baseCurrency}{" "} {calculateTotalAmount()}
+                    {oneOrganization.baseCurrency} {purchaseOrderState.grandTotal? purchaseOrderState.grandTotal:"0.00"}
                   </p>
                 </div>
               </div>
-  
-              
             </div>
           </div>
-          </div>
-
+        </div>
       </form>
       <div className="flex gap-4 my-5 justify-end">
-                {" "}
-                <Button variant="secondary" size="sm">
-                  Cancel
-                </Button>
-                <Button variant="secondary" size="sm">
-                  <PrinterIcon height={18} width={18} color="currentColor" />
-                  Print
-                </Button>
-                <Button variant="primary" size="sm" type="submit" onClick={handleSave}>
-                  Save & Send
-                </Button>{" "}
-              </div>
-      <Toaster position="top-center" reverseOrder={true} />
+        {" "}
+        <Button variant="secondary" size="sm">
+          Cancel
+        </Button>
+        <Button variant="secondary" size="sm">
+          <PrinterIcon height={18} width={18} color="currentColor" />
+          Print
+        </Button>
+        <Button variant="primary" size="sm" type="submit" onClick={handleSave}>
+          Save & Send
+        </Button>{" "}
+      </div>
     </div>
   );
 };

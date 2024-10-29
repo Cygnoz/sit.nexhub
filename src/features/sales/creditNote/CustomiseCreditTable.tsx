@@ -1,136 +1,319 @@
-
-import { useState } from "react"
-import ListFilter from "../../../assets/icons/ListFilter";
-import Modal from "../../../Components/model/Modal";
-import MoveIcon from "../../../assets/icons/MoveIcon";
-import Button from "../../../Components/Button";
+import { useEffect, useRef, useState } from "react";
+import { newPurchaseOrderTableHead } from "../../../assets/constants";
+import Pen from "../../../assets/icons/Pen";
+import TrashCan from "../../../assets/icons/TrashCan";
+import CehvronDown from "../../../assets/icons/CehvronDown";
+import CirclePlus from "../../../assets/icons/circleplus";
+import SearchBar from "../../../Components/SearchBar";
 import PlusCircle from "../../../assets/icons/PlusCircle";
-import SearchBar from "../salesOrder/SearchBar";
 
-type Column = {
-  id: string;
-  label: string;
-  visible: boolean;
-};
+type Props = {};
 
-type Props = {
-  columns: Column[];
-  setColumns: (columns: Column[]) => void;
-};
+const CreditTable = ({}: Props) => {
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [rows, setRows] = useState<number[]>([0]); // Initialize with one row
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-const CustomiseCreditTable = ({ columns, setColumns }: Props) => {
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [localColumns, setLocalColumns] = useState<Column[]>(columns);
-
-  const openModal = () => {
-    setLocalColumns(columns);
-    setModalOpen(true);
+  const toggleDropdown = (id: number | null, type: string | null) => {
+    if (openDropdownId === id && openDropdownType === type) {
+      setOpenDropdownId(null);
+      setOpenDropdownType(null);
+    } else {
+      setOpenDropdownId(id);
+      setOpenDropdownType(type);
+    }
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setOpenDropdownId(null);
+      setOpenDropdownType(null);
+    }
   };
 
-  const onDragStart =
-    (index: number) => (event: React.DragEvent<HTMLDivElement>) => {
-      event.dataTransfer.setData("dragIndex", index.toString());
+  const data = [
+    {
+      id: 1,
+      product: "Boat Airpodes",
+      qty: "1",
+      stockInHand: "6",
+      rate: "2000.00",
+      tax: "0",
+      discount: "0",
+      amt: "2000.00",
+      img: "https://i.postimg.cc/0yHRXmds/b6d22208932ebdf7dafe3d8b00c5156a.jpg",
+    },
+  ];
+
+  useEffect(() => {
+    if (openDropdownId !== null) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, [openDropdownId]);
 
-  const onDragOver = () => (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
+
+
+  const addNewItemRow = () => {
+    setRows([...rows, rows.length]);
   };
-
-  const onDrop =
-    (index: number) => (event: React.DragEvent<HTMLDivElement>) => {
-      const dragIndex = parseInt(event.dataTransfer.getData("dragIndex"), 10);
-      const draggedColumn = localColumns[dragIndex];
-      const remainingColumns = localColumns.filter((_, i) => i !== dragIndex);
-      const newColumns = [
-        ...remainingColumns.slice(0, index),
-        draggedColumn,
-        ...remainingColumns.slice(index),
-      ];
-      setLocalColumns(newColumns);
-    };
-
-  const handleVisibilityChange = (id: string) => {
-    setLocalColumns(
-      localColumns.map((col) =>
-        col.id === id ? { ...col, visible: !col.visible } : col
-      )
-    );
+  
+  const deleteRow = (index: number) => {
+    setRows(rows.filter((_, rowIndex) => rowIndex !== index));
   };
-
-  const saveChanges = () => {
-    setColumns(localColumns);
-    closeModal();
-  };
-
+  
+  
   return (
-    <>
-      <div className="cursor-pointer flex justify-center" onClick={openModal}>
-        <ListFilter color="#4B5C79" classname="w-[18px] h-[18px]" />
-      </div>
-
-      <Modal
-        open={isModalOpen}
-        style={{ width: "30%" }}
-        onClose={closeModal}
-        className=""
-      >
-        <div className="p-5">
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="text-lg font-semibold text-textColor">
-              Customise Column
-            </h3>
-            <div
-              className="text-3xl font-light cursor-pointer"
-              onClick={closeModal}
-            >
-              &times;
-            </div>
-          </div>
-          <SearchBar placeholder="Search" />
-          <div>
-            {localColumns.map((col, index) => (
-              <div
-                key={col.id}
-                className="flex items-center py-2 px-2 gap-2 mb-2 mt-3 bg-cuscolumnbg cursor-move "
-                draggable
-                onDragStart={onDragStart(index)}
-                onDragOver={onDragOver()}
-                onDrop={onDrop(index)}
-              >
-                <MoveIcon color="#8F99A9" />
-                <input
-                  type="checkbox"
-                  className="h-5 w-5 rounded-xl accent-dropdownText"
-                  checked={col.visible}
-                  onChange={() => handleVisibilityChange(col.id)}
-                />
-                <span className="text-textColor text-sm font-semibold">
-                  {col.label}
-                </span>
-              </div>
+    <div>
+      <div className="rounded-lg border-2 border-tableBorder mt-5">
+        <table className="min-w-full bg-white rounded-lg relative pb-4 border-dropdownText">
+          <thead className="text-[12px] text-center text-dropdownText">
+            <tr className="bg-lightPink ">
+              {newPurchaseOrderTableHead.map((item, index) => (
+                <th
+                  className="py-2 px-4 font-medium border-b border-tableBorder relative"
+                  key={index}
+                >
+                  {item}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="text-dropdownText text-center text-[13px] ">
+            {data.map((item,index) => (
+              <tr key={index} className="relative">
+                <td className="flex items-center justify-center mt-4 gap-2">
+                  <img src={item.img} alt="" className="h-8" />
+                  {item.product}
+                </td>
+                <td className="justify-start items-start">
+                  <div className="items-center justify-center flex">
+                    <div className="text-start">
+                      {item.qty} <br />
+                      <span className="" style={{ fontSize: "10px" }}>
+                        Stock In Hand:
+                        <br />
+                        <b>{item.stockInHand} Pcs</b>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td>{item.rate}</td>
+                <td className="py-2.5 px-4 border-y border-tableBorder relative">
+                  <div className="flex items-center justify-center gap-2">
+                    {item.tax}
+                    <div className="border border-neutral-300 flex rounded-lg text-xs p-1">
+                      %{" "}
+                      <CehvronDown
+                        color="currentColor"
+                        width={15}
+                        height={15}
+                      />
+                    </div>
+                  </div>
+                </td>
+                <td className="py-2.5 px-4 border-y border-tableBorder relative">
+                  <div className="flex items-center justify-center gap-2">
+                    {item.discount}
+                    <div className="border border-neutral-300 flex rounded-lg text-xs p-1">
+                      %{" "}
+                      <CehvronDown
+                        color="currentColor"
+                        width={15}
+                        height={15}
+                      />
+                    </div>
+                  </div>
+                </td>
+                <td className="font-semibold">{item.amt}</td>
+                <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
+                  <div className="flex items-center justify-center gap-3">
+                    <div onClick={() => toggleDropdown(item.id, "editProduct")}>
+                      <Pen color="green" />
+                    </div>
+                    {openDropdownId === item.id &&
+                      openDropdownType === "editProduct" && (
+                        <div
+                          ref={dropdownRef}
+                          className="absolute bg-white shadow text-start rounded-md mt-1 p-5 w-[35%] space-y-2"
+                          style={{ right: "100px", top: "-28px" }}
+                        >
+                          <div>
+                            <p className="text-zinc-700 font-bold text-lg">
+                              Boat Airdopes 148
+                            </p>
+                            <div className="flex items-center justify-center">
+                              <img
+                                src="https://i.postimg.cc/5tty6rrx/Screenshot-2024-07-19-132938.png"
+                                className="h-23"
+                                alt=""
+                              />
+                            </div>
+                            <p className="text-xs mt-1">Bal Stock</p>
+                            <p className="text-lg font-bold text-textColor">
+                              20{" "}
+                              <span className="text-sm font-normal">Pcs</span>
+                            </p>
+                          </div>
+                          <button className="border w-full rounded-lg py-2 mt-1">
+                            Edit Product
+                          </button>
+                        </div>
+                      )}
+                   
+                    <TrashCan  color="red" />
+                   
+                  </div>
+                </td>
+              </tr>
             ))}
-          </div>
-          <div className="flex justify-center">
 
-            <Button className="w-full h-[35px] px-[30%] mt-2 font-medium rounded-md text-sm  border-outlineButton text-outlineButton" variant="secondary">
-              <PlusCircle color="#565148" /> Add Custom Field</Button>
-          </div>
-          <div className="flex justify-end mt-4 gap-4">
-            <Button onClick={closeModal}
-              variant="secondary" className="pl-9 pr-9" size="sm">
-              <p className="text-sm font-medium">Cancel</p></Button>
+            {rows.map((row, index) => (
+              <tr key={index}>
+                <td className="border-y border-tableBorder">
+                  <div
+                    className="relative w-full"
+                    onClick={() => toggleDropdown(row, "searchProduct")}
+                  >
+                    <div className="cursor-pointer flex appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
+                      <p>Type or click</p>
+                      <CehvronDown color="currentColor" />
+                    </div>
+                  </div>
+                  {openDropdownId === row && openDropdownType === "searchProduct" && (
+                    <div
+                      ref={dropdownRef}
+                      className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2 -m-9 w-[40%] space-y-1"
+                    >
+                      <SearchBar
+                        searchValue={searchValue}
+                        onSearchChange={setSearchValue}
+                        placeholder="Select Supplier"
+                      />
 
-            <Button onClick={saveChanges} variant="primary" className="pl-8 pr-8" size="sm"><p className="text-sm font-medium">Save</p></Button>
-
-          </div>
-        </div>
-      </Modal>
-    </>
+                      <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink">
+                        <div className="col-span-2 flex  justify-center">
+                          <img
+                          className="rounded-full h-10"
+                            src="https://i.postimg.cc/0yHRXmds/b6d22208932ebdf7dafe3d8b00c5156a.jpg"
+                            alt=""
+                          />
+                        </div>
+                        <div className="col-span-10 flex">
+                          <div className="text-start">
+                            <p className="font-bold text-sm text-black">Boat Airpodes 148,Black</p>
+                            <p className="text-xs text-gray-500">
+                              Rate: RS.2000.00
+                            </p>
+                          </div>
+                          <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
+                            &times;
+                          </div>
+                        </div>
+                      </div>
+                      <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-2">
+                        <button
+                          className="w-full grid grid-cols-12  px-4  items-center justify-center"
+                        >
+                          <div className="col-span-1 flex">
+                            <CirclePlus color="darkRed" size="18" />
+                          </div>
+                          <div  className="col-span-10  text-sm flex  items-center">
+                            <p className="text-darkRed">
+                              <b>Add new Item</b>
+                            </p>
+                          </div>
+                          <div className=" col-span-1 text-end text-2xl cursor-pointer relative ">
+                            &times;
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">0.0</td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">0.00</td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <div className="flex items-center justify-center gap-2">
+                    0
+                    <div className="border border-neutral-300 flex rounded-lg text-xs p-1">
+                      %{" "}
+                      <CehvronDown color="currentColor" width={15} height={15} />
+                    </div>
+                  </div>
+                </td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <div className="flex items-center justify-center gap-2">
+                    0
+                    <div className="border border-neutral-300 flex rounded-lg text-xs p-1">
+                      %{" "}
+                      <CehvronDown color="currentColor" width={15} height={15} />
+                    </div>
+                  </div>
+                </td>
+                <td className="py-2.5 px-4 border-y border-tableBorder ">0.00</td>
+                <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
+                  <div className="flex items-center justify-center gap-3">
+                    <div onClick={() => toggleDropdown(row, "editProduct")}>
+                      <Pen color="green" />
+                    </div>
+                    {openDropdownId === row &&
+                      openDropdownType === "editProduct" && (
+                        <div
+                          ref={dropdownRef}
+                          className="absolute bg-white shadow text-start rounded-md mt-1 p-5 w-[35%] space-y-2"
+                          style={{ right: "100px", top: "-28px" }}
+                        >
+                          <div>
+                            <p className="text-zinc-700 font-bold text-lg">
+                              Boat Airdopes 148
+                            </p>
+                            <div className="flex items-center justify-center">
+                              <img
+                                src="https://i.postimg.cc/5tty6rrx/Screenshot-2024-07-19-132938.png"
+                                className="h-23"
+                                alt=""
+                              />
+                            </div>
+                            <p className="text-xs mt-1">Bal Stock</p>
+                            <p className="text-lg font-bold text-textColor">
+                              20 <span className="text-sm font-normal">Pcs</span>
+                            </p>
+                          </div>
+                          <button className="border w-full rounded-lg py-2 mt-1">
+                            Edit Product
+                          </button>
+                        </div>
+                      )}
+                      <div onClick={()=>deleteRow(index)}> 
+                    <TrashCan color="red" />
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        
+      </div>
+      <button onClick={addNewItemRow} className="mt-1">
+              <p className="text-darkRed my-3 text-sm flex gap-2 items-center">
+                <PlusCircle color="darkRed" />
+                <b> Add Item</b>
+              </p>
+        </button>
+    </div>
   );
 };
 
-export default CustomiseCreditTable;
+export default CreditTable;

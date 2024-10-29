@@ -162,6 +162,7 @@ const NewPaymentMadeOrderTable = ({paymentState, setPaymentState}: Props) => {
         </p>
       </button>
     </div>
+    
   );
 };
 

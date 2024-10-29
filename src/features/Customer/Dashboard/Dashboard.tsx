@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import ArrowDownIcon from '../../../assets/icons/ArrowDownIcon'
 import ArrowUpIcon from '../../../assets/icons/ArrowUpIcon'
-import Ellipsis from '../../../assets/icons/Ellipsis'
+// import Ellipsis from '../../../assets/icons/Ellipsis'
 import RefreshIcon from '../../../assets/icons/RefreshIcon'
 import AvaragePurchase from './AvaragePurchase'
 import Cards from './Cards'
 import CustomersRetentionRate from './CustomersRetentionRate'
 import RepeatPurchaseRate from './RepeatPurchaseRate'
 import TopCustomers from './TopCustomers'
-import NewCustomerModal from '../CustomerHome/NewCustomerModal'
 type Props = {}
 
 function Dashboard({}: Props) {
@@ -73,15 +72,12 @@ function Dashboard({}: Props) {
         <div>
           <h3 className="font-bold text-2xl text-textColor ">Customer Overview</h3>
           <p className="text-sm text-gray mt-1">
-            Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla egestas consectetur amet.
+          A customer overview is a high level description that provides key insights into business customer base.
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">
-          <NewCustomerModal page=''/>
-
-
             <div onClick={toggleDropdown} className="cursor-pointer">
-              <Ellipsis />
+              {/* <Ellipsis /> */}
             </div>
 
             {isDropdownOpen && (

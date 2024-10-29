@@ -285,7 +285,7 @@ const NewInvoiceTable = ({}: Props) => {
                         >
                           <div>
                             <p className="text-zinc-700 font-bold text-lg">
-                              Boat Airdopes 148
+                              Boateed Airdopes 148
                             </p>
                             <div className="flex items-center justify-center">
                               <img
@@ -322,6 +322,7 @@ const NewInvoiceTable = ({}: Props) => {
         </p>
       </button>
     </div>
+    
   );
 };
 

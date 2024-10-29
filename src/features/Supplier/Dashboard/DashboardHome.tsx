@@ -69,7 +69,7 @@ function DashboardHome({}: Props) {
         <div>
           <h3 className="font-bold text-2xl text-textColor">Supplier</h3>
           <p className="text-sm text-gray mt-1">
-            Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla egestas consectetur amet.
+          Effectively manage and track supplier information to enhance procurement processes and ensure reliable partnerships
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">

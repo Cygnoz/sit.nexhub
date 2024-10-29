@@ -23,9 +23,11 @@ const SubHeader = ({ activeIndex }: Props) => {
   };
 
   return (
-    <div className="bg-BgSubhead flex mx-7 justify-between px-7 py-5 my-4 items-center rounded-full ">
+    <div className="bg-BgSubhead flex mx-7 justify-between px-5 py-3 my-4 items-center rounded-full ">
       <div className="flex items-center gap-4">
-        <div className="bg-white px-3 py-2 rounded-full text-sm"><HomeIcon color="#71736B" size={24}/></div>
+        <Link to={"/landing"}>
+        <div className="bg-white px-3 py-2 rounded-full text-sm"><HomeIcon color="#585953" size={24}/></div>
+        </Link>
         {activeIndex !== null &&
           navlist[activeIndex] &&
           navlist[activeIndex].subhead &&

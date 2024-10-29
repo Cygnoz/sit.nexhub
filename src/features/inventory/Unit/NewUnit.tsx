@@ -1,14 +1,47 @@
-import { useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import Button from "../../../Components/Button";
 import CirclePlus from "../../../assets/icons/circleplus";
 import bgImage from "../../../assets/Images/12.png";
-import CehvronDown from "../../../assets/icons/CehvronDown";
+
 import Modal from "../../../Components/model/Modal";
+import { endponits } from "../../../Services/apiEndpoints";
+import useApi from "../../../Hooks/useApi";
+import toast from "react-hot-toast";
+import { UnitResponseContext } from "../../../context/ContextShare";
 
 type Props = {};
 
+interface UnitData  {
+  unitName: string;
+  symbol : string;
+  quantityCode:string;
+  precision: string;
+}
+
+
 const NewUnit = ({}: Props) => {
   const [isModalOpen, setModalOpen] = useState(false);
+
+
+  const { setUnitResponse } = useContext(UnitResponseContext)!;
+  const { request: addnewunit} = useApi("post", 5003);
+
+
+  const [initialUnitData, setInitialUnitData] = useState<UnitData>(
+    {
+    unitName: "",
+      symbol: "",
+      quantityCode:"",
+      precision:"",
+    
+    });
+    
+   
+
+  
+
+  console.log(initialUnitData);
+
 
   const openModal = () => {
     setModalOpen(true);
@@ -17,6 +50,55 @@ const NewUnit = ({}: Props) => {
   const closeModal = () => {
     setModalOpen(false);
   };
+
+
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value, } = event.target;
+
+   setInitialUnitData({...initialUnitData,[name]:value})
+  };
+
+
+ 
+  const handleSave = async (e: FormEvent) => {
+    e.preventDefault();
+
+    
+    try {
+      const url =  `${endponits.ADD_UNIT}`;
+      const body = initialUnitData;
+     
+      const { response, error } = await addnewunit(url, body);
+      if (!error && response) {
+        toast.success(response.data.message);
+     console.log(response);
+     setModalOpen(false);
+    
+          setUnitResponse((prevUnitResponse: any) => ({
+            ...prevUnitResponse,
+            ...body,
+          }));
+          setInitialUnitData({
+            unitName: "",
+            symbol: "",
+            quantityCode: "",
+            precision: "",
+          })
+        
+
+
+      } else {
+        console.log(error);
+        toast.error(error.response.data.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
   return (
     <div>
       <div>
@@ -56,7 +138,7 @@ const NewUnit = ({}: Props) => {
               </div>
             </div>
 
-            <form className="">
+            <form  onSubmit={handleSave} className="">
               <div className="">
                 <div className="mb-4">
                   <label className="block text-sm mb-1 text-labelColor">
@@ -64,6 +146,10 @@ const NewUnit = ({}: Props) => {
                   </label>
                   <input
                     type="text"
+                    name="unitName"
+                    value={initialUnitData.unitName}
+                    placeholder="Name"
+                    onChange={handleInputChange}
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-10"
                   />
                 </div>
@@ -74,6 +160,10 @@ const NewUnit = ({}: Props) => {
                   </label>
                   <input
                     type="text"
+                  name="symbol"
+                    value={initialUnitData.symbol}
+                    placeholder="Symbol"
+                    onChange={handleInputChange}
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-10"
                   />
                 </div>
@@ -82,37 +172,46 @@ const NewUnit = ({}: Props) => {
                     Unit Quantity
                   </label>
                   <div className="relative w-full">
-                    <select className="block appearance-none w-full h-10  text-zinc-400 bg-white border border-inputBorder text-sm  pl-9 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <option value="" className="text-gray"></option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
+ <input
+type="text"
+name="quantityCode"
+  value={initialUnitData.quantityCode}
+  placeholder="Unit Quantity"
+  onChange={handleInputChange}
+className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-10">
+
+</input>
+                  
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm my-3 text-labelColor">
-                    Unit Precision
-                  </label>
-                  <div className="relative w-full">
-                    <select className="block appearance-none w-full h-10  text-zinc-400 bg-white border border-inputBorder text-sm  pl-9 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <option value="" className="text-gray"></option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
-                  </div>
-                </div>
+  <label className="block text-sm my-3 text-labelColor">
+    Unit Precision
+  </label>
+  <div className="relative w-full">
+  <input 
+
+type="text"
+name= "precision"
+  value={initialUnitData.precision}
+  placeholder="Unit Precision"
+  onChange={handleInputChange}
+  className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-10"></input>
+  
+   
+  </div>
+</div>
+
 
                 <br />
                 <div className="flex justify-end gap-2 mb-3">
 
                  
-                  <Button variant="primary" size="sm">
+                  <Button type="submit" variant="primary" size="sm">
                     Save
                   </Button>
-                   <Button onClick={closeModal} variant="secondary" size="sm">
+                   <Button  variant="secondary" size="sm">
 
                     Cancel
                   </Button>

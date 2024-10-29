@@ -1,5 +1,5 @@
 import { useState } from "react";
-    import CustomiseColmn from "./CustomiseColmn";
+import CustomiseColmn from "../../../Components/CustomiseColum";
 import {  useNavigate } from "react-router-dom";
 import DotIcon from "../../../assets/icons/DotIcon";
 

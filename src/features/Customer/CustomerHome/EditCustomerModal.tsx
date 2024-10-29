@@ -7,7 +7,7 @@ import PlusCircle from "../../../assets/icons/PlusCircle";
 import Globe from "../../../assets/icons/Globe";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import PhoneInput from "react-phone-input-2";
 import Pen from "../../../assets/icons/Pen";
 import { useParams } from "react-router-dom";
@@ -86,7 +86,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
   const [taxselected, setTaxSelected] = useState<string | null>("Taxable");
   const [openingType, setOpeningtype] = useState<any | null>("Debit");
   const shippingAddressRef = useRef<HTMLDivElement | null>(null);
-const BillingAddressRef = useRef<HTMLDivElement | null>(null);
+  const BillingAddressRef = useRef<HTMLDivElement | null>(null);
   const [activeTab, setActiveTab] = useState<string>("otherDetails");
   const [paymentTerms, setPaymentTerms] = useState<any | []>([]);
   const [gstOrVat, setgstOrVat] = useState<any | []>([]);
@@ -377,17 +377,10 @@ const BillingAddressRef = useRef<HTMLDivElement | null>(null);
   const handleEdit = async () => {
     const newErrors = { ...errors };
 
-    if (
-      !customerdata.customerDisplayName ||
-      !/^[A-Za-z\s]+$/.test(customerdata.customerDisplayName)
-    ) {
+    if (customerdata.customerDisplayName === "") {
       newErrors.customerDisplayName = true;
-    } else {
-      newErrors.customerDisplayName = false;
     }
-
     if (Object.values(newErrors).some((error) => error)) {
-      // console.log("Validation failed with errors:", newErrors);
       setErrors(newErrors);
       return;
     }
@@ -411,7 +404,6 @@ const BillingAddressRef = useRef<HTMLDivElement | null>(null);
     }
   };
   const handleplaceofSupply = () => {
-
     if (oneOrganization.organizationCountry) {
       const country = countryData.find(
         (c: any) =>
@@ -433,7 +425,6 @@ const BillingAddressRef = useRef<HTMLDivElement | null>(null);
   };
 
   const getOneOrganization = async () => {
-
     try {
       const url = `${endponits.GET_ONE_ORGANIZATION}`;
       const apiResponse = await getOrganization(url);
@@ -449,11 +440,10 @@ const BillingAddressRef = useRef<HTMLDivElement | null>(null);
     }
   };
 
-
   useEffect(() => {
     getOneOrganization();
-    if(addressEdit){
-      setActiveTab("address")
+    if (addressEdit) {
+      setActiveTab("address");
     }
   }, []);
 
@@ -470,43 +460,39 @@ const BillingAddressRef = useRef<HTMLDivElement | null>(null);
     }
   }, [customerDataPorps]);
 
+  const addressscroll = () => {
+    if (addressEdit === "shippingAddressEdit" && shippingAddressRef.current) {
+      shippingAddressRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+    if (addressEdit === "billingAddressEdit" && BillingAddressRef.current) {
+      BillingAddressRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
-
-
-
-const addressscroll=()=>{
-  if (addressEdit === "shippingAddressEdit" && shippingAddressRef.current) {
-    shippingAddressRef.current.scrollIntoView({  behavior: 'smooth', block: 'start'});
-  }
-  if (addressEdit === "billingAddressEdit" && BillingAddressRef.current) {
-    BillingAddressRef.current.scrollIntoView({ behavior: 'smooth' });
-  }
-}
-
-useEffect(() => {
- addressscroll()
-}, [addressEdit,addressscroll]);
-
-  
+  useEffect(() => {
+    addressscroll();
+  }, [addressEdit, addressscroll]);
 
   return (
     <div>
-     {addressEdit  ? (
-  <button onClick={() => setModalOpen(true)} >
-    <Pen color={"#303F58"} />
-  </button>
-
-) : (
-  <Button
-    onClick={() => setModalOpen(true)}
-    variant="secondary"
-    size="sm"
-    className="text-[10px] h-6 px-5"
-  >
-    <Pen color={"#303F58"} />
-    Edit
-  </Button>
-)}
+      {addressEdit ? (
+        <button onClick={() => setModalOpen(true)}>
+          <Pen color={"#303F58"} />
+        </button>
+      ) : (
+        <Button
+          onClick={() => setModalOpen(true)}
+          variant="secondary"
+          size="sm"
+          className="text-[10px] h-6 px-5"
+        >
+          <Pen color={"#303F58"} />
+          Edit
+        </Button>
+      )}
 
       <Modal
         open={isModalOpen}
@@ -515,7 +501,6 @@ useEffect(() => {
         style={{ width: "80%" }}
       >
         <>
-
           <div className="p-5 mt-3">
             <div className="mb-5 flex p-2 rounded-xl bg-CreamBg relative overflow-hidden items-center">
               <div className="relative ">
@@ -722,15 +707,16 @@ useEffect(() => {
                     onChange={(e) => {
                       const value = e.target.value;
                       handleChange(e);
-                      if (value && !/^[A-Za-z\s]+$/.test(value)) {
+
+                      if (!value || !/^[A-Za-z0-9\s\W]+$/.test(value)) {
                         setErrors((prevErrors) => ({
                           ...prevErrors,
-                          companyName: true,
+                          customerDisplayName: true,
                         }));
                       } else {
                         setErrors((prevErrors) => ({
                           ...prevErrors,
-                          companyName: false,
+                          customerDisplayName: false,
                         }));
                       }
                     }}
@@ -749,13 +735,14 @@ useEffect(() => {
                     required
                     type="text"
                     name="customerDisplayName"
-                    className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                    className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                     placeholder="Enter Display Name"
                     value={customerdata.customerDisplayName}
                     onChange={(e) => {
                       const value = e.target.value;
                       handleChange(e);
-                      if (!value || !/^[A-Za-z\s]+$/.test(value)) {
+
+                      if (!value || !/^[A-Za-z0-9\s\W]+$/.test(value)) {
                         setErrors((prevErrors) => ({
                           ...prevErrors,
                           customerDisplayName: true,
@@ -769,44 +756,24 @@ useEffect(() => {
                     }}
                   />
 
-                  {errors.customerDisplayName &&
-                    customerdata.customerDisplayName.length > 0 && (
-                      <div className="text-red-800 text-xs ms-2 mt-1">
-                        Please enter a valid Company Name (letters only).
-                      </div>
-                    )}
+                  {errors.customerDisplayName && (
+                    <div className="text-red-800 text-xs ms-2 mt-1">
+                      Please enter a Customer Display Name.
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label htmlFor="">Customer Email</label>
                   <input
-                    type="text"
+                    type="email"
                     name="customerEmail"
                     className="pl-2 text-sm w-[100%] mt-1  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
                     placeholder="Enter Email"
+                    onChange={handleChange}
                     value={customerdata.customerEmail}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      handleChange(e);
-                      if (!value || !/^[A-Za-z\s]+$/.test(value)) {
-                        setErrors((prevErrors) => ({
-                          ...prevErrors,
-                          customerDisplayName: true,
-                        }));
-                      } else {
-                        setErrors((prevErrors) => ({
-                          ...prevErrors,
-                          customerDisplayName: false,
-                        }));
-                      }
-                    }}
                   />
 
-                  {errors.customerDisplayName &&
-                    customerdata.customerDisplayName.length > 0 && (
-                      <div className="text-red-800 text-xs ms-2 mt-1">
-                        Please enter a valid Company Name (letters only).
-                      </div>
-                    )}
+                
                 </div>
                 <div>
                   <label htmlFor="">Membership Card Number</label>
@@ -846,14 +813,15 @@ useEffect(() => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="">Date of Birth</label>
+                  <label htmlFor="dob">Date of Birth</label>
                   <input
                     type="date"
                     name="dob"
-                    className="pl-2 text-sm w-[100%] mt-1  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                    className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                     placeholder="Value"
                     value={customerdata.dob}
                     onChange={handleChange}
+                    max={new Date().toISOString().split("T")[0]} // Set max to today's date
                   />
                 </div>
               </div>
@@ -1374,7 +1342,10 @@ useEffect(() => {
                   {activeTab === "address" && (
                     <>
                       {/* Billing Address */}
-                      <div className="space-y-3 p-5 text-sm" ref={BillingAddressRef}>
+                      <div
+                        className="space-y-3 p-5 text-sm"
+                        ref={BillingAddressRef}
+                      >
                         <p>
                           <b>Billing Address</b>
                         </p>
@@ -1556,8 +1527,11 @@ useEffect(() => {
                       </div>
 
                       {/* Shipping Address */}
-                      <div className="space-y-3 p-5 text-sm"ref={shippingAddressRef} >
-                        <div className="flex" >
+                      <div
+                        className="space-y-3 p-5 text-sm"
+                        ref={shippingAddressRef}
+                      >
+                        <div className="flex">
                           <p>
                             <b>Shipping Address</b>
                           </p>
@@ -1765,10 +1739,10 @@ useEffect(() => {
                                 Salutation
                               </th>
                               <th className="py-2 px-5 font-medium border-b border-tableBorder relative">
-                                FirstName
+                                First Name
                               </th>
                               <th className="py-2 px-4 font-medium border-b border-tableBorder relative">
-                                LastName
+                                Last Name
                               </th>
                               <th className="py-2 px-4 font-medium border-b border-tableBorder relative">
                                 Email Address
@@ -1782,9 +1756,9 @@ useEffect(() => {
                             {rows.map((row, index) => (
                               <tr className="relative text-center" key={index}>
                                 <td className="py-2.5 px- border-y border-tableBorder justify-center mt-4 gap-2 items-center flex-1">
-                                  <div className="relative w-full">
+                                <div className="relative w-full text-center ms-3">
                                     <select
-                                      className="block relative appearance-none w-full h-9 text-[#818894] focus:border-none  bg-white text-sm text-center border-none rounded-md leading-tight"
+                                      className="block  appearance-none w-full h-9  text-zinc-400 bg-white  text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                       value={row.salutation}
                                       onChange={(e) =>
                                         handleRowChange(
@@ -1797,23 +1771,23 @@ useEffect(() => {
                                       <option value="" className="text-gray">
                                         Select
                                       </option>
-                                      <option value="Mr" className="text-gray">
-                                        Mr
-                                      </option>
-                                      <option value="Mrs" className="text-gray">
-                                        Mrs
+                                      <option value="Mr." className="text-gray">
+                                        Mr.
                                       </option>
                                       <option
-                                        value="Miss"
+                                        value="Mrs."
                                         className="text-gray"
                                       >
-                                        Miss
+                                        Mrs.
                                       </option>
-                                      <option value="Dr" className="text-gray">
-                                        Dr
+                                      <option value="Ms." className="text-gray">
+                                        Ms.
+                                      </option>
+                                      <option value="Dr." className="text-gray">
+                                        Dr.
                                       </option>
                                     </select>
-                                    <div className="pointer-events-none absolute inset-y-0 -right-8 flex items-center px-2 text-gray-700">
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                                       <CehvronDown color="gray" />
                                     </div>
                                   </div>
@@ -1922,7 +1896,6 @@ useEffect(() => {
           </div>
         </>
       </Modal>
-      <Toaster position="top-center" reverseOrder={true} />
     </div>
   );
 };

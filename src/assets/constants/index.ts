@@ -58,11 +58,11 @@ const navlist = [
   {
     nav: "Sales",
     icon: shoppingCart,
-    route: "/customer",
+    route: "/sales",
     subhead: [
       {
         headName: "Dashboard",
-        subRoute: "/customer",
+        subRoute: "/sales",
       },
       {
         headName: "Sales Order",
@@ -95,7 +95,7 @@ const navlist = [
     ],
   },
   {
-    nav: "Accountant",
+    nav: "Accounts",
     icon: squreUserRound,
     route: "/accountant",
     subhead: [
@@ -241,7 +241,9 @@ export const paymentTermsList = [
 export const organizationList = [
   { title: "Profile", route: "/settings/organization/profile" },
   { title: "Currencies", route: "/settings/currencies" },
+  {title:"Accounts",route:"/settings/accounts"},
   { title: "Additional Details", route: "/settings/invoice" },
+  
 ];
 
 export const taxList = [{ title: "Taxes", route: "/settings/taxes" }];
@@ -336,6 +338,7 @@ export const settingsList = [
     subhead: [
       { headName: "Profile", subRoute: "/settings/organization/profile" },
       { headName: "Currencies", subRoute: "/settings/organization/currencies" },
+      {headName:"Accounts",subRoute:"/settings/organization/accounts"},
       {
         headName: "Additional Details",
         subRoute: "/settings/organization/invoice",

@@ -9,6 +9,8 @@ import SettingsIcons from "../../../assets/icons/SettingsIcon";
 import NewCustomerModal from "../../Customer/CustomerHome/NewCustomerModal";
 import NewInvoiceTable from "./NewInvoiceTable";
 import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
+import ScanEye from "../../../assets/icons/ScanEye";
+import Upload from "../../../assets/icons/Upload";
 
 type Props = {};
 
@@ -19,6 +21,7 @@ const NewInvoice = ({}: Props) => {
     null
   );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
@@ -31,6 +34,10 @@ const NewInvoice = ({}: Props) => {
     ) {
       setOpenDropdownIndex(null);
     }
+  };
+
+  const toggleView = () => {
+    setIsExpanded(!isExpanded);
   };
 
   useEffect(() => {
@@ -248,85 +255,274 @@ const NewInvoice = ({}: Props) => {
                 </div>
               </div>
             <p className="font-bold">Add Item</p>
-            <NewInvoiceTable />
-           
-            <br />
-            <div className="text-sm">
-              <label htmlFor="" className="">
-                Add Note
-                <input
-                  name=""
-                  id=""
-                  placeholder="Note"
-                  className="border-inputBorder w-full text-sm border rounded  p-2 h-[57px] mt-2 "
-                />
-              </label>
+            <NewInvoiceTable />  
+          
             </div>
-            <div className="text-sm mt-3">
-              <label htmlFor="" className="">
-                Terms & Conditions
-                <input
-                  name=""
-                  id=""
-                  placeholder="Add Terms & Conditions of your business"
-                  className="border-inputBorder w-full text-sm border rounded p-2 h-[57px] mt-2"
-                />
-              </label>
-            </div>
+       
+            <button className="mt-0" onClick={toggleView}>
+    <p className="text-black my-0 text-sm flex gap-2 items-center">
+      <ScanEye/>
+      <b>{isExpanded ? 'View less' : 'View more'}</b>
+    </p>
+  </button>
+
+  {isExpanded && (
+   <div>
+   {/* Your form elements go here */}
+   <form>
+  <div className="grid grid-cols-12 gap-4 py-5">
+    <div className="bg-secondary_main p-0 min-h-max rounded-xl relative col-span-12">
+      <div className="grid grid-cols-2 gap-5 mt-0">
+        <div className="relative col-span-1">
+          <div className="w-full">
+            <label htmlFor="" className="">
+              Other expenses
+              <input
+                name=""
+                id=""
+                placeholder="Other expense"
+                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
+              />
+            </label>
+          </div>
+        </div>
+        <div className="relative col-span-1">
+          <div className="w-full">
+            <label className="block text-sm mb-1 text-labelColor">
+              Other Expense Reason
+              <input
+                name=""
+                id=""
+                placeholder="other expense reason"
+                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-5 mt-0">
+        <div className="relative col-span-1">
+          <div className="w-full">
+            <label htmlFor="" className="">
+              Vehicle Number
+              <input
+                name=""
+                id=""
+                placeholder="Enter vehicle number"
+                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
+              />
+            </label>
+          </div>
+        </div>
+        <div className="relative col-span-1">
+          <div className="w-full">
+            <label className="block text-sm mb-1 text-labelColor">
+              Freight Amount
+              <input
+                name=""
+                id=""
+                placeholder="Enter freight Amount"
+                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
+              />
+            </label>
+          </div>
+        </div>
+        <div className="relative col-span-1">
+          <div className="w-full">
+            <label className="block text-sm mb-1 text-labelColor">
+              Round off Amount 
+              <input
+                name=""
+                id=""
+                placeholder="Enter round off amount"
+                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
+              />
+            </label>
+          </div>
         </div>
       </div>
     </div>
-    <div className="col-span-4">
-          <div className="bg-[#FFFFFF] p-5 text-sm rounded-xl space-y-4 text-textColor">
-           
-            <div className="grid grid-cols-12 pb-4  text-dropdownText border-b-2 border-slate-200">
-              <div className="col-span-10 mt-5">
-                <p>Untaxed Amount</p>
-              </div>
-              <div className="col-span-2 mt-5">
-                <p className="text-base  font-bold">RS 0.00</p>
-              </div>
+  </div>
+</form>
 
-              <div className="col-span-10 mt-1">
-                <p>SGST</p>
-              </div>
-              <div className="col-span-2 mt-1">
-                <p className="text-base">RS 0.00</p>
-              </div>
 
-              <div className="col-span-10">
-                <p> CGST</p>
-              </div>
-              <div className="col-span-2">
-                <p className="text-base">RS 0.00</p>
-              </div>
 
-              <div className="col-span-10 mt-1">
-                <p className="font-bold text-base text-black">Total</p>
-              </div>
-              <div className="col-span-2 mt-1">
-                <p className="text-base font-bold">RS 0.00</p>
-              </div>
-            </div>
-          
-            <div className="flex gap-4 pt-3 justify-end">
-              {" "}
-              <Button size="sm" variant="secondary" >
-                <p>Cancel</p>
-              </Button>
-              <Button size="sm" variant="secondary" >
-                <PrinterIcon height={18} width={18} color="currentColor" />
-                <p>Print</p>
-              </Button>
-              <Button size="sm" variant="primary" >
-                <p>Save & Send</p>
-              </Button>{" "}
-            </div>
-          </div>
+ </div>
+
+  )}
+</div>
+
+      
+          <br />
+       
         </div>
+        <div className="col-span-4">
+        <div className="bg-secondary_main p-5 min-h-max rounded-xl relative  mt-0">
+
+        <div className="mt-5">
+            <label htmlFor="" className="">
+              Add Note
+              <input
+                name=""
+                id=""
+                placeholder="Note"
+                className="border-inputBorder w-full text-sm border rounded  p-2 h-[57px] mt-2 "
+              />
+            </label>
+          </div>
+          <div className="mt-4">
+            <label htmlFor="" className="">
+              Terms & Conditions
+              <input
+                name=""
+                id=""
+                placeholder="Add Terms & Conditions of your business"
+                className="border-inputBorder w-full text-sm border rounded p-2 h-[57px] mt-2"
+              />
+            </label>
+          </div>
+          <div className="text-sm mt-3">
+  <label className="block mb-3">
+    Attach files to the Debit Notes 
+    <div className="border-inputBorder border-gray-800 w-full border-dashed border p-2 rounded flex flex-col gap-2 justify-center items-center bg-white mb-4 mt-2">
+      <span className="text-center inline-flex items-center gap-2">
+        <Upload /> 
+        Upload File 
+      </span>
+      <div className="text-center">
+        Maximum File Size: 1 MB
+      </div>
     </div>
-    </div>
+    <p className="text-xs mt-1 text-gray-600"></p>
+    <input
+      type="file"
+      className="hidden"
+      value=""
+      name="documents"
+      // onChange={(e)=>handleFileChange(e)}
+    />
+  </label>
+</div>
+<div className="grid grid-cols-12 pb-4 text-dropdownText border-b-2 border-slate-200">
+  
+  {/* Sub Total */}
+  <div className="col-span-9 flex items-center mb-3">
+    <p>Sub Total</p>
+  </div>
+  <div className="col-span-3 flex justify-end items-center mb-3">
+    <p className="text-xl">Rs 0.00</p>
+  </div>
+
+  {/* Total Item */}
+  <div className="col-span-9 flex items-center mb-3">
+    <p>Total Item</p>
+  </div>
+  <div className="col-span-3 flex justify-end items-center mb-3">
+    <p className="text-xl">Rs 0.00</p>
+  </div>
+
+  {/* Bill Discount */}
+  <div className="col-span-9 mb-3">
+    <p>
+      Bill Discount
+      <br />
+      <span className="text-[#820000]">Apply after tax</span>
+    </p>
+  </div>
+  <div className="col-span-3 flex justify-end items-center gap-2 mb-3">
+    {/* Centered 0% dropdown */}
+    <div className="border border-neutral-300 flex items-center justify-center rounded-lg text-xs p-2 mr-2">
+  0% <CehvronDown color="currentColor" width={15} height={15} />
+</div>
+
+    {/* Rs 0.00 amount */}
+    <p className="text-xl">Rs 0.00</p>
+  </div>
+
+  {/* Total Discount */}
+  <div className="col-span-9 flex items-center mb-3">
+    <p>Total Discount</p>
+  </div>
+  <div className="col-span-3 flex justify-end items-center mb-3">
+    <p className="text-xl">Rs 0.00</p>
+  </div>
+
+  {/* SGST */}
+  <div className="col-span-9 flex items-center mb-3">
+    <p>SGST</p>
+  </div>
+  <div className="col-span-3 flex justify-end items-center mb-3">
+    <p className="text-xl">Rs 0.00</p>
+  </div>
+
+  {/* CGST */}
+  <div className="col-span-9 flex items-center">
+    <p>CGST</p>
+  </div>
+  <div className="col-span-3 flex justify-end items-center">
+    <p className="text-xl">Rs 0.00</p>
+  </div>
+
+  {/* Total Taxed Amount */}
+  <div className="col-span-9 flex items-center mb-3">
+    <p>Total Taxed Amount</p>
+  </div>
+  <div className="col-span-3 flex justify-end items-center mb-3">
+    <p className="text-xl">Rs 0.00</p>
+  </div>
+
+  {/* Other expense - Freight */}
+  <div className="col-span-9 flex items-center mb-3">
+    <p>Other expense</p>
+  </div>
+  <div className="col-span-3 flex justify-end items-center mb-3">
+    <p className="text-xl">Rs 0.00</p>
+  </div>
+  <div className="col-span-9 flex items-center mb-3">
+    <p>Freight</p>
+  </div>
+  <div className="col-span-3 flex justify-end items-center mb-3">
+    <p className="text-xl">Rs 0.00</p>
+  </div>
+
+  {/* Round off */}
+  <div className="col-span-9 flex items-center">
+    <p>Round off</p>
+  </div>
+  <div className="col-span-3 flex justify-end items-center">
+    <p className="text-xl">Rs 0.00</p>
+  </div>
+
+  {/* Total */}
+  <div className="col-span-9 flex items-center mt-1">
+    <p className="font-bold text-base text-black">Total</p>
+  </div>
+  <div className="col-span-3 flex justify-end items-center mt-1">
+    <p className="text-xl font-bold">Rs 0.00</p>
+  </div>
+</div>
+
+{/* Action buttons */}
+<div className="flex gap-4 m-5 justify-end">
+  <Button variant="secondary" size="sm">
+    Cancel
+  </Button>
+  <Button variant="secondary" size="sm">
+    <PrinterIcon height={18} width={18} color="currentColor" />
+    Print
+  </Button>
+  <Button variant="primary" size="sm">
+    Save & send
+  </Button>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
   );
 };
 
 export default NewInvoice;
+

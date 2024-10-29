@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Button from "../../Components/Button";
 import bgImage from "../../assets/Images/Group 2506.png";
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Toaster, toast } from 'react-hot-toast';
+import toast  from 'react-hot-toast';
 import axios from 'axios';
 import useApi from '../../Hooks/useApi';
 import { endponits } from '../../Services/apiEndpoints';
@@ -168,7 +168,6 @@ function Otp({}: Props) {
           <img src={bgImage} alt="Dashboard preview" className="w-full" />
         </div>
       </div>
-      <Toaster />
     </div>
   );
 }

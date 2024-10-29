@@ -8,35 +8,41 @@ import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
 import PlusCircle from "../../../../assets/icons/PlusCircle";
 import { Link } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type Row = {
-  itemName: string;
-  itemImage: string;
+  itemImage?: string;
   itemId: string;
-  itemQuantity: string;
-  itemSellingPrice: string;
-  itemDiscount: string;
-  itemAmount: string;
-  itemCgst: string;
-  itemSgst: string;
-  itemIgst: string;
+  itemName: string; 
+  itemQuantity: number;
+  itemCostPrice: number;
+  itemTax:string;
+  itemDiscount: number;
   itemDiscountType: string;
-  itemStock:string;
+  itemAmount: number;
+  itemSgst: number;
+  itemCgst: number;
+  itemIgst: number;
+  itemVat: number;
+  itemSgstAmount: number; 
+  itemCgstAmount: number; 
+  itemIgstAmount: number; 
+  itemVatAmount: number;  
 };
 
 type Props = {
-  purchaseOrderState?: PurchaseOrder;
-  isIntraState?:Boolean;
+  purchaseOrderState?: any;
+  isInterState?: Boolean;
   setPurchaseOrderState?: (value: any) => void;
-  oneOrganization?:any
+  oneOrganization?: any;
+  isNonTaxable?: Boolean;
 };
 
 const NewOrderTable = ({
   purchaseOrderState,
   setPurchaseOrderState,
-  isIntraState,
-  oneOrganization
+  isInterState,
+  oneOrganization,
 }: Props) => {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
@@ -46,18 +52,22 @@ const NewOrderTable = ({
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<Row[]>([
     {
-      itemName: "",
-      itemImage: "",
       itemId: "",
-      itemQuantity: "",
-      itemSellingPrice: "",
-      itemDiscount: "",
-      itemAmount: "",
-      itemSgst: "",
-      itemCgst: "",
-      itemIgst: "",
+      itemName: "",
+      itemQuantity: 0,
+      itemCostPrice: 0,
+      itemTax: "",
+      itemDiscount: 0,
       itemDiscountType: "percentage",
-      itemStock:"",
+      itemAmount: 0,
+      itemSgst: 0,
+      itemCgst: 0,
+      itemIgst: 0,
+      itemVat: 0,
+      itemSgstAmount: 0,
+      itemCgstAmount: 0,
+      itemIgstAmount: 0,
+      itemVatAmount: 0
     },
   ]);
 
@@ -78,30 +88,24 @@ const NewOrderTable = ({
     }
   };
 
-  useEffect(() => {
-    if (openDropdownId !== null) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [openDropdownId]);
-
   const addRow = () => {
-    const newRow: any = {
-      itemName: "",
-      itemImage: "",
+    const newRow: Row = {
       itemId: "",
-      itemQuantity: "",
-      itemSellingPrice: "",
-      itemDiscount: "",
-      itemAmount: "",
-      itemSgst: "",
-      itemCgst: "",
-      itemIgst: "",
+      itemName: "",
+      itemQuantity: 0,
+      itemCostPrice: 0,
+      itemTax: "",
+      itemDiscount: 0,
       itemDiscountType: "percentage",
+      itemAmount: 0,
+      itemSgst: 0,
+      itemCgst: 0,
+      itemIgst: 0,
+      itemVat: 0,
+      itemSgstAmount: 0,
+      itemCgstAmount: 0,
+      itemIgstAmount: 0,
+      itemVatAmount: 0
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
@@ -114,123 +118,147 @@ const NewOrderTable = ({
     const newRows = [...rows];
     newRows[index].itemName = item.itemName;
     newRows[index].itemImage = item.itemImage;
-    newRows[index].itemSellingPrice = item.sellingPrice || "0";
-    newRows[index].itemQuantity = "1";
-    newRows[index].itemStock = item.reorderPoint;
+    newRows[index].itemCostPrice = item.costPrice;
+    newRows[index].itemQuantity = 1;
     newRows[index].itemId = item._id;
-    const sellingPrice = parseFloat(newRows[index].itemSellingPrice);
-    const discountedPrice = calculateDiscountPrice(sellingPrice, newRows[index].itemDiscount, newRows[index].itemDiscountType);
-    
-    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(discountedPrice, items, index, isIntraState as boolean);
+    newRows[index].itemCgst = item.cgst;
+    newRows[index].itemSgst = item.sgst;
+    newRows[index].itemIgst = item.igst;
   
+    const costPrice = newRows[index].itemCostPrice;
+    const discountedPrice = calculateDiscountPrice(
+      costPrice,
+      newRows[index].itemDiscount,
+      newRows[index].itemDiscountType
+    );
+  
+    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+      discountedPrice,
+      newRows[index], 
+      isInterState as boolean
+    );
+
     newRows[index].itemAmount = itemAmount;
-    newRows[index].itemCgst = cgstAmount;
-    newRows[index].itemSgst = sgstAmount;
-    newRows[index].itemIgst = igstAmount;
+    newRows[index].itemCgstAmount = cgstAmount;
+    newRows[index].itemSgstAmount = sgstAmount;
+    newRows[index].itemIgstAmount = igstAmount;
   
     setRows(newRows);
-    
+  
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      itemTable: newRows,
+      itemTable: newRows.map((row) => {
+        const updatedItem = { ...row };
+        delete updatedItem.itemImage;
+        return updatedItem;
+      }),
     }));
   };
   
-  const calculateDiscountPrice = (totalSellingPrice: number, discountValue: string, discountType: string) => {
-    let discount = parseFloat(discountValue) || 0;
   
+  const calculateDiscountPrice = (
+    totalCostPrice: number,
+    discountValue: number,
+    discountType: string
+): number => {
+  let discount = typeof discountValue === 'string' ? Number(discountValue) : discountValue;
+    if (discount < 0) {
+        toast.error("Discount cannot be negative");
+        return totalCostPrice; 
+    }
+
     if (discountType === "percentage") {
-      if (discount > 100) {
-        discount = 100;
-        toast.error("Discount cannot exceed 100%");
-      }
-      return totalSellingPrice - (totalSellingPrice * discount) / 100;
+        if (discount > 100) {
+            discount = 100; 
+            toast.error("Discount cannot exceed 100%");
+        }
+        return totalCostPrice - (totalCostPrice * discount) / 100;
     } else {
-      if (discount > totalSellingPrice) {
-        discount = totalSellingPrice;
-        toast.error("Discount cannot exceed the selling price");
-      }
-      return totalSellingPrice - discount;
+        if (discount > totalCostPrice) {
+            discount = totalCostPrice; 
+            toast.error("Discount cannot exceed the selling price");
+        }
+        return totalCostPrice - discount;
     }
+};
+
+  
+  
+
+const calculateTax = (
+  discountedPrice: number,
+  item: any, 
+  isInterState: boolean
+) => { 
+  
+  const cgstPercentage = item.itemCgst || 0;
+  const sgstPercentage = item.itemSgst || 0;
+  const igstPercentage = item.itemIgst || 0;
+
+
+  let cgstAmount = 0;
+  let sgstAmount = 0;
+  let igstAmount = 0;
+
+  if (!isInterState) {
+    cgstAmount = (discountedPrice * cgstPercentage) / 100;
+    sgstAmount = (discountedPrice * sgstPercentage) / 100;
+  } else {
+    igstAmount = (discountedPrice * igstPercentage) / 100;
+  }
+
+  return {
+    itemAmount: discountedPrice,
+    cgstAmount,
+    sgstAmount,
+    igstAmount,
   };
-  
-  const calculateTax = (discountedPrice: number, items: any, index: number, isIntraState: boolean) => {
-    const cgstPercentage = items[index]?.cgst || 0;
-    const sgstPercentage = items[index]?.sgst || 0;
-    const igstPercentage = items[index]?.igst || 0;
-  
-    if (!isIntraState) {
-      const cgstAmount = ((discountedPrice * cgstPercentage) / 100).toFixed(2);
-      const sgstAmount = ((discountedPrice * sgstPercentage) / 100).toFixed(2);
-      return {
-        itemAmount: (discountedPrice + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2),
-        cgstAmount,
-        sgstAmount,
-        igstAmount: "0.00",
-      };
-    } else {
-      const igstAmount = ((discountedPrice * igstPercentage) / 100).toFixed(2);
-      return {
-        itemAmount: (discountedPrice + parseFloat(igstAmount)).toFixed(2),
-        cgstAmount: "0.00",
-        sgstAmount: "0.00",
-        igstAmount,
-      };
-    }
-  };
+};
 
-  const handleRowChange = (index: number, field: keyof Row, value: string) => {
-    const newRows = [...rows];
-    newRows[index] = { ...newRows[index], [field]: value };
   
-    const quantity = parseFloat(newRows[index].itemQuantity) || 0;
-    const stock = parseFloat(newRows[index].itemStock) || 0; 
-    const sellingPrice = parseFloat(newRows[index].itemSellingPrice) || 0;
+
+const handleRowChange = (index: number, field: keyof Row, value: string) => {
+  const newRows = [...rows];
+  newRows[index] = { ...newRows[index], [field]: value };
+
+  const quantity = newRows[index].itemQuantity || 0;
+  const costPrice = newRows[index].itemCostPrice || 0;
+  const totalCostPrice = quantity * costPrice;
+
+  const discountedPrice = calculateDiscountPrice(
+    totalCostPrice,
+    newRows[index].itemDiscount,
+    newRows[index].itemDiscountType
+  );
+
+  // Pass the individual item to calculateTax
+  const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+    discountedPrice,
+    newRows[index],
+    isInterState as boolean
+  );
+
+  newRows[index].itemAmount = itemAmount;
+  newRows[index].itemCgstAmount = cgstAmount;
+  newRows[index].itemSgstAmount = sgstAmount;
+  newRows[index].itemIgstAmount = igstAmount;
+
+  setRows(newRows);
+
+  setPurchaseOrderState?.((prevData: any) => ({
+    ...prevData,
+    itemTable: newRows.map((row) => {
+      const updatedItem = { ...row };
+      delete updatedItem.itemImage;
+      return updatedItem;
+    }),
+  }));
+};
+
   
-    if (quantity > stock) {
-      toast.error("Quantity exceeds available stock!"); 
-      return;
-    }
   
-    const totalSellingPrice = quantity * sellingPrice;
-  
-    const discountedPrice = calculateDiscountPrice(totalSellingPrice, newRows[index].itemDiscount, newRows[index].itemDiscountType);
-  
-    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(discountedPrice, items, index, isIntraState as boolean);
-  
-    newRows[index].itemAmount = itemAmount;
-    newRows[index].itemCgst = cgstAmount;
-    newRows[index].itemSgst = sgstAmount;
-    newRows[index].itemIgst = igstAmount;
-  
-    setRows(newRows);
-  
-    setPurchaseOrderState?.((prevData: any) => ({
-      ...prevData,
-      itemTable: newRows,
-    }));
-  };
 
 
-useEffect(() => {
-  const updatedRows = rows.map((row, index) => {
-      const discountedPrice = parseFloat(row.itemAmount) || 0; 
-      const taxDetails = calculateTax(discountedPrice, items, index, isIntraState as boolean);
-      return {
-          ...row,
-          itemAmount: taxDetails.itemAmount,
-          itemCgst: taxDetails.cgstAmount,
-          itemSgst: taxDetails.sgstAmount,
-          itemIgst: taxDetails.igstAmount,
-      };
-  });
-
-  setRows(updatedRows);
-}, [purchaseOrderState?.destinationOfSupply, purchaseOrderState?.sourceOfSupply, items, isIntraState]);
-  
-  
-  
-  
   const getAllItems = async () => {
     try {
       const url = `${endponits.GET_ALL_ITEM}`;
@@ -256,49 +284,49 @@ useEffect(() => {
     } else {
       const newRows = [
         {
-          itemName: "",
-          itemQuantity: "",
-          itemSellingPrice: "",
-          itemDiscount: "",
-          itemCgst: "0",
-          itemSgst: "0",
-          itemIgst: "0",
-          itemAmount: "0",
-          itemImage: "",
           itemId: "",
-          itemDiscountType: "",
-          itemStock: "",
+          itemName: "",
+          itemQuantity: 0,
+          itemCostPrice: 0,
+          itemTax: "",
+          itemDiscount: 0,
+          itemDiscountType: "percentage",
+          itemAmount: 0,
+          itemSgst: 0,
+          itemCgst: 0,
+          itemIgst: 0,
+          itemVat: 0,
+          itemSgstAmount: 0,
+          itemCgstAmount: 0,
+          itemIgstAmount: 0,
+          itemVatAmount: 0
         },
       ];
       setRows(newRows);
     }
   };
-  
-  
-
 
   const calculateTotalSGST = () => {
     return rows.reduce((total, row) => {
-      const sgst = !isIntraState ? parseFloat(row.itemSgst) || 0 : 0;
+      const sgst = !isInterState ? (row.itemSgstAmount) || 0 : 0;
       return total + sgst;
     }, 0);
   };
 
   // Function to calculate total CGST
-  const calculateTotalCGST = () => { 
+  const calculateTotalCGST = () => {
     return rows.reduce((total, row) => {
-      // console.log(row.itemCgst,"cgst");
+      console.log(row.itemCgstAmount,"total cgst");
 
-      const cgst = !isIntraState ? parseFloat(row.itemCgst) || 0 : 0;
+      const cgst = !isInterState ? (row.itemCgstAmount) || 0 : 0;
       return total + cgst;
-
     }, 0);
   };
 
   // Function to calculate total IGST
   const calculateTotalIGST = () => {
     return rows.reduce((total, row) => {
-      const igst = isIntraState ? parseFloat(row.itemIgst) || 0 : 0;
+      const igst = isInterState ? (row.itemIgstAmount) || 0 : 0;
       return total + igst;
     }, 0);
   };
@@ -306,39 +334,113 @@ useEffect(() => {
   // Function to calculate total item quantity
   const calculateTotalQuantity = () => {
     return rows.reduce((total, row) => {
-      const quantity = parseFloat(row.itemQuantity) || 0; 
-      return total + quantity; 
+      const quantity = parseFloat(row.itemQuantity?.toString() || '0'); 
+      return total + quantity;
     }, 0);
   };
-
-  const calculateDiscount = () => {
-    if (purchaseOrderState?.discountType !== "Item Line") {
-      return rows.reduce((total, row) => {
-        const discount = parseFloat(row.itemDiscount) || 0;
-        const quantity = parseFloat(row.itemQuantity) || 0;
-        const sellingPrice = parseFloat(row.itemSellingPrice) || 0;
-        
-        const totalSellingPrice = sellingPrice * quantity;
   
-        if (row.itemDiscountType === "percentage") {
-          return total + (totalSellingPrice * discount) / 100;
-        } else {
-          return total + discount;
-        }
-      }, 0);
-    }
+  const calculateDiscount = () => {
+    const totalDiscount = rows.reduce((total, row) => {
+      const discount = Number(row.itemDiscount) || 0; 
+            const quantity = row.itemQuantity || 0;
+      const costPrice = row.itemCostPrice || 0;
+  
+      const totalCostPrice = costPrice * quantity;
+  
+      if (row.itemDiscountType === "percentage") {
+        return total + (totalCostPrice * discount) / 100;
+      } else {
+        return total + discount;
+      }
+    }, 0);
+  
+    const roundedTotalDiscount = Math.round(totalDiscount * 100) / 100;
+  
+    return roundedTotalDiscount;
   };
   
-// Function to calculate the total subtotal
-const calculateTotalSubtotal = () => {
-  return rows.reduce((total, row) => {
-    const itemQuantity = parseFloat(row.itemQuantity) || 0;  
-    const itemPrice = parseFloat(row.itemSellingPrice) || 0;       
-    const subtotal = itemQuantity * itemPrice;              
-    return total + subtotal;                                 
-  }, 0);
-};
 
+  // Function to calculate the total subtotal
+  const calculateTotalSubtotal = () => {
+    return rows.reduce((total, row) => {
+      const itemQuantity = (row.itemQuantity) || 0;
+      const itemPrice = (row.itemCostPrice) || 0;
+      const subtotal = itemQuantity * itemPrice;
+      return total + subtotal;
+    }, 0);
+  };
+  const filteredItems = () => {
+    return items.filter((item: any) => {
+      const isSelected = rows.find((row) => row.itemId === item._id);
+      return (
+        !isSelected &&
+        item.itemName.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    });
+  };
+
+  useEffect(() => {
+    if (openDropdownId !== null) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openDropdownId]);
+
+  useEffect(() => {
+    const updatedRows = rows.map((row) => {
+      const discountedPrice = calculateDiscountPrice(
+        row.itemCostPrice * row.itemQuantity, 
+        row.itemDiscount,
+        row.itemDiscountType
+      );
+  
+      const taxDetails = calculateTax(
+        discountedPrice,
+        row, 
+        isInterState as boolean
+      );
+  
+      return {
+        ...row,
+        itemAmount: taxDetails.itemAmount, 
+        itemCgstAmount: taxDetails.cgstAmount,
+        itemSgstAmount: taxDetails.sgstAmount,
+        itemIgstAmount: taxDetails.igstAmount,
+      };
+    });
+  
+    setRows(updatedRows);
+  }, [
+    purchaseOrderState?.destinationOfSupply,
+    purchaseOrderState?.sourceOfSupply,
+    isInterState,
+  ]);
+  
+  
+
+  useEffect(() => {
+      const updatedRows = rows.map((row) => ({
+        ...row,
+        itemDiscountType: "",
+        itemDiscount: 0,
+      }));
+
+      setRows(updatedRows);
+
+      setPurchaseOrderState?.((prevData: any) => ({
+        ...prevData,
+        itemTable: updatedRows.map((row) => {
+          const updatedItem = { ...row };
+          delete updatedItem.itemImage;
+          return updatedItem;
+        }),
+      }));
+    
+  }, []);
 
   useEffect(() => {
     const totalQuantity = calculateTotalQuantity();
@@ -346,28 +448,36 @@ const calculateTotalSubtotal = () => {
     const totalCGST = calculateTotalCGST();
     const totalIGST = calculateTotalIGST();
     const totalSellingPrice = calculateTotalSubtotal();
-    const totalDiscount =calculateDiscount();
-
-    setPurchaseOrderState?.((prevData: any) => ({
-      ...prevData,
-      totalItem: totalQuantity, 
-      sgst: totalSGST,             
-      cgst: totalCGST,             
-      igst: totalIGST,    
-      subTotal: totalSellingPrice,    
-      totalDiscount:totalDiscount,     
-    }));
-  }, [rows, setPurchaseOrderState]);
+    const totalDiscount = calculateDiscount();
   
-  const filteredItems = () => {
-    return items.filter((item:any) =>
-      item.itemName?.toLowerCase().includes(searchValue.toLowerCase())
-    );
-  };
-console.log();
+  
+    setPurchaseOrderState?.((prevData: PurchaseOrder) => ({
+      ...prevData,
+      totalItem: totalQuantity,
+      sgst: totalSGST,
+      cgst: totalCGST,
+      igst: totalIGST,
+      subTotal: totalSellingPrice,
+      itemTotalDiscount: totalDiscount,
+      totalTaxAmount: isInterState 
+      ? totalIGST 
+      : totalSGST + totalCGST,    }));
+  }, [rows]);  
+  
 
-
-
+  useEffect(() => {
+      setRows((prevData: any) => {
+        if (Array.isArray(prevData)) {
+          return prevData.map((item) => ({
+            ...item,
+            itemDiscountType: "percentage",
+            itemDiscount: "",
+          }));
+        }
+        return [];
+      });
+    
+  }, []);
 
   useEffect(() => {
     getAllItems();
@@ -379,22 +489,14 @@ console.log();
         <table className="min-w-full bg-white rounded-lg relative pb-4 border-dropdownText">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr className="bg-lightPink">
-              {newPurchaseOrderTableHead.map((item, index) => {
-                if (
-                  item === "Discount" &&
-                  purchaseOrderState?.discountType === "Transaction Line"
-                ) {
-                  return null;
-                }
-                return (
+              {newPurchaseOrderTableHead.map((item, index) => (
                   <th
                     className="py-2 px-4 font-medium border-b border-tableBorder relative"
                     key={index}
                   >
                     {item}
                   </th>
-                );
-              })}
+                ))}
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px] ">
@@ -407,16 +509,16 @@ console.log();
                   >
                     {row.itemName ? (
                       <div className="cursor-pointer gap-2 grid grid-cols-12 appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
-                          <div className="flex items-start col-span-4">
-                            <img
-                              className="rounded-full h-10 w-10 "
-                              src={row.itemImage}
-                              alt=""
-                            />
-                          </div>
-                          <div className="col-span-8  text-start">
-                            <p className="text-textColor">{row.itemName}</p>
-                          </div>
+                        <div className="flex items-start col-span-4">
+                          <img
+                            className="rounded-full h-10 w-10 "
+                            src={row.itemImage}
+                            alt=""
+                          />
+                        </div>
+                        <div className="col-span-8  text-start">
+                          <p className="text-textColor">{row.itemName}</p>
+                        </div>
                       </div>
                     ) : (
                       <div className="cursor-pointer flex appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
@@ -429,7 +531,7 @@ console.log();
                     openDropdownType === "searchProduct" && (
                       <div
                         ref={dropdownRef}
-                        className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[40%] space-y-1"
+                        className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[30%] space-y-1"
                       >
                         <SearchBar
                           searchValue={searchValue}
@@ -441,7 +543,7 @@ console.log();
                             <div
                               key={idx}
                               className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                              onClick={() => handleItemSelect(item, index)} 
+                              onClick={() => handleItemSelect(item, index)}
                             >
                               <div className="col-span-2 flex justify-center">
                                 <img
@@ -456,7 +558,7 @@ console.log();
                                     {item.itemName}
                                   </p>
                                   <p className="text-xs text-gray-500">
-                                    Rate: RS.{item.sellingPrice}
+                                    Rate: {item.sellingPrice}
                                   </p>
                                 </div>
                                 <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
@@ -467,18 +569,18 @@ console.log();
                           ))
                         ) : (
                           <div className="text-center border-slate-400 border rounded-lg">
-                            <p className="text-[red] text-sm py-4">Items Not Found!</p>
+                            <p className="text-[red] text-sm py-4">
+                              Items Not Found!
+                            </p>
                           </div>
                         )}
                         <div>
-                      <Link to={"/inventory/Item/new"}>
-                          <button
-            className="bg-darkGreen text-darkRed rounded-lg py-4 px-6 flex items-center text-sm font-bold border-slate-400 border gap-2 w-full hover:bg-lightRed"
-          >
-            <PlusCircle color="darkRed" />
-         <p>   Add New Item</p>
-          </button>
-                      </Link>
+                          <Link to={"/inventory/Item/new"}>
+                            <button className="bg-darkGreen text-darkRed rounded-lg py-4 px-6 flex items-center text-sm font-bold border-slate-400 border gap-2 w-full hover:bg-lightRed">
+                              <PlusCircle color="darkRed" />
+                              <p> Add New Item</p>
+                            </button>
+                          </Link>
                         </div>
                       </div>
                     )}
@@ -487,71 +589,84 @@ console.log();
                   <input
                     type="text"
                     placeholder="0"
-                    className="w-[50px]  focus:outline-none "
-                    value={row.itemQuantity}
+                    className="w-[50px]  focus:outline-none text-center"
+                    value={row.itemQuantity || ""}
                     onChange={(e) =>
                       handleRowChange(index, "itemQuantity", e.target.value)
                     }
                   />
-                <div className="text-start text-[10px]">  <p>Stock OnHand:<b className="text-[12px]">{row.itemStock}</b> </p></div>
+               
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input
                     type="text"
                     placeholder="0"
                     className="w-[50px]  focus:outline-none text-center"
-                    value={row.itemSellingPrice}
+                    value={row.itemCostPrice}
                     onChange={(e) =>
-                      handleRowChange(index, "itemSellingPrice", e.target.value)
+                      handleRowChange(index, "itemCostPrice", e.target.value)
                     }
                     disabled
                   />
                 </td>
-                  <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <input
-                    disabled
-                      type="text"
-                      placeholder="0"
-                      className="w-[50px]  focus:outline-none text-center"
-                      value={!isIntraState ? (parseFloat(row.itemCgst) + parseFloat(row.itemSgst)).toFixed(2) : row.itemIgst }
-                    
-                    />
-                  </td>
-                {purchaseOrderState?.discountType !== "Transaction Line" && (
-
                 <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <div className="flex items-center justify-center gap-2 w-full">
-                    <input
-                      type="text"
-                      placeholder="0"
-                      className="w-[50px]  focus:outline-none text-center"
-                      value={row.itemDiscount}
-                      onChange={(e) =>
-                        handleRowChange(index, "itemDiscount", e.target.value)
-                      }
-                    />
-                    <div className="relative">
-                      <select
+                  {
+                   <input
+                   disabled
+                   type="text"
+                   placeholder="0"
+                   className="w-[50px] focus:outline-none text-center"
+                   value={
+                     !isInterState
+                       ? (
+                           ((row.itemCgstAmount) || 0) + ((row.itemSgstAmount) || 0) === 0
+                             ? "nil"
+                             : ((row.itemCgstAmount) + (row.itemSgstAmount))
+                         )
+                       : ((row.itemIgstAmount) || 0) === 0
+                       ? "nil"
+                       : (row.itemIgstAmount)
+                   }
+                 />
+                 
+                 
+                  }
+                </td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    <div className="flex items-center justify-center gap-2 w-full">
+                      <input
+                        type="text"
+                        placeholder="0"
+                        className="w-[50px]  focus:outline-none text-center"
+                        value={row.itemDiscount}
                         onChange={(e) =>
-                          handleRowChange(
-                            index,
-                            "itemDiscountType",
-                            e.target.value
-                          )
+                          handleRowChange(index, "itemDiscount", e.target.value)
                         }
-                        value={row.itemDiscountType}
-                        className="text-xs appearance-none w-[60px] p-1 text-zinc-400 bg-white border border-inputBorder rounded-lg"
-                      >
-                        <option value="percentage">%</option>
-                        <option value={oneOrganization.baseCurrency}>{oneOrganization.baseCurrency}</option>
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <ChevronDown color="gray" height={15} width={15} />
+                      />
+                      <div className="relative">
+                        <select
+                          onChange={(e) =>
+                            handleRowChange(
+                              index,
+                              "itemDiscountType",
+                              e.target.value
+                            )
+                          }
+                          value={row.itemDiscountType}
+                          className="text-xs appearance-none w-[60px] p-1 text-zinc-400 bg-white border border-inputBorder rounded-lg"
+                        >
+                          <option value="percentage">%</option>
+                          <option value="currency">
+                            {oneOrganization?.baseCurrency}
+                          </option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                          <ChevronDown color="gray" height={15} width={15} />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-                                )}
+                  </td>
+                
 
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input
@@ -578,9 +693,9 @@ console.log();
           </tbody>
         </table>
       </div>
-      <div className="w-[60%] mt-6">
+      <div className="w-[60%] mt-0">
         <button
-        type="button"
+          type="button"
           className="bg-darkGreen text-darkRed rounded-lg py-2 px-6 flex items-center text-sm font-bold"
           onClick={addRow}
         >
@@ -588,8 +703,6 @@ console.log();
           Add Item
         </button>
       </div>
-      <Toaster position="top-center" reverseOrder={true} />
-
     </div>
   );
 };

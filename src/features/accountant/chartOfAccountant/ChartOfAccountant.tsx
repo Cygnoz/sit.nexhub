@@ -5,7 +5,7 @@ import Table from "./Table";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { Account } from "../../../Types/Accountant";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type Props = {};
 
@@ -16,7 +16,7 @@ const ChartOfAccountant = ({}: Props) => {
 
   useEffect(() => {
     fetchAllAccounts();
-  }, []);
+}, []);
 
   const fetchAllAccounts = async () => {
     try {
@@ -33,18 +33,16 @@ const ChartOfAccountant = ({}: Props) => {
 
   const HandleOnSave = () =>{
     fetchAllAccounts();
-    toast.success('Account successfully added!');
+    toast.success('Account successfully added!'); 
   }
 
   return (
     <div className="mx-5 my-4">
-      <Toaster/>
       <div className="top-side flex items-center justify-between">
         <div className="head-frame">
           <h1>Chart Of Account</h1>
           <p className="text-sm">
-            Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla
-            egestas consectetur amet.
+          It serves as a framework for organizing financial data and helps ensure accurate and consistent reporting 
           </p>
         </div>
         <div className="button-frame">

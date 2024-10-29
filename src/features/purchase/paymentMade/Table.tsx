@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomiseColmn from "./CustomiseColmn";
+import CustomiseColmn from "../../../Components/CustomiseColum";
 
 interface Column {
   id: string;

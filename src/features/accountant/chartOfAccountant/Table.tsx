@@ -21,11 +21,11 @@ const Table = ({ accountData, searchValue, setSearchValue }: TableProps) => {
   const filteredAccounts = accountData.filter((account) => {
     const searchValueLower = searchValue.toLowerCase();
     return (
-      account.accountName.toLowerCase().startsWith(searchValueLower) ||
-      account.accountCode.toLowerCase().startsWith(searchValueLower) ||
-      account.accountSubhead.toLowerCase().startsWith(searchValueLower) ||
-      account.accountHead.toLowerCase().startsWith(searchValueLower) ||
-      account.description.toLowerCase().startsWith(searchValueLower)
+      account.accountName?.toLowerCase()?.startsWith(searchValueLower) ||
+      account.accountCode?.toLowerCase()?.startsWith(searchValueLower) ||
+      account.accountSubhead?.toLowerCase()?.startsWith(searchValueLower) ||
+      account.accountHead?.toLowerCase()?.startsWith(searchValueLower) ||
+      account.description?.toLowerCase()?.startsWith(searchValueLower)
     );
   });
 

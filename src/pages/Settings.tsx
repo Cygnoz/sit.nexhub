@@ -29,6 +29,7 @@ const settingsData: Setting[] = [
     imageUrl: organizationImg,
     route: "/settings/organization/profile",
   },
+ 
   {
     title: "Taxes & Compliance",
     description: "Manage taxes and compliance settings",

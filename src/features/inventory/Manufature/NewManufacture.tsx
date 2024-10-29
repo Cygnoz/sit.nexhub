@@ -1,5 +1,5 @@
 import { forwardRef, useState, useEffect, ChangeEvent } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Button from "../../../Components/Button";
 import Modal from "../../../Components/model/Modal";
 import PencilEdit from "../../../assets/icons/PencilEdit";
@@ -128,7 +128,6 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
 
   return (
     <div ref={ref}>
-      <Toaster position="top-center" reverseOrder={false} />
       <Modal open={true} onClose={onClose} className="">
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden h-24">
@@ -141,8 +140,7 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
                 Manage Manufacturer
               </h3>
               <p className="text-dropdownText font-semibold text-sm mt-2">
-                Have an insight on the profit or loss incurred due to the change
-                in exchange rates
+              Have an insight on the profit or loss incurred due to the change in exchange rates
               </p>
             </div>
             <div

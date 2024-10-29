@@ -1,18 +1,22 @@
-  import { RouteObject } from "react-router-dom";
-import Inventory from "../pages/Inventory";
-import ItemHome from "../features/inventory/Item/ItemHome";
-import UnitHome from "../features/inventory/Unit/UnitHome";
-import Unitconversion from "../features/inventory/Unit/Unitconversion";
-import AddItem from "../features/inventory/Item/AddItem";
-import ItemTrackingHome from "../features/inventory/ItemTracking/ItemTrackingHome";
+import { lazy } from "react";
+import { RouteObject } from "react-router-dom";
+
+// Lazy load your components
+const Inventory = lazy(() => import("../pages/Inventory"));
+const ItemHome = lazy(() => import("../features/inventory/Item/ItemHome"));
+const UnitHome = lazy(() => import("../features/inventory/Unit/UnitHome"));
+const Unitconversion = lazy(() => import("../features/inventory/Unit/Unitconversion"));
+const AddItem = lazy(() => import("../features/inventory/Item/AddItem"));
+const ItemTrackingHome = lazy(() => import("../features/inventory/ItemTracking/ItemTrackingHome"));
 
 const InventoryRoutes: RouteObject[] = [
   { path: "/inventory", element: <Inventory /> },
-  { path: "/inventory/Item", element: <ItemHome /> },
-  { path: "/inventory/Item/new", element: <AddItem /> },
+  { path: "/inventory/item", element: <ItemHome /> },
+  { path: "/inventory/item/new", element: <AddItem /> },
   { path: "/inventory/unit", element: <UnitHome /> },
   { path: "/inventory/unit/unit-conversion", element: <Unitconversion /> },
-  { path: "/inventory/item-tracking", element: <ItemTrackingHome/> },
+  { path: "/inventory/item-tracking", element: <ItemTrackingHome /> },
+ 
 ];
 
 export default InventoryRoutes;

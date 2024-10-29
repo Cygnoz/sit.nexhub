@@ -19,5 +19,4 @@ export const itemTrackingHead = [
   "Operation",
   "Unit Quantity",
   "Stakeholder",
-  "Actions",
 ];

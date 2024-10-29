@@ -90,7 +90,11 @@ const SupplierColumn = ({ columns, setColumns }: Props) => {
               &times;
             </div>
           </div>
-          <SearchBar onSearchChange={setSearchValue} searchValue={searchValue} placeholder="Search" />
+          <SearchBar
+            onSearchChange={setSearchValue}
+            searchValue={searchValue}
+            placeholder="Search"
+          />
           <div className="h-[400px] hide-scrollbar overflow-auto">
             {localColumns.map((col, index) => (
               <div

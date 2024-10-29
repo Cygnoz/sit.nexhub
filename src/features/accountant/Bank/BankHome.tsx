@@ -12,8 +12,7 @@ function BankHome({}: Props) {
         <div>
           <h3 className="font-bold text-2xl text-textColor">Bank</h3>
           <p className="text-sm text-gray mt-1">
-            Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla
-            egestas consectetur amet.
+          Providing essential details for managing financial transactions. Manage your banking details securely and efficiently
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">

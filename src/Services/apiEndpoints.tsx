@@ -6,14 +6,23 @@ export const endponits = {
   GET_COUNTRY_DATA: `get-countries-data`,
   GET_CURRENCY_LIST: `get-currency`,
  
-  //Sales
-  ADD_SALES_SETTINGS:`add-sales-settings`,
-  ADD_SALES_INVOICE_SETTINGS:"add-salesInvoice-settings",
-  ADD_SALES_DELIVARY_CHALLANS: "add-deliveryChellans",
-  GET_PREFIX:"get-prefix",
-  ADD_PREFIX:"add-prefix",
-  EDIT_PREFIX:'edit-prefix',
-  STATUS_PREFIX:'status-prefix',
+   //Sales
+   ADD_SALES_SETTINGS:`add-sales-settings`,
+   ADD_SALES_INVOICE_SETTINGS:"add-salesInvoice-settings",
+   ADD_SALES_DELIVARY_CHALLANS: "add-deliveryChellans",
+   GET_PREFIX:"get-prefix",
+   ADD_PREFIX:"add-prefix",
+   EDIT_PREFIX:'edit-prefix',
+   STATUS_PREFIX:'status-prefix',
+   ADD_SALES_QUOTE:"add-sales-quotes",
+   GET_LAST_SALES_QUOTE_PREFIX:"get-last-sales-quotes-prefix",
+   GET_ALL_QUOTES:"get-all-sales-quotes",
+   //getall-item-sales
+   GET_ALL_ITEMS_SALES:"get-all-item-xs",
+   //sales order
+   GET_LAST_SALES_ORDER_PREFIX:"get-last-sales-order-prefix",
+   ADD_SALES_ORDER:"add-sales-order",
+   GET_ALL_SALES_ORDER:"get-all-sales-order",
  
   // Organisation Invoices
   ADD_INVOICE_SETTINGS: "add-invoice-settings",
@@ -22,6 +31,10 @@ export const endponits = {
   EDIT_PAYMENT_TERMS: `edit-payment-terms/:id`,
   DELETE_PAYMENT_TERMS: `delete-payment-terms`,
   GET_PAYMENT_TERMS: `get-all-payment-terms`,
+
+  // Accounts > setting
+  ADD_DEFUALT_ACCOUNT:`add-default-account`,
+  GET_DEFUALT_ACCOUNT:`get-default-account`,
  
  // items settings
 
@@ -56,6 +69,7 @@ GET_ALL_ITEMS_Dropdown: `get-itemDropdown`,
   EDIT_CUSTOMER:`edit-customer`,
   UPDATE_CUSTOMER_STATUS:`update-customer-status`,
   GET_CUSTOMER_HISTORY:`get-one-customer-history`,
+  GET_CUSTOMER_TRANSACTIONS:`get-Customer-Trandactions` ,
 
  
   // Supplier
@@ -76,6 +90,11 @@ GET_ALL_ITEMS_Dropdown: `get-itemDropdown`,
   GET_ONE_CURRENCY: (id: string) => `/view-currency/${id}`,
  
   // Inventory
+  GET_INVENTORY_DASHBOARD:`/get-inventory-Dashboard`,
+
+  // Item Tracking
+  GET_ALL_ITEM_TRANKING:`get-all-item-track`,
+
   // Settings/Taxes
   // Gst
   GET_ALL_TAX: "get-tax",
@@ -98,20 +117,32 @@ ADD_BRMC:`add-bmcr`,
 UPDATE_BRMC:`update-bmcr`,
 DELETE_BRMC:`delete-bmcr`,
 GET_ONE_BRMC:`get-a-bmcr`,
+ADD_UNIT:`add-unit`,
+GET_ALL_UNIT:`get-all-unit`,
+UPDATE_UNIT: `edit-unit`,
+DELETE_UNIT:`delete-unit`,
+GET_ONE_UNIT:`/get-one-unit`,
 
+// PURCHASE
 
 // bill
 ADD_BILL:`/add-Bills`,
 GET_ALL_BILLS:`/get-all-Bills`,
 
+
+
 // Purchase order
   ADD_PURCHASE_ORDER:`add-purchaseOrder`,
   GET_LAST_PURCHASE_ORDER_PREFIX: `get-last-purchase-order-prefix`,
+  GET_ALL_PURCHASE_ORDER:`get-all-purchaseOrders`,
+  GET_ONE_PURCHASE_ORDER:`get-purchaseOrder`,
  
  
   // Login
   LOGIN : "/login",
-  GET_OTP :"/verify-otp"
+  GET_OTP :"/verify-otp",
+
+
  
   
 };

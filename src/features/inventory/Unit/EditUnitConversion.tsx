@@ -1,15 +1,41 @@
-import { useState } from "react";
+// import { FormEvent, 
+  // import useState from "react";
 import Button from "../../../Components/Button";
 import Pen from "../../../assets/icons/Pen";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import bgImage from "../../../assets/Images/6.png";
 import Modal from "../../../Components/model/Modal";
+import { useState } from "react";
+// import useApi from "../../../Hooks/useApi";
+// import { endponits } from "../../../Services/apiEndpoints";
+// import toast from "react-hot-toast";
 
 type Props = {};
 
+interface EditUnitData  {
+  targetUnit:string;
+unitConversionR:string;
+}
+
 const EditUnitConversion = ({}: Props) => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const[editUnitData,seteditUnitData]=useState<EditUnitData>(
+{
+  targetUnit:"",
+  unitConversionR:"",
+});
 
+// const {request:addEditunit}=useApi("post",5003);
+console.log(editUnitData);
+
+
+const handleInputChange = (
+  event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+) => {
+  const { name, value, } = event.target;
+
+  seteditUnitData({...editUnitData,[name]:value})
+};
   const openModal = () => {
     setModalOpen(true);
   };
@@ -17,6 +43,36 @@ const EditUnitConversion = ({}: Props) => {
   const closeModal = () => {
     setModalOpen(false);
   };
+  // const handleSave = async (e: FormEvent) => {
+
+
+    
+  //   try {
+  //     const url =  `${endponits.ADD_UNIT}`;
+  //     // const body = initialUnitData;
+     
+  //     const { response, error } = await addnewunit(url, body);
+  //     if (!error && response) {
+  //       toast.success(response.data.message);
+  //    console.log(response);
+  //    setModalOpen(false);
+  //       // setInitialUnitData(  {
+  //       //   unitName: "",
+  //       //     symbol: "",
+  //       //     quantityCode:"",
+  //       //     precision:"",
+          
+  //       //   });
+
+
+  //     } else {
+  //       console.log(error);
+  //       toast.error(error.response.data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
   return (
     <div>
       <Button variant="secondary" onClick={openModal} size="sm">
@@ -52,12 +108,16 @@ const EditUnitConversion = ({}: Props) => {
               <div className="text-start">
                 <label htmlFor="">Target Unit</label>
                 <div className="relative w-full ">
-                  <select className="block appearance-none w-full h-10  text-zinc-400 bg-white border border-inputBorder text-sm  pl-9 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                    <option value="" className="text-gray">
-                      {" "}
-                      Peices 250g (pcs)
-                    </option>
-                  </select>
+                <input
+                    type="text"
+                  name="symbol"
+                    // value={initialUnitData.symbol}
+                    placeholder="Symbol"
+                    onChange={handleInputChange}
+                    className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-10"
+                  />
+
+
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <CehvronDown color="gray" />
                   </div>

@@ -65,8 +65,9 @@ function ManualHome({}: Props) {
               Manual Journels
             </h3>
             <p className="text-sm text-gray mt-1">
-              Lorem ipsum dolor sit amet consectetur. Commodo enim odio
-              fringilla egestas consectetur amet.
+              A manual journal is a ledger entry used to record financial
+              transaction by hand, typically fo adjustment or entries not
+              processed through automated system
             </p>
           </div>
           <div className="ml-auto gap-3 flex items-center">
@@ -105,9 +106,6 @@ function ManualHome({}: Props) {
         </div>
 
         <div className="mt-5 bg-white  p-5 rounded-xl">
-
-        
-
           <div>
             <Table />
           </div>

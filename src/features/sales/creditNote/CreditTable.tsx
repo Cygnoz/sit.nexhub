@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DotIcon from "../../../assets/icons/DotIcon";
-import CustomiseCreditTable from "./CustomiseCreditTable";
+import CustomiseColmn from "../../../Components/CustomiseColum";
 
 
 interface Column {
@@ -71,7 +71,7 @@ const CreditTable = () => {
                                 )
                         )}
                         <th className="py-3 px-4 font-medium border-b border-tableBorder">
-                            <CustomiseCreditTable columns={columns} setColumns={setColumns} />
+                            <CustomiseColmn columns={columns} setColumns={setColumns} />
                         </th>
                     </tr>
                 </thead>

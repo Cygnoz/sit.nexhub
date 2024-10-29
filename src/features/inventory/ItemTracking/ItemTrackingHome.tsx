@@ -15,8 +15,7 @@ const ItemTrackingHome = ({}: Props) => {
               Item Tracking
             </h1>
             <p className="text-sm text-gray mt-1">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi
-              cumque rerum, sequi fugit ullam eius aspernatur
+            Track items across the entire supply chain with real-time updates for better inventory control and visibility.
             </p>
           </div>
           <div className="ml-auto flex items-center">
