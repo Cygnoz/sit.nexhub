@@ -32,7 +32,7 @@ interface item {
 function Items({}: Props) {
   const [selectedRadio, setSelectedRadio] = useState<string>("");
   const {settingsResponse, getSettingsData } = useContext(settingsdataResponseContext)!;
-  const { request: addItem } = useApi("get", 5003);
+  const { request: addItem } = useApi("put", 5003);
   const [inputData, setInputData] = useState<item>({
     itemDecimal: "",
     itemDimensions: "",

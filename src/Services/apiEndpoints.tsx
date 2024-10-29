@@ -135,6 +135,9 @@ export const endponits = {
   GET_ALL_PURCHASE_ORDER: `get-all-purchaseOrders`,
   GET_ONE_PURCHASE_ORDER: `get-purchaseOrder`,
 
+  // Payment Made
+  ADD_PAYMET_MADE:`add-payment`,
+
   // Login
   LOGIN: "/login",
   GET_OTP: "/verify-otp",
