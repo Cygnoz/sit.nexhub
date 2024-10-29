@@ -60,6 +60,7 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
   const [customerData, setCustomerData] = useState<Customer | null>(null);
   const { organization } = useOrganization();
 
+  
   const toggleItemDetails = (itemId: string) => {
     setOpenItemId((prev) => (prev === itemId ? null : itemId));
   };

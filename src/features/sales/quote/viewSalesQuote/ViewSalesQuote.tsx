@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
-import Button from "../../../../Components/Button";
-import Pen from "../../../../assets/icons/Pen";
 import MailIcon from "../../../../assets/icons/MailIcon";
-import SalesPdfView from "./SalesQuotePdfView";
-import SalesOrderView from "./SalesQuoteView";
+import Button from "../../../../Components/Button";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
+import SalesPdfView from "./SalesQuotePdfView";
+import SalesOrderView from "./SalesQuoteView";
 
 interface QuoteItem {
   itemId: string;
@@ -94,21 +93,10 @@ function ViewSalesQuote() {
             </p>
           </div>
           <div className="flex gap-3 items-center">
-            <Button variant="secondary" className="pl-6 pr-6" size="sm">
-              <Pen color="#565148" />
-              <p className="text-sm font-medium">Edit</p>
-            </Button>
             <Button variant="secondary" className="pl-5 pr-5" size="sm">
               <MailIcon color="#565148" />
               <p className="text-sm font-medium">Email</p>
             </Button>
-            <select
-              name=""
-              id=""
-              className="border-outlineButton border rounded-md px-[0.625rem] py-2 text-sm font-medium text-outlineButton "
-            >
-              <option value="">More Action</option>
-            </select>
             {/* toggle button */}
             <label className="flex items-center cursor-pointer">
               <div className="relative">
