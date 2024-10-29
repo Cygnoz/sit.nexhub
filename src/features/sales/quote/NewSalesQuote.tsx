@@ -398,7 +398,7 @@ console.log(customerData);
       );
       if (!error && response) {
         toast.success(response.data.message);
-        // setSalesQuoteState(initialSalesQuoteState)
+        handleGoBack()
       } else {
         toast.error(error?.response.data.message);
       }

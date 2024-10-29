@@ -17,7 +17,11 @@ interface CustomerTableProps {
   setSearchValue: (value: string) => void;
 }
 
-const CustomerTable: React.FC<CustomerTableProps> = ({ customerData, searchValue, setSearchValue }) => {
+const CustomerTable: React.FC<CustomerTableProps> = ({
+  customerData,
+  searchValue,
+  setSearchValue,
+}) => {
   const initialColumns: Column[] = [
     { id: "customerDisplayName", label: "Name", visible: true },
     { id: "companyName", label: "Company Name", visible: true },
@@ -34,7 +38,9 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customerData, searchValue
     const searchValueLower = searchValue.toLowerCase();
     return (
       account?.billingAttention?.toLowerCase().startsWith(searchValueLower) ||
-      account?.customerDisplayName?.toLowerCase().startsWith(searchValueLower) ||
+      account?.customerDisplayName
+        ?.toLowerCase()
+        .startsWith(searchValueLower) ||
       account?.companyName?.toLowerCase().startsWith(searchValueLower) ||
       account?.mobile?.toLowerCase().startsWith(searchValueLower) ||
       account?.customerEmail?.toLowerCase().startsWith(searchValueLower) ||
@@ -108,36 +114,35 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customerData, searchValue
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-          {filteredAccounts && filteredAccounts.length > 0 ? (
-  filteredAccounts.map((item) => (
-    <tr key={item._id} className="relative">
-      <td className="py-2.5 px-4 border-y border-tableBorder">
-        <input type="checkbox" className="form-checkbox w-4 h-4" />
-      </td>
-      {columns.map(
-        (col) =>
-          col.visible && (
-            <td
-              key={col.id}
-              className="py-2.5 px-4 border-y border-tableBorder"
-            >
-              {renderColumnContent(col.id, item)}
-            </td>
-          )
-      )}
-    </tr>
-  ))
-) : (
-  <tr>
-    <td
-      colSpan={columns.length + 2}
-      className="text-center py-4 border-y border-tableBorder"
-    >
-      <p className="text-red-500">No Data Found!</p>
-    </td>
-  </tr>
-)}
-
+            {filteredAccounts && filteredAccounts.length > 0 ? (
+              filteredAccounts.map((item) => (
+                <tr key={item._id} className="relative">
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    <input type="checkbox" className="form-checkbox w-4 h-4" />
+                  </td>
+                  {columns.map(
+                    (col) =>
+                      col.visible && (
+                        <td
+                          key={col.id}
+                          className="py-2.5 px-4 border-y border-tableBorder"
+                        >
+                          {renderColumnContent(col.id, item)}
+                        </td>
+                      )
+                  )}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={columns.length + 2}
+                  className="text-center py-4 border-y border-tableBorder"
+                >
+                  <p className="text-red-500">No Data Found!</p>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

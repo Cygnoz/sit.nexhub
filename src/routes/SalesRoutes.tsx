@@ -29,7 +29,7 @@ const SalesRoutes: RouteObject[] = [
   { path: "/sales/invoice/new", element: <NewInvoice /> },
   { path: "/sales/invoice/view", element: <ViewInvoice /> },
   { path: "/sales/quote", element: <QuoteHome /> },
-  { path: "/sales/quote/view", element: <ViewSalesQuote /> },
+  { path: "/sales/quote/view/:id", element: <ViewSalesQuote /> },
   { path: "/sales/quote/new", element: <NewSalesQuote /> },
   { path: "/sales/credit-note", element: <CreditNote /> },
   { path: "/sales/credit-note/new", element: <NewCreditNote /> },
