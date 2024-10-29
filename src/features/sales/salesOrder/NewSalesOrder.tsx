@@ -409,6 +409,7 @@ const NewSalesOrder = ({ }: Props) => {
       );
       if (!error && response) {
         toast.success(response.data.message);
+        handleGoBack()
       } else {
         toast.error(error?.response.data.message);
       }

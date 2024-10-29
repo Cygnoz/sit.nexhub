@@ -76,7 +76,7 @@ const NewSalesQuote = ({ }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const [oneOrganization, setOneOrganization] = useState<any | []>([]);
+  const [oneOrganization, setOneOrganization] = useState<any | []>([]);  
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
   const [customerData, setCustomerData] = useState<[]>([]);
@@ -398,7 +398,7 @@ console.log(customerData);
       );
       if (!error && response) {
         toast.success(response.data.message);
-        // setSalesQuoteState(initialSalesQuoteState)
+        handleGoBack()
       } else {
         toast.error(error?.response.data.message);
       }
