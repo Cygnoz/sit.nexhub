@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
+import AddExpensePage from "../features/expense/ExpenseHome/AddExpensePage";
 
 // Lazy load your components
 const Expense = lazy(() => import("../pages/Expense"));
@@ -10,6 +11,9 @@ const ExpenseRoutes: RouteObject[] = [
   { path: "/expense", element: <Expense /> },
   { path: "/expense/home", element: <ExpenseHome /> },
   { path: "/expense/view", element: <ExpenseView /> },
+  {path:"/expense/add-expense",element:<AddExpensePage/>},
+  
+  
 ];
 
 export default ExpenseRoutes;
