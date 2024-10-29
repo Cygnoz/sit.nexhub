@@ -3,11 +3,11 @@ import Ellipsis from "../../../assets/icons/Ellipsis";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import Button from "../../../Components/Button";
 import SearchBar from "../../../Components/SearchBar";
-import Booktext from "../../../assets/icons/Booktext";
-import BookopenCheck from "../../../assets/icons/BookopenCheck";
-import BookX from "../../../assets/icons/BookX";
+// import Booktext from "../../../assets/icons/Booktext";
+// import BookopenCheck from "../../../assets/icons/BookopenCheck";
+// import BookX from "../../../assets/icons/BookX";
 import { Link } from "react-router-dom";
-import newspaper from "../../../assets/icons/newspaper";
+// import newspaper from "../../../assets/icons/newspaper";
 import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
 
@@ -15,7 +15,7 @@ type Props = {};
 
 const InvoiceHome = ({}: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
-  const [selectedTab, setSelectedTab] = useState<string>("All");
+  // const [selectedTab, setSelectedTab] = useState<string>("All");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -63,25 +63,25 @@ const InvoiceHome = ({}: Props) => {
     }
   ];
 
-  const filterList = [
-    { title: "All", icon: Booktext },
-    { title: "Draft", icon: BookopenCheck },
-    { title: "Locked", icon: BookX },
-    { title: "Pending Approval", icon: newspaper },
-    { title: "Approved", icon: newspaper },
-    { title: "Customer Viewed", icon: newspaper },
-    { title: "Partially Paid", icon: newspaper },
-    // { title: "Unpaid", icon: newspaper },
-    // { title: "Overdue", icon: newspaper },
-    // { title: "Payment Initiated", icon: newspaper },
-    // { title: "Paid", icon: newspaper },
-    // { title: "Void", icon: newspaper },
-    // { title: "Yet to be shipped", icon: newspaper },
-    // { title: "Shipped", icon: newspaper },
-    // { title: "Debit Note", icon: newspaper },
-    // { title: "Write Off", icon: newspaper },
-    // { title: "Customer Portal Disabled", icon: newspaper },
-  ];
+  // const filterList = [
+  //   { title: "All", icon: Booktext },
+  //   { title: "Draft", icon: BookopenCheck },
+  //   { title: "Locked", icon: BookX },
+  //   { title: "Pending Approval", icon: newspaper },
+  //   // { title: "Approved", icon: newspaper },
+  //   { title: "Customer Viewed", icon: newspaper },
+  //   // { title: "Partially Paid", icon: newspaper },
+  //   // { title: "Unpaid", icon: newspaper },
+  //   // { title: "Overdue", icon: newspaper },
+  //   // { title: "Payment Initiated", icon: newspaper },
+  //   // { title: "Paid", icon: newspaper },
+  //   // { title: "Void", icon: newspaper },
+  //   // { title: "Yet to be shipped", icon: newspaper },
+  //   // { title: "Shipped", icon: newspaper },
+  //   // { title: "Debit Note", icon: newspaper },
+  //   // { title: "Write Off", icon: newspaper },
+  //   // { title: "Customer Portal Disabled", icon: newspaper },
+  // ];
 
   const data = [
     {
@@ -174,8 +174,8 @@ const InvoiceHome = ({}: Props) => {
       </div>
 
       {/* filter tabs */}
-      <div className="bg-white p-3 rounded-lg space-y-4">
-      <div className=" gap-3 mt-4 text-xs hide-scrollbar overflow-scroll grid-flow-col grid">
+      <div className="bg-white p-5 rounded-lg space-y-4">
+      {/* <div className=" gap-3 mt-4 text-xs hide-scrollbar overflow-scroll grid-flow-col grid">
             {filterList.map((item) => (
               <button
                 key={item.title}
@@ -207,7 +207,7 @@ const InvoiceHome = ({}: Props) => {
               <PlusCircle color="darkRed" />
               New Custom View
             </div>
-          </div>
+          </div> */}
 
 
 
