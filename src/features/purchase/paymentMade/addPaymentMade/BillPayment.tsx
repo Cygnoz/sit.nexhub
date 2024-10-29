@@ -40,6 +40,7 @@ interface SupplierPayment {
   amountUsedForPayments: number;
   amountRefunded: number;
   amountInExcess: number;
+  totalBillAmount:number;
 }
 
 const initialSupplierPayment: SupplierPayment = {
@@ -71,28 +72,39 @@ const initialSupplierPayment: SupplierPayment = {
   amountUsedForPayments: 0,
   amountRefunded: 0,
   amountInExcess: 0,
+  totalBillAmount:0
 };
 
 type Props = {};
 
 const NewPaymentMade = ({}: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
-  const [selecteSupplier, setSelecetdSupplier] = useState<any | []>([]);
+  const [selectedSupplier, setSelecetdSupplier] = useState<any | []>([]);
   const [supplierData, setSupplierData] = useState<[]>([]);
   const [allBillsData, setAllBillsData] = useState<[]>([]);
+  const [supplierBills, setSupplierBills] = useState<[] | any>([]);
+  const [allAcoounts,setAllAccounts]=useState<[] | any>([])
   const [paymentState, setPaymentState] = useState<SupplierPayment>(
     initialSupplierPayment
   );
 
   const { request: AllSuppliers } = useApi("get", 5009);
-  const { request: getAllBills } = useApi("get", 5009);
+  const { request: getAllBills } = useApi("get", 5005);
+  const { request: getAccounts } = useApi("get", 5001);
 
-console.log(allBillsData)
+
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const getBillsUrl = `${endponits.GET_ALL_BILLS}`;
+  const accountsUrl =`${endponits.Get_ALL_Acounts}`;
+
   console.log(paymentState);
+  // console.log(supplierBills, "supplierBills");
+  // console.log(allAcoounts,"allAccounts")
+
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
   );
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
@@ -108,8 +120,6 @@ console.log(allBillsData)
       setOpenDropdownIndex(null);
     }
   };
-
-
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -145,24 +155,41 @@ console.log(allBillsData)
     try {
       const { response, error } = await fetchFunction(url);
       if (!error && response) {
-        setData(response.data);
+        if (url === getBillsUrl) {
+          setData(response.data.PurchaseBills);
+        } 
+        else if (url=== accountsUrl){
+          const filteredData = response.data.filter((item: any) => item.accountGroup === 'Asset');
+          setData(filteredData);
+        }
+        else {
+          setData(response.data);
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
+
+  useEffect(()=>{
+    const grandTotal = supplierBills.reduce((total:any, bill:any) => {
+      return total + bill.grandTotal;
+    }, 0);
+
+    setPaymentState((prevData) => ({
+      ...prevData,
+      totalBillAmount: grandTotal
+    }));
+    console.log(grandTotal,"total")
+  },[supplierBills])
+
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
-    const getBillsUrl = `${endponits.GET_ALL_BRMC}`;
-
-    // const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
-    // const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
-
 
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
+    fetchData(accountsUrl, setAllAccounts, getAccounts )
     fetchData(getBillsUrl, setAllBillsData, getAllBills);
-    // fetchData(organizationUrl, setOneOrganization, getOneOrganization);
   }, []);
 
   useEffect(() => {
@@ -176,6 +203,13 @@ console.log(allBillsData)
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openDropdownIndex]);
+
+  useEffect(() => {
+    if (selectedSupplier) {
+      const filtered = allBillsData.filter((item:any) => item.supplierId === selectedSupplier._id);
+      setSupplierBills(filtered);
+    }
+  }, [selectedSupplier, allBillsData]); 
 
   return (
     <div className="px-8">
@@ -195,7 +229,7 @@ console.log(allBillsData)
           </style>
           <div className="bg-secondary_main p-5 min-h-max rounded-xl relative ">
             <p className="text-textColor text-xl font-bold"></p>
-            <div className=" space-y-5">
+            <div className=" space-y-3">
               <div className="cols-span-12">
                 <div className="col-span-6">
                   <label className="block text-sm mb-1 text-labelColor">
@@ -207,8 +241,8 @@ console.log(allBillsData)
                   >
                     <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                       <p>
-                        {selecteSupplier && selecteSupplier.supplierDisplayName
-                          ? selecteSupplier.supplierDisplayName
+                        {selectedSupplier && selectedSupplier.supplierDisplayName
+                          ? selectedSupplier.supplierDisplayName
                           : "Select Supplier"}
                       </p>
                     </div>
@@ -241,9 +275,11 @@ console.log(allBillsData)
                                 setPaymentState((prevState: any) => ({
                                   ...prevState,
                                   supplierId: supplier._id,
+                                  supplierDisplayName:supplier.supplierDisplayName
                                 }));
                                 setOpenDropdownIndex(null);
                                 setSelecetdSupplier(supplier);
+                               
                               }}
                             >
                               <div>
@@ -280,7 +316,31 @@ console.log(allBillsData)
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 mt-2">
+
+              <div className="">
+                  <label className="block text-sm mb-1 text-labelColor">
+                    Payment Made
+                  </label>
+                  <input
+                    placeholder="Enter Payment Made"
+                    type="text"
+                    value={paymentState.paymentMade? paymentState.paymentMade:""}
+                    onChange={handleChange}
+                    name="paymentMade"
+                    className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
+                  />
+                  <div className="flex mt-2 gap-2 items-center">
+                     <input
+                      placeholder="Enter Payment Made"
+                      type="checkbox"
+                      value={paymentState.paymentMade? paymentState.paymentMade:""}
+                      onChange={handleChange}
+                      name="paymentMade"
+                      className="bg-checkBox checkBox h-3 w-3"
+                    /> <p className="text-xs">Pay Full Amount ({paymentState.totalBillAmount})</p>
+                  </div>
+                </div>
                 <div className="">
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Date
@@ -295,19 +355,7 @@ console.log(allBillsData)
                   />
                 </div>
 
-                <div className="">
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Payment Made
-                  </label>
-                  <input
-                    placeholder="Enter Payment Made"
-                    type="text"
-                    value={paymentState.paymentMade}
-                    onChange={handleChange}
-                    name="paymentMade"
-                    className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
-                  />
-                </div>
+              
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -327,7 +375,7 @@ console.log(allBillsData)
                 </div>
                 <div className="">
                   <label className="block text-sm mb-1 text-labelColor">
-                   Refence
+                    Refence
                   </label>
                   <input
                     onChange={handleChange}
@@ -347,12 +395,24 @@ console.log(allBillsData)
                   Payment Mode
                 </label>
                 <div className="relative w-full">
-                  <select value={paymentState.paymentMode} name="paymentMode" onChange={handleChange} className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                  <select
+                    value={paymentState.paymentMode}
+                    name="paymentMode"
+                    onChange={handleChange}
+                    className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  >
+                      <option value="Bank Transfer" className="text-gray">
+                      Bank Transfer
+                    </option>
+                  
                     <option value="Cash" className="text-gray">
                       Cash
                     </option>
+                    <option value="Bank Transfer" className="text-gray">
+                     Check
+                    </option>
                     <option value="Credit" className="text-gray">
-                      Credit
+                      Card
                     </option>
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -366,10 +426,19 @@ console.log(allBillsData)
                   Paid Through
                 </label>
                 <div className="relative w-full">
-                  <select onChange={handleChange} value={paymentState.paidThrough}  name="paidThrough" className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                    <option value="" className="text-gray">
-                      Petty Cash
-                    </option>
+                  <select
+                    onChange={handleChange}
+                    value={paymentState.paidThrough}
+                    name="paidThrough"
+                    className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  >
+                     <option>Select Payment Through</option>
+                 {allAcoounts ? allAcoounts.map((item: any) => (
+  <option value={item._id} className="text-gray">
+    {item.accountName}
+  </option>
+)) : <option>No Accounts Available</option>}
+
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <CehvronDown color="gray" />
@@ -380,7 +449,11 @@ console.log(allBillsData)
 
             <div className="mt-5">
               <p className="font-bold text-base">Unpaid Bill</p>
-              <NewPaymentMadeOrderTable paymentState={paymentState} setPaymentState={setPaymentState} />
+              <NewPaymentMadeOrderTable
+               supplierBills={supplierBills}
+                paymentState={paymentState}
+                setPaymentState={setPaymentState}
+              />
             </div>
 
             <div className="mt-5 text-textColor">
@@ -397,7 +470,6 @@ console.log(allBillsData)
               </label>
             </div>
 
-
             <div className="text-sm mt-3  text-textColor">
               <label className="block mb-3">
                 Attachments
@@ -406,7 +478,6 @@ console.log(allBillsData)
                     <Upload />
                     Upload File
                   </span>
-                  <div className="text-center">Maximum File Size: 1 MB</div>
                   <div className="text-center">Maximum File Size: 1 MB</div>
                 </div>
                 <p className="text-xs mt-1 text-gray-600"></p>
@@ -421,37 +492,30 @@ console.log(allBillsData)
                 />
               </label>
             </div>
-           
           </div>
-          
         </div>
         <div className="col-span-4 ">
           <div className="bg-secondary_main p-5 min-h-max rounded-xl relative  mt-0  overflow-y-scroll hide-scrollbar">
-          
-
             <div className=" pb-4  text-dropdownText  border-slate-200 space-y-2">
-            <div className="flex w-full">
-            <div className="flex-grow">
-            {" "}
-            <p className="whitespace-nowrap">
-            Amount Paid</p>
+              <div className="flex w-full">
+                <div className="flex-grow">
+                  {" "}
+                  <p className="whitespace-nowrap">Amount Paid</p>
                 </div>
                 <div className="flex-shrink-0">
-                {" "}
-                  <p className="text-end">0.00</p>
+                  {" "}
+                  <p className="text-end">{paymentState.amountPaid?paymentState.amountPaid:"0.00"}</p>
                 </div>
               </div>
 
               <div className="flex w-full">
-  <div className="flex-grow">
-    <p className="whitespace-nowrap">
-      Amount Used for Payments</p>
-  </div>
-  <div className="flex-shrink-0">
-    <p>0.00</p>
-  </div>
-</div>
-
+                <div className="flex-grow">
+                  <p className="whitespace-nowrap">Amount Used for Payments</p>
+                </div>
+                <div className="flex-shrink-0">
+                  <p>{paymentState.amountUsedForPayments?paymentState.amountUsedForPayments:"0.00"}</p>
+                </div>
+              </div>
 
               <div className="flex ">
                 <div className="w-[75%]">
@@ -462,7 +526,6 @@ console.log(allBillsData)
                 </div>
               </div>
 
-
               <div className="flex ">
                 <div className="w-[75%]">
                   <p> Amount In Excess</p>
@@ -471,29 +534,21 @@ console.log(allBillsData)
                   <p className="text-end">0.00</p>
                 </div>
               </div>
-
-           
-
-              
-
-               
             </div>
-           
-
-           
-          </div> <div className="flex gap-4 m-5 justify-end">
-              {" "}
-              <Button variant="secondary" size="sm">
-                Cancel
-              </Button>
-              {/* <Button variant="secondary" size="sm">
+          </div>{" "}
+          <div className="flex gap-4 m-5 justify-end">
+            {" "}
+            <Button variant="secondary" size="sm">
+              Cancel
+            </Button>
+            {/* <Button variant="secondary" size="sm">
                 <PrinterIcon height={18} width={18} color="currentColor" />
                 Print
               </Button> */}
-              <Button variant="primary" size="sm">
-                Save 
-              </Button>{" "}
-            </div>
+            <Button variant="primary" size="sm">
+              Save
+            </Button>{" "}
+          </div>
         </div>
       </div>
     </div>

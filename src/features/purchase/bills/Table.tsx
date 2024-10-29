@@ -52,13 +52,17 @@ getAllBill()
   },[])
 
 
-
   const filteredAccounts = allBill?.filter((bill) => {
     const searchValueLower = searchValue.toLowerCase().trim();
-    return bill.billDate.toLowerCase().trim().startsWith(searchValueLower) ||
-    bill.supplierDisplayName.toLowerCase().trim().startsWith(searchValueLower)
-    ;
+  
+    // Check if billDate and supplierDisplayName are defined before calling startsWith
+    const billDateMatches = bill.billDate && bill.billDate.startsWith(searchValueLower);
+    const supplierNameMatches = bill.supplierDisplayName && 
+                                 bill.supplierDisplayName.toLowerCase().trim().startsWith(searchValueLower);
+  
+    return billDateMatches || supplierNameMatches;
   });
+  
 
 
 

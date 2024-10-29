@@ -167,10 +167,6 @@ const NewCustomerModal = ({ page }: Props) => {
     lastName: false,
     companyName: false,
     customerDisplayName: false,
-<<<<<<< HEAD
-    customerEmail:false,
-pan:false,
-=======
     customerEmail: false,
     websiteURL: false,
     pan: false,
@@ -190,17 +186,9 @@ pan:false,
     shippingCity: false,
     shippingPinCode: false,
     shippingFaxNumber: false,
->>>>>>> bd58fb71ea54a00d02ad6ef629a68808e6c99ac0
   });
 
   const addRow = () => {
-<<<<<<< HEAD
-    setRows([
-      ...rows,
-      { salutation: "", firstName: "", lastName: "", email: "", mobile: "" },
-    ]);
-  };
-=======
     setRows((prevRows) => [
       ...prevRows,
       {
@@ -217,7 +205,6 @@ pan:false,
     ]);
   };
 
->>>>>>> bd58fb71ea54a00d02ad6ef629a68808e6c99ac0
   const [customerdata, setCustomerData] =
     useState<CustomerData>(initialCustomerData);
 
@@ -876,43 +863,6 @@ pan:false,
                 </div>
 
                 <div>
-<<<<<<< HEAD
-  <label htmlFor="customerEmail">Customer Email</label>
-  <input
-  type="email"
-  name="customerEmail"
-  className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-  placeholder="Enter Email"
-  value={customerdata.customerEmail}
-  onChange={handleChange}
-  onBlur={(e) => {
-    const value = e.target.value;
-
-    // Email validation regex
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    
-    // Only validate if the field is not empty
-    if (value && !emailRegex.test(value)) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        customerEmail: true,
-      }));
-    } else {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        customerEmail: false,
-      }));
-    }
-  }}
-/>
-
-  {errors.customerEmail && (
-    <div className="text-red-800 text-xs ms-2 mt-1">
-      Please enter a valid email address.
-    </div>
-  )}
-</div>
-=======
                   <label htmlFor="customerEmail">Customer Email</label>
                   <input
                     type="email"
@@ -949,7 +899,6 @@ pan:false,
                     </div>
                   )}
                 </div>
->>>>>>> bd58fb71ea54a00d02ad6ef629a68808e6c99ac0
                 <div>
                   <label htmlFor="cardNumber">Membership Card Number</label>
                   <input
@@ -995,11 +944,7 @@ pan:false,
                     placeholder="Value"
                     value={customerdata.dob}
                     onChange={handleChange}
-<<<<<<< HEAD
-                    max={new Date().toISOString().split("T")[0]} // Set max to today's date
-=======
                     max={new Date().toISOString().split("T")[0]}
->>>>>>> bd58fb71ea54a00d02ad6ef629a68808e6c99ac0
                   />
                 </div>
               </div>
@@ -1072,76 +1017,6 @@ pan:false,
                               </div>
                             </div>
                             <input
-<<<<<<< HEAD
-  type="text"
-  className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-  placeholder={`Enter ${openingType} Opening Balance`}
-  onChange={(e) => {
-    const value = e.target.value;
-
-    if (/^\d*$/.test(value)) {
-      handleChange(e); 
-
-      if (openingType === "Debit") {
-        setCustomerData((prevData) => ({
-          ...prevData,
-          debitOpeningBalance: value,
-        }));
-      } else {
-        setCustomerData((prevData) => ({
-          ...prevData,
-          creditOpeningBalance: value,
-        }));
-      }
-    }
-  }}
-  name="openingBalance"
-  value={
-    openingType === "Debit"
-      ? customerdata.debitOpeningBalance
-      : customerdata.creditOpeningBalance
-  }
-/>
-
-                          </div>
-                        </div>
-                        <div>
-  <label className="block mb-1">PAN</label>
-  <div>
-  <input
-    type="text"
-    className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-    placeholder="Enter PAN Number"
-    name="pan"
-    value={customerdata.pan}
-    onChange={(e) => {
-      const value = e.target.value;
-
-      if (value === "" || /^[a-zA-Z0-9]*$/.test(value)) {
-        handleChange(e);
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          pan: false,
-        }));
-      } else {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          pan: true,
-        }));
-      }
-    }}
-  />
-
-  {errors.pan && (
-    <div className="text-red-800 text-xs mt-1">
-      Only alphanumeric characters are allowed for PAN.
-    </div>
-  )}
-</div>
-
-</div>
-
-=======
                               type="text"
                               className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                               placeholder={`Enter ${openingType} Opening Balance`}
@@ -1211,7 +1086,6 @@ pan:false,
                             )}
                           </div>
                         </div>
->>>>>>> bd58fb71ea54a00d02ad6ef629a68808e6c99ac0
 
                         <div>
                           <div className="">
@@ -2458,45 +2332,6 @@ pan:false,
                           </thead>
                           <tbody className="text-dropdownText text-center text-[13px]">
                             {rows.map((row, index) => (
-<<<<<<< HEAD
-                              <tr className="relative text-center" key={index}>
-                                <td className="py-2.5 px- border-y border-tableBorder justify-center mt-4 gap-2 items-center flex-1">
-                                  <div className="relative w-full text-center ms-3">
-                                    <select
-                                      className="block appearance-none w-full h-9  text-zinc-400 bg-white  text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                      value={row.salutation}
-                                      onChange={(e) =>
-                                        handleRowChange(
-                                          index,
-                                          "salutation",
-                                          e.target.value
-                                        )
-                                      }
-                                    >
-                                      <option value="" className="text-gray">
-                                        Select
-                                      </option>
-                                      <option value="Mr." className="text-gray">
-                                        Mr.
-                                      </option>
-                                      <option
-                                        value="Mrs."
-                                        className="text-gray"
-                                      >
-                                        Mrs.
-                                      </option>
-                                      <option value="Ms." className="text-gray">
-                                        Ms.
-                                      </option>
-                                      <option value="Dr." className="text-gray">
-                                        Dr.
-                                      </option>
-                                    </select>
-                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                      <CehvronDown color="gray" />
-                                    </div>
-                                  </div>
-=======
                               <tr key={index}>
                                 <td className="py-2.5 flex items-center border-y border-tableBorder">
                                   <select
@@ -2515,7 +2350,6 @@ pan:false,
                                     <option value="Ms.">Ms.</option>
                                     <option value="Dr.">Dr.</option>
                                   </select>
->>>>>>> bd58fb71ea54a00d02ad6ef629a68808e6c99ac0
                                 </td>
                                 <td className="py-2.5 px-4  border-y border-tableBorder">
                                   <input
@@ -2523,10 +2357,6 @@ pan:false,
                                     value={row.firstName}
                                     placeholder="Enter First Name"
                                     className="text-sm w-[100%] text-center rounded-md bg-white h-9 p-2 mx-4 text-[#818894]"
-<<<<<<< HEAD
-                                    placeholder="Enter Fist Name"
-=======
->>>>>>> bd58fb71ea54a00d02ad6ef629a68808e6c99ac0
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -2545,13 +2375,8 @@ pan:false,
                                   <input
                                     type="text"
                                     value={row.lastName}
-<<<<<<< HEAD
-                                    className="text-sm w-[100%] rounded-md text-center bg-white h-9 p-2 text-[#818894]"
-                                    placeholder="Enter Last Name"
-=======
                                     placeholder="Enter Last Name"
                                     className="text-sm w-[100%] text-center rounded-md bg-white h-9 p-2 mx-4 text-[#818894]"
->>>>>>> bd58fb71ea54a00d02ad6ef629a68808e6c99ac0
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -2570,13 +2395,8 @@ pan:false,
                                   <input
                                     type="text"
                                     value={row.email}
-<<<<<<< HEAD
-                                    className="text-sm w-[100%] rounded-md text-center bg-white h-9 p-2 text-[#818894]"
-                                    placeholder="Enter Email"
-=======
                                     placeholder="Enter Email"
                                     className="text-sm w-[100%] text-center rounded-md bg-white h-9 p-2 mx-4 text-[#818894]"
->>>>>>> bd58fb71ea54a00d02ad6ef629a68808e6c99ac0
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -2595,13 +2415,8 @@ pan:false,
                                   <input
                                     type="text"
                                     value={row.mobile}
-<<<<<<< HEAD
-                                    className="text-sm w-[100%] rounded-md text-center bg-white h-9 p-2 text-[#818894]"
-                                    placeholder="Enter Mobile"
-=======
                                     placeholder="Enter Mobile"
                                     className="text-sm w-[100%] text-center rounded-md bg-white h-9 p-2 mx-4 text-[#818894]"
->>>>>>> bd58fb71ea54a00d02ad6ef629a68808e6c99ac0
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
