@@ -283,7 +283,6 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
 
   newRows[index].amount = itemAmount;
 
-  // Handle tax values and set itemAmount correctly
   if (isPlaceOfSupplyVisible) {
     newRows[index].cgstAmount = cgstAmount;
     newRows[index].sgstAmount = sgstAmount;
@@ -291,7 +290,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   } else {
     newRows[index].cgstAmount = "0";
     newRows[index].sgstAmount = "0";
-    newRows[index].igstAmount = igstAmount; // IGST is still included when intra-state
+    newRows[index].igstAmount = igstAmount;
   }
 
   newRows[index].itemAmount = !isPlaceOfSupplyVisible
