@@ -11,6 +11,7 @@ export interface Bill {
     expectedShipmentDate: string;
     paymentTerms: string;
     paymentMode: string;
+    PaidThrough:string;
     billDate: string;
     dueDate: string;
     itemTable: {

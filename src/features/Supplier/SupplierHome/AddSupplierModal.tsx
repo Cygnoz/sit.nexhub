@@ -14,9 +14,11 @@ import Trash2 from "../../../assets/icons/Trash2";
 import Globe from "../../../assets/icons/Globe";
 import Eye from "../../../assets/icons/Eye";
 import EyeOff from "../../../assets/icons/EyeOff";
+import Plus from "../../../assets/icons/Plus";
 
 type Props = { page?: string };
 type SupplierData = {
+  supplierProfile: string;
   salutation: string;
   firstName: string;
   lastName: string;
@@ -32,8 +34,8 @@ type SupplierData = {
   currency: string;
   paymentTerms: string;
   tds: string;
-  debitOpeningBalance:string,
-  creditOpeningBalance:string,
+  debitOpeningBalance: string;
+  creditOpeningBalance: string;
   documents: string;
   websiteURL: string;
   department: string;
@@ -96,11 +98,11 @@ const AddSupplierModal = ({ page }: Props) => {
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [errors, setErrors] = useState({
     supplierDisplayName: false,
-    companyName:false,
-    firstName:false,
-    lastName:false
+    companyName: false,
+    firstName: false,
+    lastName: false,
   });
-  const [openingType,setOpeningType]=useState<string>('credit')
+  const [openingType, setOpeningType] = useState<string>("credit");
   const { request: getCountryData } = useApi("get", 5004);
   const { request: getCurrencyData } = useApi("get", 5004);
   const { request: CreateSupplier } = useApi("post", 5009);
@@ -134,10 +136,11 @@ const AddSupplierModal = ({ page }: Props) => {
   };
 
   const [supplierdata, setSupplierData] = useState<SupplierData>({
-    salutation:"",
-    firstName:"",
-    lastName:"",
-    companyName:"",
+    supplierProfile: "",
+    salutation: "",
+    firstName: "",
+    lastName: "",
+    companyName: "",
     supplierDisplayName: "",
     supplierEmail: "",
     workPhone: "",
@@ -146,9 +149,9 @@ const AddSupplierModal = ({ page }: Props) => {
     creditLimit: "",
     interestPercentage: "",
     pan: "",
-    currency:"",
-    debitOpeningBalance:"",
-    creditOpeningBalance:"",
+    currency: "",
+    debitOpeningBalance: "",
+    creditOpeningBalance: "",
     paymentTerms: "",
     tds: "",
     documents: "",
@@ -346,7 +349,6 @@ const AddSupplierModal = ({ page }: Props) => {
     return activeTab === tabName ? "border-darkRed" : "border-neutral-300";
   };
 
-
   // handle phonenumber change
   const handleBillingPhoneChange = (value: string) => {
     setSupplierData((prevData) => ({
@@ -366,73 +368,71 @@ const AddSupplierModal = ({ page }: Props) => {
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    
     const { name, type, value } = e.target;
-  
-    if (name === 'openingType') {
+
+    if (name === "openingType") {
       // Update openingType state first
       setOpeningType(value);
-  
+
       // Update supplierData state based on the new openingType value
-      if (value === 'debit') {
-        setSupplierData(prevData => ({
+      if (value === "debit") {
+        setSupplierData((prevData) => ({
           ...prevData,
           debitOpeningBalance: prevData.creditOpeningBalance,
-          creditOpeningBalance: "" // Clear creditOpeningBalance
+          creditOpeningBalance: "", // Clear creditOpeningBalance
         }));
-      } else if (value === 'credit') {
-        setSupplierData(prevData => ({
+      } else if (value === "credit") {
+        setSupplierData((prevData) => ({
           ...prevData,
           creditOpeningBalance: prevData.debitOpeningBalance,
-          debitOpeningBalance: "" // Clear debitOpeningBalance
+          debitOpeningBalance: "", // Clear debitOpeningBalance
         }));
       }
     }
-  
+
     // Update openingBalance field
-    if (name === 'openingBalance') {
-      if (openingType === 'credit') {
-        setSupplierData(prevData => ({
+    if (name === "openingBalance") {
+      if (openingType === "credit") {
+        setSupplierData((prevData) => ({
           ...prevData,
-          creditOpeningBalance: value
+          creditOpeningBalance: value,
         }));
-      } else if (openingType === 'debit') {
-        setSupplierData(prevData => ({
+      } else if (openingType === "debit") {
+        setSupplierData((prevData) => ({
           ...prevData,
-          debitOpeningBalance: value
+          debitOpeningBalance: value,
         }));
       }
     }
-  
+
     // Update supplierDisplayName based on companyName
-    if (name === 'companyName') {
-      setSupplierData(prevData => ({
+    if (name === "companyName") {
+      setSupplierData((prevData) => ({
         ...prevData,
-        supplierDisplayName: value
+        supplierDisplayName: value,
       }));
-      if(supplierdata.supplierDisplayName){
-        setErrors({...errors,supplierDisplayName:false})
+      if (supplierdata.supplierDisplayName) {
+        setErrors({ ...errors, supplierDisplayName: false });
       }
     }
-  
+
     // Handle checkbox updates
     if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
-      setSupplierData(prevData => ({
+      setSupplierData((prevData) => ({
         ...prevData,
-        [name]: checked
+        [name]: checked,
       }));
     } else {
       // Default case for other inputs
-     if(name!=='openingBalance'){
-      setSupplierData(prevData => ({
-        ...prevData,
-        [name]: value
-      }));
+      if (name !== "openingBalance") {
+        setSupplierData((prevData) => ({
+          ...prevData,
+          [name]: value,
+        }));
       }
     }
   };
-  
 
   // get additional data
   const getAdditionalData = async () => {
@@ -440,23 +440,23 @@ const AddSupplierModal = ({ page }: Props) => {
       // Fetching currency data
       const Currencyurl = `${endponits.GET_CURRENCY_LIST}`;
       const { response, error } = await getCurrencyData(Currencyurl);
-  
+
       if (!error && response) {
         setcurrencyData(response?.data);
       }
-  
+
       const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
       const { response: paymentTermResponse, error: paymentTermError } =
         await getPaymentTerms(paymentTermsUrl);
-  
+
       if (!paymentTermError && paymentTermResponse) {
         setPaymentTerms(paymentTermResponse.data);
       }
-  
+
       const CountryUrl = `${endponits.GET_COUNTRY_DATA}`;
       const { response: countryResponse, error: countryError } =
         await getCountryData(CountryUrl);
-  
+
       if (!countryError && countryResponse) {
         setcountryData(countryResponse?.data[0].countries);
       } else {
@@ -466,16 +466,16 @@ const AddSupplierModal = ({ page }: Props) => {
       console.log("Error in fetching currency data or payment terms", error);
     }
   };
-  
+
   const getAdditionalInfo = async () => {
     try {
       const taxUrl = `${endponits.GET_TAX_SUPPLIER}`;
       const { response: taxResponse, error: taxError } = await getTax(taxUrl);
-  
+
       if (!taxError && taxResponse) {
         if (taxResponse) {
           setgstOrVat(taxResponse.data);
-  
+
           // Using functional update for supplier data
           setSupplierData((prevSupplierData) => ({
             ...prevSupplierData,
@@ -489,16 +489,16 @@ const AddSupplierModal = ({ page }: Props) => {
       console.error("Error fetching tax data", error);
     }
   };
-  
+
   const getOneOrganization = async () => {
     try {
       const url = `${endponits.GET_ONE_ORGANIZATION}`;
       const { response, error } = await getOrganization(url);
-  
+
       if (!error && response?.data) {
         const result = response.data;
         setOneOrganization(result);
-  
+
         // Update supplier data with the organization information
         setSupplierData((prevSupplierData) => ({
           ...prevSupplierData,
@@ -514,21 +514,16 @@ const AddSupplierModal = ({ page }: Props) => {
       console.error("Error fetching organization:", error);
     }
   };
-  
-
 
   //api call for add supplier
   const handleSubmit = async () => {
     // Validation logic before API call
     const newErrors = { ...errors };
     if (supplierdata.supplierDisplayName === "")
-      newErrors.supplierDisplayName = true
-    if (supplierdata.companyName === "")
-      newErrors.companyName = true
-    if (supplierdata.firstName === "")
-      newErrors.firstName = true
-    if (supplierdata.lastName === "")
-      newErrors.lastName = true
+      newErrors.supplierDisplayName = true;
+    if (supplierdata.companyName === "") newErrors.companyName = true;
+    if (supplierdata.firstName === "") newErrors.firstName = true;
+    if (supplierdata.lastName === "") newErrors.lastName = true;
     if (Object.values(newErrors).some((error) => error)) {
       setErrors(newErrors);
       return;
@@ -536,17 +531,18 @@ const AddSupplierModal = ({ page }: Props) => {
     try {
       const url = `${endponits.ADD_SUPPLIER}`;
       const { response, error } = await CreateSupplier(url, supplierdata);
-      console.log("res",response);
-      console.log("err",error);
+      console.log("res", response);
+      console.log("err", error);
       if (response && !error) {
-        toast.success(response.data.message); 
+        toast.success(response.data.message);
         setModalOpen(false);
-        setsupplierResponse(response.data)
+        setsupplierResponse(response.data);
         getAdditionalData();
-       getAdditionalInfo();
-       getOneOrganization();
+        getAdditionalInfo();
+        getOneOrganization();
 
         setSupplierData({
+          supplierProfile: "",
           salutation: "",
           firstName: "",
           lastName: "",
@@ -561,8 +557,8 @@ const AddSupplierModal = ({ page }: Props) => {
           pan: "",
           currency: "",
           paymentTerms: "",
-          debitOpeningBalance:"",
-          creditOpeningBalance:"",
+          debitOpeningBalance: "",
+          creditOpeningBalance: "",
           tds: "",
           documents: "",
           websiteURL: "",
@@ -661,6 +657,22 @@ const AddSupplierModal = ({ page }: Props) => {
     }
   };
 
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setSupplierData((prevDetails: any) => ({
+          ...prevDetails,
+          customerProfile: base64String,
+        }));
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
 
   // handle country and state
   useEffect(() => {
@@ -684,15 +696,12 @@ const AddSupplierModal = ({ page }: Props) => {
     }
   }, [supplierdata.shippingCountry, supplierdata.billingCountry, countryData]);
 
-
-   useEffect(()=>{
+  useEffect(() => {
     getOneOrganization();
-    getAdditionalData()
-    getAdditionalInfo()
-   },[])
+    getAdditionalData();
+    getAdditionalInfo();
+  }, []);
 
-      
-  
   return (
     <div>
       {page && page == "purchase" ? (
@@ -748,239 +757,275 @@ const AddSupplierModal = ({ page }: Props) => {
               className="text-slate-600 text-sm overflow-scroll hide-scrollbar space-y-5 p-2"
               style={{ height: "480px" }}
             >
-              <div className="grid grid-cols-12 gap-4 mt-4">
-                <div className="col-span-2">
-                  <label htmlFor="salutation">Salutation</label>
-                  <div className="relative w-full">
-                    <select
-                      name="salutation"
-                      value={supplierdata.salutation}
-                      onChange={handleChange}
-                      className="block appearance-none text-[#818894] w-full h-9 mt-1  bg-white border border-inputBorder text-sm pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    >
-                      <option value="Mr." className="text-gray">
-                        Mr.
-                      </option>
-                      <option value="Mrs." className="text-gray">
-                        Mrs.
-                      </option>
-                      <option value="Ms." className="text-gray">
-                        Ms.
-                      </option>
-                      <option value="Dr." className="text-gray">
-                        Dr.
-                      </option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />{" "}
+              <div className="grid grid-col-12">
+                <div className="col-span-2 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
+                  <label htmlFor="image">
+                    <div className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ">
+                      {supplierdata.supplierProfile ? (
+                        <img
+                          src={supplierdata.supplierProfile}
+                          alt="Item"
+                          className="max-h-16 max-w-36"
+                        />
+                      ) : (
+                        <div className="gap-4 flex items-center ">
+                          <div className="bg-darkRed rounded-full flex items-center w-6 h-6 justify-center">
+                            <Plus color={"white"} classname="h-5" />
+                          </div>
+                          <p>Add Image</p>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                    <div>
+                      <p className="text-sm font-extrabold text-textColor mt-1">
+                        Upload Photo
+                      </p>
+                      <p className="text-xs text-[#818894] mt-1">
+                        Support: JPG, PNG
+                      </p>
+                    </div>
+                    <input
+                      type="file"
+                      id="image"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      name="itemImage"
+                      accept="image/*"
+                    />
+                  </label>
                 </div>
-
-                <div className="grid grid-cols-2 col-span-10 gap-4 ">
-                  <div>
-                    <label htmlFor="firstName" className="text-slate-600">
-                      First Name
-                    </label>
-                    <input
-                      required
-                      type="text"
-                      name="firstName"
-                      className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                      placeholder="Enter First Name"
-                      value={supplierdata.firstName}
-                      onChange={handleChange}
-                      onFocus={() =>
-                        setErrors({ ...errors,firstName: false })
-                      }
-                      onBlur={() => {
-                        if (supplierdata.firstName === "") {
-                          setErrors({ ...errors, firstName: true });
-                        }
-                      }}
-                    />
-                    {errors.firstName && (
-                    <div className="text-red-800 text-xs ms-2 mt-1">
-                      Enter first Name
+                <div className="col-span-10">
+                  <div className="grid grid-cols-12 gap-4 mt-4">
+                    <div className="col-span-2">
+                      <label htmlFor="salutation">Salutation</label>
+                      <div className="relative w-full">
+                        <select
+                          name="salutation"
+                          value={supplierdata.salutation}
+                          onChange={handleChange}
+                          className="block appearance-none text-[#818894] w-full h-9 mt-1  bg-white border border-inputBorder text-sm pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        >
+                          <option value="Mr." className="text-gray">
+                            Mr.
+                          </option>
+                          <option value="Mrs." className="text-gray">
+                            Mrs.
+                          </option>
+                          <option value="Ms." className="text-gray">
+                            Ms.
+                          </option>
+                          <option value="Dr." className="text-gray">
+                            Dr.
+                          </option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                          <CehvronDown color="gray" />{" "}
+                        </div>
+                      </div>
                     </div>
-                  )}
+
+                    <div className="grid grid-cols-2 col-span-10 gap-4 ">
+                      <div>
+                        <label htmlFor="firstName" className="text-slate-600">
+                          First Name
+                        </label>
+                        <input
+                          required
+                          type="text"
+                          name="firstName"
+                          className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                          placeholder="Enter First Name"
+                          value={supplierdata.firstName}
+                          onChange={handleChange}
+                          onFocus={() =>
+                            setErrors({ ...errors, firstName: false })
+                          }
+                          onBlur={() => {
+                            if (supplierdata.firstName === "") {
+                              setErrors({ ...errors, firstName: true });
+                            }
+                          }}
+                        />
+                        {errors.firstName && (
+                          <div className="text-red-800 text-xs ms-2 mt-1">
+                            Enter first Name
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <label htmlFor="lastName" className="text-slate-600">
+                          Last Name
+                        </label>
+                        <input
+                          required
+                          type="text"
+                          name="lastName"
+                          className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                          placeholder="Enter Last Name"
+                          value={supplierdata.lastName}
+                          onChange={handleChange}
+                          onFocus={() =>
+                            setErrors({ ...errors, lastName: false })
+                          }
+                          onBlur={() => {
+                            if (supplierdata.lastName === "") {
+                              setErrors({ ...errors, lastName: true });
+                            }
+                          }}
+                        />
+                        {errors.lastName && (
+                          <div className="text-red-800 text-xs ms-2 mt-1">
+                            Enter Last Name
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
-                  <div>
-                    <label htmlFor="lastName" className="text-slate-600">
-                      Last Name
-                    </label>
-                    <input
-                      required
-                      type="text"
-                      name="lastName"
-                      className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                      placeholder="Enter Last Name"
-                      value={supplierdata.lastName}
-                      onChange={handleChange}
-                      onFocus={() =>
-                        setErrors({ ...errors, lastName: false })
-                      }
-                      onBlur={() => {
-                        if (supplierdata.lastName === "") {
-                          setErrors({ ...errors, lastName: true });
+                  <div className="grid grid-cols-3 gap-4 mt-4">
+                    <div>
+                      <label htmlFor="">Company Name </label>
+                      <input
+                        required
+                        type="text"
+                        name="companyName"
+                        className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                        placeholder="Enter Company Name"
+                        value={supplierdata.companyName}
+                        onChange={handleChange}
+                        onFocus={() =>
+                          setErrors({ ...errors, companyName: false })
                         }
-                      }}
-                    />
-                    {errors.lastName && (
-                    <div className="text-red-800 text-xs ms-2 mt-1">
-                      Enter Last Name
+                        onBlur={() => {
+                          if (supplierdata.companyName === "") {
+                            setErrors({ ...errors, companyName: true });
+                          }
+                        }}
+                      />
+                      {errors.companyName && (
+                        <div className="text-red-800 text-xs ms-2 mt-1">
+                          Enter Company Name
+                        </div>
+                      )}
                     </div>
-                  )}
+                    <div>
+                      <label htmlFor="companyName">
+                        Supplier Display Name{" "}
+                      </label>
+                      <input
+                        required
+                        type="text"
+                        name="supplierDisplayName"
+                        className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                        placeholder="Enter Display Name"
+                        value={supplierdata.supplierDisplayName}
+                        onChange={handleChange}
+                        onFocus={() =>
+                          setErrors({ ...errors, supplierDisplayName: false })
+                        }
+                        onBlur={() => {
+                          if (supplierdata.supplierDisplayName === "") {
+                            setErrors({ ...errors, supplierDisplayName: true });
+                          }
+                        }}
+                      />
+                      {errors.supplierDisplayName && (
+                        <div className="text-red-800 text-xs ms-2 mt-1">
+                          Enter Supplier Display Name
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <label htmlFor="">Supplier Email</label>
+                      <input
+                        type="email"
+                        name="supplierEmail"
+                        className="pl-3 text-sm w-[100%] mt-1  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                        placeholder="Enter Email"
+                        value={supplierdata.supplierEmail}
+                        onChange={handleChange}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-4 mt-4">
                 <div>
-                  <label htmlFor="">Company Name </label>
-                  <input
-                    required
-                    type="text"
-                    name="companyName"
-                    className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                    placeholder="Enter Company Name"
-                    value={supplierdata.companyName}
-                    onChange={handleChange}
-                    onFocus={() =>
-                      setErrors({ ...errors, companyName: false })
-                    }
-                    onBlur={() => {
-                      if (supplierdata.companyName === "") {
-                        setErrors({ ...errors, companyName: true });
+                  <label
+                    className="text-slate-600 "
+                    htmlFor="organizationAddress"
+                  >
+                    Work Phone
+                  </label>
+                  <div className="w-full border-0 mt-1">
+                    <PhoneInput
+                      inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                      inputStyle={{ height: "35px", width: "100%" }}
+                      containerStyle={{ width: "100%" }}
+                      country={"in"}
+                      value={supplierdata.workPhone}
+                      onChange={(value) =>
+                        setSupplierData({ ...supplierdata, workPhone: value })
                       }
-                    }}
-                  />
-                  {errors.companyName && (
-                    <div className="text-red-800 text-xs ms-2 mt-1">
-                      Enter Company Name
-                    </div>
-                  )}
+                    />
+                  </div>
                 </div>
                 <div>
-                  <label htmlFor="companyName">Supplier Display Name </label>
-                  <input
-                    required
-                    type="text"
-                    name="supplierDisplayName"
-                    className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                    placeholder="Enter Display Name"
-                    value={supplierdata.supplierDisplayName}
-                    onChange={handleChange}
-                    onFocus={() =>
-                      setErrors({ ...errors, supplierDisplayName: false })
-                    }
-                    onBlur={() => {
-                      if (supplierdata.supplierDisplayName === "") {
-                        setErrors({ ...errors, supplierDisplayName: true });
+                  <label
+                    className="text-slate-600 "
+                    htmlFor="organizationAddress"
+                  >
+                    Mobile
+                  </label>
+                  <div className="w-full border-0 mt-1">
+                    <PhoneInput
+                      inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                      inputStyle={{ height: "35px", width: "100%" }}
+                      containerStyle={{ width: "100%" }}
+                      country={"in"}
+                      value={supplierdata.mobile}
+                      onChange={(value) =>
+                        setSupplierData({ ...supplierdata, mobile: value })
                       }
-                    }}
-                  />
-                  {errors.supplierDisplayName && (
-                    <div className="text-red-800 text-xs ms-2 mt-1">
-                      Enter Supplier Display Name
-                    </div>
-                  )}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label htmlFor="">Supplier Email</label>
-                  <input
-                    type="email"
-                    name="supplierEmail"
-                    className="pl-3 text-sm w-[100%] mt-1  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                    placeholder="Enter Email"
-                    value={supplierdata.supplierEmail}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-3 gap-4 mt-4">
-              <div>
-                            <label
-                              className="text-slate-600 "
-                              htmlFor="organizationAddress"
-                            >
-                              Work Phone
-                            </label>
-                            <div className="w-full border-0 mt-1">
-                              <PhoneInput
-                                inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                                inputStyle={{ height: "35px", width: "100%" }}
-                                containerStyle={{ width: "100%" }}
-                                country={
-                                 "in"
-                                }
-                                value={supplierdata.workPhone}
-                                onChange={(value) =>
-                                  setSupplierData({...supplierdata,workPhone:value})
-                                }
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <label
-                              className="text-slate-600 "
-                              htmlFor="organizationAddress"
-                            >
-                              Mobile
-                            </label>
-                            <div className="w-full border-0 mt-1">
-                              <PhoneInput
-                                inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                                inputStyle={{ height: "35px", width: "100%" }}
-                                containerStyle={{ width: "100%" }}
-                                country={
-                                 "in"
-                                }
-                                value={supplierdata.mobile}
-                                onChange={(value) =>
-                                  setSupplierData({...supplierdata,mobile:value})
-                                }
-                              />
-                            </div>
-                          </div>
-               
-                          <div>
-  <label className="block mb-1">Opening Balance</label>
-  <div className="flex">
-    <div className="relative w-20 ">
-      <select
-        className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder
+                <div>
+                  <label className="block mb-1">Opening Balance</label>
+                  <div className="flex">
+                    <div className="relative w-20 ">
+                      <select
+                        className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder
           text-sm pl-2 pr-2 rounded-l-md leading-tight
           focus:outline-none focus:bg-white focus:border-gray-500"
-        name="openingType"
-        value={openingType}
-        onChange={handleChange}
-      >
-        <option value="credit">Cr</option>
-        <option value="debit">Dr</option>
-      </select>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-        <CehvronDown color="gray" />
-      </div>
-    </div>
-    <input
-      type="text"
-      className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-      placeholder="Enter Opening Balance"
-      name="openingBalance"
-      value={
-        openingType === 'debit'
-          ? supplierdata.debitOpeningBalance
-          : supplierdata.creditOpeningBalance
-      }
-      onChange={handleChange}
-    />
-  </div>
-                         </div>
-
-
+                        name="openingType"
+                        value={openingType}
+                        onChange={handleChange}
+                      >
+                        <option value="credit">Cr</option>
+                        <option value="debit">Dr</option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <CehvronDown color="gray" />
+                      </div>
+                    </div>
+                    <input
+                      type="text"
+                      className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                      placeholder="Enter Opening Balance"
+                      name="openingBalance"
+                      value={
+                        openingType === "debit"
+                          ? supplierdata.debitOpeningBalance
+                          : supplierdata.creditOpeningBalance
+                      }
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="flex mt-5 px-5">
@@ -1177,7 +1222,7 @@ const AddSupplierModal = ({ page }: Props) => {
                           />
                         </div>
                       </div>
-                      
+
                       <div className="mt-4">
                         <label className="block mb-1">Documents</label>
                         <div className="border-dashed border border-neutral-300 p-2 rounded flex gap-2">
@@ -1254,9 +1299,11 @@ const AddSupplierModal = ({ page }: Props) => {
                                   value={supplierdata.gstTreatment}
                                   onChange={handleChange}
                                 >
-                                  <option  className="text-gray">
+                                  <option className="text-gray">
                                     {" "}
-                                    {supplierdata.gstTreatment?supplierdata.gstTreatment:'Select a GST treatment'}
+                                    {supplierdata.gstTreatment
+                                      ? supplierdata.gstTreatment
+                                      : "Select a GST treatment"}
                                   </option>
                                   {gstOrVat?.gstTreatment?.map(
                                     (item: any, index: number) => (
@@ -1278,9 +1325,18 @@ const AddSupplierModal = ({ page }: Props) => {
 
                               <div className="relative w-full">
                                 <select className="block appearance-none w-full h-9  text-[#818894] bg-white border border-inputBorder text-sm  pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                                  <option value={supplierdata.sourceOfSupply?supplierdata.sourceOfSupply:'Select Source of Supply'} className="text-gray">
+                                  <option
+                                    value={
+                                      supplierdata.sourceOfSupply
+                                        ? supplierdata.sourceOfSupply
+                                        : "Select Source of Supply"
+                                    }
+                                    className="text-gray"
+                                  >
                                     {" "}
-                                    {supplierdata.sourceOfSupply?supplierdata.sourceOfSupply:'Select Source of Supply'}
+                                    {supplierdata.sourceOfSupply
+                                      ? supplierdata.sourceOfSupply
+                                      : "Select Source of Supply"}
                                   </option>
                                   {placeOfSupplyList.length > 0 &&
                                     placeOfSupplyList.map(
@@ -1566,9 +1622,7 @@ const AddSupplierModal = ({ page }: Props) => {
                                 inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                                 inputStyle={{ height: "38px", width: "100%" }}
                                 containerStyle={{ width: "100%" }}
-                                country={
-                                 "in"
-                                }
+                                country={"in"}
                                 value={supplierdata.billingPhone}
                                 onChange={(value) =>
                                   handleBillingPhoneChange(value)
@@ -1577,22 +1631,22 @@ const AddSupplierModal = ({ page }: Props) => {
                             </div>
                           </div>
                           <div className="relative w-full">
-                          <div>
-                            <label
-                              className="text-slate-600 "
-                              htmlFor="organizationAddress"
-                            >
-                              Fax Number
-                            </label>
-                            <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                              placeholder="Enter Fax Number"
-                              type="number"
-                              name="billingFaxNum"
-                              value={supplierdata.billingFaxNum}
-                              onChange={handleChange}
-                            />
-                          </div>  
+                            <div>
+                              <label
+                                className="text-slate-600 "
+                                htmlFor="organizationAddress"
+                              >
+                                Fax Number
+                              </label>
+                              <input
+                                className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                                placeholder="Enter Fax Number"
+                                type="number"
+                                name="billingFaxNum"
+                                value={supplierdata.billingFaxNum}
+                                onChange={handleChange}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1762,31 +1816,29 @@ const AddSupplierModal = ({ page }: Props) => {
                                 inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                                 inputStyle={{ height: "38px", width: "100%" }}
                                 containerStyle={{ width: "100%" }}
-                                country={
-                                   "in"
-                                }
+                                country={"in"}
                                 value={supplierdata.shippingPhone}
                                 onChange={handleShippingPhoneChange}
                               />
                             </div>
                           </div>
                           <div className="relative w-full">
-                          <div>
-                            <label
-                              className="text-slate-600 "
-                              htmlFor="organizationAddress"
-                            >
-                              Fax Number
-                            </label>
-                            <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                              placeholder="Enter Fax Number"
-                              type="number"
-                              name="shippingFaxNum"
-                              value={supplierdata.shippingFaxNum}
-                              onChange={handleChange}
-                            />
-                          </div>
+                            <div>
+                              <label
+                                className="text-slate-600 "
+                                htmlFor="organizationAddress"
+                              >
+                                Fax Number
+                              </label>
+                              <input
+                                className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                                placeholder="Enter Fax Number"
+                                type="number"
+                                name="shippingFaxNum"
+                                value={supplierdata.shippingFaxNum}
+                                onChange={handleChange}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
