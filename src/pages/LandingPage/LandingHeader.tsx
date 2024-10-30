@@ -12,6 +12,9 @@ import MenuDropdown from '../../Components/menu/MenuDropdown';
 import Moon from "../../assets/icons/Moon";
 import { useNavigate } from "react-router-dom";
 import OrganizationIcon from "../../assets/icons/OrganizationIcon";
+import { useState } from "react";
+import Modal from "../../Components/model/Modal";
+import Button from "../../Components/Button";
 
 type Props = {
   setMode?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,9 +22,25 @@ type Props = {
 };
 
 
-
 function LandingHeader({ mode, setMode }: Props) {
-  const navigate = useNavigate()
+  const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+
+
+  const confirmLogout = () => {
+    setLogoutModalOpen(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+    setLogoutModalOpen(false);
+  };
+
+  const closeModal = () => {
+    setLogoutModalOpen(false);
+  };
 
   return (
     <header className={`${mode ? 'bg-[#EAEBEB]' : 'bg-[#2C353B]'} text-[#DFD1B4] flex items-center justify-between p-4 rounded-full mb-8 px-6`}>
@@ -74,8 +93,7 @@ function LandingHeader({ mode, setMode }: Props) {
               label: 'Log Out',
               icon: <LogOut color={mode ? '#4B5C79' : '#DFE1E2'} />,
               onClick: () => {
-                console.log('Delete clicked with id:', 1);
-                // handleDelete(item._id); // Directly use item properties
+               confirmLogout()
               },
 
             },
@@ -100,6 +118,32 @@ function LandingHeader({ mode, setMode }: Props) {
           </div>
         </button>
       </div>
+
+      {isLogoutModalOpen && (
+        <Modal
+          open
+          onClose={closeModal}
+          className="rounded-lg p-8 w-[546px] h-[160px] text-[#303F58] space-y-8 absolute top-0"
+        >
+          <p className="text-sm">Are you sure you want to log out?</p>
+          <div className="flex justify-end gap-2 mb-3">
+            <Button
+              onClick={closeModal}
+              variant="secondary"
+              className="pl-8 pr-8 text-sm h-10"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleLogout}
+              variant="primary"
+              className="pl-8 pr-8 text-sm h-10"
+            >
+              Ok
+            </Button>
+          </div>
+        </Modal>
+      )}
 
 
     </header>
