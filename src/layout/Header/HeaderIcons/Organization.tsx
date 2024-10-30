@@ -103,9 +103,9 @@ const Organization = ({ organizationData }: Props) => {
           ) : (
             <p className="text-xs text-gray-700">Loading...</p>
           )}
-          <div className="flex justify-end">
+          <div className="flex justify-center">
             <Button
-              className="pl-10 pr-10 h-[34px] text-sm"
+              className="pl-10 pr-10 h-[34px] mt-10 text-sm"
               onClick={confirmLogout}
             >
               Logout

@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import PrinterIcon from "../../../../assets/icons/PrinterIcon";
-import Button from "../../../../Components/Button";
-import { endponits } from "../../../../Services/apiEndpoints";
-import useApi from "../../../../Hooks/useApi";
-import { useOrganization } from "../../../../context/OrganizationContext";
 import CheveronDownIcon from "../../../../assets/icons/CheveronDownIcon";
 import CheveronUp from "../../../../assets/icons/CheveronUp";
+import Button from "../../../../Components/Button";
+import { useOrganization } from "../../../../context/OrganizationContext";
+import useApi from "../../../../Hooks/useApi";
+import { endponits } from "../../../../Services/apiEndpoints";
 
 interface QuoteItem {
   itemId: string;
@@ -29,7 +28,6 @@ interface QuoteData {
   subTotal: number;
   totalTax: number;
   totalDiscount: number;
-  
 }
 
 interface Customer {
@@ -60,7 +58,6 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
   const [customerData, setCustomerData] = useState<Customer | null>(null);
   const { organization } = useOrganization();
 
-  
   const toggleItemDetails = (itemId: string) => {
     setOpenItemId((prev) => (prev === itemId ? null : itemId));
   };
@@ -121,7 +118,7 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
       </div>
 
       {/* Item Details */}
-      <div className="grid grid-cols-2 gap-6 mt-4">
+      <div className="grid grid-cols-4 gap-6 mt-4">
         {data?.items.map((item) => (
           <div
             key={item.itemId}
@@ -139,17 +136,16 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
                 openItemId === item.itemId ? "Hide details" : "Show details"
               }
             >
-              {openItemId === item.itemId ? <CheveronUp color="black"/> : <CheveronDownIcon color="black"/> }
+              {openItemId === item.itemId ? (
+                <CheveronUp color="black" />
+              ) : (
+                <CheveronDownIcon color="black" />
+              )}
             </button>
 
             {/* Main Content */}
             <div className="flex items-center">
               <div className="flex items-center border-borderRight pr-4">
-                <img
-                  src="https://s3-alpha-sig.figma.com/img/d280/d28b/ae738328489af5e587e95fe2105955cf?Expires=1722211200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=p~s4Pd6Qn~p7F2xhOj69kvQuS37jfaVfI~EPvWb3T0GRZszU5IMeNwTmqxKJYVaPzM49ClHtCjva1VuSGl5111Wlfbzit1xe4LSjDywVLhQIlVB2nuy5~7fZOYUdnuVXb2ZtDTL0D3JJCpHURXzepy1njjkZQZtCsMILKWthxm8qryLy-rW7uS870zgh8jX~a1rgig7zSqzVqfolspoo-dnLzhajoPQQuw3LOSOhvAmnpKGjxJsXe6pxQC6XCDHhZjYgyM2bd6MAt6Q1iOBBmy0PDSce0Fyz-wX9mIjfg-KO6wvrCeVpw11e-rG6MvmipkKu9HW10oR2-y~9mAkRcg__"
-                  alt="Item"
-                  className="w-20 h-16 object-cover rounded mr-4"
-                />
                 <div>
                   <p className="text-blk font-semibold">{item.itemName}</p>
                   <p className="text-dropdownText text-sm">
@@ -243,18 +239,6 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
               <p className="text-textColor font-bold text-lg">
                 {organization?.baseCurrency} {data?.totalAmount}
               </p>
-            </div>
-            <div className="flex justify-end gap-2 mt-6 mb-2">
-              <Button variant="secondary" size="sm" className="pl-4 pr-4">
-                <p className="text-sm font-medium">Cancel</p>
-              </Button>
-              <Button variant="secondary" className="pl-2 pr-2" size="sm">
-                <PrinterIcon color="#565148" height={16} width={16} />
-                <p className="text-sm font-medium">Print</p>
-              </Button>
-              <Button variant="primary" className="pl-3 pr-3" size="sm">
-                <p className="text-sm font-medium">Save & Send</p>
-              </Button>
             </div>
           </div>
         </div>
