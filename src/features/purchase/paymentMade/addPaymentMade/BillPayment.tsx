@@ -10,6 +10,8 @@ import UserRound from "../../../../assets/icons/user-round";
 // import { PrinterIcon } from "@heroicons/react/16/solid";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 interface UnpaidBill {
   billDate: string;
@@ -40,7 +42,7 @@ interface SupplierPayment {
   amountUsedForPayments: number;
   amountRefunded: number;
   amountInExcess: number;
-  totalBillAmount:number;
+  totalBillAmount: number;
 }
 
 const initialSupplierPayment: SupplierPayment = {
@@ -72,7 +74,7 @@ const initialSupplierPayment: SupplierPayment = {
   amountUsedForPayments: 0,
   amountRefunded: 0,
   amountInExcess: 0,
-  totalBillAmount:0
+  totalBillAmount: 0,
 };
 
 type Props = {};
@@ -83,7 +85,8 @@ const NewPaymentMade = ({}: Props) => {
   const [supplierData, setSupplierData] = useState<[]>([]);
   const [allBillsData, setAllBillsData] = useState<[]>([]);
   const [supplierBills, setSupplierBills] = useState<[] | any>([]);
-  const [allAcoounts,setAllAccounts]=useState<[] | any>([])
+  const [allAcoounts, setAllAccounts] = useState<[] | any>([]);
+  const [isFullAmt, setIsFullAmount] = useState<boolean>(false);
   const [paymentState, setPaymentState] = useState<SupplierPayment>(
     initialSupplierPayment
   );
@@ -91,12 +94,13 @@ const NewPaymentMade = ({}: Props) => {
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: getAllBills } = useApi("get", 5005);
   const { request: getAccounts } = useApi("get", 5001);
+  const { request: addPayment } = useApi("post", 5005);
 
-
+  const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const getBillsUrl = `${endponits.GET_ALL_BILLS}`;
-  const accountsUrl =`${endponits.Get_ALL_Acounts}`;
+  const accountsUrl = `${endponits.Get_ALL_Acounts}`;
 
   console.log(paymentState);
   // console.log(supplierBills, "supplierBills");
@@ -157,12 +161,12 @@ const NewPaymentMade = ({}: Props) => {
       if (!error && response) {
         if (url === getBillsUrl) {
           setData(response.data.PurchaseBills);
-        } 
-        else if (url=== accountsUrl){
-          const filteredData = response.data.filter((item: any) => item.accountGroup === 'Asset');
+        } else if (url === accountsUrl) {
+          const filteredData = response.data.filter(
+            (item: any) => item.accountGroup === "Asset"
+          );
           setData(filteredData);
-        }
-        else {
+        } else {
           setData(response.data);
         }
       }
@@ -171,24 +175,55 @@ const NewPaymentMade = ({}: Props) => {
     }
   };
 
+  const handleChangeAmt = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      setIsFullAmount(true);
+      setPaymentState((prevData) => ({
+        ...prevData,
+        paymentMade: paymentState.totalBillAmount,
+      }));
+    } else {
+      setIsFullAmount(false);
+      setPaymentState((prevData) => ({
+        ...prevData,
+        paymentMade: 0,
+      }));
+    }
+  };
 
-  useEffect(()=>{
-    const grandTotal = supplierBills.reduce((total:any, bill:any) => {
+  const handleSave = async () => {
+    try {
+      const url = `${endponits.ADD_PAYMET_MADE}`;
+      const { response, error } = await addPayment(url, paymentState);
+      if (!error && response) {
+        toast.success(response.data.message);
+        setTimeout(() => {
+          navigate("/purchase/payment-made");
+        }, 1000);
+      } else {
+        toast.error(error.response.data.message);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    const grandTotal = supplierBills.reduce((total: any, bill: any) => {
       return total + bill.grandTotal;
     }, 0);
 
+    console.log(isFullAmt);
+
     setPaymentState((prevData) => ({
       ...prevData,
-      totalBillAmount: grandTotal
+      totalBillAmount: grandTotal,
     }));
-    console.log(grandTotal,"total")
-  },[supplierBills])
+  }, [supplierBills]);
 
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
 
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
-    fetchData(accountsUrl, setAllAccounts, getAccounts )
+    fetchData(accountsUrl, setAllAccounts, getAccounts);
     fetchData(getBillsUrl, setAllBillsData, getAllBills);
   }, []);
 
@@ -206,10 +241,12 @@ const NewPaymentMade = ({}: Props) => {
 
   useEffect(() => {
     if (selectedSupplier) {
-      const filtered = allBillsData.filter((item:any) => item.supplierId === selectedSupplier._id);
+      const filtered = allBillsData.filter(
+        (item: any) => item.supplierId === selectedSupplier._id
+      );
       setSupplierBills(filtered);
     }
-  }, [selectedSupplier, allBillsData]); 
+  }, [selectedSupplier, allBillsData]);
 
   return (
     <div className="px-8">
@@ -241,7 +278,8 @@ const NewPaymentMade = ({}: Props) => {
                   >
                     <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                       <p>
-                        {selectedSupplier && selectedSupplier.supplierDisplayName
+                        {selectedSupplier &&
+                        selectedSupplier.supplierDisplayName
                           ? selectedSupplier.supplierDisplayName
                           : "Select Supplier"}
                       </p>
@@ -275,11 +313,14 @@ const NewPaymentMade = ({}: Props) => {
                                 setPaymentState((prevState: any) => ({
                                   ...prevState,
                                   supplierId: supplier._id,
-                                  supplierDisplayName:supplier.supplierDisplayName
+                                  supplierDisplayName:
+                                    supplier.supplierDisplayName,
+                                    paymentMade:0
+
                                 }));
+                                setIsFullAmount(false)
                                 setOpenDropdownIndex(null);
                                 setSelecetdSupplier(supplier);
-                               
                               }}
                             >
                               <div>
@@ -317,28 +358,30 @@ const NewPaymentMade = ({}: Props) => {
               </div>
 
               <div className="grid grid-cols-2 gap-4 mt-2">
-
-              <div className="">
+                <div className="">
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Made
                   </label>
                   <input
                     placeholder="Enter Payment Made"
                     type="text"
-                    value={paymentState.paymentMade? paymentState.paymentMade:""}
+                    value={
+                      paymentState.paymentMade ? paymentState.paymentMade : ""
+                    }
                     onChange={handleChange}
                     name="paymentMade"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />
                   <div className="flex mt-2 gap-2 items-center">
-                     <input
-                      placeholder="Enter Payment Made"
+                    <input
                       type="checkbox"
-                      value={paymentState.paymentMade? paymentState.paymentMade:""}
-                      onChange={handleChange}
-                      name="paymentMade"
+                      onChange={handleChangeAmt}
+                      checked={isFullAmt}
                       className="bg-checkBox checkBox h-3 w-3"
-                    /> <p className="text-xs">Pay Full Amount ({paymentState.totalBillAmount})</p>
+                    />{" "}
+                    <p className="text-xs text-textColor">
+                      Pay Full Amount ({paymentState.totalBillAmount})
+                    </p>
                   </div>
                 </div>
                 <div className="">
@@ -354,8 +397,6 @@ const NewPaymentMade = ({}: Props) => {
                     onChange={handleChange}
                   />
                 </div>
-
-              
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -401,15 +442,15 @@ const NewPaymentMade = ({}: Props) => {
                     onChange={handleChange}
                     className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   >
-                      <option value="Bank Transfer" className="text-gray">
+                    <option value="Bank Transfer" className="text-gray">
                       Bank Transfer
                     </option>
-                  
+
                     <option value="Cash" className="text-gray">
                       Cash
                     </option>
                     <option value="Bank Transfer" className="text-gray">
-                     Check
+                      Check
                     </option>
                     <option value="Credit" className="text-gray">
                       Card
@@ -432,13 +473,16 @@ const NewPaymentMade = ({}: Props) => {
                     name="paidThrough"
                     className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   >
-                     <option>Select Payment Through</option>
-                 {allAcoounts ? allAcoounts.map((item: any) => (
-  <option value={item._id} className="text-gray">
-    {item.accountName}
-  </option>
-)) : <option>No Accounts Available</option>}
-
+                    <option>Select Payment Through</option>
+                    {allAcoounts ? (
+                      allAcoounts.map((item: any) => (
+                        <option value={item._id} className="text-gray">
+                          {item.accountName}
+                        </option>
+                      ))
+                    ) : (
+                      <option>No Accounts Available</option>
+                    )}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <CehvronDown color="gray" />
@@ -450,7 +494,8 @@ const NewPaymentMade = ({}: Props) => {
             <div className="mt-5">
               <p className="font-bold text-base">Unpaid Bill</p>
               <NewPaymentMadeOrderTable
-               supplierBills={supplierBills}
+                isFullAmt={isFullAmt}
+                supplierBills={supplierBills}
                 paymentState={paymentState}
                 setPaymentState={setPaymentState}
               />
@@ -504,7 +549,9 @@ const NewPaymentMade = ({}: Props) => {
                 </div>
                 <div className="flex-shrink-0">
                   {" "}
-                  <p className="text-end">{paymentState.amountPaid?paymentState.amountPaid:"0.00"}</p>
+                  <p className="text-end">
+                    {paymentState.amountPaid ? paymentState.amountPaid : "0.00"}
+                  </p>
                 </div>
               </div>
 
@@ -513,7 +560,11 @@ const NewPaymentMade = ({}: Props) => {
                   <p className="whitespace-nowrap">Amount Used for Payments</p>
                 </div>
                 <div className="flex-shrink-0">
-                  <p>{paymentState.amountUsedForPayments?paymentState.amountUsedForPayments:"0.00"}</p>
+                  <p>
+                    {paymentState.amountUsedForPayments
+                      ? paymentState.amountUsedForPayments
+                      : "0.00"}
+                  </p>
                 </div>
               </div>
 
@@ -531,7 +582,11 @@ const NewPaymentMade = ({}: Props) => {
                   <p> Amount In Excess</p>
                 </div>
                 <div className="w-full text-end">
-                  <p className="text-end">0.00</p>
+                  <p className="text-end">
+                    {paymentState.paymentMade > paymentState.amountPaid
+                      ? paymentState.paymentMade - paymentState.amountPaid
+                      : "0.00"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -545,7 +600,7 @@ const NewPaymentMade = ({}: Props) => {
                 <PrinterIcon height={18} width={18} color="currentColor" />
                 Print
               </Button> */}
-            <Button variant="primary" size="sm">
+            <Button variant="primary" size="sm" onClick={handleSave}>
               Save
             </Button>{" "}
           </div>

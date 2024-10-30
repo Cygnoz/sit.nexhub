@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { PaymentMadeUnpaidBillTable } from "../../../../assets/constants";
-import PlusCircle from "../../../../assets/icons/PlusCircle";
+import toast from "react-hot-toast";
 
 type Props = {
   paymentState?: any;
   setPaymentState?: any;
   supplierBills?: BillData[];
+  isFullAmt?:boolean
 };
 
 interface BillData {
@@ -22,9 +23,20 @@ const NewPaymentMadeOrderTable = ({
   paymentState,
   setPaymentState,
   supplierBills = [],
+  isFullAmt = false
 }: Props) => {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
-  const [data, setData] = useState<BillData[]>([]);
+  const [data, setData] = useState<BillData[]>([
+    {
+      billId: "",
+      billDate: "",
+      dueDate: "",
+      billNumber: "",
+      billAmount: 0,
+      amountDue: 0,
+      payment: 0,
+    }
+  ]);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -55,18 +67,6 @@ const NewPaymentMadeOrderTable = ({
     }
   };
 
-  const addRow = () => {
-    const newRow: BillData = {
-      billId: "",
-      billDate: "",
-      dueDate: "",
-      billNumber: "",
-      billAmount: 0,
-      amountDue: 0,
-      payment: 0,
-    };
-    setData((prevData) => [...prevData, newRow]);
-  };
 
   const handleRowChange = (
     index: number,
@@ -75,31 +75,74 @@ const NewPaymentMadeOrderTable = ({
   ) => {
     const newData = [...data];
     newData[index] = { ...newData[index], [field]: value };
-
+  
     const billAmount = newData[index].billAmount;
-    const payment = newData[index].payment;
-    newData[index].amountDue = billAmount - payment;
-
-    const totalPayment = newData.reduce((acc, row) => acc + row.payment, 0);
-
-    console.log(newData[index].amountDue, "amountDue");
-    console.log(billAmount, "billAmt");
-    console.log(payment, "payment");
-
+  
+    if (isFullAmt) {
+      newData[index].payment = billAmount;
+    } else {
+      newData[index].payment=0
+      const paymentValue = typeof value === "number" ? value : parseFloat(value);
+  
+      if (paymentValue > billAmount) {
+        toast.error(`Payment cannot exceed the bill amount of ${billAmount}. Setting payment to bill amount.`);
+        newData[index].payment = billAmount;
+      } else {
+        newData[index].payment = paymentValue;
+      }
+    }
+  
+    newData[index].amountDue = billAmount - newData[index].payment;
+  
+    let totalPayment = newData.reduce((acc, row) => acc + (row.payment || 0), 0);
+  
+    // Check if totalPayment exceeds paymentState.paymentMade
+    if (totalPayment > paymentState.paymentMade) {
+      toast.error(`Total payment cannot exceed the available payment amount of ${paymentState.paymentMade}.`);
+      totalPayment = paymentState.paymentMade;
+    }
+  
     setData(newData);
-
+  
     if (setPaymentState) {
       setPaymentState((prevData: any) => ({
         ...prevData,
         unpaidBills: newData,
         total: totalPayment,
-
         amountPaid: totalPayment,
-
         amountUsedForPayments: totalPayment,
       }));
     }
   };
+  
+  
+
+  
+  useEffect(() => {
+    const updatedData = data.map((row) => ({
+      ...row,
+      payment: isFullAmt ? row.billAmount : 0,
+      amountDue: row.billAmount - (isFullAmt ? row.billAmount : 0),
+    }));
+  
+    const totalPayment = updatedData.reduce((acc, row) => acc + row.payment, 0);
+  
+    setData(updatedData);
+  
+    if (setPaymentState) {
+      setPaymentState((prevData: any) => ({
+        ...prevData,
+        unpaidBills: updatedData,
+        total: totalPayment,
+        amountPaid: totalPayment,
+        amountUsedForPayments: totalPayment,
+      }));
+    }
+  }, [isFullAmt,paymentState.supplierId]);
+  
+  
+  
+
 
   useEffect(() => {
     if (openDropdownId !== null) {
@@ -116,7 +159,7 @@ const NewPaymentMadeOrderTable = ({
   return (
     <div>
       <div className="rounded-lg border-2 border-tableBorder mt-3">
-        <table className="min-w-full bg-white rounded-lg relative pb-4 border-dropdownText text-textColor">
+        <table className=" text-xs min-w-full bg-white rounded-lg relative pb-4 border-dropdownText text-textColor">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr className="bg-[#FDF8F0]">
               {PaymentMadeUnpaidBillTable.map((item, index) => (
@@ -220,12 +263,7 @@ const NewPaymentMadeOrderTable = ({
       <p className="text-right text-textColor text-sm mt-4">
         Total <span className="ms-20 font-semibold">{paymentState.total}</span>
       </p>
-      <button onClick={addRow} className="mt-1">
-        <p className="text-darkRed my-3 text-sm flex gap-2 items-center">
-          <PlusCircle color="darkRed" />
-          <b>Add Item</b>
-        </p>
-      </button>
+ 
     </div>
   );
 };

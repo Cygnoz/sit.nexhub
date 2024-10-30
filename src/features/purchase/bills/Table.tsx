@@ -5,6 +5,7 @@ import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
 import PrintButton from "../../../Components/PrintButton";
 import SearchBar from "../../../Components/SearchBar";
+import DotIcon from "../../../assets/icons/DotIcon";
 
 
 
@@ -19,10 +20,11 @@ const Table = () => {
   const initialColumns: Column[] = [
     { id: "billNumber", label: "Bill#", visible: true },
     { id: "billDate", label: "Bill Date", visible: true },
-    // { id: "reference", label: "Reference", visible: true },
     { id: "supplierDisplayName", label: "Supplier Name", visible: true },
     { id: "grandTotal", label: "Amount", visible: true },
     { id: "dueDate", label: "Due Date", visible: true },
+        { id: "paidStatus", label: "Status", visible: true },
+
   ];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
@@ -112,35 +114,51 @@ getAllBill()
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-          {filteredAccounts && filteredAccounts.length > 0 ? (
-  filteredAccounts.map((item) => (
-    <tr key={item.id} className="relative">
-      <td className="py-2.5 px-4 border-y border-tableBorder">
-        <input type="checkbox" className="form-checkbox w-4 h-4" />
+  {filteredAccounts && filteredAccounts.length > 0 ? (
+    filteredAccounts.map((item) => (
+      <tr key={item.id} className="relative">
+        <td className="py-2.5 px-4 border-y border-tableBorder">
+          <input type="checkbox" className="form-checkbox w-4 h-4" />
+        </td>
+        {columns.map((col) => {
+          const cellContent =
+            col.id === 'paidStatus' ? (
+              <div
+                className={`${
+                  item.paidStatus === "Pending" ? "bg-zinc-200" : "bg-[#78AA86]"
+                }  text-[13px] rounded-lg items-center ms-auto text-textColor h-[18px] gap-2 py-2 flex justify-center`}
+              >
+            <DotIcon color="#495160" />
+ {item.paidStatus}
+              </div>
+            ) : (
+              item[col.id as keyof typeof item]
+            );
+
+          return (
+            col.visible && (
+              <td
+                key={col.id}
+                className="py-2.5 px-4 border-y border-tableBorder cursor-pointer"
+                onClick={() => navigate("/purchase/bills/view")}
+              >
+                {cellContent}
+              </td>
+            )
+          );
+        })}
+        <td className="py-2.5 px-4 border-y border-tableBorder"></td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan={columns.length + 2} className="text-center py-4 border-y border-tableBorder">
+        <p className="text-red-500">No Data Found!</p>
       </td>
-      {columns.map(
-        (col) =>
-          col.visible && (
-            <td
-              key={col.id}
-              className="py-2.5 px-4 border-y border-tableBorder cursor-pointer"
-              onClick={() => navigate("/purchase/bills/view")}
-            >
-              {item[col.id as keyof typeof item]}
-            </td>
-          )
-      )}
-      <td className="py-2.5 px-4 border-y border-tableBorder"></td>
     </tr>
-  ))
-) : (
-  <tr>
-    <td colSpan={columns.length + 2} className="text-center py-4 border-y border-tableBorder">
-      <p className="text-red-500">No Data Found!</p>
-    </td>
-  </tr>
-)}
-          </tbody>
+  )}
+</tbody>
+
         </table>
       </div>
     </>
