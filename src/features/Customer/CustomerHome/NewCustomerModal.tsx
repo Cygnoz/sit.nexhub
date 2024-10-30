@@ -12,71 +12,14 @@ import toast from "react-hot-toast";
 import PhoneInput from "react-phone-input-2";
 import { CustomerResponseContext } from "../../../context/ContextShare";
 import Pen from "../../../assets/icons/Pen";
+import Plus from "../../../assets/icons/Plus";
+import { CustomerData } from "../../../Types/Customet";
 
 type Props = { page: string; customerDataProps?: CustomerData };
-type CustomerData = {
-  customerType: string;
-  salutation: string;
-  firstName: string;
-  lastName: string;
-  companyName: string;
-  customerDisplayName: string;
-  customerEmail: string;
-  workPhone: string;
-  mobile: string;
-  dob: string;
-  cardNumber: string;
-  pan: string;
-  currency: string;
-  paymentTerms: string;
-  creditDays: string;
-  creditLimit: string;
-  interestPercentage: string;
-  debitOpeningBalance: string;
-  creditOpeningBalance: string;
-  enablePortal: boolean;
-  documents: string;
-  department: string;
-  designation: string;
-  websiteURL: string;
-  taxType: string;
-  exemptionReason: string;
-  taxPreference: string;
-  gstTreatment: string;
-  gstin_uin: string;
-  placeOfSupply: string;
-  businessLegalName: string;
-  businessTradeName: string;
-  vatNumber: string;
-  billingAttention: string;
-  billingCountry: string;
-  billingAddressLine1: string;
-  billingAddressLine2: string;
-  billingCity: string;
-  billingState: string;
-  billingPinCode: string;
-  billingPhone: string;
-  billingFaxNumber: string;
-  shippingAttention: string;
-  shippingCountry: string;
-  shippingAddress1: string;
-  shippingAddress2: string;
-  shippingCity: string;
-  shippingState: string;
-  shippingPinCode: string;
-  shippingPhone: string;
-  shippingFaxNumber: string;
-  contactPerson: {
-    salutation: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    mobile: string;
-  }[];
-  remark: string;
-};
+
 
 const initialCustomerData: CustomerData = {
+  customerProfile:"",
   customerType: "Individual",
   salutation: "Mr.",
   firstName: "",
@@ -245,6 +188,23 @@ const NewCustomerModal = ({ page }: Props) => {
       mobileError: "",
     },
   ]);
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setCustomerData((prevDetails: any) => ({
+          ...prevDetails,
+          customerProfile: base64String,
+        }));
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleRowChange = (
     index: number,
@@ -631,177 +591,213 @@ const NewCustomerModal = ({ page }: Props) => {
               </div>
             </div>
             <form
-              className="text-slate-600 text-sm overflow-scroll hide-scrollbar space-y-5 p-2"
+              className="text-slate-600 text-sm overflow-scroll hide-scrollbar   p-2"
               style={{ height: "480px" }}
             >
+             <div className="grid grid-cols-12 gap-4">
+             <div className="col-span-2 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
+            <label htmlFor="image">
+              <div
+                className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg "
+                  
+              >
+ {customerdata.customerProfile ? (
+                  <img src={customerdata.customerProfile} alt="Item"  className="max-h-16 max-w-36" />
+                ) : (                  <div className="gap-4 flex items-center ">
+                    <div className="bg-darkRed rounded-full flex items-center w-6 h-6 justify-center">
+                      <Plus color={"white"} classname="h-5" />
+                    </div>
+                    <p>Add Image</p>
+                  </div>
+                )}
+              </div>
               <div>
-                <label
-                  className="block text-sm mb-1 text-labelColor"
-                  htmlFor=""
-                >
-                  Customer Type
-                </label>
-                <div className="flex items-center space-x-4 text-textColor text-sm">
-                  <div className="flex gap-2 justify-center items-center">
-                    <div className="grid place-items-center mt-1">
-                      <input
-                        id="Business"
-                        type="radio"
-                        name="customerType"
-                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                          selected === "Business"
-                            ? "border-8 border-neutral-400"
-                            : "border-1 border-neutral-400"
-                        }`}
-                        checked={selected === "Business"}
-                        onChange={() =>
-                          handleRadioChange("Business", "customerType")
-                        }
-                      />
-                      <div
-                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                          selected === "Business"
-                            ? "bg-neutral-100"
-                            : "bg-transparent"
-                        }`}
-                      />
-                    </div>
-                    <label
-                      htmlFor="Business"
-                      className="text-start font-medium"
-                    >
-                      Business
-                    </label>
-                  </div>
-                  <div className="flex gap-2 justify-center items-center">
-                    <div className="grid place-items-center mt-1">
-                      <input
-                        id="Individual"
-                        type="radio"
-                        name="customerType"
-                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                          selected === "Individual"
-                            ? "border-8 border-neutral-400"
-                            : "border-1 border-neutral-400"
-                        }`}
-                        checked={selected === "Individual"}
-                        onChange={() =>
-                          handleRadioChange("Individual", "customerType")
-                        }
-                      />
-                      <div
-                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                          selected === "Individual"
-                            ? "bg-neutral-100"
-                            : "bg-transparent"
-                        }`}
-                      />
-                    </div>
-                    <label
-                      htmlFor="Individual"
-                      className="text-start font-medium"
-                    >
-                      Individual
-                    </label>
-                  </div>
-                </div>
+                <p className="text-sm font-extrabold text-textColor mt-1">
+                Upload Photo
+                </p>
+                <p className="text-xs text-[#818894] mt-1">Support: JPG, PNG</p>
               </div>
-
-              <div className="grid grid-cols-12 gap-4 mt-4">
-                <div className="col-span-2">
-                  <label htmlFor="salutation">Salutation</label>
-                  <div className="relative w-full">
-                    <select
-                      name="salutation"
-                      className="block appearance-none w-full h-9 mt-1 text-[#818894] bg-white border border-inputBorder text-sm  pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                      value={customerdata.salutation}
-                      onChange={handleChange}
+              <input
+                type="file"
+                id="image"
+                onChange={handleFileChange}
+                className="hidden"
+                name="itemImage"
+                accept="image/*"
+              />
+            </label>
+          </div>
+              <div className="col-span-10">
+                  <div className="mt-3">
+                    <label
+                      className="block text-sm mb-1 text-labelColor"
+                      htmlFor=""
                     >
-                      <option defaultChecked value="Mr.">
-                        Mr.
-                      </option>
-                      <option value="Mrs.">Mrs.</option>
-                      <option value="Ms.">Ms.</option>
-                      <option value="Dr.">Dr.</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
+                      Customer Type
+                    </label>
+                    <div className="flex items-center space-x-4 text-textColor text-sm">
+                      <div className="flex gap-2 justify-center items-center">
+                        <div className="grid place-items-center mt-1">
+                          <input
+                            id="Business"
+                            type="radio"
+                            name="customerType"
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                              selected === "Business"
+                                ? "border-8 border-neutral-400"
+                                : "border-1 border-neutral-400"
+                            }`}
+                            checked={selected === "Business"}
+                            onChange={() =>
+                              handleRadioChange("Business", "customerType")
+                            }
+                          />
+                          <div
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                              selected === "Business"
+                                ? "bg-neutral-100"
+                                : "bg-transparent"
+                            }`}
+                          />
+                        </div>
+                        <label
+                          htmlFor="Business"
+                          className="text-start font-medium"
+                        >
+                          Business
+                        </label>
+                      </div>
+                      <div className="flex gap-2 justify-center items-center">
+                        <div className="grid place-items-center mt-1">
+                          <input
+                            id="Individual"
+                            type="radio"
+                            name="customerType"
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                              selected === "Individual"
+                                ? "border-8 border-neutral-400"
+                                : "border-1 border-neutral-400"
+                            }`}
+                            checked={selected === "Individual"}
+                            onChange={() =>
+                              handleRadioChange("Individual", "customerType")
+                            }
+                          />
+                          <div
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                              selected === "Individual"
+                                ? "bg-neutral-100"
+                                : "bg-transparent"
+                            }`}
+                          />
+                        </div>
+                        <label
+                          htmlFor="Individual"
+                          className="text-start font-medium"
+                        >
+                          Individual
+                        </label>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="grid grid-cols-2 col-span-10 gap-4 ">
-                  <div>
-                    <label htmlFor="firstName" className="text-slate-600">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                      placeholder="Enter First Name"
-                      value={customerdata.firstName}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        handleChange(e);
-                        setErrors((prevErrors) => ({
-                          ...prevErrors,
-                          firstName:
-                            value && !/^[A-Za-z\s]+$/.test(value)
-                              ? true
-                              : false,
-                        }));
-                      }}
-                    />
-                    {errors.firstName && customerdata.firstName.length > 0 && (
-                      <div className="text-red-800 text-xs ms-2 mt-1">
-                        Please enter a valid first name (letters only).
+    
+                  <div className="grid grid-cols-12 gap-4 mt-2">
+                    <div className="col-span-2">
+                      <label htmlFor="salutation">Salutation</label>
+                      <div className="relative w-full">
+                        <select
+                          name="salutation"
+                          className="block appearance-none w-full h-9 mt-0.5 text-[#818894] bg-white border border-inputBorder text-sm  pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                          value={customerdata.salutation}
+                          onChange={handleChange}
+                        >
+                          <option defaultChecked value="Mr.">
+                            Mr.
+                          </option>
+                          <option value="Mrs.">Mrs.</option>
+                          <option value="Ms.">Ms.</option>
+                          <option value="Dr.">Dr.</option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                          <CehvronDown color="gray" />
+                        </div>
                       </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label htmlFor="lastName" className="text-slate-600">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                      placeholder="Enter Last Name"
-                      value={customerdata.lastName}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        handleChange(e);
-                        if (value && !/^[A-Za-z\s]+$/.test(value)) {
-                          setErrors((prevErrors) => ({
-                            ...prevErrors,
-                            lastName: true,
-                          }));
-                        } else {
-                          setErrors((prevErrors) => ({
-                            ...prevErrors,
-                            lastName: false,
-                          }));
-                        }
-                      }}
-                    />
-
-                    {errors.lastName && customerdata.lastName.length > 0 && (
-                      <div className="text-red-800 text-xs ms-2 mt-1">
-                        Please enter a valid first name (letters only).
+                    </div>
+                    <div className="grid grid-cols-2 col-span-10 gap-4 ">
+                      <div>
+                        <label htmlFor="firstName" className="text-slate-600">
+                          First Name
+                        </label>
+                        <input
+                          type="text"
+                          name="firstName"
+                          className="pl-2 text-sm w-[100%]  mt-0.5 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                          placeholder="Enter First Name"
+                          value={customerdata.firstName}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            handleChange(e);
+                            setErrors((prevErrors) => ({
+                              ...prevErrors,
+                              firstName:
+                                value && !/^[A-Za-z\s]+$/.test(value)
+                                  ? true
+                                  : false,
+                            }));
+                          }}
+                        />
+                        {errors.firstName && customerdata.firstName.length > 0 && (
+                          <div className="text-red-800 text-xs ms-2 mt-1">
+                            Please enter a valid first name (letters only).
+                          </div>
+                        )}
                       </div>
-                    )}
+    
+                      <div>
+                        <label htmlFor="lastName" className="text-slate-600">
+                          Last Name
+                        </label>
+                        <input
+                          type="text"
+                          name="lastName"
+                          className="pl-2 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                          placeholder="Enter Last Name"
+                          value={customerdata.lastName}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            handleChange(e);
+                            if (value && !/^[A-Za-z\s]+$/.test(value)) {
+                              setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                lastName: true,
+                              }));
+                            } else {
+                              setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                lastName: false,
+                              }));
+                            }
+                          }}
+                        />
+    
+                        {errors.lastName && customerdata.lastName.length > 0 && (
+                          <div className="text-red-800 text-xs ms-2 mt-1">
+                            Please enter a valid first name (letters only).
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
               </div>
+             </div>
 
-              <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="grid grid-cols-3 gap-x-4 gap-y-2 mt-2 ">
                 <div>
                   <label htmlFor="companyName">Company Name </label>
                   <input
                     type="text"
                     name="companyName"
-                    className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                    className="pl-2 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
                     placeholder="Enter Company Name"
                     value={customerdata.companyName}
                     onChange={(e) => {
@@ -834,7 +830,7 @@ const NewCustomerModal = ({ page }: Props) => {
                     required
                     type="text"
                     name="customerDisplayName"
-                    className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                    className="pl-2 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                     placeholder="Enter Display Name"
                     value={customerdata.customerDisplayName}
                     onChange={(e) => {
@@ -867,7 +863,7 @@ const NewCustomerModal = ({ page }: Props) => {
                   <input
                     type="email"
                     name="customerEmail"
-                    className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                    className="pl-2 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                     placeholder="Enter Email"
                     value={customerdata.customerEmail}
                     onChange={handleChange}
@@ -899,7 +895,7 @@ const NewCustomerModal = ({ page }: Props) => {
                     </div>
                   )}
                 </div>
-                <div>
+                {/* <div className="hidden">
                   <label htmlFor="cardNumber">Membership Card Number</label>
                   <input
                     type="tel"
@@ -909,10 +905,10 @@ const NewCustomerModal = ({ page }: Props) => {
                     value={customerdata.cardNumber}
                     onChange={handleChange}
                   />
-                </div>
+                </div> */}
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 mt-2 gap-x-4">
                 <div>
                   <label htmlFor="">Work Phone</label>
                   <PhoneInput
@@ -949,7 +945,6 @@ const NewCustomerModal = ({ page }: Props) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mt-4"></div>
 
               <div className="flex mt-5 px-5">
                 <div className="w-[20%] bg-gray-100 p-4">
@@ -992,12 +987,12 @@ const NewCustomerModal = ({ page }: Props) => {
                     </li>
                   </ul>
                 </div>
-                <div className=" w-full p-2 ps-16">
+                <div className=" w-full  ps-16">
                   {activeTab === "otherDetails" && (
-                    <div className="space-y-4  p-4 ">
-                      <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2  p-4 ">
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                         <div>
-                          <label className="block mb-1">Opening Balance</label>
+                          <label className="block mb-0.5">Opening Balance</label>
                           <div className="flex">
                             <div className="relative w-20 ">
                               <select
@@ -1049,7 +1044,7 @@ const NewCustomerModal = ({ page }: Props) => {
                           </div>
                         </div>
                         <div>
-                          <label className="block mb-1">PAN</label>
+                          <label className="block mb-0.5">PAN</label>
                           <div>
                             <input
                               type="text"
@@ -1089,7 +1084,7 @@ const NewCustomerModal = ({ page }: Props) => {
 
                         <div>
                           <div className="">
-                            <label htmlFor="" className="block mb-1">
+                            <label htmlFor="" className="block mb-0.5">
                               Currency
                             </label>
                             <div className="relative w-full">
@@ -1122,7 +1117,7 @@ const NewCustomerModal = ({ page }: Props) => {
                           </div>
                         </div>
                         <div className="relative w-full">
-                          <label htmlFor="" className="block mb-1">
+                          <label htmlFor="" className="block mb-0.5">
                             Payment Terms
                           </label>
                           <select
@@ -1154,7 +1149,7 @@ const NewCustomerModal = ({ page }: Props) => {
                       </div>
                       <div className="grid grid-cols-3 gap-4">
                         <div>
-                          <label className="block mb-1">Credit Days</label>
+                          <label className="block mb-0.5">Credit Days</label>
                           <input
                             type="text"
                             className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-p p-2 text-[#818894]"
@@ -1187,7 +1182,7 @@ const NewCustomerModal = ({ page }: Props) => {
                         </div>
 
                         <div>
-                          <label className="block mb-1">Credit Limit</label>
+                          <label className="block mb-0.5">Credit Limit</label>
                           <input
                             type="text"
                             className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-p p-2 text-[#818894]"
@@ -1220,7 +1215,7 @@ const NewCustomerModal = ({ page }: Props) => {
                         </div>
 
                         <div>
-                          <label className="block mb-1">
+                          <label className="block mb-0.5">
                             Interest Percentage
                           </label>
                           <input
@@ -1257,7 +1252,7 @@ const NewCustomerModal = ({ page }: Props) => {
                           </label>
                         </div>
                         <div className="relative w-[349px]">
-                          <label htmlFor="" className="block mb-1 ">
+                          <label htmlFor="" className="block mb-0.5 ">
                             Select Language
                           </label>
                           <select
@@ -1302,7 +1297,7 @@ const NewCustomerModal = ({ page }: Props) => {
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block mb-1">Derpartment</label>
+                          <label className="block mb-0.5">Derpartment</label>
                           <input
                             type="text"
                             className=" text-sm w-full rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
@@ -1314,7 +1309,7 @@ const NewCustomerModal = ({ page }: Props) => {
                         </div>
 
                         <div>
-                          <label className="block mb-1">Designation</label>
+                          <label className="block mb-0.5">Designation</label>
 
                           <input
                             type="text"
@@ -1328,7 +1323,7 @@ const NewCustomerModal = ({ page }: Props) => {
                       </div>
 
                       <div className="">
-                        <label htmlFor="" className="block mb-1">
+                        <label htmlFor="" className="block mb-0.5">
                           Website URL
                         </label>
                         <div className="relative w-full">
@@ -1382,8 +1377,8 @@ const NewCustomerModal = ({ page }: Props) => {
 
                   {activeTab === "taxes" && (
                     <>
-                      <div className="mb-3">
-                        <label className="block text-sm mb-1 text-labelColor">
+                      <div className="mb-1.5">
+                        <label className="block text-sm mb-0.5 text-labelColor">
                           Tax Preference
                         </label>
                         <div className="flex items-center space-x-4 text-textColor text-sm">
@@ -1419,7 +1414,7 @@ const NewCustomerModal = ({ page }: Props) => {
                             </label>
                           </div>
                           <div className="flex gap-2 justify-center items-center">
-                            <div className="grid place-items-center mt-1">
+                            <div className="grid place-items-center mt-0.5">
                               <input
                                 id="Tax Exempt"
                                 type="radio"
@@ -1460,7 +1455,7 @@ const NewCustomerModal = ({ page }: Props) => {
                                 <div className="relative w-full">
                                   <label
                                     htmlFor="gstTreatment"
-                                    className="block mb-1"
+                                    className="block mb-0.5"
                                   >
                                     GST Treatment
                                   </label>
@@ -1490,7 +1485,7 @@ const NewCustomerModal = ({ page }: Props) => {
                                 <div>
                                   <label
                                     htmlFor="gstin_uin"
-                                    className="block mb-1"
+                                    className="block mb-0.5"
                                   >
                                     GSTIN/UIN
                                   </label>
@@ -1534,7 +1529,7 @@ const NewCustomerModal = ({ page }: Props) => {
                                 <div>
                                   <label
                                     htmlFor="businessLegalName"
-                                    className="block mb-1"
+                                    className="block mb-0.5"
                                   >
                                     Business Legal Name
                                   </label>
@@ -1579,7 +1574,7 @@ const NewCustomerModal = ({ page }: Props) => {
                                 <div>
                                   <label
                                     htmlFor="businessTradeName"
-                                    className="block mb-1"
+                                    className="block mb-0.5"
                                   >
                                     Business Trade Name
                                   </label>
@@ -1623,7 +1618,7 @@ const NewCustomerModal = ({ page }: Props) => {
                                 <div className="relative w-full">
                                   <label
                                     htmlFor="placeOfSupply"
-                                    className="block mb-1"
+                                    className="block mb-0.5"
                                   >
                                     Place of Supply
                                   </label>
@@ -1658,7 +1653,7 @@ const NewCustomerModal = ({ page }: Props) => {
                               <div>
                                 <label
                                   htmlFor="vatNumber"
-                                  className="block mb-1"
+                                  className="block mb-0.5"
                                 >
                                   VAT Number
                                 </label>
@@ -1674,7 +1669,7 @@ const NewCustomerModal = ({ page }: Props) => {
                               <div>
                                 <label
                                   htmlFor="businessTradeName"
-                                  className="block mb-1"
+                                  className="block mb-0.5"
                                 >
                                   Business Trade Name
                                 </label>
@@ -1693,7 +1688,7 @@ const NewCustomerModal = ({ page }: Props) => {
                       )}
                       {taxPreference === "Tax Exempt" && (
                         <div>
-                          <label className="block mb-1">Exemption Reason</label>
+                          <label className="block mb-0.5">Exemption Reason</label>
                           <input
                             type="text"
                             className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
@@ -1710,13 +1705,13 @@ const NewCustomerModal = ({ page }: Props) => {
                   {activeTab === "address" && (
                     <>
                       {/* Billing Address */}
-                      <div className="space-y-3 p-5 text-sm">
+                      <div className="space-y-2 p-5 text-sm">
                         <p>
                           <b>Billing Address</b>
                         </p>
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block mb-1">Attention</label>
+                            <label className="block mb-0.5">Attention</label>
                             <input
                               type="text"
                               className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
@@ -1758,7 +1753,7 @@ const NewCustomerModal = ({ page }: Props) => {
                           <div className="relative w-full">
                             <label
                               htmlFor="billingCountry"
-                              className="mb-1 block"
+                              className="mb-0.5 block"
                             >
                               Country/Region
                             </label>
@@ -1788,19 +1783,19 @@ const NewCustomerModal = ({ page }: Props) => {
                         {/* Address */}
                         <div className="">
                           <label
-                            className="text-slate-600 "
+                            className="text-slate-600"
                             htmlFor="organizationAddress"
                           >
                             Address
                           </label>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 ">
 
 
 
-      <div>
+      <div className="">
         <input
-          className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+          className="pl-3 -mt-1.5 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
           placeholder="Street 1"
           name="billingAddressLine1"
           value={customerdata.billingAddressLine1}
@@ -1833,7 +1828,7 @@ const NewCustomerModal = ({ page }: Props) => {
 
       <div>
         <input
-          className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+          className="pl-3 text-sm w-full -mt-1.5 text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
           placeholder="Street 2"
           name="billingAddressLine2"
           value={customerdata.billingAddressLine2}
@@ -1871,7 +1866,7 @@ const NewCustomerModal = ({ page }: Props) => {
                               City
                             </label>
                             <input
-        className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed" 
+        className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed" 
         placeholder="Enter City"
         name="billingCity"
         value={customerdata.billingCity}
@@ -1908,7 +1903,7 @@ const NewCustomerModal = ({ page }: Props) => {
                             >
                               State / Region / County
                             </label>
-                            <div className="relative w-full mt-2">
+                            <div className="relative w-full mt-0.5">
                               <select
                                 value={customerdata.billingState}
                                 onChange={handleChange}
@@ -1938,7 +1933,7 @@ const NewCustomerModal = ({ page }: Props) => {
                         </div>
 
                         {/* Other fields */}
-                        <div className="grid grid-cols-3 gap-4 pt-2">
+                        <div className="grid grid-cols-3 gap-4 ">
                           <div>
                             <label
                               className="text-slate-600"
@@ -1947,7 +1942,7 @@ const NewCustomerModal = ({ page }: Props) => {
                               Pin / Zip / Post code
                             </label>
                             <input
-        className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+        className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
         placeholder="Pin / Zip / Post code"
         type="text"
         name="billingPinCode"
@@ -1971,7 +1966,7 @@ const NewCustomerModal = ({ page }: Props) => {
                             >
                               Phone
                             </label>
-                            <div className="w-full border-0 mt-2">
+                            <div className="w-full border-0 mt-0.5">
                               <PhoneInput
                                 inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                                 inputStyle={{ height: "38px", width: "100%" }}
@@ -1985,7 +1980,7 @@ const NewCustomerModal = ({ page }: Props) => {
                             </div>
                           </div>
                           <div className="relative w-full">
-                            <label htmlFor="" className="mb-2 block">
+                            <label htmlFor="" className="mb-0.5 block">
                               Fax Number
                             </label>
                             <input
@@ -2009,7 +2004,7 @@ const NewCustomerModal = ({ page }: Props) => {
                       </div>
 
                       {/* Shipping Address */}
-                      <div className="space-y-3 p-5 text-sm">
+                      <div className="space-y-2 p-5 text-sm">
                         <div className="flex">
                           <p>
                             <b>Shipping Address</b>
@@ -2025,7 +2020,7 @@ const NewCustomerModal = ({ page }: Props) => {
                         <div className="grid grid-cols-2 gap-4">
                           {/* Attention */}
                           <div>
-                            <label className="block mb-1">Attention</label>
+                            <label className="block mb-0.5">Attention</label>
                             <input
                               type="text"
                               className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
@@ -2065,7 +2060,7 @@ const NewCustomerModal = ({ page }: Props) => {
 
                           {/* Country */}
                           <div className="relative w-full">
-                            <label htmlFor="" className="mb-1 block">
+                            <label htmlFor="" className="mb-0.5 block">
                               Country/Region
                             </label>
                             <select
@@ -2100,10 +2095,10 @@ const NewCustomerModal = ({ page }: Props) => {
                             Address
                           </label>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                           <div>
                             <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              className="pl-3 text-sm w-full -mt-1.5 text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                               placeholder="Street 1"
                               name="shippingAddress1"
                               value={customerdata.shippingAddress1}
@@ -2135,7 +2130,7 @@ const NewCustomerModal = ({ page }: Props) => {
                           </div>
                           <div>
                             <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              className="pl-3 text-sm w-full -mt-1.5 text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                               placeholder="Street 2"
                               name="shippingAddress2"
                               value={customerdata.shippingAddress2}
@@ -2170,7 +2165,7 @@ const NewCustomerModal = ({ page }: Props) => {
                               City
                             </label>
                             <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                               placeholder="Enter City"
                               name="shippingCity"
                               value={customerdata.shippingCity}
@@ -2207,7 +2202,7 @@ const NewCustomerModal = ({ page }: Props) => {
                             >
                               State / Region / County
                             </label>
-                            <div className="relative w-full mt-2">
+                            <div className="relative w-full mt-0.5">
                               <select
                                 value={customerdata.shippingState}
                                 onChange={handleChange}
@@ -2248,7 +2243,7 @@ const NewCustomerModal = ({ page }: Props) => {
                               Pin / Zip / Post code
                             </label>
                             <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                               placeholder=" Pin / Zip / Post code"
                               type="text"
                               name="shippingPinCode"
@@ -2268,7 +2263,7 @@ const NewCustomerModal = ({ page }: Props) => {
                             >
                               Phone
                             </label>
-                            <div className="w-full border-0 mt-2">
+                            <div className="w-full border-0 mt-0.5">
                               <PhoneInput
                                 inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                                 inputStyle={{ height: "38px", width: "100%" }}
@@ -2282,7 +2277,7 @@ const NewCustomerModal = ({ page }: Props) => {
                             </div>
                           </div>
                           <div className="relative w-full">
-                            <label htmlFor="" className="mb-2 block">
+                            <label htmlFor="" className="mb-0.5 block">
                               Fax Number
                             </label>
                             <input
@@ -2452,8 +2447,8 @@ const NewCustomerModal = ({ page }: Props) => {
                         <textarea
                           rows={3}
                           className="pl-2 text-sm w-[100%]  rounded-md text-start bg-white border border-slate-300   p-2 text-[#818894]"
-                          placeholder="Value"
-                          name="remark"
+                          placeholder="Add any additional comments or notes here"                      
+                              name="remark"
                           value={customerdata.remark}
                           onChange={(e: any) => handleChange(e)}
                         />
@@ -2465,8 +2460,8 @@ const NewCustomerModal = ({ page }: Props) => {
             </form>
           </div>
 
-          <div className="flex justify-end gap-2 mb-3 m-5">
-            <Button onClick={handleCancel} variant="secondary" size="sm">
+          <div className="flex justify-end gap-2 mb-3 mx-5">
+            <Button onClick={handleCancel} variant="secondary" size="sm" className="py-2 text-sm h-10  w-24 flex justify-center">
               Cancel
             </Button>
             <Button
@@ -2474,6 +2469,7 @@ const NewCustomerModal = ({ page }: Props) => {
               variant="primary"
               size="sm"
               type="submit"
+              className=" w-24 text-sm h-10 flex justify-center "
             >
               Save
             </Button>

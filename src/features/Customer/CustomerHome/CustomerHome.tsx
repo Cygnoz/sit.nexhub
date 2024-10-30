@@ -83,7 +83,7 @@ function CustomerHome({}: Props) {
     if (activeFilter === "Active") return customer.status === "Active";
     if (activeFilter === "Inactive") return customer.status === "Inactive";
     if (activeFilter === "Duplicate") {
-      return findDuplicateCustomers(customerData).some(dup => dup._id === customer._id);
+      return findDuplicateCustomers(customerData).some(dup => dup.customerDisplayName === customer.customerDisplayName);
     }
     return true;
   });

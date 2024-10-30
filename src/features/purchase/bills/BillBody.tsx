@@ -11,6 +11,7 @@ export interface Bill {
     expectedShipmentDate: string;
     paymentTerms: string;
     paymentMode: string;
+    PaidThrough:string;
     billDate: string;
     dueDate: string;
     itemTable: {
@@ -48,4 +49,6 @@ export interface Bill {
     paidStatus: string;
     shipmentPreference: string;
     grandTotal: number;
+    balanceAmount:number;
+    paidAmount:number;
 }

@@ -408,13 +408,12 @@ const AddItem = ({ }: Props) => {
                 />
               </label>
 
-            </div>
+            </div>  
           </div>
 
 
 
           <div className="col-span-10">
-            <div className="flex justify-between items-center">
             <div>
               <label
                 className="block text-sm text-labelColor"
@@ -589,17 +588,11 @@ const AddItem = ({ }: Props) => {
                           </div>
                         </div>
                       ))}
-                    {/* <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold">
-                      <SettingsIcons color="darkRed" bold={2} />
-                      <p className="mt-0.5">Manage Unit</p>
-                    </div> */}
                     <NewUnit page="item"/>
                   </div>
                 )}
               </div>
             </div>
-            </div>
-       
 
 
             <div className="grid grid-cols-3 gap-4 mt-3 ">
@@ -765,136 +758,134 @@ const AddItem = ({ }: Props) => {
           </div>
         </div>
 
-        {!isService &&
-          <div className="grid grid-cols-12 gap-4 items-center">
-            <div className="col-span-4">
-              <label
-                className="text-slate-600 flex text-sm items-center gap-2"
-                htmlFor="productUsage"
-              >
-                Product Usage
-              </label>
-              <input
-                className="pl-3 text-sm w-full rounded-md bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                name="productUsage"
-                value={initialItemData.productUsage}
-                onChange={handleInputChange}
-              />
-            </div>
+        {!isService && 
+<div className="grid grid-cols-12 gap-4 items-center">
+  <div className="col-span-4">
+    <label
+      className="text-slate-600 flex text-sm items-center gap-2"
+      htmlFor="productUsage"
+    >
+      Product Usage
+    </label>
+    <input
+      className="pl-3 text-sm w-full rounded-md bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+      name="productUsage"
+      value={initialItemData.productUsage}
+      onChange={handleInputChange}
+    />
+  </div>
 
-            <div className="col-span-4">
-              <label className="block text-xs text-labelColor">
-                Dimensions
-              </label>
-              <div className="grid grid-cols-4 gap-2">
-                <input
-                  type="number"
-                  className="text-sm rounded-md pl-3 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  placeholder="Length"
-                  name="length"
-                  value={initialItemData.length}
-                  onChange={handleInputChange}
-                  min={0}
-                />
-                <input
-                  type="number"
-                  min={0}
-                  className="text-sm rounded-md pl-3 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  placeholder="Width"
-                  name="width"
-                  value={initialItemData.width}
-                  onChange={handleInputChange}
-                />
-                <input
-                  type="number"
-                  min={0}
-                  className="text-sm rounded-md pl-3 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  placeholder="Height"
-                  name="height"
-                  value={initialItemData.height}
-                  onChange={handleInputChange}
-                />
-                <div className="relative">
-                  <select
-                    name="dimensionUnit"
-                    className="text-sm appearance-none rounded-md w-full pl-3 text-zinc-400 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    value={initialItemData.dimensionUnit}
-                    onChange={handleInputChange}
-                  >
-                    <option value="CM">CM</option>
-                    <option value="MM">MM</option>
-                    <option value="Inch">Inch</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-700">
-                    <CehvronDown color="gray" />
-                  </div>
-                </div>
-              </div>
-            </div>
+  <div className="col-span-4">
+    <label className="block text-xs text-labelColor">
+      Dimensions
+    </label>
+    <div className="grid grid-cols-4 gap-2">
+      <input
+        type="number"
+        className="text-sm rounded-md pl-3 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+        placeholder="Length"
+        name="length"
+        value={initialItemData.length}
+        onChange={handleInputChange}
+        min={0}
+      />
+      <input
+        type="number"
+        min={0}
+        className="text-sm rounded-md pl-3 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+        placeholder="Width"
+        name="width"
+        value={initialItemData.width}
+        onChange={handleInputChange}
+      />
+      <input
+        type="number"
+        min={0}
+        className="text-sm rounded-md pl-3 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+        placeholder="Height"
+        name="height"
+        value={initialItemData.height}
+        onChange={handleInputChange}
+      />
+      <div className="relative">
+        <select
+          name="dimensionUnit"
+          className="text-sm appearance-none rounded-md w-full pl-3 text-zinc-400 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+          value={initialItemData.dimensionUnit}
+          onChange={handleInputChange}
+        >
+          <option value="CM">CM</option>
+          <option value="MM">MM</option>
+          <option value="Inch">Inch</option>
+        </select>
+        <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-700">
+          <CehvronDown color="gray" />
+        </div>
+      </div>
+    </div>
+  </div>
 
-            <div className="col-span-2">
-              <label
-                className="text-slate-600 flex text-sm items-center gap-2"
-                htmlFor="warranty"
-              >
-                Warranty
-              </label>
-              <select
-                name="warranty"
-                className="block w-full text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                value={initialItemData.warranty}
-                onChange={handleInputChange}
-              >
-                <option value="">Select Warranty</option>
-                <option value="6 months">6 months</option>
-                <option value="1 year">1 year</option>
-              </select>
-            </div>
+  <div className="col-span-2">
+    <label
+      className="text-slate-600 flex text-sm items-center gap-2"
+      htmlFor="warranty"
+    >
+      Warranty
+    </label>
+    <select
+      name="warranty"
+      className="block w-full text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+      value={initialItemData.warranty}
+      onChange={handleInputChange}
+    >
+      <option value="">Select Warranty</option>
+      <option value="6 months">6 months</option>
+      <option value="1 year">1 year</option>
+    </select>
+  </div> 
 
-            <div className="col-span-2">
-              <label className="text-slate-600 text-sm" htmlFor="weight">
-                Weight
-              </label>
-              <div className="flex">
-                <input
-                  type="number"
-                  min={0}
-                  className="pl-3 text-sm w-full rounded-l-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  placeholder="Weight"
-                  name="weight"
-                  value={initialItemData.weight}
-                  onChange={handleInputChange}
-                />
-                <div className="relative w-24">
-                  <select
-                    name="weightUnit"
-                    className="block w-full appearance-none text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-7 rounded-r-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    value={initialItemData.weightUnit}
-                    onChange={handleInputChange}
-                  >
-                    <option value="KG">KG</option>
-                    <option value="G">G</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-700">
-                    <CehvronDown color="gray" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-
-
+  <div className="col-span-2">
+    <label className="text-slate-600 text-sm" htmlFor="weight">
+      Weight
+    </label>
+    <div className="flex">
+      <input
+        type="number"
+        min={0}
+        className="pl-3 text-sm w-full rounded-l-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+        placeholder="Weight"
+        name="weight"
+        value={initialItemData.weight}
+        onChange={handleInputChange}
+      />
+      <div className="relative w-24">
+        <select
+          name="weightUnit"
+          className="block w-full appearance-none text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-7 rounded-r-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+          value={initialItemData.weightUnit}
+          onChange={handleInputChange}
+        >
+          <option value="KG">KG</option>
+          <option value="G">G</option>
+        </select>
+        <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-700">
+          <CehvronDown color="gray" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}
 
 
 
 
+ 
 
+ 
         <div className="grid grid-cols-2 gap-4 ">
-          {!isService && (
-            <>
-
-              <div className="relative">
+    
+        <div className="relative">
                 <label
                   htmlFor="manufacturer-input"
                   className="text-slate-600 text-sm flex items-center gap-2"
@@ -1023,9 +1014,6 @@ const AddItem = ({ }: Props) => {
                   </div>
                 )}
               </div>
-            </>
-          )}
-
           <div className="relative">
             <label
               htmlFor="category-input"
@@ -1158,7 +1146,7 @@ const AddItem = ({ }: Props) => {
         </div>
 
         <div className="grid grid-flow-col-dense  gap-4">
-
+        
           <div>
             <label
               className="text-slate-600 flex text-sm items-center gap-2"
