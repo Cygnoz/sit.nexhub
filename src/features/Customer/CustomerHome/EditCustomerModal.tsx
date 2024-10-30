@@ -331,6 +331,8 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
       }
     }
   };
+  console.log(customerdata);
+  
 
   const getAdditionalData = async () => {
     try {

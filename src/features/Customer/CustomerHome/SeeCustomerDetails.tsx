@@ -8,11 +8,11 @@ import toast from "react-hot-toast";
 import Overview from "./viewCustomerDetails/Overview";
 import SalesHistory from "./viewCustomerDetails/SalesHistory";
 import cardBg from "../../../assets/Images/Card 3 Mask.png";
-// import walletImage from "../../../assets/Images/Frame 629221.png";
-// import walletCashImage from "../../../assets/Images/Frame 629221 (1).png";
+import walletImage from "../../../assets/Images/Frame 629221.png";
+import walletCashImage from "../../../assets/Images/Frame 629221 (1).png";
 import revenueImage from "../../../assets/Images/Frame 629221 (2).png";
 import salesImage from "../../../assets/Images/Frame 629221 (3).png";
-// import cardBackground from "../../../assets/Images/Frame 629314.png";
+import cardBackground from "../../../assets/Images/Frame 629314.png";
 
 interface Status {
   status: string;
@@ -77,11 +77,13 @@ function SeeCustomerDetails() {
   const sideBarHead = [
     { title: "Overview", onclick: () => setSelectedTab("Overview") },
     { title: "Sales History", onclick: () => setSelectedTab("Sales History") },
-    // { title: "Wallet Transaction", onclick: () => setSelectedTab("Wallet Transaction") },
-    // { title: "Referral Bonus", onclick: () => setSelectedTab("Referral Bonus") },
-    // { title: "View Payment", onclick: () => setSelectedTab("View Payment") },
+    { title: "Wallet Transaction", onclick: () => setSelectedTab("Wallet Transaction") },
+    { title: "Referral Bonus", onclick: () => setSelectedTab("Referral Bonus") },
+    { title: "View Payment", onclick: () => setSelectedTab("View Payment") },
   ];
 
+  console.log(customerData);
+  
   return (
     <div className="px-6">
       <div className="bg-white rounded-md p-5">
@@ -115,23 +117,23 @@ function SeeCustomerDetails() {
                 /> */}
                 <div>
                   <p className="text-white text-sm font-semibold mt-1">
-                    Jancy Philip
+                    {customerData?.customerDisplayName}
                   </p>
-                  <p className="text-membershipText text-xs mt-1">8756347856</p>
+                  <p className="text-membershipText text-xs mt-1">{customerData.mobile}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* 2nd card */}
-          {/* <div className="w-[7.7%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
+          <div className="w-[7.7%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
             <img src={walletImage} alt="" className="object-cover" />
             <p className="mt-2 text-sm font-semibold text-textColor">Wallet</p>
             <p className="mt-1 text-lg font-bold text-textColor">0.00</p>
-          </div> */}
+          </div>
 
           {/* 3rd card */}
-          {/* <div className="w-[13.4%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
+          <div className="w-[13.4%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
             <div className="items-center flex justify-center">
               <img src={walletCashImage} alt="" className="object-cover" />
             </div>
@@ -139,10 +141,10 @@ function SeeCustomerDetails() {
               Redeemed Wallet
             </p>
             <p className="mt-1 text-lg font-bold text-textColor">0.00</p>
-          </div> */}
+          </div>
 
           {/* 4th card */}
-          <div className="w-[30%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
+          <div className=" h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
             <div className="items-center flex justify-center">
               <img src={revenueImage} alt="" className="object-cover" />
             </div>
@@ -153,7 +155,7 @@ function SeeCustomerDetails() {
           </div>
 
           {/* 5th card */}
-          <div className="w-[33%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
+          <div className="h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center">
             <div className="items-center flex justify-center">
               <img src={salesImage} alt="" className="object-cover" />
             </div>
@@ -164,10 +166,10 @@ function SeeCustomerDetails() {
           </div>
 
           {/* 6th card */}
-          {/* <div
+          <div
             className="w-[20.65%] h-[148px] p-6 bg-cuscolumnbg rounded-lg text-center"
             style={{ backgroundImage: `url(${cardBackground})` }}
-          ></div> */}
+          ></div>
         </div>
       </div>
 

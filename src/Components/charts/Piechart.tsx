@@ -1,7 +1,8 @@
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
+import NoData from "./Nodata";
 
 interface PieChartsProps {
-  frequentlyOrderedItems: Array<{
+  data: Array<{
     itemName: string;
     saleVolume: number;
   }>;
@@ -55,48 +56,62 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-const PieCharts = ({ frequentlyOrderedItems }: PieChartsProps) => {
-  const data = frequentlyOrderedItems.map(item => ({
+const PieCharts: React.FC<PieChartsProps> = ({ data }) => {
+  const showData = data.map((item) => ({
     name: item.itemName,
     value: item.saleVolume,
   }));
 
   return (
     <div className="bg-white rounded-lg w-full p-8">
-      <p className="font-semibold">Most Frequently Added Items</p>
-      <div className="flex flex-wrap mb-4">
-        {data.map((item, index) => (
-          <div key={`item-${index}`} className="flex items-center mr-4 my-2">
-            <div
-              className="w-2 h-2 mr-2"
-              style={{ backgroundColor: COLORS[index % COLORS.length] }}
-            ></div>
-            <p className="text-sm">{item.name}</p>
-          </div>
-        ))}
-      </div>
-      <div className="overflow-hidden">
-        <div className="inline-block min-w-full">
-          <PieChart width={600} height={300}>
-            <Pie
-              data={data}
-              dataKey="value"
-              label={renderCustomizedLabel}
-              labelLine={false}
-              innerRadius={40}
-              outerRadius={120}
-              paddingAngle={5}
-              cornerRadius={10}
-            >
-              {data.map((_, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip content={<CustomTooltip />} />
-          </PieChart>
+  <p className="font-semibold">Most Frequently Added Items</p>
+  <div>
+    {showData && showData.length > 0 ? (
+      <>
+        <div className="flex flex-wrap mb-4">
+          {showData.map((item, index) => (
+            <div key={`item-${index}`} className="flex items-center mr-4 my-2">
+              <div
+                className="w-2 h-2 mr-2"
+                style={{ backgroundColor: COLORS[index % COLORS.length] }}
+              ></div>
+              <p className="text-sm">{item.name}</p>
+            </div>
+          ))}
         </div>
+        <div className="overflow-hidden">
+          <div className="inline-block min-w-full">
+            <PieChart width={600} height={300}>
+              <Pie
+                data={showData}
+                dataKey="value"
+                label={renderCustomizedLabel}
+                labelLine={false}
+                innerRadius={40}
+                outerRadius={120}
+                paddingAngle={5}
+                cornerRadius={10}
+              >
+                {showData.map((_, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip content={<CustomTooltip />} />
+            </PieChart>
+          </div>
+        </div>
+      </>
+    ) : (
+      <div className="text-center text-gray-500 text-sm py-8">
+        <NoData />
       </div>
-    </div>
+    )}
+  </div>
+</div>
+
   );
 };
 
