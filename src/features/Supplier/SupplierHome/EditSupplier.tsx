@@ -14,6 +14,7 @@ import Trash2 from "../../../assets/icons/Trash2";
 import Upload from "../../../assets/icons/Upload";
 import { SupplierResponseContext } from "../../../context/ContextShare";
 import { SupplierData } from "../../../Types/Supplier";
+import Plus from "../../../assets/icons/Plus";
 
 type Props = {
   supplier?: SupplierData | null;
@@ -73,6 +74,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
   const [openingType,setOpeningType]=useState<string>('credit')
   const [supplierdata, setSupplierData] = useState<SupplierData>({
     _id:"",
+    supplierProfile:"",
     salutation: "",
     firstName: "",
     lastName: "",
@@ -140,6 +142,23 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
     remarks: "",
     status:""
   });
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setSupplierData((prevDetails: any) => ({
+          ...prevDetails,
+          supplierProfile: base64String,
+        }));
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
     setSupplierData(prev => ({ ...prev, ...supplier }));
@@ -591,149 +610,201 @@ useEffect(()=>{
               className="text-slate-600 text-sm overflow-scroll hide-scrollbar space-y-5 p-2"
               style={{ height: "480px" }}
             >
-              <div className="grid grid-cols-12 gap-4 mt-4">
-                <div className="col-span-2">
-                  <label htmlFor="salutation">Salutation</label>
-                  <div className="relative w-full">
-                    <select
-                      name="salutation"
-                      value={supplierdata.salutation}
-                      onChange={handleChange}
-                      className="block appearance-none text-[#818894] w-full h-9 mt-1  bg-white border border-inputBorder text-sm pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    >
-                      <option value="Mr." className="text-gray">
-                        Mr.
-                      </option>
-                      <option value="Mrs." className="text-gray">
-                        Mrs.
-                      </option>
-                      <option value="Ms." className="text-gray">
-                        Ms.
-                      </option>
-                      <option value="Dr." className="text-gray">
-                        Dr.
-                      </option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />{" "}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 col-span-10 gap-4 ">
-                  <div>
-                    <label htmlFor="" className="text-slate-600">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                      placeholder="Enter First Name"
-                      value={supplierdata.firstName}
-                      onChange={handleChange}
-                      onFocus={() => setErrors({ ...errors, firstName: false })}
-                      onBlur={() => {
-                        if (supplierdata.firstName === "") {
-                          setErrors({ ...errors, firstName: true });
-                        }
-                      }}
-                    />
-                    {errors.firstName && (
-                      <div className="text-red-800 text-xs ms-2 mt-1">
-                        Enter First Name
+            <div className="grid grid-cols-12 gap-4">
+  <div className="col-span-2">
+  <div className=" border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
+                    <label htmlFor="image">
+                      <div className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ">
+                        {supplierdata.supplierProfile ? (
+                          <img
+                            src={supplierdata.supplierProfile}
+                            alt="Item"
+                            className="max-h-16 max-w-36"
+                          />
+                        ) : (
+                          <div className="gap-4 flex items-center ">
+                            <div className="bg-darkRed rounded-full flex items-center w-6 h-6 justify-center">
+                              <Plus color={"white"} classname="h-5" />
+                            </div>
+                            <p>Add Image</p>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label htmlFor="" className="text-slate-600">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]  "
-                      placeholder="Enter Last Name"
-                      value={supplierdata.lastName}
-                      onChange={handleChange}
-                      onFocus={() => setErrors({ ...errors, lastName: false })}
-                      onBlur={() => {
-                        if (supplierdata.lastName === "") {
-                          setErrors({ ...errors, lastName: true });
-                        }
-                      }}
-                    />
-                    {errors.lastName && (
-                      <div className="text-red-800 text-xs ms-2 mt-1">
-                        Enter Last Name
+                      <div>
+                        <p className="text-sm font-extrabold text-textColor mt-1">
+                          Upload Photo
+                        </p>
+                        <p className="text-xs text-[#818894] mt-1">
+                          Support: JPG, PNG
+                        </p>
                       </div>
-                    )}
+                      <input
+                        type="file"
+                        id="image"
+                        onChange={handleFileChange}
+                        className="hidden"
+                        name="itemImage"
+                        accept="image/*"
+                      />
+                    </label>
                   </div>
-                </div>
-              </div>
+  </div>
+  <div className="col-span-10">
+  <div className="grid grid-cols-12 gap-4 ">
+                    <div className="col-span-2">
+                      <label htmlFor="salutation">Salutation</label>
+                      <div className="relative w-full">
+                        <select
+                          name="salutation"
+                          value={supplierdata.salutation}
+                          onChange={handleChange}
+                          className="block appearance-none text-[#818894] w-full h-9 mt-1  bg-white border border-inputBorder text-sm pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        >
+                          <option value="Mr." className="text-gray">
+                            Mr.
+                          </option>
+                          <option value="Mrs." className="text-gray">
+                            Mrs.
+                          </option>
+                          <option value="Ms." className="text-gray">
+                            Ms.
+                          </option>
+                          <option value="Dr." className="text-gray">
+                            Dr.
+                          </option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                          <CehvronDown color="gray" />{" "}
+                        </div>
+                      </div>
+                    </div>
 
-              <div className="grid grid-cols-3 gap-4 mt-4">
-                <div>
-                  <label htmlFor="">Company Name </label>
-                  <input
-                    type="text"
-                    name="companyName"
-                    className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                    placeholder="Enter Company Name"
-                    value={supplierdata.companyName}
-                    onChange={handleChange}
-                    onFocus={() => setErrors({ ...errors, companyName: false })}
-                    onBlur={() => {
-                      if (supplierdata.companyName === "") {
-                        setErrors({ ...errors, companyName: true });
-                      }
-                    }}
-                  />
-                  {errors.companyName && (
-                    <div className="text-red-800 text-xs ms-2 mt-1">
-                      Enter Company Name
+                    <div className="grid grid-cols-2 col-span-10 gap-4 ">
+                      <div>
+                        <label htmlFor="firstName" className="text-slate-600">
+                          First Name
+                        </label>
+                        <input
+                          required
+                          type="text"
+                          name="firstName"
+                          className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                          placeholder="Enter First Name"
+                          value={supplierdata.firstName}
+                          onChange={handleChange}
+                          onFocus={() =>
+                            setErrors({ ...errors, firstName: false })
+                          }
+                          onBlur={() => {
+                            if (supplierdata.firstName === "") {
+                              setErrors({ ...errors, firstName: true });
+                            }
+                          }}
+                        />
+                        {errors.firstName && (
+                          <div className="text-red-800 text-xs ms-2 mt-1">
+                            Enter first Name
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <label htmlFor="lastName" className="text-slate-600">
+                          Last Name
+                        </label>
+                        <input
+                          required
+                          type="text"
+                          name="lastName"
+                          className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                          placeholder="Enter Last Name"
+                          value={supplierdata.lastName}
+                          onChange={handleChange}
+                          onFocus={() =>
+                            setErrors({ ...errors, lastName: false })
+                          }
+                          onBlur={() => {
+                            if (supplierdata.lastName === "") {
+                              setErrors({ ...errors, lastName: true });
+                            }
+                          }}
+                        />
+                        {errors.lastName && (
+                          <div className="text-red-800 text-xs ms-2 mt-1">
+                            Enter Last Name
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  )}
-                </div>
-                <div>
-                  <label htmlFor="companyName">Supplier Display Name </label>
-                  <input
-                    // required
-                    type="text"
-                    name="supplierDisplayName"
-                    className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                    placeholder="Enter Display Name"
-                    value={supplierdata.supplierDisplayName}
-                    onChange={handleChange}
-                    onFocus={() =>
-                      setErrors({ ...errors, supplierDisplayName: false })
-                    }
-                    onBlur={() => {
-                      if (supplierdata.supplierDisplayName === "") {
-                        setErrors({ ...errors, supplierDisplayName: true });
-                      }
-                    }}
-                  />
-                  {errors.supplierDisplayName && (
-                    <div className="text-red-800 text-xs ms-2 mt-1">
-                      Enter Supplier Display Name
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4 mt-4">
+                    <div>
+                      <label htmlFor="">Company Name </label>
+                      <input
+                        required
+                        type="text"
+                        name="companyName"
+                        className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                        placeholder="Enter Company Name"
+                        value={supplierdata.companyName}
+                        onChange={handleChange}
+                        onFocus={() =>
+                          setErrors({ ...errors, companyName: false })
+                        }
+                        onBlur={() => {
+                          if (supplierdata.companyName === "") {
+                            setErrors({ ...errors, companyName: true });
+                          }
+                        }}
+                      />
+                      {errors.companyName && (
+                        <div className="text-red-800 text-xs ms-2 mt-1">
+                          Enter Company Name
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <div>
-                  <label htmlFor="">Supplier Email</label>
-                  <input
-                    type="text"
-                    name="supplierEmail"
-                    className="pl-3 text-sm w-[100%] mt-1  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                    placeholder="Enter Email"
-                    value={supplierdata.supplierEmail}
-                    onChange={handleChange}
-                    
-                  />
-                </div>
-              </div>
+                    <div>
+                      <label htmlFor="companyName">
+                        Supplier Display Name{" "}
+                      </label>
+                      <input
+                        required
+                        type="text"
+                        name="supplierDisplayName"
+                        className="pl-3 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                        placeholder="Enter Display Name"
+                        value={supplierdata.supplierDisplayName}
+                        onChange={handleChange}
+                        onFocus={() =>
+                          setErrors({ ...errors, supplierDisplayName: false })
+                        }
+                        onBlur={() => {
+                          if (supplierdata.supplierDisplayName === "") {
+                            setErrors({ ...errors, supplierDisplayName: true });
+                          }
+                        }}
+                      />
+                      {errors.supplierDisplayName && (
+                        <div className="text-red-800 text-xs ms-2 mt-1">
+                          Enter Supplier Display Name
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <label htmlFor="">Supplier Email</label>
+                      <input
+                        type="email"
+                        name="supplierEmail"
+                        className="pl-3 text-sm w-[100%] mt-1  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                        placeholder="Enter Email"
+                        value={supplierdata.supplierEmail}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+  </div>
+</div>
 
               <div className="grid grid-cols-3 gap-4 mt-4">
               <div>
