@@ -35,7 +35,7 @@ const OrderCards: React.FC<CardProps> = ({ icon, title, count, rating, active = 
 
   return (
     <div className={`${cardVariants({ active })} py-4 px-5 w-full`} onClick={onClick}>
-      <div className="rounded-full w-8 h-8 mb-2">
+      <div className="rounded-full w-14 mb-2">
         <img src={icon} alt={`${title} icon`} />
       </div>
 

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import OrderCards from "./OrderCards";
-import toatalInvImage from "../../../assets/Images/product packaging (packaging the product into a box).png";
-import totalSalesImage from "../../../assets/Images/processing_2816119 1.png";
-import pendingImage from "../../../assets/Images/shopping-bags_3601438 1.png";
-import pendingSalesImage from "../../../assets/Images/discount_12707444 1.png";
+import toatalInvImage from "../../../assets/Images/Group 2513.png";
+import totalSalesImage from "../../../assets/Images/Group 2517.png";
+import pendingImage from "../../../assets/Images/Group 2514.png";
+import pendingSalesImage from "../../../assets/Images/Group 2518.png";
 import CardSkeleton from "../../../Components/skeleton/CardSkeleton";
 
 interface CardData {
