@@ -53,6 +53,7 @@ const NewBills = ({}: Props) => {
     expectedShipmentDate: "",
     paymentTerms: "",
     paymentMode: "",
+    PaidThrough:"",
     billDate: "",
     dueDate: "",
     itemTable: [
@@ -96,7 +97,7 @@ const NewBills = ({}: Props) => {
     paidAmount:0,
   });
 
-  // console.log(bill, "bill state");
+  console.log(bill.paymentTerms)
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
@@ -213,12 +214,11 @@ const NewBills = ({}: Props) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-
+  
     if (name === "transactionDiscount") {
       let discountValue = parseFloat(value) || 0;
-
       const totalAmount = bill.subTotal || 0;
-
+  
       if (bill.transactionDiscountType === "percentage") {
         if (discountValue > 100) {
           discountValue = 100;
@@ -230,18 +230,40 @@ const NewBills = ({}: Props) => {
           toast.error("Discount cannot exceed the subtotal amount");
         }
       }
-
+  
       setBill((prevState: any) => ({
         ...prevState,
         [name]: discountValue,
       }));
-    } else {
+    } 
+    else if (name === "purchaseOrderDate" || name === "expectedShipmentDate") {
+      // Set the date in the bill state
+      setBill((prevState: any) => ({
+        ...prevState,
+        [name]: value,
+      }));
+  
+      // Validate dates if both are available
+      if (
+        name === "expectedShipmentDate" &&
+        bill.purchaseOrderDate &&
+        new Date(value) < new Date(bill.purchaseOrderDate)
+      ) {
+        toast.error("Expected Shipment Date cannot be earlier than Purchase Order Date.");
+        setBill((prevState: any) => ({
+          ...prevState,
+          expectedShipmentDate: "", // Reset invalid date
+        }));
+      }
+    } 
+    else {
       setBill((prevState: any) => ({
         ...prevState,
         [name]: value,
       }));
     }
   };
+  
 
   const calculateTotalAmount = () => {
     const {
@@ -451,8 +473,8 @@ const NewBills = ({}: Props) => {
             </div>
 
             <div className="relative w-full">
-              <label htmlFor="billNumber" className="">
-                Bill
+            <label className="block text-sm mb-1 text-labelColor">
+            Bill
                 <input
                   id="billNumber"
                   onChange={handleChange}
@@ -526,8 +548,8 @@ const NewBills = ({}: Props) => {
             )}
 
             <div className=" w-full">
-              <label htmlFor="orderNumber" className="">
-                Order Number
+            <label className="block text-sm mb-1 text-labelColor">
+            Order Number
                 <input
                   name="orderNumber"
                   id="orderNumber"
@@ -598,8 +620,8 @@ const NewBills = ({}: Props) => {
             </div>
 
             <div className=" w-full">
-              <label htmlFor="billDate" className="">
-                Bill Date
+            <label className="block text-sm mb-1 text-labelColor">
+            Bill Date
                 <input
                   name="billDate"
                   id="billDate"
@@ -612,8 +634,8 @@ const NewBills = ({}: Props) => {
             </div>
             <div>
               <div>
-                <label htmlFor="dueDate" className="">
-                  Due Date
+              <label className="block text-sm mb-1 text-labelColor">
+              Due Date
                   <input
                     name="dueDate"
                     id="dueDate"
@@ -642,7 +664,7 @@ const NewBills = ({}: Props) => {
                   </option>
                   {paymentTerms.length > 0 &&
                     paymentTerms.map((item: any) => (
-                      <option value=" Due on Receipt" className="text-gray">
+                      <option value={item.name} className="text-gray">
                         {item.name}
                       </option>
                     ))}
@@ -654,8 +676,8 @@ const NewBills = ({}: Props) => {
             </div>
 
             <div className=" w-full">
-              <label htmlFor="" className="">
-                Payment Mode{" "}
+            <label className="block text-sm mb-1 text-labelColor">
+            Payment Mode{" "}
               </label>
               <div className="relative w-full">
                 <select
@@ -808,8 +830,8 @@ const NewBills = ({}: Props) => {
         <div className="col-span-4">
           <div className="bg-secondary_main p-5 min-h-max rounded-xl relative  mt-0">
             <div className="mt-5">
-              <label htmlFor="addNotes" className="">
-                Add Note
+            <label className="block text-sm mb-1 text-labelColor">
+            Add Note
                 <input
                   name="addNotes"
                   id="addNotes"
@@ -821,8 +843,8 @@ const NewBills = ({}: Props) => {
               </label>
             </div>
             <div className="mt-4">
-              <label htmlFor="termsAndConditions" className="">
-                Terms & Conditions
+            <label className="block text-sm mb-1 text-labelColor">
+            Terms & Conditions
                 <input
                   name="termsAndConditions"
                   id="termsAndConditions"
@@ -834,9 +856,9 @@ const NewBills = ({}: Props) => {
               </label>
             </div>
             <div className="text-sm mt-3">
-              <label className="block mb-3">
-                Attach files to the Debit Notes
-                <div className="border-inputBorder border-gray-800 w-full border-dashed border p-2 rounded flex flex-col gap-2 justify-center items-center bg-white mb-4 mt-2">
+            <label className="block text-sm mb-1 text-labelColor">
+            Attach files to the Debit Notes
+                <div className="border-inputBorder text-textColor border-gray-800 w-full border-dashed border p-2 rounded flex flex-col gap-2 justify-center items-center bg-white mb-4 mt-2">
                   <span className="text-center inline-flex items-center gap-2">
                     <Upload />
                     Upload File
@@ -1060,8 +1082,7 @@ const NewBills = ({}: Props) => {
               </div>
             </div>
 
-          { bill.paymentTerms==="Pay now"&&
-       <>
+    {bill.paymentTerms==="Pay Now"  &&   <>
              <div className="flex gap-4 items-center justify-center">
                 <label
                   className="block text-sm mb-1 text-labelColor max-w-fit"
@@ -1096,12 +1117,12 @@ const NewBills = ({}: Props) => {
                     value={bill.balanceAmount}
                     onChange={handleChange}
                     placeholder="Balance Amount"
-                    className="border-inputBorder  text-sm border rounded-lg text-dropdownText  p-2 h-9 mt-2 "
+                    className="border-inputBorder bg-white  text-sm border rounded-lg text-dropdownText  p-2 h-9 mt-2 "
                   />
                 </div>
               </div>
-       </>
-}
+       </>}
+
             <div className="flex gap-4 m-5 justify-end">
               {" "}
               <Button variant="secondary" size="sm">
