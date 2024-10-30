@@ -666,14 +666,14 @@ const AddSupplierModal = ({ page }: Props) => {
         const base64String = reader.result as string;
         setSupplierData((prevDetails: any) => ({
           ...prevDetails,
-          customerProfile: base64String,
+          supplierProfile: base64String,
         }));
       };
 
       reader.readAsDataURL(file);
     }
   };
-
+console.log(supplierdata.supplierProfile)
   // handle country and state
   useEffect(() => {
     handleplaceofSupply();
@@ -757,45 +757,49 @@ const AddSupplierModal = ({ page }: Props) => {
               className="text-slate-600 text-sm overflow-scroll hide-scrollbar space-y-5 p-2"
               style={{ height: "480px" }}
             >
-              <div className="grid grid-col-12">
-                <div className="col-span-2 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
-                  <label htmlFor="image">
-                    <div className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ">
-                      {supplierdata.supplierProfile ? (
-                        <img
-                          src={supplierdata.supplierProfile}
-                          alt="Item"
-                          className="max-h-16 max-w-36"
-                        />
-                      ) : (
-                        <div className="gap-4 flex items-center ">
-                          <div className="bg-darkRed rounded-full flex items-center w-6 h-6 justify-center">
-                            <Plus color={"white"} classname="h-5" />
+
+
+<div className="grid grid-cols-12 gap-4">
+  <div className="col-span-2">
+  <div className=" border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
+                    <label htmlFor="image">
+                      <div className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ">
+                        {supplierdata.supplierProfile ? (
+                          <img
+                            src={supplierdata.supplierProfile}
+                            alt="Item"
+                            className="max-h-16 max-w-36"
+                          />
+                        ) : (
+                          <div className="gap-4 flex items-center ">
+                            <div className="bg-darkRed rounded-full flex items-center w-6 h-6 justify-center">
+                              <Plus color={"white"} classname="h-5" />
+                            </div>
+                            <p>Add Image</p>
                           </div>
-                          <p>Add Image</p>
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-sm font-extrabold text-textColor mt-1">
-                        Upload Photo
-                      </p>
-                      <p className="text-xs text-[#818894] mt-1">
-                        Support: JPG, PNG
-                      </p>
-                    </div>
-                    <input
-                      type="file"
-                      id="image"
-                      onChange={handleFileChange}
-                      className="hidden"
-                      name="itemImage"
-                      accept="image/*"
-                    />
-                  </label>
-                </div>
-                <div className="col-span-10">
-                  <div className="grid grid-cols-12 gap-4 mt-4">
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-sm font-extrabold text-textColor mt-1">
+                          Upload Photo
+                        </p>
+                        <p className="text-xs text-[#818894] mt-1">
+                          Support: JPG, PNG
+                        </p>
+                      </div>
+                      <input
+                        type="file"
+                        id="image"
+                        onChange={handleFileChange}
+                        className="hidden"
+                        name="itemImage"
+                        accept="image/*"
+                      />
+                    </label>
+                  </div>
+  </div>
+  <div className="col-span-10">
+  <div className="grid grid-cols-12 gap-4 ">
                     <div className="col-span-2">
                       <label htmlFor="salutation">Salutation</label>
                       <div className="relative w-full">
@@ -948,8 +952,10 @@ const AddSupplierModal = ({ page }: Props) => {
                       />
                     </div>
                   </div>
-                </div>
-              </div>
+  </div>
+</div>
+
+             
 
               <div className="grid grid-cols-3 gap-4 mt-4">
                 <div>

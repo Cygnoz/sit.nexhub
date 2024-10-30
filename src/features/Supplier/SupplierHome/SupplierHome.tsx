@@ -77,7 +77,7 @@ const SupplierHome = () => {
     if (activeFilter === "Active") return supplier.status === "Active";
     if (activeFilter === "Inactive") return supplier.status === "Inactive";
     if (activeFilter === "Duplicate") {
-      return findDuplicateSuppliers(supplierData).some(dup => dup._id === supplier._id);
+      return findDuplicateSuppliers(supplierData).some(dup => dup.supplierDisplayName === supplier.supplierDisplayName);
     }
     return true;
   });
