@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import CheveronDownIcon from "../../../../assets/icons/CheveronDownIcon";
-import CheveronUp from "../../../../assets/icons/CheveronUp";
-import Button from "../../../../Components/Button";
 import { useOrganization } from "../../../../context/OrganizationContext";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
+import Button from "../../../../Components/Button";
+import CheveronDownIcon from "../../../../assets/icons/CheveronDownIcon";
+import CheveronUp from "../../../../assets/icons/CheveronUp";
 
-interface QuoteItem {
+interface OrderItem {
   itemId: string;
   itemName: string;
   quantity: number;
@@ -15,11 +15,11 @@ interface QuoteItem {
   itemAmount: number;
 }
 
-interface QuoteData {
-  salesQuoteDate: string;
-  expiryDate: string;
+interface SalesOrderData {
+  orderDate: string;
+  expectedShipmentDate: string;
   customerName: string;
-  items: QuoteItem[];
+  items: OrderItem[];
   totalAmount: number;
   status: string;
   customerId: number;
@@ -34,7 +34,6 @@ interface Customer {
   companyName: string;
   mobile: string;
   customerEmail: string;
-  skypeNameNumber?: string;
   billingAddressLine1: string;
   billingAddressLine2: string;
   billingPinCode: string;
@@ -43,14 +42,13 @@ interface Customer {
   billingCity: string;
   status: string;
   customerDisplayName: string;
-  [key: string]: any;
 }
 
 interface SalesOrderViewProps {
-  data: QuoteData | null;
+  data: SalesOrderData | null;
 }
 
-function SalesQuoteView({ data }: SalesOrderViewProps) {
+function SalesOrderView({ data }: SalesOrderViewProps) {
   const [openItemId, setOpenItemId] = useState<string | null>(null);
   const { request: getOneCustomer } = useApi("get", 5002);
   const [customerData, setCustomerData] = useState<Customer | null>(null);
@@ -80,28 +78,28 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
 
   return (
     <div className="mt-4">
-      {/* Quote Date & Expected Shipment */}
+      {/* Order Date & Expected Shipment */}
       <div className="flex items-center justify-start mb-4">
         <p className="text-textColor border-r-[1px] border-borderRight pr-4 text-sm font-normal">
-          Quote Date:
+          Order Date:
           <span className="ms-3 text-dropdownText text-sm font-semibold">
-            {data?.salesQuoteDate || "N/A"}
+            {data?.orderDate || "N/A"}
           </span>
         </p>
         <p className="text-textColor pl-4 text-sm font-normal">
           Expected Shipment:
           <span className="ms-3 text-dropdownText text-sm font-semibold">
-            {data?.expiryDate || "N/A"}
+            {data?.expectedShipmentDate || "N/A"}
           </span>
         </p>
       </div>
 
-      {/* Send Purchase Order */}
+      {/* Send Sales Order */}
       <div className="mt-4 bg-cuscolumnbg p-4 rounded-lg flex justify-between items-center">
         <div>
-          <p className="text-base font-bold text-textColor">Send Sales Quote</p>
+          <p className="text-base font-bold text-textColor">Send Sales Order</p>
           <p className="text-sm font-normal text-dropdownText mt-2">
-            Sales quote has been created. You can email the Sales Quote to your
+            Sales order has been created. You can email the Sales Order to your
             customer or mark it as Confirmed.
           </p>
         </div>
@@ -110,7 +108,7 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
             <p className="text-sm font-medium">Mark as Confirmed</p>
           </Button>
           <Button className="pl-4 pr-4" size="sm">
-            <p className="text-sm font-medium">Send Sales Quote</p>
+            <p className="text-sm font-medium">Send Sales Order</p>
           </Button>
         </div>
       </div>
@@ -245,4 +243,4 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
   );
 }
 
-export default SalesQuoteView;
+export default SalesOrderView;
