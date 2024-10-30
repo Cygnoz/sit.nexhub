@@ -607,7 +607,7 @@ const handleGoBack =()=>{
               </div>
 
               <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5">
+                {/* <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Mode
                   </label>
@@ -632,6 +632,30 @@ const handleGoBack =()=>{
                     </div>
                   </div>
 
+                </div> */}
+                    <div className="col-span-5 relative">
+                  <label className="block text-sm mb-1 text-labelColor">
+                    Sales Person
+                  </label>
+                  <div
+                    className="relative w-full"
+                    onClick={() => toggleDropdown("salesperson")}
+                  >
+                    <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                      <p>Select Salesperson</p>
+                    </div>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
+                  {openDropdownIndex === "salesperson" && (
+                    <div
+                      ref={dropdownRef}
+                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-full space-y-1"
+                    >
+                      <ManageSalesPerson />
+                    </div>
+                  )}
                 </div>
 
                 <div className="col-span-7">
@@ -687,30 +711,6 @@ const handleGoBack =()=>{
                       <CehvronDown color="gray" />
                     </div>
                   </div>
-                </div>
-                <div className="col-span-7 relative">
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Sales Person
-                  </label>
-                  <div
-                    className="relative w-full"
-                    onClick={() => toggleDropdown("salesperson")}
-                  >
-                    <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <p>Select Salesperson</p>
-                    </div>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
-                  </div>
-                  {openDropdownIndex === "salesperson" && (
-                    <div
-                      ref={dropdownRef}
-                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-full space-y-1"
-                    >
-                      <ManageSalesPerson />
-                    </div>
-                  )}
                 </div>
               </div>
 
