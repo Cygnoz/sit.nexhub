@@ -15,7 +15,6 @@ import Globe from "../../../assets/icons/Globe";
 import Eye from "../../../assets/icons/Eye";
 import EyeOff from "../../../assets/icons/EyeOff";
 import Plus from "../../../assets/icons/Plus";
-import { log } from "console";
 
 type Props = { page?: string };
 type SupplierData = {
