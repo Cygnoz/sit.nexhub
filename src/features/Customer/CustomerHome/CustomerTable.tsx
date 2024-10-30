@@ -23,6 +23,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
   setSearchValue,
 }) => {
   const initialColumns: Column[] = [
+    { id: "Sl No", label: "Sl No", visible: true },
     { id: "customerDisplayName", label: "Name", visible: true },
     { id: "companyName", label: "Company Name", visible: true },
     { id: "mobile", label: "Contact", visible: true },
@@ -38,15 +39,14 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
     const searchValueLower = searchValue.toLowerCase();
     return (
       account?.billingAttention?.toLowerCase().startsWith(searchValueLower) ||
-      account?.customerDisplayName
-        ?.toLowerCase()
-        .startsWith(searchValueLower) ||
+      account?.customerDisplayName?.toLowerCase().startsWith(searchValueLower) ||
       account?.companyName?.toLowerCase().startsWith(searchValueLower) ||
       account?.mobile?.toLowerCase().startsWith(searchValueLower) ||
       account?.customerEmail?.toLowerCase().startsWith(searchValueLower) ||
       account?.placeOfSupply?.toLowerCase().startsWith(searchValueLower)
     );
   });
+  
 
   const renderColumnContent = (colId: string, item: any) => {
     if (colId === "supplierDetails") {
@@ -62,12 +62,12 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
           </Link>
         </div>
       );
-    } else if (colId == "status") {
+    } else if (colId === "status") {
       return (
         <p
           className={`${
-            item.status == "Active" ? "bg-[#78AA86]" : "bg-zinc-400"
-          } py-1 text-[13px] rounded items-center ms-auto text-white  h-[18px] flex justify-center`}
+            item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400"
+          } py-1 text-[13px] rounded items-center ms-auto text-white h-[18px] flex justify-center`}
         >
           {item.status}
         </p>
@@ -94,9 +94,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">
-                <input type="checkbox" className="form-checkbox w-4 h-4" />
-              </th>
+              <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
               {columns.map(
                 (col) =>
                   col.visible && (
@@ -115,10 +113,10 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
             {filteredAccounts && filteredAccounts.length > 0 ? (
-              filteredAccounts.map((item) => (
+              filteredAccounts.reverse().map((item, index) => (
                 <tr key={item._id} className="relative">
                   <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <input type="checkbox" className="form-checkbox w-4 h-4" />
+                    {index + 1}
                   </td>
                   {columns.map(
                     (col) =>

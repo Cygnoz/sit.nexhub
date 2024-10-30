@@ -12,68 +12,12 @@ import PhoneInput from "react-phone-input-2";
 import Pen from "../../../assets/icons/Pen";
 import { useParams } from "react-router-dom";
 import { CustomerEditResponseContext } from "../../../context/ContextShare";
+import { CustomerData } from "../../../Types/Customet";
+import Plus from "../../../assets/icons/Plus";
+
 
 type Props = { customerDataPorps?: CustomerData; addressEdit?: string };
-type CustomerData = {
-  organizationId: string;
-  customerType: string;
-  salutation: string;
-  firstName: string;
-  lastName: string;
-  companyName: string;
-  customerDisplayName: string;
-  customerEmail: string;
-  workPhone: string;
-  mobile: string;
-  dob: string;
-  cardNumber: string;
-  pan: string;
-  currency: string;
-  paymentTerms: string;
-  creditDays: string;
-  creditLimit: string;
-  interestPercentage: string;
-  debitOpeningBalance: string;
-  creditOpeningBalance: string;
-  enablePortal: boolean;
-  documents: string;
-  department: string;
-  designation: string;
-  websiteURL: string;
-  taxType: string;
-  gstTreatment: string;
-  gstin_uin: string;
-  placeOfSupply: string;
-  businessLegalName: string;
-  businessTradeName: string;
-  vatNumber: string;
-  billingAttention: string;
-  billingCountry: string;
-  billingAddressLine1: string;
-  billingAddressLine2: string;
-  billingCity: string;
-  billingState: string;
-  billingPinCode: string;
-  billingPhone: string;
-  billingFaxNumber: string;
-  shippingAttention: string;
-  shippingCountry: string;
-  shippingAddress1: string;
-  shippingAddress2: string;
-  shippingCity: string;
-  shippingState: string;
-  shippingPinCode: string;
-  shippingPhone: string;
-  shippingFaxNumber: string;
-  contactPerson: {
-    salutation: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    mobile: string;
-  }[];
-  remark: string;
-};
+
 
 const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
@@ -106,11 +50,28 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     lastName: false,
     companyName: false,
     customerDisplayName: false,
+    customerEmail:false,
+    pan:false,
+    creditDays:false,
+    creditLimit:false,
+    websiteURL:false,
+    gstin_uin:false,
+    businessLegalName:false,
+    businessTradeName:false,
+    billingAttention:false,
+    billingAddressLine1:false,
+    billingAddressLine2:false,
+    billingCity:false,
+    shippingAttention:false,
+    shippingAddress1:false,
+    shippingAddress2:false,
+    shippingCity:false,
+    shippingFaxNumber:false,
   });
   const [customerdata, setCustomerData] = useState<CustomerData>({
-    organizationId: "INDORG0001",
-    customerType: "",
-    salutation: "",
+    customerProfile:"",
+    customerType: "Individual",
+    salutation: "Mr.",
     firstName: "",
     lastName: "",
     companyName: "",
@@ -134,6 +95,8 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     designation: "",
     websiteURL: "",
     taxType: "",
+    exemptionReason: "",
+    taxPreference: "",
     gstTreatment: "",
     gstin_uin: "",
     placeOfSupply: "",
@@ -160,7 +123,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     shippingFaxNumber: "",
     contactPerson: [
       {
-        salutation: "",
+        salutation: "Mr.",
         firstName: "",
         lastName: "",
         email: "",
@@ -168,13 +131,35 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
       },
     ],
     remark: "",
-  });
-  const [rows, setRows] = useState(customerdata.contactPerson || []);
+    });
+    const [rows, setRows] = useState([
+      {
+        salutation: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        mobile: "",
+        firstNameError: "",
+        lastNameError: "",
+        emailError: "",
+        mobileError: "",
+      },
+    ]);
 
   const addRow = () => {
-    setRows([
-      ...rows,
-      { salutation: "", firstName: "", lastName: "", email: "", mobile: "" },
+    setRows((prevRows) => [
+      ...prevRows,
+      {
+        salutation: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        mobile: "",
+        firstNameError: "",
+        lastNameError: "",
+        emailError: "",
+        mobileError: "",
+      },
     ]);
   };
 
@@ -213,15 +198,57 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     field: keyof (typeof rows)[number],
     value: string
   ) => {
-    const newRows = [...rows];
-    newRows[index] = { ...newRows[index], [field]: value };
-    setRows(newRows);
-
+    const updatedRows = [...rows];
+  
+    updatedRows[index][field] = value;
+  
+    if (field === "firstName") {
+      updatedRows[index].firstNameError = value.trim() === ""
+        ? ""
+        : /^[A-Za-z]+$/.test(value)
+        ? ""
+        : "Only letters.";
+    } else if (field === "lastName") {
+      updatedRows[index].lastNameError = value.trim() === ""
+        ? ""
+        : /^[A-Za-z]+$/.test(value)
+        ? ""
+        : "Only letters.";
+    } else if (field === "email") {
+      updatedRows[index].emailError = value.trim() === ""
+        ? ""
+        : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+        ? ""
+        : "Invalid email.";
+    } else if (field === "mobile") {
+      updatedRows[index].mobileError = value.trim() === ""
+        ? ""
+        : /^[0-9]+$/.test(value)
+        ? ""
+        : "Only numbers.";
+    }
+  
+    setRows(updatedRows);
+  
+    const updatedContactPerson = updatedRows.map((row) => ({
+      salutation: row.salutation,
+      firstName: row.firstName,
+      lastName: row.lastName,
+      email: row.email,
+      mobile: row.mobile,
+      firstNameError: row.firstNameError || "",
+      lastNameError: row.lastNameError || "",
+      emailError: row.emailError || "",
+      mobileError: row.mobileError || ""
+    }));
+  
     setCustomerData((prevFormData) => ({
       ...prevFormData,
-      contactPerson: newRows,
+      contactPerson: updatedContactPerson
     }));
   };
+  
+  
 
   const handlePhoneChange = (phoneType: string, value: string) => {
     setCustomerData((prevData) => ({
@@ -230,6 +257,22 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     }));
   };
   // console.log(customerdata);
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setCustomerData((prevDetails: any) => ({
+          ...prevDetails,
+          customerProfile: base64String,
+        }));
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -457,10 +500,18 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     getAdditionalData();
     if (customerDataPorps) {
       setCustomerData(customerDataPorps);
-      setRows(customerDataPorps.contactPerson || []);
+      const mappedContactPerson = (customerDataPorps.contactPerson || []).map((person) => ({
+        ...person,
+        firstNameError: "",
+        lastNameError: "",
+        emailError: "",
+        mobileError: ""
+      }));
+      setRows(mappedContactPerson);
       setSelected(customerDataPorps.customerType);
     }
   }, [customerDataPorps]);
+  
 
   const addressscroll = () => {
     if (addressEdit === "shippingAddressEdit" && shippingAddressRef.current) {
@@ -518,207 +569,227 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
               </div>
             </div>
             <form
-              className="text-slate-600 text-sm overflow-scroll hide-scrollbar space-y-5 p-2"
+              className="text-slate-600 text-sm overflow-scroll hide-scrollbar space-y-2 p-2"
               style={{ height: "480px" }}
             >
+               <div className="grid grid-cols-12 gap-4">
+             <div className="col-span-2 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
+            <label htmlFor="image">
+              <div
+                className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg "
+                  
+              >
+ {customerdata.customerProfile ? (
+                  <img src={customerdata.customerProfile} alt="Item"  className="max-h-16 max-w-36" />
+                ) : (                  <div className="gap-4 flex items-center ">
+                    <div className="bg-darkRed rounded-full flex items-center w-6 h-6 justify-center">
+                      <Plus color={"white"} classname="h-5" />
+                    </div>
+                    <p>Add Image</p>
+                  </div>
+                )}
+              </div>
               <div>
-                <label
-                  className="block text-sm mb-1 text-labelColor"
-                  htmlFor=""
-                >
-                  Customer Type
-                </label>
-                <div className="flex items-center space-x-4 text-textColor text-sm">
-                  <div className="flex gap-2 justify-center items-center">
-                    <div
-                      className="grid place-items-center mt-1"
-                      onChange={() =>
-                        handleRadioChange("Business", "customerType")
-                      }
-                    >
-                      <input
-                        id="Business"
-                        type="radio"
-                        name="customerType"
-                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                          selected === "Business"
-                            ? "border-8 border-neutral-400"
-                            : "border-1 border-neutral-400"
-                        }`}
-                        checked={selected === "Business"}
-                        onChange={() =>
-                          handleRadioChange("Business", "customerType")
-                        }
-                      />
-                      <div
-                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                          selected === "Business"
-                            ? "bg-neutral-100"
-                            : "bg-transparent"
-                        }`}
-                      />
-                    </div>
-                    <label
-                      htmlFor="Business"
-                      className="text-start font-medium"
-                    >
-                      Business
-                    </label>
-                  </div>
-                  <div className="flex gap-2 justify-center items-center">
-                    <div
-                      className="grid place-items-center mt-1"
-                      onChange={() =>
-                        handleRadioChange("Individual", "customerType")
-                      }
-                    >
-                      <input
-                        id="Individual"
-                        type="radio"
-                        name="customerType"
-                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                          selected === "Individual"
-                            ? "border-8 border-neutral-400"
-                            : "border-1 border-neutral-400"
-                        }`}
-                        checked={selected === "Individual"}
-                        onChange={() =>
-                          handleRadioChange("Individual", "customerType")
-                        }
-                      />
-                      <div
-                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                          selected === "Individual"
-                            ? "bg-neutral-100"
-                            : "bg-transparent"
-                        }`}
-                      />
-                    </div>
-                    <label
-                      htmlFor="Individual"
-                      className="text-start font-medium"
-                    >
-                      Individual
-                    </label>
-                  </div>
-                </div>
+                <p className="text-sm font-extrabold text-textColor mt-1">
+                Upload Photo
+                </p>
+                <p className="text-xs text-[#818894] mt-1">Support: JPG, PNG</p>
               </div>
-
-              <div className="grid grid-cols-12 gap-4 mt-4">
-                <div className="col-span-2">
-                  <label htmlFor="salutation">Salutation</label>
-                  <div className="relative w-full">
-                    <select
-                      name="salutation"
-                      className="block appearance-none w-full h-9 mt-1 text-[#818894] bg-white border border-inputBorder text-sm  pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                      value={customerdata.salutation}
-                      onChange={handleChange}
+              <input
+                type="file"
+                id="image"
+                onChange={handleFileChange}
+                className="hidden"
+                name="itemImage"
+                accept="image/*"
+              />
+            </label>
+          </div>
+              <div className="col-span-10">
+                  <div className="mt-3">
+                    <label
+                      className="block text-sm mb-1 text-labelColor"
+                      htmlFor=""
                     >
-                      <option defaultChecked value="Mr.">
-                        Mr.
-                      </option>
-                      <option value="Mrs.">Mrs.</option>
-                      <option value="Ms.">Ms.</option>
-                      <option value="Dr.">Dr.</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
+                      Customer Type
+                    </label>
+                    <div className="flex items-center space-x-4 text-textColor text-sm">
+                      <div className="flex gap-2 justify-center items-center">
+                        <div className="grid place-items-center mt-1">
+                          <input
+                            id="Business"
+                            type="radio"
+                            name="customerType"
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                              selected === "Business"
+                                ? "border-8 border-neutral-400"
+                                : "border-1 border-neutral-400"
+                            }`}
+                            checked={selected === "Business"}
+                            onChange={() =>
+                              handleRadioChange("Business", "customerType")
+                            }
+                          />
+                          <div
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                              selected === "Business"
+                                ? "bg-neutral-100"
+                                : "bg-transparent"
+                            }`}
+                          />
+                        </div>
+                        <label
+                          htmlFor="Business"
+                          className="text-start font-medium"
+                        >
+                          Business
+                        </label>
+                      </div>
+                      <div className="flex gap-2 justify-center items-center">
+                        <div className="grid place-items-center mt-1">
+                          <input
+                            id="Individual"
+                            type="radio"
+                            name="customerType"
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                              selected === "Individual"
+                                ? "border-8 border-neutral-400"
+                                : "border-1 border-neutral-400"
+                            }`}
+                            checked={selected === "Individual"}
+                            onChange={() =>
+                              handleRadioChange("Individual", "customerType")
+                            }
+                          />
+                          <div
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                              selected === "Individual"
+                                ? "bg-neutral-100"
+                                : "bg-transparent"
+                            }`}
+                          />
+                        </div>
+                        <label
+                          htmlFor="Individual"
+                          className="text-start font-medium"
+                        >
+                          Individual
+                        </label>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="grid grid-cols-2 col-span-10 gap-4 ">
-                  <div>
-                    <label htmlFor="firstName" className="text-slate-600">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                      placeholder="Enter First Name"
-                      value={customerdata.firstName}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        handleChange(e);
-                        if (value && !/^[A-Za-z\s]+$/.test(value)) {
-                          setErrors((prevErrors) => ({
-                            ...prevErrors,
-                            lastName: true,
-                          }));
-                        } else {
-                          setErrors((prevErrors) => ({
-                            ...prevErrors,
-                            lastName: false,
-                          }));
-                        }
-                      }}
-                    />
-
-                    {errors.lastName && customerdata.lastName.length > 0 && (
-                      <div className="text-red-800 text-xs ms-2 mt-1">
-                        Please enter a valid first name (letters only).
+    
+                  <div className="grid grid-cols-12 gap-x-4 mt-2">
+                    <div className="col-span-2">
+                      <label htmlFor="salutation">Salutation</label>
+                      <div className="relative w-full">
+                        <select
+                          name="salutation"
+                          className="block appearance-none w-full h-9 mt-0.5 text-[#818894] bg-white border border-inputBorder text-sm  pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                          value={customerdata.salutation}
+                          onChange={handleChange}
+                        >
+                          <option defaultChecked value="Mr.">
+                            Mr.
+                          </option>
+                          <option value="Mrs.">Mrs.</option>
+                          <option value="Ms.">Ms.</option>
+                          <option value="Dr.">Dr.</option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                          <CehvronDown color="gray" />
+                        </div>
                       </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label htmlFor="lastName" className="text-slate-600">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                      placeholder="Enter Last Name"
-                      value={customerdata.lastName}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        handleChange(e);
-                        if (value && !/^[A-Za-z\s]+$/.test(value)) {
-                          setErrors((prevErrors) => ({
-                            ...prevErrors,
-                            lastName: true,
-                          }));
-                        } else {
-                          setErrors((prevErrors) => ({
-                            ...prevErrors,
-                            lastName: false,
-                          }));
-                        }
-                      }}
-                    />
-
-                    {errors.lastName && customerdata.lastName.length > 0 && (
-                      <div className="text-red-800 text-xs ms-2 mt-1">
-                        Please enter a valid Last name (letters only).
+                    </div>
+                    <div className="grid grid-cols-2 col-span-10 gap-4 ">
+                      <div>
+                        <label htmlFor="firstName" className="text-slate-600">
+                          First Name
+                        </label>
+                        <input
+                          type="text"
+                          name="firstName"
+                          className="pl-2 text-sm w-[100%]  mt-0.5 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                          placeholder="Enter First Name"
+                          value={customerdata.firstName}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            handleChange(e);
+                            setErrors((prevErrors) => ({
+                              ...prevErrors,
+                              firstName:
+                                value && !/^[A-Za-z\s]+$/.test(value)
+                                  ? true
+                                  : false,
+                            }));
+                          }}
+                        />
+                        {errors.firstName && customerdata.firstName.length > 0 && (
+                          <div className="text-red-800 text-xs ms-2 mt-1">
+                            Please enter a valid first name (letters only).
+                          </div>
+                        )}
                       </div>
-                    )}
+    
+                      <div>
+                        <label htmlFor="lastName" className="text-slate-600">
+                          Last Name
+                        </label>
+                        <input
+                          type="text"
+                          name="lastName"
+                          className="pl-2 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                          placeholder="Enter Last Name"
+                          value={customerdata.lastName}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            handleChange(e);
+                            if (value && !/^[A-Za-z\s]+$/.test(value)) {
+                              setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                lastName: true,
+                              }));
+                            } else {
+                              setErrors((prevErrors) => ({
+                                ...prevErrors,
+                                lastName: false,
+                              }));
+                            }
+                          }}
+                        />
+    
+                        {errors.lastName && customerdata.lastName.length > 0 && (
+                          <div className="text-red-800 text-xs ms-2 mt-1">
+                            Please enter a valid first name (letters only).
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
               </div>
+             </div>
 
-              <div className="grid grid-cols-2 gap-4 mt-4">
+             <div className="grid grid-cols-3 gap-x-4  ">
                 <div>
                   <label htmlFor="companyName">Company Name </label>
                   <input
                     type="text"
                     name="companyName"
-                    className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                    className="pl-2 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
                     placeholder="Enter Company Name"
                     value={customerdata.companyName}
                     onChange={(e) => {
                       const value = e.target.value;
                       handleChange(e);
-
                       if (!value || !/^[A-Za-z0-9\s\W]+$/.test(value)) {
                         setErrors((prevErrors) => ({
                           ...prevErrors,
-                          customerDisplayName: true,
+                          companyName: true,
                         }));
                       } else {
                         setErrors((prevErrors) => ({
                           ...prevErrors,
-                          customerDisplayName: false,
+                          companyName: false,
                         }));
                       }
                     }}
@@ -737,7 +808,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                     required
                     type="text"
                     name="customerDisplayName"
-                    className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                    className="pl-2 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                     placeholder="Enter Display Name"
                     value={customerdata.customerDisplayName}
                     onChange={(e) => {
@@ -764,36 +835,60 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                     </div>
                   )}
                 </div>
+
                 <div>
-                  <label htmlFor="">Customer Email</label>
+                  <label htmlFor="customerEmail">Customer Email</label>
                   <input
                     type="email"
                     name="customerEmail"
-                    className="pl-2 text-sm w-[100%] mt-1  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                    className="pl-2 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                     placeholder="Enter Email"
-                    onChange={handleChange}
                     value={customerdata.customerEmail}
+                    onChange={handleChange}
+                    onBlur={(e) => {
+                      const value = e.target.value;
+
+                      // Email validation regex
+                      const emailRegex =
+                        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+                      // Only validate if the field is not empty
+                      if (value && !emailRegex.test(value)) {
+                        setErrors((prevErrors) => ({
+                          ...prevErrors,
+                          customerEmail: true,
+                        }));
+                      } else {
+                        setErrors((prevErrors) => ({
+                          ...prevErrors,
+                          customerEmail: false,
+                        }));
+                      }
+                    }}
                   />
 
-                
+                  {errors.customerEmail && (
+                    <div className="text-red-800 text-xs ms-2 mt-1">
+                      Please enter a valid email address.
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <label htmlFor="">Membership Card Number</label>
+                {/* <div className="hidden">
+                  <label htmlFor="cardNumber">Membership Card Number</label>
                   <input
-                    type="text"
-                    className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                    placeholder="XXX"
+                    type="tel"
+                    className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                    placeholder="Enter Card Number"
                     name="cardNumber"
                     value={customerdata.cardNumber}
                     onChange={handleChange}
                   />
-                </div>
+                </div> */}
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3  gap-x-4">
                 <div>
                   <label htmlFor="">Work Phone</label>
-
                   <PhoneInput
                     inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                     inputStyle={{ height: "38px", width: "100%" }}
@@ -823,12 +918,10 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                     placeholder="Value"
                     value={customerdata.dob}
                     onChange={handleChange}
-                    max={new Date().toISOString().split("T")[0]} // Set max to today's date
+                    max={new Date().toISOString().split("T")[0]}
                   />
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4 mt-4"></div>
 
               <div className="flex mt-5 px-5">
                 <div className="w-[20%] bg-gray-100 p-4">
@@ -877,12 +970,12 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                     </li>
                   </ul>
                 </div>
-                <div className=" w-full p-2 ps-16">
+                <div className=" w-full  ps-16">
                   {activeTab === "otherDetails" && (
-                    <div className="space-y-4  p-4 ">
-                      <div className="grid grid-cols-2 gap-4">
-                        {/* <div>
-                          <label className="block mb-1">Opening Balance</label>
+                    <div className="space-y-2  p-4 ">
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                        <div>
+                          <label className="block mb-0.5">Opening Balance</label>
                           <div className="flex">
                             <div className="relative w-20 ">
                               <select
@@ -905,7 +998,25 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               type="text"
                               className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                               placeholder={`Enter ${openingType} Opening Balance`}
-                              onChange={handleChange}
+                              onChange={(e) => {
+                                const value = e.target.value;
+
+                                if (/^\d*$/.test(value)) {
+                                  handleChange(e);
+
+                                  if (openingType === "Debit") {
+                                    setCustomerData((prevData) => ({
+                                      ...prevData,
+                                      debitOpeningBalance: value,
+                                    }));
+                                  } else {
+                                    setCustomerData((prevData) => ({
+                                      ...prevData,
+                                      creditOpeningBalance: value,
+                                    }));
+                                  }
+                                }
+                              }}
                               name="openingBalance"
                               value={
                                 openingType === "Debit"
@@ -914,21 +1025,49 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               }
                             />
                           </div>
-                        </div> */}
-                        <div>
-                          <label className="block mb-1">PAN</label>
-                          <input
-                            type="text"
-                            className=" text-sm w-[100%]  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                            placeholder="Enter Pan Number"
-                            name="pan"
-                            value={customerdata.pan}
-                            onChange={handleChange}
-                          />
                         </div>
                         <div>
+                          <label className="block mb-0.5">PAN</label>
+                          <div>
+                            <input
+                              type="text"
+                              className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                              placeholder="Enter PAN Number"
+                              name="pan"
+                              value={customerdata.pan}
+                              onChange={(e) => {
+                                const value = e.target.value;
+
+                                if (
+                                  value === "" ||
+                                  /^[a-zA-Z0-9]*$/.test(value)
+                                ) {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    pan: false,
+                                  }));
+                                } else {
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    pan: true,
+                                  }));
+                                }
+                              }}
+                            />
+
+                            {errors.pan && (
+                              <div className="text-red-800 text-xs mt-1">
+                                Only alphanumeric characters are allowed for
+                                PAN.
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div>
                           <div className="">
-                            <label htmlFor="" className="block mb-1">
+                            <label htmlFor="" className="block mb-0.5">
                               Currency
                             </label>
                             <div className="relative w-full">
@@ -961,7 +1100,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                           </div>
                         </div>
                         <div className="relative w-full">
-                          <label htmlFor="" className="block mb-1">
+                          <label htmlFor="" className="block mb-0.5">
                             Payment Terms
                           </label>
                           <select
@@ -991,14 +1130,102 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                           </div>
                         </div>
                       </div>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <label className="block mb-0.5">Credit Days</label>
+                          <input
+                            type="text"
+                            className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-p p-2 text-[#818894]"
+                            placeholder="Enter Credit Days"
+                            name="creditDays"
+                            value={customerdata.creditDays}
+                            onChange={(e) => {
+                              const value = e.target.value;
+
+                              if (value === "" || /^[0-9]+$/.test(value)) {
+                                handleChange(e);
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  creditDays: false,
+                                }));
+                              } else {
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  creditDays: true,
+                                }));
+                              }
+                            }}
+                          />
+                          {errors.creditDays &&
+                            customerdata.creditDays !== "" && (
+                              <div className="text-red-800 text-xs mt-1">
+                                Please enter a valid number for Credit Days.
+                              </div>
+                            )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-0.5">Credit Limit</label>
+                          <input
+                            type="text"
+                            className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-p p-2 text-[#818894]"
+                            placeholder="Enter Credit Limit"
+                            name="creditLimit"
+                            value={customerdata.creditLimit}
+                            onChange={(e) => {
+                              const value = e.target.value;
+
+                              if (value === "" || /^[0-9]+$/.test(value)) {
+                                handleChange(e);
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  creditLimit: false,
+                                }));
+                              } else {
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  creditLimit: true,
+                                }));
+                              }
+                            }}
+                          />
+                          {errors.creditLimit &&
+                            customerdata.creditLimit !== "" && (
+                              <div className="text-red-800 text-xs mt-1">
+                                Please enter a valid number for Credit Limit.
+                              </div>
+                            )}
+                        </div>
+
+                        <div>
+                          <label className="block mb-0.5">
+                            Interest Percentage
+                          </label>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-p p-2 text-[#818894]"
+                            placeholder="%"
+                            name="interestPercentage"
+                            value={customerdata.interestPercentage}
+                            onChange={handleChange}
+                            onKeyPress={(e) => {
+                              if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
 
                       <div className="bg-lightPink p-5 rounded-lg space-y-5">
                         <p className="font-bold text-">Enable Portal?</p>
                         <div className="flex items-center mt-4 gap-1 text-textColor">
                           <input
                             name="enablePortal"
-                            defaultChecked={customerdata.enablePortal}
-                            onChange={handleChange}
+                            checked={customerdata.enablePortal}
+                            onClick={(e: any) => handleChange(e)}
                             type="checkbox"
                             className=" h-6 w-5 mx-1 customCheckbox"
                             id=""
@@ -1008,7 +1235,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                           </label>
                         </div>
                         <div className="relative w-[349px]">
-                          <label htmlFor="" className="block mb-1 ">
+                          <label htmlFor="" className="block mb-0.5 ">
                             Select Language
                           </label>
                           <select
@@ -1019,7 +1246,10 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             // value={customerdata.}
                             onChange={handleChange}
                           >
-                            <option value="English" className="text-gray">
+                            <option
+                              value="Payment On Due"
+                              className="text-gray"
+                            >
                               English
                             </option>
                           </select>
@@ -1042,63 +1272,96 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                           <input
                             type="file"
                             className="hidden"
-                            // value={customerdata.documents}
+                            value={customerdata.documents}
                             name="documents"
                             // onChange={(e)=>handleFileChange(e)}
                           />
                         </label>
                       </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block mb-0.5">Derpartment</label>
+                          <input
+                            type="text"
+                            className=" text-sm w-full rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                            placeholder="Enter Department"
+                            name="department"
+                            value={customerdata.department}
+                            onChange={handleChange}
+                          />
+                        </div>
 
-                      <div>
-                        <label className="block mb-1">Derpartment</label>
-                        <input
-                          type="text"
-                          className=" text-sm w-[49%]  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                          placeholder="Value"
-                          name="department"
-                          value={customerdata.department}
-                          onChange={handleChange}
-                        />
-                      </div>
+                        <div>
+                          <label className="block mb-0.5">Designation</label>
 
-                      <div>
-                        <label className="block mb-1">Designation</label>
-
-                        <input
-                          type="text"
-                          className=" text-sm w-[49%]  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                          placeholder="Value"
-                          name="designation"
-                          value={customerdata.designation}
-                          onChange={handleChange}
-                        />
+                          <input
+                            type="text"
+                            className=" text-sm w-full rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                            placeholder="Enter Designation"
+                            name="designation"
+                            value={customerdata.designation}
+                            onChange={handleChange}
+                          />
+                        </div>
                       </div>
 
                       <div className="">
-                        <label htmlFor="" className="block mb-1">
-                          Website
+                        <label htmlFor="" className="block mb-0.5">
+                          Website URL
                         </label>
                         <div className="relative w-full">
-                          <div className="pointer-events-none absolute inset-y-0  flex items-center px-2 text-gray-700 w-[50%]">
+                          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2 text-gray-700">
                             <Globe />
                           </div>
                           <input
                             type="text"
-                            className=" text-sm w-[49%] ps-9 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                            placeholder="Value"
+                            className="text-sm w-full ps-9 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                            placeholder="Enter website URL"
                             name="websiteURL"
                             value={customerdata.websiteURL}
-                            onChange={handleChange}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              const urlPattern =
+                                /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/;
+
+                              setCustomerData((prevData) => ({
+                                ...prevData,
+                                websiteURL: value,
+                              }));
+
+                              if (value === "" || urlPattern.test(value)) {
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  websiteURL: false,
+                                }));
+                              } else if (
+                                value &&
+                                !urlPattern.test(value) &&
+                                value.length > 4
+                              ) {
+                                setErrors((prevErrors) => ({
+                                  ...prevErrors,
+                                  websiteURL: true,
+                                }));
+                              }
+                            }}
                           />
-                        </div>
+                        </div>{" "}
+                        {errors.websiteURL &&
+                          customerdata.websiteURL !== "" && (
+                            <div className="text-red-800 text-xs mt-1">
+                              Please enter a valid website URL (e.g.,
+                              https://example.com).
+                            </div>
+                          )}
                       </div>
                     </div>
                   )}
 
                   {activeTab === "taxes" && (
                     <>
-                      <div className="mb-3">
-                        <label className="block text-sm mb-1 text-labelColor">
+                      <div className="mb-1.5">
+                        <label className="block text-sm mb-0.5 text-labelColor">
                           Tax Preference
                         </label>
                         <div className="flex items-center space-x-4 text-textColor text-sm">
@@ -1134,7 +1397,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             </label>
                           </div>
                           <div className="flex gap-2 justify-center items-center">
-                            <div className="grid place-items-center mt-1">
+                            <div className="grid place-items-center mt-0.5">
                               <input
                                 id="Tax Exempt"
                                 type="radio"
@@ -1175,7 +1438,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                 <div className="relative w-full">
                                   <label
                                     htmlFor="gstTreatment"
-                                    className="block mb-1"
+                                    className="block mb-0.5"
                                   >
                                     GST Treatment
                                   </label>
@@ -1205,7 +1468,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                 <div>
                                   <label
                                     htmlFor="gstin_uin"
-                                    className="block mb-1"
+                                    className="block mb-0.5"
                                   >
                                     GSTIN/UIN
                                   </label>
@@ -1215,30 +1478,86 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                     className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                                     placeholder="GSTIN/UIN"
                                     value={customerdata.gstin_uin}
-                                    onChange={handleChange}
+                                    onChange={(e) => {
+                                      handleChange(e);
+                                      const value = e.target.value;
+
+                                      setCustomerData((prevData) => ({
+                                        ...prevData,
+                                        gstin_uin: value,
+                                      }));
+                                    }}
+                                    onBlur={() => {
+                                      const value = customerdata.gstin_uin;
+                                      const gstinPattern =
+                                        /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[A-Z0-9]{1}[Z]{1}[A-Z0-9]{1}$/;
+
+                                      setErrors((prevErrors) => ({
+                                        ...prevErrors,
+                                        gstin_uin:
+                                          value !== "" &&
+                                          !gstinPattern.test(value),
+                                      }));
+                                    }}
                                   />
+                                  {errors.gstin_uin &&
+                                    customerdata.gstin_uin !== "" && (
+                                      <div className="text-red-800 text-xs mt-1">
+                                        Please enter a valid GSTIN/UIN (e.g.,
+                                        22AAAAA0000A1Z5).
+                                      </div>
+                                    )}
                                 </div>
 
                                 <div>
                                   <label
                                     htmlFor="businessLegalName"
-                                    className="block mb-1"
+                                    className="block mb-0.5"
                                   >
                                     Business Legal Name
                                   </label>
+
                                   <input
                                     type="text"
                                     name="businessLegalName"
                                     className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                                     placeholder="Enter Business Legal Name"
                                     value={customerdata.businessLegalName}
-                                    onChange={handleChange}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+
+                                      const alphanumericPattern =
+                                        /^[a-zA-Z0-9\s]*$/;
+
+                                      if (
+                                        alphanumericPattern.test(value) ||
+                                        value === " "
+                                      ) {
+                                        handleChange(e);
+                                        setErrors((prevErrors) => ({
+                                          ...prevErrors,
+                                          businessLegalName: false,
+                                        }));
+                                      } else {
+                                        setErrors((prevErrors) => ({
+                                          ...prevErrors,
+                                          businessLegalName: true,
+                                        }));
+                                      }
+                                    }}
                                   />
+                                  {errors.businessLegalName &&
+                                    customerdata.businessLegalName !== "" && (
+                                      <div className="text-red-800 text-xs mt-1">
+                                        Please enter a valid business legal name
+                                        (letters and numbers only).
+                                      </div>
+                                    )}
                                 </div>
                                 <div>
                                   <label
                                     htmlFor="businessTradeName"
-                                    className="block mb-1"
+                                    className="block mb-0.5"
                                   >
                                     Business Trade Name
                                   </label>
@@ -1248,13 +1567,41 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                     className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                                     placeholder="Enter Business Trade Name"
                                     value={customerdata.businessTradeName}
-                                    onChange={handleChange}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+
+                                      const alphanumericPattern =
+                                        /^[a-zA-Z0-9\s]*$/;
+
+                                      if (
+                                        alphanumericPattern.test(value) ||
+                                        value === ""
+                                      ) {
+                                        handleChange(e);
+                                        setErrors((prevErrors) => ({
+                                          ...prevErrors,
+                                          businessTradeName: false,
+                                        }));
+                                      } else {
+                                        setErrors((prevErrors) => ({
+                                          ...prevErrors,
+                                          businessTradeName: true,
+                                        }));
+                                      }
+                                    }}
                                   />
+                                  {errors.businessTradeName &&
+                                    customerdata.businessTradeName !== "" && (
+                                      <div className="text-red-800 text-xs mt-1">
+                                        Please enter a valid business trade name
+                                        (letters and numbers only).
+                                      </div>
+                                    )}
                                 </div>
                                 <div className="relative w-full">
                                   <label
                                     htmlFor="placeOfSupply"
-                                    className="block mb-1"
+                                    className="block mb-0.5"
                                   >
                                     Place of Supply
                                   </label>
@@ -1264,9 +1611,6 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                     value={customerdata.placeOfSupply}
                                     onChange={handleChange}
                                   >
-                                    <option value="" className="text-gray">
-                                      Value
-                                    </option>
                                     {placeOfSupplyList &&
                                       placeOfSupplyList.map(
                                         (item: any, index: number) => (
@@ -1292,7 +1636,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               <div>
                                 <label
                                   htmlFor="vatNumber"
-                                  className="block mb-1"
+                                  className="block mb-0.5"
                                 >
                                   VAT Number
                                 </label>
@@ -1308,7 +1652,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               <div>
                                 <label
                                   htmlFor="businessTradeName"
-                                  className="block mb-1"
+                                  className="block mb-0.5"
                                 >
                                   Business Trade Name
                                 </label>
@@ -1327,14 +1671,14 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                       )}
                       {taxPreference === "Tax Exempt" && (
                         <div>
-                          <label className="block mb-1">Exemption Reason</label>
+                          <label className="block mb-0.5">Exemption Reason</label>
                           <input
                             type="text"
                             className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                             placeholder="Value"
-                            //  name="billingAttention"
-                            //  value={customerdata.billingAttention}
-                            //  onChange={handleChange}
+                            name="exemptionReason"
+                            value={customerdata.exemptionReason}
+                            onChange={handleChange}
                           />
                         </div>
                       )}
@@ -1344,30 +1688,56 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                   {activeTab === "address" && (
                     <>
                       {/* Billing Address */}
-                      <div
-                        className="space-y-3 p-5 text-sm"
-                        ref={BillingAddressRef}
-                      >
+                      <div className="space-y-2 p-5 text-sm">
                         <p>
                           <b>Billing Address</b>
                         </p>
                         <div className="grid grid-cols-2 gap-4">
-                          {/* Attention */}
                           <div>
-                            <label className="block mb-1">Attention</label>
+                            <label className="block mb-0.5">Attention</label>
                             <input
                               type="text"
                               className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                              placeholder="Value"
+                              placeholder="Enter Attention"
                               name="billingAttention"
                               value={customerdata.billingAttention}
-                              onChange={handleChange}
+                              onChange={(e) => {
+                                const value = e.target.value;
+
+                                const attentionPattern = /^[a-zA-Z\s]*$/;
+
+                                if (
+                                  attentionPattern.test(value) ||
+                                  value === ""
+                                ) {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingAttention: false,
+                                  }));
+                                } else {
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingAttention: true,
+                                  }));
+                                }
+                              }}
                             />
+                            {errors.billingAttention &&
+                              customerdata.billingAttention !== "" && (
+                                <div className="text-red-800 text-xs mt-1">
+                                  Please enter a valid attention name (letters
+                                  only).
+                                </div>
+                              )}
                           </div>
 
                           {/* Country */}
                           <div className="relative w-full">
-                            <label htmlFor="" className="mb-1 block">
+                            <label
+                              htmlFor="billingCountry"
+                              className="mb-0.5 block"
+                            >
                               Country/Region
                             </label>
                             <select
@@ -1384,7 +1754,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                   </option>
                                 ))
                               ) : (
-                                <option disabled></option>
+                                <option disabled>No countries available</option>
                               )}
                             </select>
                             <div className="pointer-events-none absolute inset-y-0 right-0 mt-6 flex items-center px-2 text-gray-700">
@@ -1396,42 +1766,117 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                         {/* Address */}
                         <div className="">
                           <label
-                            className="text-slate-600 "
+                            className="text-slate-600"
                             htmlFor="organizationAddress"
                           >
                             Address
                           </label>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                              placeholder="Street 1"
-                              name="billingAddressLine1"
-                              value={customerdata.billingAddressLine1}
-                              onChange={handleChange}
-                            />
-                          </div>
-                          <div>
-                            <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                              placeholder="Street 2"
-                              name="billingAddressLine2"
-                              value={customerdata.billingAddressLine2}
-                              onChange={handleChange}
-                            />
-                          </div>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 ">
+
+
+
+      <div className="">
+        <input
+          className="pl-3 -mt-1.5 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+          placeholder="Street 1"
+          name="billingAddressLine1"
+          value={customerdata.billingAddressLine1}
+          onChange={(e) => {
+            const value = e.target.value;
+
+            const addressPattern = /^[a-zA-Z0-9\s,]*$/;
+
+            if (addressPattern.test(value) || value === '') {
+              handleChange(e); 
+              setErrors((prevErrors) => ({
+                ...prevErrors,
+                billingAddressLine1: false, 
+              }));
+            } else {
+              handleChange(e); 
+              setErrors((prevErrors) => ({
+                ...prevErrors,
+                billingAddressLine1: true,
+              }));
+            }
+          }}
+        />
+        {errors.billingAddressLine1 && customerdata.billingAddressLine1 !== "" && (
+          <div className="text-red-800 text-xs mt-1">
+            Please enter a valid address (letter and numbers only).
+          </div>
+        )}
+      </div>
+
+      <div>
+        <input
+          className="pl-3 text-sm w-full -mt-1.5 text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+          placeholder="Street 2"
+          name="billingAddressLine2"
+          value={customerdata.billingAddressLine2}
+          onChange={(e) => {
+            const value = e.target.value;
+
+            const addressPattern = /^[a-zA-Z0-9\s,]*$/;
+
+            if (addressPattern.test(value) || value === '') {
+              handleChange(e); 
+              setErrors((prevErrors) => ({
+                ...prevErrors,
+                billingAddressLine2: false, 
+              }));
+            } else {
+              handleChange(e); 
+              setErrors((prevErrors) => ({
+                ...prevErrors,
+                billingAddressLine2: true,
+              }));
+            }
+          }}
+        />
+        {errors.billingAddressLine2 && (
+          <div className="text-red-800 text-xs mt-1">
+            Please enter a valid address (letters, numbers, spaces, and commas only).
+          </div>
+        )}
+      </div>
+  
+
+
                           <div>
                             <label className="text-slate-600 " htmlFor="">
                               City
                             </label>
                             <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                              placeholder="Enter City"
-                              name="billingCity"
-                              value={customerdata.billingCity}
-                              onChange={handleChange}
-                            />
+        className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed" 
+        placeholder="Enter City"
+        name="billingCity"
+        value={customerdata.billingCity}
+        onChange={(e) => {
+          const value = e.target.value;
+
+          const cityPattern = /^[a-zA-Z\s]*$/; 
+
+          if (cityPattern.test(value) || value === '') {
+            handleChange(e);
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              billingCity: false,
+            }));
+          } else {
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              billingCity: true,
+            }));
+          }
+        }}
+      />
+      {errors.billingCity && customerdata.billingCity !== "" && (
+        <div className="text-red-800 text-xs mt-1">
+          Please enter a valid city name (letters only).
+        </div>
+      )}
                           </div>
 
                           <div className="relative ">
@@ -1441,7 +1886,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             >
                               State / Region / County
                             </label>
-                            <div className="relative w-full mt-2">
+                            <div className="relative w-full mt-0.5">
                               <select
                                 value={customerdata.billingState}
                                 onChange={handleChange}
@@ -1471,23 +1916,32 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                         </div>
 
                         {/* Other fields */}
-                        <div className="grid grid-cols-3 gap-4 pt-2">
+                        <div className="grid grid-cols-3 gap-4 ">
                           <div>
                             <label
-                              className="text-slate-600 "
-                              htmlFor="organizationAddress"
+                              className="text-slate-600"
+                              htmlFor="billingPinCode"
                             >
                               Pin / Zip / Post code
                             </label>
                             <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                              placeholder=" Pin / Zip / Post code"
-                              type="text"
-                              name="billingPinCode"
-                              value={customerdata.billingPinCode}
-                              onChange={handleChange}
-                            />
+        className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+        placeholder="Pin / Zip / Post code"
+        type="text"
+        name="billingPinCode"
+        value={customerdata.billingPinCode}
+        onChange={(e) => {
+          const value = e.target.value;
+
+          const pinCodePattern = /^[0-9]*$/;
+
+          if (pinCodePattern.test(value)) {
+            handleChange(e); 
+          }
+        }}
+      />
                           </div>
+
                           <div>
                             <label
                               className="text-slate-600 "
@@ -1495,16 +1949,12 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             >
                               Phone
                             </label>
-                            <div className="w-full border-0 mt-2">
+                            <div className="w-full border-0 mt-0.5">
                               <PhoneInput
                                 inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                                 inputStyle={{ height: "38px", width: "100%" }}
                                 containerStyle={{ width: "100%" }}
-                                country={
-                                  customerdata.billingCountry
-                                    ? customerdata.billingCountry.toLowerCase()
-                                    : "in"
-                                }
+                                country={"in"}
                                 value={customerdata.billingPhone}
                                 onChange={(e) =>
                                   handlePhoneChange("billingPhone", e)
@@ -1513,7 +1963,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             </div>
                           </div>
                           <div className="relative w-full">
-                            <label htmlFor="" className="mb-2 block">
+                            <label htmlFor="" className="mb-0.5 block">
                               Fax Number
                             </label>
                             <input
@@ -1522,17 +1972,22 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               placeholder="Enter Fax Number"
                               name="billingFaxNumber"
                               value={customerdata.billingFaxNumber}
-                              onChange={handleChange}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                      
+                                const faxnumberPattern = /^[0-9]*$/;
+                      
+                                if (faxnumberPattern.test(value)) {
+                                  handleChange(e); 
+                                }
+                              }}
                             />
                           </div>
                         </div>
                       </div>
 
                       {/* Shipping Address */}
-                      <div
-                        className="space-y-3 p-5 text-sm"
-                        ref={shippingAddressRef}
-                      >
+                      <div className="space-y-2 p-5 text-sm">
                         <div className="flex">
                           <p>
                             <b>Shipping Address</b>
@@ -1548,20 +2003,47 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                         <div className="grid grid-cols-2 gap-4">
                           {/* Attention */}
                           <div>
-                            <label className="block mb-1">Attention</label>
+                            <label className="block mb-0.5">Attention</label>
                             <input
                               type="text"
-                              className="pl-2 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-slate-300 h-9 p-2 "
-                              placeholder="Value"
+                              className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                              placeholder="Enter Attention"
                               name="shippingAttention"
                               value={customerdata.shippingAttention}
-                              onChange={handleChange}
+                              onChange={(e) => {
+                                const value = e.target.value;
+
+                                const attentionPattern = /^[a-zA-Z\s]*$/;
+
+                                if (
+                                  attentionPattern.test(value) ||
+                                  value === ""
+                                ) {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    shippingAttention: false,
+                                  }));
+                                } else {
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    shippingAttention: true,
+                                  }));
+                                }
+                              }}
                             />
+                            {errors.shippingAttention &&
+                              customerdata.shippingAttention !== "" && (
+                                <div className="text-red-800 text-xs mt-1">
+                                  Please enter a valid attention name (letters
+                                  only).
+                                </div>
+                              )}
                           </div>
 
                           {/* Country */}
                           <div className="relative w-full">
-                            <label htmlFor="" className="mb-1 block">
+                            <label htmlFor="" className="mb-0.5 block">
                               Country/Region
                             </label>
                             <select
@@ -1596,36 +2078,104 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             Address
                           </label>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                           <div>
                             <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              className="pl-3 text-sm w-full -mt-1.5 text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                               placeholder="Street 1"
                               name="shippingAddress1"
                               value={customerdata.shippingAddress1}
-                              onChange={handleChange}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                    
+                                const addressPattern = /^[a-zA-Z0-9\s,]*$/;
+                    
+                                if (addressPattern.test(value) || value === '') {
+                                  handleChange(e); 
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    shippingAddress1: false, 
+                                  }));
+                                } else {
+                                  handleChange(e); 
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    shippingAddress1: true,
+                                  }));
+                                }
+                              }}
                             />
+                            {errors.shippingAddress1 && (
+                              <div className="text-red-800 text-xs mt-1">
+                                Please enter a valid address (letters, numbers, spaces, and commas only).
+                              </div>
+                            )}
                           </div>
                           <div>
                             <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              className="pl-3 text-sm w-full -mt-1.5 text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                               placeholder="Street 2"
                               name="shippingAddress2"
                               value={customerdata.shippingAddress2}
-                              onChange={handleChange}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                    
+                                const addressPattern = /^[a-zA-Z0-9\s,]*$/;
+                    
+                                if (addressPattern.test(value) || value === '') {
+                                  handleChange(e); 
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    shippingAddress2: false, 
+                                  }));
+                                } else {
+                                  handleChange(e); 
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    shippingAddress2: true,
+                                  }));
+                                }
+                              }}
                             />
+                            {errors.shippingAddress2 && (
+                              <div className="text-red-800 text-xs mt-1">
+                                Please enter a valid address (letters, numbers, spaces, and commas only).
+                              </div>
+                            )}
                           </div>
                           <div>
                             <label className="text-slate-600 " htmlFor="">
                               City
                             </label>
                             <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                               placeholder="Enter City"
                               name="shippingCity"
                               value={customerdata.shippingCity}
-                              onChange={handleChange}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                      
+                                const cityPattern = /^[a-zA-Z\s]*$/; 
+                      
+                                if (cityPattern.test(value) || value === '') {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    shippingCity: false,
+                                  }));
+                                } else {
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    shippingCity: true,
+                                  }));
+                                }
+                              }}
                             />
+                            {errors.shippingCity && customerdata.shippingCity !== "" && (
+                              <div className="text-red-800 text-xs mt-1">
+                                Please enter a valid city name (letters only).
+                              </div>
+                            )}
                           </div>
 
                           <div className="relative ">
@@ -1635,7 +2185,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             >
                               State / Region / County
                             </label>
-                            <div className="relative w-full mt-2">
+                            <div className="relative w-full mt-0.5">
                               <select
                                 value={customerdata.shippingState}
                                 onChange={handleChange}
@@ -1676,7 +2226,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               Pin / Zip / Post code
                             </label>
                             <input
-                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                               placeholder=" Pin / Zip / Post code"
                               type="text"
                               name="shippingPinCode"
@@ -1696,16 +2246,12 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             >
                               Phone
                             </label>
-                            <div className="w-full border-0 mt-2">
+                            <div className="w-full border-0 mt-0.5">
                               <PhoneInput
                                 inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                                 inputStyle={{ height: "38px", width: "100%" }}
                                 containerStyle={{ width: "100%" }}
-                                country={
-                                  customerdata.shippingCountry
-                                    ? customerdata.shippingCountry.toLowerCase()
-                                    : "in"
-                                }
+                                country={"in"}
                                 value={customerdata.shippingPhone}
                                 onChange={(e) =>
                                   handlePhoneChange("shippingPhone", e)
@@ -1714,7 +2260,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             </div>
                           </div>
                           <div className="relative w-full">
-                            <label htmlFor="" className="mb-2 block">
+                            <label htmlFor="" className="mb-0.5 block">
                               Fax Number
                             </label>
                             <input
@@ -1723,7 +2269,15 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               placeholder="Enter Fax Number"
                               name="shippingFaxNumber"
                               value={customerdata.shippingFaxNumber}
-                              onChange={handleChange}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                      
+                                const pinCodePattern = /^[0-9]*$/;
+                      
+                                if (pinCodePattern.test(value)) {
+                                  handleChange(e); 
+                                }
+                              }}
                             />
                           </div>
                         </div>
@@ -1756,50 +2310,31 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                           </thead>
                           <tbody className="text-dropdownText text-center text-[13px]">
                             {rows.map((row, index) => (
-                              <tr className="relative text-center" key={index}>
-                                <td className="py-2.5 px- border-y border-tableBorder justify-center mt-4 gap-2 items-center flex-1">
-                                <div className="relative w-full text-center ms-3">
-                                    <select
-                                      className="block  appearance-none w-full h-9  text-zinc-400 bg-white  text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                      value={row.salutation}
-                                      onChange={(e) =>
-                                        handleRowChange(
-                                          index,
-                                          "salutation",
-                                          e.target.value
-                                        )
-                                      }
-                                    >
-                                      <option value="" className="text-gray">
-                                        Select
-                                      </option>
-                                      <option value="Mr." className="text-gray">
-                                        Mr.
-                                      </option>
-                                      <option
-                                        value="Mrs."
-                                        className="text-gray"
-                                      >
-                                        Mrs.
-                                      </option>
-                                      <option value="Ms." className="text-gray">
-                                        Ms.
-                                      </option>
-                                      <option value="Dr." className="text-gray">
-                                        Dr.
-                                      </option>
-                                    </select>
-                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                      <CehvronDown color="gray" />
-                                    </div>
-                                  </div>
+                              <tr key={index}>
+                                <td className="py-2.5 flex items-center border-y border-tableBorder">
+                                  <select
+  className="block  w-full h-9  text-zinc-400 bg-white  text-sm  pl-2  rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"                                    value={row.salutation}
+                                    onChange={(e) =>
+                                      handleRowChange(
+                                        index,
+                                        "salutation",
+                                        e.target.value
+                                      )
+                                    }
+                                  >
+                                    <option value="">Select</option>
+                                    <option value="Mr.">Mr.</option>
+                                    <option value="Mrs.">Mrs.</option>
+                                    <option value="Ms.">Ms.</option>
+                                    <option value="Dr.">Dr.</option>
+                                  </select>
                                 </td>
                                 <td className="py-2.5 px-4  border-y border-tableBorder">
                                   <input
                                     type="text"
                                     value={row.firstName}
+                                    placeholder="Enter First Name"
                                     className="text-sm w-[100%] text-center rounded-md bg-white h-9 p-2 mx-4 text-[#818894]"
-                                    placeholder="Value"
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -1808,13 +2343,18 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                       )
                                     }
                                   />
+                                  {row.firstNameError && (
+                                    <div className="error text-[red] text-center">
+                                      {row.firstNameError}
+                                    </div>
+                                  )}
                                 </td>
-                                <td className="py-2.5 px-4 border-y border-tableBorder flex-1">
+                                <td className="py-2.5 px-4  border-y border-tableBorder">
                                   <input
                                     type="text"
                                     value={row.lastName}
-                                    className="text-sm w-[100%] rounded-md text-center bg-white h-9 p-2 text-[#818894]"
-                                    placeholder="Value"
+                                    placeholder="Enter Last Name"
+                                    className="text-sm w-[100%] text-center rounded-md bg-white h-9 p-2 mx-4 text-[#818894]"
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -1823,13 +2363,18 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                       )
                                     }
                                   />
+                                  {row.lastNameError && (
+                                    <div className="error text-[red] text-center">
+                                      {row.lastNameError}
+                                    </div>
+                                  )}
                                 </td>
-                                <td className="py-2.5 px-4 border-y border-tableBorder relative">
+                                <td className="py-2.5 px-4  border-y border-tableBorder">
                                   <input
                                     type="text"
                                     value={row.email}
-                                    className="text-sm w-[100%] rounded-md text-center bg-white h-9 p-2 text-[#818894]"
-                                    placeholder="Value"
+                                    placeholder="Enter Email"
+                                    className="text-sm w-[100%] text-center rounded-md bg-white h-9 p-2 mx-4 text-[#818894]"
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -1838,13 +2383,18 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                       )
                                     }
                                   />
+                                  {row.emailError && (
+                                    <div className="error text-[red] text-center">
+                                      {row.emailError}
+                                    </div>
+                                  )}
                                 </td>
-                                <td className="py-2.5 px-4 border-y border-tableBorder relative">
+                                <td className="py-2.5 px-4  border-y border-tableBorder">
                                   <input
                                     type="text"
                                     value={row.mobile}
-                                    className="text-sm w-[100%] rounded-md text-center bg-white h-9 p-2 text-[#818894]"
-                                    placeholder="Value"
+                                    placeholder="Enter Mobile"
+                                    className="text-sm w-[100%] text-center rounded-md bg-white h-9 p-2 mx-4 text-[#818894]"
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -1853,6 +2403,11 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                       )
                                     }
                                   />
+                                  {row.mobileError && (
+                                    <div className="error text-[red] text-center">
+                                      {row.mobileError}
+                                    </div>
+                                  )}
                                 </td>
                               </tr>
                             ))}
@@ -1875,8 +2430,8 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                         <textarea
                           rows={3}
                           className="pl-2 text-sm w-[100%]  rounded-md text-start bg-white border border-slate-300   p-2 text-[#818894]"
-                          placeholder="Value"
-                          name="remark"
+                          placeholder="Add any additional comments or notes here"                      
+                              name="remark"
                           value={customerdata.remark}
                           onChange={(e: any) => handleChange(e)}
                         />

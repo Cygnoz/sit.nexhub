@@ -48,4 +48,6 @@ export interface Bill {
     paidStatus: string;
     shipmentPreference: string;
     grandTotal: number;
+    balanceAmount:number;
+    paidAmount:number;
 }
