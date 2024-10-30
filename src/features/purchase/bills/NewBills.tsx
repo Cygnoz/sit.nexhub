@@ -92,6 +92,8 @@ const NewBills = ({}: Props) => {
     paidStatus: "",
     shipmentPreference: "",
     grandTotal: 0,
+    balanceAmount:0,
+    paidAmount:0,
   });
 
   // console.log(bill, "bill state");
@@ -1058,45 +1060,48 @@ const NewBills = ({}: Props) => {
               </div>
             </div>
 
-            {/* <div className="flex gap-4 items-center justify-center">
-              <label
-                className="block text-sm mb-1 text-labelColor max-w-fit"
-                htmlFor="paidAmount"
-              >
-                Paid Amount
-              </label>
-
-              <div className="ml-auto">
-                <input
-                  className="border-inputBorder w-full text-sm border rounded-lg p-1.5 pl-2 h-9"
-                  type="number"
-                  placeholder="Enter paid amount"
-                  name="paidAmount"
-                  value={bill.paidAmount === 0 ? "" : bill.paidAmount}
-                  onChange={handleChange}
-                />
+          { bill.paymentTerms==="Pay now"&&
+       <>
+             <div className="flex gap-4 items-center justify-center">
+                <label
+                  className="block text-sm mb-1 text-labelColor max-w-fit"
+                  htmlFor="paidAmount"
+                >
+                  Paid Amount
+                </label>
+  
+                <div className="ml-auto">
+                  <input
+                    className="border-inputBorder w-full text-sm border rounded-lg p-1.5 pl-2 h-9"
+                    type="number"
+                    placeholder="Enter paid amount"
+                    name="paidAmount"
+                    value={bill.paidAmount === 0 ? "" : bill.paidAmount}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
-            </div>
-            <div className=" flex gap-4 items-center justify-center">
-              <label
-                htmlFor="balanceAmount"
-                className="block text-sm mb-1 text-labelColor max-w-fit"
-              >
-                Balance Amount
-              </label>
-              <div className="ml-auto">
-                <input
-                  disabled
-                  name="balanceAmount"
-                  id="balanceAmount"
-                  value={bill.balanceAmount}
-                  onChange={handleChange}
-                  placeholder="Balance Amount"
-                  className="border-inputBorder  text-sm border rounded-lg text-dropdownText  p-2 h-9 mt-2 "
-                />
+              <div className=" flex gap-4 items-center justify-center">
+                <label
+                  htmlFor="balanceAmount"
+                  className="block text-sm mb-1 text-labelColor max-w-fit"
+                >
+                  Balance Amount
+                </label>
+                <div className="ml-auto">
+                  <input
+                    disabled
+                    name="balanceAmount"
+                    id="balanceAmount"
+                    value={bill.balanceAmount}
+                    onChange={handleChange}
+                    placeholder="Balance Amount"
+                    className="border-inputBorder  text-sm border rounded-lg text-dropdownText  p-2 h-9 mt-2 "
+                  />
+                </div>
               </div>
-            </div> */}
-
+       </>
+}
             <div className="flex gap-4 m-5 justify-end">
               {" "}
               <Button variant="secondary" size="sm">
