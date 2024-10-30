@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
-import BarChart from "../../../Components/charts/BarChart";
 import HoriBarChart from "../../../Components/charts/HoriBarChart";
 import PieCharts from "../../../Components/charts/Piechart";
 import TopDataTable from "../../../Components/charts/TopDataTable";
@@ -10,6 +9,7 @@ import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import InventoryCards from "./InventoryCards";
 import MonthYearDropdown from "../../../Components/dropdown/MonthYearDropdown"; 
+import Brchart from "../../../Components/charts/BarChart";
 
 type Props = {};
 
@@ -105,7 +105,6 @@ function DashboardHome({}: Props) {
           <h3 className="font-bold text-2xl text-textColor">
             Inventory Overview
           </h3>
-   
         </div>
         <div className="ml-auto gap-3 flex items-center">
           <MonthYearDropdown onDateChange={handleDateChange} />
@@ -141,18 +140,20 @@ function DashboardHome({}: Props) {
       <div className="grid grid-cols-3 gap-5">
         <div className="flex justify-center col-span-2">
           {data && data.topSellingProducts && (
-            <TopDataTable topSellingProducts={data.topSellingProducts} />
+            <TopDataTable data={data.topSellingProducts} />
           )}
         </div>
         <div className="flex justify-center">
-          <BarChart />
+          {data && data.topSellingProductCategories && (
+            <Brchart data={data.topSellingProductCategories} />
+          )}
         </div>
         <div className="col-span-2 flex justify-center">
           {data && data.stockLevels && <HoriBarChart data={data.stockLevels} />}
         </div>
         <div className="flex justify-center">
           {data && data.frequentlyOrderedItems && (
-            <PieCharts frequentlyOrderedItems={data.frequentlyOrderedItems} />
+            <PieCharts data={data.frequentlyOrderedItems} />
           )}
         </div>
       </div>
