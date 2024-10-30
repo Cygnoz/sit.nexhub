@@ -604,7 +604,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
             </label>
           </div>
               <div className="col-span-10">
-                  <div>
+                  <div className="mt-3">
                     <label
                       className="block text-sm mb-1 text-labelColor"
                       htmlFor=""
