@@ -11,6 +11,9 @@ import Trash2 from "../../../assets/icons/Trash2";
 import FileSearchIcon from "../../../assets/icons/FileSearchIcon";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import BookIcon from "../../../assets/icons/BookIcon";
+import BookXIcon from "../../../assets/icons/BookXIcon";
+import NewspaperIcon from "../../../assets/icons/NewspaperIcon";
 
 interface Column {
   id: string;
@@ -20,10 +23,10 @@ interface Column {
 
 const ItemTable = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isDeleteImageModalOpen, setDeleteImageModalOpen] = useState(false); // New state for delete confirmation modal
+  const [isDeleteImageModalOpen, setDeleteImageModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const { request: get_currencies } = useApi("get", 5004);
-  const { request: UpdateItem } = useApi("put", 5003); // For updating the item
+  const { request: UpdateItem } = useApi("put", 5003);
   const [currenciesData, setCurrenciesData] = useState<any[]>([]);
   const currencySymbol = currenciesData.map((i) => i.currencySymbol);
 
@@ -38,24 +41,24 @@ const ItemTable = () => {
   };
 
   const initialColumns: Column[] = [
-    { id: "itemName", label: "Name", visible: true },
+    { id: "itemName", label: "Name ", visible: true },
     { id: "sku", label: "SKU", visible: true },
     { id: "sellingPrice", label: "Sales Rate", visible: true },
     { id: "costPrice", label: "Purchase Rate", visible: true },
-    { id: "costPrice", label: "Stock", visible: true },
-    { id: "itemDetail", label: "", visible: true },
+    { id: "currentStock", label: "Stock", visible: true },
+    { id: "reorderPoint", label: "ReorderPoint", visible: false },
+
   ];
+  const [selected, setSelected] = useState("All");
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [itemsData, setItemsData] = useState<any[]>([]);
-  console.log(itemsData,"items");
-  
   const [searchValue, setSearchValue] = useState<string>("");
 
   const { request: GetAllItems } = useApi("get", 5003);
   const fetchAllItems = async () => {
     try {
-      const url = `${endponits.GET_ALL_ITEM}`;
+      const url = `${endponits.GET_ALL_ITEMS_TABLE}`;
       const { response, error } = await GetAllItems(url);
 
       if (!error && response) {
@@ -67,29 +70,29 @@ const ItemTable = () => {
       console.error("Error fetching items:", error);
     }
   };
-  const [itemsXs, setItemsXs] = useState<any>([]);
-  console.log(itemsXs,"xs");
-  
-  const { request: getallItemSales } = useApi("get", 5003);
-  const getAllItemxs = async () => {
-    try {
-      const url = `${endponits.GET_ALL_ITEMS_SALES}`;
-      const apiResponse = await getallItemSales(url);
-      const { response, error } = apiResponse;
 
+  const [allCategoryData, setAllcategoryData] = useState<any[]>([]);
+  
+  const { request: fetchAllCategories } = useApi("put", 5003);
+  const loadCategories = async () => {
+    try {
+      const url = `${endponits.GET_ALL_BRMC}`;
+      const body = { type: "category" };
+      const { response, error } = await fetchAllCategories(url, body);
       if (!error && response) {
-        console.log(response.data, "itemsasales");
-        setItemsXs(response.data);
+        setAllcategoryData(response.data);
       } else {
-        console.log(error);
+        console.error("Failed to fetch Category data.");
       }
     } catch (error) {
-      console.error("Error fetching items:", error);
+      toast.error("Error in fetching Category data.");
+      console.error("Error in fetching Category data", error);
     }
   };
+
   useEffect(() => {
-    getAllItemxs()
-  }, [])
+    loadCategories();
+  }, []);
 
   const getHandleCurrencies = async () => {
     try {
@@ -107,11 +110,6 @@ const ItemTable = () => {
     fetchAllItems();
     getHandleCurrencies();
   }, []);
-
-  const filteredItems = itemsData.filter((item) => {
-    const searchValueLower = searchValue.toLowerCase();
-    return item.itemName?.toLowerCase().includes(searchValueLower);
-  });
 
   const navigate = useNavigate();
 
@@ -144,29 +142,74 @@ const ItemTable = () => {
   const confirmDeleteImage = () => {
     setDeleteImageModalOpen(true);
   };
+
   const closeDeleteImageModal = () => {
     setDeleteImageModalOpen(false);
   };
 
   const renderColumnContent = (colId: string, item: any) => {
-    if (colId === "itemDetail") {
-      return (
-        <div className="flex justify-center items-center">
-          <Button
-            variant="secondary"
-            className="font-medium rounded-lg  h-[1rem] text-[9.5px]"
-            onClick={() => openModal(item)}
-          >
-            See details
-          </Button>
-        </div>
-      );
+    if (colId === "itemName") {
+      return <span className="font-bold text-sm">{item[colId]}</span>;
     }
     return item[colId as keyof typeof item];
   };
 
+  const Items = [
+    {
+      icon: <BookIcon color="#585953" />,
+      title: "All",
+      onClick: () => setSelected("All"),
+    },
+    {
+      icon: <BookXIcon color="#585953" />,
+      title: "Low Stock",
+      onClick: () => setSelected("Low Stock"),
+    },
+    ...allCategoryData.map((category) => ({
+      icon: <NewspaperIcon color="#585953" />,
+      title: category.categoriesName,
+      onClick: () => setSelected(category.categoriesName), // Sets the selected category
+    })),
+  ];
+  const filteredItems = itemsData.filter((item) => {
+    const searchValueLower = searchValue.toLowerCase();
+    const matchesSearch = item.itemName?.toLowerCase().includes(searchValueLower);
+  
+    if (selected === "All") {
+      return matchesSearch;
+    } else if (selected === "Low Stock") {
+      return matchesSearch && item.currentStock < item.reorderPoint;
+    } else {
+      return matchesSearch && item.categories === selected;
+    }
+  });
+  
+  
+  
+
   return (
     <div>
+      <div>
+      <div className="flex gap-3 py-2 justify-between">
+      {Items.map((customer) => (
+        <button
+          key={customer.title}
+          onClick={() => setSelected(customer.title)}
+          className={`flex items-center gap-2 p-2 w-[100%] justify-center  rounded ${
+            selected === customer.title ? "bg-WhiteIce" : "bg-white"
+          }`}
+          style={{ border: "1px solid #DADBDD" }}
+        >
+          {customer.icon}
+          <span
+            style={{ color: "#4B5C79", fontSize: "12px", fontWeight: "600" }}
+          >
+            {customer.title}
+          </span>
+        </button>
+      ))}
+    </div>
+      </div>
       <div className="flex items-center justify-between gap-4">
         <div className="w-full ">
           <SearchBar
@@ -186,13 +229,10 @@ const ItemTable = () => {
       >
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
-            <tr
-              style={{ backgroundColor: "#F9F7F0" }}
-              className="sticky top-0 z-10"
-            >
-              <th className="py-3 px-4 border-b border-tableBorder">
-                <input type="checkbox" className="form-checkbox w-4 h-4" />
-              </th>
+            <tr style={{ backgroundColor: "#F9F7F0" }} className="sticky top-0 z-10">
+              {/* Serial Number Header */}
+              <th className="py-2.5 px-4 font-medium border-b border-tableBorder">S.No</th>
+
               {columns.map(
                 (col) =>
                   col.visible && (
@@ -204,18 +244,21 @@ const ItemTable = () => {
                     </th>
                   )
               )}
+              <th className="py-2.5 px-4 font-medium border-b border-tableBorder"></th>
               <th className="py-2 px-4 font-medium border-b border-tableBorder">
                 <CustomiseColmn columns={columns} setColumns={setColumns} />
               </th>
+              {/* "See Details" Header */}
+
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
             {filteredItems && filteredItems.length > 0 ? (
-              filteredItems.map((item) => (
+              filteredItems.map((item, index) => (
                 <tr key={item.id} className="relative">
-                  <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <input type="checkbox" className="form-checkbox w-4 h-4" />
-                  </td>
+                  {/* Serial Number Cell */}
+                  <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
+
                   {columns.map(
                     (col) =>
                       col.visible && (
@@ -227,13 +270,24 @@ const ItemTable = () => {
                         </td>
                       )
                   )}
+                     <td className="py-2.5 px-4 border-y border-tableBorder">
+                    <div className="flex justify-center items-center">
+                      <Button
+                        variant="secondary"
+                        className="font-medium rounded-lg h-[1rem] text-[9.5px]"
+                        onClick={() => openModal(item)}
+                      >
+                        See details
+                      </Button>
+                    </div>
+                  </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder"></td>
                 </tr>
               ))
             ) : (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={columns.length + 3} // Adjusted colSpan to account for the serial number, customize, and action columns
                   className="text-center py-4 border-y border-tableBorder"
                 >
                   <p className="text-red-500">No Data Found!</p>
@@ -242,6 +296,8 @@ const ItemTable = () => {
             )}
           </tbody>
         </table>
+
+
       </div>
 
       {/* Modal for showing item details */}
@@ -341,12 +397,12 @@ const ItemTable = () => {
                       <p>
                         {selectedItem?.itemType
                           ? selectedItem.itemType.charAt(0).toUpperCase() +
-                            selectedItem.itemType.slice(1)
+                          selectedItem.itemType.slice(1)
                           : "N/A"}
                       </p>
                       <p>{selectedItem?.sku || "N/A"}</p>
                       <p>{selectedItem?.unit || "N/A"}</p>
-                      <p>{selectedItem?.createdDate.split(" ")[0] || "N/A"}</p>
+                      <p>{selectedItem?.createdDate?.split(" ")[0] || "N/A"}</p>
                       <p>{selectedItem?.returnableItem ? "Yes" : "No"}</p>
                     </div>
                   </div>
@@ -360,12 +416,10 @@ const ItemTable = () => {
                       <p className="text-dropdownText text-sm">Cost Price</p>
                       <p className="text-dropdownText font-semibold text-sm">
                         {currencySymbol[0]?.length === 1
-                          ? `${currencySymbol[0]} ${
-                              selectedItem?.costPrice || "N/A"
-                            }`
-                          : `${selectedItem?.costPrice || "N/A"} ${
-                              currencySymbol[0]
-                            }`}
+                          ? `${currencySymbol[0]} ${selectedItem?.costPrice || "N/A"
+                          }`
+                          : `${selectedItem?.costPrice || "N/A"} ${currencySymbol[0]
+                          }`}
                       </p>
 
                       {/* <p className="text-dropdownText text-sm">Purchase Account</p>
@@ -384,12 +438,10 @@ const ItemTable = () => {
                       <p className="text-dropdownText text-sm">Selling Price</p>
                       <p className="text-dropdownText font-semibold text-sm">
                         {currencySymbol[0]?.length === 1
-                          ? `${currencySymbol[0]} ${
-                              selectedItem?.sellingPrice || "N/A"
-                            }`
-                          : `${selectedItem?.sellingPrice || "N/A"} ${
-                              currencySymbol[0]
-                            }`}
+                          ? `${currencySymbol[0]} ${selectedItem?.sellingPrice || "N/A"
+                          }`
+                          : `${selectedItem?.sellingPrice || "N/A"} ${currencySymbol[0]
+                          }`}
                       </p>
                       {/* <p className="text-dropdownText text-sm">Sales Account</p>
                       <p className="text-dropdownText font-semibold text-sm">

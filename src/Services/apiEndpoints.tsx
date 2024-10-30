@@ -25,6 +25,7 @@ export const endponits = {
 
   //getall-item-sales
   GET_ALL_ITEMS_SALES: "get-all-item-xs",
+  GET_ALL_ITEMS_TABLE:"get-all-item-m",
   //sales order
   GET_ALL_SALES_ORDER: "get-all-sales-order",
 
