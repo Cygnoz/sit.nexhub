@@ -17,6 +17,7 @@ interface Props {
   data: {
     totalInventoryValue: number;
     totalSalesValue: number;
+
     inventoryValueChange: number;
     recentlyAddedItemsCount: number;
     salesValueChange: number;

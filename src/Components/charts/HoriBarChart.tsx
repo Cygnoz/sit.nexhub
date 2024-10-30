@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Bar,
   BarChart,
@@ -29,7 +29,8 @@ interface DataItem {
 }
 
 interface HoriBarChartProps {
-  data: DataItem[];
+  data: { categoryName: string; items: DataItem[] }[];
+  categories: string[];
 }
 
 const renderCustomTooltip: React.FC<TooltipProps<number, string>> = ({
@@ -82,20 +83,39 @@ const CustomBar: React.FC<CustomBarProps> = ({
   );
 };
 
-const HoriBarChart: React.FC<HoriBarChartProps> = ({ data }) => {
-  const maxStock = Math.max(...data.map((item) => item.stock));
+const HoriBarChart: React.FC<HoriBarChartProps> = ({ data, categories }) => {
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+
+  // Filter data based on the selected category
+  const filteredData =
+    data.find((item) => item.categoryName === selectedCategory)?.items || [];
+
+  const maxStock = Math.max(...filteredData.map((item) => item.stock), 0);
 
   return (
     <div className="bg-white rounded-lg w-full px-8">
-      <h3 className="text-base text-textColor mt-6 font-semibold">
-        Stock Levels
-      </h3>
+      <div className="flex items-center mt-6 justify-between">
+        <h3 className="text-lg text-textColor font-semibold">Stock Levels</h3>
 
-      {data && data.length > 0 ? (
+        {/* Category Dropdown */}
+        <select
+          className="rounded-lg p-2 text-sm bg-slate-50 border border-gray-300 "
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {filteredData.length > 0 ? (
         <ResponsiveContainer width="100%" height={400}>
           <BarChart
             layout="vertical"
-            data={data}
+            data={filteredData}
             margin={{ left: 0, right: 30, bottom: 0 }}
           >
             <XAxis
@@ -127,8 +147,8 @@ const HoriBarChart: React.FC<HoriBarChartProps> = ({ data }) => {
               dataKey="stock"
               fill="#8884d8"
             >
-              <LabelList dataKey="itemName" position="right" fontSize={10} />
-              {data.map((_, index) => (
+              <LabelList dataKey="stock" position="right" fontSize={10} />
+              {filteredData.map((_, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={colors[index % colors.length]}

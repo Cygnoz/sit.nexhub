@@ -11,13 +11,36 @@ import InventoryCards from "./InventoryCards";
 import MonthYearDropdown from "../../../Components/dropdown/MonthYearDropdown"; 
 import Brchart from "../../../Components/charts/BarChart";
 
+type DropdownItem = {
+  icon: JSX.Element;
+  text: string;
+  onClick: () => void;
+};
+
+// Extend DashboardData to include required properties
+interface DashboardData {
+  totalInventoryValue: number;
+  totalSalesValue: number;
+  inventoryValueChange: number;
+  recentlyAddedItemsCount: number;
+  salesValueChange: number;
+  underStockItemsCount: number;
+  stockLevels: {
+    categoryName: string;
+    items: { itemName: string; stock: number }[];
+  }[];
+  topSellingProducts: any[]; // Define a more specific type if known
+  topSellingProductCategories: any[]; // Define a more specific type if known
+  frequentlyOrderedItems: any[]; // Define a more specific type if known
+}
+
 type Props = {};
 
 function DashboardHome({}: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { request: getDashboard } = useApi("get", 5003);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<DashboardData | null>(null); // Set initial state to null
 
   const getDashboards = async (month: number, year: number) => {
     const formattedMonth = (month + 1).toString().padStart(2, "0");
@@ -26,7 +49,7 @@ function DashboardHome({}: Props) {
       const apiResponse = await getDashboard(url);
       const { response, error } = apiResponse;
       if (!error && response) {
-        setData(response.data);
+        setData(response.data); // Ensure response.data matches DashboardData
         console.log(response.data, "get status");
       }
     } catch (error) {
@@ -64,7 +87,7 @@ function DashboardHome({}: Props) {
     getDashboards(currentMonth, currentYear);
   }, []);
 
-  const dropdownItems = [
+  const dropdownItems: DropdownItem[] = [
     {
       icon: <ArrowDownIcon />,
       text: "Import Items",
@@ -149,7 +172,12 @@ function DashboardHome({}: Props) {
           )}
         </div>
         <div className="col-span-2 flex justify-center">
-          {data && data.stockLevels && <HoriBarChart data={data.stockLevels} />}
+          {data && data.stockLevels && (
+            <HoriBarChart 
+              data={data.stockLevels} 
+              categories={data.stockLevels.map(item => item.categoryName)} 
+            />
+          )}
         </div>
         <div className="flex justify-center">
           {data && data.frequentlyOrderedItems && (

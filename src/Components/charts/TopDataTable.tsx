@@ -1,3 +1,4 @@
+import { useOrganization } from '../../context/OrganizationContext';
 import ChartTableSkeleton from '../skeleton/ChartTableSkeleton';
 import Nodata from './Nodata';
 
@@ -8,11 +9,12 @@ type Props = {
     itemImage: string; 
     saleVolume: number;
     status: string;
-    unitSold: number;
+    unitBought: number;
   }[] | null;
 };
 
 function TopDataTable({ data }: Props) {
+  const {organization} = useOrganization()
   return (
     <div className="bg-white p-6 rounded-lg w-[100%]">
       <h3 className="text-base text-textColor font-semibold mb-5">
@@ -49,16 +51,16 @@ function TopDataTable({ data }: Props) {
                     </td>
                     <td className="px-4 py-2">
                       <img
-                        src={`data:image/png;base64,${product.itemImage}`}
-                        alt={product.itemId}
+                        src={product.itemImage}
+                        alt={product.itemName}
                         className="w-12 h-12 object-cover rounded"
                       />
                     </td>
                     <td className="px-4 py-2 text-xs text-gray-700">
-                      ${product.saleVolume.toLocaleString()}
+                      {organization?.baseCurrency} {product.saleVolume.toLocaleString()}
                     </td>
                     <td className="px-4 py-2 text-xs text-gray-700">
-                      {product.unitSold} Units
+                      {product.unitBought} Units
                     </td>
                     <td className="px-4 py-2">
                       <span
