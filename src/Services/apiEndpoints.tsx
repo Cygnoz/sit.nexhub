@@ -18,6 +18,7 @@ export const endponits = {
   GET_LAST_SALES_QUOTE_PREFIX: "get-last-sales-quotes-prefix",
   GET_ALL_QUOTES: "get-all-sales-quotes",
   GET_ONE_QUOTES: "get-one-sales-quotes",
+  GET_ONE_SALES_ORDER: "get-one-sales-order",
   //sales order
   GET_LAST_SALES_ORDER_PREFIX: "get-last-sales-order-prefix",
   ADD_SALES_ORDER: "add-sales-order",

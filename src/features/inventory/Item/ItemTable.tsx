@@ -41,12 +41,15 @@ const ItemTable = () => {
     { id: "itemName", label: "Name", visible: true },
     { id: "sku", label: "SKU", visible: true },
     { id: "sellingPrice", label: "Sales Rate", visible: true },
-    { id: "itemDetail", label: "Item Details", visible: true },
     { id: "costPrice", label: "Purchase Rate", visible: true },
+    { id: "costPrice", label: "Stock", visible: true },
+    { id: "itemDetail", label: "", visible: true },
   ];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [itemsData, setItemsData] = useState<any[]>([]);
+  console.log(itemsData,"items");
+  
   const [searchValue, setSearchValue] = useState<string>("");
 
   const { request: GetAllItems } = useApi("get", 5003);
@@ -64,6 +67,29 @@ const ItemTable = () => {
       console.error("Error fetching items:", error);
     }
   };
+  const [itemsXs, setItemsXs] = useState<any>([]);
+  console.log(itemsXs,"xs");
+  
+  const { request: getallItemSales } = useApi("get", 5003);
+  const getAllItemxs = async () => {
+    try {
+      const url = `${endponits.GET_ALL_ITEMS_SALES}`;
+      const apiResponse = await getallItemSales(url);
+      const { response, error } = apiResponse;
+
+      if (!error && response) {
+        console.log(response.data, "itemsasales");
+        setItemsXs(response.data);
+      } else {
+        console.log(error);
+      }
+    } catch (error) {
+      console.error("Error fetching items:", error);
+    }
+  };
+  useEffect(() => {
+    getAllItemxs()
+  }, [])
 
   const getHandleCurrencies = async () => {
     try {
