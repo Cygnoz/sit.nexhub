@@ -169,8 +169,6 @@ const AddItem = ({ }: Props) => {
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = event.target;
-
-    // If the input type is "number" and the value is negative, set it to zero
     if (type === "number" && parseFloat(value) < 0) {
       return;
     }
@@ -414,6 +412,8 @@ const AddItem = ({ }: Props) => {
 
 
           <div className="col-span-10">
+            <div className="flex justify-center items-center">
+
             <div>
               <label
                 className="block text-sm text-labelColor"
@@ -500,7 +500,7 @@ const AddItem = ({ }: Props) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-12 gap-4">
+            <div className="grid grid-cols-12 gap-4 ms-5">
               <div className="grid grid-cols-2 gap-4 mt-3 col-span-9">
                 <div>
                   <label className="text-slate-600 text-sm" htmlFor="itemName">
@@ -520,7 +520,7 @@ const AddItem = ({ }: Props) => {
                   </label>
                 </div>
 
-                <div className="">
+                <div>
                   <label
                     className="text-slate-600 flex items-center gap-2"
                     htmlFor="sku"
@@ -592,6 +592,7 @@ const AddItem = ({ }: Props) => {
                   </div>
                 )}
               </div>
+            </div>
             </div>
 
 
