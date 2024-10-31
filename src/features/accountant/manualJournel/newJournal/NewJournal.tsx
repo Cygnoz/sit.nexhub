@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AccountDropdown from "./AccountDropdown";
 // import ContactDropdown from "./ContactDropdown";
@@ -9,6 +9,8 @@ import PlusIcon from "../../../../assets/icons/PlusIcon";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
+import {  useOrganization } from "../../../../context/OrganizationContext";
+
 type Props = {};
 
 function NewJournal({}: Props) {
@@ -16,6 +18,7 @@ function NewJournal({}: Props) {
   const { request: NewJournalAdd } = useApi("post", 5001);
   const { request: GetLastJournelPrefix } = useApi("get", 5001);
   const { request: GetAllAcounts } = useApi("get", 5001);
+  const {organization} = useOrganization()
   // Initialize with two non-deletable rows
   const initialTransactions = [
     {
@@ -37,6 +40,7 @@ function NewJournal({}: Props) {
       contact: "",
     },
   ];
+
 
   const [accountOptions, setAccountOptions] = useState(null);
   const [totalResult, setTotalResult] = useState({
@@ -646,19 +650,19 @@ function NewJournal({}: Props) {
           </div>
           <div className="col-span-3 flex flex-col gap-3">
             <h4 className="text-[14px] text-[#4B5C79]">
-              Rs{totalResult.totalDebit.toFixed(2)}
+              {organization?.baseCurrency} {totalResult.totalDebit.toFixed(2)}
             </h4>
             <span className="text-textColor font-bold text-xl">
-              Rs{totalResult.totalDebit.toFixed(2)}
+            {organization?.baseCurrency}{" "}{totalResult.totalDebit.toFixed(2)}
             </span>
           </div>
 
           <div className="col-span-3 flex flex-col w-[130px]  gap-3 me-5">
             <h4 className="text-[14px] text-[#4B5C79] text-end">
-              Rs{totalResult.totalCredit.toFixed(2)}
+            {organization?.baseCurrency} {totalResult.totalCredit.toFixed(2)}
             </h4>
             <span className="text-textColor font-bold text-xl text-end">
-              Rs{totalResult.totalCredit.toFixed(2)}
+            {organization?.baseCurrency} {totalResult.totalCredit.toFixed(2)}
             </span>
           </div>
           <div className="col-span-2 flex flex-col gap-1 bg-[#FEF7F7] py-[4px] px-[14px]">

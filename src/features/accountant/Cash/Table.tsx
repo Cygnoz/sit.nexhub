@@ -1,5 +1,3 @@
-// CashAccountsTable.tsx
-
 import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
@@ -71,9 +69,7 @@ const CashAccountsTable = () => {
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText sticky top-0 z-10">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">
-                <input type="checkbox" className="form-checkbox w-4 h-4" />
-              </th>
+              <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
               {tableHeaders.map((heading, index) => (
                 <th className="py-2 px-4 font-medium border-b border-tableBorder" key={index}>
                   {heading}
@@ -82,11 +78,10 @@ const CashAccountsTable = () => {
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts.map((item: Account) => (
+            {filteredAccounts.map((item: Account, index: number) => (
               <tr key={item._id} className="relative">
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input type="checkbox" className="form-checkbox w-4 h-4" />
-                </td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
+              
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <Link
                     to={`/accountant/view/${item._id}?fromCash=true`}
