@@ -1,10 +1,10 @@
 import  { useState } from "react";
 import deliveryBox from "../../../assets/Images/delivery-box_4047598 1.png";
 import van from "../../../assets/Images/Group (1).png";
-import productPacking from "../../../assets/Images/product packaging (packaging the product into a box).png";
 import timeSettings from "../../../assets/Images/Group.png";
 import shoppingBag from "../../../assets/Images/shopping-bag_6948334 1.png";
 import PurchaseCardsOrder from "./PurchaseCardsOrder"
+import productPacking from "../../../assets/Images/packing_4536852 1.png"
 type Props = {};
 
 const PurchaseCards = ({}: Props) => {

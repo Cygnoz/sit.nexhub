@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import NewAccountModal from "./NewAccountModal";
-import AccountTypes from "../chartOfAccountant/AccountTypes";
+// import AccountTypes from "../chartOfAccountant/AccountTypes";
 import Table from "./Table";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
@@ -52,7 +52,7 @@ const ChartOfAccountant = ({}: Props) => {
       </div>
       <br />
       <div className="flex flex-col gap-3 p-3 bg-white mt-1">
-        <AccountTypes />
+        {/* <AccountTypes /> */}
         {/* Pass accountData and searchValue as props to Table */}
         <Table
           accountData={accountData}
