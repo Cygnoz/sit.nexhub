@@ -39,8 +39,11 @@ function SalesOrder({}: Props) {
       const { response, error } = apiResponse;
       if (!error && response) {
         toast.success(response.data);
+        // console.log(response.data,"res")
       } else {
-        toast.error(`API Error: ${error}`);
+        console.log(error,"res")
+
+        toast.error(error.response.data);
       }
     } catch (error) {
       toast.error(`Error during API call: ${error}`);

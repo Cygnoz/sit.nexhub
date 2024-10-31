@@ -4,6 +4,7 @@ import totalSalesImage from "../../../assets/Images/Group 2517.png";
 import pendingImage from "../../../assets/Images/Group 2514.png";
 import pendingSalesImage from "../../../assets/Images/Group 2518.png";
 import PurchaseCardsOrder from "./PurchaseCardsOrder";
+
 type Props = {};
 
 const PurchaseCards = ({}: Props) => {
