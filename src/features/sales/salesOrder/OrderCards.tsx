@@ -25,7 +25,7 @@ const cardVariants = cva("p-4 rounded-xl  cursor-pointer", {
 const Card: React.FC<CardProps> = ({ icon, title, count, rating, active = false, onClick }) => {
   return (
     <div className={cardVariants({ active })} onClick={onClick} style={{width:"100%",height:"50%"}}>
-     <img src={icon} alt="" className="w-8 h-8 object-contain"/>
+     <img src={icon} alt="" className="w-14  object-contain"/>
       <div className="text-textColor">
         <h2 className="text-sm font-bold mt-[10px]">{title}</h2>
         <p className="text-gray-500 text-[12px]">{count}</p>

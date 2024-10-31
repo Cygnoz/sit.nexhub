@@ -68,7 +68,7 @@ function AccountantView() {
       (sum, item) => sum + (Number(item.debitAmount) || 0),
       0
     );
-    return totalCredit - totalDebit;
+    return  totalDebit - totalCredit;
   };
   
 
