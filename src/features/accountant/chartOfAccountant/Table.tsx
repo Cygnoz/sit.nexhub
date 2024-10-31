@@ -1,6 +1,8 @@
+import  { useState } from "react";
 import { Link } from "react-router-dom";
 import Ellipsis from "../../../assets/icons/Ellipsis";
 import SearchBar from "../../../Components/SearchBar";
+import Pagination from "../../../Components/Pagination/Pagination";
 
 interface Account {
   _id: string;
@@ -18,6 +20,11 @@ interface TableProps {
 }
 
 const Table = ({ accountData, searchValue, setSearchValue }: TableProps) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+  const maxVisiblePages = 10; 
+
+  // Filter data based on search input
   const filteredAccounts = accountData.filter((account) => {
     const searchValueLower = searchValue.toLowerCase();
     return (
@@ -28,6 +35,12 @@ const Table = ({ accountData, searchValue, setSearchValue }: TableProps) => {
       account.description?.toLowerCase()?.startsWith(searchValueLower)
     );
   });
+
+  const totalPages = Math.ceil(filteredAccounts.length / rowsPerPage);
+  const paginatedData = filteredAccounts.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
 
   const tableHeaders = [
     "Account Name",
@@ -63,7 +76,7 @@ const Table = ({ accountData, searchValue, setSearchValue }: TableProps) => {
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts.reverse().map((item) => (
+            {paginatedData.map((item) => (
               <tr key={item._id} className="relative">
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input type="checkbox" className="form-checkbox w-4 h-4" />
@@ -95,6 +108,13 @@ const Table = ({ accountData, searchValue, setSearchValue }: TableProps) => {
           </tbody>
         </table>
       </div>
+      
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page) => setCurrentPage(page)}
+        maxVisiblePages={maxVisiblePages}
+      />
     </div>
   );
 };

@@ -284,6 +284,18 @@ const NewBills = ({}: Props) => {
     return totalAmount.toFixed(2);
   };
 
+  useEffect(() => {
+    const { grandTotal, paidAmount } = bill;
+  
+    const balanceAmount = grandTotal - paidAmount;
+  
+    setBill((prevState: any) => ({
+      ...prevState,
+      balanceAmount: balanceAmount,
+    }));
+  }, [bill.grandTotal, bill.paidAmount]);
+  
+
   const handleSave = async () => {
     try {
       const url = `${endponits.ADD_BILL}`;
