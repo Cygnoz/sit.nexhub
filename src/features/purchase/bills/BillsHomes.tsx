@@ -6,7 +6,7 @@ import Ellipsis from "../../../assets/icons/Ellipsis";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
-import BillsType from "./BillsType";
+// import BillsType from "./BillsType";
 import Table from "./Table";
 
 type Props = {};
@@ -114,7 +114,7 @@ function BillsHomes({}: Props) {
       <div className="px-6 mt-3">
         <div className="bg-white p-5">
           <div className="w-[100%] p-3 bg-gray-100">
-            <BillsType />
+            {/* <BillsType /> */}
           </div>
          
           <div className="p-3">
