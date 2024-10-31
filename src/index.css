@@ -104,3 +104,52 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+.tooltip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 115%; /* Tooltip appears above the icon */
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s;
+  z-index: 10;
+}
+
+.tooltip::before {
+  content: "";
+  position: absolute;
+  top: 108%;
+  right: 45%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  background-color: #333;
+  z-index: 10;
+  /* No transition here */
+  opacity: 0;
+  visibility: hidden;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tooltip:hover::before {
+  opacity: 1;
+  visibility: visible;
+}

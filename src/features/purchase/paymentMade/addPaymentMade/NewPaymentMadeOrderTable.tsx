@@ -1,26 +1,62 @@
 import { useEffect, useRef, useState } from "react";
 import { PaymentMadeUnpaidBillTable } from "../../../../assets/constants";
-import PlusCircle from "../../../../assets/icons/PlusCircle";
+import toast from "react-hot-toast";
 
-type Props = {};
+type Props = {
+  paymentState?: any;
+  setPaymentState?: any;
+  supplierBills?: BillData[];
+  isFullAmt?:boolean
+};
 
-const NewPaymentMadeOrderTable = ({}: Props) => {
+interface BillData {
+  billId: string;
+  billDate: string;
+  dueDate: string;
+  billNumber: string;
+  billAmount: number;
+  amountDue: number;
+  payment: number;
+}
+
+const NewPaymentMadeOrderTable = ({
+  paymentState,
+  setPaymentState,
+  supplierBills = [],
+  isFullAmt = false
+}: Props) => {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
-  const [rows, setRows] = useState<number[]>([0]); 
-  // Remove unused state
-  // const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
-  // const [searchValue, setSearchValue] = useState<string>("");
+  const [data, setData] = useState<BillData[]>([
+    {
+      billId: "",
+      billDate: "",
+      dueDate: "",
+      billNumber: "",
+      billAmount: 0,
+      amountDue: 0,
+      payment: 0,
+    }
+  ]);
+
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  // const toggleDropdown = (id: number | null, type: string | null) => {
-  //   if (openDropdownId === id && openDropdownType === type) {
-  //     setOpenDropdownId(null);
-  //     setOpenDropdownType(null);
-  //   } else {
-  //     setOpenDropdownId(id);
-  //     setOpenDropdownType(type);
-  //   }
-  // };
+  // Set initial data from supplierBills
+  useEffect(() => {
+    if (supplierBills && Array.isArray(supplierBills)) {
+      setData(
+        supplierBills.map((bill: any) => ({
+          billId: bill._id || "",
+          billDate: bill.billDate || "",
+          dueDate: bill.dueDate || "",
+          billNumber: bill.billNumber || "",
+          billAmount: bill.grandTotal || 0,
+          amountDue: bill.amountDue || 0,
+          payment: bill.payment || 0,
+        }))
+      );
+    }
+  }, [supplierBills]);
+  // console.log(data,data)
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -28,12 +64,85 @@ const NewPaymentMadeOrderTable = ({}: Props) => {
       !dropdownRef.current.contains(event.target as Node)
     ) {
       setOpenDropdownId(null);
-      // setOpenDropdownType(null); // No longer needed
     }
   };
-  const addNewItemRow = () => {
-    setRows([...rows, rows.length]);
+
+
+  const handleRowChange = (
+    index: number,
+    field: keyof BillData,
+    value: string | number
+  ) => {
+    const newData = [...data];
+    newData[index] = { ...newData[index], [field]: value };
+  
+    const billAmount = newData[index].billAmount;
+  
+    if (isFullAmt) {
+      newData[index].payment = billAmount;
+    } else {
+      newData[index].payment=0
+      const paymentValue = typeof value === "number" ? value : parseFloat(value);
+  
+      if (paymentValue > billAmount) {
+        toast.error(`Payment cannot exceed the bill amount of ${billAmount}. Setting payment to bill amount.`);
+        newData[index].payment = billAmount;
+      } else {
+        newData[index].payment = paymentValue;
+      }
+    }
+  
+    newData[index].amountDue = billAmount - newData[index].payment;
+  
+    let totalPayment = newData.reduce((acc, row) => acc + (row.payment || 0), 0);
+  
+    // Check if totalPayment exceeds paymentState.paymentMade
+    if (totalPayment > paymentState.paymentMade) {
+      toast.error(`Total payment cannot exceed the available payment amount of ${paymentState.paymentMade}.`);
+      totalPayment = paymentState.paymentMade;
+    }
+  
+    setData(newData);
+  
+    if (setPaymentState) {
+      setPaymentState((prevData: any) => ({
+        ...prevData,
+        unpaidBills: newData,
+        total: totalPayment,
+        amountPaid: totalPayment,
+        amountUsedForPayments: totalPayment,
+      }));
+    }
   };
+  
+  
+
+  
+  useEffect(() => {
+    const updatedData = data.map((row) => ({
+      ...row,
+      payment: isFullAmt ? row.billAmount : 0,
+      amountDue: row.billAmount - (isFullAmt ? row.billAmount : 0),
+    }));
+  
+    const totalPayment = updatedData.reduce((acc, row) => acc + row.payment, 0);
+  
+    setData(updatedData);
+  
+    if (setPaymentState) {
+      setPaymentState((prevData: any) => ({
+        ...prevData,
+        unpaidBills: updatedData,
+        total: totalPayment,
+        amountPaid: totalPayment,
+        amountUsedForPayments: totalPayment,
+      }));
+    }
+  }, [isFullAmt,paymentState.supplierId]);
+  
+  
+  
+
 
   useEffect(() => {
     if (openDropdownId !== null) {
@@ -47,22 +156,10 @@ const NewPaymentMadeOrderTable = ({}: Props) => {
     };
   }, [openDropdownId]);
 
-  const data = [
-    {
-      id: 1,
-      date: "28/06/2024",
-      dueDate: "28/06/2024",
-      billId: "BL-0003",
-      billAmount: "0.00",
-      amountDue: "0.00",
-      payment: 30.0,
-    },
-  ];
-
   return (
     <div>
       <div className="rounded-lg border-2 border-tableBorder mt-3">
-        <table className="min-w-full bg-white rounded-lg relative pb-4 border-dropdownText">
+        <table className=" text-xs min-w-full bg-white rounded-lg relative pb-4 border-dropdownText text-textColor">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr className="bg-[#FDF8F0]">
               {PaymentMadeUnpaidBillTable.map((item, index) => (
@@ -76,49 +173,98 @@ const NewPaymentMadeOrderTable = ({}: Props) => {
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {data.map((item) => (
-              <tr key={item.date} className="relative">
-                <td className="flex items-center justify-center mt-0 gap-2">
-                  <br />
-                  {item.date} <br />
+            {data.map((row, index) => (
+              <tr key={index} className="relative">
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    disabled
+                    type="date"
+                    placeholder="Date"
+                    className="w-full focus:outline-none text-center"
+                    value={row.billDate?row.billDate:"-"}
+                    onChange={(e) =>
+                      handleRowChange(index, "billDate", e.target.value)
+                    }
+                  />
                 </td>
-                <td className="justify-start items-start">
-                  <div className="items-center justify-center flex">
-                    <div className="text-start">
-                      <br />
-                      {item.dueDate} <br />
-                      <span className="" style={{ fontSize: "10px" }}>
-                        <br />
-                      </span>
-                    </div>
-                  </div>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    disabled
+                    type="date"
+                    placeholder="Due Date"
+                    className="w-full focus:outline-none text-center"
+                    value={row.dueDate?row.dueDate:"-"}
+                    onChange={(e) =>
+                      handleRowChange(index, "dueDate", e.target.value)
+                    }
+                  />
                 </td>
-                <td>{item.billId}</td>
-                <td className="py-2.5 px-4 border-y border-tableBorder relative">
-                  <div className="flex items-center justify-center gap-2">
-                    {item.billAmount}
-                  </div>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    disabled
+                    type="text"
+                    placeholder="Bill ID"
+                    className="w-full focus:outline-none text-center"
+                    value={row.billNumber?row.billNumber:"-"}
+                    onChange={(e) =>
+                      handleRowChange(index, "billNumber", e.target.value)
+                    }
+                  />
                 </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder relative">
-                  <div className="flex items-center justify-center gap-2">
-                    {item.amountDue}
-                  </div>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    disabled
+                    type="number"
+                    className="w-full focus:outline-none text-center"
+                    value={row.billAmount}
+                    onChange={(e) =>
+                      handleRowChange(
+                        index,
+                        "billAmount",
+                        parseFloat(e.target.value) || 0
+                      )
+                    }
+                  />
                 </td>
-                <td className="font-semibold">{item.payment}</td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    disabled
+                    type="number"
+                    className="w-full focus:outline-none text-center"
+                    value={row.amountDue}
+                    onChange={(e) =>
+                      handleRowChange(
+                        index,
+                        "amountDue",
+                        parseFloat(e.target.value) || 0
+                      )
+                    }
+                  />
+                </td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <input
+                    type="number"
+                    className="w-full focus:outline-none text-center"
+                    value={row.payment}
+                    onChange={(e) =>
+                      handleRowChange(
+                        index,
+                        "payment",
+                        parseFloat(e.target.value) || 0
+                      )
+                    }
+                  />
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <p className="text-right text-textColor text-sm mt-4">Total <span className="ms-20 font-semibold">0.00</span></p>
-      <button onClick={addNewItemRow} className="mt-1">
-              <p className="text-darkRed my-3 text-sm flex gap-2 items-center">
-                <PlusCircle color="darkRed" />
-                <b> Add Item</b>
-              </p>
-        </button>
+      <p className="text-right text-textColor text-sm mt-4">
+        Total <span className="ms-20 font-semibold">{paymentState.total}</span>
+      </p>
+ 
     </div>
-    
   );
 };
 

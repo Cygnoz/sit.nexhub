@@ -58,9 +58,9 @@ const Organization = ({ organizationData }: Props) => {
           {organizationData ? (
             <div className="flex flex-col border border-slate-200 p-4 rounded-md shadow-sm">
               <div className="flex items-center mb-4">
-                <OrganizationIcon />
-                <div className="flex-grow">
-                  <h5 className="font-bold text-sm text-gray-700">
+                <OrganizationIcon width="12" height="12"  />
+                <div className="flex flex-col ms-5">
+                  <h5 className="font-bold text-sm  text-gray-700">
                     {organizationData.organizationName}
                   </h5>
                   <p className="text-xs text-gray-700">
@@ -68,6 +68,7 @@ const Organization = ({ organizationData }: Props) => {
                   </p>
                 </div>
               </div>
+
               <p className="text-xs text-gray-700">
                 Address Line 1: {organizationData.addline1}
               </p>
@@ -102,9 +103,9 @@ const Organization = ({ organizationData }: Props) => {
           ) : (
             <p className="text-xs text-gray-700">Loading...</p>
           )}
-          <div className="flex justify-end">
+          <div className="flex justify-center">
             <Button
-              className="pl-10 pr-10 h-[34px] text-sm"
+              className="pl-10 pr-10 h-[34px] mt-10 text-sm"
               onClick={confirmLogout}
             >
               Logout

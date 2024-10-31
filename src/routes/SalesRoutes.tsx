@@ -4,7 +4,7 @@ import SalesDashboard from "../features/sales/dashboard/SalesDashboard";
 
 // Lazy load your components
 const SalesOrder = lazy(() => import("../features/sales/salesOrder/SalesOrder"));
-const ViewSalesOrder = lazy(() => import("../features/sales/salesOrder/viewSalesQuote/ViewSalesQuote"));
+const ViewSalesOrder = lazy(() => import("../features/sales/salesOrder/viewSalesQuote/ViewSalesOrder"));
 const NewSalesOrder = lazy(() => import("../features/sales/salesOrder/NewSalesOrder"));
 const InvoiceHome = lazy(() => import("../features/sales/invoice/InvoiceHome"));
 const NewInvoice = lazy(() => import("../features/sales/invoice/NewInvoice"));
@@ -23,13 +23,13 @@ const SalesInfo = lazy(() => import("../features/sales/SalesInfo"));
 const SalesRoutes: RouteObject[] = [
   { path: "/sales", element: <SalesDashboard /> }, 
   { path: "/sales/salesorder", element: <SalesOrder /> }, 
-  { path: "/sales/viewsalesorder", element: <ViewSalesOrder /> },
+  { path: "/sales/viewsalesorder/:id", element: <ViewSalesOrder /> },
   { path: "/sales/salesorder/new", element: <NewSalesOrder /> },
   { path: "/sales/invoice", element: <InvoiceHome /> },
   { path: "/sales/invoice/new", element: <NewInvoice /> },
   { path: "/sales/invoice/view", element: <ViewInvoice /> },
   { path: "/sales/quote", element: <QuoteHome /> },
-  { path: "/sales/quote/view", element: <ViewSalesQuote /> },
+  { path: "/sales/quote/view/:id", element: <ViewSalesQuote /> },
   { path: "/sales/quote/new", element: <NewSalesQuote /> },
   { path: "/sales/credit-note", element: <CreditNote /> },
   { path: "/sales/credit-note/new", element: <NewCreditNote /> },

@@ -590,6 +590,75 @@ function AccountsSettings({}: Props) {
               )}
             </div>
           )}
+           <p className="mt-4 text-textColor">
+            <b>Others</b>
+          </p>
+          <div className="bg-white border-slate-200 border-2 rounded-md mt-4 p-5">
+<div className="grid grid-cols-2 gap-4">
+<div>
+                <label
+                  htmlFor="accountPayableAccount"
+                  className="text-slate-600 flex items-center gap-1"
+                >
+                  <p>Account Payable</p>
+                </label>
+                <div className="w-full mt-2.5 relative">
+                  <select
+                    onChange={handleInputChange}
+                    value={inputData.accountPayableAccount}
+                    name="accountPayableAccount"
+                    className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                  >
+                    <option value="">Select Account</option>
+                    {allAccounts
+                      .filter(
+                        (item: any) =>
+                          item.accountSubhead === "Accounts Payable"
+                      )
+                      .map((item: any) => (
+                        <option key={item._id} value={item._id}>
+                          {item.accountName}
+                        </option>
+                      ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="accountPayableAccount"
+                  className="text-slate-600 flex items-center gap-1"
+                >
+                  <p>Account Payable</p>
+                </label>
+                <div className="w-full mt-2.5 relative">
+                  <select
+                    onChange={handleInputChange}
+                    value={inputData.accountPayableAccount}
+                    name="accountPayableAccount"
+                    className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                  >
+                    <option value="">Select Account</option>
+                    {allAccounts
+                      .filter(
+                        (item: any) =>
+                          item.accountSubhead === "Accounts Payable"
+                      )
+                      .map((item: any) => (
+                        <option key={item._id} value={item._id}>
+                          {item.accountName}
+                        </option>
+                      ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
+                  </div>
+                </div>
+              </div>
+  </div>            
+          </div>
         </form>
       </div>
 

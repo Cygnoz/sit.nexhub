@@ -896,7 +896,7 @@ console.log(supplierResponse),"SResponse"
                       </option>
                       {paymentTerms.length > 0 &&
                         paymentTerms.map((item: any) => (
-                          <option value=" Due on Receipt" className="text-gray">
+                          <option value={item.name} className="text-gray">
                             {item.name}
                           </option>
                         ))}

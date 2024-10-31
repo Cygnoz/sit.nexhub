@@ -28,7 +28,6 @@ const CustomerAndSupplier = () => {
     duplicateCustomerEmail: false,
     duplicateCustomerMobile: false,
   });
-
   useEffect(() => {
     getSettingsData();
   }, []);
@@ -37,11 +36,10 @@ const CustomerAndSupplier = () => {
     if (settingsResponse) {
       setInputData((prevData) => ({
         ...prevData,
-        ...settingsResponse?.data?.customerSupplierSettings,
+        ...settingsResponse?.data?.supplierCustomerSettings,
       }));
     }
   }, [settingsResponse]);
-  console.log(settingsResponse.data);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;

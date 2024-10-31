@@ -1,14 +1,27 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
-import MailIcon from "../../../../assets/icons/MailIcon";
 import Button from "../../../../Components/Button";
+import Pen from "../../../../assets/icons/Pen";
+import MailIcon from "../../../../assets/icons/MailIcon";
+// import SalesPdfView from "./SalesOrderPdfView";
+import SalesOrderView from "./SalesOrderView";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
-import SalesPdfView from "./SalesQuotePdfView";
-import SalesOrderView from "./SalesQuoteView";
 
-interface QuoteItem {
+interface SalesOrderData {
+  orderDate: string;
+  expectedShipmentDate: string;
+  customerName: string;
+  items: OrderItem[];
+  totalAmount: number;
+  status: string;
+  customerId: number;
+  subTotal: number;
+  totalTax: number;
+  totalDiscount: number;
+}
+interface OrderItem {
   itemId: string;
   itemName: string;
   quantity: number;
@@ -17,47 +30,27 @@ interface QuoteItem {
   itemAmount: number;
 }
 
-interface QuoteData {
-  cgst: number;
-  sgst: number;
-  createdDate: string;
-  customerName: string;
-  discountTransactionAmount: number;
-  expiryDate: string;
-  items: QuoteItem[];
-  placeOfSupply: string;
-  salesQuoteDate: string;
-  salesQuotes: string;
-  status: string;
-  subTotal: number;
-  totalAmount: number;
-  totalDiscount: number;
-  totalItem: number;
-  totalTax: number;
-  customerId: number
-}
-
-function ViewSalesQuote() {
+function ViewDebitNote() {
   const [isPdfView, setIsPdfView] = useState(false);
-  const { id } = useParams<{ id: string }>();
-  const { request: getOneQuote } = useApi("get", 5007);
-  const [data, setData] = useState<QuoteData | null>(null);
+  const { id } = useParams<{ id: string }>(); // Capture the dynamic route parameter
+  const { request: getOneSalesOrder } = useApi("get", 5007); // API for fetching a single sales order
+  const [data, setData] = useState<SalesOrderData | null>(null);
 
-  const fetchOneQuote = async () => {
+  const fetchOneSalesOrder = async () => {
     try {
-      const url = `${endponits.GET_ONE_QUOTES}/${id}`;
-      const { response, error } = await getOneQuote(url);
+      const url = `${endponits.GET_ONE_SALES_ORDER}/${id}`;
+      const { response, error } = await getOneSalesOrder(url);
       if (!error && response) {
         setData(response.data);
-        console.log(response.data);
+        console.log("Fetched Sales Order:", response.data);
       }
     } catch (error) {
-      console.error("Error fetching quote:", error);
+      console.error("Error fetching sales order:", error);
     }
   };
 
   useEffect(() => {
-    fetchOneQuote();
+    fetchOneSalesOrder();
   }, [id]);
 
   const handleToggle = () => {
@@ -66,9 +59,9 @@ function ViewSalesQuote() {
 
   return (
     <div className="px-6">
-      <div className="bg-white rounded-md p-5 mb-3">
+      <div className="bg-white rounded-md p-5 mb-32">
         <div className="flex items-center gap-5">
-          <Link to={"/sales/quote"}>
+          <Link to={"/sales/salesorder"}>
             <div
               style={{ borderRadius: "50%" }}
               className="w-[40px] h-[40px] flex items-center justify-center bg-backButton"
@@ -76,28 +69,39 @@ function ViewSalesQuote() {
               <CheveronLeftIcon />
             </div>
           </Link>
-          <p className="text-textColor text-xl font-bold">View Sales Quote</p>
+          <p className="text-textColor text-xl font-bold">View Order</p>
         </div>
         <br />
 
         <div className="flex justify-between">
           <div className="flex gap-3 items-center">
             <p className="text-lg text-textColor font-bold pr-4 border-r-[1px] border-borderRight">
-              Quote
+              Sales Order
             </p>
             <p className="text-lg text-textColor font-bold pr-4 border-r-[1px] border-borderRight">
-              #{data?.salesQuotes || "N/A"}
+              #{data?.expectedShipmentDate || "N/A"}
             </p>
             <p className="text-sm font-semibold text-textColor bg-cuscolumnbg p-1 text-center rounded-sm">
               {data?.status || "Draft"}
             </p>
           </div>
           <div className="flex gap-3 items-center">
+            <Button variant="secondary" className="pl-6 pr-6" size="sm">
+              <Pen color="#565148" />
+              <p className="text-sm font-medium">Edit</p>
+            </Button>
             <Button variant="secondary" className="pl-5 pr-5" size="sm">
               <MailIcon color="#565148" />
               <p className="text-sm font-medium">Email</p>
             </Button>
-            {/* toggle button */}
+            <select
+              name=""
+              id=""
+              className="border-outlineButton border rounded-md px-[0.625rem] py-2 text-sm font-medium text-outlineButton "
+            >
+              <option value="">More Action</option>
+            </select>
+            {/* Toggle PDF view */}
             <label className="flex items-center cursor-pointer">
               <div className="relative">
                 <input
@@ -128,7 +132,7 @@ function ViewSalesQuote() {
         {/* Conditional rendering based on isPdfView */}
         {isPdfView ? (
           <div className="pdf-view-component">
-            <SalesPdfView data = {data}/>
+            {/* <SalesPdfView data={data} /> */}
           </div>
         ) : (
           <div className="other-component">
@@ -140,4 +144,4 @@ function ViewSalesQuote() {
   );
 }
 
-export default ViewSalesQuote;
+export default ViewDebitNote;
