@@ -9,7 +9,7 @@ import linkedinlog from "../../../../assets/Images/linkedin logo.svg";
 import QrCode from "../../../../assets/Images/qr-code.svg";
 import Qrsign from "../../../../assets/Images/sign.svg";
 import twitterLogo from "../../../../assets/Images/twitter-logo.png";
-import xMark from "../../../../assets/Images/x.svg";
+// import xMark from "../../../../assets/Images/x.svg";
 import Button from "../../../../Components/Button";
 import Modal from "../../../../Components/model/Modal";
 import useApi from "../../../../Hooks/useApi";
@@ -600,7 +600,7 @@ function InvoiceSettings({}: Props) {
           className="pl-4 mt-3 text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-[39px] p-2 focus:outline-none focus:ring-1 focus:ring-[#7E0D0B]"
           name="twitter"
         />
-        <img src={xMark} className="mt-3" alt="" />
+        {/* <img src={xMark} className="mt-3" alt="" /> */}
       </div>
       <div className="flex items-center space-x-2 mt-3">
         <input
@@ -631,7 +631,7 @@ function InvoiceSettings({}: Props) {
             handleEventBindChange(e.target.value, "instagramLink")
           }
         />
-        <img src={xMark} className="mt-3" alt="" />
+        {/* <img src={xMark} className="mt-3" alt="" /> */}
       </div>
       <div className="flex items-center space-x-2 mt-3">
         <input
@@ -667,7 +667,7 @@ function InvoiceSettings({}: Props) {
           }
           value={invoiceSettings.linkedinLink}
         />
-        <img src={xMark} className="mt-3" alt="" />
+        {/* <img src={xMark} className="mt-3" alt="" /> */}
       </div>
       <div className="flex items-center space-x-2 mt-3">
         <input
@@ -701,7 +701,7 @@ function InvoiceSettings({}: Props) {
           value={invoiceSettings.facebookLink}
           name="facebook"
         />
-        <img src={xMark} className="mt-3" alt="" />
+        {/* <img src={xMark} className="mt-3" alt="" /> */}
       </div>
       <div className="flex items-center space-x-2 mt-3">
         <input

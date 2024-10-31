@@ -14,7 +14,7 @@ import { settingsdataResponseContext } from "../../../../context/ContextShare";
 type Props = {};
 
 interface creditNote {
-  overrideCostPrice: boolean;
+  overRideCostPrice: boolean;
   creditNoteQr: boolean;
   creditNoteQrType: string;
   creditNoteQrDescription: string;
@@ -79,7 +79,7 @@ function CreditNotes({}: Props) {
   const {settingsResponse, getSettingsData } = useContext(settingsdataResponseContext)!;
 
   const [inputData, setInputData] = useState<creditNote>({
-    overrideCostPrice: false,
+    overRideCostPrice: false,
     creditNoteQr: false,
     creditNoteQrType: "",
     creditNoteQrDescription: "",
@@ -195,13 +195,13 @@ function CreditNotes({}: Props) {
           <input
             type="checkbox"
             className="accent-[#97998E] bg-white h-5 w-5 mr-2 mt-1 shrink-0"
-            checked={inputData.overrideCostPrice}
-            name="overrideCostPrice"
+            checked={inputData.overRideCostPrice}
+            name="overRideCostPrice"
             onChange={handleInputChange}
-            id="customCheckbox"
+            id="overRideCostPrice"
           />
           <div className="flex-1">
-            <label htmlFor="customCheckbox" className="text-sm font-medium">
+            <label htmlFor="overRideCostPrice" className="text-sm font-medium">
               Allow users to override cost prices in credit notes
             </label>
             <p className="text-sm mt-1 text-[#818894]">
