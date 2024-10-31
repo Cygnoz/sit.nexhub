@@ -1,12 +1,26 @@
+import exploreTextLight from "../../assets/AppsIcons/app-title.png";
+import exploreTextDark from "../../assets/AppsIcons/app-title-lite.png";
 
-type Props = {}
+type Props = {
+    setMode?: React.Dispatch<React.SetStateAction<boolean>>;
+    mode?: boolean;
+};  
 
-const VeiwApps = ({}: Props) => {
+const ViewApps = ({ mode }: Props) => {
   return (
-    <div className="flex items-center justify-center">
-        
+    <>
+    <div className="flex items-center justify-center mt-16">
+      <img 
+        src={mode ? exploreTextDark : exploreTextLight} 
+        className="w-[45%]" 
+        alt="App Title" 
+      />
     </div>
-  )
-}
+    <div className="mt-5 ">
 
-export default VeiwApps
+    </div>
+    </>
+  );
+};
+
+export default ViewApps;
