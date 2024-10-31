@@ -18,7 +18,6 @@ import NewUnit from "../Unit/NewUnit";
 
 type Props = {};
 
-
 interface ItemSettings {
   itemDuplicateName: boolean;
   hsnSac: boolean;
@@ -95,7 +94,7 @@ const initialItemDataState = {
   status: "",
 };
 
-const AddItem = ({ }: Props) => {
+const AddItem = ({}: Props) => {
   const [initialItemData, setInitialItemData] = useState(initialItemDataState);
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
   const [isService, setIsService] = useState<boolean>(false);
@@ -118,6 +117,12 @@ const AddItem = ({ }: Props) => {
     fetchAllItems();
     fetchAllItemName();
   }, []);
+  // useEffect(() => {
+  //   window.scrollTo({
+  //     top: 165,
+  //     behavior: "smooth",
+  //   });
+  // }, []);
 
   const [itemsData, setItemsData] = useState<ItemsData>({
     bmcrData: {
@@ -373,20 +378,24 @@ const AddItem = ({ }: Props) => {
           {/* Add Image */}
           <div className="col-span-2">
             <div className="   h-36 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center">
-
               <label htmlFor="image">
                 <div
-                  className={`bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ${initialItemData.itemImage ? "h-[90px] rounded-b-none" : ""
-                    }`}
+                  className={`bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ${
+                    initialItemData.itemImage ? "h-[90px] rounded-b-none" : ""
+                  }`}
                 >
                   {initialItemData.itemImage ? (
-                    <img src={initialItemData.itemImage} alt="Item" className="max-h-20 max-w-40" />
+                    <img
+                      src={initialItemData.itemImage}
+                      alt="Item"
+                      className="max-h-20 max-w-40"
+                    />
                   ) : (
-                    <div className="flex gap-4">
-                      <div className="bg-darkRed rounded-full  flex items-center justify-center">
-                        <Plus color={"white"} classname="h-4" />
+                    <div className="flex gap-4 justify-center items-center">
+                      <div className="bg-darkRed rounded-full  flex items-center p-0.5 justify-center">
+                        <Plus color={"white"} classname="" />
                       </div>
-                      <p className="text-sm">Add Image</p>
+                      <p className="text-xs">Add Image</p>
                     </div>
                   )}
                 </div>
@@ -394,7 +403,9 @@ const AddItem = ({ }: Props) => {
                   <p className="font-extrabold text-textColor mt-1 text-sm">
                     Upload Item Image
                   </p>
-                  <p className="text-[55%] text-[#818894] mt-1">Support: JPG, PNG</p>
+                  <p className="text-[55%] text-[#818894] mt-1">
+                    Support: JPG, PNG
+                  </p>
                 </div>
                 <input
                   type="file"
@@ -405,198 +416,202 @@ const AddItem = ({ }: Props) => {
                   accept="image/*"
                 />
               </label>
-
-            </div>  
+            </div>
           </div>
 
-
-
-          <div className="col-span-10">
+          <div className="col-span-10 -mt-4">
             <div className="flex justify-center items-center">
-
-            <div>
-              <label
-                className="block text-sm text-labelColor"
-                htmlFor="itemType"
-              >
-                Item Type
-              </label>
-              <div className="flex items-center space-x-4 text-textColor text-sm">
-                <div className="flex gap-2 justify-center items-center">
-                  <div
-                    className="grid place-items-center mt-1"
-                    onClick={() => {
-                      setInitialItemData((prev) => ({
-                        ...prev,
-                        itemType: "goods",
-                      }));
-                      setIsService(false);
-                    }}
-                  >
-                    <input
-                      id="goods"
-                      type="radio"
-                      name="itemType"
-                      value="goods"
-                      className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${initialItemData.itemType === "goods"
-                        ? "border-8 border-[#97998E]"
-                        : "border-1 border-[#97998E]"
-                        }`}
-                      checked={initialItemData.itemType === "goods"} // "Goods" will be checked by default
-                      onChange={handleInputChange}
-                    />
+              <div>
+                <label
+                  className="block text-sm text-labelColor"
+                  htmlFor="itemType"
+                >
+                  Item Type
+                </label>
+                <div className="flex items-center space-x-4 text-textColor text-sm">
+                  <div className="flex gap-2 justify-center items-center">
                     <div
-                      className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${initialItemData.itemType === "goods"
-                        ? "bg-neutral-50"
-                        : "bg-transparent"
+                      className="grid place-items-center mt-1"
+                      onClick={() => {
+                        setInitialItemData((prev) => ({
+                          ...prev,
+                          itemType: "goods",
+                        }));
+                        setIsService(false);
+                      }}
+                    >
+                      <input
+                        id="goods"
+                        type="radio"
+                        name="itemType"
+                        value="goods"
+                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                          initialItemData.itemType === "goods"
+                            ? "border-8 border-[#97998E]"
+                            : "border-1 border-[#97998E]"
                         }`}
-                    />
+                        checked={initialItemData.itemType === "goods"} // "Goods" will be checked by default
+                        onChange={handleInputChange}
+                      />
+                      <div
+                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                          initialItemData.itemType === "goods"
+                            ? "bg-neutral-50"
+                            : "bg-transparent"
+                        }`}
+                      />
+                    </div>
+                    <label
+                      htmlFor="goods"
+                      className="text-start font-medium mt-1"
+                    >
+                      Goods
+                    </label>
                   </div>
-                  <label
-                    htmlFor="goods"
-                    className="text-start font-medium mt-1"
-                  >
-                    Goods
-                  </label>
-                </div>
 
-                <div className="flex gap-2 justify-center items-center">
-                  <div
-                    className="grid place-items-center mt-1"
-                    onClick={() => {
-                      setInitialItemData((prev) => ({
-                        ...prev,
-                        itemType: "service",
-                      }));
-                      setIsService(true);
-                    }}
-                  >
-                    <input
-                      id="service"
-                      type="radio"
-                      name="itemType"
-                      value="service"
-                      className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${initialItemData.itemType === "service"
-                        ? "border-8 border-[#97998E]"
-                        : "border-1 border-[#97998E]"
-                        }`}
-                      checked={initialItemData.itemType === "service"}
-                      onChange={handleInputChange}
-                    />
+                  <div className="flex gap-2 justify-center items-center">
                     <div
-                      className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${initialItemData.itemType === "service"
-                        ? "bg-neutral-50"
-                        : "bg-transparent"
+                      className="grid place-items-center mt-1"
+                      onClick={() => {
+                        setInitialItemData((prev) => ({
+                          ...prev,
+                          itemType: "service",
+                        }));
+                        setIsService(true);
+                      }}
+                    >
+                      <input
+                        id="service"
+                        type="radio"
+                        name="itemType"
+                        value="service"
+                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                          initialItemData.itemType === "service"
+                            ? "border-8 border-[#97998E]"
+                            : "border-1 border-[#97998E]"
                         }`}
-                    />
+                        checked={initialItemData.itemType === "service"}
+                        onChange={handleInputChange}
+                      />
+                      <div
+                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                          initialItemData.itemType === "service"
+                            ? "bg-neutral-50"
+                            : "bg-transparent"
+                        }`}
+                      />
+                    </div>
+                    <label
+                      htmlFor="service"
+                      className="text-start font-medium mt-1"
+                    >
+                      Service
+                    </label>
                   </div>
-                  <label
-                    htmlFor="service"
-                    className="text-start font-medium mt-1"
-                  >
-                    Service
-                  </label>
                 </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-12 gap-4 ms-5">
-              <div className="grid grid-cols-2 gap-4 mt-3 col-span-9">
-                <div>
-                  <label className="text-slate-600 text-sm" htmlFor="itemName">
-                    Name
-                    <input
-                      className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start  bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                      placeholder="Name"
-                      name="itemName"
-                      value={initialItemData.itemName}
-                      onChange={handleInputChange}
-                    />
-                    {errors.itemName && (
-                      <div className="text-red-800 text-xs  ms-1">
-                        Item name is required
-                      </div>
-                    )}
-                  </label>
-                </div>
-
-                <div>
-                  <label
-                    className="text-slate-600 flex items-center gap-2"
-                    htmlFor="sku"
-                  >
-                    SKU
-                    <div
-                      onMouseEnter={handleMouseEnter}
-                      onMouseLeave={handleMouseLeave}
-                      className="relative"
+              <div className="grid grid-cols-12 gap-4 ms-5">
+                <div className="grid grid-cols-2 gap-4 mt-3 col-span-9">
+                  <div>
+                    <label
+                      className="text-slate-600 text-sm"
+                      htmlFor="itemName"
                     >
-                      <CircleHelp />
-                      {tooltipVisible && (
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 pl-5  w-60 py-1 bg-gray text-white text-xs rounded-md">
-                          The stock keeping unit of the item
+                      Name
+                      <input
+                        className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start  bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                        placeholder="Enter Name"
+                        name="itemName"
+                        value={initialItemData.itemName}
+                        onChange={handleInputChange}
+                      />
+                      {errors.itemName && (
+                        <div className="text-red-800 text-xs  ms-1">
+                          Item name is required
                         </div>
                       )}
-                    </div>
-                  </label>
-                  <input
-                    className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    placeholder="Enter SKU"
-                    name="sku"
-                    value={initialItemData.sku}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-              <div className="relative col-span-3 mt-3">
-                <label
-                  htmlFor="unit-input"
-                  className="text-slate-600 flex items-center gap-2"
-                >
-                  Unit
-                  {/* <CircleHelp /> */}
-                </label>
-                <div className="relative w-full ">
-                  <input
-                    id="unit-input"
-                    type="text"
-                    value={initialItemData.unit}
-                    readOnly
-                    className="cursor-pointer appearance-none mt-0.5 w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    placeholder="Select Unit"
-                    onClick={() => toggleDropdown("unit")}
-                  />
-                  <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <CehvronDown color="gray" />
+                    </label>
                   </div>
-                </div>
-                {openDropdownIndex === "unit" && (
-                  <div
-                    ref={dropdownRef}
-                    className="absolute w-[100%] z-10 bg-white rounded-md mt-1 p-2 space-y-1 border border-inputBorder"
-                  >
-                    {itemsData.unitName &&
-                      itemsData.unitName.map((unit: string, index: number) => (
-                        <div
-                          key={index}
-                          onClick={() => handleDropdownSelect("unit", unit)}
-                          className="flex p-2 w-[100%] mb-4 hover:bg-gray-100 cursor-pointer border-b border-slate-300 text-sm  text-textColor"
-                        >
-                          {unit}
-                          <div className="ml-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                            &times;
+
+                  <div>
+                    <label
+                      className="text-slate-600 flex items-center gap-2"
+                      htmlFor="sku"
+                    >
+                      SKU
+                      <div
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                        className="relative"
+                      >
+                        <CircleHelp />
+                        {tooltipVisible && (
+                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 pl-5  w-60 py-1 bg-gray text-white text-xs rounded-md">
+                            The stock keeping unit of the item
                           </div>
-                        </div>
-                      ))}
-                    <NewUnit page="item"/>
+                        )}
+                      </div>
+                    </label>
+                    <input
+                      className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                      placeholder="Enter SKU"
+                      name="sku"
+                      value={initialItemData.sku}
+                      onChange={handleInputChange}
+                    />
                   </div>
-                )}
+                </div>
+                <div className="relative col-span-3 mt-3">
+                  <label
+                    htmlFor="unit-input"
+                    className="text-slate-600 flex items-center gap-2"
+                  >
+                    Unit
+                    {/* <CircleHelp /> */}
+                  </label>
+                  <div className="relative w-full ">
+                    <input
+                      id="unit-input"
+                      type="text"
+                      value={initialItemData.unit}
+                      readOnly
+                      className="cursor-pointer appearance-none mt-0.5 w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                      placeholder="Select Unit"
+                      onClick={() => toggleDropdown("unit")}
+                    />
+                    <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
+                  {openDropdownIndex === "unit" && (
+                    <div
+                      ref={dropdownRef}
+                      className="absolute w-[100%] z-10 bg-white rounded-md mt-1 p-2 space-y-1 border border-inputBorder"
+                    >
+                      {itemsData.unitName &&
+                        itemsData.unitName.map(
+                          (unit: string, index: number) => (
+                            <div
+                              key={index}
+                              onClick={() => handleDropdownSelect("unit", unit)}
+                              className="flex p-2 w-[100%] mb-4 hover:bg-gray-100 cursor-pointer border-b border-slate-300 text-sm  text-textColor"
+                            >
+                              {unit}
+                              <div className="ml-auto text-2xl cursor-pointer relative -mt-2 pe-2">
+                                &times;
+                              </div>
+                            </div>
+                          )
+                        )}
+                      <NewUnit page="item" />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            </div>
 
-
-            <div className="grid grid-cols-3 gap-4 mt-3 ">
+            <div className="grid grid-cols-3 gap-4 mt-4 ">
               {hsnSac &&
                 (isService ? (
                   <div>
@@ -626,7 +641,7 @@ const AddItem = ({ }: Props) => {
                       HSN Code
                     </label>
                     <input
-                      className="pl-3 text-sm w-[100%]  rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                      className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                       placeholder="Enter HSN code"
                       name="hsnCode"
                       value={initialItemData.hsnCode}
@@ -647,7 +662,7 @@ const AddItem = ({ }: Props) => {
                 </label>
                 <div className="relative w-full ">
                   <select
-                    className="block appearance-none w-full text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    className="block appearance-none w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                     name="taxPreference"
                     value={initialItemData.taxPreference}
                     onChange={handleInputChange}
@@ -711,7 +726,7 @@ const AddItem = ({ }: Props) => {
                   {openDropdownIndex === "taxRate" && (
                     <div
                       ref={dropdownRef}
-                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[50%] space-y-1"
+                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-full space-y-1"
                     >
                       <div className="mb-2.5">
                         <SearchBar
@@ -754,267 +769,274 @@ const AddItem = ({ }: Props) => {
                   )}
                 </div>
               )}
-
             </div>
+            {!isService && (
+              <div className="flex items-center mt-3  gap-1 text-textColor">
+                <input
+                  type="checkbox"
+                  className="accent-[#97998E] bg-white h-5 w-4 mx-1 my-1"
+                  id="checkbox3"
+                  name="returnableItem"
+                  checked={initialItemData.returnableItem}
+                  onChange={handleInputChange}
+                />
+                <label
+                  htmlFor="checkbox3"
+                  className="text-textColor text-sm font-semibold"
+                >
+                  Returnable Item
+                </label>
+              </div>
+            )}
           </div>
         </div>
 
-        {!isService && 
-<div className="grid grid-cols-12 gap-4 items-center">
-  <div className="col-span-4">
-    <label
-      className="text-slate-600 flex text-sm items-center gap-2"
-      htmlFor="productUsage"
-    >
-      Product Usage
-    </label>
-    <input
-      className="pl-3 text-sm w-full rounded-md bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-      name="productUsage"
-      value={initialItemData.productUsage}
-      onChange={handleInputChange}
-    />
-  </div>
-
-  <div className="col-span-4">
+   
+        <div className="grid grid-cols-2 gap-x-4">
+  <div>
+    <p className="text-textColor text-base font-semibold mt-2">
+      Storage Information
+    </p>
     <label className="block text-xs text-labelColor">
       Dimensions
     </label>
-    <div className="grid grid-cols-4 gap-2">
-      <input
-        type="number"
-        className="text-sm rounded-md pl-3 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-        placeholder="Length"
-        name="length"
-        value={initialItemData.length}
-        onChange={handleInputChange}
-        min={0}
-      />
-      <input
-        type="number"
-        min={0}
-        className="text-sm rounded-md pl-3 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-        placeholder="Width"
-        name="width"
-        value={initialItemData.width}
-        onChange={handleInputChange}
-      />
-      <input
-        type="number"
-        min={0}
-        className="text-sm rounded-md pl-3 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-        placeholder="Height"
-        name="height"
-        value={initialItemData.height}
-        onChange={handleInputChange}
-      />
-      <div className="relative">
+    <div className="flex flex-row gap-x-2">
+      <div className="">
+        <input
+          type="number"
+          className="text-sm rounded-md pl-3  bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+          placeholder="Length"
+          name="length"
+          value={initialItemData.length}
+          onChange={handleInputChange}
+          min={0}
+        />
+      </div>
+      <div className="">
+        <input
+          type="number"
+          min={0}
+          className="text-sm rounded-md pl-3 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+          placeholder="Width"
+          name="width"
+          value={initialItemData.width}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div className="">
+        <input
+          type="number"
+          min={0}
+          className="text-sm rounded-md  pl-3 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+          placeholder="Height"
+          name="height"
+          value={initialItemData.height}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div className="w-full">
+        <div className="relative">
+          <select
+            name="dimensionUnit"
+            className="text-sm  rounded-md  pl-3 text-zinc-400 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+            value={initialItemData.dimensionUnit}
+            onChange={handleInputChange}
+          >
+            <option value="CM">CM</option>
+            <option value="MM">MM</option>
+            <option value="Inch">Inch</option>
+          </select>
+          {/* <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-700">
+            <CehvronDown color="gray" />
+          </div> */}
+        </div>
+      </div>
+    </div>
+
+    <div className="grid grid-cols-2 gap-x-4 mt-4">
+      <div>
+        <label className="text-slate-600 flex text-sm items-center gap-2" htmlFor="warranty">
+          Warranty
+        </label>
         <select
-          name="dimensionUnit"
-          className="text-sm appearance-none rounded-md w-full pl-3 text-zinc-400 bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-          value={initialItemData.dimensionUnit}
+          name="warranty"
+          className="block w-full text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+          value={initialItemData.warranty}
           onChange={handleInputChange}
         >
-          <option value="CM">CM</option>
-          <option value="MM">MM</option>
-          <option value="Inch">Inch</option>
+          <option value="">Select Warranty</option>
+          <option value="6 months">6 months</option>
+          <option value="1 year">1 year</option>
         </select>
-        <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-700">
-          <CehvronDown color="gray" />
+      </div>
+
+      <div>
+        <label className="text-slate-600 text-sm" htmlFor="weight">
+          Weight
+        </label>
+        <div className="flex">
+          <input
+            type="number"
+            min={0}
+            className="pl-3 text-sm w-full rounded-l-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+            placeholder="Weight"
+            name="weight"
+            value={initialItemData.weight}
+            onChange={handleInputChange}
+          />
+          <div className="relative w-24">
+            <select
+              name="weightUnit"
+              className="block w-full appearance-none text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-7 rounded-r-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+              value={initialItemData.weightUnit}
+              onChange={handleInputChange}
+            >
+              <option value="KG">KG</option>
+              <option value="G">G</option>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-700">
+              <CehvronDown color="gray" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div className="col-span-2">
-    <label
-      className="text-slate-600 flex text-sm items-center gap-2"
-      htmlFor="warranty"
-    >
-      Warranty
-    </label>
-    <select
-      name="warranty"
-      className="block w-full text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-      value={initialItemData.warranty}
-      onChange={handleInputChange}
-    >
-      <option value="">Select Warranty</option>
-      <option value="6 months">6 months</option>
-      <option value="1 year">1 year</option>
-    </select>
-  </div> 
-
-  <div className="col-span-2">
-    <label className="text-slate-600 text-sm" htmlFor="weight">
-      Weight
-    </label>
-    <div className="flex">
-      <input
-        type="number"
-        min={0}
-        className="pl-3 text-sm w-full rounded-l-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-        placeholder="Weight"
-        name="weight"
-        value={initialItemData.weight}
-        onChange={handleInputChange}
-      />
-      <div className="relative w-24">
-        <select
-          name="weightUnit"
-          className="block w-full appearance-none text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-7 rounded-r-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-          value={initialItemData.weightUnit}
-          onChange={handleInputChange}
-        >
-          <option value="KG">KG</option>
-          <option value="G">G</option>
-        </select>
-        <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-700">
-          <CehvronDown color="gray" />
-        </div>
-      </div>
-    </div>
+  <div>
+   
   </div>
 </div>
-}
 
 
+      
 
-
- 
-
- 
         <div className="grid grid-cols-2 gap-4 ">
-    
-        <div className="relative">
-                <label
-                  htmlFor="manufacturer-input"
-                  className="text-slate-600 text-sm flex items-center gap-2"
-                >
-                  Manufacturer
-                </label>
-                <div className="relative w-full ">
-                  <input
-                    id="manufacturer-input"
-                    type="text"
-                    value={initialItemData.manufacturer}
-                    readOnly
-                    className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    placeholder="Select or add Manufacturer"
-                    onClick={() => toggleDropdown("manufacturer")}
-                  />
-                  <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <CehvronDown color="gray" />
-                  </div>
-                </div>
-                {openDropdownIndex === "manufacturer" && (
-                  <div
-                    ref={dropdownRef}
-                    className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[50%] space-y-1"
-                  >
-                    <div className="mb-2.5">
-                      <SearchBar
-                        searchValue={searchValueManufacturer}
-                        onSearchChange={setSearchValueManufacturer}
-                        placeholder="Select Manufacturer"
-                      />
-                    </div>
-                    {itemsData.bmcrData.manufacturers
-                      .filter((manufacturer: string) =>
-                        manufacturer
-                          .toLowerCase()
-                          .includes(searchValueManufacturer.toLowerCase())
-                      )
-                      .map((manufacturer: string, index: number) => (
-                        <div
-                          key={index}
-                          onClick={() =>
-                            handleDropdownSelect("manufacturer", manufacturer)
-                          }
-                          className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                        >
-                          <div className="col-span-10 flex">
-                            <div>
-                              <p className="font-bold text-sm">
-                                {manufacturer}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    <div
-                      onClick={() => setIsManufatureModalOpen(true)}
-                      className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
-                    >
-                      <SettingsIcons color="darkRed" bold={2} />
-                      <p className="mt-0.5">Manage Manufacturer</p>
-                    </div>
-                  </div>
-                )}
+          <div className="relative">
+            <label
+              htmlFor="manufacturer-input"
+              className="text-slate-600 text-sm flex items-center gap-2"
+            >
+              Manufacturer
+            </label>
+            <div className="relative w-full ">
+              <input
+                id="manufacturer-input"
+                type="text"
+                value={initialItemData.manufacturer}
+                readOnly
+                className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                placeholder="Select or add Manufacturer"
+                onClick={() => toggleDropdown("manufacturer")}
+              />
+              <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <CehvronDown color="gray" />
               </div>
+            </div>
+            {openDropdownIndex === "manufacturer" && (
+              <div
+                ref={dropdownRef}
+                className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[50%] space-y-1"
+              >
+                <div className="mb-2.5">
+                  <SearchBar
+                    searchValue={searchValueManufacturer}
+                    onSearchChange={setSearchValueManufacturer}
+                    placeholder="Select Manufacturer"
+                  />
+                </div>
+                {itemsData.bmcrData.manufacturers
+                  .filter((manufacturer: string) =>
+                    manufacturer
+                      .toLowerCase()
+                      .includes(searchValueManufacturer.toLowerCase())
+                  )
+                  .map((manufacturer: string, index: number) => (
+                    <div
+                      key={index}
+                      onClick={() =>
+                        handleDropdownSelect("manufacturer", manufacturer)
+                      }
+                      className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                    >
+                      <div className="col-span-10 flex">
+                        <div>
+                          <p className="font-bold text-sm">{manufacturer}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                <div
+                  onClick={() => setIsManufatureModalOpen(true)}
+                  className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
+                >
+                  <SettingsIcons color="darkRed" bold={2} />
+                  <p className="mt-0.5">Manage Manufacturer</p>
+                </div>
+              </div>
+            )}
+          </div>
 
-              <div className="relative">
-                <label
-                  htmlFor="brand-input"
-                  className="text-slate-600 text-sm flex items-center gap-2"
-                >
-                  Brand
-                </label>
-                <div className="relative w-full ">
-                  <input
-                    id="brand-input"
-                    type="text"
-                    value={initialItemData.brand}
-                    readOnly
-                    className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    placeholder="Select or add Brand"
-                    onClick={() => toggleDropdown("brand")}
-                  />
-                  <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <CehvronDown color="gray" />
-                  </div>
-                </div>
-                {openDropdownIndex === "brand" && (
-                  <div
-                    ref={dropdownRef}
-                    className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[50%] space-y-1"
-                  >
-                    <div className="mb-2.5">
-                      <SearchBar
-                        searchValue={searchValueBrand}
-                        onSearchChange={setSearchValueBrand}
-                        placeholder="Select Brand"
-                      />
-                    </div>
-                    {itemsData.bmcrData.brandNames
-                      .filter((brand: string) =>
-                        brand
-                          .toLowerCase()
-                          .includes(searchValueBrand.toLowerCase())
-                      )
-                      .map((brand: string, index: number) => (
-                        <div
-                          key={index}
-                          onClick={() => handleDropdownSelect("brand", brand)}
-                          className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                        >
-                          <div className="col-span-10 flex">
-                            <div>
-                              <p className="font-bold text-sm">{brand}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    <div
-                      onClick={() => setIsBrandModalOpen(true)}
-                      className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
-                    >
-                      <SettingsIcons color="darkRed" bold={2} />
-                      <p className="mt-0.5">Manage Brand</p>
-                    </div>
-                  </div>
-                )}
+          <div className="relative">
+            <label
+              htmlFor="brand-input"
+              className="text-slate-600 text-sm flex items-center gap-2"
+            >
+              Brand
+            </label>
+            <div className="relative w-full ">
+              <input
+                id="brand-input"
+                type="text"
+                value={initialItemData.brand}
+                readOnly
+                className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                placeholder="Select or add Brand"
+                onClick={() => toggleDropdown("brand")}
+              />
+              <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <CehvronDown color="gray" />
               </div>
+            </div>
+            {openDropdownIndex === "brand" && (
+              <div
+                ref={dropdownRef}
+                className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[50%] space-y-1"
+              >
+                <div className="mb-2.5">
+                  <SearchBar
+                    searchValue={searchValueBrand}
+                    onSearchChange={setSearchValueBrand}
+                    placeholder="Select Brand"
+                  />
+                </div>
+                {itemsData.bmcrData.brandNames
+                  .filter((brand: string) =>
+                    brand.toLowerCase().includes(searchValueBrand.toLowerCase())
+                  )
+                  .map((brand: string, index: number) => (
+                    <div
+                      key={index}
+                      onClick={() => handleDropdownSelect("brand", brand)}
+                      className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                    >
+                      <div className="col-span-10 flex">
+                        <div>
+                          <p className="font-bold text-sm">{brand}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                <div
+                  onClick={() => setIsBrandModalOpen(true)}
+                  className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
+                >
+                  <SettingsIcons color="darkRed" bold={2} />
+                  <p className="mt-0.5">Manage Brand</p>
+                </div>
+              </div>
+            )}
+          </div>
           <div className="relative">
             <label
               htmlFor="category-input"
@@ -1147,7 +1169,6 @@ const AddItem = ({ }: Props) => {
         </div>
 
         <div className="grid grid-flow-col-dense  gap-4">
-        
           <div>
             <label
               className="text-slate-600 flex text-sm items-center gap-2"
@@ -1301,7 +1322,10 @@ const AddItem = ({ }: Props) => {
                 )}
               </div>
               <div className="w-1/2">
-                <label className="text-slate-600 flex text-sm items-center gap-2" htmlFor="saleMrp">
+                <label
+                  className="text-slate-600 flex text-sm items-center gap-2"
+                  htmlFor="saleMrp"
+                >
                   MRP
                 </label>
                 <div className="flex">
@@ -1319,8 +1343,6 @@ const AddItem = ({ }: Props) => {
                   />
                 </div>
               </div>
-
-
             </div>
           </div>
         </div>
