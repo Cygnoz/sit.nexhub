@@ -21,6 +21,10 @@ interface AccountDetails {
   inputSgst: string;
   inputIgst: string;
   inputVat: string;
+  freightOutward: string;
+  freightInward: string;
+  otherExpenseSales: string;
+  otherExpensePurchase: string;
 }
 
 type Props = {};
@@ -51,6 +55,10 @@ function AccountsSettings({}: Props) {
     inputSgst: "",
     inputIgst: "",
     inputVat: "",
+    freightOutward: "",
+    freightInward: "",
+    otherExpenseSales: "",
+    otherExpensePurchase: "",
   });
 
   const handleToggle = () => {
@@ -87,7 +95,7 @@ function AccountsSettings({}: Props) {
       const { response, error } = await fetchFunction(url);
       if (!error && response) {
         setData(response.data);
-        console.log(response);
+        // console.log(response);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -590,30 +598,30 @@ function AccountsSettings({}: Props) {
               )}
             </div>
           )}
-           <p className="mt-4 text-textColor">
+          <p className="mt-4 text-textColor">
             <b>Others</b>
           </p>
           <div className="bg-white border-slate-200 border-2 rounded-md mt-4 p-5">
-<div className="grid grid-cols-2 gap-4">
-<div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
                 <label
-                  htmlFor="accountPayableAccount"
+                  htmlFor="freightOutward"
                   className="text-slate-600 flex items-center gap-1"
                 >
-                  <p>Account Payable</p>
+                  <p>Freight Outward</p>
                 </label>
                 <div className="w-full mt-2.5 relative">
                   <select
                     onChange={handleInputChange}
-                    value={inputData.accountPayableAccount}
-                    name="accountPayableAccount"
+                    value={inputData.freightOutward}
+                    name="freightOutward"
                     className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                   >
                     <option value="">Select Account</option>
                     {allAccounts
                       .filter(
                         (item: any) =>
-                          item.accountSubhead === "Accounts Payable"
+                          item.accountSubhead === "Current Asset"
                       )
                       .map((item: any) => (
                         <option key={item._id} value={item._id}>
@@ -628,23 +636,23 @@ function AccountsSettings({}: Props) {
               </div>
               <div>
                 <label
-                  htmlFor="accountPayableAccount"
+                  htmlFor="  freightInward"
                   className="text-slate-600 flex items-center gap-1"
                 >
-                  <p>Account Payable</p>
+                  <p> Freight Inward</p>
                 </label>
                 <div className="w-full mt-2.5 relative">
                   <select
                     onChange={handleInputChange}
-                    value={inputData.accountPayableAccount}
-                    name="accountPayableAccount"
+                    value={inputData.freightInward}
+                    name="  freightInward"
                     className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                   >
                     <option value="">Select Account</option>
                     {allAccounts
                       .filter(
                         (item: any) =>
-                          item.accountSubhead === "Accounts Payable"
+                          item.accountSubhead === "Current Asset"
                       )
                       .map((item: any) => (
                         <option key={item._id} value={item._id}>
@@ -657,7 +665,70 @@ function AccountsSettings({}: Props) {
                   </div>
                 </div>
               </div>
-  </div>            
+
+              <div>
+                <label
+                  htmlFor="otherExpenseSales"
+                  className="text-slate-600 flex items-center gap-1"
+                >
+                  <p>Other Expense Sales</p>
+                </label>
+                <div className="w-full mt-2.5 relative">
+                  <select
+                    onChange={handleInputChange}
+                    value={inputData.otherExpenseSales}
+                    name="otherExpenseSales"
+                    className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                  >
+                    <option value="">Select Account</option>
+                    {allAccounts
+                      .filter(
+                        (item: any) =>
+                          item.accountSubhead === "Current Asset"
+                      )
+                      .map((item: any) => (
+                        <option key={item._id} value={item._id}>
+                          {item.accountName}
+                        </option>
+                      ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="otherExpensePurchase"
+                  className="text-slate-600 flex items-center gap-1"
+                >
+                  <p>Other Expense Purchase</p>
+                </label>
+                <div className="w-full mt-2.5 relative">
+                  <select
+                    onChange={handleInputChange}
+                    value={inputData.otherExpensePurchase}
+                    name="otherExpensePurchase"
+                    className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                  >
+                    <option value="">Select Account</option>
+                    {allAccounts
+                      .filter(
+                        (item: any) =>
+                          item.accountSubhead === "Current Asset"
+                      )
+                      .map((item: any) => (
+                        <option key={item._id} value={item._id}>
+                          {item.accountName}
+                        </option>
+                      ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </form>
       </div>
