@@ -8,37 +8,38 @@ import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
 import toast from "react-hot-toast";
 import { UnitResponseContext } from "../../../context/ContextShare";
+import SettingsIcons from "../../../assets/icons/SettingsIcon";
 
-type Props = {};
+type Props = { page?: string };
 
-interface UnitData  {
+interface UnitData {
   unitName: string;
-  symbol : string;
-  quantityCode:string;
+  symbol: string;
+  quantityCode: string;
   precision: string;
 }
 
 
-const NewUnit = ({}: Props) => {
+const NewUnit = ({ page }: Props) => {
   const [isModalOpen, setModalOpen] = useState(false);
 
 
   const { setUnitResponse } = useContext(UnitResponseContext)!;
-  const { request: addnewunit} = useApi("post", 5003);
+  const { request: addnewunit } = useApi("post", 5003);
 
 
   const [initialUnitData, setInitialUnitData] = useState<UnitData>(
     {
-    unitName: "",
+      unitName: "",
       symbol: "",
-      quantityCode:"",
-      precision:"",
-    
-    });
-    
-   
+      quantityCode: "",
+      precision: "",
 
-  
+    });
+
+
+
+
 
   console.log(initialUnitData);
 
@@ -57,36 +58,36 @@ const NewUnit = ({}: Props) => {
   ) => {
     const { name, value, } = event.target;
 
-   setInitialUnitData({...initialUnitData,[name]:value})
+    setInitialUnitData({ ...initialUnitData, [name]: value })
   };
 
 
- 
+
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
 
-    
+
     try {
-      const url =  `${endponits.ADD_UNIT}`;
+      const url = `${endponits.ADD_UNIT}`;
       const body = initialUnitData;
-     
+
       const { response, error } = await addnewunit(url, body);
       if (!error && response) {
         toast.success(response.data.message);
-     console.log(response);
-     setModalOpen(false);
-    
-          setUnitResponse((prevUnitResponse: any) => ({
-            ...prevUnitResponse,
-            ...body,
-          }));
-          setInitialUnitData({
-            unitName: "",
-            symbol: "",
-            quantityCode: "",
-            precision: "",
-          })
-        
+        console.log(response);
+        setModalOpen(false);
+
+        setUnitResponse((prevUnitResponse: any) => ({
+          ...prevUnitResponse,
+          ...body,
+        }));
+        setInitialUnitData({
+          unitName: "",
+          symbol: "",
+          quantityCode: "",
+          precision: "",
+        })
+
 
 
       } else {
@@ -102,17 +103,23 @@ const NewUnit = ({}: Props) => {
   return (
     <div>
       <div>
-        <Button
-          onClick={openModal}
-          variant="primary"
-          className="flex items-center"
-          size="sm"
-        >
-          <CirclePlus color="white" size="14" />{" "}
-          <p className="text-md">New Unit</p>
-        </Button>
+        {
+          page == "item" ? <div onClick={openModal} className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold">
+            <SettingsIcons color="darkRed" bold={2} />
+            <p className="mt-0.5">Manage Unit</p>
+          </div>
+            :
+            <Button
+              onClick={openModal}
+              variant="primary"
+              className="flex items-center"
+              size="sm"
+            >
+              <CirclePlus color="white" size="14" />{" "}
+              <p className="text-md">New Unit</p>
+            </Button>}
 
-        <Modal open={isModalOpen} onClose={closeModal}  style={{width:"39%"}}>
+        <Modal open={isModalOpen} onClose={closeModal} style={{ width: "39%" }}>
           <div className="p-5 mt-3">
             <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
               <div
@@ -138,7 +145,7 @@ const NewUnit = ({}: Props) => {
               </div>
             </div>
 
-            <form  onSubmit={handleSave} className="">
+            <form onSubmit={handleSave} className="">
               <div className="">
                 <div className="mb-4">
                   <label className="block text-sm mb-1 text-labelColor">
@@ -160,7 +167,7 @@ const NewUnit = ({}: Props) => {
                   </label>
                   <input
                     type="text"
-                  name="symbol"
+                    name="symbol"
                     value={initialUnitData.symbol}
                     placeholder="Symbol"
                     onChange={handleInputChange}
@@ -172,46 +179,46 @@ const NewUnit = ({}: Props) => {
                     Unit Quantity
                   </label>
                   <div className="relative w-full">
- <input
-type="text"
-name="quantityCode"
-  value={initialUnitData.quantityCode}
-  placeholder="Unit Quantity"
-  onChange={handleInputChange}
-className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-10">
+                    <input
+                      type="text"
+                      name="quantityCode"
+                      value={initialUnitData.quantityCode}
+                      placeholder="Unit Quantity"
+                      onChange={handleInputChange}
+                      className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-10">
 
-</input>
-                  
+                    </input>
+
                   </div>
                 </div>
 
                 <div>
-  <label className="block text-sm my-3 text-labelColor">
-    Unit Precision
-  </label>
-  <div className="relative w-full">
-  <input 
+                  <label className="block text-sm my-3 text-labelColor">
+                    Unit Precision
+                  </label>
+                  <div className="relative w-full">
+                    <input
 
-type="text"
-name= "precision"
-  value={initialUnitData.precision}
-  placeholder="Unit Precision"
-  onChange={handleInputChange}
-  className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-10"></input>
-  
-   
-  </div>
-</div>
+                      type="text"
+                      name="precision"
+                      value={initialUnitData.precision}
+                      placeholder="Unit Precision"
+                      onChange={handleInputChange}
+                      className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-10"></input>
+
+
+                  </div>
+                </div>
 
 
                 <br />
                 <div className="flex justify-end gap-2 mb-3">
 
-                 
+
                   <Button type="submit" variant="primary" size="sm">
                     Save
                   </Button>
-                   <Button  variant="secondary" size="sm">
+                  <Button variant="secondary" size="sm" onClick={closeModal}>
 
                     Cancel
                   </Button>

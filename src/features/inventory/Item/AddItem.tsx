@@ -14,6 +14,7 @@ import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
 import CategoryModal from "../Category/CategoryModal";
+import NewUnit from "../Unit/NewUnit";
 
 type Props = {};
 
@@ -587,10 +588,7 @@ const AddItem = ({ }: Props) => {
                           </div>
                         </div>
                       ))}
-                    <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold">
-                      <SettingsIcons color="darkRed" bold={2} />
-                      <p className="mt-0.5">Manage Unit</p>
-                    </div>
+                    <NewUnit page="item"/>
                   </div>
                 )}
               </div>
