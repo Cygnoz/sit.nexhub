@@ -138,7 +138,7 @@ function SeeCustomerDetails() {
               <img src={walletCashImage} alt="" className="object-cover" />
             </div>
             <p className="mt-2 text-sm font-semibold text-textColor">
-              Redeemed Wallet
+             Total Balance
             </p>
             <p className="mt-1 text-lg font-bold text-textColor">0.00</p>
           </div>
