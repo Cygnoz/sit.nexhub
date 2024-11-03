@@ -91,9 +91,10 @@ const iconDataMap: any = {
 
 type Props = {
   mode?: boolean;
+  setMode?:boolean
 };
 
-const ViewApps = ({ mode }: Props) => {
+const ViewApps : React.FC<Props> = ({ mode }) => {
   const [selectedTab, setSelectedTab] = useState("All");
 
 

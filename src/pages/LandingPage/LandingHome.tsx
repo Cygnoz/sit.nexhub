@@ -17,7 +17,7 @@ const LandingHome: React.FC = () => {
 
       {/* Main Content */}
       <LandingContant mode={mode} setMode={setMode} />
-      <VeiwApps  mode={mode} setMode={setMode}/>
+      <VeiwApps  mode={mode}/>
     </div>
   );
 };
