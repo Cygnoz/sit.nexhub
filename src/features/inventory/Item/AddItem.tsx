@@ -118,6 +118,12 @@ const AddItem = ({ }: Props) => {
     fetchAllItems();
     fetchAllItemName();
   }, []);
+  // useEffect(() => {
+  //   window.scrollTo({
+  //     top: 165,
+  //     behavior: "smooth",
+  //   });
+  // }, []);
 
   const [itemsData, setItemsData] = useState<ItemsData>({
     bmcrData: {
@@ -169,8 +175,6 @@ const AddItem = ({ }: Props) => {
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = event.target;
-
-    // If the input type is "number" and the value is negative, set it to zero
     if (type === "number" && parseFloat(value) < 0) {
       return;
     }
@@ -384,11 +388,11 @@ const AddItem = ({ }: Props) => {
                   {initialItemData.itemImage ? (
                     <img src={initialItemData.itemImage} alt="Item" className="max-h-20 max-w-40" />
                   ) : (
-                    <div className="flex gap-4">
-                      <div className="bg-darkRed rounded-full  flex items-center justify-center">
-                        <Plus color={"white"} classname="h-4" />
+                    <div className="flex gap-4 justify-center items-center">
+                      <div className="bg-darkRed rounded-full  flex items-center p-0.5 justify-center">
+                        <Plus color={"white"} classname="" />
                       </div>
-                      <p className="text-sm">Add Image</p>
+                      <p className="text-xs">Add Image</p>
                     </div>
                   )}
                 </div>
@@ -413,7 +417,9 @@ const AddItem = ({ }: Props) => {
 
 
 
-          <div className="col-span-10">
+          <div className="col-span-10 -mt-4">
+            <div className="flex justify-center items-center">
+
             <div>
               <label
                 className="block text-sm text-labelColor"
@@ -500,14 +506,14 @@ const AddItem = ({ }: Props) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-12 gap-4">
+            <div className="grid grid-cols-12 gap-4 ms-5">
               <div className="grid grid-cols-2 gap-4 mt-3 col-span-9">
                 <div>
                   <label className="text-slate-600 text-sm" htmlFor="itemName">
                     Name
                     <input
                       className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start  bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                      placeholder="Name"
+                      placeholder="Enter Name"
                       name="itemName"
                       value={initialItemData.itemName}
                       onChange={handleInputChange}
@@ -520,7 +526,7 @@ const AddItem = ({ }: Props) => {
                   </label>
                 </div>
 
-                <div className="">
+                <div>
                   <label
                     className="text-slate-600 flex items-center gap-2"
                     htmlFor="sku"
@@ -593,9 +599,9 @@ const AddItem = ({ }: Props) => {
                 )}
               </div>
             </div>
+            </div>
 
-
-            <div className="grid grid-cols-3 gap-4 mt-3 ">
+            <div className="grid grid-cols-3 gap-4 mt-4 ">
               {hsnSac &&
                 (isService ? (
                   <div>
@@ -755,6 +761,25 @@ const AddItem = ({ }: Props) => {
               )}
 
             </div>
+            {!isService && (
+              <div className="flex items-center  gap-1 text-textColor">
+                <input
+                  type="checkbox"
+                  className="accent-[#97998E] bg-white h-5 w-5 mx-1 my-1"
+                  id="checkbox3"
+                  name="returnableItem"
+                  checked={initialItemData.returnableItem}
+                  onChange={handleInputChange}
+                />
+                <label
+                  htmlFor="checkbox3"
+                  className="text-textColor text-sm font-semibold"
+                >
+                  Returnable Item
+                </label>
+              </div>
+            )}
+
           </div>
         </div>
 

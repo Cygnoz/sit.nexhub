@@ -9,7 +9,6 @@ type Props = {};
 
 function PurchaseOrders({}: Props) {
   const initialPurchaseOrder = {
-    organizationId: "INDORG0001",
     purchaseOrderClose: "",
     purchaseTC: "",
     purchaseNote: "",
@@ -17,15 +16,14 @@ function PurchaseOrders({}: Props) {
 
   const [purchaseOrderData, setPurchaseOrderData] = useState(initialPurchaseOrder);
 
-  const { request: fetchPurchaseOrderSettings } = useApi("put", 5004);
+  const { request: fetchPurchaseOrderSettings } = useApi("get", 5004);
   const { request: savePurchaseOrderSettings } = useApi("put", 5005);
 
   useEffect(() => {
     const fetchAllSettings = async () => {
       try {
         const url = `${endponits.GET_SETTINGS}`;
-        const body = { organizationId: purchaseOrderData.organizationId };
-        const { response, error } = await fetchPurchaseOrderSettings(url, body);
+        const { response, error } = await fetchPurchaseOrderSettings(url);
         
         if (!error && response) {
           const settings = response.data.purchaseOrderSettings;

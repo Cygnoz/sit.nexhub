@@ -10,7 +10,7 @@ interface CardData {
   icon: string;
   title: string;
   count: string;
-  rating: number; // Numeric change or percentage change
+  rating: number;
 }
 
 interface Props {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AccountDropdown from "./AccountDropdown";
-import ContactDropdown from "./ContactDropdown";
+// import ContactDropdown from "./ContactDropdown";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
 import TrashCan from "../../../../assets/icons/TrashCan";
 import Button from "../../../../Components/Button";
@@ -60,7 +60,7 @@ function NewJournal({}: Props) {
   const tableHeaders = [
     "Account",
     "Description",
-    "Contact (INR)",
+    // "Contact (INR)",
     "Debits",
     "Credits",
     "Actions",
@@ -122,7 +122,7 @@ function NewJournal({}: Props) {
     setContactSearch(contactSearch.filter((_, i) => i !== index));
   };
 
-  const contactOptions = ["John Doe", "Jane Smith", "Robert Brown"];
+  // const contactOptions = ["John Doe", "Jane Smith", "Robert Brown"];
 
   const currencies = [
     { value: "INR", display: "INR - Indian Rupees" },
@@ -314,17 +314,17 @@ function NewJournal({}: Props) {
       isAccountDropdownOpen.map((open, i) => (i === index ? false : open))
     );
   };
-  const handleContactSelect = (index: number, contact: string) => {
-    const newTransaction = [...newJournalDatas.transaction];
-    newTransaction[index].contact = contact;
-    setNewJournelDatas({
-      ...newJournalDatas,
-      transaction: newTransaction,
-    });
-    setIsContactDropdownOpen(
-      isContactDropdownOpen.map((open, i) => (i === index ? false : open))
-    );
-  };
+  // const handleContactSelect = (index: number, contact: string) => {
+  //   const newTransaction = [...newJournalDatas.transaction];
+  //   newTransaction[index].contact = contact;
+  //   setNewJournelDatas({
+  //     ...newJournalDatas,
+  //     transaction: newTransaction,
+  //   });
+  //   setIsContactDropdownOpen(
+  //     isContactDropdownOpen.map((open, i) => (i === index ? false : open))
+  //   );
+  // };
 
   const handleAccountSearchChange = (index: number, value: string) => {
     const newSearch = [...accountSearch];
@@ -332,11 +332,11 @@ function NewJournal({}: Props) {
     setAccountSearch(newSearch);
   };
 
-  const handleContactSearchChange = (index: number, value: string) => {
-    const newSearch = [...contactSearch];
-    newSearch[index] = value;
-    setContactSearch(newSearch);
-  };
+  // const handleContactSearchChange = (index: number, value: string) => {
+  //   const newSearch = [...contactSearch];
+  //   newSearch[index] = value;
+  //   setContactSearch(newSearch);
+  // };
 
   const handleAccountDropdownToggle = (index: number, isOpen: boolean) => {
     setIsAccountDropdownOpen(
@@ -344,11 +344,11 @@ function NewJournal({}: Props) {
     );
   };
 
-  const handleContactDropdownToggle = (index: number, isOpen: boolean) => {
-    setIsContactDropdownOpen(
-      isContactDropdownOpen.map((open, i) => (i === index ? isOpen : open))
-    );
-  };
+  // const handleContactDropdownToggle = (index: number, isOpen: boolean) => {
+  //   setIsContactDropdownOpen(
+  //     isContactDropdownOpen.map((open, i) => (i === index ? isOpen : open))
+  //   );
+  // };
 
   const clearAccountSearch = (index: number) => {
     const newSearch = [...accountSearch];
@@ -356,11 +356,11 @@ function NewJournal({}: Props) {
     setAccountSearch(newSearch);
   };
 
-  const clearContactSearch = (index: number) => {
-    const newSearch = [...contactSearch];
-    newSearch[index] = "";
-    setContactSearch(newSearch);
-  };
+  // const clearContactSearch = (index: number) => {
+  //   const newSearch = [...contactSearch];
+  //   newSearch[index] = "";
+  //   setContactSearch(newSearch);
+  // };
 
   const handleInputChange = (index: number, field: string, value: any) => {
     const newTransaction = [...newJournalDatas.transaction];
@@ -557,7 +557,7 @@ function NewJournal({}: Props) {
                         }
                       />
                     </td>
-                    <ContactDropdown
+                    {/* <ContactDropdown
                       index={index}
                       contact={row.contact}
                       contactOptions={contactOptions}
@@ -567,7 +567,7 @@ function NewJournal({}: Props) {
                       onSearchChange={handleContactSearchChange}
                       onDropdownToggle={handleContactDropdownToggle}
                       clearSearch={clearContactSearch}
-                    />
+                    /> */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <input
                         type="number"
