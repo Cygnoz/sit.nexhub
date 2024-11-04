@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Ellipsis from "../../../assets/icons/Ellipsis";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import Button from "../../../Components/Button";
@@ -8,60 +8,41 @@ import SearchBar from "../../../Components/SearchBar";
 // import BookX from "../../../assets/icons/BookX";
 import { Link } from "react-router-dom";
 // import newspaper from "../../../assets/icons/newspaper";
-import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
-import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
+
 
 type Props = {};
 
 const InvoiceHome = ({}: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
-  // const [selectedTab, setSelectedTab] = useState<string>("All");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  // const toggleDropdown = () => {
+  //   setIsDropdownOpen(!isDropdownOpen);
+  // };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+ 
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
-      setIsDropdownOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const dropdownItems = [
-    {
-      icon: <ArrowDownIcon />,
-      text: "Import Journals",
-      onClick: () => {
-        console.log("Import Sales Order clicked");
-      },
-    },
-    {
-      icon: <ArrowUpIcon />,
-      text: "Export Journals",
-      onClick: () => {
-        console.log("Export Sales Order clicked");
-      },
-    },
-    {
-      icon: <ArrowUpIcon />,
-      text: "Manage Templates",
-      onClick: () => {
-        console.log("Export Current View clicked");
-      },
-    }
-  ];
+  // const dropdownItems = [
+  //   {
+  //     icon: <ArrowDownIcon />,
+  //     text: "Import Journals",
+  //     onClick: () => {
+  //       console.log("Import Sales Order clicked");
+  //     },
+  //   },
+  //   {
+  //     icon: <ArrowUpIcon />,
+  //     text: "Export Journals",
+  //     onClick: () => {
+  //       console.log("Export Sales Order clicked");
+  //     },
+  //   },
+  //   {
+  //     icon: <ArrowUpIcon />,
+  //     text: "Manage Templates",
+  //     onClick: () => {
+  //       console.log("Export Current View clicked");
+  //     },
+  //   }
+  // ];
 
   // const filterList = [
   //   { title: "All", icon: Booktext },
@@ -140,11 +121,11 @@ const InvoiceHome = ({}: Props) => {
           <Link to={"/sales/invoice/new"}>
           <Button size="sm">
             <PlusCircle color="white" />
-            <p>New Invoice</p>
+            <p className="text-sm">New Invoice</p>
           </Button>
           </Link>
          
-
+{/* 
           <div onClick={toggleDropdown} className="cursor-pointer">
               <Ellipsis />
             </div>
@@ -169,7 +150,7 @@ const InvoiceHome = ({}: Props) => {
                                    ))}
                 </ul>
               </div>
-            )}
+            )} */}
         </div>
       </div>
 

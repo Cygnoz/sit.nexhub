@@ -294,7 +294,7 @@ function NewJournal({}: Props) {
             navigate("/accountant/manualjournal");
           }, 2000);
         } else {
-          alert("An error occurred");
+          toast.error(error?.response.data.message);
           console.log("error", error);
         }
       } catch (error) {
