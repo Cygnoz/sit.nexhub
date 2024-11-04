@@ -23,8 +23,7 @@ function AddExpensePage({}: Props) {
       fileInputRef.current.click();
     }
   };
- 
-
+    
   return (
     <div className="bg-white mx-7">
       <div className="flex gap-5 items-center mb-4">
