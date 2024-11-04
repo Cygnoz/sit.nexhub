@@ -20,11 +20,12 @@ interface Props {
     totalSalesValue: number;
     inventoryValueChange: number;
     recentlyAddedItemsCount: number;
-    totalSoldValue: number;
+    totalSoldValue?: number; // Make this optional
     salesValueChange: number;
     underStockItemsCount: number;
   } | null;
 }
+
 
 const InventoryCards: React.FC<Props> = ({ data }) => {
   const [activeCard, setActiveCard] = useState<number | null>(null);

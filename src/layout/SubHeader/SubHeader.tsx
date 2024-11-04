@@ -3,17 +3,18 @@ import navlist from "../../assets/constants";
 import { Link } from "react-router-dom";
 import ItemEllipsis from "../../Components/ellipsis/Ellipsis";
 import HomeIcon from "../../assets/icons/HomeIcon";
+
 type Props = {
   activeIndex: number | null;
 };
 
 const SubHeader = ({ activeIndex }: Props) => {
-  const [selectedIndex, setSelectedIndex] = useState<number>();
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const savedSelectedIndex = localStorage.getItem("savedSelectedIndex");
     if (savedSelectedIndex !== null) {
-      setSelectedIndex(Number(0));
+      setSelectedIndex(Number(savedSelectedIndex));
     }
   }, [activeIndex]);
 
@@ -26,7 +27,9 @@ const SubHeader = ({ activeIndex }: Props) => {
     <div className="bg-BgSubhead flex mx-7 justify-between px-5 py-3 my-4 items-center rounded-full ">
       <div className="flex items-center gap-4">
         <Link to={"/landing"}>
-        <div className="bg-white px-3 py-2 rounded-full text-sm"><HomeIcon color="#585953" size={24}/></div>
+          <div className="bg-white px-3 py-2 rounded-full text-sm">
+            <HomeIcon color="#585953" size={24} />
+          </div>
         </Link>
         {activeIndex !== null &&
           navlist[activeIndex] &&
