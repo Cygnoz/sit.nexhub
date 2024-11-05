@@ -30,7 +30,7 @@ interface AccountDetails {
 type Props = {};
 
 function AccountsSettings({}: Props) {
-  const [isVat, setIsVat] = useState(true);
+  // const [isVat, setIsVat] = useState(true);
   const [allAccounts, setAllAccounts] = useState<any>([]);
   const [tax, setTax] = useState<any>([]);
   const [accounts, setAccounts] = useState<any>([]);
@@ -61,9 +61,9 @@ function AccountsSettings({}: Props) {
     otherExpensePurchase: "",
   });
 
-  const handleToggle = () => {
-    setIsVat(!isVat);
-  };
+  // const handleToggle = () => {
+  //   setIsVat(!isVat);
+  // };
 
   const handleInputChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -134,7 +134,7 @@ function AccountsSettings({}: Props) {
           <p className="mt-4 text-textColor">
             <b>Accounts</b>
           </p>
-          <div className="ml-auto items-center justify-center mt-4">
+          {/* <div className="ml-auto items-center justify-center mt-4">
             <label className="flex items-center cursor-pointer">
               <div className="relative">
                 <input
@@ -155,7 +155,7 @@ function AccountsSettings({}: Props) {
                 ></div>
               </div>
             </label>
-          </div>
+          </div> */}
         </div>
 
         <form>
@@ -598,10 +598,10 @@ function AccountsSettings({}: Props) {
               )}
             </div>
           )}
-          <p className="mt-4 text-textColor">
+          {/* <p className="mt-4 text-textColor">
             <b>Others</b>
-          </p>
-          <div className="bg-white border-slate-200 border-2 rounded-md mt-4 p-5">
+          </p> */}
+          {/* <div className="bg-white border-slate-200 border-2 rounded-md mt-4 p-5">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label
@@ -729,7 +729,7 @@ function AccountsSettings({}: Props) {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </form>
       </div>
 
