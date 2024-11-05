@@ -16,15 +16,15 @@ import salesVector from "../../assets/Images/salesVector.png";
 import supplierVector from "../../assets/Images/supplierVector.png";
 import droidBilly from '../../assets/Images/droidBilly.png'
 import { useNavigate } from "react-router-dom";
-
+ 
 type Props = {
   setMode?: React.Dispatch<React.SetStateAction<boolean>>;
   mode?: boolean
 };
-
+ 
 const LandingContant = ({ mode }: Props) => {
   const navigate = useNavigate()
-
+ 
   const handleNavigation = (route: string, index: number) => {
     localStorage.setItem('savedIndex', index.toString())
     navigate(route);
@@ -48,20 +48,20 @@ const LandingContant = ({ mode }: Props) => {
                   </button>
                 </div>
                 {/* Arrow Button */}
-
+ 
                 <div className="flex justify-end cursor-pointer">
                   <div className={`${mode ? 'bg-[#948B7C]' : 'bg-[#90887A]'} text-white h-[52px] w-[52px] flex items-center justify-center rounded-full `}>
                     <ArrowrightUp size={30} stroke={1} />
                   </div>
                 </div>
               </div>
-
+ 
               {/* Main Content */}
               <div className={`mt-2 ${mode ? 'text-[#303F58]' : 'text-white'} `}>
                 <p className="text-[32px] ">Manage <span className="font-bold">Sales</span></p>
                 <p className="w-52 text-[32px] ">Workflow Solution</p>
               </div>
-
+ 
               <img src={manageSalesImg} alt="" className="absolute -right-12 -bottom-7 w-[326px] h-[177px]" />
             </div>
           </div>
@@ -199,7 +199,7 @@ const LandingContant = ({ mode }: Props) => {
       </div>
       <div>
         <button className={`absolute z-60 right-1/2 ${mode ? 'bg-white' : 'bg-[#1A282F]'} rounded-full -bottom-2 h-[52px] w-[10.2%] flex items-center rotate-border shadow-xl`}>
-
+ 
         </button>
         <button className={`absolute z-70 right-[50.1%] ${mode ? 'bg-white' : 'bg-[#1A282F]'} rounded-full -bottom-[1.1%] px-4 py-3 ${mode && 'text-[#C2A270]'} flex items-center`}>
           More Apps <CehvronDown color={mode ? '#C2A270' : "white"} />
@@ -208,5 +208,5 @@ const LandingContant = ({ mode }: Props) => {
     </div>
   )
 }
-
+ 
 export default LandingContant
