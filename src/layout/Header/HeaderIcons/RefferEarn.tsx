@@ -30,7 +30,7 @@ function RefferEarn({}: Props) {
                 &times;
               </button>
             </div>
-            <div className="p-4 overflow-y-auto " style={{maxHeight: 'calc(100vh - 100px)'}}>
+            <div className="p-4 overflow-y-scroll hide-scrollbar " style={{maxHeight: 'calc(100vh - 100px)'}}>
               <div className="space-y-2  text-center">
                 <h3 className="text-lg font-bold text-gray-700 ">Refer a Friend, Enjoy <br />Great Perks!</h3>
                 <p className="text-gray-600 text-xs">

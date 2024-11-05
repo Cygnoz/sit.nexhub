@@ -53,7 +53,7 @@ const ViewMoreOrder = ({ salesOrderState, setSalesOrderState, page, allAccounts 
                   >
                     <option value="" selected hidden disabled>Select Account</option>
                     {allAccounts
-                      .filter((item: { accountSubhead: string }) => item.accountSubhead === "Expense")
+                      .filter((item: { accountHead: string }) => item.accountHead === "Expenses")
                       .map((item: { _id: string; accountName: string }) => (
                         <option key={item._id} value={item._id}>
                           {item.accountName}
@@ -198,7 +198,7 @@ const ViewMoreOrder = ({ salesOrderState, setSalesOrderState, page, allAccounts 
                     name="paidAmount"
                     type="number"
                     onChange={handleChange}
-                    placeholder="Enter vehicle number"
+                    placeholder="Enter Paid Amount"
                     className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-2"
                   />
                 </label>
