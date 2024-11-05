@@ -11,7 +11,6 @@ type Props = {
 
 const ViewMoreOrder = ({ salesOrderState, setSalesOrderState, page, allAccounts }: Props) => {
   const [viewDetails, setViewDetails] = useState<boolean>(false);
-  console.log(allAccounts, "all her");
 
   const handleChange = (event: any) => {
     const { name, value } = event.target;
