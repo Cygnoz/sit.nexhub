@@ -17,8 +17,8 @@ export interface CustomerData {
     creditDays: string;
     creditLimit: string;
     interestPercentage: string;
-    debitOpeningBalance: string;
-    creditOpeningBalance: string;
+    debitOpeningBalance?: string;  
+    creditOpeningBalance?: string;
     enablePortal: boolean;
     documents: string;
     department: string;

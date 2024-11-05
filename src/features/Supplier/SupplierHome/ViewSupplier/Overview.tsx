@@ -116,8 +116,8 @@ const Overview: React.FC<OverviewProps> = ({
 
   console.log(supplier?.status);
   const formatDateTime = (dateString: string) => {
-    const [datePart, timePart] = dateString.split(" ");
-    const [hoursString, minutes] = timePart.split(":");
+    const [datePart, timePart] = dateString?.split(" ");
+    const [hoursString, minutes] = timePart?.split(":");
 
     let period = "AM";
 

@@ -278,9 +278,11 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, type, value } = e.target;
-    if (name == "companyName") {
+  
+    if (name === "companyName") {
       setCustomerData({ ...customerdata, customerDisplayName: value });
     }
+  
     if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
       setCustomerData((prevData) => ({
@@ -295,42 +297,55 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
         }));
       }
     }
-
+  
     if (name === "openingType") {
-      // Update openingType state first
       setOpeningtype(value);
-
-      // Update supplierData state based on the new openingType value
+  
       if (value === "Debit") {
-        setCustomerData((prevData) => ({
-          ...prevData,
-          debitOpeningBalance: prevData.creditOpeningBalance,
-          creditOpeningBalance: "", // Clear creditOpeningBalance
-        }));
+        setCustomerData((prevData) => {
+          const updatedData = {
+            ...prevData,
+            debitOpeningBalance: prevData.creditOpeningBalance,
+          };
+          delete updatedData.creditOpeningBalance;
+          return updatedData;
+        });
       } else if (value === "Credit") {
-        setCustomerData((prevData) => ({
-          ...prevData,
-          creditOpeningBalance: prevData.debitOpeningBalance,
-          debitOpeningBalance: "", // Clear debitOpeningBalance
-        }));
+        setCustomerData((prevData) => {
+          const updatedData = {
+            ...prevData,
+            creditOpeningBalance: prevData.debitOpeningBalance,
+          };
+          delete updatedData.debitOpeningBalance;
+          return updatedData;
+        });
       }
     }
-
-    // Update openingBalance field
+  
     if (name === "openingBalance") {
       if (openingType === "Credit") {
-        setCustomerData((prevData) => ({
-          ...prevData,
-          creditOpeningBalance: value,
-        }));
+        setCustomerData((prevData) => {
+          const updatedData = {
+            ...prevData,
+            creditOpeningBalance: value,
+          };
+          delete updatedData.debitOpeningBalance; 
+          return updatedData;
+        });
       } else if (openingType === "Debit") {
-        setCustomerData((prevData) => ({
-          ...prevData,
-          debitOpeningBalance: value,
-        }));
+        setCustomerData((prevData) => {
+          const updatedData = {
+            ...prevData,
+            debitOpeningBalance: value,
+          };
+          delete updatedData.creditOpeningBalance;
+          return updatedData;
+        });
       }
     }
   };
+  
+  
   console.log(customerdata);
   
 
@@ -983,7 +998,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                    text-sm pl-2 pr-2 rounded-l-md leading-tight 
                                    focus:outline-none focus:bg-white focus:border-gray-500"
                                 name="openingType"
-                                value={openingType}
+                                value={customerdata.creditOpeningBalance?"Credit":"Debit"}
                                 onChange={handleChange}
                               >
                                 <option value="Debit">Dr</option>
@@ -996,6 +1011,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             </div>
                             <input
                               type="text"
+                              value={customerdata.creditOpeningBalance?customerdata.creditOpeningBalance:customerdata.debitOpeningBalance}
                               className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                               placeholder={`Enter ${openingType} Opening Balance`}
                               onChange={(e) => {
@@ -1018,11 +1034,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                 }
                               }}
                               name="openingBalance"
-                              value={
-                                openingType === "Debit"
-                                  ? customerdata.debitOpeningBalance
-                                  : customerdata.creditOpeningBalance
-                              }
+                             
                             />
                           </div>
                         </div>

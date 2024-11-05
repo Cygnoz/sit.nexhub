@@ -13,6 +13,8 @@ interface CustomerSupplierSettings {
   duplicateCustomerDisplayName: boolean;
   duplicateCustomerEmail: boolean;
   duplicateCustomerMobile: boolean;
+  customerActivityDays: string;
+  supplierActivityDays:string;
 }
 
 const CustomerAndSupplier = () => {
@@ -27,6 +29,8 @@ const CustomerAndSupplier = () => {
     duplicateCustomerDisplayName: false,
     duplicateCustomerEmail: false,
     duplicateCustomerMobile: false,
+    customerActivityDays: "",
+    supplierActivityDays:""
   });
   useEffect(() => {
     getSettingsData();
@@ -42,12 +46,14 @@ const CustomerAndSupplier = () => {
   }, [settingsResponse]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setInputData((prevData) => ({
-      ...prevData,
-      [name]: checked,
-    }));
-  };
+      const { name, type, checked, value } = e.target;
+    
+      setInputData((prevData) => ({
+        ...prevData,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
+    };
+    
 
   const handleSave = async () => {
     try {
@@ -103,6 +109,18 @@ const CustomerAndSupplier = () => {
             Don't allow duplicate supplier mobile numbers
           </label>
         </div>
+
+        <div className="flex items-center  space-x-2 mt-2">
+          <label className="font-medium">Cusomer Inactive In</label>
+          <input
+            className="pl-3 text-sm w-[20%] placeholder-[#495160]  rounded-md text-start bg-white border border-inputBorder  h-7 p-2  leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+            placeholder="Enter Days"
+            type="text"
+            name="supplierActivityDays"
+            value={inputData.supplierActivityDays}
+            onChange={handleInputChange}
+          />
+        </div>
       </div>
       <div className="bg-white w-full p-6 mt-5 text-[14px] rounded-lg space-y-3">
         <p className="font-bold">Duplicate Customer Settings</p>
@@ -138,6 +156,17 @@ const CustomerAndSupplier = () => {
           <label className="font-medium">
             Don't allow duplicate customer mobile numbers
           </label>
+        </div>
+        <div className="flex items-center  space-x-2 mt-2">
+          <label className="font-medium">Cusomer Inactive In</label>
+          <input
+            className="pl-3 text-sm w-[20%] placeholder-[#495160]  rounded-md text-start bg-white border border-inputBorder  h-7 p-2  leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+            placeholder="Enter Days"
+            type="text"
+            name="customerActivityDays"
+            value={inputData.customerActivityDays}
+            onChange={handleInputChange}
+          />
         </div>
       </div>
       <Button
