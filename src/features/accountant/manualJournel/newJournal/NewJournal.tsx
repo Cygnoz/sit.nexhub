@@ -294,7 +294,8 @@ function NewJournal({}: Props) {
             navigate("/accountant/manualjournal");
           }, 2000);
         } else {
-          toast.error(error?.response.data.message);          console.log("error", error);
+          toast.error(error?.response.data.message);
+          console.log("error", error);
         }
       } catch (error) {
         console.log("Error during API call", error);
