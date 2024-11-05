@@ -198,12 +198,13 @@ const LandingContant = ({ mode }: Props) => {
         </div>
       </div>
       <div>
-        <button className={`absolute z-60 right-1/2 ${mode ? 'bg-white' : 'bg-[#1A282F]'} rounded-full -bottom-2 h-[52px] w-[10.2%] flex items-center rotate-border shadow-xl`}>
- 
-        </button>
-        <button className={`absolute z-70 right-[50.1%] ${mode ? 'bg-white' : 'bg-[#1A282F]'} rounded-full -bottom-[1.1%] px-4 py-3 ${mode && 'text-[#C2A270]'} flex items-center`}>
-          More Apps <CehvronDown color={mode ? '#C2A270' : "white"} />
-        </button>
+      <button className={`absolute z-60 right-[50%] translate-x-[50%] ${mode ? 'bg-white' : 'bg-[#1A282F]'} rounded-full -bottom-6 h-[55px] w-[150px] flex items-center rotate-border shadow-xl`}>
+</button>
+<button className={`absolute z-70 right-[50%] translate-x-[50%] ${mode ? 'bg-white' : 'bg-[#1A282F]'} rounded-full -bottom-5 px-4 py-3 ${mode && 'text-[#C2A270]'} flex items-center`}>
+  More Apps <CehvronDown color={mode ? '#C2A270' : 'white'} />
+</button>
+
+
       </div>
     </div>
   )
