@@ -2,6 +2,7 @@ import { useState } from "react";
 import OrderCards from "./OrderCards";
 import toatalInvImage from "../../../assets/Images/Group 2513.png";
 import totalSalesImage from "../../../assets/Images/Group 2517.png";
+import totalSoldImage from "../../../assets/Images/Group 2516.png";
 import pendingImage from "../../../assets/Images/Group 2514.png";
 import pendingSalesImage from "../../../assets/Images/Group 2518.png";
 import CardSkeleton from "../../../Components/skeleton/CardSkeleton";
@@ -17,13 +18,14 @@ interface Props {
   data: {
     totalInventoryValue: number;
     totalSalesValue: number;
-
     inventoryValueChange: number;
     recentlyAddedItemsCount: number;
+    totalSoldValue?: number; // Make this optional
     salesValueChange: number;
     underStockItemsCount: number;
   } | null;
 }
+
 
 const InventoryCards: React.FC<Props> = ({ data }) => {
   const [activeCard, setActiveCard] = useState<number | null>(null);
@@ -47,6 +49,12 @@ const InventoryCards: React.FC<Props> = ({ data }) => {
           rating: data.salesValueChange ?? 0,
         },
         {
+          icon: totalSoldImage,
+          title: "Total Sold Value",
+          count: data.underStockItemsCount?.toString() || "N/A",
+          rating: 10, // Placeholder value
+        },
+        {
           icon: pendingImage,
           title: "Recently Added",
           count: data.recentlyAddedItemsCount?.toString() || "N/A",
@@ -58,7 +66,6 @@ const InventoryCards: React.FC<Props> = ({ data }) => {
           count: data.underStockItemsCount?.toString() || "N/A",
           rating: 10, // Placeholder value
         },
-        // Additional card for frequently ordered items
       ]
     : [];
 
@@ -77,7 +84,9 @@ const InventoryCards: React.FC<Props> = ({ data }) => {
                 onClick={() => handleCardClick(index)}
               />
             ))
-          : Array.from({ length: 4 }).map((_, index) => <CardSkeleton key={index} />)}
+          : Array.from({ length: 4 }).map((_, index) => (
+              <CardSkeleton key={index} />
+            ))}
       </div>
     </div>
   );
