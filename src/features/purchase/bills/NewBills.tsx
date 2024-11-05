@@ -214,6 +214,16 @@ const NewBills = ({}: Props) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+
+    if (name === "dueDate") {
+      const selectedDueDate = new Date(value);
+      const billDate = new Date(bill.billDate);
+  
+      if (selectedDueDate < billDate) {
+        toast.error("Due Date cannot be before the Bill Date.");
+        return;
+      }
+    }
   
     if (name === "transactionDiscount") {
       let discountValue = parseFloat(value) || 0;
@@ -263,6 +273,55 @@ const NewBills = ({}: Props) => {
       }));
     }
   };
+
+  const getLastDayOfMonth = (date:any, monthsToAdd = 0) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + monthsToAdd + 1; 
+    return new Date(year, month, 1); 
+  };
+  
+ // Assuming 'customDueDate' is part of the bill state
+useEffect(() => {
+  if (bill.billDate) {
+    const billDate = new Date(bill.billDate);
+    let dueDate = new Date(billDate);
+
+    switch (bill.paymentTerms) {
+      case "Net 15":
+      case "Net 30":
+      case "Net 45":
+        const daysToAdd = parseInt(bill.paymentTerms.split(" ")[1], 10);
+        dueDate.setDate(billDate.getDate() + daysToAdd);
+        break;
+      case "Due end of next month":
+        dueDate = getLastDayOfMonth(billDate, 1); 
+        break;
+      case "Due end of the month":
+        dueDate = getLastDayOfMonth(billDate); 
+        break;
+      case "Pay Now":
+        dueDate = billDate; 
+        break;
+      case "Due on Receipt":
+        if (bill.dueDate) {
+          dueDate = new Date(bill.dueDate); // Set custom date if available
+        } else {
+          dueDate = billDate; // Default to bill date if no custom date is set
+        }
+        break;
+      default:
+        break;
+    }
+
+    setBill((prevState) => ({
+      ...prevState,
+      dueDate: dueDate.toISOString().split("T")[0],
+    }));
+  }
+}, [bill.paymentTerms, bill.billDate]);
+
+  
+
   
 
   const calculateTotalAmount = () => {
@@ -310,7 +369,6 @@ const NewBills = ({}: Props) => {
       }
     } catch (error) {}
   };
-
 
   useEffect(() => {
     const newGrandTotal = calculateTotalAmount();
@@ -654,6 +712,7 @@ const NewBills = ({}: Props) => {
                     value={bill.dueDate}
                     onChange={handleChange}
                     type="date"
+                    disabled={bill.paymentTerms !== "Due on Receipt"}
                     className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
                   />
                 </label>
