@@ -94,7 +94,7 @@ const initialItemDataState = {
   status: "",
 };
 
-const AddItem = ({}: Props) => {
+const AddItem = ({ }: Props) => {
   const [initialItemData, setInitialItemData] = useState(initialItemDataState);
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
   const [isService, setIsService] = useState<boolean>(false);
@@ -255,6 +255,10 @@ const AddItem = ({}: Props) => {
   const [errors, setErrors] = useState({
     itemName: false,
     sellingPrice: false,
+    taxPreference: false,
+    taxRate: false,
+    taxExemptReason: false,
+
   });
 
   const navigate = useNavigate();
@@ -268,6 +272,9 @@ const AddItem = ({}: Props) => {
     const newErrors = {
       itemName: !initialItemData.itemName,
       sellingPrice: !initialItemData.sellingPrice,
+      taxPreference: !initialItemData.taxPreference,
+      taxRate: initialItemData.taxPreference === "Taxable" && !initialItemData.taxRate,
+      taxExemptReason: initialItemData.taxPreference === "Non-taxable" && !initialItemData.taxExemptReason
     };
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) {
@@ -302,6 +309,12 @@ const AddItem = ({}: Props) => {
     }
   };
 
+  const handleClearFields = (field: string) => {
+    setInitialItemData((prev) => ({
+      ...prev,
+      [field]: "", // Clear only the specified field
+    }));
+  };
   const location = useLocation();
   const selectedItem = location.state?.item;
   useEffect(() => {
@@ -380,9 +393,8 @@ const AddItem = ({}: Props) => {
             <div className="   h-36 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center">
               <label htmlFor="image">
                 <div
-                  className={`bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ${
-                    initialItemData.itemImage ? "h-[90px] rounded-b-none" : ""
-                  }`}
+                  className={`bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ${initialItemData.itemImage ? "h-[90px] rounded-b-none" : ""
+                    }`}
                 >
                   {initialItemData.itemImage ? (
                     <img
@@ -445,20 +457,18 @@ const AddItem = ({}: Props) => {
                         type="radio"
                         name="itemType"
                         value="goods"
-                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                          initialItemData.itemType === "goods"
-                            ? "border-8 border-[#97998E]"
-                            : "border-1 border-[#97998E]"
-                        }`}
+                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${initialItemData.itemType === "goods"
+                          ? "border-8 border-[#97998E]"
+                          : "border-1 border-[#97998E]"
+                          }`}
                         checked={initialItemData.itemType === "goods"} // "Goods" will be checked by default
                         onChange={handleInputChange}
                       />
                       <div
-                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                          initialItemData.itemType === "goods"
-                            ? "bg-neutral-50"
-                            : "bg-transparent"
-                        }`}
+                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${initialItemData.itemType === "goods"
+                          ? "bg-neutral-50"
+                          : "bg-transparent"
+                          }`}
                       />
                     </div>
                     <label
@@ -485,20 +495,18 @@ const AddItem = ({}: Props) => {
                         type="radio"
                         name="itemType"
                         value="service"
-                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                          initialItemData.itemType === "service"
-                            ? "border-8 border-[#97998E]"
-                            : "border-1 border-[#97998E]"
-                        }`}
+                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${initialItemData.itemType === "service"
+                          ? "border-8 border-[#97998E]"
+                          : "border-1 border-[#97998E]"
+                          }`}
                         checked={initialItemData.itemType === "service"}
                         onChange={handleInputChange}
                       />
                       <div
-                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                          initialItemData.itemType === "service"
-                            ? "bg-neutral-50"
-                            : "bg-transparent"
-                        }`}
+                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${initialItemData.itemType === "service"
+                          ? "bg-neutral-50"
+                          : "bg-transparent"
+                          }`}
                       />
                     </div>
                     <label
@@ -677,7 +685,13 @@ const AddItem = ({}: Props) => {
                     <CehvronDown color="gray" />
                   </div>
                 </div>
+                {errors.taxPreference && (
+                  <div className="text-red-800 text-xs  ms-1">
+                    Tax Preference is required
+                  </div>
+                )}
               </div>
+
               {initialItemData.taxPreference === "Non-taxable" && (
                 <div className="">
                   <div className="">
@@ -698,6 +712,11 @@ const AddItem = ({}: Props) => {
                       />
                     </div>
                   </div>
+                  {errors.taxExemptReason && (
+                    <div className="text-red-800 text-xs  ms-1">
+                      Tax exempt reason is required
+                    </div>
+                  )}
                 </div>
               )}
               {initialItemData.taxPreference === "Taxable" && (
@@ -767,6 +786,11 @@ const AddItem = ({}: Props) => {
                       </Link>
                     </div>
                   )}
+                  {errors.taxRate && (
+                    <div className="text-red-800 text-xs  ms-1">
+                      Tax Rate is required
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -791,7 +815,7 @@ const AddItem = ({}: Props) => {
           </div>
         </div>
 
-     { !isService &&  <div className="grid grid-cols-2 gap-x-4 ">
+        {!isService && <div className="grid grid-cols-2 gap-x-4 ">
           <div>
             <p className="text-textColor text-base font-semibold my-2">
               Storage Information
@@ -846,7 +870,7 @@ const AddItem = ({}: Props) => {
 
             <div className="grid grid-cols-12 gap-4">
               <div className="col-span-4">
-              <label className="text-slate-600 text-sm" htmlFor="weight">
+                <label className="text-slate-600 text-sm" htmlFor="weight">
                   Weight
                 </label>
                 <div className="flex">
@@ -877,7 +901,7 @@ const AddItem = ({}: Props) => {
               </div>
 
               <div className="col-span-8">
-                  <label
+                <label
                   className="text-slate-600 mt-1.5 flex text-sm items-center "
                   htmlFor="warranty"
                 >
@@ -893,350 +917,374 @@ const AddItem = ({}: Props) => {
                   <option value="6 months">6 months</option>
                   <option value="1 year">1 year</option>
                 </select>
-               
+
               </div>
             </div>
           </div>
 
           <div>
-          <p className="text-textColor text-base font-semibold my-2">
-             Classification Details
+            <p className="text-textColor text-base font-semibold my-2">
+              Classification Details
             </p>
-<div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
-      <div className="relative">
-            <label
-              htmlFor="manufacturer-input"
-              className="text-slate-600 text-sm flex items-center gap-2"
-            >
-              Manufacturer
-            </label>
-            <div className="relative w-full ">
-              <input
-                id="manufacturer-input"
-                type="text"
-                value={initialItemData.manufacturer}
-                readOnly
-                className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                placeholder="Select or add Manufacturer"
-                onClick={() => toggleDropdown("manufacturer")}
-              />
-              <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <CehvronDown color="gray" />
-              </div>
-            </div>
-            {openDropdownIndex === "manufacturer" && (
-              <div
-                ref={dropdownRef}
-                className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[50%] space-y-1"
-              >
-                <div className="mb-2.5">
-                  <SearchBar
-                    searchValue={searchValueManufacturer}
-                    onSearchChange={setSearchValueManufacturer}
-                    placeholder="Select Manufacturer"
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+              <div className="relative">
+                <label
+                  htmlFor="manufacturer-input"
+                  className="text-slate-600 text-sm flex items-center gap-2"
+                >
+                  Manufacturer
+                </label>
+                <div className="relative w-full ">
+                  <input
+                    id="manufacturer-input"
+                    type="text"
+                    value={initialItemData.manufacturer}
+                    readOnly
+                    className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    placeholder="Select or add Manufacturer"
+                    onClick={() => toggleDropdown("manufacturer")}
                   />
-                </div>
-                {itemsData.bmcrData.manufacturers
-                  .filter((manufacturer: string) =>
-                    manufacturer
-                      .toLowerCase()
-                      .includes(searchValueManufacturer.toLowerCase())
-                  )
-                  .map((manufacturer: string, index: number) => (
-                    <div
-                      key={index}
-                      onClick={() =>
-                        handleDropdownSelect("manufacturer", manufacturer)
-                      }
-                      className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                    >
-                      <div className="col-span-10 flex">
-                        <div>
-                          <p className="font-bold text-sm">{manufacturer}</p>
-                        </div>
-                      </div>
+                  {initialItemData.manufacturer.length === 0 ? (
+                    <div onClick={() => toggleDropdown("manufacturer")} className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
                     </div>
-                  ))}
-                <div
-                  onClick={() => setIsManufatureModalOpen(true)}
-                  className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
-                >
-                  <SettingsIcons color="darkRed" bold={2} />
-                  <p className="mt-0.5">Manage Manufacturer</p>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="relative">
-            <label
-              htmlFor="brand-input"
-              className="text-slate-600 text-sm flex items-center gap-2"
-            >
-              Brand
-            </label>
-            <div className="relative w-full ">
-              <input
-                id="brand-input"
-                type="text"
-                value={initialItemData.brand}
-                readOnly
-                className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                placeholder="Select or add Brand"
-                onClick={() => toggleDropdown("brand")}
-              />
-              <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <CehvronDown color="gray" />
-              </div>
-            </div>
-            {openDropdownIndex === "brand" && (
-              <div
-                ref={dropdownRef}
-                className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[50%] space-y-1"
-              >
-                <div className="mb-2.5">
-                  <SearchBar
-                    searchValue={searchValueBrand}
-                    onSearchChange={setSearchValueBrand}
-                    placeholder="Select Brand"
-                  />
-                </div>
-                {itemsData.bmcrData.brandNames
-                  .filter((brand: string) =>
-                    brand.toLowerCase().includes(searchValueBrand.toLowerCase())
-                  )
-                  .map((brand: string, index: number) => (
-                    <div
-                      key={index}
-                      onClick={() => handleDropdownSelect("brand", brand)}
-                      className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                    >
-                      <div className="col-span-10 flex">
-                        <div>
-                          <p className="font-bold text-sm">{brand}</p>
-                        </div>
-                      </div>
+                  ) : (
+                    <div className="cursor-pointer absolute inset-y-0 right-0.5 -mt-1 flex items-center px-2 text-gray-700">
+                      <span onClick={() => handleClearFields("manufacturer")} className="text-textColor text-2xl font-light">&times;</span>
                     </div>
-                  ))}
-                <div
-                  onClick={() => setIsBrandModalOpen(true)}
-                  className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
-                >
-                  <SettingsIcons color="darkRed" bold={2} />
-                  <p className="mt-0.5">Manage Brand</p>
+                  )}
                 </div>
-              </div>
-            )}
-          </div>
-          <div className="relative">
-            <label
-              htmlFor="category-input"
-              className="text-slate-600 text-sm flex items-center gap-2"
-            >
-              Category
-            </label>
-            <div className="relative w-full ">
-              <input
-                id="category-input"
-                type="text"
-                value={initialItemData.categories}
-                readOnly
-                className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                placeholder="Select or add Category"
-                onClick={() => toggleDropdown("category")}
-              />
-              <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <CehvronDown color="gray" />
-              </div>
-            </div>
-            {openDropdownIndex === "category" && (
-              <div
-                ref={dropdownRef}
-                className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[50%] space-y-1"
-              >
-                <div className="mb-2.5">
-                  <SearchBar
-                    searchValue={searchValueCategory}
-                    onSearchChange={setSearchValueCategory}
-                    placeholder="Select Category"
-                  />
-                </div>
-                {itemsData.bmcrData.categories
-                  .filter((category: string) =>
-                    category
-                      .toLowerCase()
-                      .includes(searchValueCategory.toLowerCase())
-                  )
-                  .map((category: string, index: number) => (
-                    <div
-                      key={index}
-                      onClick={() =>
-                        handleDropdownSelect("categories", category)
-                      }
-                      className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                    >
-                      <div className="col-span-10 flex">
-                        <div>
-                          <p className="font-bold text-sm">{category}</p>
-                        </div>
-                      </div>
+                {openDropdownIndex === "manufacturer" && (
+                  <div
+                    ref={dropdownRef}
+                    className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-full space-y-1"
+                  >
+                    <div className="mb-2.5">
+                      <SearchBar
+                        searchValue={searchValueManufacturer}
+                        onSearchChange={setSearchValueManufacturer}
+                        placeholder="Select Manufacturer"
+                      />
                     </div>
-                  ))}
-                <div
-                  onClick={() => setIsCategoryModalOpen(true)}
-                  className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
-                >
-                  <SettingsIcons color="darkRed" bold={2} />
-                  <p className="mt-0.5">Manage Category</p>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="relative">
-              <label
-                htmlFor="rack-input"
-                className="text-slate-600 text-sm flex items-center gap-2"
-              >
-                Rack
-              </label>
-              <div className="relative w-full ">
-                <input
-                  id="rack-input"
-                  type="text"
-                  value={initialItemData.rack}
-                  readOnly
-                  className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  placeholder="Select or add Rack"
-                  onClick={() => toggleDropdown("rack")}
-                />
-                <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
-              </div>
-              {openDropdownIndex === "rack" && (
-                <div
-                  ref={dropdownRef}
-                  className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[50%] space-y-1"
-                >
-                  <div className="mb-2.5">
-                    <SearchBar
-                      searchValue={searchValueRack}
-                      onSearchChange={setSearchValueRack}
-                      placeholder="Select Rack"
-                    />
-                  </div>
-                  {itemsData.bmcrData.racks
-                    .filter((rack: string) =>
-                      rack.toLowerCase().includes(searchValueRack.toLowerCase())
-                    )
-                    .map((rack: string, index: number) => (
-                      <div
-                        key={index}
-                        onClick={() => handleDropdownSelect("rack", rack)}
-                        className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                      >
-                        <div className="col-span-10 flex">
-                          <div>
-                            <p className="font-bold text-sm">{rack}</p>
+                    {itemsData.bmcrData.manufacturers
+                      .filter((manufacturer: string) =>
+                        manufacturer
+                          .toLowerCase()
+                          .includes(searchValueManufacturer.toLowerCase())
+                      )
+                      .map((manufacturer: string, index: number) => (
+                        <div
+                          key={index}
+                          onClick={() =>
+                            handleDropdownSelect("manufacturer", manufacturer)
+                          }
+                          className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                        >
+                          <div className="col-span-10 flex">
+                            <div>
+                              <p className="font-bold text-sm">{manufacturer}</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  <div
-                    onClick={() => setIsRackModalOpen(true)}
-                    className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
-                  >
-                    <SettingsIcons color="darkRed" bold={2} />
-                    <p className="mt-0.5">Manage Rack</p>
+                      ))}
+                    <div
+                      onClick={() => setIsManufatureModalOpen(true)}
+                      className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
+                    >
+                      <SettingsIcons color="darkRed" bold={2} />
+                      <p className="mt-0.5">Manage Manufacturer</p>
+                    </div>
                   </div>
+                )}
+              </div>
+              <div className="relative">
+                <label
+                  htmlFor="brand-input"
+                  className="text-slate-600 text-sm flex items-center gap-2"
+                >
+                  Brand
+                </label>
+                <div className="relative w-full ">
+                  <input
+                    id="brand-input"
+                    type="text"
+                    value={initialItemData.brand}
+                    readOnly
+                    className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    placeholder="Select or add Brand"
+                    onClick={() => toggleDropdown("brand")}
+                  />
+                  {initialItemData.brand.length === 0 ? (
+                    <div onClick={() => toggleDropdown("brand")} className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  ) : (
+                    <div className="cursor-pointer absolute inset-y-0 right-0.5 -mt-1 flex items-center px-2 text-gray-700">
+                      <span onClick={() => handleClearFields("brand")} className="text-textColor text-2xl font-light">&times;</span>
+                    </div>
+                  )}
                 </div>
-              )}
+                {openDropdownIndex === "brand" && (
+                  <div
+                    ref={dropdownRef}
+                    className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-full space-y-1"
+                  >
+                    <div className="mb-2.5">
+                      <SearchBar
+                        searchValue={searchValueBrand}
+                        onSearchChange={setSearchValueBrand}
+                        placeholder="Select Brand"
+                      />
+                    </div>
+                    {itemsData.bmcrData.brandNames
+                      .filter((brand: string) =>
+                        brand.toLowerCase().includes(searchValueBrand.toLowerCase())
+                      )
+                      .map((brand: string, index: number) => (
+                        <div
+                          key={index}
+                          onClick={() => handleDropdownSelect("brand", brand)}
+                          className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                        >
+                          <div className="col-span-10 flex">
+                            <div>
+                              <p className="font-bold text-sm">{brand}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    <div
+                      onClick={() => setIsBrandModalOpen(true)}
+                      className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
+                    >
+                      <SettingsIcons color="darkRed" bold={2} />
+                      <p className="mt-0.5">Manage Brand</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="relative">
+                <label
+                  htmlFor="category-input"
+                  className="text-slate-600 text-sm flex items-center gap-2"
+                >
+                  Category
+                </label>
+                <div className="relative w-full">
+                  <input
+                    id="category-input"
+                    type="text"
+                    value={initialItemData.categories}
+                    readOnly
+                    className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    placeholder="Select or add Category"
+                    onClick={() => toggleDropdown("category")}
+                  />
+                  {initialItemData.categories.length === 0 ? (
+                    <div onClick={() => toggleDropdown("category")} className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  ) : (
+                    <div className="cursor-pointer absolute inset-y-0 right-0.5 -mt-1 flex items-center px-2 text-gray-700">
+                      <span onClick={() => handleClearFields("categories")} className="text-textColor text-2xl font-light">&times;</span>
+                    </div>
+                  )}
+                </div>
+                {openDropdownIndex === "category" && (
+                  <div
+                    ref={dropdownRef}
+                    className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-full space-y-1"
+                  >
+                    <div className="mb-2.5">
+                      <SearchBar
+                        searchValue={searchValueCategory}
+                        onSearchChange={setSearchValueCategory}
+                        placeholder="Select Category"
+                      />
+                    </div>
+                    {itemsData.bmcrData.categories
+                      .filter((category: string) =>
+                        category
+                          .toLowerCase()
+                          .includes(searchValueCategory.toLowerCase())
+                      )
+                      .map((category: string, index: number) => (
+                        <div
+                          key={index}
+                          onClick={() =>
+                            handleDropdownSelect("categories", category)
+                          }
+                          className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                        >
+                          <div className="col-span-10 flex">
+                            <div>
+                              <p className="font-bold text-sm">{category}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    <div
+                      onClick={() => setIsCategoryModalOpen(true)}
+                      className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
+                    >
+                      <SettingsIcons color="darkRed" bold={2} />
+                      <p className="mt-0.5">Manage Category</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="relative">
+                <label
+                  htmlFor="rack-input"
+                  className="text-slate-600 text-sm flex items-center gap-2"
+                >
+                  Rack
+                </label>
+                <div className="relative w-full ">
+                  <input
+                    id="rack-input"
+                    type="text"
+                    value={initialItemData.rack}
+                    readOnly
+                    className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    placeholder="Select or add Rack"
+                    onClick={() => toggleDropdown("rack")}
+                  />
+                  {initialItemData.rack.length === 0 ? (
+                    <div onClick={() => toggleDropdown("rack")} className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  ) : (
+                    <div className="cursor-pointer absolute inset-y-0 right-0.5 -mt-1 flex items-center px-2 text-gray-700">
+                      <span onClick={() => handleClearFields("rack")} className="text-textColor text-2xl font-light">&times;</span>
+                    </div>
+                  )}
+                </div>
+                {openDropdownIndex === "rack" && (
+                  <div
+                    ref={dropdownRef}
+                    className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-full space-y-1"
+                  >
+                    <div className="mb-2.5">
+                      <SearchBar
+                        searchValue={searchValueRack}
+                        onSearchChange={setSearchValueRack}
+                        placeholder="Select Rack"
+                      />
+                    </div>
+                    {itemsData.bmcrData.racks
+                      .filter((rack: string) =>
+                        rack.toLowerCase().includes(searchValueRack.toLowerCase())
+                      )
+                      .map((rack: string, index: number) => (
+                        <div
+                          key={index}
+                          onClick={() => handleDropdownSelect("rack", rack)}
+                          className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                        >
+                          <div className="col-span-10 flex">
+                            <div>
+                              <p className="font-bold text-sm">{rack}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    <div
+                      onClick={() => setIsRackModalOpen(true)}
+                      className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
+                    >
+                      <SettingsIcons color="darkRed" bold={2} />
+                      <p className="mt-0.5">Manage Rack</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-</div>
           </div>
         </div>}
 
- 
-       
+
+
         <div className="grid grid-cols-2 mt-1  gap-4">
-          {isService && 
+          {isService &&
             <div>
-               <p className="text-textColor text-base font-semibold my-2">
-               Storage Information
-             </p>
-             <div className="relative">
-            <label
-              htmlFor="category-input"
-              className="text-slate-600 text-sm flex items-center gap-2"
-            >
-              Category
-            </label>
-            <div className="relative w-full ">
-              <input
-                id="category-input"
-                type="text"
-                value={initialItemData.categories}
-                readOnly
-                className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                placeholder="Select or add Category"
-                onClick={() => toggleDropdown("category")}
-              />
-              <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <CehvronDown color="gray" />
-              </div>
-            </div>
-            {openDropdownIndex === "category" && (
-              <div
-                ref={dropdownRef}
-                className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[50%] space-y-1"
-              >
-                <div className="mb-2.5">
-                  <SearchBar
-                    searchValue={searchValueCategory}
-                    onSearchChange={setSearchValueCategory}
-                    placeholder="Select Category"
-                  />
-                </div>
-                {itemsData.bmcrData.categories
-                  .filter((category: string) =>
-                    category
-                      .toLowerCase()
-                      .includes(searchValueCategory.toLowerCase())
-                  )
-                  .map((category: string, index: number) => (
-                    <div
-                      key={index}
-                      onClick={() =>
-                        handleDropdownSelect("categories", category)
-                      }
-                      className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                    >
-                      <div className="col-span-10 flex">
-                        <div>
-                          <p className="font-bold text-sm">{category}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                <div
-                  onClick={() => setIsCategoryModalOpen(true)}
-                  className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
-                >
-                  <SettingsIcons color="darkRed" bold={2} />
-                  <p className="mt-0.5">Manage Category</p>
-                </div>
-              </div>
-            )}
-          </div>
-            </div>
-
-            
-
-           }
-           <div>
-              <p className="text-textColor text-base font-semibold mt-2 mb-2">
-               Item Codes and Standards
+              <p className="text-textColor text-base font-semibold my-2">
+                Storage Information
               </p>
-          <div className="grid grid-cols-2 gap-x-4">
+              <div className="relative">
+                <label
+                  htmlFor="category-input"
+                  className="text-slate-600 text-sm flex items-center gap-2"
+                >
+                  Category
+                </label>
+                <div className="relative w-full ">
+                  <input
+                    id="category-input"
+                    type="text"
+                    value={initialItemData.categories}
+                    readOnly
+                    className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    placeholder="Select or add Category"
+                    onClick={() => toggleDropdown("category")}
+                  />
+                  <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
+                  </div>
+                </div>
+                {openDropdownIndex === "category" && (
+                  <div
+                    ref={dropdownRef}
+                    className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[50%] space-y-1"
+                  >
+                    <div className="mb-2.5">
+                      <SearchBar
+                        searchValue={searchValueCategory}
+                        onSearchChange={setSearchValueCategory}
+                        placeholder="Select Category"
+                      />
+                    </div>
+                    {itemsData.bmcrData.categories
+                      .filter((category: string) =>
+                        category
+                          .toLowerCase()
+                          .includes(searchValueCategory.toLowerCase())
+                      )
+                      .map((category: string, index: number) => (
+                        <div
+                          key={index}
+                          onClick={() =>
+                            handleDropdownSelect("categories", category)
+                          }
+                          className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                        >
+                          <div className="col-span-10 flex">
+                            <div>
+                              <p className="font-bold text-sm">{category}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    <div
+                      onClick={() => setIsCategoryModalOpen(true)}
+                      className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
+                    >
+                      <SettingsIcons color="darkRed" bold={2} />
+                      <p className="mt-0.5">Manage Category</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+
+
+          }
+          <div>
+            <p className="text-textColor text-base font-semibold mt-2 mb-2">
+              Item Codes and Standards
+            </p>
+            <div className="grid grid-cols-2 gap-x-4">
               <div>
                 <label
                   className="text-slate-600 flex text-sm items-center gap-2"
@@ -1252,7 +1300,7 @@ const AddItem = ({}: Props) => {
                   onChange={handleInputChange}
                 />
               </div>
-    
+
               <div>
                 <label
                   className="text-slate-600  flex text-sm items-center gap-2"
@@ -1268,62 +1316,62 @@ const AddItem = ({}: Props) => {
                   onChange={handleInputChange}
                 />
               </div>
+            </div>
           </div>
-           </div>
-         {  isService && <div className="-mt-1.5">
-                  <label
-                  className="text-slate-600 mt-1.5 flex text-sm items-center "
-                  htmlFor="warranty"
-                >
-                  Warranty
-                </label>
-                <select
-                  name="warranty"
-                  className="block w-full text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  value={initialItemData.warranty}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Select Warranty</option>
-                  <option value="6 months">6 months</option>
-                  <option value="1 year">1 year</option>
-                </select>
-               
-              </div>}
-              <div className={`grid grid-cols-2  gap-4 ${isService ? 'mt-0' : 'mt-11'}`}>
-              <div>
+          {isService && <div className="-mt-1.5">
             <label
-              className="text-slate-600 flex text-sm items-center gap-2"
-              htmlFor="ean"
+              className="text-slate-600 mt-1.5 flex text-sm items-center "
+              htmlFor="warranty"
             >
-              EAN
+              Warranty
             </label>
-            <input
-              className="pl-3 text-sm w-[100%]  rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-              placeholder="Enter EAN"
-              name="ean"
-              value={initialItemData.ean}
+            <select
+              name="warranty"
+              className="block w-full text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+              value={initialItemData.warranty}
               onChange={handleInputChange}
-            />
-          </div>
-          <div className="mt-">
-            <label
-              className="text-slate-600 flex text-sm items-center gap-2"
-              htmlFor="isbn"
             >
-              ISBN
-            </label>
-            <input
-              className="pl-3 text-sm w-[100%]  rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-              placeholder="Enter ISBN"
-              name="isbn"
-              value={initialItemData.isbn}
-              onChange={handleInputChange}
-            />
+              <option value="">Select Warranty</option>
+              <option value="6 months">6 months</option>
+              <option value="1 year">1 year</option>
+            </select>
+
+          </div>}
+          <div className={`grid grid-cols-2  gap-4 ${isService ? 'mt-0' : 'mt-11'}`}>
+            <div>
+              <label
+                className="text-slate-600 flex text-sm items-center gap-2"
+                htmlFor="ean"
+              >
+                EAN
+              </label>
+              <input
+                className="pl-3 text-sm w-[100%]  rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                placeholder="Enter EAN"
+                name="ean"
+                value={initialItemData.ean}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="mt-">
+              <label
+                className="text-slate-600 flex text-sm items-center gap-2"
+                htmlFor="isbn"
+              >
+                ISBN
+              </label>
+              <input
+                className="pl-3 text-sm w-[100%]  rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                placeholder="Enter ISBN"
+                name="isbn"
+                value={initialItemData.isbn}
+                onChange={handleInputChange}
+              />
+            </div>
           </div>
-        </div>
         </div>
 
-        
+
         <div className="flex gap-4 w-full">
           <div className="w-1/2">
             <p className="text-textColor text-base font-semibold mt-2">
