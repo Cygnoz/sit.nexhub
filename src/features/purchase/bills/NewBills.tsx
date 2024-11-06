@@ -41,7 +41,6 @@ const NewBills = ({}: Props) => {
   const navigate = useNavigate();
 
   const [bill, setBill] = useState<Bill>({
-    organizationId: "INDORG0006",
     supplierId: "",
     supplierDisplayName:"",
     billNumber: "",
@@ -64,6 +63,7 @@ const NewBills = ({}: Props) => {
         itemCostPrice: 0,
         itemDiscount: 0,
         itemDiscountType: "",
+        itemTax:0,
         itemSgst: 0,
         itemCgst: 0,
         itemIgst: 0,
@@ -97,7 +97,7 @@ const NewBills = ({}: Props) => {
     paidAmount:0,
   });
 
-  console.log(bill.paymentTerms)
+  console.log(bill,"bill")
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
@@ -214,6 +214,16 @@ const NewBills = ({}: Props) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+
+    if (name === "dueDate") {
+      const selectedDueDate = new Date(value);
+      const billDate = new Date(bill.billDate);
+  
+      if (selectedDueDate < billDate) {
+        toast.error("Due Date cannot be before the Bill Date.");
+        return;
+      }
+    }
   
     if (name === "transactionDiscount") {
       let discountValue = parseFloat(value) || 0;
@@ -263,6 +273,55 @@ const NewBills = ({}: Props) => {
       }));
     }
   };
+
+  const getLastDayOfMonth = (date:any, monthsToAdd = 0) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + monthsToAdd + 1; 
+    return new Date(year, month, 1); 
+  };
+  
+ // Assuming 'customDueDate' is part of the bill state
+useEffect(() => {
+  if (bill.billDate) {
+    const billDate = new Date(bill.billDate);
+    let dueDate = new Date(billDate);
+
+    switch (bill.paymentTerms) {
+      case "Net 15":
+      case "Net 30":
+      case "Net 45":
+        const daysToAdd = parseInt(bill.paymentTerms.split(" ")[1], 10);
+        dueDate.setDate(billDate.getDate() + daysToAdd);
+        break;
+      case "Due end of next month":
+        dueDate = getLastDayOfMonth(billDate, 1); 
+        break;
+      case "Due end of the month":
+        dueDate = getLastDayOfMonth(billDate); 
+        break;
+      case "Pay Now":
+        dueDate = billDate; 
+        break;
+      case "Due on Receipt":
+        if (bill.dueDate) {
+          dueDate = new Date(bill.dueDate); // Set custom date if available
+        } else {
+          dueDate = billDate; // Default to bill date if no custom date is set
+        }
+        break;
+      default:
+        break;
+    }
+
+    setBill((prevState) => ({
+      ...prevState,
+      dueDate: dueDate.toISOString().split("T")[0],
+    }));
+  }
+}, [bill.paymentTerms, bill.billDate]);
+
+  
+
   
 
   const calculateTotalAmount = () => {
@@ -311,7 +370,6 @@ const NewBills = ({}: Props) => {
     } catch (error) {}
   };
 
-
   useEffect(() => {
     const newGrandTotal = calculateTotalAmount();
 
@@ -338,7 +396,7 @@ const NewBills = ({}: Props) => {
       setBill((prevState: any) => ({
         ...prevState,
         transactionDiscountAmount: roundedDiscountValue,
-        grandTotal: updatedGrandTotal.toFixed(2),
+        grandTotal: updatedGrandTotal,
       }));
     }
   }, [
@@ -560,7 +618,7 @@ const NewBills = ({}: Props) => {
             )}
 
             <div className=" w-full">
-            <label className="block text-sm mb-1 text-labelColor">
+            <label className="block text-sm  text-labelColor">
             Order Number
                 <input
                   name="orderNumber"
@@ -568,7 +626,7 @@ const NewBills = ({}: Props) => {
                   value={bill.orderNumber}
                   onChange={handleChange}
                   placeholder="Enter Order Number"
-                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
+                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  mt-1 p-2 h-9 "
                 />
               </label>
             </div>
@@ -632,7 +690,7 @@ const NewBills = ({}: Props) => {
             </div>
 
             <div className=" w-full">
-            <label className="block text-sm mb-1 text-labelColor">
+            <label className="block text-sm  text-labelColor">
             Bill Date
                 <input
                   name="billDate"
@@ -640,13 +698,13 @@ const NewBills = ({}: Props) => {
                   type="date"
                   value={bill.billDate}
                   onChange={handleChange}
-                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
+                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-1 "
                 />
               </label>
             </div>
             <div>
               <div>
-              <label className="block text-sm mb-1 text-labelColor">
+              <label className="block text-sm text-labelColor">
               Due Date
                   <input
                     name="dueDate"
@@ -654,17 +712,18 @@ const NewBills = ({}: Props) => {
                     value={bill.dueDate}
                     onChange={handleChange}
                     type="date"
-                    className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
+                    disabled={bill.paymentTerms !== "Due on Receipt"}
+                    className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-1 "
                   />
                 </label>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm mb-1 text-labelColor">
+              <label className="block text-sm text-labelColor">
                 Payment Terms
               </label>
-              <div className="relative w-full">
+              <div className="relative w-full mt-1">
                 <select
                   value={bill.paymentTerms}
                   onChange={handleChange}
@@ -688,7 +747,7 @@ const NewBills = ({}: Props) => {
             </div>
 
             <div className=" w-full">
-            <label className="block text-sm mb-1 text-labelColor">
+            <label className="block text-sm  text-labelColor">
             Payment Mode{" "}
               </label>
               <div className="relative w-full">
@@ -696,7 +755,7 @@ const NewBills = ({}: Props) => {
                   value={bill.paymentMode}
                   name="paymentMode"
                   onChange={handleChange}
-                  className="block appearance-none mt-2 w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="block appearance-none mt-1 w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 >
                   <option value="" className="text-gray">
                     Select Payment Mode

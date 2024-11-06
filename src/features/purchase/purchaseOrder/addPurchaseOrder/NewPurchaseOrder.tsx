@@ -130,6 +130,16 @@ const NewPurchaseOrder = ({}: Props) => {
   ) => {
     const { name, value } = e.target;
 
+    if (name === "expectedShipmentDate") {
+      const selectedDate = new Date(value);
+      const purchaseOrderDate = new Date(purchaseOrderState.purchaseOrderDate);
+  
+      if (selectedDate < purchaseOrderDate) {
+        toast.error("Expected Shipment Date cannot be before the Purchase Order Date.");
+        return;
+      }
+    }
+
     if (name === "transactionDiscount") {
       let discountValue = parseFloat(value) || 0;
 

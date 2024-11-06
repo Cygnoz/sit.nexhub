@@ -180,6 +180,15 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     return activeTab === tabName ? "border-darkRed" : "border-neutral-300";
   };
 
+  const addressscroll=()=>{
+    if (addressEdit === "shippingAddressEdit" && shippingAddressRef.current) {
+      shippingAddressRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+    if (addressEdit === "billingAddressEdit" && BillingAddressRef.current) {
+      BillingAddressRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
   // data from checkboxes
   const handleRadioChange = (type: string, field: "customerType") => {
     setCustomerData((prevFormData) => ({
@@ -256,12 +265,17 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
       [phoneType]: value,
     }));
   };
-  // console.log(customerdata);
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const validTypes = ["image/jpeg", "image/png"];
+      if (!validTypes.includes(file.type)) {
+        toast.error("Only JPG and PNG images are supported.");
+        return;
+      }
+  
       const reader = new FileReader();
-
+  
       reader.onloadend = () => {
         const base64String = reader.result as string;
         setCustomerData((prevDetails: any) => ({
@@ -269,7 +283,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
           customerProfile: base64String,
         }));
       };
-
+  
       reader.readAsDataURL(file);
     }
   };
@@ -412,6 +426,10 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     }));
   };
 
+  useEffect(()=>{
+    addressscroll()
+  },[addressscroll])
+
   useEffect(() => {
     if (customerdata.billingCountry) {
       const country = countryData.find(
@@ -528,17 +546,6 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
   }, [customerDataPorps]);
   
 
-  const addressscroll = () => {
-    if (addressEdit === "shippingAddressEdit" && shippingAddressRef.current) {
-      shippingAddressRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-    if (addressEdit === "billingAddressEdit" && BillingAddressRef.current) {
-      BillingAddressRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   useEffect(() => {
     addressscroll();
@@ -1700,7 +1707,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                   {activeTab === "address" && (
                     <>
                       {/* Billing Address */}
-                      <div className="space-y-2 p-5 text-sm">
+                      <div className="space-y-2 p-5 text-sm" ref={BillingAddressRef}>
                         <p>
                           <b>Billing Address</b>
                         </p>
@@ -1999,7 +2006,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                       </div>
 
                       {/* Shipping Address */}
-                      <div className="space-y-2 p-5 text-sm">
+                      <div className="space-y-2 p-5 text-sm" ref={shippingAddressRef} >
                         <div className="flex">
                           <p>
                             <b>Shipping Address</b>

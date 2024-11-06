@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomiseColmn from "../../../Components/CustomiseColum";
+import DateFormat from "../../../Components/DateFormat/DateFormta";
+
 
 interface Column {
   id: string;
@@ -25,7 +27,7 @@ const Table = () => {
   const data = [
     {
       id: "1",
-      date: "16/7/2024",
+      date: "16/07/2024",
       payment: "VP-0001",
       vendorName: "JustinDoe",
       bill: "VP-0001",
@@ -35,7 +37,7 @@ const Table = () => {
     },
     {
       id: "2",
-      date: "17/7/2024",
+      date: "17/07/2024",
       payment: "VP-0002",
       vendorName: "JaneDoe",
       bill: "VP-0002",
@@ -92,7 +94,11 @@ const Table = () => {
                       className="py-2.5 px-4 border-y border-tableBorder cursor-pointer"
                       onClick={() => navigate("/purchase/payment-made/view")}
                     >
-                      {item[col.id as keyof typeof item]}
+                      {col.id === "date" ? (
+                        <DateFormat date={item[col.id as keyof typeof item]} /> // Use DateFormat here
+                      ) : (
+                        item[col.id as keyof typeof item]
+                      )}
                     </td>
                   )
               )}

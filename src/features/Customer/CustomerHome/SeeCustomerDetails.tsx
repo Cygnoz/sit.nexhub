@@ -109,12 +109,13 @@ function SeeCustomerDetails() {
               {/* <p className="text-membershipText text-sm mt-1">
                 Privilege Membership Card
               </p> */}
-              <div className="flex items-center mt-3">
-                {/* <img
-                src="https://i.postimg.cc/05XQMpkS/Ellipse-2.png"
+              <div className=" items-center mt-3">
+                <img
+                src={customerData.customerProfile?customerData.customerProfile:"https://i.postimg.cc/MHh2tQ41/avatar-3814049-1280.webp"}
                   alt="Profile"
                   className="w-8 h-8 object-cover rounded-full mr-3"
-                /> */}
+                />
+
                 <div>
                   <p className="text-white text-sm font-semibold mt-1">
                     {customerData?.customerDisplayName}

@@ -17,6 +17,8 @@ interface BillData {
   billAmount: number;
   amountDue: number;
   payment: number;
+  paidStatus:string;
+  balanceAmount:number
 }
 
 const NewPaymentMadeOrderTable = ({
@@ -35,12 +37,14 @@ const NewPaymentMadeOrderTable = ({
       billAmount: 0,
       amountDue: 0,
       payment: 0,
+      paidStatus:"",
+      balanceAmount:0
     }
   ]);
+console.log(supplierBills,"supplierBills")
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  // Set initial data from supplierBills
   useEffect(() => {
     if (supplierBills && Array.isArray(supplierBills)) {
       setData(
@@ -50,13 +54,14 @@ const NewPaymentMadeOrderTable = ({
           dueDate: bill.dueDate || "",
           billNumber: bill.billNumber || "",
           billAmount: bill.grandTotal || 0,
-          amountDue: bill.amountDue || 0,
+          amountDue: bill.balanceAmount || 0,
           payment: bill.payment || 0,
+          paidStatus:bill.paidStatus|| "",
+          balanceAmount:bill.balanceAmount||0
         }))
       );
     }
   }, [supplierBills]);
-  // console.log(data,data)
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -75,36 +80,37 @@ const NewPaymentMadeOrderTable = ({
   ) => {
     const newData = [...data];
     newData[index] = { ...newData[index], [field]: value };
-  
+const balanceAmount=newData[index].balanceAmount;
     const billAmount = newData[index].billAmount;
+    let paymentValue = typeof value === "number" ? value : parseFloat(value);
   
     if (isFullAmt) {
       newData[index].payment = billAmount;
     } else {
-      newData[index].payment=0
-      const paymentValue = typeof value === "number" ? value : parseFloat(value);
-  
+      newData[index].payment = 0;
+      
       if (paymentValue > billAmount) {
         toast.error(`Payment cannot exceed the bill amount of ${billAmount}. Setting payment to bill amount.`);
-        newData[index].payment = billAmount;
+        paymentValue = billAmount;
+      }
+      
+      const totalPayment = newData.reduce((acc, row) => acc + (row.payment || 0), 0) + paymentValue - (newData[index].payment || 0);
+  
+      if (totalPayment > paymentState.paymentMade) {
+        const remainingAmount = paymentState.paymentMade - (totalPayment - paymentValue);
+        toast.error(`Payment cannot exceed the available amount of ${paymentState.paymentMade}. Adjusting payment to ${remainingAmount}.`);
+        newData[index].payment = Math.min(remainingAmount, paymentValue);
       } else {
         newData[index].payment = paymentValue;
       }
     }
   
-    newData[index].amountDue = billAmount - newData[index].payment;
-  
-    let totalPayment = newData.reduce((acc, row) => acc + (row.payment || 0), 0);
-  
-    // Check if totalPayment exceeds paymentState.paymentMade
-    if (totalPayment > paymentState.paymentMade) {
-      toast.error(`Total payment cannot exceed the available payment amount of ${paymentState.paymentMade}.`);
-      totalPayment = paymentState.paymentMade;
-    }
+    newData[index].amountDue = balanceAmount - newData[index].payment;
   
     setData(newData);
   
     if (setPaymentState) {
+      const totalPayment = newData.reduce((acc, row) => acc + (row.payment || 0), 0);
       setPaymentState((prevData: any) => ({
         ...prevData,
         unpaidBills: newData,
@@ -114,6 +120,7 @@ const NewPaymentMadeOrderTable = ({
       }));
     }
   };
+  
   
   
 
@@ -173,90 +180,84 @@ const NewPaymentMadeOrderTable = ({
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {data.map((row, index) => (
-              <tr key={index} className="relative">
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input
-                    disabled
-                    type="date"
-                    placeholder="Date"
-                    className="w-full focus:outline-none text-center"
-                    value={row.billDate?row.billDate:"-"}
-                    onChange={(e) =>
-                      handleRowChange(index, "billDate", e.target.value)
-                    }
-                  />
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input
-                    disabled
-                    type="date"
-                    placeholder="Due Date"
-                    className="w-full focus:outline-none text-center"
-                    value={row.dueDate?row.dueDate:"-"}
-                    onChange={(e) =>
-                      handleRowChange(index, "dueDate", e.target.value)
-                    }
-                  />
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input
-                    disabled
-                    type="text"
-                    placeholder="Bill ID"
-                    className="w-full focus:outline-none text-center"
-                    value={row.billNumber?row.billNumber:"-"}
-                    onChange={(e) =>
-                      handleRowChange(index, "billNumber", e.target.value)
-                    }
-                  />
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input
-                    disabled
-                    type="number"
-                    className="w-full focus:outline-none text-center"
-                    value={row.billAmount}
-                    onChange={(e) =>
-                      handleRowChange(
-                        index,
-                        "billAmount",
-                        parseFloat(e.target.value) || 0
-                      )
-                    }
-                  />
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input
-                    disabled
-                    type="number"
-                    className="w-full focus:outline-none text-center"
-                    value={row.amountDue}
-                    onChange={(e) =>
-                      handleRowChange(
-                        index,
-                        "amountDue",
-                        parseFloat(e.target.value) || 0
-                      )
-                    }
-                  />
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input
-                    type="number"
-                    className="w-full focus:outline-none text-center"
-                    value={row.payment}
-                    onChange={(e) =>
-                      handleRowChange(
-                        index,
-                        "payment",
-                        parseFloat(e.target.value) || 0
-                      )
-                    }
-                  />
-                </td>
-              </tr>
-            ))}
+          {data && data.length > 0 ? (
+  data
+    .filter(row => row.paidStatus === "pending" || row.paidStatus === "overdue")
+    .map((row, index) => (
+      <tr key={index} className="relative">
+        <td className="py-2.5 px-4 border-y border-tableBorder">
+          <input
+            disabled
+            type="text"
+            placeholder="Date"
+            className="w-full focus:outline-none text-center"
+            value={row.billDate ? row.billDate : "-"}
+            onChange={(e) => handleRowChange(index, "billDate", e.target.value)}
+          />
+        </td>
+        <td className="py-2.5 px-4 border-y border-tableBorder">
+          <input
+            disabled
+            type="text"
+            placeholder="Due Date"
+            className="w-full focus:outline-none text-center"
+            value={row.dueDate ? row.dueDate : "-"}
+            onChange={(e) => handleRowChange(index, "dueDate", e.target.value)}
+          />
+        </td>
+        <td className="py-2.5 px-4 border-y border-tableBorder">
+          <input
+            disabled
+            type="text"
+            placeholder="Bill ID"
+            className="w-full focus:outline-none text-center"
+            value={row.billNumber ? row.billNumber : "-"}
+            onChange={(e) => handleRowChange(index, "billNumber", e.target.value)}
+          />
+        </td>
+        <td className="py-2.5 px-4 border-y border-tableBorder">
+          <input
+            disabled
+            type="number"
+            className="w-full focus:outline-none text-center"
+            value={row.billAmount}
+            onChange={(e) =>
+              handleRowChange(index, "billAmount", parseFloat(e.target.value) || 0)
+            }
+          />
+        </td>
+        <td className="py-2.5 px-4 border-y border-tableBorder">
+          <input
+            disabled
+            type="number"
+            className="w-full focus:outline-none text-center"
+            value={row.amountDue}
+            onChange={(e) =>
+              handleRowChange(index, "amountDue", parseFloat(e.target.value) || 0)
+            }
+          />
+        </td>
+        <td className="py-2.5 px-4 border-y border-tableBorder">
+          <input
+            type="number"
+            className="w-full focus:outline-none text-center"
+            value={row.payment}
+            onChange={(e) =>
+              handleRowChange(index, "payment", parseFloat(e.target.value) || 0)
+            }
+          />
+        </td>
+      </tr>
+    ))
+) : (
+  <tr>
+    <td colSpan={6} className="py-4 text-center text-gray-500 text-[red]">
+      There are no bills for this supplier.
+    </td>
+  </tr>
+)}
+
+
           </tbody>
         </table>
       </div>
