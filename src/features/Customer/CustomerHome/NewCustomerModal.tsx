@@ -554,9 +554,6 @@ const NewCustomerModal = ({ page }: Props) => {
               <b>Add new Customer</b>
             </p>
           </div>
-          <div className="col-span-2 text-end text-2xl cursor-pointer relative">
-            &times;
-          </div>
         </div>
       ) : page && page === "CustomerEdit" ? (
         <Button
