@@ -6,7 +6,6 @@ import CehvronDown from "../../../assets/icons/CehvronDown";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import NewCustomerModal from "../../Customer/CustomerHome/NewCustomerModal";
-import NewInvoiceTable from "../invoice/NewInvoiceTable";
 import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
 import ScanEye from "../../../assets/icons/ScanEye";
 import Upload from "../../../assets/icons/Upload";
@@ -387,7 +386,6 @@ const NewReceipt = ({}: Props) => {
               </div>
               
             <p className="font-bold">Unpaid Invoices</p>
-            <NewInvoiceTable />  
           
             </div>
        

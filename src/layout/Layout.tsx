@@ -18,7 +18,7 @@ const Layout = ({}: Props) => {
   return (
     <div className="flex">
       <SideBar activeIndex={activeIndex} setActiveIndex={setActiveIndex} />
-      <div className="w-[100%]">
+      <div className="w-[100%] h-[100vh] overflow-y-scroll hide-scrollbar">
         <Header />
         {!subHeaderView&&<SubHeader activeIndex={activeIndex} />}
         <Outlet />

@@ -1503,7 +1503,7 @@ const AddItem = ({}: Props) => {
           </div>
         </div>
       </div>
-      <div className="justify-end me-5 flex gap-4 sticky bottom-0 bg-white p-2">
+      <div className="justify-end me-5 flex gap-4 p-2">
         <Link to="/inventory/Item">
           <Button variant="secondary" size="sm" className="text-sm pl-8 pr-8">
             Cancel
