@@ -41,7 +41,6 @@ const NewBills = ({}: Props) => {
   const navigate = useNavigate();
 
   const [bill, setBill] = useState<Bill>({
-    organizationId: "INDORG0006",
     supplierId: "",
     supplierDisplayName:"",
     billNumber: "",
@@ -64,6 +63,7 @@ const NewBills = ({}: Props) => {
         itemCostPrice: 0,
         itemDiscount: 0,
         itemDiscountType: "",
+        itemTax:0,
         itemSgst: 0,
         itemCgst: 0,
         itemIgst: 0,
@@ -97,7 +97,7 @@ const NewBills = ({}: Props) => {
     paidAmount:0,
   });
 
-  console.log(bill.paymentTerms)
+  console.log(bill,"bill")
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
@@ -396,7 +396,7 @@ useEffect(() => {
       setBill((prevState: any) => ({
         ...prevState,
         transactionDiscountAmount: roundedDiscountValue,
-        grandTotal: updatedGrandTotal.toFixed(2),
+        grandTotal: updatedGrandTotal,
       }));
     }
   }, [
@@ -618,7 +618,7 @@ useEffect(() => {
             )}
 
             <div className=" w-full">
-            <label className="block text-sm mb-1 text-labelColor">
+            <label className="block text-sm  text-labelColor">
             Order Number
                 <input
                   name="orderNumber"
@@ -626,7 +626,7 @@ useEffect(() => {
                   value={bill.orderNumber}
                   onChange={handleChange}
                   placeholder="Enter Order Number"
-                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
+                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  mt-1 p-2 h-9 "
                 />
               </label>
             </div>
@@ -690,7 +690,7 @@ useEffect(() => {
             </div>
 
             <div className=" w-full">
-            <label className="block text-sm mb-1 text-labelColor">
+            <label className="block text-sm  text-labelColor">
             Bill Date
                 <input
                   name="billDate"
@@ -698,13 +698,13 @@ useEffect(() => {
                   type="date"
                   value={bill.billDate}
                   onChange={handleChange}
-                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
+                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-1 "
                 />
               </label>
             </div>
             <div>
               <div>
-              <label className="block text-sm mb-1 text-labelColor">
+              <label className="block text-sm text-labelColor">
               Due Date
                   <input
                     name="dueDate"
@@ -713,17 +713,17 @@ useEffect(() => {
                     onChange={handleChange}
                     type="date"
                     disabled={bill.paymentTerms !== "Due on Receipt"}
-                    className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
+                    className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-1 "
                   />
                 </label>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm mb-1 text-labelColor">
+              <label className="block text-sm text-labelColor">
                 Payment Terms
               </label>
-              <div className="relative w-full">
+              <div className="relative w-full mt-1">
                 <select
                   value={bill.paymentTerms}
                   onChange={handleChange}
@@ -747,7 +747,7 @@ useEffect(() => {
             </div>
 
             <div className=" w-full">
-            <label className="block text-sm mb-1 text-labelColor">
+            <label className="block text-sm  text-labelColor">
             Payment Mode{" "}
               </label>
               <div className="relative w-full">
@@ -755,7 +755,7 @@ useEffect(() => {
                   value={bill.paymentMode}
                   name="paymentMode"
                   onChange={handleChange}
-                  className="block appearance-none mt-2 w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="block appearance-none mt-1 w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 >
                   <option value="" className="text-gray">
                     Select Payment Mode

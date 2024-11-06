@@ -6,6 +6,7 @@ import useApi from "../../../Hooks/useApi";
 import PrintButton from "../../../Components/PrintButton";
 import SearchBar from "../../../Components/SearchBar";
 import DotIcon from "../../../assets/icons/DotIcon";
+import DateFormat from "../../../Components/DateFormat/DateFormta";
 
 interface Column {
   id: string;
@@ -116,21 +117,25 @@ const Table = () => {
                     <input type="checkbox" className="form-checkbox w-4 h-4" />
                   </td>
                   {columns.map((col) => {
-                    const cellContent =
-                      col.id === "paidStatus" ? (
+                    let cellContent;
+                    if (col.id === "paidStatus") {
+                      cellContent = (
                         <div
                           className={`${
                             item.paidStatus === "Pending"
                               ? "bg-zinc-200"
                               : "bg-[#78AA86]"
-                          }  text-[13px] rounded-lg items-center ms-auto text-textColor h-[18px] gap-2 py-2 flex justify-center`}
+                          } text-[13px] rounded-lg items-center ms-auto text-textColor h-[18px] gap-2 py-2 flex justify-center`}
                         >
                           <DotIcon color="#495160" />
                           {item.paidStatus}
                         </div>
-                      ) : (
-                        item[col.id as keyof typeof item]
                       );
+                    } else if (col.id === "billDate" || col.id==="dueDate") {
+                      cellContent = <DateFormat date={item[col.id]} />;
+                    } else {
+                      cellContent = item[col.id as keyof typeof item];
+                    }
 
                     return (
                       col.visible && (
