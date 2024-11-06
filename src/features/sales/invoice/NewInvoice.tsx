@@ -20,6 +20,51 @@ interface Customer {
   taxType: string;
 }
 
+const getCurrentDate = () => {
+  const today = new Date();
+  return today.toISOString().split('T')[0];
+};
+
+const getEndOfMonthDate = (date: Date) => {
+  const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  return endOfMonth.toISOString().split('T')[0];
+};
+
+const calculateDueDate = (invoiceDate: string, term: string) => {
+  const date = new Date(invoiceDate);
+
+  switch (term) {
+    case "Due on Receipt":
+      return getCurrentDate();
+    case "Due end of the month":
+      const endOfMonthDate = getEndOfMonthDate(date);
+      const endOfMonth = new Date(endOfMonthDate);
+      endOfMonth.setDate(endOfMonth.getDate() + 1);
+      return endOfMonth.toISOString().split('T')[0];
+    case "Due end of next month":
+      const nextMonthDate = new Date(date.getFullYear(), date.getMonth() + 2, 0);
+      const endOfNextMonth = getEndOfMonthDate(nextMonthDate);
+      const nextMonth = new Date(endOfNextMonth);
+      nextMonth.setDate(nextMonth.getDate() + 1);
+      return nextMonth.toISOString().split('T')[0];
+    case "Net 15":
+      date.setDate(date.getDate() + 15);
+      break;
+    case "Net 30":
+      date.setDate(date.getDate() + 30);
+      break;
+    case "Net 45":
+      date.setDate(date.getDate() + 45);
+      break;
+    case "Net 60":
+      date.setDate(date.getDate() + 60);
+      break;
+    default:
+      return invoiceDate;
+  }
+
+  return date.toISOString().split('T')[0];
+};
 const initialSalesQuoteState: invoice = {
 
   customerId: "",
@@ -27,8 +72,8 @@ const initialSalesQuoteState: invoice = {
   placeOfSupply: "",
   reference: "",
 
-  salesInvoiceDate: "",
-  dueDate: "",
+  salesInvoiceDate: getCurrentDate(),
+  dueDate: getCurrentDate(),
 
 
   paymentMode: "",
@@ -99,21 +144,21 @@ const NewInvoice = ({ }: Props) => {
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
-  const [paymentTerms, setPaymentTerms] = useState<[]>([]);
+  // const [paymentTerms, setPaymentTerms] = useState<[]>([]);
   const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(true);
   const [prefix, setPrifix] = useState("")
   const [allAccounts, setAllAccounts] = useState<any>([]);
-  
+
 
   const [invoiceState, setInvoiceState] = useState<invoice>(initialSalesQuoteState);
   console.log(invoiceState);
-  
+
 
   const { request: AllCustomer } = useApi("get", 5002);
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: getPrfix } = useApi("get", 5007);
-  const { request: allPyamentTerms } = useApi("get", 5004);
+  // const { request: allPyamentTerms } = useApi("get", 5004);
   const { request: getAccounts } = useApi("get", 5001);
 
 
@@ -123,75 +168,63 @@ const NewInvoice = ({ }: Props) => {
     navigate(-1)
     setInvoiceState(initialSalesQuoteState)
   }
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     const totalTax = parseFloat(invoiceState?.totalTax);
-    let discountValue = parseFloat(invoiceState.discountTransactionAmount) || 0; // Use `discountTransactionAmount`
     const totalAmount = parseFloat(invoiceState.subtotalTotal + totalTax) || 0;
+    let discountValue = parseFloat(invoiceState.discountTransactionAmount) || 0;
 
-    if (name === "transactionDiscountType") {
-      setInvoiceState((prevState: any) => ({
-        ...prevState,
-        discountTransactionType: value,
-      }));
-
-      if (value === "Percentage") {
-        const PercentageDiscount = (discountValue / totalAmount) * 100;
-        if (PercentageDiscount > 100) {
-          toast.error("Discount cannot exceed 100%");
-        }
-
-        setInvoiceState((prevState: any) => ({
-          ...prevState,
-          discountTransactionAmount: PercentageDiscount ? PercentageDiscount.toFixed(2) : '0', // Set `discountTransactionAmount`
-        }));
-      } else {
-        const currencyDiscount = (discountValue / 100) * totalAmount;
-        setInvoiceState((prevState: any) => ({
-          ...prevState,
-          discountTransactionAmount: currencyDiscount ? currencyDiscount.toFixed(2) : '0', // Set `discountTransactionAmount`
-        }));
+    setInvoiceState((prevState) => {
+      let newState = { ...prevState, [name]: value };
+      if (name === "paymentTerms") {
+        newState.dueDate = calculateDueDate(prevState.salesInvoiceDate, value);
       }
-    }
-
-    if (name === "discountTransactionAmount") { // Previously `transactionDiscount`
-      discountValue = parseFloat(value) || 0;
-
-      if (invoiceState.discountTransactionType === "Percentage") {
-        if (discountValue > 100) {
-          discountValue = 0;
-          toast.error("Discount cannot exceed 100%");
-        }
-        const discountAmount = (discountValue / 100) * totalAmount;
-
-        setInvoiceState((prevState: any) => ({
-          ...prevState,
-          discountTransactionAmount: discountValue ? discountValue.toString() : '0', // Set `discountTransactionAmount`
-          transactionDiscount: discountAmount ? discountAmount.toFixed(2) : '0', // Set `transactionDiscount`
-        }));
-      } else {
-        if (discountValue > totalAmount) {
-          discountValue = totalAmount;
-          toast.error("Discount cannot exceed the subtotal amount");
-        }
-
-        setInvoiceState((prevState: any) => ({
-          ...prevState,
-          discountTransactionAmount: discountValue ? discountValue.toString() : '0', // Set `discountTransactionAmount`
-          transactionDiscount: discountValue ? discountValue.toFixed(2) : '0', // Set `transactionDiscount`
-        }));
+      else if (name === "dueDate") {
+        newState.paymentTerms = "Custom";
       }
-    }
+      else if (name === "transactionDiscountType") {
+        newState.discountTransactionType = value;
 
-    if (name !== "discountTransactionAmount" && name !== "transactionDiscountType") {
-      setInvoiceState((prevState: any) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
+        if (value === "Percentage") {
+          const percentageDiscount = (discountValue / totalAmount) * 100;
+          if (percentageDiscount > 100) {
+            toast.error("Discount cannot exceed 100%");
+            discountValue = 0; // Reset if exceeds 100%
+          }
+          newState.discountTransactionAmount = percentageDiscount ? percentageDiscount.toFixed(2) : '0';
+        } else {
+          const currencyDiscount = (discountValue / 100) * totalAmount;
+          newState.discountTransactionAmount = currencyDiscount ? currencyDiscount.toFixed(2) : '0';
+        }
+      }
+      else if (name === "discountTransactionAmount") {
+        discountValue = parseFloat(value) || 0;
+
+        if (prevState.discountTransactionType === "Percentage") {
+          if (discountValue > 100) {
+            discountValue = 0;
+            toast.error("Discount cannot exceed 100%");
+          }
+          const discountAmount = (discountValue / 100) * totalAmount;
+          newState.discountTransactionAmount = discountValue ? discountValue.toString() : '0';
+          newState.transactionDiscount = discountAmount ? discountAmount.toFixed(2) : '0';
+        } else {
+          if (discountValue > totalAmount) {
+            discountValue = totalAmount;
+            toast.error("Discount cannot exceed the subtotal amount");
+          }
+          newState.discountTransactionAmount = discountValue ? discountValue.toString() : '0';
+          newState.transactionDiscount = discountValue ? discountValue.toFixed(2) : '0';
+        }
+      }
+
+      return newState;
+    });
   };
+
+
+
+
   const calculateTotal = () => {
     const {
       totalItemDiscount,
@@ -278,7 +311,7 @@ const NewInvoice = ({ }: Props) => {
       const { response, error } = await getPrfix(prefixUrl);
 
       if (!error && response) {
-        setPrifix(response.data) 
+        setPrifix(response.data)
       } else {
         console.log(error);
       }
@@ -342,11 +375,11 @@ const NewInvoice = ({ }: Props) => {
 
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
-    const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
+    // const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
 
     fetchData(allAccountsUrl, setAllAccounts, getAccounts);
-    fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
+    // fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
     handleplaceofSupply();
     fetchCountries();
@@ -374,6 +407,7 @@ const NewInvoice = ({ }: Props) => {
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
+    setSearchValue("")
 
     fetchData(customerUrl, setCustomerData, AllCustomer);
   };
@@ -478,7 +512,7 @@ const NewInvoice = ({ }: Props) => {
                       {filteredCustomer ? (
                         filteredCustomer.map((customer: any) => (
                           <div
-                            className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe
+                            className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100
                                 border border-slate-400 rounded-lg bg-lightPink"
                             onClick={() => {
                               setInvoiceState((prevState) => ({
@@ -488,6 +522,7 @@ const NewInvoice = ({ }: Props) => {
                               setOpenDropdownIndex(null);
                               setSelecetdCustomer(customer);
                             }}
+                            style={{ cursor: "pointer" }}
                           >
                             <div className="col-span-2 flex items-center justify-center">
                               <img
@@ -500,12 +535,10 @@ const NewInvoice = ({ }: Props) => {
                                 <p className="font-bold text-sm">
                                   {customer.customerDisplayName}
                                 </p>
-                                <p className="text-xs text-gray-500">
-                                  Phone: {customer.mobile}
-                                </p>
-                              </div>
-                              <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                                &times;
+                                {customer.mobile &&
+                                  <p className="text-xs text-gray-500">
+                                    Phone: {customer.mobile}
+                                  </p>}
                               </div>
                             </div>
                           </div>
@@ -579,6 +612,7 @@ const NewInvoice = ({ }: Props) => {
 
 
               <div className="grid grid-cols-12 gap-4">
+
                 <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Invoice Date
@@ -611,6 +645,7 @@ const NewInvoice = ({ }: Props) => {
 
               </div>
               <div className="grid grid-cols-12 gap-4">
+
                 <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Due Date
@@ -621,6 +656,7 @@ const NewInvoice = ({ }: Props) => {
                       onChange={handleChange}
                       name="dueDate"
                       value={invoiceState.dueDate}
+                      min={invoiceState.salesInvoiceDate} 
                       className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
                     />
                   </div>
@@ -637,15 +673,17 @@ const NewInvoice = ({ }: Props) => {
                       onChange={handleChange}
                       name="paymentTerms"
                       className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <option value="" disabled selected hidden className="text-gray">
+                      <option value="" className="text-gray">
                         Select Payment Terms
                       </option>
-                      {paymentTerms.length > 0 &&
-                        paymentTerms.map((item: any) => (
-                          <option value={item.name} className="text-gray">
-                            {item.name}
-                          </option>
-                        ))}
+                      <option value="Due on Receipt" selected>Due on Receipt</option>
+                      <option value="Due end of the month">Due end of the month</option>
+                      <option value="Due end of next month">Due end of next month</option>
+                      <option value="Net 15">Net 15</option>
+                      <option value="Net 30">Net 30</option>
+                      <option value="Net 45">Net 45</option>
+                      <option value="Net 60">Net 60</option>
+                      <option value="Custom">Custom</option>
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <CehvronDown color="gray" />
@@ -733,7 +771,7 @@ const NewInvoice = ({ }: Props) => {
             </div>
             <div className="mt-3">
               <ViewMoreOrder
-                page="invoice" 
+                page="invoice"
                 allAccounts={allAccounts}
                 salesOrderState={invoiceState}
                 setSalesOrderState={setInvoiceState}
@@ -1031,4 +1069,3 @@ const NewInvoice = ({ }: Props) => {
 };
 
 export default NewInvoice;
-
