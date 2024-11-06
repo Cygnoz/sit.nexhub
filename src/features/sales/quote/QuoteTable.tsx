@@ -24,7 +24,8 @@ interface QuoteData {
   totalAmount: string;
   status?: string;
   _id: string;
-  salesInvoice:any
+  salesInvoice: any;
+  salesOrder: any
 }
 
 const QuoteTable = ({ page }: Props) => {
@@ -39,7 +40,9 @@ const QuoteTable = ({ page }: Props) => {
     try {
       const url = page === "invoice"
         ? `${endponits.GET_ALL_SALES_INVOICE}`
-        : `${endponits.GET_ALL_QUOTES}`;
+        : page === "salesOrder" ?
+          `${endponits.GET_ALL_SALES_ORDER}` :
+          `${endponits.GET_ALL_QUOTES}`;
 
       const { response, error } = await getAllQuotes(url);
       if (!error && response) {
@@ -56,8 +59,8 @@ const QuoteTable = ({ page }: Props) => {
     fetchAllQuotes();
   }, []);
 
-  const initialColumns: Column[] = page === "invoice"
-    ? [
+  const initialColumns: Column[] =
+    page === "invoice" ? [
       { id: "createdDate", label: "Date", visible: true },
       { id: "", label: "Due Date", visible: false },
       { id: "salesInvoice", label: "Invoice#", visible: true },
@@ -67,14 +70,23 @@ const QuoteTable = ({ page }: Props) => {
       { id: "totalAmount", label: "Amount", visible: true },
       { id: "", label: "Balance Due", visible: false },
     ]
-    : [
-      { id: "customerName", label: "Customer Name", visible: true },
-      { id: "createdDate", label: "Date", visible: true },
-      { id: "reference", label: "Reference", visible: true },
-      { id: "salesQuotes", label: "Quote Number", visible: true },
-      { id: "status", label: "Status", visible: true },
-      { id: "totalAmount", label: "Amount", visible: true },
-    ];
+      : page === "salesOrder" ? [
+        { id: "salesOrder", label: "Order Number", visible: true },
+        { id: "createdDate", label: "Order Date", visible: true },
+        { id: "salesOrder", label: "Sales Order#", visible: true },
+        { id: "customerName", label: "Customer Name", visible: true },
+        { id: "totalAmount", label: "Total", visible: true },
+        { id: "status", label: "Status", visible: true },
+      ]
+        : [
+          { id: "customerName", label: "Customer Name", visible: true },
+          { id: "createdDate", label: "Date", visible: true },
+          { id: "reference", label: "Reference", visible: true },
+          { id: "salesQuotes", label: "Quote Number", visible: true },
+          { id: "status", label: "Status", visible: true },
+          { id: "totalAmount", label: "Amount", visible: true },
+        ];
+
 
 
 
@@ -106,8 +118,9 @@ const QuoteTable = ({ page }: Props) => {
     return (
       quote?.customerName?.toLowerCase()?.includes(searchValueLower) ||
       quote?.reference?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.salesQuotes?.toLowerCase()?.includes(searchValueLower) || 
-      quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower)
+      quote?.salesQuotes?.toLowerCase()?.includes(searchValueLower) ||
+      quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
+      quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
     );
   });
 
@@ -119,7 +132,7 @@ const QuoteTable = ({ page }: Props) => {
     <div className="w-full">
       <div className="flex mb-4 items-center gap-5">
         <div className="w-[95%]">
-          <SearchBar onSearchChange={setSearchValue} searchValue={searchValue} placeholder={page== "invoice" ? "Search Invoice" : "Search Quote"} />
+          <SearchBar onSearchChange={setSearchValue} searchValue={searchValue} placeholder={page == "invoice" ? "Search Invoice" : page == "salesOrder" ? "Search Sales Order" : "Search Quote"} />
         </div>
         <Print />
       </div>
@@ -127,7 +140,7 @@ const QuoteTable = ({ page }: Props) => {
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
-            <th className="py-2.5 px-4 font-medium border-b border-tableBorder">S.No</th>
+              <th className="py-2.5 px-4 font-medium border-b border-tableBorder">S.No</th>
 
               {columns.map(
                 (col) =>
@@ -146,9 +159,9 @@ const QuoteTable = ({ page }: Props) => {
             {filteredData
               .slice()
               .reverse()
-              .map((item , index) => (
+              .map((item, index) => (
                 <tr key={item._id} className="relative cursor-pointer" onClick={() => handleRowClick(item._id)}>
-                     <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
                   {columns.map(
                     (col) =>
                       col.visible && (

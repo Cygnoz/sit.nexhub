@@ -77,7 +77,7 @@ const initialSalesQuoteState: invoice = {
 
 
   paymentMode: "",
-  paymentTerms: "",
+  paymentTerms: "Due on Receipt",
   deliveryMethod: "",
   expectedShipmentDate: "",
 
