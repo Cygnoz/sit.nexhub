@@ -35,10 +35,11 @@ type SeriesModalData = {
 };
 
 function TransactionNumber() {
-  const { request: GetPrefix } = useApi("put", 5004);
+  const { request: GetPrefix } = useApi("get", 5004);
   const { request: AddPrefix } = useApi("post", 5004);
   const { request: EditPrefix } = useApi("put", 5004);
   const { request: StatusPrefix } = useApi("put", 5004);
+  const { request: DeletePrefix}=useApi('delete',5004)
   const modules = [
     "journal",
     "creditNote",
@@ -100,7 +101,6 @@ function TransactionNumber() {
     setModalOpen(true);
   };
 
-  console.log(editData);
 
   const closeModal = () => {
     setModalOpen(false);
@@ -251,6 +251,28 @@ function TransactionNumber() {
     }
   };
 
+  const handleDeletePrefix=async(sId: any)=>{
+    console.log("SId",sId);
+    
+    const  seriesId= sId
+    
+    try {
+      const url = `${endponits.DELETE_PREFIX}/${seriesId}`;
+      const apiResponse = await DeletePrefix(url);
+      const { response, error } = apiResponse;
+      console.log("res",response);
+      console.log("err",error);
+      if (!error && response) {
+        toast.success(response.data.message);
+        getPrefixDatas();
+      } else {
+        toast.error(`${error.response.data.message}`);
+      }
+    } catch (error) {
+      toast.error(`Error during API call: ${error}`);
+    }
+  }
+
   useEffect(() => {
     getPrefixDatas();
   }, []);
@@ -296,9 +318,8 @@ function TransactionNumber() {
     setModalData(updatedData);
   };
 
-  const handleStatusPrefix = async (orgId: any, sId: any) => {
+  const handleStatusPrefix = async (sId: any) => {
     const payload = {
-      organizationId: orgId,
       seriesId: sId,
     };
     try {
@@ -315,8 +336,6 @@ function TransactionNumber() {
       toast.error(`Error during API call: ${error}`);
     }
   };
-
-  console.log(data);
 
   return (
     <div className="p-5 w-[1100px]">
@@ -681,24 +700,30 @@ function TransactionNumber() {
                                             icon: <StarYellow />,
                                             onClick: () => {
                                               handleStatusPrefix(
-                                                item.orgId,
                                                 item._id
                                               ); // Directly use item properties
                                             },
                                           },
+                                          {
+                                          label: "Delete",
+                                          icon: <TrashCan color="red" />,
+                                          onClick: () => {
+                                            handleDeletePrefix(item._id)
+                                            // handleDelete(item._id); // Directly use item properties
+                                          },
+                                        },
                                         ]
-                                      : []),
-                                    {
-                                      label: "Delete",
-                                      icon: <TrashCan color="red" />,
-                                      onClick: () => {
-                                        console.log(
-                                          "Delete clicked with id:",
-                                          item._id
-                                        );
-                                        // handleDelete(item._id); // Directly use item properties
-                                      },
-                                    },
+                                      : [
+                                        // {
+                                        //   label: "Delete",
+                                        //   icon: <TrashCan color="red" />,
+                                        //   onClick: () => {
+                                        //     handleDeletePrefix(item._id)
+                                        //     // handleDelete(item._id); // Directly use item properties
+                                        //   },
+                                        // },
+                                      ]),
+                                    
                                   ]}
                                   backgroundColor="bg-white"
                                   trigger={<Ellipsis height={16} />}

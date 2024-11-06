@@ -26,6 +26,12 @@ const Currencies: React.FC<Props> = () => {
   const [isExchangeRateFields, setIsExchangeRateFields] = useState(false);
   const [enableExchangeRateModal, setEnableExchangeRateModal] = useState(false);
   const [newCurrencyModal, setNewCurrencyModal] = useState(false);
+  const [errors, setErrors] = useState({
+    currencyCode: false,
+    currencySymbol: false,
+    currencyName: false,
+ 
+  });
   const [newCurrency, setNewCurrency] = useState<InputCurrencyData>({
     currencyCode: "",
     currencySymbol: "",
@@ -47,6 +53,17 @@ const Currencies: React.FC<Props> = () => {
   const closeModal = () => {
     setEnableExchangeRateModal(false);
     setNewCurrencyModal(false);
+    setNewCurrency({
+      currencyCode: "",
+    currencySymbol: "",
+    currencyName: "",
+    decimalPlaces: "",
+    format: "",
+    })
+    setErrors({
+      currencyCode: false,
+      currencySymbol: false,
+      currencyName: false,})
   };
 
   const handleChange = (
@@ -60,28 +77,75 @@ const Currencies: React.FC<Props> = () => {
   };
 
   const onSubmit = async () => {
+    const { currencyCode, currencyName, currencySymbol } = newCurrency;
+  
+    // Validate that currencyCode, currencyName, and currencySymbol are not empty
+    let isValid = true;
+  
+    // Update error states and check for empty fields
+    if (!currencyCode || !currencyName || !currencySymbol) {
+      if (!currencyCode) {
+        setErrors((prevErrors) => ({ ...prevErrors, currencyCode: true }));
+        isValid = false;
+      }
+      if (!currencyName) {
+        setErrors((prevErrors) => ({ ...prevErrors, currencyName: true }));
+        isValid = false;
+      }
+      if (!currencySymbol) {
+        setErrors((prevErrors) => ({ ...prevErrors, currencySymbol: true }));
+        isValid = false;
+      }
+    }
+  
+    // If there are errors, stop submission
+    if (!isValid) return;
+  
     try {
       const url = `${endponits.ADD_CURRENCIES}`;
       const { response, error } = await CreateNewCurrency(url, newCurrency);
+  
+      // Log responses for debugging
       console.log("response", response);
-      console.log("Error", error.response);
-
-      if (!error && response) {
+      console.log("error", error);
+  
+      if (error) {
+        // Handle error by checking if error response exists
+        const errorMessage = error?.response?.data?.message || "An error occurred while adding currency.";
+        toast.error(errorMessage);
+        return;
+      }
+  
+      if (response) {
         closeModal();
-        console.log(response.data);
-
-        toast.success(response.data.message);
+        console.log("Currency added successfully:", response.data);
+        
+        // Clear form after successful submission
+        setNewCurrency({
+          currencyCode: "",
+          currencySymbol: "",
+          currencyName: "",
+          decimalPlaces: "",
+          format: "",
+        });
+        
+        // Show success toast
+        toast.success(response.data);
+  
+        // Update currency response state
         setCurrencyResponse((prevCurrencyResponse: any) => ({
           ...prevCurrencyResponse,
           ...newCurrency,
         }));
-      } else {
-        toast.error(error.response?.data?.message);
       }
     } catch (error) {
-      console.error("Error due to add currency!", error);
+      // Catch any other errors and log them
+      console.error("Error occurred while adding currency:", error);
+      toast.error("An unexpected error occurred.");
     }
   };
+  
+  
 
   return (
     <>
@@ -200,20 +264,30 @@ const Currencies: React.FC<Props> = () => {
                     Currency Code
                   </label>
                   <div className="relative w-full mt-1">
-                    <select
-                      value={newCurrency.currencyCode}
-                      onChange={handleChange}
-                      name="currencyCode"
-                      id="currencyCode"
-                      className="block appearance-none w-full text-zinc-400 bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    >
-                      <option value="">Select Currency Code</option>
-                      <option value="AED">AED</option>
-                      <option value="INR">INR</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
+                  <input
+                required
+                  type="text"
+                  name="currencyCode"
+                  value={newCurrency.currencyCode}
+                  onChange={handleChange}
+                  placeholder="Value"
+                  className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
+                  onFocus={() =>
+                    setErrors({ ...errors, currencyCode: false })
+                  }
+                  onBlur={() => {
+                    if (newCurrency.currencyCode === "") {
+                      setErrors({ ...errors, currencyCode: true });
+                    }
+                  }}
+                />
+                {errors.currencyCode && (
+                  <div className="text-red-800 text-xs ms-2 mt-1">
+                    Enter Currency Code
+                  </div>
+                )}
+            
+                  
                   </div>
                 </div>
                 <div className="mb-4">
@@ -224,14 +298,29 @@ const Currencies: React.FC<Props> = () => {
                     Currency Symbol
                   </label>
                   <input
+                  required
                     type="text"
                     name="currencySymbol"
                     value={newCurrency.currencySymbol}
                     onChange={handleChange}
                     placeholder="Value"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
+                    onFocus={() =>
+                      setErrors({ ...errors, currencySymbol: false })
+                    }
+                    onBlur={() => {
+                      if (newCurrency.currencySymbol === "") {
+                        setErrors({ ...errors, currencySymbol: true });
+                      }
+                    }}
                   />
+                  {errors.currencySymbol && (
+                    <div className="text-red-800 text-xs ms-2 mt-1">
+                      Enter Currency Symbol
+                    </div>
+                  )}
                 </div>
+      
 
                 {/* Currency Name  */}
                 <div className="mb-4 mt-4">
@@ -239,14 +328,30 @@ const Currencies: React.FC<Props> = () => {
                     Currency Name
                   </label>
                   <input
+                  required
                     type="text"
                     name="currencyName"
                     value={newCurrency.currencyName}
                     onChange={handleChange}
                     placeholder="Value"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
+                    onFocus={() =>
+                      setErrors({ ...errors, currencyName: false })
+                    }
+                    onBlur={() => {
+                      if (newCurrency.currencyName === "") {
+                        setErrors({ ...errors, currencyName: true });
+                      }
+                    }}
                   />
+                  {errors.currencyName && (
+                    <div className="text-red-800 text-xs ms-2 mt-1">
+                      Enter Currency Name
+                    </div>
+                  )}
                 </div>
+                  
+           
                 <div className="relative w-full mt-3">
                   <label className="block text-sm mb-1 text-labelColor">
                     Decimal Places
@@ -307,6 +412,7 @@ const Currencies: React.FC<Props> = () => {
                   </Button>
                 </div>
               </div>
+              
             </form>
           </div>
         </Modal>

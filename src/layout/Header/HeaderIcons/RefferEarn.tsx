@@ -30,46 +30,87 @@ function RefferEarn({}: Props) {
                 &times;
               </button>
             </div>
-            <div className="p-4 overflow-y-auto " style={{maxHeight: 'calc(100vh - 100px)'}}>
-              <div className="space-y-2  text-center">
-                <h3 className="text-lg font-bold text-gray-700 ">Refer a Friend, Enjoy <br />Great Perks!</h3>
-                <p className="text-gray-600 text-xs">
-                  Invite your friends to join our inventory management platform and earn exclusive rewards for every successful referral. The more you share, the more you earn!
-                </p>
-                <div className="flex justify-center">
-               <Button size="sm"><p className="text-xs">Refer & earn</p></Button>
-                </div>
-                <div 
-  className="relative"
+            <div
+  className="p-4 overflow-y-auto"
   style={{
-    backgroundImage: `url(${frameBgIMage})`,
-    backgroundPosition: 'center',
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
+    maxHeight: 'calc(100vh - 100px)',
+    scrollbarWidth: 'none', // for Firefox
+    msOverflowStyle: 'none', // for IE and Edge
   }}
 >
-  <img src={twoMenImage} alt="" className="mx-auto" style={{objectFit: "cover"}} />
+  <div className="space-y-2 text-center">
+    <h3 className="text-lg font-bold text-gray-700">
+      Refer a Friend, Enjoy <br />
+      Great Perks!
+    </h3>
+    <p className="text-gray-600 text-xs">
+      Invite your friends to join our inventory management platform and earn
+      exclusive rewards for every successful referral. The more you share, the
+      more you earn!
+    </p>
+    <div className="flex justify-center">
+      <Button size="sm">
+        <p className="text-xs">Refer & earn</p>
+      </Button>
+    </div>
+    <div
+      className="relative"
+      style={{
+        backgroundImage: `url(${frameBgIMage})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      <img
+        src={twoMenImage}
+        alt=""
+        className="mx-auto"
+        style={{ objectFit: 'cover' }}
+      />
+    </div>
+
+    <div className="text-left">
+      <h4 className="text-md text-center font-semibold mt-6">
+        How does it work?
+      </h4>
+      <p className="text-gray-600 text-center text-xs mt-1">
+        Invite your friends to join our inventory management platform and earn
+        exclusive rewards for every successful referral. The more you share, the
+        more you earn!
+      </p>
+      <br />
+      <ol className="list-decimal ml-5 text-sm text-gray-700 space-y-2">
+        <li>
+          <strong>How do I refer a friend?</strong>
+          <br />
+          <span className="text-xs">
+            You can refer a friend by sharing your unique referral link, which
+            you can find in the “Refer a Friend” section of your account
+            dashboard.
+          </span>
+        </li>
+        <li>
+          <strong>What does my friend need to do for me to earn rewards?</strong>
+          <span className="text-xs">
+            Your friend needs to sign up for our inventory management software
+            using your unique referral link.
+          </span>
+        </li>
+        <li>
+          <strong>What kind of rewards can I earn?</strong>
+          <br />
+          <span className="text-xs">
+            Rewards can vary, but they typically include discounts on your
+            subscription, free months of service, gift cards, or other special
+            offers.
+          </span>
+        </li>
+      </ol>
+    </div>
+  </div>
 </div>
 
-                <div className="text-left">
-                  <h4 className="text-md text-center font-semibold mt-6">How does it work?</h4>
-                  <p className="text-gray-600 text-center text-xs mt-1">
-                  Invite your friends to join our inventory management platform and earn exclusive rewards for every successful referral. The more you share, the more you earn!
-                </p><br />
-                  <ol className="list-decimal ml-5 text-sm text-gray-700 space-y-2">
-                    <li>
-                      <strong>How do I refer a friend?</strong> <br /><span className='text-xs'> You can refer a friend by sharing your unique referral link, which you can find in the “Refer a Friend” section of your account dashboard.</span>
-                    </li>
-                    <li>
-                      <strong>What does my friend need to do for me to earn rewards?</strong><span className='text-xs'> Your friend needs to sign up for our inventory management software using your unique referral link.</span>
-                    </li>
-                    <li>
-                      <strong>What kind of rewards can I earn?</strong> <br /><span className='text-xs'> Rewards can vary, but they typically include discounts on your subscription, free months of service, gift cards, or other special offers.</span>
-                    </li>
-                  </ol>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
   </Drawer>

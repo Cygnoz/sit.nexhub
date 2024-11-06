@@ -4,6 +4,8 @@ import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import SearchBar from "../../../../Components/SearchBar";
 import { useNavigate } from "react-router-dom";
+import TableSkelton from "../../../../Components/skeleton/Table/TableSkelton";
+import NoDataFoundTable from "../../../../Components/skeleton/Table/NoDataFoundTable";
 
 interface Journal {
   _id: string;
@@ -19,6 +21,10 @@ type Props = {};
 
 function Table({}: Props) {
   const navigate = useNavigate();
+  const [loading,setLoading]=useState<any>({
+    skelton:false,
+    noDataFound:false
+  })
   const [journalData, setJournalData] = useState<Journal[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const { request: AllJournals } = useApi("get", 5001);
@@ -35,18 +41,32 @@ function Table({}: Props) {
 
   const getAllJournals = async () => {
     try {
+      // Set loading skeleton state before API call
+      setLoading({ ...loading, skeleton: true, noDataFound: false });
+  
       const url = `${endponits.GET_ALL_JOURNALS}`;
-      const apiResponse = await AllJournals(url);
-      const { response, error } = apiResponse;
-      if (!error && response) {
-        setJournalData(response.data);
-        console.log(journalData, "journalData");
+      const { response, error } = await AllJournals(url);
+      
+      if (error || !response) {
+        // If there's an error or no response, show "No Data Found"
+        setLoading({ ...loading, skeleton: false, noDataFound: true });
+        return;
       }
-      console.log(apiResponse, "api Response");
+  
+      // If data is received, set the journal data
+      setJournalData(response.data);
+  
+      // Turn off the skeleton loader after data is received
+      setLoading({ ...loading, skeleton: false });
+  
     } catch (error) {
+      // Handle error
       console.error("Something went wrong:", error);
+      setLoading({ ...loading, skeleton: false, noDataFound: true });
     }
   };
+  
+  
 
   useEffect(() => {
     getAllJournals();
@@ -73,60 +93,63 @@ function Table({}: Props) {
         />
       </div>
       <table className="min-w-full bg-white mb-5">
-        <thead className="text-[12px] text-center text-dropdownText">
-          <tr style={{ backgroundColor: "#F9F7F0" }}>
-            <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
-            {tableHeaders.map((heading, index) => (
-              <th
-                className="py-2 px-4 font-medium border-b border-tableBorder"
-                key={index}
-              >
-                {heading}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="text-dropdownText text-center text-[13px]">
-          {filteredJournals && filteredJournals.length > 0 ? (
-            filteredJournals.reverse().map((item, index) => (
-              <tr
-                onClick={() => navigate(`/accountant/manualjournal/view/${item._id}`)}
-                key={item._id}
-                className="relative"
-              >
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {index + 1}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.date}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.journalId}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.reference}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.note}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.status}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.totalDebitAmount}
-                </td>
-                <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
-                  <div className="flex justify-end">
-                    <Ellipsis height={17} />
-                  </div>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <></>
-          )}
-        </tbody>
-      </table>
+      <thead className="text-[12px] text-center text-dropdownText">
+        <tr style={{ backgroundColor: "#F9F7F0" }}>
+          <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
+          {tableHeaders.map((heading, index) => (
+            <th className="py-2 px-4 font-medium border-b border-tableBorder" key={index}>
+              {heading}
+            </th>
+          ))}
+        </tr>
+      </thead>
+     
+      <tbody className="text-dropdownText text-center text-[13px]">
+      {loading.skeleton ? (
+  [...Array(filteredJournals.length || 5)].map((_, idx) => (
+    <TableSkelton key={idx} columns={tableHeaders} />
+  ))
+) : filteredJournals.length > 0 ? (
+  filteredJournals.reverse().map((item, index) => (
+    // Render actual data rows here
+    <tr
+    onClick={() => navigate(`/accountant/manualjournal/view/${item._id}`)}
+    key={item._id}
+    className="relative"
+  >
+    <td className="py-2.5 px-4 border-y border-tableBorder">
+      {index + 1}
+    </td>
+    <td className="py-2.5 px-4 border-y border-tableBorder">
+      {item.date}
+    </td>
+    <td className="py-2.5 px-4 border-y border-tableBorder">
+      {item.journalId}
+    </td>
+    <td className="py-2.5 px-4 border-y border-tableBorder">
+      {item.reference}
+    </td>
+    <td className="py-2.5 px-4 border-y border-tableBorder">
+      {item.note}
+    </td>
+    <td className="py-2.5 px-4 border-y border-tableBorder">
+      {item.status}
+    </td>
+    <td className="py-2.5 px-4 border-y border-tableBorder">
+      {item.totalDebitAmount}
+    </td>
+    <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
+      <div className="flex justify-end">
+        <Ellipsis height={17} />
+      </div>
+    </td>
+  </tr>
+  ))
+) : (
+   <NoDataFoundTable columns={tableHeaders} />
+)}
+      </tbody>
+    </table>
     </div>
   );
 }

@@ -1,11 +1,10 @@
-import TrashCan from "../../../../assets/icons/TrashCan";
-import { Link } from "react-router-dom";
-import useApi from "../../../../Hooks/useApi";
 import { useContext, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
+import TrashCan from "../../../../assets/icons/TrashCan";
 import { CurrencyResponseContext } from "../../../../context/ContextShare";
 import EditCurrencyModal from "./EditCurrencyModal";
-import toast from "react-hot-toast";
 
 const CurrencyTable = () => {
   const { request: get_currencies } = useApi("get", 5004);
@@ -86,11 +85,11 @@ const CurrencyTable = () => {
                     <div className="h-[26px] justify-start items-start inline-flex">
                       <div className="#fefdfa">
                         <div className="#565148 border px-[10px] py-1 rounded-lg">
-                          <Link
-                            to={`/settings/currencies/exchange-rates/${item._id}`}
+                          <p
+                            // to={`/settings/currencies/exchange-rates/${item._id}`}
                           >
                             View Exchange Rate
-                          </Link>
+                          </p>
                         </div>
                       </div>
                     </div>

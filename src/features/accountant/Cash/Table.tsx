@@ -4,6 +4,8 @@ import SearchBar from "../../../Components/SearchBar";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { cashResponseContext } from "../../../context/ContextShare";
+import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
+import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 
 interface Account {
   _id: string;
@@ -20,33 +22,54 @@ const CashAccountsTable = () => {
   const { request: AllAccounts } = useApi("get", 5001);
   const { cashResponse } = useContext(cashResponseContext)!;
 
+  // Loading state
+  const [loading, setLoading] = useState({
+    skeleton: false,
+    noDataFound: false,
+  });
+
   useEffect(() => {
     fetchAllAccounts();
   }, [cashResponse]); // Fetch data when cashResponse changes
 
+  
   const fetchAllAccounts = async () => {
     try {
+      // Set loading skeleton state before API call
+      setLoading({ ...loading, skeleton: true, noDataFound: false });
+  
       const url = `${endponits.Get_ALL_Acounts}`;
       const { response, error } = await AllAccounts(url);
+  
       if (!error && response) {
         const cashAccounts = response.data.filter(
           (account: Account) => account.accountSubhead === "Cash"
         );
         setAccountData(cashAccounts);
+        
+        // Set loading to false after the data is received immediately
+        setLoading({ ...loading, skeleton: false });
+      } else {
+        // If there's an error or no response, show "No Data Found"
+        setLoading({ ...loading, skeleton: false, noDataFound: true });
       }
     } catch (error) {
       console.error("Error fetching accounts:", error);
+  
+      // In case of error, hide the skeleton and show "No Data Found"
+      setLoading({ ...loading, skeleton: false, noDataFound: true });
     }
   };
+  
 
   const filteredAccounts = accountData.filter((account: Account) => {
     const searchValueLower = searchValue.toLowerCase();
     return (
-      account.accountName.toLowerCase().startsWith(searchValueLower) ||
-      account.accountCode.toLowerCase().startsWith(searchValueLower) ||
-      account.accountSubhead.toLowerCase().startsWith(searchValueLower) ||
-      account.accountHead.toLowerCase().startsWith(searchValueLower) ||
-      account.description.toLowerCase().startsWith(searchValueLower)
+      account.accountName.toLowerCase().includes(searchValueLower) ||
+      account.accountCode.toLowerCase().includes(searchValueLower) ||
+      account.accountSubhead.toLowerCase().includes(searchValueLower) ||
+      account.accountHead.toLowerCase().includes(searchValueLower) ||
+      account.description.toLowerCase().includes(searchValueLower)
     );
   });
 
@@ -56,6 +79,7 @@ const CashAccountsTable = () => {
     "Account Type",
     "Documents",
     "Parent Account Type",
+    ""
   ];
 
   return (
@@ -78,31 +102,32 @@ const CashAccountsTable = () => {
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts.map((item: Account, index: number) => (
-              <tr key={item._id} className="relative">
-                <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
-              
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <Link
-                    to={`/accountant/view/${item._id}?fromCash=true`}
-                  >
-                    {item.accountName}
-                  </Link>
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.accountCode}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.accountSubhead}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.description}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.accountHead}
-                </td>
-              </tr>
-            ))}
+            {loading.skeleton ? (
+              [...Array(filteredAccounts.length ||5)].map((_, idx) => (
+                <TableSkelton key={idx} columns={tableHeaders} />
+              ))
+            ) : filteredAccounts.length > 0 ? (
+              filteredAccounts.map((item: Account, index: number) => (
+                <tr
+                  key={item._id}
+                  onClick={() => console.log(`View account: ${item._id}`)} // Navigate to account view
+                  className="relative"
+                >
+                  <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    <Link to={`/accountant/view/${item._id}?fromCash=true`}>
+                      {item.accountName}
+                    </Link>
+                  </td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountCode}</td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountSubhead}</td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">{item.description}</td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountHead}</td>
+                </tr>
+              ))
+            ) : (
+              <NoDataFoundTable columns={tableHeaders} />
+            )}
           </tbody>
         </table>
       </div>
