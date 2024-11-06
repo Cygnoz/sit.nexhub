@@ -23,7 +23,7 @@ const SideBar = ({ activeIndex, setActiveIndex }: Props) => {
   };
   const navigate=useNavigate()
   return (
-    <aside className="bg-primary_main h-auto w-[72px]">
+    <aside className="bg-primary_main h-[100vh] overflow-y-scroll hide-scrollbar w-[72px]">
       <nav>
         <div onClick={()=>navigate('/landing')} className="flex justify-between items-center px-6 pt-7 pb-5 cursor-pointer">
           <img src={logo} alt="logo" />

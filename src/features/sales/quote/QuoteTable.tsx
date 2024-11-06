@@ -12,6 +12,9 @@ interface Column {
   label: string;
   visible: boolean;
 }
+type Props = {
+  page?: string;
+};
 
 interface QuoteData {
   customerName: string;
@@ -19,11 +22,13 @@ interface QuoteData {
   reference: string;
   salesQuotes: string;
   totalAmount: string;
-  Status?: string;
+  status?: string;
   _id: string;
+  salesInvoice: any;
+  salesOrder: any
 }
 
-const QuoteTable = () => {
+const QuoteTable = ({ page }: Props) => {
   const navigate = useNavigate();
 
   const { request: getAllQuotes } = useApi("get", 5007);
@@ -33,7 +38,12 @@ const QuoteTable = () => {
 
   const fetchAllQuotes = async () => {
     try {
-      const url = `${endponits.GET_ALL_QUOTES}`;
+      const url = page === "invoice"
+        ? `${endponits.GET_ALL_SALES_INVOICE}`
+        : page === "salesOrder" ?
+          `${endponits.GET_ALL_SALES_ORDER}` :
+          `${endponits.GET_ALL_QUOTES}`;
+
       const { response, error } = await getAllQuotes(url);
       if (!error && response) {
         setData(response.data);
@@ -44,19 +54,41 @@ const QuoteTable = () => {
     }
   };
 
+
   useEffect(() => {
     fetchAllQuotes();
   }, []);
 
-  const initialColumns: Column[] = [
-    { id: "customerName", label: "Customer Name", visible: true },
-    { id: "createdDate", label: "Date", visible: true },
-    { id: "reference", label: "Reference", visible: true },
-    { id: "salesQuotes", label: "Quote Number", visible: true },
-    { id: "totalAmount", label: "Amount", visible: true },
-    // Uncomment below if "Status" should be visible
-    // { id: "Status", label: "Status", visible: true },
-  ];
+  const initialColumns: Column[] =
+    page === "invoice" ? [
+      { id: "createdDate", label: "Date", visible: true },
+      { id: "", label: "Due Date", visible: false },
+      { id: "salesInvoice", label: "Invoice#", visible: true },
+      { id: "reference", label: "Reference", visible: true },
+      { id: "status", label: "Status", visible: true },
+      { id: "customerName", label: "Customer Name", visible: true },
+      { id: "totalAmount", label: "Amount", visible: true },
+      { id: "", label: "Balance Due", visible: false },
+    ]
+      : page === "salesOrder" ? [
+        { id: "salesOrder", label: "Order Number", visible: true },
+        { id: "createdDate", label: "Order Date", visible: true },
+        { id: "salesOrder", label: "Sales Order#", visible: true },
+        { id: "customerName", label: "Customer Name", visible: true },
+        { id: "totalAmount", label: "Total", visible: true },
+        { id: "status", label: "Status", visible: true },
+      ]
+        : [
+          { id: "customerName", label: "Customer Name", visible: true },
+          { id: "createdDate", label: "Date", visible: true },
+          { id: "reference", label: "Reference", visible: true },
+          { id: "salesQuotes", label: "Quote Number", visible: true },
+          { id: "status", label: "Status", visible: true },
+          { id: "totalAmount", label: "Amount", visible: true },
+        ];
+
+
+
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
@@ -68,12 +100,12 @@ const QuoteTable = () => {
     if (colId === "createdDate") {
       return extractDate(item.createdDate);
     }
-    if (colId === "Status") {
+    if (colId === "status") {
       return (
         <div className="flex justify-center items-center">
           <div className="flex items-center gap-1.5 bg-BgSubhead rounded-2xl px-2 pt-0.5 pb-0.5">
             <DotIcon color="#495160" />
-            <p className="text-outlineButton text-xs font-medium">{item.Status}</p>
+            <p className="text-outlineButton text-xs font-medium">{item.status}</p>
           </div>
         </div>
       );
@@ -84,9 +116,11 @@ const QuoteTable = () => {
   const filteredData = data.filter((quote) => {
     const searchValueLower = searchValue.toLowerCase();
     return (
-      quote.customerName.toLowerCase().includes(searchValueLower) ||
-      quote.reference.toLowerCase().includes(searchValueLower) ||
-      quote.salesQuotes.toLowerCase().includes(searchValueLower)
+      quote?.customerName?.toLowerCase()?.includes(searchValueLower) ||
+      quote?.reference?.toLowerCase()?.includes(searchValueLower) ||
+      quote?.salesQuotes?.toLowerCase()?.includes(searchValueLower) ||
+      quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
+      quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
     );
   });
 
@@ -98,7 +132,7 @@ const QuoteTable = () => {
     <div className="w-full">
       <div className="flex mb-4 items-center gap-5">
         <div className="w-[95%]">
-          <SearchBar onSearchChange={setSearchValue} searchValue={searchValue} placeholder="Search Quote" />
+          <SearchBar onSearchChange={setSearchValue} searchValue={searchValue} placeholder={page == "invoice" ? "Search Invoice" : page == "salesOrder" ? "Search Sales Order" : "Search Quote"} />
         </div>
         <Print />
       </div>
@@ -106,9 +140,8 @@ const QuoteTable = () => {
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">
-                <input type="checkbox" className="form-checkbox w-4 h-4" />
-              </th>
+              <th className="py-2.5 px-4 font-medium border-b border-tableBorder">S.No</th>
+
               {columns.map(
                 (col) =>
                   col.visible && (
@@ -126,11 +159,9 @@ const QuoteTable = () => {
             {filteredData
               .slice()
               .reverse()
-              .map((item) => (
+              .map((item, index) => (
                 <tr key={item._id} className="relative cursor-pointer" onClick={() => handleRowClick(item._id)}>
-                  <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <input type="checkbox" className="form-checkbox w-4 h-4" />
-                  </td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
                   {columns.map(
                     (col) =>
                       col.visible && (
