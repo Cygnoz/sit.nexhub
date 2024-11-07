@@ -1,5 +1,4 @@
 export interface Bill {
-    organizationId: string;
     supplierId: string;
     supplierDisplayName:string;
     billNumber: string;
@@ -21,6 +20,7 @@ export interface Bill {
         itemCostPrice: number;
         itemDiscount: number;
         itemDiscountType: string;
+        itemTax:number;
         itemSgst: number;
         itemCgst: number;
         itemIgst: number;

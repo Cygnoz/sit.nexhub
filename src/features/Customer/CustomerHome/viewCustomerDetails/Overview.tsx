@@ -24,10 +24,10 @@ const Overview = ({
             <span className="font-medium"> Customer Name: </span>
             {customerData?.customerDisplayName}
           </p>
-          <p className="font-bold text-textColor px-5 border-e pe-5 border-e-textColor">
+         { customerData.companyName && <p className="font-bold text-textColor px-5 border-e pe-5 border-e-textColor">
             <span className="font-medium"> Company Name: </span>
             {customerData.companyName}
-          </p>
+          </p> }
 
           <div className="w-[33.6%] ml-auto">
             <div
@@ -55,7 +55,7 @@ const Overview = ({
               className="text-[10px] h-6 ps-2 bg-white border-blk rounded-md border text-textColor border-textColor"
               value={statusData.status}
               name="status"
-              onChange={handleStatusSubmit} // handle status change here
+              onChange={handleStatusSubmit} 
             >
               <option value="" className="disabled hidden"></option>
               <option value="Active">Active</option>
@@ -67,49 +67,75 @@ const Overview = ({
 
       <div className="border-[1px] border-[#DADBDD] rounded-md p-2 mt-2">
         <div className="grid grid-cols-3 gap-4 text-sm text-textColor">
-          <div className="bg-[#F3F3F3] p-2 rounded-lg">
-            <div className="flex w-full p-2">
-              <p className="font-bold">Billing Address</p>
-              <div className="ml-auto">
-                <EditCustomerModal
-                  addressEdit="billingAddressEdit"
-                  customerDataPorps={customerData}
-                />
-              </div>
-            </div>
-            <div className="text-xs p-2">
-              <p>{customerData.billingAttention}</p>
-              <p>
-                {customerData.billingAddressLine1}, {customerData.billingAddressLine2}
-              </p>
-              <p>{customerData.billingCity}</p>
-              <p>Pin: {customerData.billingPinCode}</p>
-              <p>{customerData.billingCountry}</p>
-              <p>Phone: {customerData.billingPhone}</p>
-            </div>
-          </div>
+        <div className="bg-[#F3F3F3] p-2 rounded-lg">
+  <div className="flex w-full p-2">
+    <p className="font-bold">Billing Address</p>
+    <div className="ml-auto">
+      <EditCustomerModal
+        addressEdit="billingAddressEdit"
+        customerDataPorps={customerData}
+      />
+    </div>
+  </div>
+  <div className="text-xs p-2">
+    {customerData.billingAttention || 
+    customerData.billingAddressLine1 || 
+    customerData.billingAddressLine2 || 
+    customerData.billingCity || 
+    customerData.billingPinCode || 
+    customerData.billingCountry || 
+    customerData.billingPhone ? (
+      <>
+        {customerData.billingAttention && <p>{customerData.billingAttention}</p>}
+        {customerData.billingAddressLine1 && (
+          <p>{customerData.billingAddressLine1}, {customerData.billingAddressLine2}</p>
+        )}
+        {customerData.billingCity && <p>{customerData.billingCity}</p>}
+        {customerData.billingPinCode && <p>Pin: {customerData.billingPinCode}</p>}
+        {customerData.billingCountry && customerData.billingState && <p>{customerData.billingState},{customerData.billingCountry}</p>}
+        {customerData.billingPhone && <p>Phone: {customerData.billingPhone}</p>}
+      </>
+    ) : (
+      <p>No billing address available.</p> 
+    )}
+  </div>
+</div>
 
-          <div className="bg-[#F3F3F3] p-2 rounded-lg">
-            <div className="flex w-full p-2">
-              <p className="font-bold">Shipping Address</p>
-              <div className="ml-auto">
-                <EditCustomerModal
-                  addressEdit="shippingAddressEdit"
-                  customerDataPorps={customerData}
-                />
-              </div>
-            </div>
-            <div className="text-xs p-2">
-              <p>{customerData.shippingAttention}</p>
-              <p>
-                {customerData.shippingAddress1}, {customerData.shippingAddress2}
-              </p>
-              <p>{customerData.shippingCity}</p>
-              <p>Pin: {customerData.shippingPinCode}</p>
-              <p>{customerData.shippingCountry}</p>
-              <p>Phone: {customerData.shippingPhone}</p>
-            </div>
-          </div>
+
+<div className="bg-[#F3F3F3] p-2 rounded-lg">
+  <div className="flex w-full p-2">
+    <p className="font-bold">Shipping Address</p>
+    <div className="ml-auto">
+      <EditCustomerModal
+        addressEdit="shippingAddressEdit"
+        customerDataPorps={customerData}
+      />
+    </div>
+  </div>
+  <div className="text-xs p-2">
+    {customerData.shippingAttention || 
+    customerData.shippingAddress1 || 
+    customerData.shippingAddress2 || 
+    customerData.shippingCity || 
+    customerData.shippingPinCode || 
+    customerData.shippingCountry || 
+    customerData.shippingPhone ? (
+      <>
+        {customerData.shippingAttention && <p>{customerData.shippingAttention}</p>}
+        {customerData.shippingAddress1 && (
+          <p>{customerData.shippingAddress1}{customerData.shippingAddress2 ? `, ${customerData.shippingAddress2}` : ''}</p>
+        )}
+        {customerData.shippingCity && <p>{customerData.shippingCity}</p>}
+        {customerData.shippingPinCode && <p>Pin: {customerData.shippingPinCode}</p>}
+        {customerData.shippingCountry && customerData.shippingState && <p>{customerData.shippingState}, {customerData.shippingCountry}</p>}
+        {customerData.shippingPhone && <p>Phone: {customerData.shippingPhone}</p>}
+      </>
+    ) : (
+      <p>No shipping address available.</p> 
+    )}
+  </div>
+</div>
+
 
           <div className="pe-8 p-2">
             <p className="font-bold m-2">Other Details</p>
@@ -117,19 +143,19 @@ const Overview = ({
               <div className="flex text-textColor">
                 <p>Customer Type</p>
                 <p className="ml-auto font-semibold">
-                  {customerData.customerType}
+                  {customerData.customerType?customerData.customerType:"-"}
                 </p>
               </div>
               <div className="flex text-textColor">
                 <p>Default Currency</p>
                 <p className="ml-auto font-semibold">
-                  {customerData.currency}
+                  {customerData.currency?customerData.currency:"-"}
                 </p>
               </div>
               <div className="flex text-textColor">
                 <p>Payment Terms</p>
                 <p className="ml-auto font-semibold">
-                  {customerData.paymentTerms}
+                  {customerData.paymentTerms?customerData.paymentTerms:"-"}
                 </p>
               </div>
               <div className="flex text-textColor">
