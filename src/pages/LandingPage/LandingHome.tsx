@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LandingHeader from "./LandingHeader";
 import LandingContant from "./LandingContant";
 import VeiwApps from "./VeiwApps";
+import { useLocation } from "react-router-dom";
 
 const LandingHome: React.FC = () => {
   const [mode, setMode] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === '/landing' && location.hash === '#appsSection') {
+      document.getElementById('appsSection')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [location]);
 
   return (
     <div
@@ -17,7 +25,9 @@ const LandingHome: React.FC = () => {
 
       {/* Main Content */}
       <LandingContant mode={mode} setMode={setMode} />
+      <div id="appsSection">
       <VeiwApps  mode={mode}/>
+      </div>
     </div>
   );
 };
