@@ -6,8 +6,8 @@ import Button from "../../../Components/Button";
 // import Ellipsis from "../../../assets/icons/Ellipsis";
 import SalesOrderCard from "./SalesOrderCard";
 import PlusCircle from "../../../assets/icons/PlusCircle";
-import SalesTable from "./SalesTable";
 import { useNavigate } from "react-router-dom";
+import QuoteTable from "../quote/QuoteTable";
 type Props = {};
 
 const Sales = ({}: Props) => {
@@ -129,7 +129,7 @@ const Sales = ({}: Props) => {
             <SalesOrderCustomers />
           </div> */}
           <div className="p-4">
-            <SalesTable />
+          <QuoteTable page="salesOrder"/>
           </div>
         </div>
       </div>
