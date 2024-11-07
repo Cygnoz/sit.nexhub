@@ -15,7 +15,7 @@ type Props = {};
 const Header = ({ }: Props) => {
   const navigate = useNavigate();
   const handleNavigate = () => {
-    navigate("/landing");
+    navigate('/landing#appsSection');
   };
 
   const [searchValue, setSearchValue] = useState<string>("");
