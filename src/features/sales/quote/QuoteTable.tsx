@@ -125,6 +125,9 @@ const QuoteTable = ({ page }: Props) => {
   });
 
   const handleRowClick = (id: string) => {
+    page === "salesOrder" ?
+    navigate(`/sales/viewsalesorder/${id}`)
+    :
     navigate(`/sales/quote/view/${id}`);
   };
 
@@ -132,7 +135,8 @@ const QuoteTable = ({ page }: Props) => {
     <div className="w-full">
       <div className="flex mb-4 items-center gap-5">
         <div className="w-[95%]">
-          <SearchBar onSearchChange={setSearchValue} searchValue={searchValue} placeholder={page == "invoice" ? "Search Invoice" : page == "salesOrder" ? "Search Sales Order" : "Search Quote"} />
+          <SearchBar onSearchChange={setSearchValue} searchValue={searchValue} 
+          placeholder={page == "invoice" ? "Search Invoice" : page == "salesOrder" ? "Search Sales Order" : "Search Quote"} />
         </div>
         <Print />
       </div>
