@@ -48,7 +48,6 @@ const NewPurchaseOrder = ({}: Props) => {
   );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [purchaseOrderState, setPurchaseOrderState] = useState<PurchaseOrder>({
-    organizationId: "INDORG0006",
     supplierId: "",
     supplierDisplayName: "",
     supplierBillingCountry: "", 
@@ -107,7 +106,7 @@ const NewPurchaseOrder = ({}: Props) => {
     grandTotal: 0,
   });
 
-  // console.log(purchaseOrderState);
+  console.log(purchaseOrderState);
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
