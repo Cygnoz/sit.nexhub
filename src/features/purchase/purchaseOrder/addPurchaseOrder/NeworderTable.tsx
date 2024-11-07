@@ -16,7 +16,7 @@ type Row = {
   itemName: string; 
   itemQuantity: number;
   itemCostPrice: number;
-  itemTax:string;
+  itemTax:number;
   itemDiscount: number;
   itemDiscountType: string;
   itemAmount: number;
@@ -56,7 +56,7 @@ const NewOrderTable = ({
       itemName: "",
       itemQuantity: 0,
       itemCostPrice: 0,
-      itemTax: "",
+      itemTax: 0,
       itemDiscount: 0,
       itemDiscountType: "percentage",
       itemAmount: 0,
@@ -94,7 +94,7 @@ const NewOrderTable = ({
       itemName: "",
       itemQuantity: 0,
       itemCostPrice: 0,
-      itemTax: "",
+      itemTax: 0,
       itemDiscount: 0,
       itemDiscountType: "percentage",
       itemAmount: 0,
@@ -142,6 +142,13 @@ const NewOrderTable = ({
     newRows[index].itemCgstAmount = cgstAmount;
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
+    if(isInterState){
+      newRows[index].itemTax=igstAmount
+
+    }
+    else{
+      newRows[index].itemTax=cgstAmount+sgstAmount
+    }
   
     setRows(newRows);
   
@@ -288,7 +295,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
           itemName: "",
           itemQuantity: 0,
           itemCostPrice: 0,
-          itemTax: "",
+          itemTax: 0,
           itemDiscount: 0,
           itemDiscountType: "percentage",
           itemAmount: 0,
@@ -406,6 +413,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   
       return {
         ...row,
+
         itemAmount: taxDetails.itemAmount, 
         itemCgstAmount: taxDetails.cgstAmount,
         itemSgstAmount: taxDetails.sgstAmount,
@@ -449,7 +457,6 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
     const totalIGST = calculateTotalIGST();
     const totalSellingPrice = calculateTotalSubtotal();
     const totalDiscount = calculateDiscount();
-  
   
     setPurchaseOrderState?.((prevData: PurchaseOrder) => ({
       ...prevData,

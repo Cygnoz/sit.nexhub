@@ -66,6 +66,7 @@ const SupplierTable = ({
   });
 
   const renderColumnContent = (colId: string, item: Supplier) => {
+    // Check if the column is "supplierDetails" first
     if (colId === "supplierDetails") {
       return (
         <div className="flex justify-center">
@@ -79,26 +80,36 @@ const SupplierTable = ({
           </Link>
         </div>
       );
-    } else if (colId === "status") {
+    }
+  
+    if (colId === "status") {
+      const statusStyles =
+        item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400";
+  
       return (
         <p
-          className={`${
-            item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400"
-          } text-[13px] rounded items-center ms-auto text-white h-[18px] flex justify-center`}
+          className={`${statusStyles} text-[13px] rounded text-white h-[18px] flex items-center justify-center`}
         >
           {item.status}
         </p>
       );
     }
-    return item[colId as keyof Supplier];
+  
+    const columnValue = item[colId as keyof Supplier];
+    return columnValue ? (
+      <span>{columnValue}</span>
+    ) : (
+      <span className="text-gray-500 italic">-</span>
+    );
   };
+  
 
 
   console.log(filteredAccounts);
   
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div className="w-full ">
           <SearchBar
             placeholder="Search"

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import Button from "../../../Components/Button";
 import { Link } from "react-router-dom";
@@ -11,44 +11,57 @@ interface Column {
   visible: boolean;
 }
 
+interface Customer {
+  _id: string;
+  customerDisplayName?: string;
+  companyName?: string;
+  mobile?: string;
+  customerEmail?: string;
+  supplierDetails?: string;
+  status?: string;
+  skypeNameNumber?: string;
+  billingAttention?: string;
+  placeOfSupply?: string;
+}
+
 interface CustomerTableProps {
-  customerData: any[];
+  customerData: Customer[];
   searchValue: string;
   setSearchValue: (value: string) => void;
 }
+
+const initialColumns: Column[] = [
+  { id: "customerDisplayName", label: "Name", visible: true },
+  { id: "companyName", label: "Company Name", visible: true },
+  { id: "mobile", label: "Contact", visible: true },
+  { id: "customerEmail", label: "Email", visible: true },
+  { id: "supplierDetails", label: "Customer details", visible: true },
+  { id: "status", label: "Status", visible: true },
+  { id: "skypeNameNumber", label: "Receivables(BCY)", visible: true },
+];
 
 const CustomerTable: React.FC<CustomerTableProps> = ({
   customerData,
   searchValue,
   setSearchValue,
 }) => {
-  const initialColumns: Column[] = [
-    { id: "Sl No", label: "Sl No", visible: true },
-    { id: "customerDisplayName", label: "Name", visible: true },
-    { id: "companyName", label: "Company Name", visible: true },
-    { id: "mobile", label: "Contact", visible: true },
-    { id: "customerEmail", label: "Email", visible: true },
-    { id: "supplierDetails", label: "Customer details", visible: true },
-    { id: "status", label: "Status", visible: true },
-    { id: "skypeNameNumber", label: "Receivables(BCY)", visible: true },
-  ];
-
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
-  const filteredAccounts = customerData.filter((account) => {
+  const filteredAccounts = useMemo(() => {
     const searchValueLower = searchValue.toLowerCase();
-    return (
-      account?.billingAttention?.toLowerCase().startsWith(searchValueLower) ||
-      account?.customerDisplayName?.toLowerCase().startsWith(searchValueLower) ||
-      account?.companyName?.toLowerCase().startsWith(searchValueLower) ||
-      account?.mobile?.toLowerCase().startsWith(searchValueLower) ||
-      account?.customerEmail?.toLowerCase().startsWith(searchValueLower) ||
-      account?.placeOfSupply?.toLowerCase().startsWith(searchValueLower)
-    );
-  });
-  
+    return customerData.filter((account) => {
+      return (
+        account?.billingAttention?.toLowerCase().startsWith(searchValueLower) ||
+        account?.customerDisplayName?.toLowerCase().startsWith(searchValueLower) ||
+        account?.companyName?.toLowerCase().startsWith(searchValueLower) ||
+        account?.mobile?.toLowerCase().startsWith(searchValueLower) ||
+        account?.customerEmail?.toLowerCase().startsWith(searchValueLower) ||
+        account?.placeOfSupply?.toLowerCase().startsWith(searchValueLower)
+      );
+    });
+  }, [customerData, searchValue]);
 
-  const renderColumnContent = (colId: string, item: any) => {
+  const renderColumnContent = (colId: string, item: Customer) => {
     if (colId === "supplierDetails") {
       return (
         <div className="flex justify-center">
@@ -65,15 +78,20 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
     } else if (colId === "status") {
       return (
         <p
-          className={`${
+          className={`py-1 text-[13px] rounded items-center ms-auto text-white h-[18px] flex justify-center ${
             item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400"
-          } py-1 text-[13px] rounded items-center ms-auto text-white h-[18px] flex justify-center`}
+          }`}
         >
           {item.status}
         </p>
       );
     }
-    return item[colId as keyof typeof item];
+    const columnValue = item[colId as keyof Customer];
+    return columnValue ? (
+      <span>{columnValue}</span>
+    ) : (
+      <span className="text-gray-500 italic">-</span>
+    );
   };
 
   return (
@@ -88,6 +106,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
         </div>
         <div className="flex gap-4">
           <Print />
+          <CustomiseColmn columns={columns} setColumns={setColumns} />
         </div>
       </div>
       <div className="mt-3 overflow-y-scroll max-h-[25rem]">
@@ -106,14 +125,11 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                     </th>
                   )
               )}
-              <th className="py-2 px-4 font-medium border-b border-tableBorder">
-                <CustomiseColmn columns={columns} setColumns={setColumns} />
-              </th>
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
             {filteredAccounts && filteredAccounts.length > 0 ? (
-              filteredAccounts.reverse().map((item, index) => (
+              [...filteredAccounts].reverse().map((item, index) => (
                 <tr key={item._id} className="relative">
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {index + 1}
@@ -133,11 +149,8 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
               ))
             ) : (
               <tr>
-                <td
-                  colSpan={columns.length + 2}
-                  className="text-center py-4 border-y border-tableBorder"
-                >
-                  <p className="text-red-500">No Data Found!</p>
+                <td colSpan={columns.length + 1} className="py-4 text-center">
+                  No customer data found
                 </td>
               </tr>
             )}
