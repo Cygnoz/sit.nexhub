@@ -186,7 +186,7 @@ const LandingContant = ({ mode }: Props) => {
           <img src={droidBilly} className="w-[125px] -bottom-[60px] absolute " alt="" />
           <img src={chatVector1} className="-z-10 absolute right-20 top-0" alt="" />
           <img src={chatVector2} className="-z-10 absolute right-0 bottom-0" alt="" />
-          <p className={`w-[140px] text-[16px]  absolute right-14 bottom-5 ${mode ? 'text-[#303F58]' : 'text-white'}`}>Chat With <br /><span className="font-bold text-[24px]">droid billie</span></p>
+          <p className={`w-[140px] text-[16px]  absolute right-14 bottom-5 ${mode ? 'text-[#303F58]' : 'text-white'}`}>Chat With <br /><span className="font-bold text-[24px]">Droid Billie</span></p>
           <button onClick={() => handleNavigation('/chatboat', 0)} className="bg-[#F6F6F6] absolute right-3 top-4 text-white h-[49px] w-[49px] flex items-center justify-center rounded-full">
             <ArrowIconNoUnderline
               className="transform rotate-90"
@@ -198,9 +198,14 @@ const LandingContant = ({ mode }: Props) => {
         </div>
       </div>
       <div>
-      <button className={`absolute z-60 right-[50%] translate-x-[50%] ${mode ? 'bg-white' : 'bg-[#1A282F]'} rounded-full -bottom-6 h-[55px] w-[150px] flex items-center rotate-border shadow-xl`}>
+      <button
+  className={`absolute z-60 right-[50%] translate-x-[50%] ${mode ? 'bg-white' : 'bg-[#1A282F]'} rounded-full -bottom-6 h-[55px] w-[150px] flex items-center rotate-border shadow-xl`}>
 </button>
-<button className={`absolute z-70 right-[50%] translate-x-[50%] ${mode ? 'bg-white' : 'bg-[#1A282F]'} rounded-full -bottom-5 px-4 py-3 ${mode && 'text-[#C2A270]'} flex items-center`}>
+<button
+  className={`absolute z-70 right-[50%] translate-x-[50%] ${mode ? 'bg-white' : 'bg-[#1A282F]'} rounded-full -bottom-5 px-4 py-3 ${mode && 'text-[#C2A270]'} flex items-center`}
+  onClick={() => {
+    document.getElementById('appsSection').scrollIntoView({ behavior: 'smooth' });
+  }}>
   More Apps <CehvronDown color={mode ? '#C2A270' : 'white'} />
 </button>
 

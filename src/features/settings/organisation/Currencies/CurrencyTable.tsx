@@ -1,21 +1,20 @@
 import TrashCan from "../../../../assets/icons/TrashCan";
-import { Link } from "react-router-dom";
 import useApi from "../../../../Hooks/useApi";
 import { useContext, useEffect, useState } from "react";
 import { endponits } from "../../../../Services/apiEndpoints";
 import { CurrencyResponseContext } from "../../../../context/ContextShare";
 import EditCurrencyModal from "./EditCurrencyModal";
 import toast from "react-hot-toast";
-
+ 
 const CurrencyTable = () => {
   const { request: get_currencies } = useApi("get", 5004);
   const tableHeaders = ["Name", "Symbol", "Actions"];
   const [currenciesData, setCurrenciesData] = useState<any[]>([]);
-
+ 
   const [selectedCurrency, setSelectedCurrency] = useState<any | null>(null);
   const { currencyResponse } = useContext(CurrencyResponseContext)!;
   const { request: deleteCurrencyRequest } = useApi("delete", 5004);
-
+ 
   const getHandleCurrencies = async () => {
     try {
       const url = `${endponits.GET_CURRENCIES}`;
@@ -28,12 +27,12 @@ const CurrencyTable = () => {
       console.log("Error in fetching currency data", error);
     }
   };
-
+ 
   const handleDelete = async (currencyId: string) => {
     try {
       const url = `${endponits.DELETE_CURRENCIES(currencyId)}`;
       const { response, error } = await deleteCurrencyRequest(url);
-
+ 
       if (!error && response) {
         toast.success(response.data.message);
         getHandleCurrencies();
@@ -44,11 +43,11 @@ const CurrencyTable = () => {
       console.error("Error in delete operation", error);
     }
   };
-
+ 
   useEffect(() => {
     getHandleCurrencies();
   }, [currencyResponse]);
-
+ 
   return (
     <div className="space-y-4 pt-2">
       <div>
@@ -86,11 +85,11 @@ const CurrencyTable = () => {
                     <div className="h-[26px] justify-start items-start inline-flex">
                       <div className="#fefdfa">
                         <div className="#565148 border px-[10px] py-1 rounded-lg">
-                          <Link
-                            to={`/settings/currencies/exchange-rates/${item._id}`}
+                          <p
+                            // to={`/settings/currencies/exchange-rates/${item._id}`}
                           >
                             View Exchange Rate
-                          </Link>
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -112,5 +111,5 @@ const CurrencyTable = () => {
     </div>
   );
 };
-
+ 
 export default CurrencyTable;
