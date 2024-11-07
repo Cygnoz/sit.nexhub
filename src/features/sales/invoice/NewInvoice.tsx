@@ -35,7 +35,7 @@ const calculateDueDate = (invoiceDate: string, term: string) => {
 
   switch (term) {
     case "Due on Receipt":
-      return getCurrentDate();
+      return invoiceDate; // Return the invoiceDate directly
     case "Due end of the month":
       const endOfMonthDate = getEndOfMonthDate(date);
       const endOfMonth = new Date(endOfMonthDate);
@@ -65,6 +65,7 @@ const calculateDueDate = (invoiceDate: string, term: string) => {
 
   return date.toISOString().split('T')[0];
 };
+
 const initialSalesQuoteState: invoice = {
 
   customerId: "",
@@ -223,7 +224,14 @@ const NewInvoice = ({ }: Props) => {
   };
 
 
-
+  useEffect(() => {
+    if (new Date(invoiceState.dueDate) < new Date(invoiceState.salesInvoiceDate)) {
+      setInvoiceState((prevState) => ({
+        ...prevState,
+        dueDate: invoiceState.salesInvoiceDate,
+      }));
+    }
+  }, [invoiceState.salesInvoiceDate]);
 
   const calculateTotal = () => {
     const {
@@ -656,7 +664,7 @@ const NewInvoice = ({ }: Props) => {
                       onChange={handleChange}
                       name="dueDate"
                       value={invoiceState.dueDate}
-                      min={invoiceState.salesInvoiceDate} 
+                      min={invoiceState.salesInvoiceDate}
                       className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
                     />
                   </div>
