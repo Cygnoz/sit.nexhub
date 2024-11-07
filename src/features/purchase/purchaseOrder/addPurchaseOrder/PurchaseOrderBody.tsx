@@ -1,9 +1,8 @@
 export interface PurchaseOrder {
-  organizationId: string;
   supplierId: string;
-  supplierDisplayName: string;  // Added missing field
-  supplierBillingCountry: string; // Added missing field
-  supplierBillingState: string; // Added missing field
+  supplierDisplayName: string;  
+  supplierBillingCountry: string; 
+  supplierBillingState: string; 
   taxMode: string;
   sourceOfSupply: string;
   destinationOfSupply: string;

@@ -27,21 +27,41 @@ const SupplierHome = () => {
   const { supplierResponse } = useContext(SupplierResponseContext)!;
   const [searchValue, setSearchValue] = useState<string>("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [loading,setLoading]=useState<object | null>({
+    skelton:false,
+    noDataFound:false
+  })
+
+
 
   const fetchAllSuppliers = async () => {
     try {
       const url = `${endponits.GET_ALL_SUPPLIER}`;
+      setLoading({ ...loading, skelton: true });
+  
       const { response, error } = await AllSuppliers(url);
-      if (!error && response) {
-        setSupplierData(response.data);
+  
+      if (error || !response) {
+        // Handle no data scenario
+        setLoading({ ...loading, skelton: false, noDataFound: true });
+        return;
       }
+  
+      // Set supplier data if response is valid
+      setSupplierData(response.data);
+  
+      // Turn off the skeleton loader after data is received
+      setLoading({ ...loading, skelton: false });
+  
     } catch (error) {
       console.error("Error fetching suppliers:", error);
+      setLoading({ ...loading, noDataFound: true, skelton: false });
     }
   };
+  
 
   useEffect(() => {
-    fetchAllSuppliers();
+      fetchAllSuppliers();
   }, [supplierResponse]);
 
   const activeSuppliers = supplierData.filter(supplier => supplier.status === "Active").length;
@@ -107,7 +127,7 @@ const SupplierHome = () => {
       </div>
       <div className="px-6 mt-3">
         <div className="bg-white p-5">
-          <SupplierTable supplierData={filteredSuppliers} searchValue={searchValue} setSearchValue={setSearchValue} />
+          <SupplierTable loading={loading} supplierData={filteredSuppliers} searchValue={searchValue} setSearchValue={setSearchValue} />
         </div>
       </div>
     </>
