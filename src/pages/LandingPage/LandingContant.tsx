@@ -27,6 +27,7 @@ const LandingContant = ({ mode }: Props) => {
  
   const handleNavigation = (route: string, index: number) => {
     localStorage.setItem('savedIndex', index.toString())
+    localStorage.setItem('savedSelectedIndex','0')
     navigate(route);
   };
   return (
@@ -70,7 +71,7 @@ const LandingContant = ({ mode }: Props) => {
               onClick={() => handleNavigation('/inventory', 1)}
               className="w-[97%] h-[260px]  cursor-pointer relative overflow-hidden  rounded-2xl"
             >
-              <img src={inventoryVector} className="absolute overflow-hidden right-20 top-[2px] z-9999" alt="" />
+              <img src={inventoryVector} className="absolute overflow-hidden right-20 top-[2px] z-100" alt="" />
               {/* Image section */}
               <img
                 src={inventoryImg}
@@ -94,7 +95,7 @@ const LandingContant = ({ mode }: Props) => {
                   <p className={`w-[260px] text-[32px] ${mode ? 'text-[#303F58]' : 'text-white'}`}>Track and manage <span className="font-bold"> stock </span> efficiently </p>
                 </div>
               </div>
-              <div className={`absolute ${mode ? 'bg-[#CACCBE]' : 'bg-[#2C353B]'}  rounded-r-2xl bg-[#2C353B] w-[105px] h-[198px]  top-[63px] right-0`}></div>
+              <div className={`absolute ${mode ? 'bg-[#CACCBE]' : 'bg-[#2C353B]'}  rounded-r-2xl bg-[#2C353B] w-[105px] h-[198px] z-50  top-[63px] right-0`}></div>
             </div>
           </div>
           <div className="col-span-3">

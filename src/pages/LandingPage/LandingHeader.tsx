@@ -123,7 +123,7 @@ function LandingHeader({ mode, setMode }: Props) {
         <Modal
           open
           onClose={closeModal}
-          className="rounded-lg p-8 w-[546px] h-[160px] text-[#303F58] space-y-8 absolute top-0"
+          className="rounded-lg p-8 w-[546px] h-[160px] z-[1200] text-[#303F58] space-y-8 absolute top-0"
         >
           <p className="text-sm">Are you sure you want to log out?</p>
           <div className="flex justify-end gap-2 mb-3">

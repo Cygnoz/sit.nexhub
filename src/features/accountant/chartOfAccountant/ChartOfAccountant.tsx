@@ -12,24 +12,43 @@ type Props = {};
 const ChartOfAccountant = ({}: Props) => {
   const [accountData, setAccountData] = useState<Account[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
+  const [loading,setLoading]=useState<object | null>({
+    skelton:false,
+    noDataFound:false
+  })
   const { request: AllAccounts } = useApi("get", 5001);
 
   useEffect(() => {
     fetchAllAccounts();
 }, []);
 
-  const fetchAllAccounts = async () => {
-    try {
-      const url = `${endponits.Get_ALL_Acounts}`;
-      const { response, error } = await AllAccounts(url);
-      if (!error && response) {
-        setAccountData(response.data);
-        console.log(response);
-      }
-    } catch (error) {
-      console.error("Error fetching accounts:", error);
+const fetchAllAccounts = async () => {
+  try {
+    const url = `${endponits.Get_ALL_Acounts}`;
+    setLoading({ ...loading, skeleton: true });
+
+    const { response, error } = await AllAccounts(url);
+
+    if (error || !response) {
+      // Handle no data scenario immediately
+      setLoading({ ...loading, skeleton: false, noDataFound: true });
+      return;
     }
-  };
+
+    // Set account data if response is valid
+    setAccountData(response.data);
+    
+    // Set loading to false immediately after data is fetched
+    setLoading({ ...loading, skeleton: false });
+
+  } catch (error) {
+    console.error("Error fetching accounts:", error);
+    // In case of error, set loading to false and show "No Data Found"
+    setLoading({ ...loading, skeleton: false, noDataFound: true });
+  }
+};
+
+
 
   const HandleOnSave = () =>{
     fetchAllAccounts();
@@ -58,6 +77,7 @@ const ChartOfAccountant = ({}: Props) => {
           accountData={accountData}
           searchValue={searchValue}
           setSearchValue={setSearchValue}
+          loading={loading}
         />
       </div>
     </div>

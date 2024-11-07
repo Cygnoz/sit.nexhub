@@ -19,6 +19,7 @@ const SideBar = ({ activeIndex, setActiveIndex }: Props) => {
   const handleClick = (index: number) => {
     setActiveIndex(index);
     localStorage.setItem("savedIndex", index.toString());
+    localStorage.setItem("savedSelectedIndex",'0')
   };
   const navigate=useNavigate()
   return (
