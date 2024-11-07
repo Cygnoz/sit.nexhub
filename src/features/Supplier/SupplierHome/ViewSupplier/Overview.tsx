@@ -148,12 +148,12 @@ const Overview: React.FC<OverviewProps> = ({
                   {supplier?.supplierDisplayName}
                 </p>
               </div>
-              <div className="flex items-center gap-1">
+             {supplier?.companyName && <div className="flex items-center gap-1">
                 <p>Company Name:</p>
                 <p className="font-bold text-[16px] ps-2">
                   {supplier?.companyName}
                 </p>
-              </div>
+              </div>}
               <p
                 className={`${
                   statusData.status == "Active" ? "bg-[#78AA86]" : "bg-zinc-400"
@@ -215,15 +215,30 @@ const Overview: React.FC<OverviewProps> = ({
                 </div>
               </div>
               <div className="flex flex-col space-y-2 text-[12px]">
-                <p>{supplier?.billingCity}</p>
-                <p>{supplier?.billingAddressStreet1}</p>
-                <p>{supplier?.billingAddressStreet2}</p>
-                <p>pin {supplier?.billingPinCode}</p>
-                <p>Phone:{supplier?.billingPhone}</p>
-                <p>
-                  {supplier?.billingState} {supplier?.billingCountry}
-                </p>
-              </div>
+  {supplier?.billingCity || 
+  supplier?.billingAddressStreet1 || 
+  supplier?.billingAddressStreet2 || 
+  supplier?.billingPinCode || 
+  supplier?.billingPhone || 
+  supplier?.billingState || 
+  supplier?.billingCountry ? (
+    <>
+      {supplier?.billingCity && <p>{supplier.billingCity}</p>}
+      {supplier?.billingAddressStreet1 && <p>{supplier.billingAddressStreet1}</p>}
+      {supplier?.billingAddressStreet2 && <p>{supplier.billingAddressStreet2}</p>}
+      {supplier?.billingPinCode && <p>Pin: {supplier.billingPinCode}</p>}
+      {supplier?.billingPhone && <p>Phone: {supplier.billingPhone}</p>}
+      {supplier?.billingState && supplier?.billingCountry && (
+        <p>
+          {supplier.billingState} {supplier.billingCountry}
+        </p>
+      )}
+    </>
+  ) : (
+    <p>No billing information available.</p> 
+  )}
+</div>
+
             </div>
             <div className="w-[98%] h-[200px]  space-y-3 p-[10px] rounded-lg bg-[#FCFFED]">
               <div className="flex justify-between items-center">
@@ -236,15 +251,30 @@ const Overview: React.FC<OverviewProps> = ({
                 </p>
               </div>
               <div className="flex flex-col space-y-2 text-[12px]">
-                <p>{supplier?.shippingCity}</p>
-                <p>{supplier?.shippingAddressStreet1}</p>
-                <p>{supplier?.shippingAddressStreet2}</p>
-                <p>pin {supplier?.shippingPinCode}</p>
-                <p>Phone:{supplier?.shippingPhone}</p>
-                <p>
-                  {supplier?.shippingState} {supplier?.shippingCountry}
-                </p>
-              </div>
+  {supplier?.shippingCity || 
+  supplier?.shippingAddressStreet1 || 
+  supplier?.shippingAddressStreet2 || 
+  supplier?.shippingPinCode || 
+  supplier?.shippingPhone || 
+  supplier?.shippingState || 
+  supplier?.shippingCountry ? (
+    <>
+      {supplier?.shippingCity && <p>{supplier.shippingCity}</p>}
+      {supplier?.shippingAddressStreet1 && <p>{supplier.shippingAddressStreet1}</p>}
+      {supplier?.shippingAddressStreet2 && <p>{supplier.shippingAddressStreet2}</p>}
+      {supplier?.shippingPinCode && <p>Pin: {supplier.shippingPinCode}</p>}
+      {supplier?.shippingPhone && <p>Phone: {supplier.shippingPhone}</p>}
+      {supplier?.shippingState && supplier?.shippingCountry && (
+        <p>
+          {supplier.shippingState} {supplier.shippingCountry}
+        </p>
+      )}
+    </>
+  ) : (
+    <p>No shipping information available.</p> 
+  )}
+</div>
+
             </div>
             <div className="w-[100%] h-[200px]  space-y-3 p-[10px] rounded-lg bg-[#F6F6F6]">
               <h3 className="font-bold text-[14px]">Other Details</h3>

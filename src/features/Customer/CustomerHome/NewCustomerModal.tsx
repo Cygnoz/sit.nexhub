@@ -129,6 +129,7 @@ const NewCustomerModal = ({ page }: Props) => {
     shippingCity: false,
     shippingPinCode: false,
     shippingFaxNumber: false,
+    customerProfile:false,
   });
 
   const addRow = () => {
@@ -192,8 +193,14 @@ const NewCustomerModal = ({ page }: Props) => {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const validTypes = ["image/jpeg", "image/png"];
+      if (!validTypes.includes(file.type)) {
+        toast.error("Only JPG and PNG images are supported.");
+        return;
+      }
+  
       const reader = new FileReader();
-
+  
       reader.onloadend = () => {
         const base64String = reader.result as string;
         setCustomerData((prevDetails: any) => ({
@@ -201,11 +208,10 @@ const NewCustomerModal = ({ page }: Props) => {
           customerProfile: base64String,
         }));
       };
-
+  
       reader.readAsDataURL(file);
     }
   };
-
   const handleRowChange = (
     index: number,
     field: keyof (typeof rows)[number],

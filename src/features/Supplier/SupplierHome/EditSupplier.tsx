@@ -57,6 +57,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
       mobile: "",
     },
   ]);
+
   
   const addRow = () => {
     setRows([
@@ -142,20 +143,27 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
     remarks: "",
     status:""
   });
+  console.log(supplierdata,"supplierData")
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const validTypes = ["image/jpeg", "image/png"];
+      if (!validTypes.includes(file.type)) {
+        toast.error("Only JPG and PNG images are supported.");
+        return;
+      }
+  
       const reader = new FileReader();
-
+  
       reader.onloadend = () => {
         const base64String = reader.result as string;
         setSupplierData((prevDetails: any) => ({
           ...prevDetails,
-          supplierProfile: base64String,
+          customerProfile: base64String,
         }));
       };
-
+  
       reader.readAsDataURL(file);
     }
   };
@@ -359,37 +367,34 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
   ) => {
     const { name, type, value } = e.target;
   
-    if (name === 'openingType') {
-      // Update openingType state first
+    if (name === "openingType") {
       setOpeningType(value);
-  
-      // Update supplierData state based on the new openingType value
-      if (value === 'debit') {
-        setSupplierData(prevData => ({
+
+      if (value === "Debit") {
+        setSupplierData((prevData) => ({
           ...prevData,
           debitOpeningBalance: prevData.creditOpeningBalance,
-          creditOpeningBalance: "" // Clear creditOpeningBalance
+          creditOpeningBalance: "", 
         }));
-      } else if (value === 'credit') {
-        setSupplierData(prevData => ({
+      } else if (value === "Credit") {
+        setSupplierData((prevData) => ({
           ...prevData,
           creditOpeningBalance: prevData.debitOpeningBalance,
-          debitOpeningBalance: "" // Clear debitOpeningBalance
+          debitOpeningBalance: "",
         }));
       }
     }
-  
-    // Update openingBalance field
-    if (name === 'openingBalance') {
-      if (openingType === 'credit') {
-        setSupplierData(prevData => ({
+
+    if (name === "openingBalance") {
+      if (openingType === "Credit") {
+        setSupplierData((prevData) => ({
           ...prevData,
-          creditOpeningBalance: value
+          creditOpeningBalance: value,
         }));
-      } else if (openingType === 'debit') {
-        setSupplierData(prevData => ({
+      } else if (openingType === "Debit") {
+        setSupplierData((prevData) => ({
           ...prevData,
-          debitOpeningBalance: value
+          debitOpeningBalance: value,
         }));
       }
     }
@@ -851,7 +856,7 @@ useEffect(()=>{
                               />
                             </div>
                           </div>
-                {/* <div>
+                <div>
   <label className="block mb-1">Opening Balance</label>
   <div className="flex">
     <div className="relative w-20 ">
@@ -875,15 +880,33 @@ useEffect(()=>{
       className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
       placeholder="Enter Opening Balance"
       name="openingBalance"
+      onChange={(e) => {
+        const value = e.target.value;
+
+        if (/^\d*$/.test(value)) {
+          handleChange(e);
+
+          if (openingType === "Debit") {
+            setSupplierData((prevData) => ({
+              ...prevData,
+              debitOpeningBalance: value,
+            }));
+          } else {
+            setSupplierData((prevData) => ({
+              ...prevData,
+              creditOpeningBalance: value,
+            }));
+          }
+        }
+      }}
       value={
-        openingType === 'debit'
+        openingType === "Debit"
           ? supplierdata.debitOpeningBalance
           : supplierdata.creditOpeningBalance
       }
-      onChange={handleChange}
     />
   </div>
-                         </div> */}
+                         </div>
               </div>
 
               <div className="flex mt-5 px-5">

@@ -660,21 +660,26 @@ const AddSupplierModal = ({ page }: Props) => {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const validTypes = ["image/jpeg", "image/png"];
+      if (!validTypes.includes(file.type)) {
+        toast.error("Only JPG and PNG images are supported.");
+        return;
+      }
+  
       const reader = new FileReader();
-
+  
       reader.onloadend = () => {
         const base64String = reader.result as string;
         setSupplierData((prevDetails: any) => ({
           ...prevDetails,
-          supplierProfile: base64String,
+          customerProfile: base64String,
         }));
       };
-
+  
       reader.readAsDataURL(file);
     }
   };
-console.log(supplierdata.supplierProfile)
-  // handle country and state
+
   useEffect(() => {
     handleplaceofSupply();
     if (supplierdata.billingCountry) {
