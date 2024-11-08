@@ -155,7 +155,7 @@ const Currencies: React.FC<Props> = () => {
           <p className="font-bold text-[15px]">Currencies</p>
 
           <div className="ml-auto flex gap-4 items-center">
-            <label className="flex items-center cursor-pointer">
+            {/* <label className="flex items-center cursor-pointer">
               <div onClick={() => openModal(true, false)} className="relative">
                 <input
                   type="checkbox"
@@ -178,7 +178,7 @@ const Currencies: React.FC<Props> = () => {
               <div className="ml-2 text-textColor text-sm">
                 Enable Exchange Rate Fields
               </div>
-            </label>
+            </label> */}
 
             <Modal
               onClose={closeModal}

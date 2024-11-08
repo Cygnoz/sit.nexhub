@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import CustomiseColmn from "../../../Components/CustomiseColum";
@@ -14,6 +14,9 @@ import toast from "react-hot-toast";
 import BookIcon from "../../../assets/icons/BookIcon";
 import BookXIcon from "../../../assets/icons/BookXIcon";
 import NewspaperIcon from "../../../assets/icons/NewspaperIcon";
+import { TableResponseContext } from "../../../context/ContextShare";
+import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
+import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 
 interface Column {
   id: string;
@@ -54,22 +57,35 @@ const ItemTable = () => {
   const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [itemsData, setItemsData] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
-
+  const {loading,setLoading}=useContext(TableResponseContext)!;
   const { request: GetAllItems } = useApi("get", 5003);
   const fetchAllItems = async () => {
     try {
       const url = `${endponits.GET_ALL_ITEMS_TABLE}`;
+      // Set loading state to show the skeleton loader
+      setLoading({ ...loading, skeleton: true });
+  
       const { response, error } = await GetAllItems(url);
-
-      if (!error && response) {
-        setItemsData(response.data);
-      } else {
-        console.error("Error in response:", error);
+  
+      if (error || !response) {
+        // Handle no data scenario
+        setLoading({ ...loading, skeleton: false, noDataFound: true });
+        return;
       }
+  
+      // Set items data if response is valid
+      setItemsData(response.data);
+  
+      // Turn off the skeleton loader after data is received
+      setLoading({ ...loading, skeleton: false });
+  
     } catch (error) {
       console.error("Error fetching items:", error);
+      // Handle error state
+      setLoading({ ...loading, noDataFound: true, skeleton: false });
     }
   };
+  
 
   const [allCategoryData, setAllcategoryData] = useState<any[]>([]);
   
@@ -228,74 +244,65 @@ const ItemTable = () => {
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         <table className="min-w-full bg-white mb-5">
-          <thead className="text-[12px] text-center text-dropdownText">
-            <tr style={{ backgroundColor: "#F9F7F0" }} className="sticky top-0 z-10">
-              {/* Serial Number Header */}
-              <th className="py-2.5 px-4 font-medium border-b border-tableBorder">S.No</th>
-
-              {columns.map(
-                (col) =>
-                  col.visible && (
-                    <th
-                      className="py-2 px-4 font-medium border-b border-tableBorder"
-                      key={col.id}
-                    >
-                      {col.label}
-                    </th>
-                  )
-              )}
-              <th className="py-2.5 px-4 font-medium border-b border-tableBorder"></th>
-              <th className="py-2 px-4 font-medium border-b border-tableBorder">
-                <CustomiseColmn columns={columns} setColumns={setColumns} />
-              </th>
-              {/* "See Details" Header */}
-
-            </tr>
-          </thead>
-          <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredItems && filteredItems.length > 0 ? (
-              filteredItems.map((item, index) => (
-                <tr key={item.id} className="relative">
-                  {/* Serial Number Cell */}
-                  <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
-
-                  {columns.map(
-                    (col) =>
-                      col.visible && (
-                        <td
-                          key={col.id}
-                          className="py-2.5 px-4 border-y border-tableBorder"
-                        >
-                          {renderColumnContent(col.id, item)}
-                        </td>
-                      )
-                  )}
-                     <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <div className="flex justify-center items-center">
-                      <Button
-                        variant="secondary"
-                        className="font-medium rounded-lg h-[1rem] text-[9.5px]"
-                        onClick={() => openModal(item)}
-                      >
-                        See details
-                      </Button>
-                    </div>
-                  </td>
-                  <td className="py-2.5 px-4 border-y border-tableBorder"></td>
-                </tr>
-              ))
-            ) : (
-              <tr>
+  <thead className="text-[12px] text-center text-dropdownText sticky top-0 z-10">
+    <tr style={{ backgroundColor: "#F9F7F0" }}>
+      <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
+      {columns.map((col, index) =>
+        col.visible ? (
+          <th
+            className="py-2 px-4 font-medium border-b border-tableBorder"
+            key={index}
+          >
+            {col.label}
+          </th>
+        ) : null
+      )}
+      <th className="py-2.5 px-4 font-medium border-b border-tableBorder">
+        <CustomiseColmn columns={columns} setColumns={setColumns} />
+      </th>
+    </tr>
+  </thead>
+  <tbody className="text-dropdownText text-center text-[13px]">
+    {loading.skeleton ? (
+      [...Array(5)].map((_, idx) => <TableSkelton key={idx} columns={columns} />) // Skeleton loader
+    ) : filteredItems.length > 0 ? (
+      filteredItems.map((item, index) => (
+        <tr
+          key={item.id}
+          onClick={() => openModal(item)} // Open modal on row click
+          className="relative cursor-pointer"
+        >
+          <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
+          {columns.map(
+            (col) =>
+              col.visible && (
                 <td
-                  colSpan={columns.length + 3} // Adjusted colSpan to account for the serial number, customize, and action columns
-                  className="text-center py-4 border-y border-tableBorder"
+                  key={col.id}
+                  className="py-2.5 px-4 border-y border-tableBorder"
                 >
-                  <p className="text-red-500">No Data Found!</p>
+                  {renderColumnContent(col.id, item)}
                 </td>
-              </tr>
-            )}
-          </tbody>
+              )
+          )}
+          <td className="py-2.5 px-4 border-y border-tableBorder">
+            <div className="flex justify-center items-center">
+              <Button
+                variant="secondary"
+                className="font-medium rounded-lg h-[1rem] text-[9.5px]"
+                onClick={() => openModal(item)}
+              >
+                See details
+              </Button>
+            </div>
+          </td>
+        </tr>
+      ))
+    ) : (
+      <NoDataFoundTable columns={[...columns,"ee"]} />
+    )}
+  </tbody>
         </table>
+
 
 
       </div>

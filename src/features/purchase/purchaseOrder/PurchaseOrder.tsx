@@ -79,7 +79,7 @@ const PurchaseOrder = ({}: Props) => {
           </Button></Link>
 
           <div onClick={toggleDropdown} className="cursor-pointer">
-            <Ellipsis />
+            {/* <Ellipsis /> */}
           </div>
 
          

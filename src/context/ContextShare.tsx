@@ -58,6 +58,11 @@ interface SettingsResponseType {
   getSettingsData: () => void;
 }
 
+interface TableLoadingContextType{
+  loading:any;
+  setLoading: React.Dispatch<React.SetStateAction<any>>;
+}
+
 
 export const cashResponseContext = createContext<CashResponseContextType | undefined>(undefined);
 export const BankResponseContext = createContext<BankResponseContextType | undefined>(undefined);
@@ -70,6 +75,8 @@ export const CustomerResponseContext = createContext<CustomerResponseContextType
 export const CustomerEditResponseContext = createContext<CustomerEditResponseContextType | undefined>(undefined);
 export const UnitResponseContext=createContext<unitResponseContextType | undefined>(undefined);
 export const UnitEditResponseContext=createContext<unitEditResponseContextType | undefined>(undefined);
+export const TableResponseContext=createContext<TableLoadingContextType| undefined>(undefined);
+
 interface ContextShareProps {
   children: ReactNode;
 }
@@ -88,6 +95,10 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
   const [customerEditResponse, setcustomereditResponse] = useState<any>({});
   const [unitResponse, setUnitResponse] =useState<any>({});
   const [unitEditResponse, setEditUnitResponse] =useState<any>({});
+  const [loading,setLoading]=useState<any>({
+    skelton:false,
+    noDataFound:false
+  })
 
   const getSettingsData = async () => {
     try {
@@ -116,7 +127,9 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
                 <CustomerEditResponseContext.Provider value={{ customerEditResponse, setcustomereditResponse }}>
                   <SupplierResponseContext.Provider value={{ supplierResponse, setsupplierResponse }}>
                     <CustomerResponseContext.Provider value={{ customerResponse, setcustomerResponse }}>
+                      <TableResponseContext.Provider value={{loading,setLoading}}>
                       {children}
+                      </TableResponseContext.Provider>
                     </CustomerResponseContext.Provider>
                   </SupplierResponseContext.Provider>
                 </CustomerEditResponseContext.Provider>
