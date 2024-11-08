@@ -121,15 +121,18 @@ const Table = () => {
                     if (col.id === "paidStatus") {
                       cellContent = (
                         <div
-                          className={`${
-                            item.paidStatus === "Pending"
-                              ? "bg-zinc-200"
-                              : "bg-[#78AA86]"
-                          } text-[13px] rounded-lg items-center ms-auto text-textColor h-[18px] gap-2 py-2 flex justify-center`}
-                        >
-                          <DotIcon color="#495160" />
-                          {item.paidStatus}
-                        </div>
+                        className={`${
+                          item.paidStatus === "Paid"
+                            ? "bg-[#74fd9b]" 
+                            : item.paidStatus === "Overdue"
+                            ? "bg-[#ffe293d5]"
+                            : "bg-zinc-200" 
+                        } text-[13px] rounded-lg items-center  text-textColor max-w-fit h-[18px] gap-2 py-2.5 px-2 flex justify-center`}
+                      >
+                        <DotIcon color="#495160" />
+                        {item.paidStatus}
+                      </div>
+                      
                       );
                     } else if (col.id === "billDate" || col.id==="dueDate") {
                       cellContent = <DateFormat date={item[col.id]} />;

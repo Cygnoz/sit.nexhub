@@ -143,6 +143,7 @@ export const endponits = {
 
   // Payment Made
   ADD_PAYMET_MADE:`add-payment`,
+  GET_PAYMENTMADE:`getAllPayments`,
 
   // Login
   LOGIN: "/login",

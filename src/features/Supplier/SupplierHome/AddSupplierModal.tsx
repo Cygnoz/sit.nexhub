@@ -1427,7 +1427,7 @@ const AddSupplierModal = ({ page }: Props) => {
                             The Vendor is MSME Registered
                           </label>
                         </div>
-                        <div className="grid grid-cols-2 mt-1 gap-4">
+                      { supplierdata.msmeRegistered==true && <div className="grid grid-cols-2 mt-1 gap-4">
                           <div className="relative w-full">
                             <label htmlFor="" className="mb-1 block">
                               MSME/Udyam Registration Type
@@ -1472,7 +1472,7 @@ const AddSupplierModal = ({ page }: Props) => {
                               onChange={handleChange}
                             />
                           </div>
-                        </div>
+                        </div>}
                       </div>
                     </>
                   )}
