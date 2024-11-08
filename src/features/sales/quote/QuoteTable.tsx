@@ -49,8 +49,9 @@ const QuoteTable = ({ page }: Props) => {
           ? `${endponits.GET_ALL_SALES_INVOICE}`
           : page === "salesOrder"
             ? `${endponits.GET_ALL_SALES_ORDER}`
-            : `${endponits.GET_ALL_QUOTES}`;
-
+            : page === "quote"
+              ? `${endponits.GET_ALL_QUOTES}`
+              : "";
       setLoading({ ...loading, skelton: true });
       const { response, error } = await getAllQuotes(url);
       if (error || !response) {
@@ -58,7 +59,7 @@ const QuoteTable = ({ page }: Props) => {
         return;
       }
       console.log(response.data);
-      
+
       setData(response.data);
       setLoading({ ...loading, skelton: false });
     } catch (error) {
@@ -91,14 +92,14 @@ const QuoteTable = ({ page }: Props) => {
         { id: "totalAmount", label: "Total", visible: true },
         { id: "status", label: "Status", visible: true },
       ]
-        : [
+        : page === "quote" ? [
           { id: "customerName", label: "Customer Name", visible: true },
           { id: "createdDate", label: "Date", visible: true },
           { id: "reference", label: "Reference", visible: true },
           { id: "salesQuotes", label: "Quote Number", visible: true },
           { id: "status", label: "Status", visible: true },
           { id: "totalAmount", label: "Amount", visible: true },
-        ];
+        ] : [];
 
 
 
@@ -146,14 +147,17 @@ const QuoteTable = ({ page }: Props) => {
   });
 
   const handleRowClick = (id: string) => {
-    page === "salesOrder" ?
-      navigate(`/sales/viewsalesorder/${id}`)
-      :
-      page === "invoice" ?
-        navigate(`/sales/invoice/view/${id}`)
-        :
-        navigate(`/sales/quote/view/${id}`);
+    const state = { page };
+
+    if (page === "salesOrder") {
+      navigate(`/sales/viewsalesorder/${id}`, { state });
+    } else if (page === "invoice") {
+      navigate(`/sales/viewsalesorder/${id}`, { state });
+    } else if (page === "quote") {
+      navigate(`/sales/viewsalesorder/${id}`, { state });
+    }
   };
+
 
 
 

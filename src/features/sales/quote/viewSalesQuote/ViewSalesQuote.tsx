@@ -5,7 +5,7 @@ import MailIcon from "../../../../assets/icons/MailIcon";
 import Button from "../../../../Components/Button";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
-import SalesPdfView from "./SalesQuotePdfView";
+// import SalesPdfView from "./SalesQuotePdfView";
 import SalesOrderView from "./SalesQuoteView";
 
 interface QuoteItem {
@@ -128,7 +128,7 @@ function ViewSalesQuote() {
         {/* Conditional rendering based on isPdfView */}
         {isPdfView ? (
           <div className="pdf-view-component">
-            <SalesPdfView data = {data}/>
+            {/* <SalesPdfView data = {data}/> */}
           </div>
         ) : (
           <div className="other-component">
