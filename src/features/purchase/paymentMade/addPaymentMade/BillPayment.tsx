@@ -18,9 +18,9 @@ interface UnpaidBill {
   dueDate: string;
   billId: string;
   billNumber: string;
-  billAmount: number;
-  amountDue: number;
-  payment: number;
+  billAmount: number | string;
+  amountDue: number | string;
+  payment: number | string;
 }
 
 interface SupplierPayment {
@@ -64,9 +64,9 @@ const initialSupplierPayment: SupplierPayment = {
       dueDate: "",
       billId: "",
       billNumber: "",
-      billAmount: 0,
-      amountDue: 0,
-      payment: 0,
+      billAmount: "",
+      amountDue: "",
+      payment: "",
     },
   ],
   total: 0,
@@ -184,10 +184,7 @@ const NewPaymentMade = ({}: Props) => {
       }));
     } else {
       setIsFullAmount(false);
-      setPaymentState((prevData) => ({
-        ...prevData,
-        paymentMade: 0,
-      }));
+    
     }
   };
 

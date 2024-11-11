@@ -140,7 +140,7 @@ const NewBills = ({}: Props) => {
       if (oneOrganization) {
         setBill((preData: any) => ({
           ...preData,
-          sourceOfSupply: oneOrganization.state,
+          destinationOfSupply: oneOrganization.state,
         }));
       }
       if (country) {
@@ -164,7 +164,7 @@ const NewBills = ({}: Props) => {
       if (selecteSupplier) {
         setBill((preData: any) => ({
           ...preData,
-          destinationOfSupply: selecteSupplier.billingState,
+          sourceOfSupply: selecteSupplier.billingState,
           supplierDisplayName: selecteSupplier.supplierDisplayName,
         }));
       }
@@ -352,7 +352,14 @@ const NewBills = ({}: Props) => {
     const numericGrandTotal = Number(grandTotal) || 0;
     const numericPaidAmount = Number(paidAmount) || 0;
   
-    const balanceAmount = numericGrandTotal - numericPaidAmount;
+    let balanceAmount;
+    if(bill.paymentTerms=="Pay Now"){
+       balanceAmount = numericGrandTotal - numericPaidAmount;
+
+    }
+    else{
+      balanceAmount=numericGrandTotal
+    }
   
     setBill((prevState: any) => ({
       ...prevState,

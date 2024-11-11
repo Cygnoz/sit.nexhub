@@ -11,8 +11,13 @@ import { useState } from "react"
 
 type Props = {}
 
+
+
+
 function DebitNote({}: Props) {
   const [searchValue, setSearchValue] = useState<string>("");
+ 
+
   return (
     <>
          <div className=" px-6 flex items-center relative">

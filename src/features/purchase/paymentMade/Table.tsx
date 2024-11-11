@@ -17,13 +17,13 @@ interface Column {
 const Table = () => {
   const navigate = useNavigate();
   const initialColumns: Column[] = [
-    { id: "date", label: "Date", visible: true },
-    { id: "payment", label: "Payment#", visible: true },
-    { id: "vendorName", label: "Vendor Name", visible: true },
+    { id: "paymentDate", label: "Date", visible: true },
+    { id: "paymentId", label: "Payment#", visible: true },
+    { id: "supplierDisplayName", label: "Vendor Name", visible: true },
     { id: "bill", label: "Bill#", visible: true },
-    { id: "mode", label: "Mode", visible: true },
-    { id: "amount", label: "Amount", visible: true },
-    { id: "unusedAmount", label: "Unused Amount", visible: true },
+    { id: "paymentMode", label: "Mode", visible: true },
+    { id: "amountPaid", label: "Amount", visible: true },
+    // { id: "unusedAmount", label: "Unused Amount", visible: true },
   ];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
@@ -37,7 +37,7 @@ const Table = () => {
       const url = `${endponits.GET_PAYMENTMADE}`;
       const { response, error } = await getBills(url);
       if (!error && response) {
-        setAllBill(response.data.PurchaseBills);
+        setAllBill(response.data);
       } else {
         console.log(error);
       }
@@ -50,15 +50,13 @@ const Table = () => {
     getAllBill();
   }, []);
 
-  const filteredAccounts = allBill?.filter((bill) => {
+  const filteredAccounts = allBill?.filter((paymentMade) => {
     const searchValueLower = searchValue.toLowerCase().trim();
-
-    // Check if billDate and supplierDisplayName are defined before calling startsWith
     const billDateMatches =
-      bill.billDate && bill.billDate.startsWith(searchValueLower);
+    paymentMade.billDate && paymentMade.billDate.startsWith(searchValueLower);
     const supplierNameMatches =
-      bill.supplierDisplayName &&
-      bill.supplierDisplayName
+    paymentMade.supplierDisplayName &&
+    paymentMade.supplierDisplayName
         .toLowerCase()
         .trim()
         .startsWith(searchValueLower);
@@ -71,6 +69,9 @@ const Table = () => {
   const handleColumnChange = (newColumns: Column[]) => {
     setColumns(newColumns);
   };
+
+  console.log(filteredAccounts,"filtered");
+  
 
   return (
   <>
@@ -113,32 +114,34 @@ const Table = () => {
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts.map((item) => (
-              <tr key={item.id} className="relative">
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input type="checkbox" className="form-checkbox w-4 h-4" />
-                </td>
-                {columns.map(
-                  (col) =>
-                    col.visible && (
-                      <td
-                        key={col.id}
-                        className="py-2.5 px-4 border-y border-tableBorder cursor-pointer"
-                        onClick={() => navigate("/purchase/payment-made/view")}
-                      >
-                        {col.id === "date" ? (
-                          <DateFormat date={item[col.id as keyof typeof item]} /> // Use DateFormat here
-                        ) : (
-                          item[col.id as keyof typeof item]
-                        )}
-                      </td>
-                    )
-                )}
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {filteredAccounts?.map((item) => (
+    <tr key={item.id} className="relative">
+      <td className="py-2.5 px-4 border-y border-tableBorder">
+        <input type="checkbox" className="form-checkbox w-4 h-4" />
+      </td>
+      {columns.map((col) =>
+        col.visible ? (
+          <td
+            key={col.id}
+            className="py-2.5 px-4 border-y border-tableBorder cursor-pointer"
+            onClick={() => navigate("/purchase/payment-made/view")}
+          >
+            {col.id === "date" ? (
+              <DateFormat date={item[col.id as keyof typeof item]} /> // Use DateFormat here
+            ) : col.id === "bill" ? (
+              item.unpaidBills?.map((bill:any) => bill.billNumber).join(", ")
+            ) : (
+              item[col.id as keyof typeof item]
+            )}
+          </td>
+        ) : null
+      )}
+      <td className="py-2.5 px-4 border-y border-tableBorder"></td>
+    </tr>
+  ))}
+</tbody>
+
+
         </table>
       </div>
   </>

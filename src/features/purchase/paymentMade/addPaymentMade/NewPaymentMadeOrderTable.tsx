@@ -18,7 +18,6 @@ interface BillData {
   amountDue: number;
   payment: number;
   paidStatus: string;
-  balanceAmount: number;
 }
 
 const NewPaymentMadeOrderTable = ({
@@ -38,7 +37,6 @@ const NewPaymentMadeOrderTable = ({
       amountDue: 0,
       payment: 0,
       paidStatus: "",
-      balanceAmount: 0,
     },
   ]);
   console.log(supplierBills, "supplierBills");
@@ -57,7 +55,6 @@ const NewPaymentMadeOrderTable = ({
           amountDue: bill.balanceAmount || 0,
           payment: bill.payment || 0,
           paidStatus: bill.paidStatus || "",
-          balanceAmount: bill.balanceAmount || 0,
         }))
       );
     }
@@ -79,7 +76,6 @@ const NewPaymentMadeOrderTable = ({
   ) => {
     const newData = [...data];
     newData[index] = { ...newData[index], [field]: value };
-    const balanceAmount = newData[index].balanceAmount;
     const billAmount = newData[index].billAmount;
     let paymentValue = typeof value === "number" ? value : parseFloat(value);
 
@@ -112,7 +108,6 @@ const NewPaymentMadeOrderTable = ({
       }
     }
 
-    newData[index].amountDue = balanceAmount - newData[index].payment;
 
     setData(newData);
 
@@ -135,7 +130,6 @@ const NewPaymentMadeOrderTable = ({
     const updatedData = data.map((row) => ({
       ...row,
       payment: isFullAmt ? row.billAmount : 0,
-      amountDue: row.billAmount - (isFullAmt ? row.billAmount : 0),
     }));
 
     const totalPayment = updatedData.reduce((acc, row) => acc + row.payment, 0);
