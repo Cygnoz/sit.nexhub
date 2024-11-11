@@ -12,6 +12,8 @@ import SupplierRoutes from "./routes/SupplierRoutes";
 import SettingsRoutes from "./routes/SettingsRoutes";
 import LayoutSkeleton from "./Components/skeleton/LayoutSkeleton";
 import { OrganizationProvider } from "./context/OrganizationContext";
+import ReportsRoutes from "./routes/ReportsRoutes";
+import ReportsLayout from "./layout/ReportsLayout";
 
 // Lazy imports of components
 const Login = lazy(() => import("./features/login/Login"));
@@ -81,6 +83,17 @@ const App: React.FC = () => {
     {
       path: "/otp",
       element: <Otp />,
+    }, {
+      path: "/",
+      element: isAuthenticated ? (
+        <ReportsLayout children />
+      ) : (
+        <Navigate to="/login" replace />
+      ),
+      children: [
+        { path: "", element: <Navigate to="/login" replace /> },
+        ...ReportsRoutes,
+      ],
     },
     {
       path: "*",

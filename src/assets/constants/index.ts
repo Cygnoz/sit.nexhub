@@ -119,10 +119,6 @@ const navlist = [
         headName: "Cash",
         subRoute: "/accountant/cash",
       },
-      {
-        headName: "Day Book",
-        subRoute: "/accountant/daybook",
-      },
     ],
   },
   {
@@ -200,7 +196,7 @@ const navlist = [
   {
     nav: "Reports",
     icon: newspapper,
-    route: "/home",
+    route: "/reports",
   },
 ];
 
