@@ -8,8 +8,6 @@ const ViewSalesOrder = lazy(() => import("../features/sales/salesOrder/viewSales
 const NewSalesOrder = lazy(() => import("../features/sales/salesOrder/NewSalesOrder"));
 const InvoiceHome = lazy(() => import("../features/sales/invoice/InvoiceHome"));
 const NewInvoice = lazy(() => import("../features/sales/invoice/NewInvoice"));
-// const ViewInvoice = lazy(() => import("../features/sales/invoice/ViewInvoice"));
-// const ViewSalesInvoice = lazy(() => import("../features/sales/invoice/viewInvoice/ViewSalesInvoice"))
 const QuoteHome = lazy(() => import("../features/sales/quote/QuoteHome"));
 const ViewSalesQuote = lazy(() => import("../features/sales/quote/viewSalesQuote/ViewSalesQuote"));
 const NewSalesQuote = lazy(() => import("../features/sales/quote/NewSalesQuote"));
@@ -28,10 +26,8 @@ const SalesRoutes: RouteObject[] = [
   { path: "/sales/salesorder/new", element: <NewSalesOrder /> },
   { path: "/sales/invoice", element: <InvoiceHome /> },
   { path: "/sales/invoice/new", element: <NewInvoice /> },
-  // { path: "/sales/invoice/view", element: <ViewInvoice /> },
   { path: "/sales/quote", element: <QuoteHome /> },
   { path: "/sales/quote/view/:id", element: <ViewSalesQuote /> },
-  // { path: "/sales/invoice/view/:id", element: <ViewSalesInvoice /> },
   { path: "/sales/quote/new", element: <NewSalesQuote /> },
   { path: "/sales/credit-note", element: <CreditNote /> },
   { path: "/sales/credit-note/new", element: <NewCreditNote /> },
