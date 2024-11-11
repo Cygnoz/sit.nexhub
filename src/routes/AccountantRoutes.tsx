@@ -13,7 +13,6 @@ const NewJournal = lazy(() => import('../features/accountant/manualJournel/newJo
 const Accountant = lazy(() => import('../pages/Accountant'));
 const AccountantInfo = lazy(() => import('../features/accountant/accountantInfo/AccountantInfo'));
 const AccountantView = lazy(() => import('../features/accountant/accountantView/AccountantView'));
-const DayBook = lazy(() => import('../features/accountant/DayBook/DayBook'));
 
 const AccountantRoutes: RouteObject[] = [
   { path: "/accountant", element: <Accountant /> },
@@ -27,7 +26,6 @@ const AccountantRoutes: RouteObject[] = [
   { path: "/accountant/chart-OF-accountant", element: <ChartOfAccountant /> },
   { path: "/accountant/info", element: <AccountantInfo /> },
   { path: "/accountant/view/:id", element: <AccountantView /> },
-  { path: "/accountant/daybook", element: <DayBook /> },
 ];
 
 export default AccountantRoutes;

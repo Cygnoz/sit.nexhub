@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import OrganizationIcon from "../../../assets/icons/OrganizationIcon";
 import SettingsIcons from "../../../assets/icons/SettingsIcon";
 import Button from "../../../Components/Button";
 import Drawer from "../../../Components/drawer/drawer";
 import Modal from "../../../Components/model/Modal";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 type Props = {
   organizationData: any;
@@ -13,7 +14,14 @@ type Props = {
 const Organization = ({ organizationData }: Props) => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [organization, setOrganization] = useState<any>(null);
   const navigate = useNavigate();
+
+  const { organization: orgData } = useOrganization();
+
+  useEffect(() => {
+    setOrganization(orgData);
+  }, [orgData]);
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
@@ -36,7 +44,7 @@ const Organization = ({ organizationData }: Props) => {
   return (
     <>
       <button onClick={toggleDrawer}>
-        <OrganizationIcon />
+        <OrganizationIcon organization={organization} />
       </button>
 
       <Drawer onClose={toggleDrawer} open={isDrawerOpen} position="right">
@@ -58,7 +66,7 @@ const Organization = ({ organizationData }: Props) => {
           {organizationData ? (
             <div className="flex flex-col border border-slate-200 p-4 rounded-md shadow-sm">
               <div className="flex items-center mb-4">
-                <OrganizationIcon width="12" height="12"  />
+                <OrganizationIcon organization={organization}  width="12" height="12"  />
                 <div className="flex flex-col ms-5">
                   <h5 className="font-bold text-sm  text-gray-700">
                     {organizationData.organizationName}

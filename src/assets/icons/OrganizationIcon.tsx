@@ -5,6 +5,7 @@ import organizationIcon from '../Images/Ellipse 1.png';
 type Props = {
   width?: string;
   height?: string;
+  organization?:any;
 };
 
 const OrganizationIcon: React.FC<Props> = ({ width = '6', height = '6' }) => {
