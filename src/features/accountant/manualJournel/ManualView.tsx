@@ -27,13 +27,14 @@ function ManualView({}: Props) {
       console.error("Error fetching journal:", error);
     }
   };
-
+  
   useEffect(() => {
     if (id) {
       getOneJournalData();
     }
   }, [id]);
-
+  console.log(oneJournal);
+  
   return (
     <>
       <div className="px-6">

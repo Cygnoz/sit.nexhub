@@ -394,7 +394,7 @@ function NewJournal({}: Props) {
     });
   };
 
-  console.log(newJournalDatas);
+  console.log("new",newJournalDatas);
 
   return (
     <div className="p-5">

@@ -44,7 +44,7 @@ const Organization = ({ organizationData }: Props) => {
   return (
     <>
       <button onClick={toggleDrawer}>
-        <OrganizationIcon organization={organization} />
+        <OrganizationIcon  />
       </button>
 
       <Drawer onClose={toggleDrawer} open={isDrawerOpen} position="right">
@@ -66,7 +66,7 @@ const Organization = ({ organizationData }: Props) => {
           {organizationData ? (
             <div className="flex flex-col border border-slate-200 p-4 rounded-md shadow-sm">
               <div className="flex items-center mb-4">
-                <OrganizationIcon organization={organization}  width="12" height="12"  />
+                <OrganizationIcon   width="12" height="12"  />
                 <div className="flex flex-col ms-5">
                   <h5 className="font-bold text-sm  text-gray-700">
                     {organizationData.organizationName}

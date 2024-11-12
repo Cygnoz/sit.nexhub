@@ -14,6 +14,8 @@ const LandingHome: React.FC = () => {
     }
   }, [location]);
 
+  
+
   return (
     <div
       className={`${

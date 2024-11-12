@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import Ellipsis from "../../../../assets/icons/Ellipsis";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import SearchBar from "../../../../Components/SearchBar";
+import NoDataFoundTable from "../../../../Components/skeleton/Table/NoDataFoundTable";
+import TableSkelton from "../../../../Components/skeleton/Table/TableSkelton";
+import { TableResponseContext } from "../../../../context/ContextShare";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
-import SearchBar from "../../../../Components/SearchBar";
-import { useNavigate } from "react-router-dom";
-import TableSkelton from "../../../../Components/skeleton/Table/TableSkelton";
-import NoDataFoundTable from "../../../../Components/skeleton/Table/NoDataFoundTable";
 
 interface Journal {
   _id: string;
@@ -21,14 +21,11 @@ type Props = {};
 
 function Table({}: Props) {
   const navigate = useNavigate();
-  const [loading,setLoading]=useState<any>({
-    skelton:false,
-    noDataFound:false
-  })
+  const {loading,setLoading}=useContext(TableResponseContext)!;
   const [journalData, setJournalData] = useState<Journal[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const { request: AllJournals } = useApi("get", 5001);
-
+  
   const tableHeaders = [
     "Date",
     "Journal",
@@ -36,7 +33,7 @@ function Table({}: Props) {
     "Notes",
     "Status",
     "Amount",
-    "",
+    // "",
   ];
 
   const getAllJournals = async () => {
@@ -66,11 +63,12 @@ function Table({}: Props) {
     }
   };
   
-  
-
   useEffect(() => {
     getAllJournals();
   }, []);
+
+  console.log(journalData);
+  
 
   const filteredJournals = journalData.filter((journal) => {
     const searchValueLower = searchValue.toLowerCase().trim();
@@ -106,8 +104,8 @@ function Table({}: Props) {
      
       <tbody className="text-dropdownText text-center text-[13px]">
       {loading.skeleton ? (
-  [...Array(filteredJournals.length || 5)].map((_, idx) => (
-    <TableSkelton key={idx} columns={tableHeaders} />
+  [...Array(filteredJournals.length>0?filteredJournals.length:5)].map((_, idx) => (
+    <TableSkelton key={idx} columns={[...tableHeaders,"rr"]} />
   ))
 ) : filteredJournals.length > 0 ? (
   filteredJournals.reverse().map((item, index) => (
@@ -115,7 +113,7 @@ function Table({}: Props) {
     <tr
     onClick={() => navigate(`/accountant/manualjournal/view/${item._id}`)}
     key={item._id}
-    className="relative"
+    className="relative cursor-pointer"
   >
     <td className="py-2.5 px-4 border-y border-tableBorder">
       {index + 1}
@@ -124,29 +122,29 @@ function Table({}: Props) {
       {item.date}
     </td>
     <td className="py-2.5 px-4 border-y border-tableBorder">
-      {item.journalId}
+      {item.journalId?item.journalId:"-"}
     </td>
     <td className="py-2.5 px-4 border-y border-tableBorder">
-      {item.reference}
+      {item.reference?item.reference:"-"}
     </td>
     <td className="py-2.5 px-4 border-y border-tableBorder">
-      {item.note}
+    {item.note?item.note:"-"}
     </td>
     <td className="py-2.5 px-4 border-y border-tableBorder">
-      {item.status}
+    {item.status?item.status:"-"}
     </td>
     <td className="py-2.5 px-4 border-y border-tableBorder">
-      {item.totalDebitAmount}
+      {item.totalDebitAmount?item.totalDebitAmount:"-"}
     </td>
-    <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
+    {/* <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
       <div className="flex justify-end">
         <Ellipsis height={17} />
       </div>
-    </td>
+    </td> */}
   </tr>
   ))
 ) : (
-   <NoDataFoundTable columns={tableHeaders} />
+   <NoDataFoundTable columns={[...tableHeaders,"rr"]} />
 )}
       </tbody>
     </table>

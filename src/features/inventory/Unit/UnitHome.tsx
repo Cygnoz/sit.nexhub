@@ -20,7 +20,7 @@ const UnitHome = ({}: Props) => {
           <div className="ml-auto flex items-center">
             <NewUnit/>
             <div className="ms-5">
-              <Ellipsis />
+              {/* <Ellipsis /> */}
             </div>
           </div>
         </div>

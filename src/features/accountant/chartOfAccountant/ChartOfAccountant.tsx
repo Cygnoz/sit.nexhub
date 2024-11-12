@@ -64,7 +64,7 @@ const fetchAllAccounts = async () => {
           It serves as a framework for organizing financial data and helps ensure accurate and consistent reporting 
           </p>
         </div>
-        <div className="button-frame">
+        <div className="button-frame me-4">
           {/* Pass fetchAllAccounts as prop to NewAccountModal */}
           <NewAccountModal fetchAllAccounts={HandleOnSave} />
         </div>

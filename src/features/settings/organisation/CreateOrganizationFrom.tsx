@@ -37,7 +37,6 @@ const CreateOrganizationForm = () => {
   const [additionalData, setAdditionalData] = useState<any | null>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<any>(null);
-
   const [countryData, setcountryData] = useState<any | []>([]);
   const [currencyData, setcurrencyData] = useState<any | []>([]);
   const [stateList, setStateList] = useState<any | []>([]);

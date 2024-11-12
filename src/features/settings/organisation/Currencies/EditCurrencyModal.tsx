@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import Modal from "../../../../Components/model/Modal";
 import CehvronDown from "../../../../assets/icons/CehvronDown";
 import Button from "../../../../Components/Button";
@@ -8,6 +8,7 @@ import topImg from "../../../../assets/Images/14.png";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
 import toast from "react-hot-toast";
+import { CurrencyResponseContext } from "../../../../context/ContextShare";
 
 interface InputCurrencyData {
   currencyCode: string;
@@ -21,7 +22,7 @@ interface InputCurrencyData {
 const EditCurrencyModal = ({ selectedCurrency }: { selectedCurrency: any }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const { request: editCurrency } = useApi("put", 5004);
-
+  const { setCurrencyResponse } = useContext(CurrencyResponseContext)!;
   const [errors, setErrors] = useState({
     currencyCode: false,
     currencySymbol: false,
@@ -58,20 +59,60 @@ const EditCurrencyModal = ({ selectedCurrency }: { selectedCurrency: any }) => {
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    const { currencyCode, currencyName, currencySymbol } = newCurrency;
+    let isValid = true;
+
+    // Update error states and check for empty fields
+    if (!currencyCode || !currencyName || !currencySymbol) {
+      if (!currencyCode) {
+        setErrors((prevErrors) => ({ ...prevErrors, currencyCode: true }));
+        isValid = false;
+      }
+      if (!currencyName) {
+        setErrors((prevErrors) => ({ ...prevErrors, currencyName: true }));
+        isValid = false;
+      }
+      if (!currencySymbol) {
+        setErrors((prevErrors) => ({ ...prevErrors, currencySymbol: true }));
+        isValid = false;
+      }
+    }
+
+    // If there are errors, stop submission
+    if (!isValid) return;
+
     try {
       const url = `${endponits.EDIT_CURRENCIES}`;
       const { response, error } = await editCurrency(url, newCurrency);
 
-      if (!error && response) {
+      if (error) {
+        // Handle error by checking if error response exists
+        const errorMessage =
+          error?.response?.data?.message || "An error occurred while editing currency.";
+        toast.error(errorMessage);
+        return;
+      }
+
+      if (response) {
         closeModal();
+        console.log("Currency edited successfully:", response.data);
+
+        // Show success toast
         toast.success(response.data);
-      } else {
-        toast.error(error.data);
+
+        // Update currency response state
+        setCurrencyResponse((prevCurrencyResponse: any) => ({
+          ...prevCurrencyResponse,
+          ...newCurrency,
+        }));
       }
     } catch (error) {
-      console.error(error);
+      // Catch any other errors and log them
+      console.error("Error occurred while editing currency:", error);
+      toast.error("An unexpected error occurred.");
     }
   };
+
 
   useEffect(() => {
     if (selectedCurrency) {
@@ -149,7 +190,7 @@ const EditCurrencyModal = ({ selectedCurrency }: { selectedCurrency: any }) => {
                   }}
                 />
                 {errors.currencyCode && (
-                  <div className="text-red-800 text-xs ms-2 mt-1">
+                  <div className="text-red-800 text-xs mt-1">
                     Enter Currency Code
                   </div>
                 )}
@@ -164,20 +205,6 @@ const EditCurrencyModal = ({ selectedCurrency }: { selectedCurrency: any }) => {
                   htmlFor="currencySymbol"
                 >
                   Currency Symbol
-                </label>
-                <input
-                  type="text"
-                  name="currencySymbol"
-                  value={newCurrency.currencySymbol}
-                  onChange={handleChange}
-                  placeholder="Value"
-                  className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
-                />
-              </div>
-
-              <div className="mb-4 mt-4">
-                <label className="block text-sm mb-1 text-labelColor">
-                  Currency Name
                 </label>
                 <input
                   required
@@ -197,56 +224,90 @@ const EditCurrencyModal = ({ selectedCurrency }: { selectedCurrency: any }) => {
                     }}
                   />
                   {errors.currencySymbol && (
-                    <div className="text-red-800 text-xs ms-2 mt-1">
+                    <div className="text-red-800 text-xs mt-1">
                       Enter Currency Symbol
+                    </div>
+                  )}
+              </div>
+
+              <div className="mb-2 mt-4">
+                <label className="block text-sm mb-1 text-labelColor">
+                  Currency Name
+                </label>
+                <input
+                  required
+                    type="text"
+                    name="currencyName"
+                    value={newCurrency.currencyName}
+                    onChange={handleChange}
+                    placeholder="Value"
+                    className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
+                    onFocus={() =>
+                      setErrors({ ...errors,currencyName: false })
+                    }
+                    onBlur={() => {
+                      if (newCurrency.currencyName === "") {
+                        setErrors({ ...errors,currencyName: true });
+                      }
+                    }}
+                  />
+                  {errors.currencyName&& (
+                    <div className="text-red-800 text-xs mt-1">
+                      Enter Currency Name
                     </div>
                   )}
                 </div>
               
 
-              <div className="relative w-full mt-3">
-                <label className="block text-sm mb-1 text-labelColor">
-                  Decimal Places
-                </label>
-                <div className="relative w-full mt-1">
-                  <select
-                    name="decimalPlaces"
-                    id="decimalPlaces"
-                    onChange={handleChange}
-                    value={newCurrency.decimalPlaces}
-                    className="block appearance-none w-full text-zinc-400 bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  >
-                    <option value="">Select Decimal Places</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <CehvronDown color="gray" />
-                  </div>
+                <div className="grid grid-cols-2 gap-2">
+          <div className="col-span-1">
+            <div className="relative w-full ">
+              <label className="block text-sm mb-1 text-labelColor">
+                Decimal Places
+              </label>
+              <div className="relative w-full mt-1">
+                <select
+                  name="decimalPlaces"
+                  id="decimalPlaces"
+                  onChange={handleChange}
+                  value={newCurrency.decimalPlaces}
+                  className="block appearance-none w-full text-zinc-400 bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                >
+                  <option value="">Select Decimal Places</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div className="relative w-full mt-3 ">
-                <label className="block text-sm mb-1 text-labelColor">
-                  Format
-                </label>
-                <div className="relative w-full mt-1">
-                  <select
-                    name="format"
-                    id="format"
-                    onChange={handleChange}
-                    value={newCurrency.format}
-                    className="block appearance-none w-full text-zinc-400 bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  >
-                    <option value="">Select Format Value</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <CehvronDown color="gray" />
-                  </div>
+          <div className="col-span-1">
+            <div className="relative w-full">
+              <label className="block text-sm mb-1 text-labelColor">
+                Format
+              </label>
+              <div className="relative w-full mt-1">
+                <select
+                  name="format"
+                  id="format"
+                  onChange={handleChange}
+                  value={newCurrency.format}
+                  className="block appearance-none w-full text-zinc-400 bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                >
+                  <option value="">Select Format Value</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
 
               <div className="flex justify-end gap-2 pt-3">
                 <Button
