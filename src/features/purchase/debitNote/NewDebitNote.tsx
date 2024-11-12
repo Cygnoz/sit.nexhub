@@ -6,13 +6,13 @@ import Button from "../../../Components/Button";
 import SearchBar from "../../../Components/SearchBar";
 import AddSupplierModal from "../../Supplier/SupplierHome/AddSupplierModal";
 import DebitNumberPrfncModal from "./DebitNumberPrfncModal";
-import NeworderTable from "../purchaseOrder/addPurchaseOrder/NeworderTable";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import Upload from "../../../assets/icons/Upload";
 import { DebitNoteBody } from "../../../Types/DebitNot";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
 import { SupplierResponseContext } from "../../../context/ContextShare";
+import DebitNoteTable from "./DebitNoteTable";
 
 const initialSupplierBillState: DebitNoteBody = {
   organizationId: "",
@@ -77,15 +77,19 @@ const NewDebitNote = ({}: Props) => {
   const [destinationList, setDestinationList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
-  const [debitNoteState, setDebitNoteState] = useState<DebitNoteBody>(
-    initialSupplierBillState
-  );
-    const [isInterState, setIsInterState] = useState<boolean>(false);
+  const [DBPrefix, setDBPrefix] = useState<any | []>([]);
+  const [allBills, setAllBills] = useState<any | []>([]);
 
+  const [isInterState, setIsInterState] = useState<boolean>(false);
+  const [debitNoteState, setDebitNoteState] = useState<DebitNoteBody>(initialSupplierBillState);
 
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: getCountries } = useApi("get", 5004);
   const { request: getOneOrganization } = useApi("get", 5004);
+  const { request: getPrefix } = useApi("get", 5005);
+  const { request: getAllBills } = useApi("get", 5005);
+
+
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const { supplierResponse } = useContext(SupplierResponseContext)!;
@@ -102,6 +106,14 @@ const NewDebitNote = ({}: Props) => {
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
   };
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setOpenDropdownIndex(null);
+    }
+  };
 
   const fetchData = async (
     url: string,
@@ -117,15 +129,7 @@ const NewDebitNote = ({}: Props) => {
       console.error("Error fetching data:", error);
     }
   };
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
-      setOpenDropdownIndex(null);
-    }
-  };
+  console.log(DBPrefix,"DB")
 
   const filterByDisplayName = (
     data: any[],
@@ -148,8 +152,7 @@ const NewDebitNote = ({}: Props) => {
       console.log("Error in fetching Country", error);
     }
   };
-     const handleDestination = () => {
-
+  const handleDestination = () => {
     if (oneOrganization?.organizationCountry) {
       const country = countryData.find(
         (c: any) =>
@@ -204,7 +207,6 @@ const NewDebitNote = ({}: Props) => {
     }
   };
 
-
   const filteredSupplier = filterByDisplayName(
     supplierData,
     "supplierDisplayName",
@@ -216,30 +218,36 @@ const NewDebitNote = ({}: Props) => {
       setIsInterState(false);
     } else {
       if (
-        debitNoteState?.sourceOfSupply !==
-        debitNoteState?.destinationOfSupply
+        debitNoteState?.sourceOfSupply !== debitNoteState?.destinationOfSupply
       ) {
         setIsInterState(true);
       } else {
         setIsInterState(false);
       }
     }
-  }, [
-    debitNoteState?.sourceOfSupply,
-    debitNoteState?.destinationOfSupply,
-  ]);
-
+  }, [debitNoteState?.sourceOfSupply, debitNoteState?.destinationOfSupply]);
 
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
+    const getAllBillsUrl=`${endponits.GET_ALL_BILLS}`;
+    const getPrefixUrl =`${endponits.GET_DEBIT_NOTE_PREFIX}`
 
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
-    fetchCountries();
-    handleplaceofSupply();
-    handleDestination();
+    fetchData(getAllBillsUrl, setAllBills, getAllBills);
+    fetchData(getPrefixUrl, setDBPrefix , getPrefix);
+
   }, []);
+
+  useEffect(()=>{
+    setDebitNoteState((preData) => ({
+      ...preData,
+      debitNote: DBPrefix,
+      
+    }));
+  },[DBPrefix])
+
 
   useEffect(() => {
     supplierResponse;
@@ -357,73 +365,16 @@ const NewDebitNote = ({}: Props) => {
               <label htmlFor="" className="">
                 Debit Note
                 <input
-                  name=""
+                value={debitNoteState.debitNote}
+                  name="debitNote"
                   id=""
+                  onChange={handleInputChange}
                   disabled
                   className=" block  appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 "
                 />
               </label>
               <DebitNumberPrfncModal />
             </div>
-            {/* <div className="grid grid-cols-2 gap-4 mt-5 space-y-1">
-            <div>
-              <label className="block text-sm mb-1 text-labelColor">
-                Supplier Name
-              </label>
-              <div
-                className="relative w-full"
-                onClick={() => toggleDropdown("supplier")}
-              >
-                <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                  <p>Select Supplier</p>
-                </div>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
-              </div>
-              {openDropdownIndex === "supplier" && (
-                <div
-                  ref={dropdownRef}
-                  className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2 -m-9 w-[40%] space-y-1"
-                >
-                  <SearchBar
-                    searchValue={searchValue}
-                    onSearchChange={setSearchValue}
-                    placeholder="Select Supplier"
-                  />
-                  <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink">
-                    <div className="col-span-2 flex items-center justify-center">
-                      <img
-                        src="https://i.postimg.cc/MHdYrGVP/Ellipse-43.png"
-                        alt=""
-                      />
-                    </div>
-                    <div className="col-span-10 flex">
-                      <div>
-                        <p className="font-bold text-sm">Smart world</p>
-                        <p className="text-xs text-gray-500">
-                          Phone: 9643287899
-                        </p>
-                      </div>
-                      <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                        &times;
-                      </div>
-                    </div>
-                  </div>
-                  <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-3">
-                  <AddSupplierModal page="purchase" />
-                  </div>
-                </div>
-              )}
-            </div>
-       
-
-         
-         
-
-     
-
-          </div> */}
 
             {debitNoteState.supplierId && (
               <>
@@ -486,17 +437,83 @@ const NewDebitNote = ({}: Props) => {
               </>
             )}
             <div className=" w-full">
-              <label htmlFor="" className="">
+              <label htmlFor="" className=""  onClick={() => toggleDropdown("bill")}>
                 Bill#
-                <input
-                  value={debitNoteState.billNumber}
-                  onChange={handleInputChange}
-                  name="billNumber"
-                  id=""
-                  placeholder="Select Bill"
-                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
-                />
+               
               </label>
+              <div
+                className="relative w-full"
+                onClick={() => {
+                  if (debitNoteState.supplierId) toggleDropdown("bill");
+                }}              >
+                <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                  <p>
+                    {selecteSupplier && selecteSupplier.supplierDisplayName
+                      ? selecteSupplier.supplierDisplayName
+                      : "Select Bill"}
+                  </p>
+                </div>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
+                </div>
+              </div>
+              {openDropdownIndex === "bill" && (
+                <div
+                  ref={dropdownRef}
+                  className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2 w-[30%] space-y-1 max-h-72 overflow-y-auto  hide-scrollbar"
+                >
+                  <SearchBar
+                    searchValue={searchValue}
+                    onSearchChange={setSearchValue}
+                    placeholder="Search Bill"
+                  />
+                  {allBills.length > 0 ? (
+                    allBills.map((supplier: any) => (
+                      <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer">
+                        <div className="col-span-2 flex items-center justify-center">
+                          <img
+                            src="https://i.postimg.cc/MHdYrGVP/Ellipse-43.png"
+                            alt=""
+                          />
+                        </div>
+                        <div
+                          className="col-span-10 flex cursor-pointer "
+                          onClick={() => {
+                            setDebitNoteState((prevState) => ({
+                              ...prevState,
+                              supplierId: supplier._id,
+                              supplierDisplayName: supplier.supplierDisplayName,
+                            }));
+                            setOpenDropdownIndex(null);
+                            setSelecetdSupplier(supplier);
+                          }}
+                        >
+                          <div>
+                            <p className="font-bold text-sm">
+                              {supplier.supplierDisplayName}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              Phone: {supplier.mobile}
+                            </p>
+                          </div>
+                          <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
+                            &times;
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center border-slate-400 border rounded-lg">
+                      <p className="text-[red] text-sm py-4">
+                        Bills Not Found!
+                      </p>
+                    </div>
+                  )}
+                  {/* <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
+                    <AddSupplierModal page="purchase" />
+                  </div> */}
+                </div>
+              )}
             </div>
 
             <div>
@@ -504,11 +521,31 @@ const NewDebitNote = ({}: Props) => {
                 Bill Type
               </label>
               <div className="relative w-full">
-                <select name="billType" value={debitNoteState.billType} onChange={handleInputChange} className="block appearance-none w-full h-9 mt-2 text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                <select
+                  name="billType"
+                  value={debitNoteState.billType}
+                  onChange={handleInputChange}
+                  className="block appearance-none w-full h-9 mt-2 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                >
                   <option value="" className="text-gray">
                     Select Bill Type
                   </option>
+                  <option value="Registered">Registered</option>
+                  <option value="Deemed Export">Deemed Export</option>
+                  <option value="SEZ With Payment">SEZ With Payment</option>
+                  <option value="SEZ Without Payment">
+                    SEZ Without Payment
+                  </option>
+                  <option value="Export With Payment">
+                    Export With Payment
+                  </option>
+                  <option value="Export Without Payment">
+                    Export Without Payment
+                  </option>
+                  <option value="B2C (Large)">B2C (Large)</option>
+                  <option value="B2C Others">B2C Others</option>
                 </select>
+
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <CehvronDown color="gray" />
                 </div>
@@ -533,8 +570,8 @@ const NewDebitNote = ({}: Props) => {
                 Supplier Debit Date
               </label>
               <div className="relative w-full">
-              <input
-              type="date"
+                <input
+                  type="date"
                   name="supplierDebitDate"
                   value={debitNoteState.supplierDebitDate}
                   onChange={handleInputChange}
@@ -550,7 +587,7 @@ const NewDebitNote = ({}: Props) => {
                 Subject
                 <input
                   name="subject"
-                onChange={handleInputChange}
+                  onChange={handleInputChange}
                   id=""
                   value={debitNoteState.subject}
                   placeholder="Enter a subject within 250 Characters"
@@ -558,18 +595,17 @@ const NewDebitNote = ({}: Props) => {
                 />
               </label>
             </div>
-
-           
           </div>
           <div className="mt-9">
             <p className="font-bold text-base">Add Item</p>
-            <NeworderTable
-                purchaseOrderState={debitNoteState}
-                setPurchaseOrderState={setDebitNoteState}
-                isInterState={isInterState}
-                oneOrganization={oneOrganization}
-              />          </div>
-         
+            <DebitNoteTable
+              purchaseOrderState={debitNoteState}
+              setPurchaseOrderState={setDebitNoteState}
+              isInterState={isInterState}
+              oneOrganization={oneOrganization}
+            />{" "}
+          </div>
+
           <br />
           <div className="mt-5">
             <label htmlFor="" className="">
@@ -578,7 +614,7 @@ const NewDebitNote = ({}: Props) => {
                 name="addNotes"
                 id=""
                 value={debitNoteState.addNotes}
-              onChange={handleInputChange}
+                onChange={handleInputChange}
                 placeholder="Note"
                 className="border-inputBorder w-full text-sm border rounded  p-2 h-[57px] mt-2 "
               />
