@@ -87,7 +87,7 @@ const QuoteTable = ({ page }: Props) => {
       : page === "salesOrder" ? [
         { id: "salesOrder", label: "Order Number", visible: true },
         { id: "createdDate", label: "Order Date", visible: true },
-        { id: "salesOrder", label: "Sales Order#", visible: true },
+        // { id: "salesOrder", label: "Sales Order#", visible: true },
         { id: "customerName", label: "Customer Name", visible: true },
         { id: "totalAmount", label: "Total", visible: true },
         { id: "status", label: "Status", visible: true },
