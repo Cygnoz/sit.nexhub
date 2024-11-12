@@ -1,11 +1,10 @@
-import Ellipsis from "../../../assets/icons/Ellipsis";
-import Button from "../../../Components/Button";
-import PlusCircle from "../../../assets/icons/PlusCircle";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import Table from "../manualJournel/newJournal/Table";
 import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
-import { useEffect, useRef, useState } from "react";
+import PlusCircle from "../../../assets/icons/PlusCircle";
+import Button from "../../../Components/Button";
+import Table from "../manualJournel/newJournal/Table";
 
 type Props = {};
 

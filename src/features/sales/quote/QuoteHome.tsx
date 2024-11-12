@@ -136,7 +136,7 @@ const QuoteHome = ({}: Props) => {
        
         <div className="p-3">
           {/* table */}
-          <QuoteTable />
+          <QuoteTable page="quote" />
         </div>
       </div>
     </div>

@@ -33,7 +33,7 @@ function Table({}: Props) {
     "Notes",
     "Status",
     "Amount",
-    "",
+    // "",
   ];
 
   const getAllJournals = async () => {
@@ -105,7 +105,7 @@ function Table({}: Props) {
       <tbody className="text-dropdownText text-center text-[13px]">
       {loading.skeleton ? (
   [...Array(filteredJournals.length>0?filteredJournals.length:5)].map((_, idx) => (
-    <TableSkelton key={idx} columns={tableHeaders} />
+    <TableSkelton key={idx} columns={[...tableHeaders,"rr"]} />
   ))
 ) : filteredJournals.length > 0 ? (
   filteredJournals.reverse().map((item, index) => (
@@ -136,15 +136,15 @@ function Table({}: Props) {
     <td className="py-2.5 px-4 border-y border-tableBorder">
       {item.totalDebitAmount?item.totalDebitAmount:"-"}
     </td>
-    <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
+    {/* <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
       <div className="flex justify-end">
-        {/* <Ellipsis height={17} /> */}
+        <Ellipsis height={17} />
       </div>
-    </td>
+    </td> */}
   </tr>
   ))
 ) : (
-   <NoDataFoundTable columns={tableHeaders} />
+   <NoDataFoundTable columns={[...tableHeaders,"rr"]} />
 )}
       </tbody>
     </table>

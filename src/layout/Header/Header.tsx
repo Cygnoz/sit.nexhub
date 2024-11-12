@@ -59,7 +59,6 @@ const Header = ({}: Props) => {
   };
 
 
-
   useEffect(() => {
     // Update previous path whenever location changes
     setPreviousPath(location.pathname);

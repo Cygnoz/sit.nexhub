@@ -17,6 +17,7 @@ import NewspaperIcon from "../../../assets/icons/NewspaperIcon";
 import { TableResponseContext } from "../../../context/ContextShare";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 interface Column {
   id: string;
@@ -49,8 +50,8 @@ const ItemTable = () => {
     { id: "sellingPrice", label: "Sales Rate", visible: true },
     { id: "costPrice", label: "Purchase Rate", visible: true },
     { id: "currentStock", label: "Stock", visible: true },
+    {id:"itemsDetails",label:'Item Details',visible:true},
     { id: "reorderPoint", label: "ReorderPoint", visible: false },
-
   ];
   const [selected, setSelected] = useState("All");
 
@@ -58,6 +59,7 @@ const ItemTable = () => {
   const [itemsData, setItemsData] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const {loading,setLoading}=useContext(TableResponseContext)!;
+  const { organization: orgData } = useOrganization();
   const { request: GetAllItems } = useApi("get", 5003);
   const fetchAllItems = async () => {
     try {
@@ -85,6 +87,7 @@ const ItemTable = () => {
       setLoading({ ...loading, noDataFound: true, skeleton: false });
     }
   };
+  console.log(orgData);
   
 
   const [allCategoryData, setAllcategoryData] = useState<any[]>([]);
@@ -162,19 +165,33 @@ const ItemTable = () => {
   const closeDeleteImageModal = () => {
     setDeleteImageModalOpen(false);
   };
-  const renderColumnContent = (colId: string, item: any) => {
+  const renderColumnContent = (colId: string, item: any, openModal: (item: any) => void) => {
     if (colId === "itemName") {
       return <span className="font-bold text-sm">{item[colId]}</span>;
+    } else if (colId === "itemsDetails") {
+      return (
+        
+          <div className="flex justify-center items-center">
+            <Button
+              variant="secondary"
+              className="font-medium rounded-lg h-[1rem] text-[9.5px]"
+              onClick={() => openModal(item)}
+            >
+              See details
+            </Button>
+          </div>
+       
+      );
     }
-
+  
     const columnValue = item[colId as keyof typeof item];
     return columnValue ? (
       <span>{columnValue}</span>
     ) : (
-      <span className="text-gray-500 italic">-</span> 
+      <span className="text-gray-500 italic">-</span>
     );
   };
-
+  
   const Items = [
     {
       icon: <BookIcon color="#585953" />,
@@ -205,6 +222,8 @@ const ItemTable = () => {
     }
   });
 
+
+  
 
 
 
@@ -261,6 +280,7 @@ const ItemTable = () => {
           </th>
         ) : null
       )}
+      
       <th className="py-2.5 px-4 font-medium border-b border-tableBorder">
         <CustomiseColmn columns={columns} setColumns={setColumns} />
       </th>
@@ -268,7 +288,9 @@ const ItemTable = () => {
   </thead>
   <tbody className="text-dropdownText text-center text-[13px]">
     {loading.skeleton ? (
-      [...Array(5)].map((_, idx) => <TableSkelton key={idx} columns={columns} />) // Skeleton loader
+      [...Array(5)].map((_, idx) => (
+        <TableSkelton key={idx} columns={[...columns, "ee"]} />
+      )) // Skeleton loader
     ) : filteredItems.length > 0 ? (
       filteredItems.map((item, index) => (
         <tr
@@ -284,28 +306,20 @@ const ItemTable = () => {
                   key={col.id}
                   className="py-2.5 px-4 border-y border-tableBorder"
                 >
-                  {renderColumnContent(col.id, item)}
+                  {renderColumnContent(col.id, item, openModal)}
                 </td>
               )
           )}
-          <td className="py-2.5 px-4 border-y border-tableBorder">
-            <div className="flex justify-center items-center">
-              <Button
-                variant="secondary"
-                className="font-medium rounded-lg h-[1rem] text-[9.5px]"
-                onClick={() => openModal(item)}
-              >
-                See details
-              </Button>
-            </div>
-          </td>
+          
+          <td className="py-2.5 px-4 border-y border-tableBorder">{" "}</td> {/* Empty cell for consistent styling */}
         </tr>
       ))
     ) : (
-      <NoDataFoundTable columns={[...columns,"ee"]} />
+      <NoDataFoundTable columns={[...columns, "ee"]} />
     )}
   </tbody>
-        </table>
+</table>
+
 
 
 
@@ -426,10 +440,10 @@ const ItemTable = () => {
                     <div className="grid grid-cols-2 gap-y-4">
                       <p className="text-dropdownText text-sm">Cost Price</p>
                       <p className="text-dropdownText font-semibold text-sm">
-                        {currencySymbol[0]?.length === 1
-                          ? `${currencySymbol[0]} ${selectedItem?.costPrice || "N/A"
+                        {orgData?.baseCurrency?.length === 1
+                          ? `${orgData.baseCurrency} ${selectedItem?.costPrice || "N/A"
                           }`
-                          : `${selectedItem?.costPrice || "N/A"} ${currencySymbol[0]
+                          : `${selectedItem?.costPrice || "N/A"} ${orgData?.baseCurrency
                           }`}
                       </p>
 
@@ -448,10 +462,10 @@ const ItemTable = () => {
                     <div className="grid grid-cols-2 gap-y-4">
                       <p className="text-dropdownText text-sm">Selling Price</p>
                       <p className="text-dropdownText font-semibold text-sm">
-                        {currencySymbol[0]?.length === 1
-                          ? `${currencySymbol[0]} ${selectedItem?.sellingPrice || "N/A"
+                        {orgData?.baseCurrency?.length === 1
+                          ? `${orgData.baseCurrency} ${selectedItem?.sellingPrice || "N/A"
                           }`
-                          : `${selectedItem?.sellingPrice || "N/A"} ${currencySymbol[0]
+                          : `${selectedItem?.sellingPrice || "N/A"} ${orgData?.baseCurrency
                           }`}
                       </p>
                       {/* <p className="text-dropdownText text-sm">Sales Account</p>
