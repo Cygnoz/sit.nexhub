@@ -21,12 +21,9 @@ type Props = {
   mode?: boolean
 };
 
-
 function LandingHeader({ mode, setMode }: Props) {
   const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
-
-
 
   const confirmLogout = () => {
     setLogoutModalOpen(true);
@@ -55,9 +52,7 @@ function LandingHeader({ mode, setMode }: Props) {
 
       <div className="flex items-center space-x-4">
         <div className={`${mode ? 'bg-white' : 'bg-[#404B52]'} rounded-full relative items-center w-[372px] h-[38px] flex gap-1`}>
-
           <SearchIcon color={mode ? '#303F58' : 'white'} />
-
           <input placeholder='Search' type="text" className={`ms-9 ${mode ? 'text-[#303F58]' : 'text-white'} bg-[#404B52] outline-none ${mode ? 'bg-white' : 'bg-[#404B52]'}`} />
         </div>
         <button className={`${mode ? 'bg-white' : 'bg-[#404B52]'} text-[#DFD1B4] w-[38px] h-[38px] flex justify-center items-center rounded-full`}>
@@ -81,21 +76,17 @@ function LandingHeader({ mode, setMode }: Props) {
               },
             },
             {
-              label: 'My Subsciption',
+              label: 'My Subscription',
               icon: <BellRing color={mode ? '#4B5C79' : '#DFE1E2'} />,
               onClick: () => {
                 console.log('Delete clicked with id:', 1);
                 // handleDelete(item._id); // Directly use item properties
               },
-
             },
             {
               label: 'Log Out',
               icon: <LogOut color={mode ? '#4B5C79' : '#DFE1E2'} />,
-              onClick: () => {
-               confirmLogout()
-              },
-
+              onClick: confirmLogout,
             },
           ]}
           backgroundColor={mode ? "bg-white" : "bg-[#3C474D]"}
@@ -144,8 +135,6 @@ function LandingHeader({ mode, setMode }: Props) {
           </div>
         </Modal>
       )}
-
-
     </header>
   );
 }

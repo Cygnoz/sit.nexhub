@@ -30,7 +30,6 @@ const Currencies: React.FC<Props> = () => {
     currencyCode: false,
     currencySymbol: false,
     currencyName: false,
- 
   });
   const [newCurrency, setNewCurrency] = useState<InputCurrencyData>({
     currencyCode: "",
@@ -55,15 +54,16 @@ const Currencies: React.FC<Props> = () => {
     setNewCurrencyModal(false);
     setNewCurrency({
       currencyCode: "",
-    currencySymbol: "",
-    currencyName: "",
-    decimalPlaces: "",
-    format: "",
-    })
+      currencySymbol: "",
+      currencyName: "",
+      decimalPlaces: "",
+      format: "",
+    });
     setErrors({
       currencyCode: false,
       currencySymbol: false,
-      currencyName: false,})
+      currencyName: false,
+    });
   };
 
   const handleChange = (
@@ -78,10 +78,8 @@ const Currencies: React.FC<Props> = () => {
 
   const onSubmit = async () => {
     const { currencyCode, currencyName, currencySymbol } = newCurrency;
-  
-    // Validate that currencyCode, currencyName, and currencySymbol are not empty
     let isValid = true;
-  
+
     // Update error states and check for empty fields
     if (!currencyCode || !currencyName || !currencySymbol) {
       if (!currencyCode) {
@@ -97,29 +95,26 @@ const Currencies: React.FC<Props> = () => {
         isValid = false;
       }
     }
-  
+
     // If there are errors, stop submission
     if (!isValid) return;
-  
+
     try {
       const url = `${endponits.ADD_CURRENCIES}`;
       const { response, error } = await CreateNewCurrency(url, newCurrency);
-  
-      // Log responses for debugging
-      console.log("response", response);
-      console.log("error", error);
-  
+
       if (error) {
         // Handle error by checking if error response exists
-        const errorMessage = error?.response?.data?.message || "An error occurred while adding currency.";
+        const errorMessage =
+          error?.response?.data?.message || "An error occurred while adding currency.";
         toast.error(errorMessage);
         return;
       }
-  
+
       if (response) {
         closeModal();
         console.log("Currency added successfully:", response.data);
-        
+
         // Clear form after successful submission
         setNewCurrency({
           currencyCode: "",
@@ -128,10 +123,10 @@ const Currencies: React.FC<Props> = () => {
           decimalPlaces: "",
           format: "",
         });
-        
+
         // Show success toast
         toast.success(response.data);
-  
+
         // Update currency response state
         setCurrencyResponse((prevCurrencyResponse: any) => ({
           ...prevCurrencyResponse,
@@ -144,14 +139,12 @@ const Currencies: React.FC<Props> = () => {
       toast.error("An unexpected error occurred.");
     }
   };
-  
-  
 
   return (
     <>
       <div className="m-4 overflow-y-scroll hide-scrollbar text-[#303F58]">
         <Banner seeOrgDetails />
-        <div className="p-2 flex items-center ">
+        <div className="p-2 flex items-center">
           <p className="font-bold text-[15px]">Currencies</p>
 
           <div className="ml-auto flex gap-4 items-center">
@@ -199,8 +192,7 @@ const Currencies: React.FC<Props> = () => {
                 </Button>
                 <Button
                   onClick={() => {
-                    closeModal(),
-                      setIsExchangeRateFields(!isExchangeRateFields);
+                    closeModal(), setIsExchangeRateFields(!isExchangeRateFields);
                   }}
                   variant="primary"
                   className="h-[38px] w-[120px] flex justify-center"
@@ -264,33 +256,34 @@ const Currencies: React.FC<Props> = () => {
                     Currency Code
                   </label>
                   <div className="relative w-full mt-1">
-                  <input
-                required
-                  type="text"
-                  name="currencyCode"
-                  value={newCurrency.currencyCode}
-                  onChange={handleChange}
-                  placeholder="Value"
-                  className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
-                  onFocus={() =>
-                    setErrors({ ...errors, currencyCode: false })
-                  }
-                  onBlur={() => {
-                    if (newCurrency.currencyCode === "") {
-                      setErrors({ ...errors, currencyCode: true });
-                    }
-                  }}
-                />
-                {errors.currencyCode && (
-                  <div className="text-red-800 text-xs ms-2 mt-1">
-                    Enter Currency Code
-                  </div>
-                )}
-            
-                  
+                    <input
+                      required
+                      type="text"
+                      name="currencyCode"
+                      value={newCurrency.currencyCode}
+                      onChange={handleChange}
+                      placeholder="Value"
+                      className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
+                      onFocus={() => setErrors({ ...errors, currencyCode: false })}
+                      onBlur={() => {
+                        if (newCurrency.currencyCode === "") {
+                          setErrors((prevErrors) => ({
+                            ...prevErrors,
+                            currencyCode: true,
+                          }));
+                        }
+                      }}
+                    />
+                    {errors.currencyCode && (
+                      <div className="absolute text-xs text-red-500 top-8 left-1">
+                        Currency Code is required!
+                      </div>
+                    )}
                   </div>
                 </div>
-                <div className="mb-4">
+
+                {/* Currency Symbol  */}
+                <div className="relative w-full mt-3">
                   <label
                     className="block text-sm mb-1 text-labelColor"
                     htmlFor="currencySymbol"
@@ -298,121 +291,74 @@ const Currencies: React.FC<Props> = () => {
                     Currency Symbol
                   </label>
                   <input
-                  required
+                    required
                     type="text"
                     name="currencySymbol"
                     value={newCurrency.currencySymbol}
                     onChange={handleChange}
-                    placeholder="Value"
+                    placeholder="Currency Symbol"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
-                    onFocus={() =>
-                      setErrors({ ...errors, currencySymbol: false })
-                    }
+                    onFocus={() => setErrors({ ...errors, currencySymbol: false })}
                     onBlur={() => {
                       if (newCurrency.currencySymbol === "") {
-                        setErrors({ ...errors, currencySymbol: true });
+                        setErrors((prevErrors) => ({
+                          ...prevErrors,
+                          currencySymbol: true,
+                        }));
                       }
                     }}
                   />
                   {errors.currencySymbol && (
-                    <div className="text-red-800 text-xs ms-2 mt-1">
-                      Enter Currency Symbol
+                    <div className="absolute text-xs text-red-500 top-8 left-1">
+                      Currency Symbol is required!
                     </div>
                   )}
                 </div>
-      
 
                 {/* Currency Name  */}
-                <div className="mb-4 mt-4">
-                  <label className="block text-sm mb-1 text-labelColor">
+                <div className="relative w-full mt-3">
+                  <label
+                    className="block text-sm mb-1 text-labelColor"
+                    htmlFor="currencyName"
+                  >
                     Currency Name
                   </label>
                   <input
-                  required
+                    required
                     type="text"
                     name="currencyName"
                     value={newCurrency.currencyName}
                     onChange={handleChange}
-                    placeholder="Value"
+                    placeholder="Currency Name"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
-                    onFocus={() =>
-                      setErrors({ ...errors, currencyName: false })
-                    }
+                    onFocus={() => setErrors({ ...errors, currencyName: false })}
                     onBlur={() => {
                       if (newCurrency.currencyName === "") {
-                        setErrors({ ...errors, currencyName: true });
+                        setErrors((prevErrors) => ({
+                          ...prevErrors,
+                          currencyName: true,
+                        }));
                       }
                     }}
                   />
                   {errors.currencyName && (
-                    <div className="text-red-800 text-xs ms-2 mt-1">
-                      Enter Currency Name
+                    <div className="absolute text-xs text-red-500 top-8 left-1">
+                      Currency Name is required!
                     </div>
                   )}
                 </div>
-                  
-           
-                <div className="relative w-full mt-3">
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Decimal Places
-                  </label>
-                  <div className="relative w-full mt-1">
-                    <select
-                      name="decimalPlaces"
-                      id="decimalPlaces"
-                      onChange={handleChange}
-                      value={newCurrency.decimalPlaces}
-                      className="block appearance-none w-full text-zinc-400 bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    >
-                      <option value="">Select Decimal Places</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
-                  </div>
-                </div>
-                <div className="relative w-full mt-3 ">
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Format
-                  </label>
-                  <div className="relative w-full mt-1">
-                    <select
-                      name="format"
-                      id="format"
-                      onChange={handleChange}
-                      value={newCurrency.format}
-                      className="block appearance-none w-full text-zinc-400 bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    >
-                      <option value="">Select Format Value</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
-                  </div>
-                </div>
 
-                <div className="flex justify-end gap-2 pt-3">
-                  <Button
-                    onClick={closeModal}
-                    variant="secondary"
-                    className="h-[38px] w-[120px] flex justify-center"
-                  >
-                    <p className="text-sm">Cancel</p>
-                  </Button>
+                {/* Submit Button  */}
+                <div className="mt-3 text-center">
                   <Button
                     onClick={onSubmit}
                     variant="primary"
-                    className="h-[38px] w-[120px] flex justify-center"
+                    className="w-full h-[42px] text-sm flex justify-center"
                   >
-                    <p className="text-sm">Save</p>
+                    Create Currency
                   </Button>
                 </div>
               </div>
-              
             </form>
           </div>
         </Modal>
