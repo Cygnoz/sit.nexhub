@@ -36,10 +36,10 @@ const SettingsSidebar = ({}: Props) => {
     });
   }, [location]);
 
-  const handleMainClick = (index: number) => {
-    setSelectedMain(index);
-    setSelectedSub({ mainIndex: index, subIndex: null });
-  };
+  // const handleMainClick = (index: number) => {
+  //   setSelectedMain(index);
+  //   setSelectedSub({ mainIndex: index, subIndex: null });
+  // };
 
   const handleSubClick = (mainIndex: number, subIndex: number) => {
     setSelectedMain(mainIndex);
@@ -49,6 +49,8 @@ const SettingsSidebar = ({}: Props) => {
   const handleBackClick = () => {
     navigate("/settings");
   };
+
+
 
   return (
     <div className="overflow-y-scroll  pt-6 hide-scrollbar col-span-3 border-neutral-300 text-textColor h-auto border-r-2 px-7 bg-white w-[27%]">
@@ -83,7 +85,7 @@ const SettingsSidebar = ({}: Props) => {
                   ? "bg-[#F3E6E6]"
                   : ""
               }`}
-              onClick={() => handleMainClick(mainIndex)}
+              // onClick={() => handleMainClick(mainIndex)}
             >
               <main.icon color="currentColor" />
               <p className="font-semibold text-base text-textColor">

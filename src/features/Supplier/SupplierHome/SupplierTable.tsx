@@ -122,7 +122,7 @@ const SupplierTable = ({
           <thead className="text-[12px] text-center  text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
               <th className="py-3 px-4 border-b border-tableBorder">
-                <input type="checkbox" className="form-checkbox w-4 h-4" />
+                <td>SI No</td>
               </th>
               {columns.map(
                 (col) =>
@@ -146,11 +146,9 @@ const SupplierTable = ({
                 <TableSkelton key={idx} columns={columns} />
               ))
             ) : filteredAccounts && filteredAccounts.length > 0 ? (
-              filteredAccounts.reverse().map((item) => (
+              filteredAccounts.reverse().map((item,index) => (
                 <tr key={item._id} className="relative">
-                  <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <input type="checkbox" className="form-checkbox w-4 h-4" />
-                  </td>
+                  <td>{index+1}</td>
                   {columns.map(
                     (col) =>
                       col.visible && (

@@ -1,6 +1,7 @@
-import React, { createContext, useState, ReactNode } from "react";
+import React, { createContext, useState, ReactNode, useEffect } from "react";
 import { endponits } from "../Services/apiEndpoints";
 import useApi from "../Hooks/useApi";
+import { useLocation } from "react-router-dom";
 
 interface CashResponseContextType {
   cashResponse: any;
@@ -63,6 +64,11 @@ interface TableLoadingContextType{
   setLoading: React.Dispatch<React.SetStateAction<any>>;
 }
 
+interface PreviousPathContextType {
+  previousPath: string;
+  setPreviousPath: React.Dispatch<React.SetStateAction<any>>;
+}
+
 
 export const cashResponseContext = createContext<CashResponseContextType | undefined>(undefined);
 export const BankResponseContext = createContext<BankResponseContextType | undefined>(undefined);
@@ -76,13 +82,15 @@ export const CustomerEditResponseContext = createContext<CustomerEditResponseCon
 export const UnitResponseContext=createContext<unitResponseContextType | undefined>(undefined);
 export const UnitEditResponseContext=createContext<unitEditResponseContextType | undefined>(undefined);
 export const TableResponseContext=createContext<TableLoadingContextType| undefined>(undefined);
+export const PreviousPathContext = createContext<PreviousPathContextType | undefined>(undefined);
 
 interface ContextShareProps {
   children: ReactNode;
 }
 
 const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
-
+  const location = useLocation();
+  const [previousPath, setPreviousPath] = useState("");
   const [cashResponse, setCashResponse] = useState<any>({});
   const [bankResponse, setBankResponse] = useState<any>({});
   const [currencyResponse, setCurrencyResponse] = useState<any>({});
@@ -114,6 +122,11 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
       console.error('Failed to fetch settings:', error);
     }
   };
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    setPreviousPath((prev) => (prev !== currentPath ? prev : previousPath));
+  }, [location.pathname]);
   
   return (
     <UnitEditResponseContext.Provider value={{unitEditResponse,setEditUnitResponse }}>
@@ -128,7 +141,9 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
                   <SupplierResponseContext.Provider value={{ supplierResponse, setsupplierResponse }}>
                     <CustomerResponseContext.Provider value={{ customerResponse, setcustomerResponse }}>
                       <TableResponseContext.Provider value={{loading,setLoading}}>
+                      <PreviousPathContext.Provider value={{ previousPath,setPreviousPath }}>
                       {children}
+                      </PreviousPathContext.Provider>
                       </TableResponseContext.Provider>
                     </CustomerResponseContext.Provider>
                   </SupplierResponseContext.Provider>

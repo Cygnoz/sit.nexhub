@@ -90,9 +90,10 @@ function LandingHeader({ mode, setMode }: Props) {
             },
           ]}
           backgroundColor={mode ? "bg-white" : "bg-[#3C474D]"}
-          textColor={mode ? 'text-[#4B5C79]' : 'text-[#DFE1E2]'}
+         
           trigger={<OrganizationIcon height="10" width="10" />}
           position="center"
+          labelColor={mode?"#4B5C79":'#DFE1E2'}
           underline
           underlineColor='text-[#DFE1E2]'
         />
@@ -103,11 +104,26 @@ function LandingHeader({ mode, setMode }: Props) {
             <ArrowrightUp />
           </div>
         </button>
-        <button className={` ${mode ? 'bg-white' : 'bg-[#F3F3F3]'} ${mode ? 'border-[white]' : 'border-[#7A8087]'} p-1 rounded-full border-4 `}>
-          <div onClick={() => setMode && setMode(prev => !prev)} className={`${mode ? 'bg-[#F6F6F6]' : 'bg-[#F3F3F3]'} rounded-full`}>
-            {mode ? <Moon /> : <Sun />}
-          </div>
-        </button>
+        {mode ? (
+  <button
+    className="bg-white border-white  rounded-full border-4"
+    onClick={() => setMode && setMode(prev => !prev)}
+  >
+    <div className="bg-[#EAEBEB] p-1 rounded-full">
+      <Moon />
+    </div>
+  </button>
+) : (
+  <button
+    className="bg-[#F3F3F3] border-[#7A8087] p-1 rounded-full border-4"
+    onClick={() => setMode && setMode(prev => !prev)}
+  >
+    <div className="bg-[#F3F3F3] rounded-full">
+      <Sun />
+    </div>
+  </button>
+)}
+
       </div>
 
       {isLogoutModalOpen && (

@@ -55,7 +55,7 @@ const QuoteTable = ({ page }: Props) => {
     }
   };
 
-
+  
 
   useEffect(() => {
     fetchAllQuotes();

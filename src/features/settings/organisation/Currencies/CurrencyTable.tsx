@@ -50,60 +50,16 @@ const CurrencyTable = () => {
 
   return (
     <div className="space-y-4 pt-2">
-      <div>
-        <table className="min-w-full bg-white mb-5">
-          <thead className="text-[12px] w-full text-center text-dropdownText sticky bg-red-500">
-            <tr style={{ backgroundColor: "#F9F7F0", height: "44px" }}>
-              {tableHeaders.map((heading, index) => (
-                <th
-                  className="py-2 px-4 font-medium border-b border-tableBorder"
-                  key={index}
-                >
-                  {heading}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="text-dropdownText text-center text-[13px]">
-            {currenciesData.map((item: any, index: number) => (
-              <tr className="relative" key={index}>
-                <td className="py-4 px-4 border-y border-tableBorder">
-                  <p>
-                    {item.currencyCode}-{item.currencyName}{" "}
-                    {item.baseCurrency && (
-                      <span className="px-2 py-1 bg-[#6FC7A2] text-white">
-                        Base Currency
-                      </span>
-                    )}
-                  </p>
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.currencySymbol}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <div className="flex justify-center gap-2 items-center">
-                    {/* <div className="h-[26px] justify-start items-start inline-flex">
-                      <div className="#fefdfa">
-                        <div className="#565148 border px-[10px] py-1 rounded-lg">
-                          <p
-                            // to={`/settings/currencies/exchange-rates/${item._id}`}
-                          >
-                            View Exchange Rate
-                          </p>
-                        </div>
-                      </div>
-                    </div> */}
-                    <div onClick={() => setSelectedCurrency(item)}>
-                      <EditCurrencyModal selectedCurrency={selectedCurrency} />
-                    </div>
-                    {item.baseCurrency == false && (
-                      <div onClick={() => handleDelete(item._id)}>
-                        <TrashCan color={"red"} />
-                      </div>
-                    )}
-                  </div>
-                </td>
-              </tr>
+      <table className="min-w-full bg-white mb-5">
+        <thead className="text-[12px] w-full text-center text-dropdownText sticky bg-red-500">
+          <tr style={{ backgroundColor: "#F9F7F0", height: "44px" }}>
+            {tableHeaders.map((heading, index) => (
+              <th
+                className="py-2 px-4 font-medium border-b border-tableBorder"
+                key={index}
+              >
+                {heading}
+              </th>
             ))}
           </tr>
         </thead>
