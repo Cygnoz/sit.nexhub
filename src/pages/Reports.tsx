@@ -26,7 +26,7 @@ const settingsData: reports[] = [
     title: "Profit and Loss",
     description: "Manage Profit and Loss",
     imageUrl: profitAndLoss,
-    route: "",
+    route: "/reports/profitandloss",
   },
   {
     title: "Balance Sheet",
@@ -70,12 +70,6 @@ const ReportsCard: React.FC<reports> = ({
 
 const Reports: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>("");
-  // const navigate = useNavigate(); 
-
-  // const handleGoBack = () => {
-  //   navigate(-1); 
-  // };
-
   const filteredSettings = settingsData.filter((setting) =>
     setting.title.toLowerCase().includes(searchValue.toLowerCase())
   );
@@ -92,12 +86,6 @@ const Reports: React.FC = () => {
               onSearchChange={setSearchValue}
             />
           </div>
-          {/* <button
-            onClick={handleGoBack}
-            className="bg-white  px-4 py-1   rounded-lg border-textColor border text-sm"
-          >
-            Close <span className="text-lg ms-1 -mt-1"> &times;</span>
-          </button> */}
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-14">
