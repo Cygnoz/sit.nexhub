@@ -21,7 +21,7 @@ const SalesReturn = ({}: Props) => {
     </div>
     <div className="ml-auto gap-3 flex items-center relative">
       <Button
-        onClick={() => Navigate("")}
+        onClick={() => Navigate("/sales/newsalesreturn")}
         variant="secondary"
         size="sm"
       >
@@ -39,7 +39,7 @@ const SalesReturn = ({}: Props) => {
       </Button>
     </div>
   </div>
-  <div className="bg-white p-5 rounded-lg space-y-4">
+  <div className="bg-white p-5 rounded-lg space-y-4 mt-4">
       <QuoteTable
       page="salesReturn"
       />
