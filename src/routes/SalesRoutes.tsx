@@ -18,6 +18,7 @@ const ReceiptHome = lazy(() => import("../features/sales/Receipt/ReceiptHome"));
 const ReceiptView = lazy(() => import("../features/sales/Receipt/ReceiptView"));
 const NewReceipt = lazy(() => import("../features/sales/Receipt/NewReceipt"));
 const SalesInfo = lazy(() => import("../features/sales/SalesInfo"));
+const SalesReturn = lazy(() => import("../features/sales/salesReturn/SalesReturn"));
 
 const SalesRoutes: RouteObject[] = [
   { path: "/sales", element: <SalesDashboard /> },
@@ -36,6 +37,8 @@ const SalesRoutes: RouteObject[] = [
   { path: "/sales/receipt/view", element: <ReceiptView /> },
   { path: "/sales/receipt/new", element: <NewReceipt /> },
   { path: "/sales/info", element: <SalesInfo /> },
+  { path: "/sales/salesreturn", element: <SalesReturn/> },
+
 ];
 
 export default SalesRoutes;

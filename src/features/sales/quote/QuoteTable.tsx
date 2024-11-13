@@ -96,8 +96,18 @@ const QuoteTable = ({ page }: Props) => {
           { id: "salesQuotes", label: "Quote Number", visible: true },
           { id: "status", label: "Status", visible: true },
           { id: "totalAmount", label: "Amount", visible: true },
+
         ]
-      : [];
+      : 
+      page === "salesReturn" ? [
+        { id: "createdDate", label: "Date", visible: true },
+        { id: "customerRMA", label: "RMA#", visible: true },
+        { id: "salesOrder", label: "SalesOrder", visible: true },
+        { id: "status", label: "Status", visible: true },
+        { id: "customerName", label: "Customer Name", visible: true },
+        { id: "totalAmount", label: "Amount", visible: true },
+        { id: "returned", label: "Returned", visible: true },
+      ]:[];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
@@ -128,17 +138,18 @@ const QuoteTable = ({ page }: Props) => {
       <span className="text-gray-500 italic">-</span>
     );
   };
+// Initialize `data` as an empty array if it's undefined
+const filteredData = Array.isArray(data) ? data.filter((quote) => {
+  const searchValueLower = searchValue?.toLowerCase();
+  return (
+    quote?.customerName?.toLowerCase()?.includes(searchValueLower) ||
+    quote?.reference?.toLowerCase()?.includes(searchValueLower) ||
+    quote?.salesQuotes?.toLowerCase()?.includes(searchValueLower) ||
+    quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
+    quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
+  );
+}) : []; // If `data` is not an array, default to an empty array
 
-  const filteredData = data.filter((quote) => {
-    const searchValueLower = searchValue.toLowerCase();
-    return (
-      quote?.customerName?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.reference?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.salesQuotes?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
-    );
-  });
 
   const handleRowClick = (id: string) => {
     const state = { page };
@@ -162,9 +173,12 @@ const QuoteTable = ({ page }: Props) => {
             placeholder={
               page == "invoice"
                 ? "Search Invoice"
-                : page == "salesOrder"
+                : page == "salesOrder"               
                 ? "Search Sales Order"
+                :page=="salesReturn"
+                ? "Search Sales Return"
                 : "Search Quote"
+
             }
           />
         </div>

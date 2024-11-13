@@ -86,7 +86,7 @@ const navlist = [
       },
       {
         headName: "Sales Return",
-        subRoute: "/inventory",
+        subRoute: "/sales/salesreturn",
       },
       {
         headName: "Credit Note",
