@@ -3,7 +3,7 @@ import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
-import Ellipsis from "../../../assets/icons/Ellipsis";
+// import Ellipsis from "../../../assets/icons/Ellipsis";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 // import PurchaseOrderCards from "./PurchaseOrderCards";
 // import PurchaseFilterCards from "./PurchaseFilterCards";
@@ -66,8 +66,8 @@ const PurchaseOrder = ({}: Props) => {
   return (
     <>
       <div className="mx-5 my-4 flex items-center relative">
-        <div className="mx-4">
-          <h3 className="font-bold text-xl text-textColor">Create Purchase Order</h3>
+        <div>
+          <h3 className="font-bold text-2xl text-textColor">Create Purchase Order</h3>
           <p className="text-sm text-gray mt-1">
           A formal document outlining the details of a purchase
                     </p>
