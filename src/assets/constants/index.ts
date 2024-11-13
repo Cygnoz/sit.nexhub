@@ -80,10 +80,10 @@ const navlist = [
         headName: "Receipt",
         subRoute: "/sales/receipt",
       },
-      {
-        headName: "POS",
-        subRoute: "/inventory",
-      },
+      // {
+      //   headName: "POS",
+      //   subRoute: "/inventory",
+      // },
       {
         headName: "Sales Return",
         subRoute: "/inventory",

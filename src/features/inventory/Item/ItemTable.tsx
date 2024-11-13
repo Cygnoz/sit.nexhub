@@ -87,7 +87,7 @@ const ItemTable = () => {
       setLoading({ ...loading, noDataFound: true, skeleton: false });
     }
   };
-  console.log(orgData);
+ 
   
 
   const [allCategoryData, setAllcategoryData] = useState<any[]>([]);
@@ -314,7 +314,7 @@ const ItemTable = () => {
           <td className="py-2.5 px-4 border-y border-tableBorder">{" "}</td> {/* Empty cell for consistent styling */}
         </tr>
       ))
-    ) :loading.noDataFound&&!loading.skeleton (
+    ) : (
       <NoDataFoundTable columns={[...columns, "ee"]} />
     )}
   </tbody>
