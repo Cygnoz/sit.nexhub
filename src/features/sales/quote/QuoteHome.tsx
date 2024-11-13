@@ -72,10 +72,10 @@ const QuoteHome = ({}: Props) => {
   ];
 
   return (
-    <div className="mx-4 my-4 overflow-x-hidden">
+    <div className="mx-5 my-4  text-[#303F58] overflow-x-hidden">
       <div className="flex items-center relative">
         <div>
-          <h3 className="font-bold text-xl text-textColor">
+          <h3 className="font-bold text-2xl text-textColor">
             Create Sales Quote
           </h3>
           <p className="text-sm text-gray mt-1">
