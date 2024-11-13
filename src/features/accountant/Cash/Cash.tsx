@@ -21,7 +21,7 @@ function Cash({}: Props) {
           <div className="ml-auto gap-3 flex items-center">
             <CreateAccountModal />
             <div className="cursor-pointer">
-              <Ellipsis />
+              {/* <Ellipsis /> */}
             </div>
           </div>
           <div></div>

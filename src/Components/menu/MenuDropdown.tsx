@@ -14,7 +14,7 @@ interface MenuDropdownProps {
   position?: 'left' | 'right' | 'center';
   underline?: boolean;
   underlineColor?: string;
-  textColor?: string;
+  labelColor?: string;  // New prop for label color
 }
 
 const MenuDropdown: React.FC<MenuDropdownProps> = ({
@@ -23,8 +23,8 @@ const MenuDropdown: React.FC<MenuDropdownProps> = ({
   trigger,
   position = 'right',
   underline = false,
-  underlineColor = "text-white",  // Default underline color
-  textColor = "black"
+  underlineColor = "text-white",
+  labelColor = "#4B5C79"  // Default label color
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
@@ -147,19 +147,18 @@ const MenuDropdown: React.FC<MenuDropdownProps> = ({
                   style={{
                     borderRadius:
                       index === 0
-                        ? '8px 8px 0 0' // Top items have top radius
+                        ? '8px 8px 0 0'
                         : index === menuItems.length - 1
-                        ? '0 0 8px 8px' // Last item has bottom radius
-                        : '0', // Middle items have no radius
-                    color: textColor,
-                    borderBottomColor: underlineColor, // Set the custom underline color
+                        ? '0 0 8px 8px'
+                        : '0',
+                    borderBottomColor: underlineColor,
                   }}
                   role="menuitem"
                   tabIndex={0}
                   onKeyDown={(e) => e.key === 'Enter' && item.onClick()}
                 >
                   {item.icon && <span className="mr-2">{item.icon}</span>}
-                  {item.label}
+                  <span style={{ color: labelColor }}>{item.label}</span> {/* Apply label color */}
                 </button>
               ))}
             </div>

@@ -1387,7 +1387,7 @@ const AddItem = ({ }: Props) => {
                 </label>
                 <div className="flex">
                   <div className="w-16 text-sm  mt-0.5 rounded-l-md text-start bg-white text-zinc-400 border border-inputBorder h-10 items-center justify-center flex">
-                    {itemsData.organization.baseCurrency.toUpperCase() || "INR"}
+                    {itemsData?.organization?.baseCurrency?.toUpperCase() || "INR"}
                   </div>
                   <input
                     type="number"
@@ -1441,7 +1441,7 @@ const AddItem = ({ }: Props) => {
                 </label>
                 <div className="flex">
                   <div className="w-16 text-sm mt-0.5 rounded-l-md text-start bg-white text-zinc-400 border border-inputBorder h-10 items-center justify-center flex">
-                    {itemsData.organization.baseCurrency.toUpperCase() || "INR"}
+                    {itemsData?.organization?.baseCurrency?.toUpperCase() || "INR"}
                   </div>
                   <input
                     type="number"
@@ -1468,7 +1468,7 @@ const AddItem = ({ }: Props) => {
                 </label>
                 <div className="flex">
                   <div className="w-16 text-sm mt-0.5 rounded-l-md text-start bg-white text-zinc-400 border border-inputBorder h-10 items-center justify-center flex">
-                    {itemsData.organization.baseCurrency.toUpperCase() || "INR"}
+                    {itemsData?.organization?.baseCurrency?.toUpperCase() || "INR"}
                   </div>
                   <input
                     type="number"

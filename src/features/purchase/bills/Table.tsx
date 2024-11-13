@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import { endponits } from "../../../Services/apiEndpoints";
@@ -7,6 +7,9 @@ import PrintButton from "../../../Components/PrintButton";
 import SearchBar from "../../../Components/SearchBar";
 import DotIcon from "../../../assets/icons/DotIcon";
 import DateFormat from "../../../Components/DateFormat/DateFormta";
+import { TableResponseContext } from "../../../context/ContextShare";
+import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
+import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 
 interface Column {
   id: string;
@@ -31,19 +34,33 @@ const Table = () => {
 
   const { request: getBills } = useApi("get", 5005);
 
+  // Loading state
+  const {loading,setLoading}=useContext(TableResponseContext)!;
+
   const getAllBill = async () => {
     try {
+      // Set loading skeleton state before API call
+      setLoading({ ...loading, skeleton: true, noDataFound: false });
+  
       const url = `${endponits.GET_ALL_BILLS}`;
       const { response, error } = await getBills(url);
+  
       if (!error && response) {
+        // Successfully fetched data
         setAllBill(response.data.PurchaseBills);
+        setLoading({ ...loading, skeleton: false }); // Hide skeleton
       } else {
-        console.log(error);
+        // If there's an error or no response, show "No Data Found"
+        setLoading({ ...loading, skeleton: false, noDataFound: true });
       }
     } catch (error) {
       console.error(error);
+      // In case of error, hide the skeleton and show "No Data Found"
+      setLoading({ ...loading, skeleton: false, noDataFound: true });
     }
   };
+  
+  
 
   useEffect(() => {
     getAllBill();
@@ -110,62 +127,58 @@ const Table = () => {
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts && filteredAccounts.length > 0 ? (
-              filteredAccounts.map((item) => (
-                <tr key={item.id} className="relative">
-                  <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <input type="checkbox" className="form-checkbox w-4 h-4" />
-                  </td>
-                  {columns.map((col) => {
-                    let cellContent;
-                    if (col.id === "paidStatus") {
-                      cellContent = (
-                        <div
-                        className={`${
-                          item.paidStatus === "Paid"
-                            ? "bg-[#74fd9b]" 
-                            : item.paidStatus === "Overdue"
-                            ? "bg-[#ffe293d5]"
-                            : "bg-zinc-200" 
-                        } text-[13px] rounded-lg items-center  text-textColor max-w-fit h-[18px] gap-2 py-2.5 px-2 flex justify-center`}
-                      >
-                        <DotIcon color="#495160" />
-                        {item.paidStatus}
-                      </div>
-                      
-                      );
-                    } else if (col.id === "billDate" || col.id==="dueDate") {
-                      cellContent = <DateFormat date={item[col.id]} />;
-                    } else {
-                      cellContent = item[col.id as keyof typeof item];
-                    }
+  {loading.skeleton ? (
+    [...Array(filteredAccounts.length > 0 ? filteredAccounts.length : 5)].map(
+      (_, idx) => (
+        <TableSkelton key={idx} columns={[...columns,"rrr","g"]} />
+      )
+    )
+  ) : filteredAccounts && filteredAccounts.length > 0 ? (
+    filteredAccounts.map((item) => (
+      <tr key={item.id} className="relative">
+        <td className="py-2.5 px-4 border-y border-tableBorder">
+          <input type="checkbox" className="form-checkbox w-4 h-4" />
+        </td>
+        {columns.map((col) => {
+          let cellContent;
+          if (col.id === "paidStatus") {
+            cellContent = (
+              <div
+                className={`${
+                  item.paidStatus === "Pending" ? "bg-zinc-200" : "bg-[#78AA86]"
+                } text-[13px] rounded-lg items-center ms-auto text-textColor h-[18px] gap-2 py-2 flex justify-center`}
+              >
+                <DotIcon color="#495160" />
+                {item.paidStatus}
+              </div>
+            );
+          } else if (col.id === "billDate" || col.id === "dueDate") {
+            cellContent = <DateFormat date={item[col.id]} />;
+          } else {
+            cellContent = item[col.id as keyof typeof item];
+          }
 
-                    return (
-                      col.visible && (
-                        <td
-                          key={col.id}
-                          className="py-2.5 px-4 border-y border-tableBorder cursor-pointer"
-                          onClick={() => navigate("/purchase/bills/view")}
-                        >
-                          {cellContent}
-                        </td>
-                      )
-                    );
-                  })}
-                  <td className="py-2.5 px-4 border-y border-tableBorder"></td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={columns.length + 2}
-                  className="text-center py-4 border-y border-tableBorder"
-                >
-                  <p className="text-red-500">No Data Found!</p>
-                </td>
-              </tr>
-            )}
-          </tbody>
+          return (
+            col.visible && (
+              <td
+                key={col.id}
+                className="py-2.5 px-4 border-y border-tableBorder cursor-pointer"
+                onClick={() => navigate("/purchase/bills/view")}
+              >
+                {cellContent}
+              </td>
+            )
+          );
+        })}
+        <td className="py-2.5 px-4 border-y border-tableBorder"></td>
+      </tr>
+    ))
+  ) :   (
+    <NoDataFoundTable columns={[...columns,"rrr","rr"]}/>
+  ) 
+  }
+</tbody>
+
         </table>
       </div>
     </>

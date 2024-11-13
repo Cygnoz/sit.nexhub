@@ -87,7 +87,7 @@ function BillsHomes({}: Props) {
           </Button>
 
           <div onClick={toggleDropdown} className="cursor-pointer">
-            <Ellipsis />
+            {/* <Ellipsis /> */}
           </div>
 
           {isDropdownOpen && (

@@ -77,7 +77,7 @@ const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps)
     </thead>
     <tbody className="text-dropdownText text-center text-[13px]">
       {loading.skeleton ? (
-        [...Array(5)].map((_, idx) => (
+        [...Array(paginatedData.length>0?paginatedData.length:5)].map((_, idx) => (
           <TableSkelton key={idx} columns={tableHeaders} />
         ))
       ) : paginatedData && paginatedData.length > 0 ? (
@@ -105,7 +105,7 @@ const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps)
             </td>
             <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
               <div className="flex justify-end">
-                <Ellipsis height={17} />
+                {/* <Ellipsis height={17} /> */}
               </div>
             </td>
           </tr>

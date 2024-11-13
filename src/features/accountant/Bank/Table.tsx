@@ -3,7 +3,7 @@ import Ellipsis from "../../../assets/icons/Ellipsis";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import SearchBar from "../../../Components/SearchBar";
-import { BankResponseContext } from "../../../context/ContextShare";
+import { BankResponseContext, TableResponseContext } from "../../../context/ContextShare";
 import { Link } from "react-router-dom";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
@@ -24,10 +24,7 @@ const Table = () => {
   const { bankResponse } = useContext(BankResponseContext)!;
 
   // Loading state
-  const [loading, setLoading] = useState({
-    skeleton: false,
-    noDataFound: false,
-  });
+  const {loading,setLoading}=useContext(TableResponseContext)!;
 
   const tableHeaders = [
     "Sl No",
@@ -113,7 +110,7 @@ const Table = () => {
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
             {loading.skeleton ? (
-              [...Array(filteredAccounts.length || 5)].map((_, idx) => (
+              [...Array(filteredAccounts.length>0?filteredAccounts.length: 5)].map((_, idx) => (
                 <TableSkelton key={idx} columns={tableHeaders} />
               ))
             ) : filteredAccounts.length > 0 ? (
