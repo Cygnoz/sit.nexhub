@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import { cashResponseContext } from "../../../context/ContextShare";
+import { cashResponseContext, TableResponseContext } from "../../../context/ContextShare";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 
@@ -23,10 +23,7 @@ const CashAccountsTable = () => {
   const { cashResponse } = useContext(cashResponseContext)!;
 
   // Loading state
-  const [loading, setLoading] = useState({
-    skeleton: false,
-    noDataFound: false,
-  });
+  const {loading,setLoading}=useContext(TableResponseContext)!;
 
   useEffect(() => {
     fetchAllAccounts();
@@ -103,7 +100,7 @@ const CashAccountsTable = () => {
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
             {loading.skeleton ? (
-              [...Array(filteredAccounts.length ||5)].map((_, idx) => (
+              [...Array(filteredAccounts.length>0?filteredAccounts.length:5)].map((_, idx) => (
                 <TableSkelton key={idx} columns={tableHeaders} />
               ))
             ) : filteredAccounts.length > 0 ? (

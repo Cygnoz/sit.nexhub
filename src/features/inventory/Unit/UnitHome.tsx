@@ -1,4 +1,3 @@
-import Ellipsis from "../../../assets/icons/Ellipsis";
 import NewUnit from "./NewUnit";
 import UnitTable from "./UnitTable";
 
@@ -20,7 +19,7 @@ const UnitHome = ({}: Props) => {
           <div className="ml-auto flex items-center">
             <NewUnit/>
             <div className="ms-5">
-              <Ellipsis />
+              {/* <Ellipsis /> */}
             </div>
           </div>
         </div>

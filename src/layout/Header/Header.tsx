@@ -1,21 +1,25 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import SearchBar from "../../Components/SearchBar";
 import SettingsIcons from "../../assets/icons/SettingsIcon";
 import Notification from "./HeaderIcons/Notification";
 import RefferEarn from "./HeaderIcons/RefferEarn";
 import Organization from "./HeaderIcons/Organization";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import viewAppsIcon from "../../assets/Images/Frame 629925.png";
 import { endponits } from "../../Services/apiEndpoints";
 import useApi from "../../Hooks/useApi";
 import toast, { Toaster } from "react-hot-toast";
+import { PreviousPathContext } from "../../context/ContextShare";
 
 type Props = {};
 
-const Header = ({ }: Props) => {
+const Header = ({}: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { previousPath, setPreviousPath } = useContext(PreviousPathContext)!;
+
   const handleNavigate = () => {
-    navigate('/landing#appsSection');
+    navigate("/landing#appsSection");
   };
 
   const [searchValue, setSearchValue] = useState<string>("");
@@ -47,6 +51,19 @@ const Header = ({ }: Props) => {
     fetchOrganization();
   }, []);
 
+  const handleGoToSettings = () => {
+    if (previousPath) {
+      localStorage.setItem("modulePreviousPath", previousPath);
+    }
+    navigate("/settings");
+  };
+
+
+  useEffect(() => {
+    // Update previous path whenever location changes
+    setPreviousPath(location.pathname);
+  }, [location, setPreviousPath]);
+
   return (
     <div
       className="p-4 flex items-center gap-2 w-full border-b-slate-400 border-y-orange-200"
@@ -76,14 +93,13 @@ const Header = ({ }: Props) => {
         <div className="tooltip" data-tooltip="Refer & Earn">
           <RefferEarn />
         </div>
-        <Link to="/settings" className="tooltip" data-tooltip="Settings">
+        <p onClick={handleGoToSettings} className="tooltip" data-tooltip="Settings">
           <SettingsIcons size="md" />
-        </Link>
+        </p>
         <div className="tooltip" data-tooltip="Organization">
           <Organization organizationData={organizationData} />
         </div>
       </div>
-
     </div>
   );
 };
