@@ -1,15 +1,71 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import CehvronDown from "../../../assets/icons/CehvronDown";
-import PlusCircle from "../../../assets/icons/PlusCircle";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import Button from "../../../Components/Button";
 import SearchBar from "../../../Components/SearchBar";
 import AddSupplierModal from "../../Supplier/SupplierHome/AddSupplierModal";
 import DebitNumberPrfncModal from "./DebitNumberPrfncModal";
-import NeworderTable from "../purchaseOrder/addPurchaseOrder/NeworderTable";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import Upload from "../../../assets/icons/Upload";
+import { DebitNoteBody } from "../../../Types/DebitNot";
+import { endponits } from "../../../Services/apiEndpoints";
+import useApi from "../../../Hooks/useApi";
+import { SupplierResponseContext } from "../../../context/ContextShare";
+import DebitNoteTable from "./DebitNoteTable";
+import toast from "react-hot-toast";
+
+
+const initialSupplierBillState: DebitNoteBody = {
+  organizationId: "",
+  supplierId: "",
+  supplierDisplayName: "",
+  sourceOfSupply: "",
+  destinationOfSupply: "",
+  taxMode: "",
+
+  billId: "",
+  billNumber: "",
+  billDate: "",
+  billType: "",
+  debitNote: "",
+  orderNumber: "",
+  supplierDebitDate: "",
+  subject: "",
+
+  items: [
+    {
+      itemId: "",
+      itemName: "",
+      itemQuantity: "",
+      itemCostPrice: "",
+      itemTax: "",
+      itemDiscount: "",
+      itemDiscountType: "",
+      itemAmount: "",
+      itemSgst: "",
+      itemCgst: "",
+      itemIgst: "",
+      itemSgstAmount: "",
+      itemCgstAmount: "",
+    },
+  ],
+
+  addNotes: "",
+  attachFiles: "",
+
+  subTotal: "",
+  totalItem: "",
+  sgst: "",
+  cgst: "",
+  igst:"",
+  transactionDiscount: "",
+  transactionDiscountType: "",
+  transactionDiscountAmount: "",
+  totalTaxAmount: "",
+  itemTotalDiscount: "",
+  grandTotal: "",
+};
 
 type Props = {};
 
@@ -18,14 +74,71 @@ const NewDebitNote = ({}: Props) => {
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
   );
+  const [supplierData, setSupplierData] = useState<[]>([]);
+  const [selecteSupplier, setSelecetdSupplier] = useState<any | []>([]);
+  const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
+  const [destinationList, setDestinationList] = useState<any | []>([]);
+  const [countryData, setcountryData] = useState<any | any>([]);
+  const [oneOrganization, setOneOrganization] = useState<any | []>([]);
+  const [DBPrefix, setDBPrefix] = useState<any | []>([]);
+  const [allBills, setAllBills] = useState<any | []>([]);
+  const [selectedBill, setSelectedBill] = useState<any | []>([]);
+  const [isInterState, setIsInterState] = useState<boolean>(false);
+  const [debitNoteState, setDebitNoteState] = useState<DebitNoteBody>(
+    initialSupplierBillState
+  );
 
- 
+  const { request: AllSuppliers } = useApi("get", 5009);
+  const { request: getCountries } = useApi("get", 5004);
+  const { request: getOneOrganization } = useApi("get", 5004);
+  const { request: getPrefix } = useApi("get", 5005);
+  const { request: getAllBills } = useApi("get", 5005);
+
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const { supplierResponse } = useContext(SupplierResponseContext)!;
+  const navigate =useNavigate()
+  const { request: newDebitNoteApi } = useApi("post", 5005);
+
+  console.log(debitNoteState, "debitnote state");
+
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+  
+    if (name === "transactionDiscount") {
+      let discountValue = parseFloat(value) || 0;
+      const totalAmount = parseFloat(debitNoteState.subTotal as string) || 0; 
+  
+      if (debitNoteState.transactionDiscountType === "percentage") {
+        if (discountValue > 100) {
+          discountValue = 100;
+          toast.error("Discount cannot exceed 100%");
+        }
+      } else {
+        if (discountValue > totalAmount) {
+          discountValue = totalAmount;
+          toast.error("Discount cannot exceed the subtotal amount");
+        }
+      }
+  
+      setDebitNoteState({
+        ...debitNoteState,
+        [name]: discountValue, 
+      });
+    } else {
+      setDebitNoteState({
+        ...debitNoteState,
+        [name]: value,
+      });
+    }
+  };
+  
+  
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
   };
-
   const handleClickOutside = (event: MouseEvent) => {
     if (
       dropdownRef.current &&
@@ -34,6 +147,212 @@ const NewDebitNote = ({}: Props) => {
       setOpenDropdownIndex(null);
     }
   };
+
+  const fetchData = async (
+    url: string,
+    setData: React.Dispatch<React.SetStateAction<any>>,
+    fetchFunction: (url: string) => Promise<any>
+  ) => {
+    try {
+      const { response, error } = await fetchFunction(url);
+      if (!error && response) {
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  console.log(allBills, "DB");
+
+  const filterByDisplayName = (
+    data: any[],
+    displayNameKey: string,
+    searchValue: string
+  ) => {
+    return data.filter((item: any) =>
+      item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
+    );
+  };
+
+  const fetchCountries = async () => {
+    try {
+      const url = `${endponits.GET_COUNTRY_DATA}`;
+      const { response, error } = await getCountries(url);
+      if (!error && response) {
+        setcountryData(response.data[0].countries);
+      }
+    } catch (error) {
+      console.log("Error in fetching Country", error);
+    }
+  };
+  const handleDestination = () => {
+    if (oneOrganization?.organizationCountry) {
+      const country = countryData.find(
+        (c: any) =>
+          c.name.toLowerCase() ===
+          oneOrganization.organizationCountry.toLowerCase()
+      );
+      // console.log(country, "country");
+      if (oneOrganization) {
+        setDebitNoteState((preData) => ({
+          ...preData,
+          destinationOfSupply: oneOrganization.state,
+        }));
+      }
+      if (country) {
+        const states = country.states;
+        // console.log(states);
+        setDebitNoteState((preData) => ({
+          ...preData,
+        }));
+        setPlaceOfSupplyList(states);
+      } else {
+        console.log("Country not found");
+      }
+    } else {
+      console.log("No country selected");
+    }
+  };
+  const handleplaceofSupply = () => {
+    if (selecteSupplier.billingCountry) {
+      const country = countryData.find(
+        (c: any) =>
+          c.name.toLowerCase() === selecteSupplier.billingCountry.toLowerCase()
+      );
+      if (selecteSupplier) {
+        setDebitNoteState((preData) => ({
+          ...preData,
+          sourceOfSupply: selecteSupplier.billingState,
+          supplierDisplayName: selecteSupplier.supplierDisplayName,
+          supplierBillingCountry: selecteSupplier.billingCountry,
+          supplierBillingState: selecteSupplier.billingState,
+        }));
+      }
+
+      if (country) {
+        const states = country.states;
+        setDestinationList(states);
+      } else {
+        console.log("Country not found");
+      }
+    } else {
+      console.log("No country selected");
+    }
+  };
+
+  const filteredSupplier = filterByDisplayName(
+    supplierData,
+    "supplierDisplayName",
+    searchValue
+  );
+
+
+  const calculateTotalAmount = () => {
+    const {
+      itemTotalDiscount,
+      totalTaxAmount,
+      subTotal ,
+    } = debitNoteState;
+
+    const totalAmount =
+     Number(subTotal) +
+      Number(totalTaxAmount) 
+    -
+      Number(itemTotalDiscount) 
+          return totalAmount.toFixed(2);
+  };
+
+  const handleSave = async () => {
+    try {
+      const url = `${endponits.ADD_DEBIT_NOTE}`;
+      const { response, error } = await newDebitNoteApi(
+        url,
+        debitNoteState
+      );
+      if (!error && response) {
+        // console.log(response);
+
+        toast.success(response.data.message);
+        setTimeout(() => {
+          navigate("/purchase/debit-note/")
+        }, 1000);
+      } else {
+        toast.error(error?.response.data.message);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    const newGrandTotal = calculateTotalAmount();
+  
+    const {
+      transactionDiscountType,
+      transactionDiscount = 0,
+      transactionDiscountAmount = 0,
+    } = debitNoteState;
+  
+    const transactionDiscountValueAMT =
+    transactionDiscountType === "percentage"
+      ? (parseFloat(transactionDiscount as string) / 100) * Number(parseFloat(newGrandTotal as string))
+      : Number(parseFloat(transactionDiscount as string));
+  
+  
+    const roundedDiscountValue = Math.round(transactionDiscountValueAMT * 100) / 100;
+  
+    const updatedGrandTotal = Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
+      if (transactionDiscountAmount !== roundedDiscountValue || debitNoteState.grandTotal !== updatedGrandTotal) {
+      setDebitNoteState((prevState:any) => ({
+        ...prevState,
+        transactionDiscountAmount: roundedDiscountValue,
+        grandTotal: updatedGrandTotal.toFixed(2), 
+      }));
+    }
+  }, [
+    debitNoteState.transactionDiscount,
+    debitNoteState.transactionDiscountType,
+    debitNoteState.subTotal,
+    debitNoteState.totalTaxAmount,
+    debitNoteState.itemTotalDiscount,
+  ]);
+  useEffect(() => {
+    if (debitNoteState?.destinationOfSupply == "") {
+      setIsInterState(false);
+    } else {
+      if (
+        debitNoteState?.sourceOfSupply !== debitNoteState?.destinationOfSupply
+      ) {
+        setIsInterState(true);
+      } else {
+        setIsInterState(false);
+      }
+    }
+  }, [debitNoteState?.sourceOfSupply, debitNoteState?.destinationOfSupply]);
+
+  useEffect(() => {
+    const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
+    const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
+    const getAllBillsUrl = `${endponits.GET_ALL_BILLS}`;
+    const getPrefixUrl = `${endponits.GET_DEBIT_NOTE_PREFIX}`;
+
+    fetchData(organizationUrl, setOneOrganization, getOneOrganization);
+    fetchData(supplierUrl, setSupplierData, AllSuppliers);
+    fetchData(getAllBillsUrl, setAllBills, getAllBills);
+    fetchData(getPrefixUrl, setDBPrefix, getPrefix);
+  }, []);
+
+  useEffect(() => {
+    setDebitNoteState((preData) => ({
+      ...preData,
+      debitNote: DBPrefix,
+    }));
+  }, [DBPrefix]);
+
+  useEffect(() => {
+    supplierResponse;
+    handleDestination();
+    handleplaceofSupply();
+    fetchCountries();
+  }, [oneOrganization, selecteSupplier]);
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -72,7 +391,11 @@ const NewDebitNote = ({}: Props) => {
                 onClick={() => toggleDropdown("supplier")}
               >
                 <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                  <p>Select Supplier</p>
+                  <p>
+                    {selecteSupplier && selecteSupplier.supplierDisplayName
+                      ? selecteSupplier.supplierDisplayName
+                      : "Select Supplier"}
+                  </p>
                 </div>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <CehvronDown color="gray" />
@@ -81,34 +404,57 @@ const NewDebitNote = ({}: Props) => {
               {openDropdownIndex === "supplier" && (
                 <div
                   ref={dropdownRef}
-                  className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2 -m-9 w-[40%] space-y-1"
+                  className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2 w-[30%] space-y-1 max-h-72 overflow-y-auto  hide-scrollbar"
                 >
                   <SearchBar
                     searchValue={searchValue}
                     onSearchChange={setSearchValue}
                     placeholder="Select Supplier"
                   />
-                  <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink">
-                    <div className="col-span-2 flex items-center justify-center">
-                      <img
-                        src="https://i.postimg.cc/MHdYrGVP/Ellipse-43.png"
-                        alt=""
-                      />
-                    </div>
-                    <div className="col-span-10 flex">
-                      <div>
-                        <p className="font-bold text-sm">Smart world</p>
-                        <p className="text-xs text-gray-500">
-                          Phone: 9643287899
-                        </p>
+                  {filteredSupplier.length > 0 ? (
+                    filteredSupplier.map((supplier: any) => (
+                      <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer">
+                        <div className="col-span-2 flex items-center justify-center">
+                          <img
+                            src="https://i.postimg.cc/MHdYrGVP/Ellipse-43.png"
+                            alt=""
+                          />
+                        </div>
+                        <div
+                          className="col-span-10 flex cursor-pointer "
+                          onClick={() => {
+                            setDebitNoteState((prevState) => ({
+                              ...prevState,
+                              supplierId: supplier._id,
+                              supplierDisplayName: supplier.supplierDisplayName,
+                            }));
+                            setOpenDropdownIndex(null);
+                            setSelecetdSupplier(supplier);
+                          }}
+                        >
+                          <div>
+                            <p className="font-bold text-sm">
+                              {supplier.supplierDisplayName}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              Phone: {supplier.mobile}
+                            </p>
+                          </div>
+                          <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
+                            &times;
+                          </div>
+                        </div>
                       </div>
-                      <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                        &times;
-                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center border-slate-400 border rounded-lg">
+                      <p className="text-[red] text-sm py-4">
+                        Supplier Not Found!
+                      </p>
                     </div>
-                  </div>
-                  <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-3">
-                  <AddSupplierModal page="purchase" />
+                  )}
+                  <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
+                    <AddSupplierModal page="purchase" />
                   </div>
                 </div>
               )}
@@ -117,132 +463,186 @@ const NewDebitNote = ({}: Props) => {
               <label htmlFor="" className="">
                 Debit Note
                 <input
-                  name=""
+                  value={debitNoteState.debitNote}
+                  name="debitNote"
                   id=""
+                  onChange={handleInputChange}
                   disabled
                   className=" block  appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 "
                 />
               </label>
-            <DebitNumberPrfncModal/>
+              <DebitNumberPrfncModal />
             </div>
-            {/* <div className="grid grid-cols-2 gap-4 mt-5 space-y-1">
-            <div>
-              <label className="block text-sm mb-1 text-labelColor">
-                Supplier Name
+
+            {debitNoteState.supplierId && (
+              <>
+                <div>
+                  <label className="block text-sm mb-1 text-labelColor">
+                    Source Of Supply
+                  </label>
+                  <div className="relative w-full">
+                    <select
+                      onChange={handleInputChange}
+                      name="sourceOfSupply"
+                      value={debitNoteState.sourceOfSupply}
+                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    >
+                      <option value="">Select Source Of Supply</option>
+                      {debitNoteState &&
+                        placeOfSupplyList.map((item: any, index: number) => (
+                          <option
+                            key={index}
+                            value={item}
+                            className="text-gray"
+                          >
+                            {item}
+                          </option>
+                        ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm mb-1 text-labelColor">
+                    Destination of Supply
+                  </label>
+                  <div className="relative w-full">
+                    <select
+                      onChange={handleInputChange}
+                      name="destinationOfSupply"
+                      value={debitNoteState.destinationOfSupply}
+                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    >
+                      <option value="">Select Destination Of Supply</option>
+                      {destinationList &&
+                        destinationList.map((item: any, index: number) => (
+                          <option
+                            key={index}
+                            value={item}
+                            className="text-gray"
+                          >
+                            {item}
+                          </option>
+                        ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+            <div className=" w-full">
+              <label
+                htmlFor=""
+                className=""
+                onClick={() => toggleDropdown("bill")}
+              >
+                Bill#
               </label>
               <div
-                className="relative w-full"
-                onClick={() => toggleDropdown("supplier")}
+                className="relative w-full mt-2"
+                onClick={() => {
+                  if (debitNoteState.supplierId) toggleDropdown("bill");
+                }}
               >
                 <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                  <p>Select Supplier</p>
+                  <p>
+                    {selectedBill && selectedBill.billNumber
+                      ? selectedBill.billNumber
+                      : "Select Bill"}
+                  </p>
                 </div>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <CehvronDown color="gray" />
                 </div>
               </div>
-              {openDropdownIndex === "supplier" && (
+              {openDropdownIndex === "bill" && (
                 <div
                   ref={dropdownRef}
-                  className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2 -m-9 w-[40%] space-y-1"
+                  className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2 w-[30%] space-y-1 max-h-72 overflow-y-auto  hide-scrollbar"
                 >
                   <SearchBar
                     searchValue={searchValue}
                     onSearchChange={setSearchValue}
-                    placeholder="Select Supplier"
+                    placeholder="Search Bill"
                   />
-                  <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink">
-                    <div className="col-span-2 flex items-center justify-center">
-                      <img
-                        src="https://i.postimg.cc/MHdYrGVP/Ellipse-43.png"
-                        alt=""
-                      />
-                    </div>
-                    <div className="col-span-10 flex">
-                      <div>
-                        <p className="font-bold text-sm">Smart world</p>
-                        <p className="text-xs text-gray-500">
-                          Phone: 9643287899
-                        </p>
+                  {allBills?.PurchaseBills.length > 0 ? (
+                    allBills.PurchaseBills.filter(
+                      (bill: any) => bill.supplierId === selecteSupplier?._id
+                    ).map((bill: any) => (
+                      <div
+                        key={bill._id}
+                        className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                      >
+                        <div
+                          className="flex cursor-pointer"
+                          onClick={() => {
+                            setDebitNoteState((prevState) => ({
+                              ...prevState,
+                              billId: bill._id,
+                              billNumber: bill.billNumber,
+                              billDate:bill.billDate,
+                              orderNumber:bill.orderNumber
+                            }));
+                            setOpenDropdownIndex(null);
+                            setSelectedBill(bill);
+                          }}
+                        >
+                          <div>
+                            <p className="font-bold text-sm">
+                              {bill.billNumber}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              Supplier: {bill.supplierDisplayName}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                        &times;
-                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center border-slate-400 border rounded-lg">
+                      <p className="text-[red] text-sm py-4">
+                        Bills Not Found!
+                      </p>
                     </div>
-                  </div>
-                  <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-3">
-                  <AddSupplierModal page="purchase" />
-                  </div>
+                  )}
                 </div>
               )}
             </div>
-       
 
-         
-         
-
-     
-
-          </div> */}
-          
-          <div className=" w-full">
-              <label htmlFor="" className="">
-                Source of Supply
-                {/* <input
-                  name=""
-                  id=""
-                  placeholder="Value"
-                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
-                /> */}
-              </label>  <div className="relative w-full">
-                <select className="block appearance-none w-full h-9 mt-2 text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                  <option value="" className="text-gray">
-                  Value 
-                  </option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
-              </div>
-            </div>
             <div>
               <label className="block text-sm mb-1 text-labelColor">
-                Destination of Supply
+                Bill Type
               </label>
               <div className="relative w-full">
-                <select className="block appearance-none w-full h-9 mt-2 text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                  <option value="" className="text-gray">
-                    Select A Destination
-                  </option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
-              </div>
-            </div>
-            <div className=" w-full">
-              <label htmlFor="" className="">
-                Bill#
-                <input
-                  name=""
-                  id=""
-                  placeholder="Select Bill"
-                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
-                />
-              </label>
-            </div>
-
-
-      <div>
-              <label className="block text-sm mb-1 text-labelColor">
-Bill Type
-              </label>
-              <div className="relative w-full">
-                <select className="block appearance-none w-full h-9 mt-2 text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                <select
+                  name="billType"
+                  value={debitNoteState.billType}
+                  onChange={handleInputChange}
+                  className="block appearance-none w-full h-9 mt-2 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                >
                   <option value="" className="text-gray">
                     Select Bill Type
                   </option>
+                  <option value="Registered">Registered</option>
+                  <option value="Deemed Export">Deemed Export</option>
+                  <option value="SEZ With Payment">SEZ With Payment</option>
+                  <option value="SEZ Without Payment">
+                    SEZ Without Payment
+                  </option>
+                  <option value="Export With Payment">
+                    Export With Payment
+                  </option>
+                  <option value="Export Without Payment">
+                    Export Without Payment
+                  </option>
+                  <option value="B2C (Large)">B2C (Large)</option>
+                  <option value="B2C Others">B2C Others</option>
                 </select>
+
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <CehvronDown color="gray" />
                 </div>
@@ -253,7 +653,9 @@ Bill Type
               <label htmlFor="" className="">
                 Order Number
                 <input
-                  name=""
+                  name="orderNumber"
+                  value={debitNoteState.orderNumber}
+                  onChange={handleInputChange}
                   id=""
                   placeholder="Value"
                   className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
@@ -265,14 +667,15 @@ Bill Type
                 Supplier Debit Date
               </label>
               <div className="relative w-full">
-                <select className="block appearance-none w-full h-9 mt-2 text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                  <option value="" className="text-gray">
-                    Select A Date
-                  </option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
+                <input
+                  type="date"
+                  name="supplierDebitDate"
+                  value={debitNoteState.supplierDebitDate}
+                  onChange={handleInputChange}
+                  id=""
+                  placeholder="Value"
+                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
+                />
               </div>
             </div>
 
@@ -280,56 +683,44 @@ Bill Type
               <label htmlFor="" className="">
                 Subject
                 <input
-                  name=""
+                  name="subject"
+                  onChange={handleInputChange}
                   id=""
+                  value={debitNoteState.subject}
                   placeholder="Enter a subject within 250 Characters"
                   className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
                 />
               </label>
             </div>
-
-            <div>
-              <label className="block text-sm mb-1 text-labelColor">
-                Warehouse
-              </label>
-              <div className="relative w-full">
-                <select className="block appearance-none mt-2 w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                  <option value="" className="text-gray">
-                    Select Warehouse
-                  </option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
-              </div>
-            </div>
           </div>
           <div className="mt-9">
             <p className="font-bold text-base">Add Item</p>
-            <NeworderTable />
+            <DebitNoteTable
+              purchaseOrderState={debitNoteState}
+              setPurchaseOrderState={setDebitNoteState}
+              isInterState={isInterState}
+              oneOrganization={oneOrganization}
+              selectedBill={selectedBill}
+            />{" "}
           </div>
-          <button className="mt-1">
-            <p className="text-darkRed my-3 text-sm flex gap-2 items-center">
-              <PlusCircle color="darkRed" />
-              <b> Add Item</b>
-            </p>
-          </button>{" "}
+
           <br />
           <div className="mt-5">
             <label htmlFor="" className="">
               Add Note
               <input
-                name=""
+                name="addNotes"
                 id=""
+                value={debitNoteState.addNotes}
+                onChange={handleInputChange}
                 placeholder="Note"
                 className="border-inputBorder w-full text-sm border rounded  p-2 h-[57px] mt-2 "
               />
             </label>
           </div>
-          
         </div>
         <div className="col-span-4">
-        <div className="mt-0">
+          <div className="mt-0">
             <label htmlFor="" className="">
               Terms & Conditions
               <input
@@ -341,71 +732,207 @@ Bill Type
             </label>
           </div>
           <div className="text-sm mt-3">
-  <label className="block mb-3">
-    Attach files to the Debit Notes 
-    <div className="border-inputBorder border-gray-800 w-full border-dashed border p-2 rounded flex flex-col gap-2 justify-center items-center bg-white mb-4 mt-2">
-      <span className="text-center inline-flex items-center gap-2">
-        <Upload /> 
-        Upload File 
-      </span>
-      <div className="text-center">
-        Maximum File Size: 1 MB
-      </div>
-    </div>
-    <p className="text-xs mt-1 text-gray-600"></p>
-    <input
-      type="file"
-      className="hidden"
-      value=""
-      name="documents"
-      // onChange={(e)=>handleFileChange(e)}
-    />
-  </label>
-</div>
-
+            <label className="block mb-3">
+              Attach files to the Debit Notes
+              <div className="border-inputBorder border-gray-800 w-full border-dashed border p-2 rounded flex flex-col gap-2 justify-center items-center bg-white mb-4 mt-2">
+                <span className="text-center inline-flex items-center gap-2">
+                  <Upload />
+                  Upload File
+                </span>
+                <div className="text-center">Maximum File Size: 1 MB</div>
+              </div>
+              <p className="text-xs mt-1 text-gray-600"></p>
+              <input
+                type="file"
+                className="hidden"
+                value=""
+                name="documents"
+                // onChange={(e)=>handleFileChange(e)}
+              />
+            </label>
+          </div>
 
           <div className="bg-secondary_main p-5 min-h-max rounded-xl relative ">
-            <div className="grid grid-cols-12 pb-4  text-dropdownText border-b-2 border-slate-200">
-            <div className="col-span-9 mt-5">
-                <p>Discount</p>
-              </div>
-              <div className="col-span-3 mt-5">
-                <p className="text-xl font-bold">RS 0.00</p>
-              </div>
-              <div className="col-span-9 mt-5">
-                <p>Untaxed Amount</p>
-              </div>
-              <div className="col-span-3 mt-5">
-                <p className="text-xl font-bold">RS 0.00</p>
-              </div>
-              <div className="col-span-9 mt-5">
-                <p>Discount</p>
-              </div>
-              <div className="col-span-3 mt-5">
-                <p className="text-xl font-bold">RS 0.00</p>
-              </div>
+          <div className=" pb-4  text-dropdownText border-b-2 border-slate-200 space-y-2">
+                <div className="flex ">
+                  <div className="w-[75%]">
+                    {" "}
+                    <p>Sub Total</p>
+                  </div>
+                  <div className="w-full text-end">
+                    {" "}
+                    <p className="text-end">
+                      {oneOrganization?.baseCurrency}{" "}
+                      {debitNoteState.subTotal
+                        ? debitNoteState.subTotal
+                        : "0.00"}{" "}
+                    </p>
+                  </div>
+                </div>
 
-              <div className="col-span-9 mt-1">
-                <p>SGST</p>
-              </div>
-              <div className="col-span-3 mt-1">
-                <p className="text-base">RS 0.00</p>
-              </div>
+                <div className="flex ">
+                  <div className="w-[75%]">
+                    {" "}
+                    <p> Total Quantity</p>
+                  </div>
+                  <div className="w-full text-end">
+                    {" "}
+                    <p className="text-end">
+                      {debitNoteState.totalItem
+                        ? debitNoteState.totalItem
+                        : "0"}
+                    </p>
+                  </div>
+                </div>
 
-              <div className="col-span-9">
-                <p> CGST</p>
-              </div>
-              <div className="col-span-3">
-                <p className="text-base">RS 0.00</p>
-              </div>
+                <div className="flex ">
+                  <div className="w-[75%]">
+                    <p> Total Item Discount</p>
+                  </div>
+                  <div className="w-full text-end">
+                    <p className="text-end">
+                      {oneOrganization.baseCurrency}{" "}
+                      {debitNoteState.itemTotalDiscount
+                        ? debitNoteState.itemTotalDiscount
+                        : "0.00"}
+                    </p>
+                  </div>
+                </div>
 
-              <div className="col-span-9 mt-1">
-                <p className="font-bold text-base text-black">Total</p>
+                <div>
+                  {isInterState ? (
+                    <div className="flex ">
+                      <div className="w-[75%]">
+                        {" "}
+                        <p> IGST</p>
+                      </div>
+                      <div className="w-full text-end">
+                        {" "}
+                        <p className="text-end">
+                          {oneOrganization.baseCurrency}{" "}
+                          {debitNoteState.igst
+                            ? debitNoteState.igst
+                            : "0.00"}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex ">
+                        <div className="w-[75%]">
+                          {" "}
+                          <p> SGST</p>
+                        </div>
+                        <div className="w-full text-end">
+                          {" "}
+                          <p className="text-end">
+                            {oneOrganization.baseCurrency}{" "}
+                            {debitNoteState.sgst
+                              ? debitNoteState.sgst
+                              : "0.00"}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex mt-2">
+                        <div className="w-[75%]">
+                          {" "}
+                          <p> CGST</p>
+                        </div>
+                        <div className="w-full text-end">
+                          {" "}
+                          <p className="text-end">
+                            {oneOrganization.baseCurrency}{" "}
+                            {debitNoteState.cgst
+                              ? debitNoteState.cgst
+                              : "0.00"}
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {!isInterState && (
+                  <div className="flex ">
+                    <div className="w-[75%]">
+                      {" "}
+                      <p> Total Tax</p>
+                    </div>
+                    <div className="w-full text-end">
+                      {" "}
+                      <p className="text-end">
+                        {" "}
+                        {oneOrganization.baseCurrency}{" "}
+                        {debitNoteState.totalTaxAmount}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+               
+              
+
+               
+                <div className="flex ">
+                  <div className="w-[150%]">
+                    {" "}
+                    <p>Bill Discount</p>
+                    <div className=""></div>
+                  </div>
+
+                  <div className=" ">
+                    <div className="border border-inputBorder rounded-lg flex items-center justify-center p-1 gap-1">
+                      <input
+                        value={debitNoteState.transactionDiscount}
+                        onChange={handleInputChange}
+                        name="transactionDiscount"
+                        type="text"
+                        placeholder="0"
+                        className="w-[30px]  focus:outline-none text-center"
+                      />
+                      <select
+                        className="text-xs   text-zinc-400 bg-white relative"
+                        value={debitNoteState.transactionDiscountType}
+                        onChange={handleInputChange}
+                        name="transactionDiscountType"
+                      >
+                        <option value="percentage">%</option>
+                        <option value="currency">
+                          {oneOrganization.baseCurrency}
+                        </option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center  text-gray-700 ms-1">
+                        <CehvronDown color="gray" height={15} width={15} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-full text-end ">
+                    {" "}
+                    <p className="text-end">
+                      <p className="text-end">
+                        {oneOrganization.baseCurrency}{" "}
+                        {debitNoteState.transactionDiscountAmount
+                          ? debitNoteState.transactionDiscountAmount
+                          : "0.00"}
+                      </p>
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="col-span-3 mt-1">
-                <p className="text-base font-bold">RS 0.00</p>
+              <div className="flex text-black">
+                <div className="w-[75%] font-bold">
+                  {" "}
+                  <p>Total</p>
+                </div>
+                <div className="w-full text-end font-bold text-base">
+                  {" "}
+                  <p className="text-end">
+                    {" "}
+                    {oneOrganization.baseCurrency} {debitNoteState.grandTotal? debitNoteState.grandTotal:"0.00"}
+                  </p>
+                </div>
               </div>
-            </div>
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}
@@ -416,18 +943,14 @@ Bill Type
                 <PrinterIcon height={18} width={18} color="currentColor" />
                 Print
               </Button>
-              <Button variant="primary" size="sm">
+              <Button variant="primary" size="sm" onClick={handleSave}>
                 Save & send
               </Button>{" "}
             </div>
           </div>
         </div>
       </div>
-      <div>
-
-       
-      </div>
-       
+      <div></div>
     </div>
   );
 };

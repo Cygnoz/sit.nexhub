@@ -226,7 +226,7 @@ const NewPurchaseOrder = ({}: Props) => {
       if (oneOrganization) {
         setPurchaseOrderState((preData) => ({
           ...preData,
-          sourceOfSupply: oneOrganization.state,
+          destinationOfSupply: oneOrganization.state,
         }));
       }
       if (country) {
@@ -250,7 +250,7 @@ const NewPurchaseOrder = ({}: Props) => {
       if (selecteSupplier) {
         setPurchaseOrderState((preData) => ({
           ...preData,
-          destinationOfSupply: selecteSupplier.billingState,
+          sourceOfSupply: selecteSupplier.billingState,
           supplierDisplayName: selecteSupplier.supplierDisplayName,
           supplierBillingCountry: selecteSupplier.billingCountry,
           supplierBillingState: selecteSupplier.billingState,
