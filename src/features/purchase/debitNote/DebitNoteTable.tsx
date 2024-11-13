@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { newPurchaseOrderTableHead } from "../../../../assets/constants";
-import TrashCan from "../../../../assets/icons/TrashCan";
-import ChevronDown from "../../../../assets/icons/CehvronDown";
-import SearchBar from "../../../../Components/SearchBar";
-import { PurchaseOrder } from "./PurchaseOrderBody";
-import { endponits } from "../../../../Services/apiEndpoints";
-import useApi from "../../../../Hooks/useApi";
-import PlusCircle from "../../../../assets/icons/PlusCircle";
-import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
+import { DebitNoteBody } from "../../../Types/DebitNot";
+import { newPurchaseOrderTableHead } from "../../../assets/constants";
+import CheveronDownIcon from "../../../assets/icons/CheveronDownIcon";
+import SearchBar from "../../../Components/SearchBar";
+import PlusCircle from "../../../assets/icons/PlusCircle";
+import TrashCan from "../../../assets/icons/TrashCan";
+import CehvronDown from "../../../assets/icons/CehvronDown";
 
 type Row = {
   itemImage?: string;
@@ -36,19 +36,23 @@ type Props = {
   setPurchaseOrderState?: (value: any) => void;
   oneOrganization?: any;
   isNonTaxable?: Boolean;
+  selectedBill?:any
 };
 
-const NewOrderTable = ({
+const DebitNoteTable = ({
   purchaseOrderState,
   setPurchaseOrderState,
   isInterState,
   oneOrganization,
+  selectedBill
 }: Props) => {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<any>([]);
   const { request: getAllItemsRequest } = useApi("get", 5003);
+
+  
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<Row[]>([
     {
@@ -161,7 +165,7 @@ const discountedPrice = calculateDiscountPrice(
   
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      itemTable: newRows.map((row) => {
+      items: newRows.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
@@ -266,7 +270,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
 
   setPurchaseOrderState?.((prevData: any) => ({
     ...prevData,
-    itemTable: newRows.map((row) => {
+    items: newRows.map((row) => {
       const updatedItem = { ...row };
       delete updatedItem.itemImage;
       return updatedItem;
@@ -304,7 +308,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       setRows(newRows);
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: newRows, // Directly use newRows without mapping
+        items: newRows, // Directly use newRows without mapping
       }));
     } else {
       const defaultRow = {
@@ -332,7 +336,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       // Update purchaseOrderState with the default row
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: [defaultRow], // Set default row
+        items: [defaultRow], // Set default row
       }));
     }
   };
@@ -414,6 +418,8 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       );
     });
   };
+
+
   
 
   useEffect(() => {
@@ -459,7 +465,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
     isInterState,
   ]);
   
-  
+ 
 
   useEffect(() => {
       const updatedRows = rows.map((row) => ({
@@ -472,7 +478,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
 
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: updatedRows.map((row) => {
+        items: updatedRows.map((row) => {
           const updatedItem = { ...row };
           delete updatedItem.itemImage;
           return updatedItem;
@@ -489,7 +495,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
     const totalSellingPrice = calculateTotalSubtotal();
     const totalDiscount = calculateDiscount();
   
-    setPurchaseOrderState?.((prevData: PurchaseOrder) => ({
+    setPurchaseOrderState?.((prevData: DebitNoteBody) => ({
       ...prevData,
       totalItem: totalQuantity,
       sgst: totalSGST,
@@ -561,7 +567,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
                     ) : (
                       <div className="cursor-pointer flex appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
                         <p>Type or click</p>
-                        <ChevronDown color="currentColor" />
+                        <CheveronDownIcon color="currentColor" />
                       </div>
                     )}
                   </div>
@@ -576,50 +582,42 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
                           onSearchChange={setSearchValue}
                           placeholder="Select Item"
                         />
-                        {items.length > 0 ? (
-                          filteredItems().map((item: any, idx: number) => (
-                            <div
-                              key={idx}
-                              className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                              onClick={() => handleItemSelect(item, index)}
-                            >
-                              <div className="col-span-2 flex justify-center">
-                                <img
-                                  className="rounded-full h-10"
-                                  src={item.itemImage}
-                                  alt=""
-                                />
-                              </div>
-                              <div className="col-span-10 flex">
-                                <div className="text-start">
-                                  <p className="font-bold text-sm text-black">
-                                    {item.itemName}
-                                  </p>
-                                  <p className="text-xs text-gray-500">
-                                    Rate: {item.sellingPrice}
-                                  </p>
-                                </div>
-                                <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                                  &times;
-                                </div>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="text-center border-slate-400 border rounded-lg">
-                            <p className="text-[red] text-sm py-4">
-                              Items Not Found!
-                            </p>
-                          </div>
-                        )}
-                        <div>
-                          <Link to={"/inventory/Item/new"}>
-                            <button className="bg-darkGreen text-darkRed rounded-lg py-4 px-6 flex items-center text-sm font-bold border-slate-400 border gap-2 w-full hover:bg-lightRed">
-                              <PlusCircle color="darkRed" />
-                              <p> Add New Item</p>
-                            </button>
-                          </Link>
-                        </div>
+                       {items.length > 0 ? (
+  filteredItems()
+    .filter((item: any) => selectedBill.itemTable.some((tableItem: any) => tableItem.itemId === item._id))
+    .map((item: any, idx: number) => (
+      <div
+        key={idx}
+        className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+        onClick={() => handleItemSelect(item, index)}
+      >
+        <div className="col-span-2 flex justify-center">
+          <img
+            className="rounded-full h-10"
+            src={item.itemImage}
+            alt=""
+          />
+        </div>
+        <div className="col-span-10 flex">
+          <div className="text-start">
+            <p className="font-bold text-sm text-black">
+              {item.itemName}
+            </p>
+            <p className="text-xs text-gray-500">
+              Rate: {item.sellingPrice}
+            </p>
+          </div>
+         
+        </div>
+      </div>
+    ))
+) : (
+  <div className="text-center border-slate-400 border rounded-lg">
+    <p className="text-[red] text-sm py-4">Items Not Found!</p>
+  </div>
+)}
+
+                       
                       </div>
                     )}
                 </td>
@@ -633,7 +631,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
                       handleRowChange(index, "itemQuantity", e.target.value)
                     }
                   />
-               
+                  
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input
@@ -699,7 +697,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
                           </option>
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                          <ChevronDown color="gray" height={15} width={15} />
+                          <CehvronDown color="gray" height={15} width={15} />
                         </div>
                       </div>
                     </div>
@@ -745,4 +743,4 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   );
 };
 
-export default NewOrderTable;
+export default DebitNoteTable;
