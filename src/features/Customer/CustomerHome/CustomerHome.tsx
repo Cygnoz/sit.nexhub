@@ -116,7 +116,7 @@ function CustomerHome({}: Props) {
         <div className="ml-auto gap-3 flex items-center">
           <NewCustomerModal page="" />
           <div>
-          {/* <Dropdown /> */}
+          <Dropdown />
           </div>
         </div>
       </div>

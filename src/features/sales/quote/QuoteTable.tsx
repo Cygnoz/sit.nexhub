@@ -195,7 +195,7 @@ const QuoteTable = ({ page }: Props) => {
           <tbody className="text-dropdownText text-center text-[13px]">
             {loading.skelton ? (
               // Render skeleton rows if loading
-              [...Array(5)].map((_, idx) => (
+              [...Array(filteredData?.length?filteredData?.length:5)].map((_, idx) => (
                 <TableSkelton key={idx} columns={page=='salesOrder' || page=='quote' ?[...columns,"ff","tt"]:columns} />
               ))
             ) : filteredData && filteredData.length > 0 ? (

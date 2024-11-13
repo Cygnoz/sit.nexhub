@@ -288,7 +288,7 @@ const ItemTable = () => {
   </thead>
   <tbody className="text-dropdownText text-center text-[13px]">
     {loading.skeleton ? (
-      [...Array(5)].map((_, idx) => (
+      [...Array(filteredItems?.length?filteredItems?.length:5)].map((_, idx) => (
         <TableSkelton key={idx} columns={[...columns, "ee"]} />
       )) // Skeleton loader
     ) : filteredItems.length > 0 ? (
@@ -314,7 +314,7 @@ const ItemTable = () => {
           <td className="py-2.5 px-4 border-y border-tableBorder">{" "}</td> {/* Empty cell for consistent styling */}
         </tr>
       ))
-    ) : (
+    ) :loading.noDataFound&&!loading.skeleton (
       <NoDataFoundTable columns={[...columns, "ee"]} />
     )}
   </tbody>

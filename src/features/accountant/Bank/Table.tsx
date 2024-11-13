@@ -33,7 +33,7 @@ const Table = () => {
     "Account Type",
     "Documents",
     "Parent Account Type",
-    "",
+    // "",
   ];
 
   useEffect(() => {
@@ -136,11 +136,11 @@ const Table = () => {
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {item.accountHead}
                   </td>
-                  <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
+                  {/* <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
                     <div className="flex justify-end">
                       <Ellipsis height={17} />
                     </div>
-                  </td>
+                  </td> */}
                 </tr>
               ))
             ) : (
