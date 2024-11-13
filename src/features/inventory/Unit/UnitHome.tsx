@@ -9,7 +9,7 @@ const UnitHome = ({}: Props) => {
       <div className="mx-5 my-4  h-[100vh]  gap-3">
         <div className="flex">
           <div>
-            <h1 className="font-bold text-lg">
+            <h1 className="font-bold text-2xl">
               Unit Of Measurement
             </h1>
             <p className="text-sm text-gray mt-1">

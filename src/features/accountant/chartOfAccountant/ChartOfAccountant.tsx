@@ -59,8 +59,8 @@ const fetchAllAccounts = async () => {
     <div className="mx-5 my-4">
       <div className="top-side flex items-center justify-between">
         <div className="head-frame">
-          <h1>Chart Of Account</h1>
-          <p className="text-sm">
+          <h1 className="font-bold text-2xl text-textColo">Chart Of Account</h1>
+          <p className="text-sm mt-1">
           It serves as a framework for organizing financial data and helps ensure accurate and consistent reporting 
           </p>
         </div>

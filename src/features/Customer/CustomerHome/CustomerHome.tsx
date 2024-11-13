@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import Cards from "./Cards";
-import Dropdown from "./Dropdown";
 import NewCustomerModal from "./NewCustomerModal";
 import CustomerTable from "./CustomerTable";
 // import Customers from "./Customers";
@@ -105,7 +104,7 @@ function CustomerHome({}: Props) {
 
   return (
     <>
-      <div className="mx-5 my-4 space-y-8 flex items-center relative">
+      <div className="mx-5 my-4 space-y-4 flex items-center relative">
         <div>
           <h3 className="font-bold text-2xl text-textColor">Customer</h3>
           <p className="text-sm text-gray mt-1">

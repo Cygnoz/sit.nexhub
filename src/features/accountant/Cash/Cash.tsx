@@ -1,4 +1,3 @@
-import Ellipsis from "../../../assets/icons/Ellipsis";
 
 import CreateAccountModal from "./CreateAccountModal";
 import Table from "./Table";
@@ -11,7 +10,7 @@ function Cash({}: Props) {
       <div className="mx-5 my-4 ">
         <div className="flex items-center">
           <div>
-            <h3 className="font-bold text-xl text-textColor">Cash</h3>
+            <h3 className="font-bold text-2xl text-textColor">Cash</h3>
             <p className="text-sm text-gray mt-1">
               Manage your cash asset effectively with detailed insights into
               each account. Allowing for easy identification and organization of

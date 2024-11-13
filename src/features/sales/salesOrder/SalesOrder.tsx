@@ -68,9 +68,9 @@ const Sales = ({}: Props) => {
 
   return (
     <>
-      <div className="px-7 flex items-center relative">
+      <div className="mx-5 my-4 flex items-center relative">
         <div>
-          <h3 className="font-bold text-xl text-textColor">
+          <h3 className="font-bold text-2xl text-textColor">
             Create Sales Order
           </h3>
           <p className="text-sm text-gray mt-1">
