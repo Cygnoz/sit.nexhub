@@ -16,7 +16,7 @@ export interface DebitNoteBody {
     supplierDebitDate: string; 
     subject: string;
   
-    itemTable: {
+    items: {
       itemId: string;
       itemName: string;
       itemQuantity: number | string;
@@ -39,6 +39,7 @@ export interface DebitNoteBody {
     totalItem: number | string;
     sgst: number | string;
     cgst: number | string;
+    igst:number | string;
     transactionDiscount: number | string;
     transactionDiscountType: string;
     transactionDiscountAmount: number | string;

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
@@ -37,6 +36,7 @@ type Props = {
   setPurchaseOrderState?: (value: any) => void;
   oneOrganization?: any;
   isNonTaxable?: Boolean;
+  selectedBill?:any
 };
 
 const DebitNoteTable = ({
@@ -44,12 +44,15 @@ const DebitNoteTable = ({
   setPurchaseOrderState,
   isInterState,
   oneOrganization,
+  selectedBill
 }: Props) => {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<any>([]);
   const { request: getAllItemsRequest } = useApi("get", 5003);
+
+  
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<Row[]>([
     {
@@ -162,7 +165,7 @@ const discountedPrice = calculateDiscountPrice(
   
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      itemTable: newRows.map((row) => {
+      items: newRows.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
@@ -267,7 +270,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
 
   setPurchaseOrderState?.((prevData: any) => ({
     ...prevData,
-    itemTable: newRows.map((row) => {
+    items: newRows.map((row) => {
       const updatedItem = { ...row };
       delete updatedItem.itemImage;
       return updatedItem;
@@ -305,7 +308,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       setRows(newRows);
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: newRows, // Directly use newRows without mapping
+        items: newRows, // Directly use newRows without mapping
       }));
     } else {
       const defaultRow = {
@@ -333,7 +336,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       // Update purchaseOrderState with the default row
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: [defaultRow], // Set default row
+        items: [defaultRow], // Set default row
       }));
     }
   };
@@ -415,6 +418,8 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       );
     });
   };
+
+
   
 
   useEffect(() => {
@@ -460,7 +465,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
     isInterState,
   ]);
   
-  
+ 
 
   useEffect(() => {
       const updatedRows = rows.map((row) => ({
@@ -473,7 +478,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
 
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: updatedRows.map((row) => {
+        items: updatedRows.map((row) => {
           const updatedItem = { ...row };
           delete updatedItem.itemImage;
           return updatedItem;
@@ -577,50 +582,42 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
                           onSearchChange={setSearchValue}
                           placeholder="Select Item"
                         />
-                        {items.length > 0 ? (
-                          filteredItems().map((item: any, idx: number) => (
-                            <div
-                              key={idx}
-                              className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                              onClick={() => handleItemSelect(item, index)}
-                            >
-                              <div className="col-span-2 flex justify-center">
-                                <img
-                                  className="rounded-full h-10"
-                                  src={item.itemImage}
-                                  alt=""
-                                />
-                              </div>
-                              <div className="col-span-10 flex">
-                                <div className="text-start">
-                                  <p className="font-bold text-sm text-black">
-                                    {item.itemName}
-                                  </p>
-                                  <p className="text-xs text-gray-500">
-                                    Rate: {item.sellingPrice}
-                                  </p>
-                                </div>
-                                <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                                  &times;
-                                </div>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="text-center border-slate-400 border rounded-lg">
-                            <p className="text-[red] text-sm py-4">
-                              Items Not Found!
-                            </p>
-                          </div>
-                        )}
-                        <div>
-                          <Link to={"/inventory/Item/new"}>
-                            <button className="bg-darkGreen text-darkRed rounded-lg py-4 px-6 flex items-center text-sm font-bold border-slate-400 border gap-2 w-full hover:bg-lightRed">
-                              <PlusCircle color="darkRed" />
-                              <p> Add New Item</p>
-                            </button>
-                          </Link>
-                        </div>
+                       {items.length > 0 ? (
+  filteredItems()
+    .filter((item: any) => selectedBill.itemTable.some((tableItem: any) => tableItem.itemId === item._id))
+    .map((item: any, idx: number) => (
+      <div
+        key={idx}
+        className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+        onClick={() => handleItemSelect(item, index)}
+      >
+        <div className="col-span-2 flex justify-center">
+          <img
+            className="rounded-full h-10"
+            src={item.itemImage}
+            alt=""
+          />
+        </div>
+        <div className="col-span-10 flex">
+          <div className="text-start">
+            <p className="font-bold text-sm text-black">
+              {item.itemName}
+            </p>
+            <p className="text-xs text-gray-500">
+              Rate: {item.sellingPrice}
+            </p>
+          </div>
+         
+        </div>
+      </div>
+    ))
+) : (
+  <div className="text-center border-slate-400 border rounded-lg">
+    <p className="text-[red] text-sm py-4">Items Not Found!</p>
+  </div>
+)}
+
+                       
                       </div>
                     )}
                 </td>
@@ -634,7 +631,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
                       handleRowChange(index, "itemQuantity", e.target.value)
                     }
                   />
-               
+                  
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input
