@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import Ellipsis from "../../../assets/icons/Ellipsis";
+// import Ellipsis from "../../../assets/icons/Ellipsis";
 import SearchBar from "../../../Components/SearchBar";
 import Pagination from "../../../Components/Pagination/Pagination";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
@@ -64,7 +64,7 @@ const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps)
         searchValue={searchValue}
         onSearchChange={setSearchValue}
       />
-      <div className="max-h-[25rem] overflow-y-auto mt-1">
+      <div className="min-h-[25rem]  overflow-y-auto mt-1">
   <table className="min-w-full bg-white mb-5">
     <thead className="text-[12px] text-center text-dropdownText sticky top-0 z-10">
       <tr style={{ backgroundColor: "#F9F7F0" }}>

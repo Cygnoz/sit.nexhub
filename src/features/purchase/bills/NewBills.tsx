@@ -25,7 +25,6 @@ const NewBills = ({}: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   // const [selected, setSelected] = useState<string | null>("organization");
   const [supplierData, setSupplierData] = useState<[]>([]);
-  const [paymentTerms, setPaymentTerms] = useState<[]>([]);
   const [selecteSupplier, setSelecetdSupplier] = useState<any | []>([]);
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
@@ -34,7 +33,6 @@ const NewBills = ({}: Props) => {
   const [isInterState, setIsInterState] = useState<boolean>(false);
 
   const { request: AllSuppliers } = useApi("get", 5009);
-  const { request: allPyamentTerms } = useApi("get", 5004);
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: newBillApi } = useApi("post", 5005);
@@ -59,42 +57,42 @@ const NewBills = ({}: Props) => {
       {
         itemId: "",
         itemName: "",
-        itemQuantity: 0,
-        itemCostPrice: 0,
-        itemDiscount: 0,
+        itemQuantity: "",
+        itemCostPrice: "",
+        itemDiscount: "",
         itemDiscountType: "",
-        itemTax:0,
-        itemSgst: 0,
-        itemCgst: 0,
-        itemIgst: 0,
-        itemVat: 0,
-        itemSgstAmount: 0,
-        itemCgstAmount: 0,
+        itemTax:"",
+        itemSgst: "",
+        itemCgst: "",
+        itemIgst: "",
+        itemVat: "",
+        itemSgstAmount: "",
+        itemCgstAmount: "",
       },
     ],
-    otherExpense: 0,
+    otherExpense: "",
     otherExpenseReason: "",
     vehicleNo: "",
-    freight: 0,
+    freight: "",
     addNotes: "",
     termsAndConditions: "",
     attachFiles: "",
-    subTotal: 0,
-    totalItem: 0,
-    sgst: 0,
-    cgst: 0,
-    igst: 0,
+    subTotal: "",
+    totalItem: "",
+    sgst: "",
+    cgst: "",
+    igst: "",
     transactionDiscountType: "percentage",
-    transactionDiscount: 0,
-    transactionDiscountAmount: 0,
-    totalTaxAmount: 0,
-    itemTotalDiscount: 0,
-    roundOff: 0,
+    transactionDiscount: "",
+    transactionDiscountAmount: "",
+    totalTaxAmount: "",
+    itemTotalDiscount: "",
+    roundOff: "",
     paidStatus: "",
     shipmentPreference: "",
-    grandTotal: 0,
-    balanceAmount:0,
-    paidAmount:0,
+    grandTotal: "",
+    balanceAmount:"",
+    paidAmount:"",
   });
 
   console.log(bill,"bill")
@@ -142,7 +140,7 @@ const NewBills = ({}: Props) => {
       if (oneOrganization) {
         setBill((preData: any) => ({
           ...preData,
-          sourceOfSupply: oneOrganization.state,
+          destinationOfSupply: oneOrganization.state,
         }));
       }
       if (country) {
@@ -166,7 +164,7 @@ const NewBills = ({}: Props) => {
       if (selecteSupplier) {
         setBill((preData: any) => ({
           ...preData,
-          destinationOfSupply: selecteSupplier.billingState,
+          sourceOfSupply: selecteSupplier.billingState,
           supplierDisplayName: selecteSupplier.supplierDisplayName,
         }));
       }
@@ -227,8 +225,8 @@ const NewBills = ({}: Props) => {
   
     if (name === "transactionDiscount") {
       let discountValue = parseFloat(value) || 0;
-      const totalAmount = bill.subTotal || 0;
-  
+      const totalAmount = Number(bill.subTotal) || 0; 
+    
       if (bill.transactionDiscountType === "percentage") {
         if (discountValue > 100) {
           discountValue = 100;
@@ -240,12 +238,13 @@ const NewBills = ({}: Props) => {
           toast.error("Discount cannot exceed the subtotal amount");
         }
       }
-  
+    
       setBill((prevState: any) => ({
         ...prevState,
         [name]: discountValue,
       }));
-    } 
+    }
+     
     else if (name === "purchaseOrderDate" || name === "expectedShipmentDate") {
       // Set the date in the bill state
       setBill((prevState: any) => ({
@@ -262,7 +261,7 @@ const NewBills = ({}: Props) => {
         toast.error("Expected Shipment Date cannot be earlier than Purchase Order Date.");
         setBill((prevState: any) => ({
           ...prevState,
-          expectedShipmentDate: "", // Reset invalid date
+          expectedShipmentDate: "", 
         }));
       }
     } 
@@ -280,45 +279,49 @@ const NewBills = ({}: Props) => {
     return new Date(year, month, 1); 
   };
   
- // Assuming 'customDueDate' is part of the bill state
-useEffect(() => {
-  if (bill.billDate) {
-    const billDate = new Date(bill.billDate);
-    let dueDate = new Date(billDate);
-
-    switch (bill.paymentTerms) {
-      case "Net 15":
-      case "Net 30":
-      case "Net 45":
-        const daysToAdd = parseInt(bill.paymentTerms.split(" ")[1], 10);
-        dueDate.setDate(billDate.getDate() + daysToAdd);
-        break;
-      case "Due end of next month":
-        dueDate = getLastDayOfMonth(billDate, 1); 
-        break;
-      case "Due end of the month":
-        dueDate = getLastDayOfMonth(billDate); 
-        break;
-      case "Pay Now":
-        dueDate = billDate; 
-        break;
-      case "Due on Receipt":
-        if (bill.dueDate) {
-          dueDate = new Date(bill.dueDate); // Set custom date if available
-        } else {
-          dueDate = billDate; // Default to bill date if no custom date is set
-        }
-        break;
-      default:
-        break;
+  useEffect(() => {
+    if (bill.billDate) {
+      const billDate = new Date(bill.billDate);
+      let dueDate = new Date(billDate);
+  
+      switch (bill.paymentTerms) {
+        case "Net 15":
+        case "Net 30":
+        case "Net 45":
+        case "Net 60":
+          const daysToAdd = parseInt(bill.paymentTerms.split(" ")[1], 10);
+          dueDate.setDate(billDate.getDate() + daysToAdd);
+          break;
+        case "End of Next Month":
+          dueDate = getLastDayOfMonth(billDate, 1);
+          break;
+        case "End of This Month":
+          dueDate = getLastDayOfMonth(billDate);
+          break;
+        case "Pay Now":
+        case "due on receipt":
+          dueDate = billDate;
+          break;
+      }
+  
+      setBill((prevState) => ({
+        ...prevState,
+        dueDate: dueDate.toISOString().split("T")[0],
+      }));
     }
-
-    setBill((prevState) => ({
-      ...prevState,
-      dueDate: dueDate.toISOString().split("T")[0],
-    }));
-  }
-}, [bill.paymentTerms, bill.billDate]);
+  }, [bill.paymentTerms, bill.billDate]);
+  
+  useEffect(() => {
+    if (bill.paymentTerms === "due on receipt" && bill.dueDate !== bill.billDate) {
+      setBill((prevState) => ({
+        ...prevState,
+        paymentTerms: "Custom",
+      }));
+    }
+  }, [bill.dueDate, bill.paymentTerms, bill.billDate]);
+  
+  
+  
 
   
 
@@ -346,7 +349,17 @@ useEffect(() => {
   useEffect(() => {
     const { grandTotal, paidAmount } = bill;
   
-    const balanceAmount = grandTotal - paidAmount;
+    const numericGrandTotal = Number(grandTotal) || 0;
+    const numericPaidAmount = Number(paidAmount) || 0;
+  
+    let balanceAmount;
+    if(bill.paymentTerms=="Pay Now"){
+       balanceAmount = numericGrandTotal - numericPaidAmount;
+
+    }
+    else{
+      balanceAmount=numericGrandTotal
+    }
   
     setBill((prevState: any) => ({
       ...prevState,
@@ -378,12 +391,11 @@ useEffect(() => {
       transactionDiscount = 0,
       transactionDiscountAmount = 0,
     } = bill;
-
     const transactionDiscountValueAMT =
-      transactionDiscountType === "percentage"
-        ? (transactionDiscount / 100) * Number(newGrandTotal)
-        : Number(transactionDiscount);
-
+    transactionDiscountType === "percentage"
+      ? (Number(transactionDiscount) / 100) * Number(newGrandTotal)
+      : Number(transactionDiscount);
+  
     const roundedDiscountValue =
       Math.round(transactionDiscountValueAMT * 100) / 100;
 
@@ -424,11 +436,9 @@ useEffect(() => {
 
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
-    const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
 
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
-    fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
   }, []);
 
@@ -712,7 +722,7 @@ useEffect(() => {
                     value={bill.dueDate}
                     onChange={handleChange}
                     type="date"
-                    disabled={bill.paymentTerms !== "Due on Receipt"}
+                    disabled={bill.paymentTerms !== "due on receipt" && bill.paymentTerms !== "Custom"}
                     className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-1 "
                   />
                 </label>
@@ -733,12 +743,15 @@ useEffect(() => {
                   <option value="" className="text-gray">
                     Select Payment Terms
                   </option>
-                  {paymentTerms.length > 0 &&
-                    paymentTerms.map((item: any) => (
-                      <option value={item.name} className="text-gray">
-                        {item.name}
-                      </option>
-                    ))}
+                  <option value="Net 15">Net 15</option>
+                  <option value="Net 30">Net 30</option>
+                  <option value="Net 45">Net 45</option>
+                  <option value="Net 60">Net 60</option>
+                  <option value="Pay Now">Pay Now</option>
+                  <option value="due on receipt">Due on Receipt</option>
+                  <option value="End of This Month">End of This Month</option>
+                  <option value="End of Next Month">End of Next Month</option>
+                  <option value="Custom">Custom</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <CehvronDown color="gray" />

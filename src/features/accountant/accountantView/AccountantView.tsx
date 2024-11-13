@@ -119,11 +119,11 @@ function AccountantView() {
               {trialBalance.length > 0 ? (
                 trialBalance.map((item) => (
                   <tr key={item._id}>
-                    <td className="py-3 px-4 border-b border-tableBorder">{item.date.split(' ')[0]}</td>
-                    <td className="py-3 px-4 border-b border-tableBorder">{item.accountName}</td>
-                    <td className="py-3 px-4 border-b border-tableBorder">{item.action}</td>
-                    <td className="py-3 px-4 border-b border-tableBorder">{item.debitAmount}</td>
-                    <td className="py-3 px-4 border-b border-tableBorder">{item.creditAmount}</td>
+                    <td className="py-3 px-4 border-b border-tableBorder">{item?.date?.split(' ')[0]}</td>
+                    <td className="py-3 px-4 border-b border-tableBorder">{item?.accountName}</td>
+                    <td className="py-3 px-4 border-b border-tableBorder">{item?.action}</td>
+                    <td className="py-3 px-4 border-b border-tableBorder">{item?.debitAmount}</td>
+                    <td className="py-3 px-4 border-b border-tableBorder">{item?.creditAmount}</td>
                   </tr>
                 ))
               ) : (

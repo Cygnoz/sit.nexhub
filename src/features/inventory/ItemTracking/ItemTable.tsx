@@ -87,8 +87,9 @@ const ItemTable = ({}: Props) => {
 
   const formatDate = (dateString: string) => {
     const datePart = dateString.split(" ")[0];
-    const [day, month, year] = datePart.split("/");
-    return `${day}/${month}/${year}`;
+    // const [day, month, year] = datePart.split("/");
+    // return `${day}/${month}/${year}`;
+    return datePart;
   };
 
   useEffect(() => {

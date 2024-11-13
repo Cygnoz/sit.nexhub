@@ -71,28 +71,25 @@ const QuoteTable = ({ page }: Props) => {
   }, []);
 
   const initialColumns: Column[] =
-    page === "invoice"
-      ? [
-          { id: "createdDate", label: "Date", visible: true },
-          { id: "", label: "Due Date", visible: false },
-          { id: "salesInvoice", label: "Invoice#", visible: true },
-          { id: "reference", label: "Reference", visible: true },
-          { id: "status", label: "Status", visible: true },
-          { id: "customerName", label: "Customer Name", visible: true },
-          { id: "totalAmount", label: "Amount", visible: true },
-          { id: "", label: "Balance Due", visible: false },
-        ]
-      : page === "salesOrder"
-      ? [
-          { id: "salesOrder", label: "Order Number", visible: true },
-          { id: "createdDate", label: "Order Date", visible: true },
-          { id: "salesOrder", label: "Sales Order#", visible: true },
-          { id: "customerName", label: "Customer Name", visible: true },
-          { id: "totalAmount", label: "Total", visible: true },
-          { id: "status", label: "Status", visible: true },
-        ]
-      : page === "quote"
-      ? [
+    page === "invoice" ? [
+      { id: "createdDate", label: "Date", visible: true },
+      { id: "", label: "Due Date", visible: false },
+      { id: "salesInvoice", label: "Invoice#", visible: true },
+      { id: "reference", label: "Reference", visible: true },
+      { id: "status", label: "Status", visible: true },
+      { id: "customerName", label: "Customer Name", visible: true },
+      { id: "totalAmount", label: "Amount", visible: true },
+      { id: "", label: "Balance Due", visible: false },
+    ]
+      : page === "salesOrder" ? [
+        { id: "salesOrder", label: "Order Number", visible: true },
+        { id: "createdDate", label: "Order Date", visible: true },
+        // { id: "salesOrder", label: "Sales Order#", visible: true },
+        { id: "customerName", label: "Customer Name", visible: true },
+        { id: "totalAmount", label: "Total", visible: true },
+        { id: "status", label: "Status", visible: true },
+      ]
+        : page === "quote" ? [
           { id: "customerName", label: "Customer Name", visible: true },
           { id: "createdDate", label: "Date", visible: true },
           { id: "reference", label: "Reference", visible: true },
