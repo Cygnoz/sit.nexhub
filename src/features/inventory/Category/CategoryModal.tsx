@@ -117,6 +117,9 @@ function Category({ isOpen, onClose, page }: Props) {
       const { response, error } = await deleteCategoryRequest(url);
       if (!error && response) {
         toast.success("Category deleted successfully!");
+        if(allCategoryData.length==1){
+          setAllcategoryData((prevData) => prevData.filter((m:any) => m._id !== item._id));
+        }
         loadCategories();
       } else {
         toast.error(error.response.data.message);

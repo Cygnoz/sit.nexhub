@@ -75,13 +75,14 @@ const CreateAccountModal = ({}: Props) => {
       const url = `${endponits.Add_NEW_ACCOUNT}`;
       const body = accounts;
       const { response, error } = await CreateAccount(url, body);
-      closeModal();
+      
       if (!error && response) {
         toast.success(response.data.message);
         setCashResponse((prevCashResponse: any) => ({
           ...prevCashResponse,
           ...body,
         }));
+        closeModal();
         setAccounts(initialAccounts);
       } else {
         toast.error(error.response.data.message);
@@ -108,7 +109,7 @@ const CreateAccountModal = ({}: Props) => {
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
             <div
-              className="absolute top-0 -right-8 w-[178px] h-[89px]"
+              className="absolute top-0 -right-8 w-[px] h-[89px]"
               style={{
                 backgroundImage: `url(${bgImage})`,
                 backgroundRepeat: "no-repeat",
@@ -131,8 +132,8 @@ const CreateAccountModal = ({}: Props) => {
           </div>
 
           <form className="flex justify-between" onSubmit={onSubmit}>
-            <div className="mt-12">
-              <img src={CashImage} alt="Cash" />
+            <div className="mt-16 ms-3 ">
+              <img width={250} height={130} src={CashImage} alt="Cash" />
             </div>
             <div className="w-[65%]">
               <div className="mb-4">

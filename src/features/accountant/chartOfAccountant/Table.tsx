@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 // import Ellipsis from "../../../assets/icons/Ellipsis";
 import SearchBar from "../../../Components/SearchBar";
 import Pagination from "../../../Components/Pagination/Pagination";
@@ -23,7 +23,7 @@ interface TableProps {
 }
 
 const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps) => {
-  
+  const navigate=useNavigate()
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const maxVisiblePages = 5;
@@ -46,6 +46,9 @@ const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps)
     currentPage * rowsPerPage
   );
 
+  useEffect(()=>{
+    setCurrentPage(1)
+  },[searchValue])
   const tableHeaders = [
     "Sl No",
     "Account Name",
@@ -82,14 +85,14 @@ const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps)
         ))
       ) : paginatedData && paginatedData.length > 0 ? (
         paginatedData.reverse().map((item, index) => (
-          <tr key={item._id} className="relative">
+          <tr key={item._id} className="relative cursor-pointer" onClick={()=>navigate(`/accountant/view/${item._id}`)}>
             <td className="py-2.5 px-4 border-y border-tableBorder">
               {(currentPage - 1) * rowsPerPage + index + 1}
             </td>
             <td className="py-2.5 px-4 border-y border-tableBorder">
-              <Link to={`/accountant/view/${item._id}`}>
+              
                 {item.accountName}
-              </Link>
+              
             </td>
             <td className="py-2.5 px-4 border-y border-tableBorder">
               {item.accountCode}

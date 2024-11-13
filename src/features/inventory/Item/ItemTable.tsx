@@ -87,7 +87,7 @@ const ItemTable = () => {
       setLoading({ ...loading, noDataFound: true, skeleton: false });
     }
   };
-  console.log(orgData);
+ 
   
 
   const [allCategoryData, setAllcategoryData] = useState<any[]>([]);
@@ -288,7 +288,7 @@ const ItemTable = () => {
   </thead>
   <tbody className="text-dropdownText text-center text-[13px]">
     {loading.skeleton ? (
-      [...Array(5)].map((_, idx) => (
+      [...Array(filteredItems?.length?filteredItems?.length:5)].map((_, idx) => (
         <TableSkelton key={idx} columns={[...columns, "ee"]} />
       )) // Skeleton loader
     ) : filteredItems.length > 0 ? (

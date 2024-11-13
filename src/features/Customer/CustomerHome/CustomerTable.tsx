@@ -41,6 +41,7 @@ const initialColumns: Column[] = [
   { id: "supplierDetails", label: "Customer details", visible: true },
   { id: "status", label: "Status", visible: true },
   { id: "skypeNameNumber", label: "Receivables(BCY)", visible: true },
+  
 ];
 
 const CustomerTable: React.FC<CustomerTableProps> = ({
@@ -96,6 +97,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
     ) : (
       <span className="text-gray-500 italic">-</span>
     );
+    
   };
 
   return (
@@ -110,7 +112,6 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
         </div>
         <div className="flex gap-4">
           <Print />
-          <CustomiseColmn columns={columns} setColumns={setColumns} />
         </div>
       </div>
       <div className="mt-3 overflow-y-scroll max-h-[25rem]">
@@ -129,6 +130,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
             </th>
           )
       )}
+      <th><CustomiseColmn columns={columns} setColumns={setColumns} /></th>
     </tr>
   </thead>
   <tbody className="text-dropdownText text-center text-[13px]">
@@ -155,6 +157,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                 </td>
               )
           )}
+          <td className="py-2.5 px-4 border-y border-tableBorder"></td>
         </tr>
       ))
     ) : (

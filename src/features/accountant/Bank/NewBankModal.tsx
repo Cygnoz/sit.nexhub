@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent, useContext } from "react";
+import { useState, ChangeEvent, FormEvent, useContext, useEffect } from "react";
 import Button from "../../../Components/Button";
 import bgImage from "../../../assets/Images/14.png";
 import savings from "../../../assets/Images/Savings.png";
@@ -10,6 +10,7 @@ import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 // import BankHome from "./BankHome";
 import { BankResponseContext } from "../../../context/ContextShare";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 type Props = {};
 
@@ -35,10 +36,27 @@ const NewBankModal = ({}: Props) => {
   const [openingType, setOpeningType] = useState("Debit");
   const { setBankResponse } = useContext(BankResponseContext)!;
   const { request: CreateAccount } = useApi("post", 5001);
-
+  const {organization}=useOrganization()
   const openModal = () => {
     setModalOpen(true);
+    getcurrencyData()
   };
+  const [currencyData, setcurrencyData] = useState<any | []>([]);
+  const { request: getCurrencyData } = useApi("get", 5004);
+  const getcurrencyData = async () => {
+    try {
+      const url = `${endponits.GET_CURRENCY_LIST}`;
+      const { response, error } = await getCurrencyData(url);
+      if (!error && response) {
+        setcurrencyData(response.data);
+        setBankAccount({...bankAccount,bankCurrency:response.data.find((item:any)=>item.baseCurrency).currencyCode})
+      }
+    } catch (error) {
+      console.log("Error in fetching currency data", error);
+    }
+  };
+  
+
 
   const closeModal = () => {
     setModalOpen(false);
@@ -72,20 +90,19 @@ const NewBankModal = ({}: Props) => {
     }
   };
   
-
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       const url = `${endponits.Add_NEW_ACCOUNT}`;
       const body = bankAccount;
       const { response, error } = await CreateAccount(url, body);
-      closeModal();
       if (!error && response) {
         toast.success(response.data.message);
         setBankResponse((prevBankResponse: any) => ({
           ...prevBankResponse,
           ...body,
         }));
+        closeModal()
         setBankAccount(initialBankAccount);
       } else {
         toast.error(error.response.data.message);
@@ -94,6 +111,9 @@ const NewBankModal = ({}: Props) => {
       console.error(error);
     }
   };
+
+  
+  
 
   return (
     <div>
@@ -225,25 +245,30 @@ const NewBankModal = ({}: Props) => {
                     Currency
                   </label>
                   <div className="relative">
-                    <div className="relative w-full">
-                      <select
-                        name="bankCurrency"
-                        value={bankAccount.bankCurrency}
-                        onChange={handleChange}
-                        className="block appearance-none w-full text-zinc-400 bg-white border border-slate-200 text-sm h-[39px] pl-9 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                      >
-                        <option value="" className="text-gray">
-                          Select currency
-                        </option>
-                        <option value="INR" className="text-slate-300">
-                          INR
-                        </option>
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <CehvronDown color="gray" />
-                      </div>
-                    </div>
-                  </div>
+  <div className="relative w-full">
+    <select
+      name="bankCurrency"
+      value={bankAccount.bankCurrency}
+      onChange={handleChange}
+      className="block appearance-none w-full text-zinc-400 bg-white border border-slate-200 text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+    >
+      {currencyData?.map((data:any) => (
+        <option
+          key={data._id}
+          value={data.currencyCode}
+          selected={data.currencyName} // Set as selected if baseCurrency is true
+          className="text-slate-300"
+        >
+          {`${data.currencyName} (${data.currencySymbol})`}
+        </option>
+      ))}
+    </select>
+    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+      <CehvronDown color="gray" />
+    </div>
+  </div>
+</div>
+
                 </div>
               </div>
               <div className="mb-4">
@@ -260,11 +285,10 @@ const NewBankModal = ({}: Props) => {
               </div>
               <br />
               <div className="flex justify-end gap-2 mb-3">
-                <Button onClick={closeModal} variant="secondary" size="lg">
+              <Button onClick={closeModal} className="pl-10 pr-10" variant="secondary" size="sm">
                   Cancel
                 </Button>
-
-                <Button type="submit" variant="primary" size="lg">
+                <Button type="submit" variant="primary" className="pl-10 pr-10" size="sm">
                   Save
                 </Button>
               </div>

@@ -1,4 +1,3 @@
-import Ellipsis from "../../../assets/icons/Ellipsis";
 import NewBankModal from "./NewBankModal";
 import Table from "./Table";
 

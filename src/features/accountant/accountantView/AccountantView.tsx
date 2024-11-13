@@ -71,6 +71,7 @@ function AccountantView() {
     return  totalDebit - totalCredit;
   };
   
+  
 
   return (
     <div className="px-6">
@@ -92,10 +93,10 @@ function AccountantView() {
         <div className="flex justify-between mb-4">
           <p className="font-bold text-textColor text-base">Recent Transaction</p>
           {/* FCY/BCY Toggle Buttons */}
-          <div className="flex text-[#565148] text-xs font-medium">
+          {/* <div className="flex text-[#565148] text-xs font-medium">
             <button className="border border-[#565148] border-r-0 px-3 py-1 rounded-s-lg text-sm">FCY</button>
             <button className="border border-[#565148] px-3 py-1 rounded-e-lg text-sm">BCY</button>
-          </div>
+          </div> */}
         </div>
 
         {/* Table Section */}
@@ -119,11 +120,21 @@ function AccountantView() {
               {trialBalance.length > 0 ? (
                 trialBalance.map((item) => (
                   <tr key={item._id}>
-                    <td className="py-3 px-4 border-b border-tableBorder">{item?.date?.split(' ')[0]}</td>
-                    <td className="py-3 px-4 border-b border-tableBorder">{item?.accountName}</td>
-                    <td className="py-3 px-4 border-b border-tableBorder">{item?.action}</td>
-                    <td className="py-3 px-4 border-b border-tableBorder">{item?.debitAmount}</td>
-                    <td className="py-3 px-4 border-b border-tableBorder">{item?.creditAmount}</td>
+                    <td className="py-3 px-4 border-b border-tableBorder">
+                      {item?.date ? item.date.split(' ')[0] : '-'}
+                    </td>
+                    <td className="py-3 px-4 border-b border-tableBorder">
+                      {item?.accountName || '-'}
+                    </td>
+                    <td className="py-3 px-4 border-b border-tableBorder">
+                      {item?.action || '-'}
+                    </td>
+                    <td className="py-3 px-4 border-b border-tableBorder">
+                      {item?.debitAmount ? item.debitAmount : '0.00'}
+                    </td>
+                    <td className="py-3 px-4 border-b border-tableBorder">
+                      {item?.creditAmount ? item.creditAmount : '0.00'}
+                    </td>
                   </tr>
                 ))
               ) : (
