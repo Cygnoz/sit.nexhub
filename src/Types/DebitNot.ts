@@ -22,8 +22,6 @@ export interface DebitNoteBody {
       itemQuantity: number | string;
       itemCostPrice: number | string;
       itemTax: number | string;
-      itemDiscount: number | string;
-      itemDiscountType: string;
       itemAmount: number | string;
       itemSgst: number | string;
       itemCgst: number | string;
@@ -40,9 +38,6 @@ export interface DebitNoteBody {
     sgst: number | string;
     cgst: number | string;
     igst:number | string;
-    transactionDiscount: number | string;
-    transactionDiscountType: string;
-    transactionDiscountAmount: number | string;
     totalTaxAmount: number | string;
     itemTotalDiscount: number | string;
     grandTotal: number | string;

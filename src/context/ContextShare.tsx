@@ -65,7 +65,7 @@ interface TableLoadingContextType{
 }
 
 interface PreviousPathContextType {
-  previousPath: string;
+  previousPath: any;
   setPreviousPath: React.Dispatch<React.SetStateAction<any>>;
 }
 

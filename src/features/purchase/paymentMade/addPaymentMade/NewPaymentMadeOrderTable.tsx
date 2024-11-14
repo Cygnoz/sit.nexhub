@@ -42,23 +42,32 @@ const NewPaymentMadeOrderTable = ({
   console.log(supplierBills, "supplierBills");
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+console.log(data,"data");
 
-  useEffect(() => {
-    if (supplierBills && Array.isArray(supplierBills)) {
-      setData(
-        supplierBills.map((bill: any) => ({
-          billId: bill._id || "",
-          billDate: bill.billDate || "",
-          dueDate: bill.dueDate || "",
-          billNumber: bill.billNumber || "",
-          billAmount: bill.grandTotal || 0,
-          amountDue: bill.balanceAmount || 0,
-          payment: bill.payment || 0,
-          paidStatus: bill.paidStatus || "",
-        }))
-      );
-    }
-  }, [supplierBills]);
+
+
+useEffect(() => {
+  if (supplierBills && Array.isArray(supplierBills)) {
+    const filteredBills = supplierBills.filter(
+      (bill: any) => bill.paidStatus === "Pending" || bill.paidStatus === "Overdue"
+    );
+
+    setData(
+      filteredBills.map((bill: any) => ({
+        billId: bill._id || "",
+        billDate: bill.billDate || "",
+        dueDate: bill.dueDate || "",
+        billNumber: bill.billNumber || "",
+        billAmount: bill.grandTotal || 0,
+        amountDue: bill.balanceAmount || 0,
+        payment: bill.payment || 0,
+        paidStatus: bill.paidStatus || "",
+      }))
+    );
+  }
+}, [supplierBills]);
+
+  
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -133,6 +142,9 @@ const NewPaymentMadeOrderTable = ({
     }));
 
     const totalPayment = updatedData.reduce((acc, row) => acc + row.payment, 0);
+
+    console.log(updatedData,"update");
+    
 
     setData(updatedData);
 

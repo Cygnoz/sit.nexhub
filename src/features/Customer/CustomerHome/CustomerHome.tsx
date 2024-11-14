@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import Cards from "./Cards";
-import Dropdown from "./Dropdown";
+// import Dropdown from "./Dropdown";
 import NewCustomerModal from "./NewCustomerModal";
 import CustomerTable from "./CustomerTable";
 // import Customers from "./Customers";
