@@ -64,8 +64,13 @@ const PurchaseOrderTable = () => {
         </div>
       );
     }
-    return item[colId as keyof typeof item];
+  
+    const columnValue = item[colId as keyof typeof item];
+    
+    // Display `-` for empty values (null, undefined, or empty string)
+    return columnValue ? columnValue : <span className="text-gray-500 italic">-</span>;
   };
+  
 
   return (
     <PurchaseTable

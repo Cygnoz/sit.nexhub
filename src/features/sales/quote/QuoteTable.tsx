@@ -71,36 +71,43 @@ const QuoteTable = ({ page }: Props) => {
   }, []);
 
   const initialColumns: Column[] =
-    page === "invoice"
-      ? [
-          { id: "createdDate", label: "Date", visible: true },
-          { id: "", label: "Due Date", visible: false },
-          { id: "salesInvoice", label: "Invoice#", visible: true },
-          { id: "reference", label: "Reference", visible: true },
-          { id: "status", label: "Status", visible: true },
-          { id: "customerName", label: "Customer Name", visible: true },
-          { id: "totalAmount", label: "Amount", visible: true },
-          { id: "", label: "Balance Due", visible: false },
-        ]
-      : page === "salesOrder"
-      ? [
-          { id: "salesOrder", label: "Order Number", visible: true },
-          { id: "createdDate", label: "Order Date", visible: true },
-          { id: "salesOrder", label: "Sales Order#", visible: true },
-          { id: "customerName", label: "Customer Name", visible: true },
-          { id: "totalAmount", label: "Total", visible: true },
-          { id: "status", label: "Status", visible: true },
-        ]
-      : page === "quote"
-      ? [
+    page === "invoice" ? [
+      { id: "createdDate", label: "Date", visible: true },
+      { id: "", label: "Due Date", visible: false },
+      { id: "salesInvoice", label: "Invoice#", visible: true },
+      { id: "reference", label: "Reference", visible: true },
+      { id: "status", label: "Status", visible: true },
+      { id: "customerName", label: "Customer Name", visible: true },
+      { id: "totalAmount", label: "Amount", visible: true },
+      { id: "", label: "Balance Due", visible: false },
+    ]
+      : page === "salesOrder" ? [
+        { id: "salesOrder", label: "Order Number", visible: true },
+        { id: "createdDate", label: "Order Date", visible: true },
+        // { id: "salesOrder", label: "Sales Order#", visible: true },
+        { id: "customerName", label: "Customer Name", visible: true },
+        { id: "totalAmount", label: "Total", visible: true },
+        { id: "status", label: "Status", visible: true },
+      ]
+        : page === "quote" ? [
           { id: "customerName", label: "Customer Name", visible: true },
           { id: "createdDate", label: "Date", visible: true },
           { id: "reference", label: "Reference", visible: true },
           { id: "salesQuotes", label: "Quote Number", visible: true },
           { id: "status", label: "Status", visible: true },
           { id: "totalAmount", label: "Amount", visible: true },
+
         ]
-      : [];
+      : 
+      page === "salesReturn" ? [
+        { id: "createdDate", label: "Date", visible: true },
+        { id: "customerRMA", label: "RMA#", visible: true },
+        { id: "salesOrder", label: "SalesOrder", visible: true },
+        { id: "status", label: "Status", visible: true },
+        { id: "customerName", label: "Customer Name", visible: true },
+        { id: "totalAmount", label: "Amount", visible: true },
+        { id: "returned", label: "Returned", visible: true },
+      ]:[];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
@@ -131,17 +138,18 @@ const QuoteTable = ({ page }: Props) => {
       <span className="text-gray-500 italic">-</span>
     );
   };
+// Initialize `data` as an empty array if it's undefined
+const filteredData = Array.isArray(data) ? data.filter((quote) => {
+  const searchValueLower = searchValue?.toLowerCase();
+  return (
+    quote?.customerName?.toLowerCase()?.includes(searchValueLower) ||
+    quote?.reference?.toLowerCase()?.includes(searchValueLower) ||
+    quote?.salesQuotes?.toLowerCase()?.includes(searchValueLower) ||
+    quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
+    quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
+  );
+}) : []; // If `data` is not an array, default to an empty array
 
-  const filteredData = data.filter((quote) => {
-    const searchValueLower = searchValue.toLowerCase();
-    return (
-      quote?.customerName?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.reference?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.salesQuotes?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
-    );
-  });
 
   const handleRowClick = (id: string) => {
     const state = { page };
@@ -165,9 +173,12 @@ const QuoteTable = ({ page }: Props) => {
             placeholder={
               page == "invoice"
                 ? "Search Invoice"
-                : page == "salesOrder"
+                : page == "salesOrder"               
                 ? "Search Sales Order"
+                :page=="salesReturn"
+                ? "Search Sales Return"
                 : "Search Quote"
+
             }
           />
         </div>
@@ -195,7 +206,7 @@ const QuoteTable = ({ page }: Props) => {
           <tbody className="text-dropdownText text-center text-[13px]">
             {loading.skelton ? (
               // Render skeleton rows if loading
-              [...Array(5)].map((_, idx) => (
+              [...Array(filteredData?.length?filteredData?.length:5)].map((_, idx) => (
                 <TableSkelton key={idx} columns={page=='salesOrder' || page=='quote' ?[...columns,"ff","tt"]:columns} />
               ))
             ) : filteredData && filteredData.length > 0 ? (

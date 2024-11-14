@@ -1300,7 +1300,7 @@ const NewCustomerModal = ({ page }: Props) => {
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block mb-0.5">Derpartment</label>
+                          <label className="block mb-0.5">Department</label>
                           <input
                             type="text"
                             className=" text-sm w-full rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"

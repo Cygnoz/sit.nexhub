@@ -15,9 +15,9 @@ const InvoiceHome = ({}: Props) => {
     <div className="mx-5 my-4 h-[100vh]">
       <div className="flex mb-8">
         <div>
-          <h1>Invoice</h1>
-          <p className="text-textColor text-sm">
-            Invoice Lorem ipsum dolor sit amet consectetur. Commodo enim odio
+        <h3 className="font-bold text-2xl text-textColor">Invoice</h3>
+        <p className="text-sm text-gray mt-1">
+        Invoice Lorem ipsum dolor sit amet consectetur. Commodo enim odio
             fringilla egestas consectetur amet.
           </p>
         </div>

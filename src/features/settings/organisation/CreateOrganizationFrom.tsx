@@ -10,6 +10,7 @@ import TrashCan from "../../../assets/icons/TrashCan";
 import "react-phone-input-2/lib/style.css";
 import Info from "../../../assets/icons/Info";
 import Tooltip from "../../../Components/tooltip/Tooltip";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 interface InputData {
   organizationLogo: string;
@@ -44,6 +45,7 @@ const CreateOrganizationForm = () => {
   const { request: createOrganization } = useApi("post", 5004);
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCurrencyData } = useApi("get", 5004);
+  const { setOrganization} = useOrganization();
   const [tooltipState, setTooltipState] = useState<{ [key: string]: boolean }>({
     industry: false,
     address: false,
@@ -71,6 +73,9 @@ const CreateOrganizationForm = () => {
     dateSplit: "",
     phoneNumberCode: "",
   });
+
+
+  
 
   const getDropdownList = async () => {
     try {
@@ -120,9 +125,9 @@ const CreateOrganizationForm = () => {
         setInputData(response.data);
         setInputData((prevData: any) => ({
           ...prevData,
-          organizationName: response.data.organizationName,
-          
+          organizationName: response.data.organizationName,   
         }));
+        setOrganization(response.data);
         if (response.data.organizationPhNum) {
           const organizationPhNum = response.data.organizationPhNum;
           let matchingCountry = null;
@@ -180,8 +185,7 @@ const CreateOrganizationForm = () => {
     }));
   };
   
-  
-
+ 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -253,10 +257,12 @@ const CreateOrganizationForm = () => {
     try {
       const url = `${endponits.CREATE_ORGANIZATION}`;
       const apiResponse = await createOrganization(url, inputData);
-      // console.log(apiResponse, "api response");
       const { response, error } = apiResponse;
+  
       if (!error && response) {
         toast.success(response.data.message);
+       getOrganization()
+        
       } else {
         toast.error(error.response.data.message);
       }
@@ -264,6 +270,8 @@ const CreateOrganizationForm = () => {
       console.log(error, "Error in creating organization");
     }
   };
+  
+
   const handleDeleteImage = () => {
     setInputData((prevDetails: any) => ({
       ...prevDetails,

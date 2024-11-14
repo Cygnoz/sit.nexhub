@@ -96,13 +96,15 @@ const BrandManager = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
 
 
   const handleDelete = async (brand: any) => {
-
     try {
       const url = `${endponits.DELETE_BRMC}/${brand.id}`;
       const { response, error } = await deleteBrandRequest(url);
       if (!error && response) {
         toast.success("Brand deleted successfully!");
         loadBrands();
+        if(allBrandData.length==1){
+          setAllBrandData((prevData) => prevData.filter((m:any) => m._id !== brand._id));
+        }
       } else {
         toast.error(error.response.data.message);
       }

@@ -17,7 +17,7 @@ function DebitNote({}: Props) {
     <>
          <div className=" px-6 flex items-center relative">
         <div>
-          <h3 className="font-bold text-xl text-textColor">Create Supplier Debit Note</h3>
+          <h3 className="font-bold text-2xl text-textColor">Create Supplier Debit Note</h3>
           <p className="text-sm text-gray mt-1">
           Create a debit note for supplier returns, accounting adjustments etc...
           </p>

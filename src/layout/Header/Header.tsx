@@ -1,24 +1,22 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import SearchBar from "../../Components/SearchBar";
-import SettingsIcons from "../../assets/icons/SettingsIcon";
-import Notification from "./HeaderIcons/Notification";
-import RefferEarn from "./HeaderIcons/RefferEarn";
-import Organization from "./HeaderIcons/Organization";
-import { useState, useEffect, useContext } from "react";
-import viewAppsIcon from "../../assets/Images/Frame 629925.png";
-import { endponits } from "../../Services/apiEndpoints";
-import useApi from "../../Hooks/useApi";
+import { useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import navlist from "../../assets/constants";
+import SettingsIcons from "../../assets/icons/SettingsIcon";
+import viewAppsIcon from "../../assets/Images/Frame 629925.png";
+import SearchBar from "../../Components/SearchBar";
 import { PreviousPathContext } from "../../context/ContextShare";
-
-
+import useApi from "../../Hooks/useApi";
+import { endponits } from "../../Services/apiEndpoints";
+import Notification from "./HeaderIcons/Notification";
+import Organization from "./HeaderIcons/Organization";
+import RefferEarn from "./HeaderIcons/RefferEarn";
 type Props = {};
 
 const Header = ({}: Props) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { previousPath, setPreviousPath } = useContext(PreviousPathContext)!;
-
+  const { setPreviousPath } = useContext(PreviousPathContext)!;
+  
   const handleNavigate = () => {
     navigate("/landing#appsSection");
   };
@@ -53,17 +51,25 @@ const Header = ({}: Props) => {
   }, []);
 
   const handleGoToSettings = () => {
-    if (previousPath) {
-      localStorage.setItem("modulePreviousPath", previousPath);
-    }
     navigate("/settings");
+  
+    // Retrieve values from localStorage and parse them as numbers
+    const savedIndex = localStorage.getItem('savedIndex');
+    const savedSelectedIndex = localStorage.getItem('savedSelectedIndex');
+  
+    // Check if values are not null before parsing them as integers
+    const index = savedIndex !== null ? parseInt(savedIndex, 10) : 0;
+    const selectedIndex = savedSelectedIndex !== null ? parseInt(savedSelectedIndex, 10) : 0;
+  
+    // Ensure navlist has the appropriate structure and check index bounds
+    if (navlist[index]?.subhead?.[selectedIndex]?.subRoute) {
+      setPreviousPath(navlist[index].subhead[selectedIndex].subRoute);
+    } else {
+      console.warn("Invalid index or subhead in navlist.");
+    }
   };
+  
 
-
-  useEffect(() => {
-    // Update previous path whenever location changes
-    setPreviousPath(location.pathname);
-  }, [location, setPreviousPath]);
 
   return (
     <div

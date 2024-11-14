@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import organizationImg from "../assets/Images/Rectangle 5415.png";
+import ArrowrightUp from "../assets/icons/ArrowrightUp";
 import taximg from "../assets/Images/Rectangle 5415 (1).png";
+import rewardImg from "../assets/Images/Rectangle 5415 (10).png";
 import usersImg from "../assets/Images/Rectangle 5415 (2).png";
 import preferencesImg from "../assets/Images/Rectangle 5415 (3).png";
 import salesImg from "../assets/Images/Rectangle 5415 (4).png";
@@ -10,10 +11,9 @@ import itemsImg from "../assets/Images/Rectangle 5415 (6).png";
 import paymentImg from "../assets/Images/Rectangle 5415 (7).png";
 import CustomizationImg from "../assets/Images/Rectangle 5415 (8).png";
 import reminderImg from "../assets/Images/Rectangle 5415 (9).png";
-import rewardImg from "../assets/Images/Rectangle 5415 (10).png";
+import organizationImg from "../assets/Images/Rectangle 5415.png";
 import Button from "../Components/Button";
 import SearchBar from "../Components/SearchBar";
-import ArrowrightUp from "../assets/icons/ArrowrightUp";
 import { PreviousPathContext } from "../context/ContextShare";
 
 interface Setting {
@@ -128,14 +128,16 @@ const SettingCard: React.FC<Setting> = ({
 const Settings: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const navigate=useNavigate()
+  const {previousPath}=useContext(PreviousPathContext)!
+  
 
   const handleGoBack = () => {
-    const previousPath = localStorage.getItem("modulePreviousPath");
-    if (previousPath) {
       navigate(previousPath);
     }
-  };
 
+    console.log("prev",previousPath);
+    
+   
 
   
 

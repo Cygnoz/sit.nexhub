@@ -6,6 +6,7 @@ import { Organization } from '../Types/Organization';
 interface OrganizationContextType {
   organization: Organization | null;
   fetchOrganization: () => Promise<void>;
+  setOrganization: React.Dispatch<React.SetStateAction<Organization | null>>;
 }
 
 const OrganizationContext = createContext<OrganizationContextType | undefined>(undefined);
@@ -37,7 +38,7 @@ export const OrganizationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   }, []);
 
   return (
-    <OrganizationContext.Provider value={{ organization, fetchOrganization }}>
+    <OrganizationContext.Provider value={{ organization, fetchOrganization,setOrganization }}>
       {children}
     </OrganizationContext.Provider>
   );

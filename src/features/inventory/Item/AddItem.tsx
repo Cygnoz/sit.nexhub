@@ -384,7 +384,9 @@ const AddItem = ({ }: Props) => {
             </div>
           </Link>
           <div className="flex justify-center items-center">
-            <h4 className="font-bold text-xl text-textColor ">New Item</h4>
+            <h4 className="font-bold text-xl text-textColor ">{
+            selectedItem ? "Edit Item" :
+            "New Item"}</h4>
           </div>
         </div>
         <div className="grid grid-cols-12 gap-4 my-2">

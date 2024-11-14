@@ -34,7 +34,6 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
   });
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isModalOpen, setModalOpen] = useState(false);
-  console.log(manufacturers);
 
   const openModal = (item?: any) => {
     if (item) {
@@ -71,7 +70,7 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
       console.error("Error fetching manufacturers data", error);
     }
   };
-
+  
   useEffect(() => {
     loadManufacturers();
   }, []);
@@ -105,9 +104,13 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
     try {
       const url = `${endponits.DELETE_BRMC}/${item.id}`;
       const { response, error } = await deleteManufacturerRequest(url);
+      
       if (!error && response) {
-        toast.success("Manufaturer deleted successfully!");
+        toast.success("Manufacturer deleted successfully!");
         loadManufacturers();
+        if(allManufactures.length==1){
+          setAllManufatures((prevData) => prevData.filter((m:any) => m._id !== item._id));
+        }
       } else {
         toast.error(error.response.data.message);
       }
@@ -115,6 +118,7 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
       toast.error("Error occurred while deleting Manufacturer.");
     }
   };
+  
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -186,7 +190,7 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
                   </div>
                 </div>
               ))
-            ) : (
+            ) :(
               <p className="text-center col-span-3 text-red-500 font-semibold">No manufacturers found !</p>
             )}
           </div>

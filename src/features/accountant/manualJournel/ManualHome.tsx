@@ -57,7 +57,7 @@ function ManualHome({}: Props) {
   ];
   return (
     <>
-      <div className="mx-5 my-4 bg-slate-50 h-[100vh]">
+      <div className="mx-5 my-4  h-[100vh]">
         <div className="flex items-center">
           <div>
             <h3 className="font-bold text-2xl text-textColor">

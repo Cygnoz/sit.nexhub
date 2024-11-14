@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-// import Ellipsis from "../../../assets/icons/Ellipsis";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
 import Pagination from "../../../Components/Pagination/Pagination";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
@@ -23,7 +22,7 @@ interface TableProps {
 }
 
 const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps) => {
-  
+  const navigate=useNavigate()
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const maxVisiblePages = 5;
@@ -46,12 +45,14 @@ const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps)
     currentPage * rowsPerPage
   );
 
+  useEffect(()=>{
+    setCurrentPage(1)
+  },[searchValue])
   const tableHeaders = [
     "Sl No",
     "Account Name",
     "Account Code",
     "Account Type",
-    "Documents",
     "Parent Account Type",
     "",
   ];
@@ -64,7 +65,7 @@ const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps)
         searchValue={searchValue}
         onSearchChange={setSearchValue}
       />
-      <div className="max-h-[25rem] overflow-y-auto mt-1">
+      <div className="min-h-[25rem]  overflow-y-auto mt-1">
   <table className="min-w-full bg-white mb-5">
     <thead className="text-[12px] text-center text-dropdownText sticky top-0 z-10">
       <tr style={{ backgroundColor: "#F9F7F0" }}>
@@ -82,14 +83,14 @@ const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps)
         ))
       ) : paginatedData && paginatedData.length > 0 ? (
         paginatedData.reverse().map((item, index) => (
-          <tr key={item._id} className="relative">
+          <tr key={item._id} className="relative cursor-pointer" onClick={()=>navigate(`/accountant/view/${item._id}`)}>
             <td className="py-2.5 px-4 border-y border-tableBorder">
               {(currentPage - 1) * rowsPerPage + index + 1}
             </td>
             <td className="py-2.5 px-4 border-y border-tableBorder">
-              <Link to={`/accountant/view/${item._id}`}>
+              
                 {item.accountName}
-              </Link>
+              
             </td>
             <td className="py-2.5 px-4 border-y border-tableBorder">
               {item.accountCode}
@@ -97,9 +98,7 @@ const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps)
             <td className="py-2.5 px-4 border-y border-tableBorder">
               {item.accountSubhead}
             </td>
-            <td className="py-2.5 px-4 border-y border-tableBorder">
-              {item.description}
-            </td>
+          
             <td className="py-2.5 px-4 border-y border-tableBorder">
               {item.accountHead}
             </td>

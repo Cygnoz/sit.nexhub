@@ -33,11 +33,11 @@ function ItemHome({}: Props) {
     fetchAllItems()
   }, [])
   return (
-    <div className="m-7">
+    <div className="mx-5 my-4 text-[#303F58]">
       <div className="flex justify-between items-center">
         <div>
-          <h1>Item</h1>
-          <p className="text-sm">
+          <h1 className="font-bold text-2xl">Item</h1>
+          <p className="text-sm text-gray mt-1">
           Organize item data effortlessly, monitor stock in real-time, and optimize inventory for smooth operations.
           </p>
         </div>

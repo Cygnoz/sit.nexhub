@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
@@ -21,7 +21,7 @@ const CashAccountsTable = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const { request: AllAccounts } = useApi("get", 5001);
   const { cashResponse } = useContext(cashResponseContext)!;
-
+  const navigate=useNavigate()
   // Loading state
   const {loading,setLoading}=useContext(TableResponseContext)!;
 
@@ -74,7 +74,6 @@ const CashAccountsTable = () => {
     "Account Name",
     "Account Code",
     "Account Type",
-    "Documents",
     "Parent Account Type",
     ""
   ];
@@ -107,18 +106,17 @@ const CashAccountsTable = () => {
               filteredAccounts.map((item: Account, index: number) => (
                 <tr
                   key={item._id}
-                  onClick={() => console.log(`View account: ${item._id}`)} // Navigate to account view
-                  className="relative"
+                  onClick={() => navigate(`/accountant/view/${item._id}?fromCash=true`)} // Navigate to account view
+                  className="relative cursor-pointer"
                 >
                   <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <Link to={`/accountant/view/${item._id}?fromCash=true`}>
+                 
                       {item.accountName}
-                    </Link>
+                  
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountCode}</td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountSubhead}</td>
-                  <td className="py-2.5 px-4 border-y border-tableBorder">{item.description}</td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountHead}</td>
                 </tr>
               ))

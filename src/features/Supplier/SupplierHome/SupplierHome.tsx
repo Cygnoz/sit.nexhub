@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import NewSupplierModal from "./AddSupplierModal";
 import Cards from "./Cards";
-import Dropdown from "./Dropdown";
 import SupplierTable from "./SupplierTable";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";

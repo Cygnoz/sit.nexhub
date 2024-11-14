@@ -5,20 +5,23 @@ import organizationIcon from '../Images/Ellipse 1.png';
 type Props = {
   width?: string;
   height?: string;
- 
 };
 
 const OrganizationIcon: React.FC<Props> = ({ width = '6', height = '6' }) => {
-  const { organization: orgData } = useOrganization();
+  const { organization: orgData, fetchOrganization } = useOrganization();
   
-  useEffect(()=>{
-    
-  },[orgData])
+  useEffect(() => {
+    // Fetch organization data on initial render if it's not already loaded
+    if (!orgData) {
+      fetchOrganization();
+    }
+  }, [orgData, fetchOrganization]);
+
   return (
     <div>
       {orgData?.organizationLogo ? (
         <img
-          src={orgData.organizationLogo || organizationIcon}
+          src={orgData.organizationLogo}
           className={`w-${width} h-${height} rounded-full object-cover`}
           alt="Organization Logo"
           style={{ cursor: 'pointer' }}
@@ -26,7 +29,7 @@ const OrganizationIcon: React.FC<Props> = ({ width = '6', height = '6' }) => {
       ) : (
         <img
           src={organizationIcon}
-          className={`${width} ${height} rounded-full object-cover`}
+          className={`w-${width} h-${height} rounded-full object-cover`}
           alt="Default Organization Logo"
           style={{ cursor: 'pointer' }}
         />

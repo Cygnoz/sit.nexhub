@@ -1,7 +1,6 @@
-import React, { createContext, useState, ReactNode, useEffect } from "react";
+import React, { createContext, useState, ReactNode} from "react";
 import { endponits } from "../Services/apiEndpoints";
 import useApi from "../Hooks/useApi";
-import { useLocation } from "react-router-dom";
 
 interface CashResponseContextType {
   cashResponse: any;
@@ -89,7 +88,6 @@ interface ContextShareProps {
 }
 
 const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
-  const location = useLocation();
   const [previousPath, setPreviousPath] = useState("");
   const [cashResponse, setCashResponse] = useState<any>({});
   const [bankResponse, setBankResponse] = useState<any>({});
@@ -123,10 +121,7 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    const currentPath = location.pathname;
-    setPreviousPath((prev) => (prev !== currentPath ? prev : previousPath));
-  }, [location.pathname]);
+  
   
   return (
     <UnitEditResponseContext.Provider value={{unitEditResponse,setEditUnitResponse }}>
