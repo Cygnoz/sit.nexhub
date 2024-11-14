@@ -29,9 +29,8 @@ function Table({}: Props) {
   const tableHeaders = [
     "Date",
     "Journal",
-    "Reference rating",
+    "Reference#",
     "Notes",
-    "Status",
     "Amount",
     // "",
   ];
@@ -129,9 +128,6 @@ function Table({}: Props) {
     </td>
     <td className="py-2.5 px-4 border-y border-tableBorder">
     {item.note?item.note:"-"}
-    </td>
-    <td className="py-2.5 px-4 border-y border-tableBorder">
-    {item.status?item.status:"-"}
     </td>
     <td className="py-2.5 px-4 border-y border-tableBorder">
       {item.totalDebitAmount?item.totalDebitAmount:"-"}

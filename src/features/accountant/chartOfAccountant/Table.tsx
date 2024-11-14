@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 // import Ellipsis from "../../../assets/icons/Ellipsis";
 import SearchBar from "../../../Components/SearchBar";
 import Pagination from "../../../Components/Pagination/Pagination";
@@ -54,7 +54,6 @@ const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps)
     "Account Name",
     "Account Code",
     "Account Type",
-    "Documents",
     "Parent Account Type",
     "",
   ];
@@ -100,9 +99,7 @@ const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps)
             <td className="py-2.5 px-4 border-y border-tableBorder">
               {item.accountSubhead}
             </td>
-            <td className="py-2.5 px-4 border-y border-tableBorder">
-              {item.description}
-            </td>
+          
             <td className="py-2.5 px-4 border-y border-tableBorder">
               {item.accountHead}
             </td>

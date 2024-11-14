@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
@@ -74,7 +74,6 @@ const CashAccountsTable = () => {
     "Account Name",
     "Account Code",
     "Account Type",
-    "Documents",
     "Parent Account Type",
     ""
   ];
@@ -118,7 +117,6 @@ const CashAccountsTable = () => {
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountCode}</td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountSubhead}</td>
-                  <td className="py-2.5 px-4 border-y border-tableBorder">{item.description}</td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountHead}</td>
                 </tr>
               ))
