@@ -5,7 +5,6 @@ import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import Button from "../../../Components/Button";
 import SearchBar from "../../../Components/SearchBar";
 import AddSupplierModal from "../../Supplier/SupplierHome/AddSupplierModal";
-import DebitNumberPrfncModal from "./DebitNumberPrfncModal";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import Upload from "../../../assets/icons/Upload";
 import { DebitNoteBody } from "../../../Types/DebitNot";
@@ -40,8 +39,6 @@ const initialSupplierBillState: DebitNoteBody = {
       itemQuantity: "",
       itemCostPrice: "",
       itemTax: "",
-      itemDiscount: "",
-      itemDiscountType: "",
       itemAmount: "",
       itemSgst: "",
       itemCgst: "",
@@ -59,9 +56,6 @@ const initialSupplierBillState: DebitNoteBody = {
   sgst: "",
   cgst: "",
   igst:"",
-  transactionDiscount: "",
-  transactionDiscountType: "",
-  transactionDiscountAmount: "",
   totalTaxAmount: "",
   itemTotalDiscount: "",
   grandTotal: "",
@@ -106,32 +100,12 @@ const NewDebitNote = ({}: Props) => {
   ) => {
     const { name, value } = e.target;
   
-    if (name === "transactionDiscount") {
-      let discountValue = parseFloat(value) || 0;
-      const totalAmount = parseFloat(debitNoteState.subTotal as string) || 0; 
-  
-      if (debitNoteState.transactionDiscountType === "percentage") {
-        if (discountValue > 100) {
-          discountValue = 100;
-          toast.error("Discount cannot exceed 100%");
-        }
-      } else {
-        if (discountValue > totalAmount) {
-          discountValue = totalAmount;
-          toast.error("Discount cannot exceed the subtotal amount");
-        }
-      }
-  
-      setDebitNoteState({
-        ...debitNoteState,
-        [name]: discountValue, 
-      });
-    } else {
+   
       setDebitNoteState({
         ...debitNoteState,
         [name]: value,
       });
-    }
+    
   };
   
   
@@ -162,7 +136,6 @@ const NewDebitNote = ({}: Props) => {
       console.error("Error fetching data:", error);
     }
   };
-  console.log(allBills, "DB");
 
   const filterByDisplayName = (
     data: any[],
@@ -247,20 +220,7 @@ const NewDebitNote = ({}: Props) => {
   );
 
 
-  const calculateTotalAmount = () => {
-    const {
-      itemTotalDiscount,
-      totalTaxAmount,
-      subTotal ,
-    } = debitNoteState;
 
-    const totalAmount =
-     Number(subTotal) +
-      Number(totalTaxAmount) 
-    -
-      Number(itemTotalDiscount) 
-          return totalAmount.toFixed(2);
-  };
 
   const handleSave = async () => {
     try {
@@ -270,50 +230,22 @@ const NewDebitNote = ({}: Props) => {
         debitNoteState
       );
       if (!error && response) {
-        // console.log(response);
 
         toast.success(response.data.message);
         setTimeout(() => {
-          navigate("/purchase/debit-note/")
+          navigate("/purchase/debitnote")
         }, 1000);
       } else {
         toast.error(error?.response.data.message);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   };
 
-  useEffect(() => {
-    const newGrandTotal = calculateTotalAmount();
-  
-    const {
-      transactionDiscountType,
-      transactionDiscount = 0,
-      transactionDiscountAmount = 0,
-    } = debitNoteState;
-  
-    const transactionDiscountValueAMT =
-    transactionDiscountType === "percentage"
-      ? (parseFloat(transactionDiscount as string) / 100) * Number(parseFloat(newGrandTotal as string))
-      : Number(parseFloat(transactionDiscount as string));
   
   
-    const roundedDiscountValue = Math.round(transactionDiscountValueAMT * 100) / 100;
   
-    const updatedGrandTotal = Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
-      if (transactionDiscountAmount !== roundedDiscountValue || debitNoteState.grandTotal !== updatedGrandTotal) {
-      setDebitNoteState((prevState:any) => ({
-        ...prevState,
-        transactionDiscountAmount: roundedDiscountValue,
-        grandTotal: updatedGrandTotal.toFixed(2), 
-      }));
-    }
-  }, [
-    debitNoteState.transactionDiscount,
-    debitNoteState.transactionDiscountType,
-    debitNoteState.subTotal,
-    debitNoteState.totalTaxAmount,
-    debitNoteState.itemTotalDiscount,
-  ]);
   useEffect(() => {
     if (debitNoteState?.destinationOfSupply == "") {
       setIsInterState(false);
@@ -369,7 +301,7 @@ const NewDebitNote = ({}: Props) => {
   return (
     <div className="mx-5 my-4 text-sm">
       <div className="flex gap-5">
-        <Link to={"purchase/purchase-order"}>
+        <Link to={"/purchase/debitNote"}>
           <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
             <CheveronLeftIcon />
           </div>
@@ -381,7 +313,7 @@ const NewDebitNote = ({}: Props) => {
 
       <div className="grid grid-cols-12 gap-4 py-5">
         <div className="bg-secondary_main p-5 min-h-max rounded-xl relative col-span-8">
-          <div className="grid grid-cols-2 gap-4 mt-5 space-y-1">
+          <div className="grid grid-cols-2 gap-4 mt-5 space-y-">
             <div>
               <label className="block text-sm mb-1 text-labelColor">
                 Supplier Name
@@ -427,9 +359,14 @@ const NewDebitNote = ({}: Props) => {
                               ...prevState,
                               supplierId: supplier._id,
                               supplierDisplayName: supplier.supplierDisplayName,
+                              orderNumber:"",
+                              billNumber:"",
+                              billId:"",
+                              billDate:""
                             }));
                             setOpenDropdownIndex(null);
                             setSelecetdSupplier(supplier);
+                            setSelectedBill([])
                           }}
                         >
                           <div>
@@ -440,15 +377,13 @@ const NewDebitNote = ({}: Props) => {
                               Phone: {supplier.mobile}
                             </p>
                           </div>
-                          <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                            &times;
-                          </div>
+                         
                         </div>
                       </div>
                     ))
                   ) : (
                     <div className="text-center border-slate-400 border rounded-lg">
-                      <p className="text-[red] text-sm py-4">
+                      <p className="text-[darkRed] text-sm py-4">
                         Supplier Not Found!
                       </p>
                     </div>
@@ -460,18 +395,17 @@ const NewDebitNote = ({}: Props) => {
               )}
             </div>
             <div className="relative w-full">
-              <label htmlFor="" className="">
-                Debit Note
+            <label className="block text-sm mb-1 text-labelColor">
+            Debit Note
                 <input
                   value={debitNoteState.debitNote}
                   name="debitNote"
                   id=""
                   onChange={handleInputChange}
                   disabled
-                  className=" block  appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 "
+                  className=" block  appearance-none w-full h-9  mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 "
                 />
               </label>
-              <DebitNumberPrfncModal />
             </div>
 
             {debitNoteState.supplierId && (
@@ -537,15 +471,15 @@ const NewDebitNote = ({}: Props) => {
             <div className=" w-full">
               <label
                 htmlFor=""
-                className=""
+                className="block text-sm mb-1 text-labelColor"
                 onClick={() => toggleDropdown("bill")}
               >
                 Bill#
               </label>
               <div
-                className="relative w-full mt-2"
+                className="relative w-full "
                 onClick={() => {
-                  if (debitNoteState.supplierId) toggleDropdown("bill");
+                  toggleDropdown("bill")
                 }}
               >
                 <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
@@ -569,46 +503,65 @@ const NewDebitNote = ({}: Props) => {
                     onSearchChange={setSearchValue}
                     placeholder="Search Bill"
                   />
-                  {allBills?.PurchaseBills.length > 0 ? (
-                    allBills.PurchaseBills.filter(
-                      (bill: any) => bill.supplierId === selecteSupplier?._id
-                    ).map((bill: any) => (
-                      <div
-                        key={bill._id}
-                        className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                      >
-                        <div
-                          className="flex cursor-pointer"
-                          onClick={() => {
-                            setDebitNoteState((prevState) => ({
-                              ...prevState,
-                              billId: bill._id,
-                              billNumber: bill.billNumber,
-                              billDate:bill.billDate,
-                              orderNumber:bill.orderNumber
-                            }));
-                            setOpenDropdownIndex(null);
-                            setSelectedBill(bill);
-                          }}
-                        >
-                          <div>
-                            <p className="font-bold text-sm">
-                              {bill.billNumber}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              Supplier: {bill.supplierDisplayName}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center border-slate-400 border rounded-lg">
-                      <p className="text-[red] text-sm py-4">
-                        Bills Not Found!
-                      </p>
-                    </div>
-                  )}
+                 {selecteSupplier && Object.keys (selecteSupplier).length>0? (
+  allBills?.PurchaseBills.length > 0 ? (
+    allBills.PurchaseBills.filter(
+      (bill: any) => bill.supplierId === selecteSupplier?._id
+    ).length > 0 ? (
+      allBills.PurchaseBills.filter(
+        (bill: any) => bill.supplierId === selecteSupplier?._id
+      ).map((bill: any) => (
+        <div
+          key={bill._id}
+          className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+        >
+          <div
+            className="flex cursor-pointer"
+            onClick={() => {
+              setDebitNoteState((prevState) => ({
+                ...prevState,
+                billId: bill._id,
+                billNumber: bill.billNumber,
+                billDate: bill.billDate,
+                orderNumber: bill.orderNumber,
+              }));
+              setOpenDropdownIndex(null);
+              setSelectedBill(bill);
+            }}
+          >
+            <div>
+              <p className="font-bold text-sm">
+                {bill.billNumber}
+              </p>
+              <p className="text-xs text-gray-500">
+                Supplier: {bill.supplierDisplayName}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))
+    ) : (
+      <div className="text-center border-slate-400 border rounded-lg">
+        <p className="text-[red] text-sm py-4">
+          Bills Not Found!
+        </p>
+      </div>
+    )
+  ) : (
+    <div className="text-center border-slate-400 border rounded-lg">
+      <p className="text-[red] text-sm py-4">
+        Bills Not Found!
+      </p>
+    </div>
+  )
+) : (
+  <div className="text-center border-slate-400 border rounded-lg">
+    <p className="text-[darkRed] px-4 text-sm py-4">
+      Please select a supplier to view bills !
+    </p>
+  </div>
+)}
+
                 </div>
               )}
             </div>
@@ -622,7 +575,7 @@ const NewDebitNote = ({}: Props) => {
                   name="billType"
                   value={debitNoteState.billType}
                   onChange={handleInputChange}
-                  className="block appearance-none w-full h-9 mt-2 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 >
                   <option value="" className="text-gray">
                     Select Bill Type
@@ -650,15 +603,15 @@ const NewDebitNote = ({}: Props) => {
             </div>
 
             <div className=" w-full">
-              <label htmlFor="" className="">
-                Order Number
+            <label className="block text-sm mb-1 text-labelColor">
+            Order Number
                 <input
                   name="orderNumber"
                   value={debitNoteState.orderNumber}
                   onChange={handleInputChange}
                   id=""
                   placeholder="Value"
-                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
+                  className=" block  appearance-none w-full h-9  mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 "
                 />
               </label>
             </div>
@@ -674,21 +627,21 @@ const NewDebitNote = ({}: Props) => {
                   onChange={handleInputChange}
                   id=""
                   placeholder="Value"
-                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
+                  className=" block  appearance-none w-full h-9  mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 "
                 />
               </div>
             </div>
 
             <div className=" w-full">
-              <label htmlFor="" className="">
-                Subject
+            <label className="block text-sm mb-1 text-labelColor">
+            Subject
                 <input
                   name="subject"
                   onChange={handleInputChange}
                   id=""
                   value={debitNoteState.subject}
                   placeholder="Enter a subject within 250 Characters"
-                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-2 "
+                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 "
                 />
               </label>
             </div>
@@ -705,8 +658,8 @@ const NewDebitNote = ({}: Props) => {
           </div>
 
           <br />
-          <div className="mt-5">
-            <label htmlFor="" className="">
+          <div className="mt-2">
+            <label htmlFor="" className="block text-sm mb-1 text-labelColor">
               Add Note
               <input
                 name="addNotes"
@@ -714,27 +667,27 @@ const NewDebitNote = ({}: Props) => {
                 value={debitNoteState.addNotes}
                 onChange={handleInputChange}
                 placeholder="Note"
-                className="border-inputBorder w-full text-sm border rounded  p-2 h-[57px] mt-2 "
+                className="border-inputBorder w-full text-sm border rounded  p-2 h-[57px] "
               />
             </label>
           </div>
         </div>
         <div className="col-span-4">
           <div className="mt-0">
-            <label htmlFor="" className="">
+            <label htmlFor="" className="block text-sm mb-1 text-labelColor">
               Terms & Conditions
               <input
                 name=""
                 id=""
                 placeholder="Add Terms & Conditions of your business"
-                className="border-inputBorder w-full text-sm border rounded p-2 h-[57px] mt-2"
+                className="border-inputBorder w-full text-sm border rounded p-2 h-[57px] "
               />
             </label>
           </div>
           <div className="text-sm mt-3">
-            <label className="block mb-3">
+            <label className="block  text-sm mb-1 text-labelColor">
               Attach files to the Debit Notes
-              <div className="border-inputBorder border-gray-800 w-full border-dashed border p-2 rounded flex flex-col gap-2 justify-center items-center bg-white mb-4 mt-2">
+              <div className="border-inputBorder border-gray-800 w-full border-dashed border p-2 rounded flex flex-col gap-2 justify-center items-center bg-white mb-4 ">
                 <span className="text-center inline-flex items-center gap-2">
                   <Upload />
                   Upload File
@@ -874,51 +827,7 @@ const NewDebitNote = ({}: Props) => {
               
 
                
-                <div className="flex ">
-                  <div className="w-[150%]">
-                    {" "}
-                    <p>Bill Discount</p>
-                    <div className=""></div>
-                  </div>
-
-                  <div className=" ">
-                    <div className="border border-inputBorder rounded-lg flex items-center justify-center p-1 gap-1">
-                      <input
-                        value={debitNoteState.transactionDiscount}
-                        onChange={handleInputChange}
-                        name="transactionDiscount"
-                        type="text"
-                        placeholder="0"
-                        className="w-[30px]  focus:outline-none text-center"
-                      />
-                      <select
-                        className="text-xs   text-zinc-400 bg-white relative"
-                        value={debitNoteState.transactionDiscountType}
-                        onChange={handleInputChange}
-                        name="transactionDiscountType"
-                      >
-                        <option value="percentage">%</option>
-                        <option value="currency">
-                          {oneOrganization.baseCurrency}
-                        </option>
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center  text-gray-700 ms-1">
-                        <CehvronDown color="gray" height={15} width={15} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-full text-end ">
-                    {" "}
-                    <p className="text-end">
-                      <p className="text-end">
-                        {oneOrganization.baseCurrency}{" "}
-                        {debitNoteState.transactionDiscountAmount
-                          ? debitNoteState.transactionDiscountAmount
-                          : "0.00"}
-                      </p>
-                    </p>
-                  </div>
-                </div>
+               
               </div>
               <div className="flex text-black">
                 <div className="w-[75%] font-bold">

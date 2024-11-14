@@ -31,6 +31,14 @@ const NewBills = ({}: Props) => {
   const [destinationList, setDestinationList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
   const [isInterState, setIsInterState] = useState<boolean>(false);
+  const [errors,setErrors]=useState({
+    billNumber:false,
+    dueDate:false,
+    billDate:false,
+    supplierId:false,
+    sourceOfSupply:false,
+    destinationOfSupply:false,
+  })
 
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: getOneOrganization } = useApi("get", 5004);
@@ -366,9 +374,48 @@ const NewBills = ({}: Props) => {
       balanceAmount: balanceAmount,
     }));
   }, [bill.grandTotal, bill.paidAmount]);
-  
+  console.log(errors,"errors");
+
 
   const handleSave = async () => {
+    const newErrors = { ...errors };
+  
+    if (bill.billNumber.trim() === "") {
+      newErrors.billNumber = true;
+    } else {
+      newErrors.billNumber = false;
+    }
+  
+    if (bill.supplierId.trim() === "") {
+      newErrors.supplierId = true;
+    } else {
+      newErrors.supplierId = false;
+    }
+  
+    if (bill.destinationOfSupply.trim() === "") {
+      newErrors.destinationOfSupply = true;
+    } else {
+      newErrors.destinationOfSupply = false;
+    }
+  
+    if (bill.sourceOfSupply.trim() === "") {
+      newErrors.sourceOfSupply = true;
+    } else {
+      newErrors.sourceOfSupply = false;
+    }
+  
+    if (bill.billDate.trim() === "") {
+      newErrors.billDate = true;
+    } else {
+      newErrors.billDate = false;
+    }
+  
+    if (Object.values(newErrors).some((error) => error)) {
+      setErrors(newErrors);
+      toast.error("Fill the required fields");
+      return;
+    }
+  
     try {
       const url = `${endponits.ADD_BILL}`;
       const { response, error } = await newBillApi(url, bill);
@@ -380,8 +427,12 @@ const NewBills = ({}: Props) => {
       } else {
         toast.error(error?.response.data.message);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Save error", error);
+    }
   };
+  
+  
 
   useEffect(() => {
     const newGrandTotal = calculateTotalAmount();
@@ -477,7 +528,7 @@ const NewBills = ({}: Props) => {
           <div className="grid grid-cols-2 gap-4 mt-5 space-y-1">
             <div>
               <label className="block text-sm mb-1 text-labelColor">
-                Supplier Name
+                Supplier Name<span className="text-[#bd2e2e] ">*</span>
               </label>
               <div
                 className="relative w-full"
@@ -554,7 +605,7 @@ const NewBills = ({}: Props) => {
 
             <div className="relative w-full">
             <label className="block text-sm mb-1 text-labelColor">
-            Bill
+            Bill <span className="text-[#bd2e2e] -ms-0.5">*</span>
                 <input
                   id="billNumber"
                   onChange={handleChange}
@@ -570,7 +621,7 @@ const NewBills = ({}: Props) => {
               <>
                 <div>
                   <label className="block text-sm mb-1 text-labelColor">
-                    Destination Of Supply
+                    Destination Of Supply<span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <select
@@ -598,7 +649,7 @@ const NewBills = ({}: Props) => {
                 </div>
                 <div>
                   <label className="block text-sm mb-1 text-labelColor">
-                    Source of Supply
+                    Source of Supply<span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <select
@@ -701,7 +752,7 @@ const NewBills = ({}: Props) => {
 
             <div className=" w-full">
             <label className="block text-sm  text-labelColor">
-            Bill Date
+            Bill Date <span className="text-[#bd2e2e] -ms-0.5">*</span>
                 <input
                   name="billDate"
                   id="billDate"
@@ -715,7 +766,7 @@ const NewBills = ({}: Props) => {
             <div>
               <div>
               <label className="block text-sm text-labelColor">
-              Due Date
+              Due Date <span className="text-[#bd2e2e] -ms-0.5">*</span>
                   <input
                     name="dueDate"
                     id="dueDate"
@@ -731,7 +782,7 @@ const NewBills = ({}: Props) => {
 
             <div>
               <label className="block text-sm text-labelColor">
-                Payment Terms
+                Payment Terms 
               </label>
               <div className="relative w-full mt-1">
                 <select

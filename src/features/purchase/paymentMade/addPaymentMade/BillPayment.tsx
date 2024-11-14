@@ -91,6 +91,7 @@ const NewPaymentMade = ({}: Props) => {
     initialSupplierPayment
   );
 
+
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: getAllBills } = useApi("get", 5005);
   const { request: getAccounts } = useApi("get", 5001);
@@ -204,17 +205,16 @@ const NewPaymentMade = ({}: Props) => {
   };
 
   useEffect(() => {
-    const grandTotal = supplierBills.reduce((total: any, bill: any) => {
-      return total + bill.grandTotal;
-    }, 0);
-
-    console.log(isFullAmt);
-
+    const grandTotal = supplierBills
+      .filter((bill: any) => bill.paidStatus === "Pending" || bill.paidStatus === "Overdue")
+      .reduce((total: number, bill: any) => total + bill.grandTotal, 0);
+  
     setPaymentState((prevData) => ({
       ...prevData,
       totalBillAmount: grandTotal,
     }));
   }, [supplierBills]);
+  
 
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
@@ -439,6 +439,9 @@ const NewPaymentMade = ({}: Props) => {
                     onChange={handleChange}
                     className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   >
+                     <option value="" className="text-gray">
+                     Select Payment Mode
+                    </option>
                     <option value="Bank Transfer" className="text-gray">
                       Bank Transfer
                     </option>
