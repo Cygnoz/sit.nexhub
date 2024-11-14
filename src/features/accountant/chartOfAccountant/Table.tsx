@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import {  useNavigate } from "react-router-dom";
-// import Ellipsis from "../../../assets/icons/Ellipsis";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
 import Pagination from "../../../Components/Pagination/Pagination";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";

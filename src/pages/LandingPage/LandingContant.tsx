@@ -205,7 +205,7 @@ const LandingContant = ({ mode }: Props) => {
 <button
   className={`absolute z-70 right-[50%] translate-x-[50%] ${mode ? 'bg-white' : 'bg-[#1A282F]'} rounded-full -bottom-5 px-4 py-3 ${mode && 'text-[#C2A270]'} flex items-center`}
   onClick={() => {
-    document.getElementById('appsSection').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('appsSection')?.scrollIntoView({ behavior: 'smooth' });
   }}>
   More Apps <CehvronDown color={mode ? '#C2A270' : 'white'} />
 </button>

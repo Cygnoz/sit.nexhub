@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";

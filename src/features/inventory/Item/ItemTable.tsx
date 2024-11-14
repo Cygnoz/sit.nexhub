@@ -29,10 +29,8 @@ const ItemTable = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isDeleteImageModalOpen, setDeleteImageModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
-  const { request: get_currencies } = useApi("get", 5004);
   const { request: UpdateItem } = useApi("put", 5003);
-  const [currenciesData, setCurrenciesData] = useState<any[]>([]);
-  const currencySymbol = currenciesData.map((i) => i.currencySymbol);
+  
 
   const openModal = (item: any) => {
     setSelectedItem(item);
@@ -113,21 +111,10 @@ const ItemTable = () => {
     loadCategories();
   }, []);
 
-  const getHandleCurrencies = async () => {
-    try {
-      const url = `${endponits.GET_CURRENCIES}`;
-      const { response, error } = await get_currencies(url);
-      if (!error && response) {
-        setCurrenciesData(response.data);
-      }
-    } catch (error) {
-      console.log("Error in fetching currency data", error);
-    }
-  };
+ 
 
   useEffect(() => {
     fetchAllItems();
-    getHandleCurrencies();
   }, []);
 
   const navigate = useNavigate();
