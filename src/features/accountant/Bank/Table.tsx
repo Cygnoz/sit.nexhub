@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import Ellipsis from "../../../assets/icons/Ellipsis";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import SearchBar from "../../../Components/SearchBar";
 import { BankResponseContext, TableResponseContext } from "../../../context/ContextShare";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 

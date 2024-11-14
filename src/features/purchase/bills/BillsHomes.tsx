@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
-import Ellipsis from "../../../assets/icons/Ellipsis";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";

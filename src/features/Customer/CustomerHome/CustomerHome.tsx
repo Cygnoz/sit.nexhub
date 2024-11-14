@@ -6,6 +6,7 @@ import CustomerTable from "./CustomerTable";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { CustomerResponseContext, TableResponseContext } from "../../../context/ContextShare";
+import Dropdown from "./Dropdown";
 
 interface Customer {
   _id: string;
@@ -115,7 +116,7 @@ function CustomerHome({}: Props) {
         <div className="ml-auto gap-3 flex items-center">
           <NewCustomerModal page="" />
           <div>
-          <Dropdown />
+          <Dropdown/>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent, useContext, useEffect } from "react";
+import { useState, ChangeEvent, FormEvent, useContext,} from "react";
 import Button from "../../../Components/Button";
 import bgImage from "../../../assets/Images/14.png";
 import savings from "../../../assets/Images/Savings.png";
@@ -10,7 +10,7 @@ import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 // import BankHome from "./BankHome";
 import { BankResponseContext } from "../../../context/ContextShare";
-import { useOrganization } from "../../../context/OrganizationContext";
+// import { useOrganization } from "../../../context/OrganizationContext";
 
 type Props = {};
 
@@ -36,7 +36,7 @@ const NewBankModal = ({}: Props) => {
   const [openingType, setOpeningType] = useState("Debit");
   const { setBankResponse } = useContext(BankResponseContext)!;
   const { request: CreateAccount } = useApi("post", 5001);
-  const {organization}=useOrganization()
+  // const {organization}=useOrganization()
   const openModal = () => {
     setModalOpen(true);
     getcurrencyData()
