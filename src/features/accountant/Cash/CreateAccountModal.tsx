@@ -45,29 +45,36 @@ const CreateAccountModal = ({}: Props) => {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+    let processedValue = value;
+  
+    // If the value is negative and the field is openingBalance, reset it to 0
+    if (name === "openingBalance" && parseFloat(value) < 0) {
+      processedValue = "0";
+    }
   
     // Update openingType and related balances accordingly
     if (name === "openingType") {
-      setOpeningType(value);
+      setOpeningType(processedValue);
       setAccounts((prevFormValues) => ({
         ...prevFormValues,
-        debitOpeningBalance: value === "Debit" ? prevFormValues.openingBalance : "",
-        creditOpeningBalance: value === "Credit" ? prevFormValues.openingBalance : "",
+        debitOpeningBalance: processedValue === "Debit" ? prevFormValues.openingBalance : "",
+        creditOpeningBalance: processedValue === "Credit" ? prevFormValues.openingBalance : "",
       }));
     } else if (name === "openingBalance") {
       setAccounts((prevFormValues) => ({
         ...prevFormValues,
-        debitOpeningBalance: openingType === "Debit" ? value : prevFormValues.debitOpeningBalance,
-        creditOpeningBalance: openingType === "Credit" ? value : prevFormValues.creditOpeningBalance,
+        debitOpeningBalance: openingType === "Debit" ? processedValue : prevFormValues.debitOpeningBalance,
+        creditOpeningBalance: openingType === "Credit" ? processedValue : prevFormValues.creditOpeningBalance,
       }));
     } else {
       // Update any other fields normally
       setAccounts((prevBankAccount) => ({
         ...prevBankAccount,
-        [name]: value,
+        [name]: processedValue,
       }));
     }
   };
+  
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -183,7 +190,7 @@ const CreateAccountModal = ({}: Props) => {
                     </div>
                   </div>
                   <input
-                    type="text"
+                    type="number"
                     className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2"
                     placeholder="Enter Opening Balance"
                     name="openingBalance"

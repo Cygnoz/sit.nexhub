@@ -46,7 +46,7 @@ function ViewTaxDetails({ taxRate }: Props) {
           <div className="text-start">
             <h3 className="text-xl font-bold text-textColor">View Tax</h3>
             <p className="text-dropdownText font-semibold text-sm mt-2">
-              Open a new bank account swiftly and securely.
+            Details of the selected Tax.
             </p>
           </div>
           <div

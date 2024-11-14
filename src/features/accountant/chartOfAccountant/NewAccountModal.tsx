@@ -112,7 +112,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
     >
   ) => {
     const { name, value } = e.target;
-  
+
     if (name === "accountSubhead") {
       const result = headGroup(value);
       if (result) {
@@ -138,6 +138,9 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
         creditOpeningBalance: value === "Credit" ? prevFormValues.creditOpeningBalance : "",
       }));
     } else if (name === "openingBalance") {
+      // Check if the entered value is non-negative
+      if (parseFloat(value) < 0) return;
+
       setFormValues((prevFormValues) => ({
         ...prevFormValues,
         debitOpeningBalance:
@@ -152,7 +155,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
       }));
     }
   };
-  
+
   return (
     <div>
       <Button onClick={openModal} variant="primary">
@@ -169,7 +172,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
             <div className="relative z-10">
               <h3 className="text-xl font-bold text-textColor">Create Account</h3>
               <p className="text-dropdownText font-semibold text-sm mt-2">
-                Start your journey with us—create your account in moments!
+                Start your journey with us create your account in moments!
               </p>
             </div>
             <div
@@ -250,7 +253,8 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
                     </div>
                   </div>
                   <input
-                    type="text"
+                    type="number"
+                    min={0}
                     className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2"
                     placeholder="Enter Opening Balance"
                     name="openingBalance"

@@ -30,7 +30,7 @@ const initialBankAccount = {
   creditOpeningBalance: "",
 };
 
-const NewBankModal = ({}: Props) => {
+const NewBankModal = ({ }: Props) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [bankAccount, setBankAccount] = useState(initialBankAccount);
   const [openingType, setOpeningType] = useState("Debit");
@@ -49,47 +49,53 @@ const NewBankModal = ({}: Props) => {
       const { response, error } = await getCurrencyData(url);
       if (!error && response) {
         setcurrencyData(response.data);
-        setBankAccount({...bankAccount,bankCurrency:response.data.find((item:any)=>item.baseCurrency).currencyCode})
+        setBankAccount({ ...bankAccount, bankCurrency: response.data.find((item: any) => item.baseCurrency).currencyCode })
       }
     } catch (error) {
       console.log("Error in fetching currency data", error);
     }
   };
-  
+
 
 
   const closeModal = () => {
     setModalOpen(false);
   };
-
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-  
+    let processedValue = value;
+
+    // If the value is negative, reset it to 0
+    if (name === "openingBalance" && parseFloat(value) < 0) {
+      processedValue = "0";
+    }
+
     // Update openingType and related balances accordingly
     if (name === "openingType") {
-      setOpeningType(value);
+      setOpeningType(processedValue);
       setBankAccount((prevFormValues) => ({
         ...prevFormValues,
-        debitOpeningBalance: value === "Debit" ? prevFormValues.openingBalance : "",
-        creditOpeningBalance: value === "Credit" ? prevFormValues.openingBalance : "",
+        debitOpeningBalance: processedValue === "Debit" ? prevFormValues.openingBalance : "",
+        creditOpeningBalance: processedValue === "Credit" ? prevFormValues.openingBalance : "",
       }));
     } else if (name === "openingBalance") {
       setBankAccount((prevFormValues) => ({
         ...prevFormValues,
-        debitOpeningBalance: openingType === "Debit" ? value : prevFormValues.debitOpeningBalance,
-        creditOpeningBalance: openingType === "Credit" ? value : prevFormValues.creditOpeningBalance,
+        debitOpeningBalance: openingType === "Debit" ? processedValue : prevFormValues.debitOpeningBalance,
+        creditOpeningBalance: openingType === "Credit" ? processedValue : prevFormValues.creditOpeningBalance,
       }));
     } else {
       // Update any other fields normally
       setBankAccount((prevBankAccount) => ({
         ...prevBankAccount,
-        [name]: value,
+        [name]: processedValue,
       }));
     }
   };
-  
+
+
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -112,8 +118,8 @@ const NewBankModal = ({}: Props) => {
     }
   };
 
-  
-  
+
+
 
   return (
     <div>
@@ -200,7 +206,8 @@ const NewBankModal = ({}: Props) => {
                     </div>
                   </div>
                   <input
-                    type="text"
+                    type="number"
+                    min={0}
                     className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2"
                     placeholder="Enter Opening Balance"
                     name="openingBalance"
@@ -245,29 +252,29 @@ const NewBankModal = ({}: Props) => {
                     Currency
                   </label>
                   <div className="relative">
-  <div className="relative w-full">
-    <select
-      name="bankCurrency"
-      value={bankAccount.bankCurrency}
-      onChange={handleChange}
-      className="block appearance-none w-full text-zinc-400 bg-white border border-slate-200 text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-    >
-      {currencyData?.map((data:any) => (
-        <option
-          key={data._id}
-          value={data.currencyCode}
-          selected={data.currencyName} // Set as selected if baseCurrency is true
-          className="text-slate-300"
-        >
-          {`${data.currencyName} (${data.currencySymbol})`}
-        </option>
-      ))}
-    </select>
-    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-      <CehvronDown color="gray" />
-    </div>
-  </div>
-</div>
+                    <div className="relative w-full">
+                      <select
+                        name="bankCurrency"
+                        value={bankAccount.bankCurrency}
+                        onChange={handleChange}
+                        className="block appearance-none w-full text-zinc-400 bg-white border border-slate-200 text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                      >
+                        {currencyData?.map((data: any) => (
+                          <option
+                            key={data._id}
+                            value={data.currencyCode}
+                            selected={data.currencyName} // Set as selected if baseCurrency is true
+                            className="text-slate-300"
+                          >
+                            {`${data.currencyName} (${data.currencySymbol})`}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <CehvronDown color="gray" />
+                      </div>
+                    </div>
+                  </div>
 
                 </div>
               </div>
@@ -285,7 +292,7 @@ const NewBankModal = ({}: Props) => {
               </div>
               <br />
               <div className="flex justify-end gap-2 mb-3">
-              <Button onClick={closeModal} className="pl-10 pr-10" variant="secondary" size="sm">
+                <Button onClick={closeModal} className="pl-10 pr-10" variant="secondary" size="sm">
                   Cancel
                 </Button>
                 <Button type="submit" variant="primary" className="pl-10 pr-10" size="sm">

@@ -74,7 +74,6 @@ const CashAccountsTable = () => {
     "Account Name",
     "Account Code",
     "Account Type",
-    "Documents",
     "Parent Account Type",
     ""
   ];
@@ -118,7 +117,6 @@ const CashAccountsTable = () => {
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountCode}</td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountSubhead}</td>
-                  <td className="py-2.5 px-4 border-y border-tableBorder">{item.description}</td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountHead}</td>
                 </tr>
               ))
