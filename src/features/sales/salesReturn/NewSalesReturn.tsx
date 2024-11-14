@@ -1,10 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import Button from "../../../Components/Button";
 
 type Props = {};
 
 const NewSalesReturn = ({}: Props) => {
+  const navigate = useNavigate()
+  const handleGoBack=()=>{
+    navigate(-1)
+  }
   return (
     <div className="px-8 text-[#303F58]">
       <div className="flex gap-5">
@@ -101,6 +105,7 @@ const NewSalesReturn = ({}: Props) => {
         </div>
         <div className="flex justify-end gap-2 mb-3 me-8 mt-5">
           <Button
+            onClick={handleGoBack}
             variant="secondary"
             size="sm"
             className="py-2 text-sm h-10  w-24 flex justify-center"
