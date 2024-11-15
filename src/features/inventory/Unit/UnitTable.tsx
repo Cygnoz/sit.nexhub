@@ -76,21 +76,26 @@ const UnitTable = ({}: Props) => {
 };
 
 
-  const handleDelete = async (item: any) => {
-    console.log(item);
-    try {
-      const url = `${endponits.DELETE_UNIT}/${item._id}`;
-      const { response, error } = await deleteunit(url);
-      if (!error && response) {
-        toast.success("Category deleted successfully!");
-        getTables();
+const handleDelete = async (item: any) => {
+  console.log(item);
+  try {
+    const url = `${endponits.DELETE_UNIT}/${item._id}`;
+    const { response, error } = await deleteunit(url);
+    if (!error && response) {
+      toast.success("Category deleted successfully!");
+      if (store.length === 1) {
+        setStore([]);
       } else {
-        toast.error(error.response.data.message);
+        getTables();
       }
-    } catch (error) {
-      toast.error("Error occurred while deleting Category.");
+    } else {
+      toast.error(error.response.data.message);
     }
-  };
+  } catch (error) {
+    toast.error("Error occurred while deleting Category.");
+  }
+};
+
 
   const handleUpdate = (updatedUnit: any) => {
     setStore((prevStore: any) =>

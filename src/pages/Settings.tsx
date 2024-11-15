@@ -128,7 +128,8 @@ const SettingCard: React.FC<Setting> = ({
 const Settings: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const navigate=useNavigate()
-  const {previousPath,setPreviousPath}=useContext(PreviousPathContext)!
+  const {previousPath}=useContext(PreviousPathContext)!
+  
 
   const handleGoBack = () => {
       navigate(previousPath);

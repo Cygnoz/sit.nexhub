@@ -309,6 +309,14 @@ export const newPurchaseOrderTableHead = [
   "Amount",
   "Actions",
 ];
+export const newDebitTableHead = [
+  "Product",
+  "Quantity",
+  "Rate",
+  "Tax",
+  "Amount",
+  "Actions",
+];
 
 export const PaymentMadeUnpaidBillTable = [
   "Date",

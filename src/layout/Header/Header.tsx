@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import navlist from "../../assets/constants";
 import SettingsIcons from "../../assets/icons/SettingsIcon";
 import viewAppsIcon from "../../assets/Images/Frame 629925.png";
@@ -15,9 +15,8 @@ type Props = {};
 
 const Header = ({}: Props) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { previousPath, setPreviousPath } = useContext(PreviousPathContext)!;
-
+  const { setPreviousPath } = useContext(PreviousPathContext)!;
+  
   const handleNavigate = () => {
     navigate("/landing#appsSection");
   };

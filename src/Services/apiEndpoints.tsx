@@ -137,6 +137,7 @@ export const endponits = {
   // bill
   ADD_BILL: `/add-Bills`,
   GET_ALL_BILLS: `/get-all-Bills`,
+  GET_A_BILL:`get-a-Bill`,
 
   // Purchase order
   ADD_PURCHASE_ORDER: `add-purchaseOrder`,
@@ -151,6 +152,7 @@ export const endponits = {
   // Debit note
  GET_DEBIT_NOTE_PREFIX:`get-last-debit-note-prefix`,
  ADD_DEBIT_NOTE:`add-DebitNote`,
+ GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
 
   // Login
   LOGIN: "/login",

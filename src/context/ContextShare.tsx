@@ -1,7 +1,6 @@
-import React, { createContext, useState, ReactNode, useEffect } from "react";
+import React, { createContext, useState, ReactNode} from "react";
 import { endponits } from "../Services/apiEndpoints";
 import useApi from "../Hooks/useApi";
-import { useLocation } from "react-router-dom";
 
 interface CashResponseContextType {
   cashResponse: any;
@@ -65,7 +64,7 @@ interface TableLoadingContextType{
 }
 
 interface PreviousPathContextType {
-  previousPath: string;
+  previousPath: any;
   setPreviousPath: React.Dispatch<React.SetStateAction<any>>;
 }
 
