@@ -353,7 +353,7 @@ export const settingsList = [
     ],
   },
   {
-    nav: "Tax & Complaints",
+    nav: "Tax & Compliance",
     icon: circleDollar,
     subhead: [
       { headName: "Taxes", subRoute: "/settings/taxes" },

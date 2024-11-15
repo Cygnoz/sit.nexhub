@@ -518,7 +518,7 @@ const CreateOrganizationForm = () => {
             <div>
               <input
                 className="pl-3 text-sm w-[100%] placeholder-[#495160] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2  leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                placeholder="Street 1"
+                placeholder="Street 2"
                 name="addline2"
                 value={inputData.addline2}
                 onChange={handleInputChange}

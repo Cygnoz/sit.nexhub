@@ -428,8 +428,8 @@ function Items({}: Props) {
                   id="state"
                   className="block appearance-none w-full text-zinc-400 bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 >
-                  <option value="aneetasolaman@cygnoz">
-                    aneetasolaman@cygnoz
+                  <option value="abc@mail.com">
+                    abc@mail.com
                   </option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
