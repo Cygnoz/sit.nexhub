@@ -71,7 +71,7 @@ function DeliveryChallans({}: Props) {
 
       <div className="mt-4 p-6 rounded-lg bg-white">
         <p className="font-bold text-textColor text-sm mb-3">
-          Terms & Condition
+          Terms & Conditions
         </p>
         <textarea
           name="deliveryChellanTC"

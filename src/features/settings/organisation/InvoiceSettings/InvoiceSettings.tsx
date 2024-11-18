@@ -585,14 +585,14 @@ function InvoiceSettings({}: Props) {
 <div className="rounded-md p-5 bg-white">
   <div className="grid grid-cols-2 gap-4">
     <div>
-      <label htmlFor="" className="text-slate-600">Twitter</label>
+      <label htmlFor="" className="text-slate-600">X</label>
       <div className="flex gap-2 items-center justify-center">
         <div className="flex items-center justify-center align-middle bg-slate-100 p-2 h-10 rounded-md mt-2">
           <img width={25} src={twitterLogo} alt="" />
         </div>
         <input
           type="text"
-          placeholder="Add Twitter Link"
+          placeholder="Add X Link"
           onChange={(e) =>
             handleEventBindChange(e.target.value, "xLink")
           }
