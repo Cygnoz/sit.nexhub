@@ -35,11 +35,7 @@ const ExpenseFilterCards: React.FC<ExpenseFilterCardProps> = ({ onSelectSection 
 
   useEffect(() => {
     onSelectSection("expense");
-  }, 
-  []);
-
-
-  
+  }, []);
 
   return (
     <div className="flex gap-3 justify-start mx-5">

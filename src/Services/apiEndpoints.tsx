@@ -159,5 +159,5 @@ export const endponits = {
   GET_OTP: "/verify-otp",
 
   //Expense 
-  ADD_EXPENSE:`add-expense`,
+  ADD_EXPENSES:`add-expense`,
 };
