@@ -1,13 +1,44 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Button from '../../../../Components/Button';
 import CheveronLeftIcon from '../../../../assets/icons/CheveronLeftIcon';
 import PencilEdit from '../../../../assets/icons/PencilEdit';
 import PdfView from './PdfView';
 import SideBar from '../../../sales/salesOrder/SideBar';
+import { useEffect, useState } from 'react';
+import useApi from '../../../../Hooks/useApi';
+import { endponits } from '../../../../Services/apiEndpoints';
+import { useOrganization } from '../../../../context/OrganizationContext';
+
 
 type Props = {};
 
 function PaymentView({}: Props) {
+  const[paymentData,setPaymentData]=useState<[]|any>([])
+  const {request:getPayment}=useApi("get",5005)
+  const { organization } = useOrganization()
+
+
+  const {id}=useParams()
+
+  const getPayments = async () => {
+    try {
+      const url = `${endponits.GET_PAYMENT}/${id}`;
+      const apiResponse = await getPayment(url);
+      const { response, error } = apiResponse;
+      if (!error && response) {
+        setPaymentData(response.data);
+      } else {
+        console.error('API Error:', error?.response?.data?.message || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('Failed to fetch settings:', error);
+    }
+  };
+
+  useEffect(()=>{
+    getPayments()
+  },[])
+
   return (
     <div className="p-6 text-pdftext bg-white rounded-lg mx-7">
       <div className="flex items-center space-x-2 mb-4">
@@ -25,7 +56,7 @@ function PaymentView({}: Props) {
         <div className="space-x-3 items-center flex text-[#303F58] font-bold text-[16px]">
           <h3>Payment</h3>
           <h3 className="font-normal">|</h3>
-          <h3>VP-0001</h3>
+          <h3>{paymentData?.paymentId}</h3>
           <p className="w-[47px] h-[25px] bg-[#F3F3F3] rounded-lg flex items-center justify-center">Draft</p>
         </div>
         <div className="flex space-x-3 mb-4">
@@ -49,11 +80,11 @@ function PaymentView({}: Props) {
       <hr className="mb-5 border-loremcolor" />
       <div className="grid grid-cols-3 space-x-4">
         {/* Sidebar */}
-       <SideBar/>
+       <SideBar data={paymentData}/>
 
         {/* Main content */}
         <div className='col-span-2'>
-        <PdfView/>
+        <PdfView data={paymentData} organization={organization}/>
         </div>
       </div>
     </div>

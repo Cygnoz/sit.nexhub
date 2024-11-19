@@ -354,7 +354,7 @@ function Invoices({}: Props) {
 
         {/* Terms & Condition */}
         <div className="bg-white w-full p-6 text-[14px] rounded-lg space-y-2">
-          <p className="font-bold text-textColor text-sm">Terms & Condition</p>
+          <p className="font-bold text-textColor text-sm">Terms & Conditions</p>
           <textarea
             className="w-full h-32 p-3 border border-inputBorder rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-[#7E0D0B]"
             value={invoiceState.salesInvoiceTC}

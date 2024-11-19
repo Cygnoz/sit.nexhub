@@ -12,8 +12,8 @@ import AddExpenseTable from "./AddExpenseTable";
 import ExpenseFilterCards from "./ExpenseFilterCards";
 import toast from "react-hot-toast";
 
+ 
 type Props = {};
-
 interface ExpenseData {
   expenseDate: string;
   employee: string;
@@ -31,7 +31,6 @@ interface ExpenseData {
     amount: string;
   }[];
 }
-
 function AddExpensePage({}: Props) {
   const [selectedSection, setSelectedSection] = useState<
     "expense" | "mileage" | null
@@ -112,13 +111,11 @@ function AddExpensePage({}: Props) {
       }
     } catch (error) { }
   };
-
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
   };
-
   const handleFileChange = (
     e: ChangeEvent<HTMLInputElement>,
     key: "uploadFiles"
@@ -159,7 +156,6 @@ function AddExpensePage({}: Props) {
       fileInputRef.current.click();
     }
   };
-
   const filterByDisplayName = (
     data: any[],
     displayNameKey: string,
@@ -169,14 +165,12 @@ function AddExpensePage({}: Props) {
       item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
     );
   };
-
   const filteredSupplier = filterByDisplayName(
     supplierData,
     "supplierDisplayName",
     searchValue
   );
   console.log(expenseData);
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -323,7 +317,6 @@ function AddExpensePage({}: Props) {
                 />
               </div>
             </div>
-
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">Employee</label>
               <div className="relative w-full">
@@ -337,7 +330,6 @@ function AddExpensePage({}: Props) {
                 />
               </div>
             </div>
-
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">
                 Paid Through
@@ -377,7 +369,6 @@ function AddExpensePage({}: Props) {
                 </div>
               </div>
             </div>
-
             <div className="col-span-1 space-y-2 mt-1 cursor-pointer">
               <label className="block text-sm  text-labelColor">Vendor</label>
               <div
@@ -397,7 +388,6 @@ function AddExpensePage({}: Props) {
                       : "Select Supplier"}
                   </p>
                 </div>
-
                 {/* Clear button for selected vendor */}
                 {expenseData.vendor ? (
                   <div className="cursor-pointer absolute inset-y-0 right-0.5 -mt-1 flex items-center px-2 text-gray-700">
@@ -416,7 +406,6 @@ function AddExpensePage({}: Props) {
                     <CehvronDown color="gray" />
                   </div>
                 )}
-
                 {/* Dropdown menu */}
                 {openDropdownIndex === "supplier" && (
                   <div
@@ -474,7 +463,6 @@ function AddExpensePage({}: Props) {
                 )}
               </div>
             </div>
-
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">Invoice #</label>
               <div className="relative w-full">
@@ -488,7 +476,6 @@ function AddExpensePage({}: Props) {
                 />
               </div>
             </div>
-
             <div className="col-span-3">
               <AddExpenseTable
                 liabilities={accountData.liabilities}
@@ -498,7 +485,6 @@ function AddExpensePage({}: Props) {
             </div>
           </div>
         )}
-
         {selectedSection === "mileage" && (
           <div className="grid grid-cols-3 gap-4 mt-5 mx-4">
             <div className="col-span-1 space-y-2">
@@ -514,7 +500,6 @@ function AddExpensePage({}: Props) {
                 />
               </div>
             </div>
-
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">Employee</label>
               <div className="relative w-full">
@@ -528,7 +513,6 @@ function AddExpensePage({}: Props) {
                 />
               </div>
             </div>
-
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">
                 Expense Account
@@ -539,12 +523,10 @@ function AddExpensePage({}: Props) {
                   value={expenseData.expense[0].expenseAccount}
                   onChange={(e) => {
                     const selectedValue = e.target.value;
-
                     // Find the selected account's ID
                     const selectedAccount:any = accountData.liabilities?.find(
                       (account: any) => account.accountName === selectedValue
                     );
-
                     // Update expenseAccount and expenseAccountId
                     setExpenseData((prevData) => {
                       const updatedExpense = [...prevData.expense]; // Clone the expense array
@@ -553,7 +535,6 @@ function AddExpensePage({}: Props) {
                         expenseAccount: selectedValue, // Set selected expense account
                         expenseAccountId: selectedAccount?._id || "", // Set selected account's ID
                       };
-
                       return {
                         ...prevData,
                         expense: updatedExpense, // Update the expense array
@@ -574,7 +555,6 @@ function AddExpensePage({}: Props) {
                 </div>
               </div>
             </div>
-
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">
                 Paid Through
@@ -585,12 +565,10 @@ function AddExpensePage({}: Props) {
                   value={expenseData.paidThrough}
                   onChange={(e) => {
                     const selectedValue = e.target.value;
-
                     // Find the selected account's ID
                     const selectedAccount:any = accountData?.paidThrough?.find(
                       (account: any) => account.accountName === selectedValue
                     );
-
                     // Update both paidThrough and paidThroughId in expenseData
                     setExpenseData({
                       ...expenseData,
@@ -615,7 +593,6 @@ function AddExpensePage({}: Props) {
                 </div>
               </div>
             </div>
-
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">Distance</label>
               <div className="relative w-full">
@@ -629,7 +606,6 @@ function AddExpensePage({}: Props) {
                 />
               </div>
             </div>
-
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">
                 Rate Per Km
@@ -645,7 +621,6 @@ function AddExpensePage({}: Props) {
                 />
               </div>
             </div>
-
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">Amount</label>
               <div className="relative w-full">
@@ -660,7 +635,6 @@ function AddExpensePage({}: Props) {
                 />
               </div>
             </div>
-
             <div className="col-span-1 space-y-2 mt-1 cursor-pointer">
               <label className="block text-sm mb-1 text-labelColor">
                 Vendor
@@ -682,7 +656,6 @@ function AddExpensePage({}: Props) {
                       : "Select Supplier"}
                   </p>
                 </div>
-
                 {/* Clear button for selected vendor */}
                 {expenseData.vendor ? (
                   <div className="cursor-pointer absolute inset-y-0 right-0.5 -mt-1 flex items-center px-2 text-gray-700">
@@ -701,7 +674,6 @@ function AddExpensePage({}: Props) {
                     <CehvronDown color="gray" />
                   </div>
                 )}
-
                 {/* Dropdown menu */}
                 {openDropdownIndex === "supplier" && (
                   <div
@@ -759,7 +731,6 @@ function AddExpensePage({}: Props) {
                 )}
               </div>
             </div>
-
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">Invoice#</label>
               <div className="relative w-full">
@@ -813,5 +784,5 @@ function AddExpensePage({}: Props) {
     </>
   );
 }
-
+ 
 export default AddExpensePage;

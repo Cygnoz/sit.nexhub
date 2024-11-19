@@ -36,7 +36,7 @@ const NewBankModal = ({ }: Props) => {
   const [openingType, setOpeningType] = useState("Debit");
   const { setBankResponse } = useContext(BankResponseContext)!;
   const { request: CreateAccount } = useApi("post", 5001);
-  // const {organization}=useOrganization()
+  // const {organization}=nization()
   const openModal = () => {
     setModalOpen(true);
     getcurrencyData()

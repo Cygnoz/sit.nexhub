@@ -258,9 +258,19 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   );
 
   newRows[index].itemAmount = itemAmount;
-  newRows[index].itemCgstAmount = cgstAmount;
-  newRows[index].itemSgstAmount = sgstAmount;
-  newRows[index].itemIgstAmount = igstAmount;
+    newRows[index].itemCgstAmount = cgstAmount;
+    newRows[index].itemSgstAmount = sgstAmount;
+    newRows[index].itemIgstAmount = igstAmount;
+    if(isInterState){
+      newRows[index].itemTax=igstAmount
+      newRows[index].itemCgstAmount=""
+      newRows[index].itemSgstAmount=""
+
+    }
+    else{
+      newRows[index].itemTax=cgstAmount+sgstAmount
+      newRows[index].itemIgstAmount=""
+    }
 
   setRows(newRows);
 
@@ -304,7 +314,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       setRows(newRows);
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: newRows, // Directly use newRows without mapping
+        itemTable: newRows, 
       }));
     } else {
       const defaultRow = {
@@ -326,13 +336,11 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
         itemVatAmount: "",
       };
   
-      // Reset rows to default row
       setRows([defaultRow]);
   
-      // Update purchaseOrderState with the default row
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: [defaultRow], // Set default row
+        itemTable: [defaultRow], 
       }));
     }
   };
@@ -444,15 +452,23 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   
       return {
         ...row,
-
         itemAmount: taxDetails.itemAmount, 
-        itemCgstAmount: taxDetails.cgstAmount,
-        itemSgstAmount: taxDetails.sgstAmount,
-        itemIgstAmount: taxDetails.igstAmount,
+        itemCgstAmount: taxDetails.cgstAmount>0?taxDetails.cgstAmount:"",
+        itemSgstAmount: taxDetails.sgstAmount>0?taxDetails.sgstAmount:"",
+        itemIgstAmount: taxDetails.igstAmount>0?taxDetails.igstAmount:"",
       };
     });
   
     setRows(updatedRows);
+    setPurchaseOrderState?.((prevData: any) => ({
+      ...prevData,
+      itemTable: updatedRows.map((row) => {
+        const updatedItem = { ...row };
+        delete updatedItem.itemImage;
+        return updatedItem;
+      }),
+    }));
+    
   }, [
     purchaseOrderState?.destinationOfSupply,
     purchaseOrderState?.sourceOfSupply,
@@ -492,11 +508,11 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
     setPurchaseOrderState?.((prevData: PurchaseOrder) => ({
       ...prevData,
       totalItem: totalQuantity,
-      sgst: totalSGST,
-      cgst: totalCGST,
-      igst: totalIGST,
+      sgst: isInterState?"": totalSGST ,
+      cgst: isInterState?"":totalCGST,
+      igst: isInterState?totalIGST:"",
       subTotal: totalSellingPrice,
-      itemTotalDiscount: totalDiscount,
+      itemTotalDiscount: totalDiscount?totalDiscount:"",
       totalTaxAmount: isInterState 
       ? totalIGST 
       : totalSGST + totalCGST,    }));

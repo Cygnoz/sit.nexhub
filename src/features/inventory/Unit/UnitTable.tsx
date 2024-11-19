@@ -82,7 +82,7 @@ const handleDelete = async (item: any) => {
     const url = `${endponits.DELETE_UNIT}/${item._id}`;
     const { response, error } = await deleteunit(url);
     if (!error && response) {
-      toast.success("Category deleted successfully!");
+      toast.success(response.data.message);
       if (store.length === 1) {
         setStore([]);
       } else {
