@@ -1358,7 +1358,7 @@ const AddItem = ({ }: Props) => {
             </select>
 
           </div>}
-          <div className={`grid grid-cols-2  gap-4 ${isService ? 'mt-0' : 'mt-11'}`}>
+          <div className={`grid grid-cols-2  gap-4 ${isService ? 'mt-0' : 'mt-10'}`}>
             <div>
               <label
                 className="text-slate-600 flex text-sm items-center gap-2"
@@ -1460,7 +1460,7 @@ const AddItem = ({ }: Props) => {
                 {openDropdownIndex === "preferredVendor" && (
                   <div
                     ref={dropdownRef}
-                    className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-full space-y-1"
+                    className="absolute z-10 bg-white shadow rounded-md mt-1 max-h-[200px] overflow-y-scroll  p-2 w-full space-y-1"
                   >
                     <div className="mb-2.5">
                       <SearchBar
@@ -1506,7 +1506,7 @@ const AddItem = ({ }: Props) => {
               Sales Information
             </p>
             <div className="flex gap-4 my-1">
-              <div className="relative w-1/2">
+              <div className="relative w-1/2 mt-0.5">
                 <label
                   className="text-slate-600 flex text-sm gap-2"
                   htmlFor="sellingPrice"
@@ -1568,8 +1568,8 @@ const AddItem = ({ }: Props) => {
               Track Inventory for this item
             </label>
           </div>
-          <div className="flex justify-between gap-3 mt-1">
-            <div className="w-1/2 ">
+          <div className="flex gap-3 mt-1">
+            <div className="w-[30%] ">
               <label
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="openingStock"
@@ -1587,7 +1587,7 @@ const AddItem = ({ }: Props) => {
               />
             </div>
 
-            <div className="w-1/3">
+            {/* <div className="w-1/3">
               <label
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="openingStockRatePerUnit"
@@ -1603,9 +1603,9 @@ const AddItem = ({ }: Props) => {
                 value={initialItemData.openingStockRatePerUnit}
                 onChange={handleInputChange}
               />
-            </div>
+            </div> */}
 
-            <div className="w-1/3">
+            <div className="w-[30%]">
               <label
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="reorderPoint"

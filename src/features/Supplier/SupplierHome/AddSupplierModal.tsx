@@ -737,9 +737,6 @@ const AddSupplierModal = ({ page }: Props) => {
               <b>Add new Supplier</b>
             </p>
           </div>
-          <div className=" col-span-2 text-end text-2xl cursor-pointer relative ">
-            &times;
-          </div>
         </div>
       ) : (
         <Button
