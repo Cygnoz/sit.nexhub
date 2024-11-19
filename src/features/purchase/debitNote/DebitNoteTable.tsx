@@ -144,6 +144,8 @@ const DebitNoteTable = ({
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
     
+    console.log(igstAmount, sgstAmount,cgstAmount,"igstsvdjgjgh")
+
     if (isInterState) {
       newRows[index].itemTax = igstAmount;
       newRows[index].itemCgstAmount = "";
@@ -172,9 +174,13 @@ const DebitNoteTable = ({
     item: any,
     isInterState: boolean
   ) => {
+
     const cgstPercentage = item.itemCgst || 0;
     const sgstPercentage = item.itemSgst || 0;
     const igstPercentage = item.itemIgst || 0;
+
+    console.log(cgstPercentage,sgstPercentage,igstPercentage,"qwertyui")
+
 
     let cgstAmount = 0;
     let sgstAmount = 0;
@@ -222,6 +228,16 @@ const DebitNoteTable = ({
     newRows[index].itemCgstAmount = cgstAmount;
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
+    if(isInterState){
+      newRows[index].itemTax=igstAmount
+      newRows[index].itemCgstAmount=""
+      newRows[index].itemSgstAmount=""
+
+    }
+    else{
+      newRows[index].itemTax=cgstAmount+sgstAmount
+      newRows[index].itemIgstAmount=""
+    }
 
     setRows(newRows);
 
@@ -367,13 +383,14 @@ const DebitNoteTable = ({
     const totalIGST = calculateTotalIGST();
     const totalSellingPrice = calculateTotalSubtotal();
 
+    
   
     setPurchaseOrderState?.((prevData: DebitNoteBody) => ({
       ...prevData,
       totalItem: totalQuantity,
-      sgst: totalSGST,
-      cgst: totalCGST,
-      igst: totalIGST,
+      sgst: isInterState?"": totalSGST ,
+      cgst: isInterState?"":totalCGST,
+      igst: isInterState?totalIGST:"",
       subTotal: totalSellingPrice,
       totalTaxAmount: isInterState 
       ? totalIGST 
@@ -384,6 +401,40 @@ const DebitNoteTable = ({
   }, [rows,purchaseOrderState.totalTaxAmount]);  
   
 
+  useEffect(() => {
+    const updatedRows = rows.map((row) => {
+      const originalPrice = (Number(row.itemCostPrice) || 0) * (Number(row.itemQuantity) || 0);
+  
+      const taxDetails = calculateTax(
+        originalPrice,
+        row,
+        isInterState as boolean
+      );
+
+  
+      return {
+        ...row,
+        itemAmount: taxDetails.itemAmount,
+        itemCgstAmount: taxDetails.cgstAmount > 0 ? taxDetails.cgstAmount : "",
+        itemSgstAmount: taxDetails.sgstAmount > 0 ? taxDetails.sgstAmount : "",
+        itemIgstAmount: taxDetails.igstAmount > 0 ? taxDetails.igstAmount : "",
+      };
+    });
+  
+    setRows(updatedRows);
+    setPurchaseOrderState?.((prevData: any) => ({
+      ...prevData,
+      items: updatedRows.map((row) => {
+        const updatedItem = { ...row };
+        delete updatedItem.itemImage;
+        return updatedItem;
+      }),
+    }));
+    
+  }, [ isInterState, purchaseOrderState?.destinationOfSupply,
+    purchaseOrderState?.sourceOfSupply,]);
+  
+  
 
   useEffect(() => {
     if (selectedBill.length==0) {
