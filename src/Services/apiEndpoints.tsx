@@ -159,4 +159,7 @@ export const endponits = {
   // Login
   LOGIN: "/login",
   GET_OTP: "/verify-otp",
+
+  //Expense 
+  ADD_EXPENSES:`add-expense`,
 };

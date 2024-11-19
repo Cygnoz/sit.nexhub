@@ -150,33 +150,9 @@ const ViewMoreOrder = ({ salesOrderState, setSalesOrderState, page, allAccounts 
                 />
               </label>
             </div>
-            {page === "invoice" && (
-              <div>
-                <label className="block text-sm mb-1 text-labelColor">
-                  Deposite Account
-                </label>
-                <div className="relative w-full">
-                  <select
-                    onChange={handleChange}
-                    value={salesOrderState.depositAccountId}
-                    name="depositAccountId"
-                    className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  >
-                    <option value="" selected hidden disabled>Select Account</option>
-                    {allAccounts
-                      .filter((item: { accountSubhead: string }) => item.accountSubhead === "Bank" || item.accountSubhead === "Cash")
-                      .map((item: { _id: string; accountName: string }) => (
-                        <option key={item._id} value={item._id}>
-                          {item.accountName}
-                        </option>
-                      ))}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <CehvronDown color="gray" />
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* {page === "invoice" && (
+              
+            )} */}
             <div className="text-sm">
               <label htmlFor="vehiclestring" className="">
                 Vehicle Number
@@ -189,21 +165,9 @@ const ViewMoreOrder = ({ salesOrderState, setSalesOrderState, page, allAccounts 
                 />
               </label>
             </div>
-            {page === "invoice" && (
-              <div className="text-sm">
-                <label htmlFor="vehiclestring" className="">
-                  Paid Amount
-                  <input
-                    value={salesOrderState.paidAmount}
-                    name="paidAmount"
-                    type="number"
-                    onChange={handleChange}
-                    placeholder="Enter Paid Amount"
-                    className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-2"
-                  />
-                </label>
-              </div>
-            )}
+            {/* {page === "invoice" && (
+              
+            )} */}
           </div>
         </>
       ) : (
