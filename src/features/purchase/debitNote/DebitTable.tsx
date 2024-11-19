@@ -52,7 +52,7 @@ const DebitTable = () => {
   }, []);
 
   const handleRowClick = (id: string) => {
-    navigate(`/purchase/viewdebitnote/${id}`);
+    navigate(`/purchase/debit-note/view/${id}`);
   };
 
   const renderColumnContent = (colId: string, item: any) => {

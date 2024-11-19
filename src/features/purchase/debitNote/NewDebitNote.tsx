@@ -14,7 +14,6 @@ import { SupplierResponseContext } from "../../../context/ContextShare";
 import DebitNoteTable from "./DebitNoteTable";
 import toast from "react-hot-toast";
 
-
 const initialSupplierBillState: DebitNoteBody = {
   organizationId: "",
   supplierId: "",
@@ -30,6 +29,8 @@ const initialSupplierBillState: DebitNoteBody = {
   debitNote: "",
   orderNumber: "",
   supplierDebitDate: "",
+  paymentMode: "",
+  depositTo: "",
   subject: "",
 
   items: [
@@ -55,7 +56,7 @@ const initialSupplierBillState: DebitNoteBody = {
   totalItem: "",
   sgst: "",
   cgst: "",
-  igst:"",
+  igst: "",
   totalTaxAmount: "",
   itemTotalDiscount: "",
   grandTotal: "",
@@ -78,19 +79,31 @@ const NewDebitNote = ({}: Props) => {
   const [allBills, setAllBills] = useState<any | []>([]);
   const [selectedBill, setSelectedBill] = useState<any | []>([]);
   const [isInterState, setIsInterState] = useState<boolean>(false);
+  const [accounts, setAccounts] = useState<any>([]);
   const [debitNoteState, setDebitNoteState] = useState<DebitNoteBody>(
     initialSupplierBillState
   );
+  const [errors,setErrors]=useState({
+    billNumber:false,
+    debitDate:false,
+    supplierId:false,
+    sourceOfSupply:false,
+    destinationOfSupply:false,
+    paymentMode:false,
+    depositTo:false,
+    itemTable:false,
+  })
 
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: getCountries } = useApi("get", 5004);
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getPrefix } = useApi("get", 5005);
   const { request: getAllBills } = useApi("get", 5005);
+  const { request: getAccountData } = useApi("get", 5001);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const { supplierResponse } = useContext(SupplierResponseContext)!;
-  const navigate =useNavigate()
+  const navigate = useNavigate();
   const { request: newDebitNoteApi } = useApi("post", 5005);
 
   console.log(debitNoteState, "debitnote state");
@@ -99,16 +112,12 @@ const NewDebitNote = ({}: Props) => {
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-  
-   
-      setDebitNoteState({
-        ...debitNoteState,
-        [name]: value,
-      });
-    
+
+    setDebitNoteState({
+      ...debitNoteState,
+      [name]: value,
+    });
   };
-  
-  
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
@@ -218,34 +227,71 @@ const NewDebitNote = ({}: Props) => {
     "supplierDisplayName",
     searchValue
   );
-
-
-
+  console.log(errors,"error")
 
   const handleSave = async () => {
+    const newErrors = { ...errors };
+  
+    newErrors.billNumber = 
+    typeof debitNoteState.billNumber === "string" 
+      ? debitNoteState.billNumber.trim() === "" 
+      : false;
+  
+  
+    if (debitNoteState.supplierId.trim() === "") {
+      newErrors.supplierId = true;
+    } else {
+      newErrors.supplierId = false;
+    }
+  
+    if (debitNoteState.destinationOfSupply.trim() === "") {
+      newErrors.destinationOfSupply = true;
+    } else {
+      newErrors.destinationOfSupply = false;
+    }
+  
+    if (debitNoteState.sourceOfSupply.trim() === "") {
+      newErrors.sourceOfSupply = true;
+    } else {
+      newErrors.sourceOfSupply = false;
+    }
+    if (debitNoteState.supplierDebitDate.trim() === "") {
+      newErrors.debitDate = true;
+    } else {
+      newErrors.debitDate = false;
+    }
+    if (debitNoteState.paymentMode.trim() === "") {
+      newErrors.paymentMode = true;
+    } else {
+      newErrors.paymentMode = false;
+    }
+    if (debitNoteState.depositTo.trim() === "") {
+      newErrors.depositTo = true;
+    } else {
+      newErrors.depositTo = false;
+    }
+  
+    if (Object.values(newErrors).some((error) => error)) {
+      setErrors(newErrors);
+      toast.error("Fill the required fields");
+      return;
+    }
     try {
       const url = `${endponits.ADD_DEBIT_NOTE}`;
-      const { response, error } = await newDebitNoteApi(
-        url,
-        debitNoteState
-      );
+      const { response, error } = await newDebitNoteApi(url, debitNoteState);
       if (!error && response) {
-
         toast.success(response.data.message);
         setTimeout(() => {
-          navigate("/purchase/debitnote")
+          navigate("/purchase/debitnote");
         }, 1000);
       } else {
         toast.error(error?.response.data.message);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
-  
-  
-  
   useEffect(() => {
     if (debitNoteState?.destinationOfSupply == "") {
       setIsInterState(false);
@@ -265,11 +311,13 @@ const NewDebitNote = ({}: Props) => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
     const getAllBillsUrl = `${endponits.GET_ALL_BILLS}`;
     const getPrefixUrl = `${endponits.GET_DEBIT_NOTE_PREFIX}`;
+    const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
 
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
     fetchData(getAllBillsUrl, setAllBills, getAllBills);
     fetchData(getPrefixUrl, setDBPrefix, getPrefix);
+    fetchData(allAccountsUrl, setAccounts, getAccountData);
   }, []);
 
   useEffect(() => {
@@ -316,7 +364,7 @@ const NewDebitNote = ({}: Props) => {
           <div className="grid grid-cols-2 gap-4 mt-5 space-y-">
             <div>
               <label className="block text-sm mb-1 text-labelColor">
-                Supplier Name
+                Supplier Name<span className="text-[#bd2e2e] ">*</span>
               </label>
               <div
                 className="relative w-full"
@@ -359,14 +407,14 @@ const NewDebitNote = ({}: Props) => {
                               ...prevState,
                               supplierId: supplier._id,
                               supplierDisplayName: supplier.supplierDisplayName,
-                              orderNumber:"",
-                              billNumber:"",
-                              billId:"",
-                              billDate:""
+                              orderNumber: "",
+                              billNumber: "",
+                              billId: "",
+                              billDate: "",
                             }));
                             setOpenDropdownIndex(null);
                             setSelecetdSupplier(supplier);
-                            setSelectedBill([])
+                            setSelectedBill([]);
                           }}
                         >
                           <div>
@@ -377,7 +425,6 @@ const NewDebitNote = ({}: Props) => {
                               Phone: {supplier.mobile}
                             </p>
                           </div>
-                         
                         </div>
                       </div>
                     ))
@@ -395,8 +442,8 @@ const NewDebitNote = ({}: Props) => {
               )}
             </div>
             <div className="relative w-full">
-            <label className="block text-sm mb-1 text-labelColor">
-            Debit Note
+              <label className="block text-sm mb-1 text-labelColor">
+                Debit Note
                 <input
                   value={debitNoteState.debitNote}
                   name="debitNote"
@@ -412,7 +459,7 @@ const NewDebitNote = ({}: Props) => {
               <>
                 <div>
                   <label className="block text-sm mb-1 text-labelColor">
-                    Source Of Supply
+                    Source Of Supply<span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <select
@@ -440,7 +487,7 @@ const NewDebitNote = ({}: Props) => {
                 </div>
                 <div>
                   <label className="block text-sm mb-1 text-labelColor">
-                    Destination of Supply
+                    Destination of Supply<span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <select
@@ -474,12 +521,12 @@ const NewDebitNote = ({}: Props) => {
                 className="block text-sm mb-1 text-labelColor"
                 onClick={() => toggleDropdown("bill")}
               >
-                Bill#
+                Bill#<span className="text-[#bd2e2e] ">*</span>
               </label>
               <div
                 className="relative w-full "
                 onClick={() => {
-                  toggleDropdown("bill")
+                  toggleDropdown("bill");
                 }}
               >
                 <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
@@ -503,72 +550,73 @@ const NewDebitNote = ({}: Props) => {
                     onSearchChange={setSearchValue}
                     placeholder="Search Bill"
                   />
-                 {selecteSupplier && Object.keys (selecteSupplier).length>0? (
-  allBills?.PurchaseBills.length > 0 ? (
-    allBills.PurchaseBills.filter(
-      (bill: any) => bill.supplierId === selecteSupplier?._id
-    ).length > 0 ? (
-      allBills.PurchaseBills.filter(
-        (bill: any) => bill.supplierId === selecteSupplier?._id
-      ).map((bill: any) => (
-        <div
-          key={bill._id}
-          className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-        >
-          <div
-            className="flex cursor-pointer"
-            onClick={() => {
-              setDebitNoteState((prevState) => ({
-                ...prevState,
-                billId: bill._id,
-                billNumber: bill.billNumber,
-                billDate: bill.billDate,
-                orderNumber: bill.orderNumber,
-              }));
-              setOpenDropdownIndex(null);
-              setSelectedBill(bill);
-            }}
-          >
-            <div>
-              <p className="font-bold text-sm">
-                {bill.billNumber}
-              </p>
-              <p className="text-xs text-gray-500">
-                Supplier: {bill.supplierDisplayName}
-              </p>
-            </div>
-          </div>
-        </div>
-      ))
-    ) : (
-      <div className="text-center border-slate-400 border rounded-lg">
-        <p className="text-[red] text-sm py-4">
-          Bills Not Found!
-        </p>
-      </div>
-    )
-  ) : (
-    <div className="text-center border-slate-400 border rounded-lg">
-      <p className="text-[red] text-sm py-4">
-        Bills Not Found!
-      </p>
-    </div>
-  )
-) : (
-  <div className="text-center border-slate-400 border rounded-lg">
-    <p className="text-[darkRed] px-4 text-sm py-4">
-      Please select a supplier to view bills !
-    </p>
-  </div>
-)}
-
+                  {selecteSupplier &&
+                  Object.keys(selecteSupplier).length > 0 ? (
+                    allBills?.PurchaseBills.length > 0 ? (
+                      allBills.PurchaseBills.filter(
+                        (bill: any) => bill.supplierId === selecteSupplier?._id
+                      ).length > 0 ? (
+                        allBills.PurchaseBills.filter(
+                          (bill: any) =>
+                            bill.supplierId === selecteSupplier?._id
+                        ).map((bill: any) => (
+                          <div
+                            key={bill._id}
+                            className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                          >
+                            <div
+                              className="flex cursor-pointer"
+                              onClick={() => {
+                                setDebitNoteState((prevState) => ({
+                                  ...prevState,
+                                  billId: bill._id,
+                                  billNumber: bill.billNumber,
+                                  billDate: bill.billDate,
+                                  orderNumber: bill.orderNumber,
+                                }));
+                                setOpenDropdownIndex(null);
+                                setSelectedBill(bill);
+                              }}
+                            >
+                              <div>
+                                <p className="font-bold text-sm">
+                                  {bill.billNumber}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  Supplier: {bill.supplierDisplayName}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center border-slate-400 border rounded-lg">
+                          <p className="text-[red] text-sm py-4">
+                            Bills Not Found!
+                          </p>
+                        </div>
+                      )
+                    ) : (
+                      <div className="text-center border-slate-400 border rounded-lg">
+                        <p className="text-[red] text-sm py-4">
+                          Bills Not Found!
+                        </p>
+                      </div>
+                    )
+                  ) : (
+                    <div className="text-center border-slate-400 border rounded-lg">
+                      <p className="text-[darkRed] px-4 text-sm py-4">
+                        Please select a supplier to view bills !
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
 
             <div>
               <label className="block text-sm mb-1 text-labelColor">
-                Bill Type
+                Bill Type<span className="text-[#bd2e2e] ">*</span>
               </label>
               <div className="relative w-full">
                 <select
@@ -603,9 +651,10 @@ const NewDebitNote = ({}: Props) => {
             </div>
 
             <div className=" w-full">
-            <label className="block text-sm mb-1 text-labelColor">
-            Order Number
+              <label className="block text-sm mb-1 text-labelColor">
+                Order Number
                 <input
+                disabled
                   name="orderNumber"
                   value={debitNoteState.orderNumber}
                   onChange={handleInputChange}
@@ -617,7 +666,7 @@ const NewDebitNote = ({}: Props) => {
             </div>
             <div>
               <label className="block text-sm mb-1 text-labelColor">
-                Supplier Debit Date
+                Supplier Debit Date<span className="text-[#bd2e2e] ">*</span>
               </label>
               <div className="relative w-full">
                 <input
@@ -631,10 +680,56 @@ const NewDebitNote = ({}: Props) => {
                 />
               </div>
             </div>
+            <div>
+              <label className="block text-sm mb-1 text-labelColor">
+                Payment Mode<span className="text-[#bd2e2e] ">*</span>
+              </label>
+              <div className="relative w-full">
+                <select
+                  onChange={handleInputChange}
+                  name="paymentMode"
+                  value={debitNoteState.paymentMode}
+                  className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                >
+                  <option value="">Select Payment Mode</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Credit">Credit</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm mb-1 text-labelColor">
+                Deposit To<span className="text-[#bd2e2e] ">*</span>
+              </label>
+              <div className="relative w-full">
+                <select
+                  onChange={handleInputChange}
+                  name="depositTo"
+                  value={debitNoteState.depositTo}
+                  className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                >
+                  <option value="">Select Account</option>
+                  {accounts
+                      .filter((item: any) => item.accountSubhead === "Bank" || item.accountSubhead=="Cash")
+                      .map((item: any) => (
+                        <option key={item._id} value={item._id}>
+                          {item.accountName}
+                        </option>
+                      ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
+                </div>
+              </div>
+            </div>
 
             <div className=" w-full">
-            <label className="block text-sm mb-1 text-labelColor">
-            Subject
+              <label className="block text-sm mb-1 text-labelColor">
+                Subject
                 <input
                   name="subject"
                   onChange={handleInputChange}
@@ -706,142 +801,115 @@ const NewDebitNote = ({}: Props) => {
           </div>
 
           <div className="bg-secondary_main p-5 min-h-max rounded-xl relative ">
-          <div className=" pb-4  text-dropdownText border-b-2 border-slate-200 space-y-2">
-                <div className="flex ">
-                  <div className="w-[75%]">
-                    {" "}
-                    <p>Sub Total</p>
-                  </div>
-                  <div className="w-full text-end">
-                    {" "}
-                    <p className="text-end">
-                      {oneOrganization?.baseCurrency}{" "}
-                      {debitNoteState.subTotal
-                        ? debitNoteState.subTotal
-                        : "0.00"}{" "}
-                    </p>
-                  </div>
+            <div className=" pb-4  text-dropdownText border-b-2 border-slate-200 space-y-2">
+              <div className="flex ">
+                <div className="w-[75%]">
+                  {" "}
+                  <p>Sub Total</p>
                 </div>
-
-                <div className="flex ">
-                  <div className="w-[75%]">
-                    {" "}
-                    <p> Total Quantity</p>
-                  </div>
-                  <div className="w-full text-end">
-                    {" "}
-                    <p className="text-end">
-                      {debitNoteState.totalItem
-                        ? debitNoteState.totalItem
-                        : "0"}
-                    </p>
-                  </div>
+                <div className="w-full text-end">
+                  {" "}
+                  <p className="text-end">
+                    {oneOrganization?.baseCurrency}{" "}
+                    {debitNoteState.subTotal ? debitNoteState.subTotal : "0.00"}{" "}
+                  </p>
                 </div>
+              </div>
 
-                <div className="flex ">
-                  <div className="w-[75%]">
-                    <p> Total Item Discount</p>
-                  </div>
-                  <div className="w-full text-end">
-                    <p className="text-end">
-                      {oneOrganization.baseCurrency}{" "}
-                      {debitNoteState.itemTotalDiscount
-                        ? debitNoteState.itemTotalDiscount
-                        : "0.00"}
-                    </p>
-                  </div>
+              <div className="flex ">
+                <div className="w-[75%]">
+                  {" "}
+                  <p> Total Quantity</p>
                 </div>
+                <div className="w-full text-end">
+                  {" "}
+                  <p className="text-end">
+                    {debitNoteState.totalItem ? debitNoteState.totalItem : "0"}
+                  </p>
+                </div>
+              </div>
 
-                <div>
-                  {isInterState ? (
+              <div>
+                {isInterState ? (
+                  <div className="flex ">
+                    <div className="w-[75%]">
+                      {" "}
+                      <p> IGST</p>
+                    </div>
+                    <div className="w-full text-end">
+                      {" "}
+                      <p className="text-end">
+                        {oneOrganization.baseCurrency}{" "}
+                        {debitNoteState.igst ? debitNoteState.igst : "0.00"}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
                     <div className="flex ">
                       <div className="w-[75%]">
                         {" "}
-                        <p> IGST</p>
+                        <p> SGST</p>
                       </div>
                       <div className="w-full text-end">
                         {" "}
                         <p className="text-end">
                           {oneOrganization.baseCurrency}{" "}
-                          {debitNoteState.igst
-                            ? debitNoteState.igst
-                            : "0.00"}
+                          {debitNoteState.sgst ? debitNoteState.sgst : "0.00"}
                         </p>
                       </div>
                     </div>
-                  ) : (
-                    <>
-                      <div className="flex ">
-                        <div className="w-[75%]">
-                          {" "}
-                          <p> SGST</p>
-                        </div>
-                        <div className="w-full text-end">
-                          {" "}
-                          <p className="text-end">
-                            {oneOrganization.baseCurrency}{" "}
-                            {debitNoteState.sgst
-                              ? debitNoteState.sgst
-                              : "0.00"}
-                          </p>
-                        </div>
-                      </div>
 
-                      <div className="flex mt-2">
-                        <div className="w-[75%]">
-                          {" "}
-                          <p> CGST</p>
-                        </div>
-                        <div className="w-full text-end">
-                          {" "}
-                          <p className="text-end">
-                            {oneOrganization.baseCurrency}{" "}
-                            {debitNoteState.cgst
-                              ? debitNoteState.cgst
-                              : "0.00"}
-                          </p>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {!isInterState && (
-                  <div className="flex ">
-                    <div className="w-[75%]">
-                      {" "}
-                      <p> Total Tax</p>
-                    </div>
-                    <div className="w-full text-end">
-                      {" "}
-                      <p className="text-end">
+                    <div className="flex mt-2">
+                      <div className="w-[75%]">
                         {" "}
-                        {oneOrganization.baseCurrency}{" "}
-                        {debitNoteState.totalTaxAmount}
-                      </p>
+                        <p> CGST</p>
+                      </div>
+                      <div className="w-full text-end">
+                        {" "}
+                        <p className="text-end">
+                          {oneOrganization.baseCurrency}{" "}
+                          {debitNoteState.cgst ? debitNoteState.cgst : "0.00"}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
-
-               
-              
-
-               
-               
               </div>
-              <div className="flex text-black">
-                <div className="w-[75%] font-bold">
-                  {" "}
-                  <p>Total</p>
-                </div>
-                <div className="w-full text-end font-bold text-base">
-                  {" "}
-                  <p className="text-end">
+
+              {!isInterState && (
+                <div className="flex ">
+                  <div className="w-[75%]">
                     {" "}
-                    {oneOrganization.baseCurrency} {debitNoteState.grandTotal? debitNoteState.grandTotal:"0.00"}
-                  </p>
+                    <p> Total Tax</p>
+                  </div>
+                  <div className="w-full text-end">
+                    {" "}
+                    <p className="text-end">
+                      {" "}
+                      {oneOrganization.baseCurrency}{" "}
+                      {debitNoteState.totalTaxAmount}
+                    </p>
+                  </div>
                 </div>
+              )}
+            </div>
+            <div className="flex text-black">
+              <div className="w-[75%] font-bold">
+                {" "}
+                <p>Total</p>
               </div>
+              <div className="w-full text-end font-bold text-base">
+                {" "}
+                <p className="text-end">
+                  {" "}
+                  {oneOrganization.baseCurrency}{" "}
+                  {debitNoteState.grandTotal
+                    ? debitNoteState.grandTotal
+                    : "0.00"}
+                </p>
+              </div>
+            </div>
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}

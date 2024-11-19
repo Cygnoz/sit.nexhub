@@ -55,9 +55,8 @@ const PurchaseTable: React.FC<TableProps> = ({
     setCurrentPage(page);
   };
 
-  // Filter only visible columns and calculate the total skeleton columns (visible + 2)
   const visibleColumns = columns.filter((col) => col.visible);
-  const skeletonColumns = [...visibleColumns, {}, {}]; // Add 2 placeholders for extra columns
+  const skeletonColumns = [...visibleColumns, {}, {}]; 
 
   return (
     <div>
@@ -128,7 +127,7 @@ const PurchaseTable: React.FC<TableProps> = ({
                 </tr>
               ))
             ) : (
-              <NoDataFoundTable columns={columns} />
+              <NoDataFoundTable columns={skeletonColumns} />
             )}
           </tbody>
         </table>

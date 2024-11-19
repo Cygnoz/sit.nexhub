@@ -106,7 +106,6 @@ const NewPurchaseOrder = ({}: Props) => {
     grandTotal: 0,
   });
 
-  console.log(purchaseOrderState);
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
@@ -194,26 +193,6 @@ const NewPurchaseOrder = ({}: Props) => {
       console.log("Error in fetching Country", error);
     }
   };
-
-  // const getPurchaseOrderPrefix = async () => {
-  //   try {
-  //     const prefixUrl = `${endponits.GET_LAST_PURCHASE_ORDER_PREFIX}`;
-  //     const { response, error } = await getPrfix(prefixUrl);
-
-  //     if (!error && response) {
-  //       // console.log(response.data);
-
-  //       setPurchaseOrderState((prevData: any) => ({
-  //         ...prevData,
-  //         purchaseOrder: response.data
-  //       }));
-  //     } else {
-  //       console.log(error);
-  //     }
-  //   } catch (error) {
-  //     console.log("Error in fetching Purchase Order Prefix", error);
-  //   }
-  // };
 
   const handleplaceofSupply = () => {
     if (oneOrganization.organizationCountry) {
@@ -309,7 +288,6 @@ const NewPurchaseOrder = ({}: Props) => {
           return totalAmount.toFixed(2);
   };
 
-  console.log();
   
 
   useEffect(() => {
@@ -399,7 +377,6 @@ const NewPurchaseOrder = ({}: Props) => {
     fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
   }, []);
-console.log(supplierResponse),"SResponse"
   useEffect(() => {supplierResponse
     handleDestination();
     handleplaceofSupply();

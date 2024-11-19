@@ -148,11 +148,13 @@ export const endponits = {
   // Payment Made
   ADD_PAYMET_MADE:`add-payment`,
   GET_PAYMENTMADE:`getAllPayments`,
+  GET_PAYMENT:`getPayment`,
 
   // Debit note
  GET_DEBIT_NOTE_PREFIX:`get-last-debit-note-prefix`,
  ADD_DEBIT_NOTE:`add-DebitNote`,
  GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
+ GET_DEBIT_NOTE:`getDebitNote`,
 
   // Login
   LOGIN: "/login",
