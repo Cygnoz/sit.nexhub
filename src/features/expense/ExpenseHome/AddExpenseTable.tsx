@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import CirclePlus from "../../../assets/icons/circleplus";
 import CehvronDown from "../../../assets/icons/CehvronDown";
-import Trash2 from "../../../assets/icons/Trash2";
- 
 interface Row {
   expenseAccountId: string;
   expenseAccount: string;
   note: string;
   amount: number | string;
 }
- 
 type Props = {
   expenseData: {
     expenseDate: string;
@@ -26,15 +23,14 @@ type Props = {
   setExpenseData: React.Dispatch<React.SetStateAction<any>>;
   liabilities:any
 };
- 
+
 const AddExpenseTable = ({ expenseData, setExpenseData,liabilities}: Props) => {
   const [rows, setRows] = useState<Row[]>(expenseData.expense);
- 
+
   useEffect(() => {
     // Keep rows in sync with expenseData.expense
     setRows(expenseData.expense);
   }, [expenseData.expense]);
- 
   const handleAddRow = () => {
     const newRow = { expenseAccountId: "", expenseAccount: "", note: "", amount: "" };
     const updatedRows = [...rows, newRow];
@@ -47,11 +43,11 @@ const AddExpenseTable = ({ expenseData, setExpenseData,liabilities}: Props) => {
       rowIndex === index ? { ...row, [field]: value } : row
     );
     setRows(updatedRows);
- 
+  
     // Update the expenseData as well
     setExpenseData({ ...expenseData, expense: updatedRows });
   };
- 
+
   const handleRowBatchChange = (index: number, updatedFields: Partial<Row>) => {
     const updatedRows = rows.map((row, rowIndex) =>
       rowIndex === index ? { ...row, ...updatedFields } : row
@@ -59,21 +55,21 @@ const AddExpenseTable = ({ expenseData, setExpenseData,liabilities}: Props) => {
     setRows(updatedRows);
     setExpenseData({ ...expenseData, expense: updatedRows });
   };
- 
- 
+  
+
   const calculateTotal = () => {
     return rows
       .reduce((total, row) => total + (parseFloat(row.amount.toString()) || 0), 0)
       .toFixed(2);
   };
- 
- 
- 
- 
- 
+
+
+
+
+
   return (
     <div className="p-4">
-      <div className="overflow-auto w-full">
+      <div className="overflow-auto">
         <table className="w-full bg-gray-50 rounded-md">
           <thead>
             <tr className="bg-gray-100 text-left text-sm font-semibold text-gray-700">
@@ -93,18 +89,15 @@ const AddExpenseTable = ({ expenseData, setExpenseData,liabilities}: Props) => {
     value={rows[index]?.expenseAccount || ""}
     onChange={(e) => {
       const selectedValue = e.target.value;
- 
       // Find the selected account's ID
       const selectedAccount = liabilities.find(
         (account: any) => account.accountName === selectedValue
       );
- 
       // Batch update both fields at once
       const updatedFields = {
         expenseAccount: selectedValue,
         expenseAccountId: selectedAccount?._id || "",
       };
- 
       handleRowBatchChange(index, updatedFields);
     }}
     className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
@@ -126,10 +119,10 @@ const AddExpenseTable = ({ expenseData, setExpenseData,liabilities}: Props) => {
     <CehvronDown color="gray" />
   </div>
 </div>
- 
- 
- 
- 
+
+
+
+
 </td>
 <td className="p-2">
   <input
@@ -140,7 +133,6 @@ const AddExpenseTable = ({ expenseData, setExpenseData,liabilities}: Props) => {
     className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
   />
 </td>
- 
                 <td className="p-2">
                   <input
                     type="number"
@@ -151,20 +143,18 @@ const AddExpenseTable = ({ expenseData, setExpenseData,liabilities}: Props) => {
                   />
                 </td>
                 <td className="p-2 text-center">
-
-                <Trash2  
-  color="gray"
-  size={18}
-  onClick={() => {
-    if (rows.length !== 1) {
-      const updatedRows = rows.filter((_, rowIndex) => rowIndex !== index);
-      setRows(updatedRows);
-      setExpenseData({ ...expenseData, expense: updatedRows });
-    }
-  }}
-  className="text-gray-500 hover:text-red-700"
-/>
-                  
+                  <button
+                    onClick={() => {
+                      if(rows.length!=1){
+                        const updatedRows = rows.filter((_, rowIndex) => rowIndex !== index);
+                      setRows(updatedRows);
+                      setExpenseData({ ...expenseData, expense: updatedRows });
+                      }
+                    }}
+                    className="text-gray-500 hover:text-red-700"
+                  >
+                    &times;
+                  </button>
                 </td>
 
                 
@@ -186,6 +176,5 @@ const AddExpenseTable = ({ expenseData, setExpenseData,liabilities}: Props) => {
     </div>
   );
 };
- 
+
 export default AddExpenseTable;
- 

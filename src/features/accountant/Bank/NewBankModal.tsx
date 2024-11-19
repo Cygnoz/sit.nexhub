@@ -1,15 +1,15 @@
 import { useState, ChangeEvent, FormEvent, useContext,} from "react";
 import Button from "../../../Components/Button";
+import Modal from "../../../Components/model/Modal";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
 import bgImage from "../../../assets/Images/14.png";
 import savings from "../../../assets/Images/Savings.png";
 import CehvronDown from "../../../assets/icons/CehvronDown";
-import Modal from "../../../Components/model/Modal";
 import PlusCircle from "../../../assets/icons/PlusCircle";
-import toast from "react-hot-toast";
-import useApi from "../../../Hooks/useApi";
-import { endponits } from "../../../Services/apiEndpoints";
 // import BankHome from "./BankHome";
 import { BankResponseContext } from "../../../context/ContextShare";
+import toast from "react-hot-toast";
 // import { useOrganization } from "../../../context/OrganizationContext";
 
 type Props = {};
