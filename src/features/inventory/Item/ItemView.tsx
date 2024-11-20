@@ -16,6 +16,8 @@ import line from '../../../assets/Images/Rectangle 5557.png'
 import UserCheck from '../../../assets/icons/UserCheck';
 import ArrowRightLeft from '../../../assets/icons/ArrowRightLeft';
 import ListTreeIcon from '../../../assets/icons/ListTreeIcon';
+import Eye from '../../../assets/icons/Eye';
+import PencilEdit from '../../../assets/icons/PencilEdit';
 type Props = {
   fetchAllItems: () => Promise<any>;
   item: any
@@ -40,8 +42,9 @@ function ItemView({ fetchAllItems, item }: Props) {
   };
   const navigate = useNavigate();
 
-  const handleEdit = () => {
-    navigate("/inventory/Item/new", { state: { item: selectedItem } });
+  const handleEdit = (item: any) => {
+    setSelectedItem(item); // Set the selected item before navigation
+    navigate("/inventory/Item/new", { state: { item } }); // Pass the selected item to the new page
   };
 
   const handleDeleteImage = async () => {
@@ -77,13 +80,14 @@ function ItemView({ fetchAllItems, item }: Props) {
 
   return (
     <div>
-      <Button
-        variant="secondary"
-        className="font-medium rounded-lg h-[1rem] text-[9.5px]"
-        onClick={() => openModal(item)}
-      >
-        See details
-      </Button>
+      <div className='flex justify-center items-center gap-2'>
+        <div onClick={() => handleEdit(item)}> {/* Pass the current item to handleEdit */}
+          <PencilEdit color={'#0B9C56'} />
+        </div>
+        <div onClick={() => openModal(item)}>
+          <Eye color={'#569FBC'} />
+        </div>
+      </div>
 
       <Modal open={isModalOpen} onClose={closeModal} style={{ width: '80%' }}>
         {selectedItem ? (
@@ -107,7 +111,7 @@ function ItemView({ fetchAllItems, item }: Props) {
                         <Button
                           variant="tertiary"
                           className="text-xs font-medium h-[20px] pl-2 pr-2"
-                          onClick={handleEdit}
+                          onClick={() => handleEdit(item)}
                         >
                           <Pen color="#585953" /> Edit
                         </Button>
