@@ -25,7 +25,6 @@ const NewPurchaseOrder = ({}: Props) => {
   const [selected, setSelected] = useState<string | null>("organization");
   const [supplierData, setSupplierData] = useState<[]>([]);
   const [customerData, setCustomerData] = useState<[]>([]);
-  const [paymentTerms, setPaymentTerms] = useState<[]>([]);
   const [selectedCustomer, setSelecetdCustomer] = useState<string>("");
   const [selecteSupplier, setSelecetdSupplier] = useState<any | []>([]);
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
@@ -36,7 +35,6 @@ const NewPurchaseOrder = ({}: Props) => {
 
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: AllCustomer } = useApi("get", 5002);
-  const { request: allPyamentTerms } = useApi("get", 5004);
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: newPurchaseOrderApi } = useApi("post", 5005);
@@ -63,7 +61,7 @@ const NewPurchaseOrder = ({}: Props) => {
     expectedShipmentDate: "",
     paymentTerms: "",
     paymentMode: "",
-    itemTable: [
+    items: [
       {
         itemId: "",
         itemName: "",
@@ -369,12 +367,10 @@ const NewPurchaseOrder = ({}: Props) => {
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
-    const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
 
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
     fetchData(customerUrl, setCustomerData, AllCustomer);
-    fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
   }, []);
   useEffect(() => {supplierResponse
@@ -880,12 +876,15 @@ const NewPurchaseOrder = ({}: Props) => {
                       <option value="" className="text-gray">
                         Select Payment Terms
                       </option>
-                      {paymentTerms.length > 0 &&
-                        paymentTerms.map((item: any) => (
-                          <option value={item.name} className="text-gray">
-                            {item.name}
-                          </option>
-                        ))}
+                      <option value="Net 15">Net 15</option>
+                  <option value="Net 30">Net 30</option>
+                  <option value="Net 45">Net 45</option>
+                  <option value="Net 60">Net 60</option>
+                  <option value="Pay Now">Pay Now</option>
+                  <option value="due on receipt">Due on Receipt</option>
+                  <option value="End of This Month">End of This Month</option>
+                  <option value="End of Next Month">End of Next Month</option>
+                  <option value="Custom">Custom</option>
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <CehvronDown color="gray" />
