@@ -111,6 +111,9 @@ const RackModal = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
       if (!error && response) {
         toast.success("Rack deleted successfully!");
         loadRacks();
+        if(Allracks.length==1){
+          setallRacks((prevData) => prevData.filter((m:any) => m._id !== rack._id));
+        }
       } else {
         toast.error(error.response.data.message);
       }

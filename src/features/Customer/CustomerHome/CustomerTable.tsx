@@ -4,6 +4,8 @@ import Button from "../../../Components/Button";
 import { Link } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
 import Print from "../../sales/salesOrder/Print";
+import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
+import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 
 interface Column {
   id: string;
@@ -27,6 +29,7 @@ interface Customer {
 interface CustomerTableProps {
   customerData: Customer[];
   searchValue: string;
+  loading:any;
   setSearchValue: (value: string) => void;
 }
 
@@ -37,13 +40,15 @@ const initialColumns: Column[] = [
   { id: "customerEmail", label: "Email", visible: true },
   { id: "supplierDetails", label: "Customer details", visible: true },
   { id: "status", label: "Status", visible: true },
-  { id: "skypeNameNumber", label: "Receivables(BCY)", visible: true },
+  { id: "skypeNameNumber", label: "Receivables(BCY)", visible: false },
+  
 ];
 
 const CustomerTable: React.FC<CustomerTableProps> = ({
   customerData,
   searchValue,
   setSearchValue,
+  loading
 }) => {
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
@@ -92,6 +97,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
     ) : (
       <span className="text-gray-500 italic">-</span>
     );
+    
   };
 
   return (
@@ -106,56 +112,61 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
         </div>
         <div className="flex gap-4">
           <Print />
-          <CustomiseColmn columns={columns} setColumns={setColumns} />
         </div>
       </div>
       <div className="mt-3 overflow-y-scroll max-h-[25rem]">
-        <table className="min-w-full bg-white mb-5">
-          <thead className="text-[12px] text-center text-dropdownText">
-            <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
-              {columns.map(
-                (col) =>
-                  col.visible && (
-                    <th
-                      key={col.id}
-                      className="py-2 px-4 font-medium border-b border-tableBorder"
-                    >
-                      {col.label}
-                    </th>
-                  )
-              )}
-            </tr>
-          </thead>
-          <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts && filteredAccounts.length > 0 ? (
-              [...filteredAccounts].reverse().map((item, index) => (
-                <tr key={item._id} className="relative">
-                  <td className="py-2.5 px-4 border-y border-tableBorder">
-                    {index + 1}
-                  </td>
-                  {columns.map(
-                    (col) =>
-                      col.visible && (
-                        <td
-                          key={col.id}
-                          className="py-2.5 px-4 border-y border-tableBorder"
-                        >
-                          {renderColumnContent(col.id, item)}
-                        </td>
-                      )
-                  )}
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={columns.length + 1} className="py-4 text-center">
-                  No customer data found
+      <table className="min-w-full bg-white mb-5">
+  <thead className="text-[12px] text-center text-dropdownText">
+    <tr style={{ backgroundColor: "#F9F7F0" }}>
+      <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
+      {columns.map(
+        (col) =>
+          col.visible && (
+            <th
+              key={col.id}
+              className="py-2 px-4 font-medium border-b border-tableBorder"
+            >
+              {col.label}
+            </th>
+          )
+      )}
+      <th><CustomiseColmn columns={columns} setColumns={setColumns} /></th>
+    </tr>
+  </thead>
+  <tbody className="text-dropdownText text-center text-[13px]">
+    {/* Show skeleton loader if loading */}
+    {loading.skeleton ? (
+      [...Array(filteredAccounts.length>0?filteredAccounts.length:5)].map((_, idx) => (
+        <TableSkelton key={idx} columns={[...columns,"h"]} />
+      ))
+    ) : filteredAccounts && filteredAccounts.length > 0 ? (
+      // Render data if available
+      [...filteredAccounts].reverse().map((item, index) => (
+        <tr key={item._id} className="relative">
+          <td className="py-2.5 px-4 border-y border-tableBorder">
+            {index + 1}
+          </td>
+          {columns.map(
+            (col) =>
+              col.visible && (
+                <td
+                  key={col.id}
+                  className="py-2.5 px-4 border-y border-tableBorder"
+                >
+                  {renderColumnContent(col.id, item)}
                 </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )
+          )}
+          <td className="py-2.5 px-4 border-y border-tableBorder"></td>
+        </tr>
+      ))
+    ) : (
+      // If no data is available, display "No customer data found"
+      <NoDataFoundTable columns={[...columns,"dd"]} />
+    )}
+  </tbody>
+</table>
+
       </div>
     </div>
   );

@@ -80,13 +80,13 @@ const navlist = [
         headName: "Receipt",
         subRoute: "/sales/receipt",
       },
-      {
-        headName: "POS",
-        subRoute: "/inventory",
-      },
+      // {
+      //   headName: "POS",
+      //   subRoute: "/inventory",
+      // },
       {
         headName: "Sales Return",
-        subRoute: "/inventory",
+        subRoute: "/sales/salesreturn",
       },
       {
         headName: "Credit Note",
@@ -118,10 +118,6 @@ const navlist = [
       {
         headName: "Cash",
         subRoute: "/accountant/cash",
-      },
-      {
-        headName: "Day Book",
-        subRoute: "/accountant/daybook",
       },
     ],
   },
@@ -200,7 +196,7 @@ const navlist = [
   {
     nav: "Reports",
     icon: newspapper,
-    route: "/home",
+    route: "/reports",
   },
 ];
 
@@ -313,6 +309,14 @@ export const newPurchaseOrderTableHead = [
   "Amount",
   "Actions",
 ];
+export const newDebitTableHead = [
+  "Product",
+  "Quantity",
+  "Rate",
+  "Tax",
+  "Amount",
+  "Actions",
+];
 
 export const PaymentMadeUnpaidBillTable = [
   "Date",
@@ -357,7 +361,7 @@ export const settingsList = [
     ],
   },
   {
-    nav: "Tax & Complaints",
+    nav: "Tax & Compliance",
     icon: circleDollar,
     subhead: [
       { headName: "Taxes", subRoute: "/settings/taxes" },

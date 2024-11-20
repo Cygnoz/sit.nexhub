@@ -21,12 +21,12 @@ type Props = {
   isModalOpen: boolean;
   openModal: () => void;
   closeModal: () => void;
-  addressEdit?:string
+  addressEdit?: string
 };
 
-const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addressEdit}) => {
-  const [activeTab, setActiveTab] = useState<string>(addressEdit?'address':'otherDetails');
-  const {request:editSupplier}=useApi('put',5009)
+const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addressEdit }) => {
+  const [activeTab, setActiveTab] = useState<string>(addressEdit ? 'address' : 'otherDetails');
+  const { request: editSupplier } = useApi('put', 5009)
   const [countryData, setcountryData] = useState<any | []>([]);
   const [stateList, setStateList] = useState<any | []>([]);
   const [currencyData, setcurrencyData] = useState<any | []>([]);
@@ -34,7 +34,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [shippingstateList, setshippingStateList] = useState<any | []>([]);
   const [paymentTerms, setPaymentTerms] = useState<any | []>([]);
-  const [placeOfSupplyList,setPlaceOfSupplyList]=useState<any |[]>([])
+  const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([])
   const [errors, setErrors] = useState({
     firstName: false,
     lastName: false,
@@ -44,7 +44,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
   const { request: getCountryData } = useApi("get", 5004);
   const { request: getCurrencyData } = useApi("get", 5004);
   const { request: getPaymentTerms } = useApi("get", 5004);
-  const {request:getOrganization}=useApi("get",5004)
+  const { request: getOrganization } = useApi("get", 5004)
   const { request: getTax } = useApi("get", 5009);
   const { setsupplierResponse } = useContext(SupplierResponseContext)!;
   const [rows, setRows] = useState([
@@ -58,7 +58,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
     },
   ]);
 
-  
+
   const addRow = () => {
     setRows([
       ...rows,
@@ -72,10 +72,10 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
       },
     ]);
   };
-  const [openingType,setOpeningType]=useState<string>('credit')
+  const [openingType, setOpeningType] = useState<string>('credit')
   const [supplierdata, setSupplierData] = useState<SupplierData>({
-    _id:"",
-    supplierProfile:"",
+    _id: "",
+    supplierProfile: "",
     salutation: "",
     firstName: "",
     lastName: "",
@@ -141,9 +141,9 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
       },
     ],
     remarks: "",
-    status:""
+    status: ""
   });
-  console.log(supplierdata,"supplierData")
+  console.log(supplierdata, "supplierData")
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -153,9 +153,9 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
         toast.error("Only JPG and PNG images are supported.");
         return;
       }
-  
+
       const reader = new FileReader();
-  
+
       reader.onloadend = () => {
         const base64String = reader.result as string;
         setSupplierData((prevDetails: any) => ({
@@ -163,7 +163,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
           customerProfile: base64String,
         }));
       };
-  
+
       reader.readAsDataURL(file);
     }
   };
@@ -171,7 +171,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
   useEffect(() => {
     setSupplierData(prev => ({ ...prev, ...supplier }));
   }, [supplier]);
-                 
+
   const [showAccountNumbers, setShowAccountNumbers] = useState(
     supplierdata.bankDetails.map(() => false)
   );
@@ -179,25 +179,25 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
     supplierdata.bankDetails.map(() => false)
   );
 
-// check account number
+  // check account number
   const [reEnterAccountNumbers, setReEnterAccountNumbers] = useState(
     supplierdata.bankDetails.map(() => "")
   );
   const [isAccountNumberSame, setIsaccountNumbersame] = useState(
     supplierdata.bankDetails.map(() => true)
   );
-  
+
   const handleReEnterAccountNumberChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const newReEnterAccountNumbers = [...reEnterAccountNumbers];
     newReEnterAccountNumbers[index] = e.target.value;
     setReEnterAccountNumbers(newReEnterAccountNumbers);
-  
+
     const isMatch = supplierdata.bankDetails[index].accountNum === e.target.value;
     const newIsAccountNumberSame = [...isAccountNumberSame];
     newIsAccountNumberSame[index] = isMatch;
     setIsaccountNumbersame(newIsAccountNumberSame);
   };
-  
+
   // add bank account
   const handleBankDetailsChange = (
     index: number,
@@ -219,8 +219,8 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
       bankDetails: updatedBankDetails,
     }));
   };
- 
-  const handleEditSupplier=async()=>{
+
+  const handleEditSupplier = async () => {
     const newErrors = { ...errors };
     if (supplierdata.firstName === "") newErrors.firstName = true;
     if (supplierdata.lastName === "") newErrors.lastName = true;
@@ -234,16 +234,16 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
     }
     try {
       const url = `${endponits.EDIT_SUPPLIER}/${supplier?._id}`;
-      const { response, error } = await editSupplier(url,supplierdata);
-      console.log("res",response?.data);
-      console.log("err",error);
+      const { response, error } = await editSupplier(url, supplierdata);
+      console.log("res", response?.data);
+      console.log("err", error);
       if (!error && response) {
         setsupplierResponse(response.data);
         console.log(response.data);
-        
+
         toast.success(response.data.message)
         console.log(response.data);
-        
+
         closeModal()
       }
     } catch (error) {
@@ -257,19 +257,19 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
     setShowReEnterAccountNumbers(supplierdata.bankDetails.map(() => false));
   }, [supplierdata.bankDetails]);
 
-  const toggleShowAccountNumber = (index:number) => {
+  const toggleShowAccountNumber = (index: number) => {
     setShowAccountNumbers((prev) =>
       prev.map((item, i) => (i === index ? !item : item))
     );
   };
 
-  const toggleShowReEnterAccountNumber = (index:number) => {
+  const toggleShowReEnterAccountNumber = (index: number) => {
     setShowReEnterAccountNumbers((prev) =>
       prev.map((item, i) => (i === index ? !item : item))
     );
   };
 
-// add new bank account
+  // add new bank account
   const addNewBankAccount = () => {
     if (supplierdata.bankDetails.length < 6) {
       setSupplierData((prevState) => ({
@@ -366,7 +366,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, type, value } = e.target;
-  
+
     if (name === "openingType") {
       setOpeningType(value);
 
@@ -374,7 +374,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
         setSupplierData((prevData) => ({
           ...prevData,
           debitOpeningBalance: prevData.creditOpeningBalance,
-          creditOpeningBalance: "", 
+          creditOpeningBalance: "",
         }));
       } else if (value === "Credit") {
         setSupplierData((prevData) => ({
@@ -398,7 +398,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
         }));
       }
     }
-  
+
     // Update supplierDisplayName based on companyName
     if (name === 'companyName') {
       setSupplierData(prevData => ({
@@ -406,7 +406,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
         supplierDisplayName: value
       }));
     }
-  
+
     // Handle checkbox updates
     if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
@@ -416,11 +416,11 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
       }));
     } else {
       // Default case for other inputs
-     if(name!=='openingBalance'){
-      setSupplierData(prevData => ({
-        ...prevData,
-        [name]: value
-      }));
+      if (name !== 'openingBalance') {
+        setSupplierData(prevData => ({
+          ...prevData,
+          [name]: value
+        }));
       }
     }
   };
@@ -446,7 +446,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
         // console.log(paymentTermResponse.data, "paymet terms");
       }
 
-      
+
       const CountryUrl = `${endponits.GET_COUNTRY_DATA}`;
       const { response: countryResponse, error: countryError } =
         await getCountryData(CountryUrl);
@@ -462,7 +462,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
     }
   };
 
-  const getAdditionalInfo=async()=>{
+  const getAdditionalInfo = async () => {
     try {
       const taxUrl = `${endponits.GET_TAX_SUPPLIER}`;
       const { response: taxResponse, error: taxError } = await getTax(taxUrl);
@@ -478,18 +478,18 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
       }
 
     } catch (error) {
-      
+
     }
   }
   const getOneOrganization = async () => {
     try {
       const url = `${endponits.GET_ONE_ORGANIZATION}`;
       const { response, error } = await getOrganization(url);
- 
+
       if (!error && response?.data) {
         setOneOrganization(response.data);
         // console.log(response.data,"org");
-        
+
       }
     } catch (error) {
       console.error("Error fetching organization:", error);
@@ -520,12 +520,12 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
       const country = countryData.find((c: any) =>
         c.name.toLowerCase() === oneOrganization.organizationCountry.toLowerCase()
       );
-  
+
       if (country) {
         const states = country.states;
         // console.log("States:", states);
-  
-        setPlaceOfSupplyList(states); 
+
+        setPlaceOfSupplyList(states);
       } else {
         console.log("Country not found");
       }
@@ -533,10 +533,10 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
       console.log("No country selected");
     }
   };
-  
+
 
   // console.log(placeOfSupplyList,"place");
-  
+
   // handle country and state 
   useEffect(() => {
     handleplaceofSupply()
@@ -566,30 +566,30 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal,addre
   }, []);
 
   const shippingAddressRef = useRef<HTMLDivElement | null>(null);
-const BillingAddressRef = useRef<HTMLDivElement | null>(null);
- 
- 
-const addressscroll=()=>{
-  if (addressEdit === "shippingAddressEdit" && shippingAddressRef.current) {
-    shippingAddressRef.current.scrollIntoView({ behavior: 'smooth' });
-  }
-  if (addressEdit === "billingAddressEdit" && BillingAddressRef.current) {
-    BillingAddressRef.current.scrollIntoView({ behavior: 'smooth' });
-  }
-}
- 
-useEffect(() => {
-setActiveTab(addressEdit?'address':'otherDetails')
-}, [addressEdit]);
+  const BillingAddressRef = useRef<HTMLDivElement | null>(null);
 
-useEffect(()=>{
-  addressscroll()
-},[addressscroll])
+
+  const addressscroll = () => {
+    if (addressEdit === "shippingAddressEdit" && shippingAddressRef.current) {
+      shippingAddressRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+    if (addressEdit === "billingAddressEdit" && BillingAddressRef.current) {
+      BillingAddressRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  useEffect(() => {
+    setActiveTab(addressEdit ? 'address' : 'otherDetails')
+  }, [addressEdit]);
+
+  useEffect(() => {
+    addressscroll()
+  }, [addressscroll])
 
   return (
     <div>
-      
-        {/* <Button onClick={openModal} variant="secondary" className="pl-6 pr-6"  size="sm"><Pen size={18} color="#565148" /> <p className="text-sm font-medium">Edit</p></Button> */}
+
+      {/* <Button onClick={openModal} variant="secondary" className="pl-6 pr-6"  size="sm"><Pen size={18} color="#565148" /> <p className="text-sm font-medium">Edit</p></Button> */}
       <Modal
         open={isModalOpen}
         onClose={closeModal}
@@ -615,9 +615,9 @@ useEffect(()=>{
               className="text-slate-600 text-sm overflow-scroll hide-scrollbar space-y-5 p-2"
               style={{ height: "480px" }}
             >
-            <div className="grid grid-cols-12 gap-4">
-  <div className="col-span-2">
-  <div className=" border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
+              <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-2">
+                  <div className=" border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
                     <label htmlFor="image">
                       <div className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ">
                         {supplierdata.supplierProfile ? (
@@ -653,9 +653,9 @@ useEffect(()=>{
                       />
                     </label>
                   </div>
-  </div>
-  <div className="col-span-10">
-  <div className="grid grid-cols-12 gap-4 ">
+                </div>
+                <div className="col-span-10">
+                  <div className="grid grid-cols-12 gap-4 ">
                     <div className="col-span-2">
                       <label htmlFor="salutation">Salutation</label>
                       <div className="relative w-full">
@@ -808,105 +808,105 @@ useEffect(()=>{
                       />
                     </div>
                   </div>
-  </div>
-</div>
+                </div>
+              </div>
 
               <div className="grid grid-cols-3 gap-4 mt-4">
-              <div>
-                            <label
-                              className="text-slate-600 "
-                              htmlFor="organizationAddress"
-                            >
-                              Work Phone
-                            </label>
-                            <div className="w-full border-0 mt-1">
-                              <PhoneInput
-                                inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                                inputStyle={{ height: "35px", width: "100%" }}
-                                containerStyle={{ width: "100%" }}
-                                country={
-                                 "in"
-                                }
-                                value={supplierdata.workPhone}
-                                onChange={(value) =>
-                                  setSupplierData({...supplierdata,workPhone:value})
-                                }
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <label
-                              className="text-slate-600 "
-                              htmlFor="organizationAddress"
-                            >
-                              Mobile
-                            </label>
-                            <div className="w-full border-0 mt-1">
-                              <PhoneInput
-                                inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                                inputStyle={{ height: "35px", width: "100%" }}
-                                containerStyle={{ width: "100%" }}
-                                country={
-                                 "in"
-                                }
-                                value={supplierdata.mobile}
-                                onChange={(value) =>
-                                  setSupplierData({...supplierdata,mobile:value})
-                                }
-                              />
-                            </div>
-                          </div>
                 <div>
-  <label className="block mb-1">Opening Balance</label>
-  <div className="flex">
-    <div className="relative w-20 ">
-      <select
-        className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder
+                  <label
+                    className="text-slate-600 "
+                    htmlFor="organizationAddress"
+                  >
+                    Work Phone
+                  </label>
+                  <div className="w-full border-0 mt-1">
+                    <PhoneInput
+                      inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                      inputStyle={{ height: "35px", width: "100%" }}
+                      containerStyle={{ width: "100%" }}
+                      country={
+                        "in"
+                      }
+                      value={supplierdata.workPhone}
+                      onChange={(value) =>
+                        setSupplierData({ ...supplierdata, workPhone: value })
+                      }
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label
+                    className="text-slate-600 "
+                    htmlFor="organizationAddress"
+                  >
+                    Mobile
+                  </label>
+                  <div className="w-full border-0 mt-1">
+                    <PhoneInput
+                      inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                      inputStyle={{ height: "35px", width: "100%" }}
+                      containerStyle={{ width: "100%" }}
+                      country={
+                        "in"
+                      }
+                      value={supplierdata.mobile}
+                      onChange={(value) =>
+                        setSupplierData({ ...supplierdata, mobile: value })
+                      }
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block mb-1">Opening Balance</label>
+                  <div className="flex">
+                    <div className="relative w-20 ">
+                      <select
+                        className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder
           text-sm pl-2 pr-2 rounded-l-md leading-tight
           focus:outline-none focus:bg-white focus:border-gray-500"
-        name="openingType"
-        value={openingType}
-        onChange={handleChange}
-      >
-        <option value="credit">Cr</option>
-        <option value="debit">Dr</option>
-      </select>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-        <CehvronDown color="gray" />
-      </div>
-    </div>
-    <input
-      type="text"
-      className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-      placeholder="Enter Opening Balance"
-      name="openingBalance"
-      onChange={(e) => {
-        const value = e.target.value;
+                        name="openingType"
+                        value={openingType}
+                        onChange={handleChange}
+                      >
+                        <option value="credit">Cr</option>
+                        <option value="debit">Dr</option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <CehvronDown color="gray" />
+                      </div>
+                    </div>
+                    <input
+                      type="text"
+                      className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                      placeholder="Enter Opening Balance"
+                      name="openingBalance"
+                      onChange={(e) => {
+                        const value = e.target.value;
 
-        if (/^\d*$/.test(value)) {
-          handleChange(e);
+                        if (/^\d*$/.test(value)) {
+                          handleChange(e);
 
-          if (openingType === "Debit") {
-            setSupplierData((prevData) => ({
-              ...prevData,
-              debitOpeningBalance: value,
-            }));
-          } else {
-            setSupplierData((prevData) => ({
-              ...prevData,
-              creditOpeningBalance: value,
-            }));
-          }
-        }
-      }}
-      value={
-        openingType === "Debit"
-          ? supplierdata.debitOpeningBalance
-          : supplierdata.creditOpeningBalance
-      }
-    />
-  </div>
-                         </div>
+                          if (openingType === "Debit") {
+                            setSupplierData((prevData) => ({
+                              ...prevData,
+                              debitOpeningBalance: value,
+                            }));
+                          } else {
+                            setSupplierData((prevData) => ({
+                              ...prevData,
+                              creditOpeningBalance: value,
+                            }));
+                          }
+                        }
+                      }}
+                      value={
+                        openingType === "Debit"
+                          ? supplierdata.debitOpeningBalance
+                          : supplierdata.creditOpeningBalance
+                      }
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="flex mt-5 px-5">
@@ -1049,10 +1049,10 @@ useEffect(()=>{
                                 Select a Tax
                               </option>
                               {gstOrVat.tds && gstOrVat.tds.map((item: any, index: number) => (
-  <option key={index} value={`${item.name}-${item.value}%`} className="text-gray">
-    {item.name} - ({item.value}%)
-  </option>
-))}
+                                <option key={index} value={`${item.name}-${item.value}%`} className="text-gray">
+                                  {item.name} - ({item.value}%)
+                                </option>
+                              ))}
 
                             </select>
                             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -1115,7 +1115,7 @@ useEffect(()=>{
                           className="hidden"
                           // value={supplierdata.documents}
                           name="documents"
-                          // onChange={(e)=>handleFileChange(e)}
+                        // onChange={(e)=>handleFileChange(e)}
                         />
                       </div>
                       <div className="">
@@ -1177,9 +1177,11 @@ useEffect(()=>{
                                   value={supplierdata.gstTreatment}
                                   onChange={handleChange}
                                 >
-                                  <option value="" className="text-gray">
+                                  <option className="text-gray">
                                     {" "}
-                                    Select a GST treatment
+                                    {supplierdata.gstTreatment
+                                      ? supplierdata.gstTreatment
+                                      : "Select a GST treatment"}
                                   </option>
                                   {gstOrVat?.gstTreatment?.map(
                                     (item: any, index: number) => (
@@ -1194,37 +1196,77 @@ useEffect(()=>{
                                 </div>
                               </div>
                             </div>
-                            <div>
-                              <label className="block mb-1">
-                                Source of Supply
-                              </label>
-
-                              <div className="relative w-full">
-                                <select className="block appearance-none w-full h-9  text-[#818894] bg-white border border-inputBorder text-sm  pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                                  <option value="" className="text-gray">
-                                    {" "}
-                                    {supplier?.sourceOfSupply?supplier?.sourceOfSupply:'Select Source of Supply'}
-                                  </option>
-                                 {placeOfSupplyList.length>0&& placeOfSupplyList.map((item:any,index:number)=><option key={index} value={item} className="text-gray">
-                                   {item}
-                                  </option>) }
-                                </select>
-                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                  <CehvronDown color="gray" />
+                            {supplierdata.gstTreatment !== "Overseas" && (
+                              <div>
+                                <label className="block mb-1">
+                                  Source of Supply
+                                </label>
+                                <div className="relative w-full">
+                                  <select
+                                    name="sourceOfSupply"
+                                    className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder text-sm pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    value={supplierdata.sourceOfSupply}
+                                    onChange={handleChange}
+                                  >
+                                    <option value="" className="text-gray">
+                                      Select Source of Supply
+                                    </option>
+                                    {placeOfSupplyList.length > 0 &&
+                                      placeOfSupplyList.map(
+                                        (item: any, index: number) => (
+                                          <option
+                                            key={index}
+                                            value={item}
+                                            className="text-gray"
+                                          >
+                                            {item}
+                                          </option>
+                                        )
+                                      )}
+                                  </select>
+                                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                    <CehvronDown color="gray" />
+                                  </div>
                                 </div>
+                                {supplierdata.gstTreatment !== "Overseas" &&
+                                  !supplierdata.sourceOfSupply && (
+                                    <p className="text-red-800 text-xs ms-2 mt-1">
+                                      Please select a Source of Supply.
+                                    </p>
+                                  )}
                               </div>
-                            </div>
-                            <div>
-                              <label className="block mb-1">GSTIN/UIN</label>
-                              <input
-                                type="text"
-                                name="gstinUin"
-                                className=" text-sm w-[100%]  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                                placeholder="Enter GSTIN/UIN"
-                                value={supplierdata.gstinUin}
-                                onChange={handleChange}
-                              />
-                            </div>
+                            )}
+
+                            {supplierdata.gstTreatment !== "Unregistered Business" && (
+                              <div>
+                                <div>
+                                  <label className="block mb-1">GSTIN/UIN</label>
+                                  <input
+                                    type="text"
+                                    name="gstinUin"
+                                    className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                                    placeholder="Enter GSTIN/UIN"
+                                    value={supplierdata.gstinUin}
+                                    onChange={handleChange}
+                                    onBlur={() => {
+                                      if (
+                                        supplierdata.gstTreatment !== "Overseas" &&
+                                        supplierdata.gstTreatment !== "Unregistered Business" &&
+                                        supplierdata.gstTreatment !== "" &&
+
+                                        supplierdata.gstinUin === ""
+                                      ) {
+                                        setErrors((prevErrors) => ({ ...prevErrors, gstinUin: true }));
+                                      } else {
+                                        setErrors((prevErrors) => ({ ...prevErrors, gstinUin: false }));
+                                      }
+                                    }}
+                                  />
+                                </div>
+
+                              </div>
+                            )}
+
                           </div>
                         )}
 
@@ -1258,71 +1300,75 @@ useEffect(()=>{
                            </div> */}
                           </div>
                         )}
-
-                        <div>
-                          <label htmlFor="" className="mb-1 block text-base">
-                            MSME Registered?
-                          </label>
+                        <label htmlFor="" className="mt-0 block text-base">
+                          MSME Registered?
+                        </label>
+                        <div className="flex items-center space-x-2">
                           <input
                             type="checkbox"
-                            className="customCheckbox h-6 w-6 mt-2"
+                            id="msmeCheckbox"
+                            className="customCheckbox h-4 w-4"
                             name="msmeRegistered"
                             checked={supplierdata.msmeRegistered}
                             onChange={handleChange}
-                          />{" "}
-                          <label htmlFor="" className="text-base">
+                          />
+                          <label htmlFor="msmeCheckbox" className="text-base cursor-pointer">
                             The Vendor is MSME Registered
                           </label>
                         </div>
-                        <div className="grid grid-cols-2 mt-1 gap-4">
-                          <div className="relative w-full">
-                            <label htmlFor="" className="mb-1 block">
-                              MSME/Udyam Registration Type
-                            </label>
-                            <select 
-                            value={supplierdata.msmeType}
-                            name="msmeType"
-                           onChange={handleChange} 
-                            className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder text-sm  pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                              <option value="" className="text-gray">
-                                {" "}
-                                Select the Registration Type
-                              </option>
-                              {/* {gstOrVat.msmeType &&
-                                gstOrVat.msmeType.map(
-                                  (item: any, index: number) => (
-                                    <option
-                                      key={index}
-                                      value={item}
-                                      className="text-gray"
-                                    >
-                                      {item}
-                                    </option>
-                                  )
-                                )} */}
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-0 mt-6 flex items-center px-2 text-gray-700">
-                              <CehvronDown color="gray" />
+
+
+                        {supplierdata.msmeRegistered == true && (
+                          <div className="grid grid-cols-2 mt-1 gap-4">
+                            <div className="relative w-full">
+                              <label htmlFor="" className="mb-1 block">
+                                MSME/Udyam Registration Type
+                              </label>
+                              <select
+                                value={supplierdata.msmeType}
+                                name="msmeType"
+                                onChange={handleChange}
+                                className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder text-sm  pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                              >
+                                <option value="" className="text-gray">
+                                  {" "}
+                                  Select the Registration Type
+                                </option>
+                                {gstOrVat.msmeType &&
+                                  gstOrVat.msmeType.map(
+                                    (item: any, index: number) => (
+                                      <option
+                                        key={index}
+                                        value={item}
+                                        className="text-gray"
+                                      >
+                                        {item}
+                                      </option>
+                                    )
+                                  )}
+                              </select>
+                              <div className="pointer-events-none absolute inset-y-0 right-0 mt-6 flex items-center px-2 text-gray-700">
+                                <CehvronDown color="gray" />
+                              </div>
+                            </div>
+                            <div className="relative w-full">
+                              <label htmlFor="" className="mb-1 block">
+                                MSME/Udyam Registration Number
+                              </label>
+                              <input
+                                type="text"
+                                className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                                placeholder="Enetr MSME/Udyam Registration Number"
+                                name="msmeNumber"
+                                value={supplierdata.msmeNumber}
+                                onChange={handleChange}
+                              />
                             </div>
                           </div>
-                          <div className="relative w-full">
-                            <label htmlFor="" className="mb-1 block">
-                              MSME/Udyam Registration Number
-                            </label>
-                            <input
-                              type="text"
-                              className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                              placeholder="Enetr MSME/Udyam Registration Number"
-                              name="msmeNumber"
-                              value={supplierdata.msmeNumber}
-                              onChange={handleChange}
-                            />
-                          </div>
-                        </div>
+                        )}
                       </div>
                     </>
                   )}
-
                   {activeTab === "address" && (
                     <div >
                       {/* Billing Address */}
@@ -1411,7 +1457,7 @@ useEffect(()=>{
                               value={supplierdata.billingCity}
                               onChange={handleChange}
                             />
-                            
+
                           </div>
 
                           <div className="relative ">
@@ -1487,7 +1533,7 @@ useEffect(()=>{
                                 onChange={(value) =>
                                   handleBillingPhoneChange(value)
                                 }
-                                
+
                               />
                             </div>
                           </div>
@@ -1506,7 +1552,7 @@ useEffect(()=>{
                               value={supplierdata.billingFaxNum}
                               onChange={handleChange}
                             />
-                          </div>  
+                          </div>
                         </div>
                       </div>
 
@@ -1740,43 +1786,18 @@ useEffect(()=>{
                                 <td className="py-2.5 px- border-y border-tableBorder justify-center mt-4 gap-2 items-center flex-1">
                                   <div className="relative w-full">
                                     <select
-                                      className="block relative appearance-none w-full h-9 focus:border-none text-zinc-400 bg-white text-sm text-center border-none rounded-md leading-tight"
+                                      className="block relative w-full h-9 focus:border-none text-zinc-400 bg-white text-sm text-center border-none rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                       value={row.salutation}
                                       onChange={(e) =>
-                                        handleRowChange(
-                                          index,
-                                          "salutation",
-                                          e.target.value
-                                        )
+                                        handleRowChange(index, "salutation", e.target.value)
                                       }
                                     >
-                                      <option value="" className="text-gray">
-                                        {" "}
-                                        Select
-                                      </option>
-                                      <option value="Mr" className="text-gray">
-                                        {" "}
-                                        Mr
-                                      </option>
-                                      <option value="Mrs" className="text-gray">
-                                        {" "}
-                                        Mrs
-                                      </option>
-                                      <option
-                                        value="Miss"
-                                        className="text-gray"
-                                      >
-                                        {" "}
-                                        Miss
-                                      </option>
-                                      <option value="Dr" className="text-gray">
-                                        {" "}
-                                        Dr
-                                      </option>
+                                      <option value="" className="text-gray">Select</option>
+                                      <option value="Mr" className="text-gray">Mr</option>
+                                      <option value="Mrs" className="text-gray">Mrs</option>
+                                      <option value="Miss" className="text-gray">Miss</option>
+                                      <option value="Dr" className="text-gray">Dr</option>
                                     </select>
-                                    <div className="pointer-events-none absolute inset-y-0 -right-8 flex items-center px-2 text-gray-700">
-                                      <CehvronDown color="gray" />
-                                    </div>
                                   </div>
                                 </td>
                                 <td className="py-2.5 px-8 border-y border-tableBorder">
@@ -1923,26 +1944,26 @@ useEffect(()=>{
                                   Account Number
                                 </label>
                                 <div className="relative">
-                <input
-                  type={showAccountNumbers[index] ? "text" : "password"}
-                  name="accountNum"
-                  className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                  placeholder="Enter Account Number"
-                  value={bankDetail.accountNum}
-                  onChange={(e) => handleBankDetailsChange(index, e)}
-                />
-                <button
-                  type="button"
-                  className="absolute right-2 top-2 text-sm text-gray-600"
-                  onClick={() => toggleShowAccountNumber(index)}
-                >
-                  {showAccountNumbers[index] ? (
-                    <Eye color={"currentColor"} />
-                  ) : (
-                    <EyeOff />
-                  )}
-                </button>
-              </div>
+                                  <input
+                                    type={showAccountNumbers[index] ? "text" : "password"}
+                                    name="accountNum"
+                                    className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                                    placeholder="Enter Account Number"
+                                    value={bankDetail.accountNum}
+                                    onChange={(e) => handleBankDetailsChange(index, e)}
+                                  />
+                                  <button
+                                    type="button"
+                                    className="absolute right-2 top-2 text-sm text-gray-600"
+                                    onClick={() => toggleShowAccountNumber(index)}
+                                  >
+                                    {showAccountNumbers[index] ? (
+                                      <Eye color={"currentColor"} />
+                                    ) : (
+                                      <EyeOff />
+                                    )}
+                                  </button>
+                                </div>
                               </div>
                               <div>
                                 <label className="block mb-1">IFSC Code</label>
@@ -1961,31 +1982,31 @@ useEffect(()=>{
                                 <label className="block mb-1">
                                   Re-Enter Account Number
                                 </label>
-                                
+
                                 <div className="relative">
-                <input
-                  type={showReEnterAccountNumbers[index] ? "text" : "password"}
-                  name="reAccountNum"
-                  className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                  placeholder="Re-Enter Account Number"
-                  value={reEnterAccountNumbers[index]}
-                  onChange={(e) => handleReEnterAccountNumberChange(index, e)}
-                />
-                <button
-                  type="button"
-                  className="absolute right-2 top-2 text-sm text-gray-600"
-                  onClick={() => toggleShowReEnterAccountNumber(index)}
-                >
-                  {showReEnterAccountNumbers[index] ? (
-                    <Eye color={"currentColor"} />
-                  ) : (
-                    <EyeOff />
-                  )}
-                </button>
-              </div>
-              {supplierdata.bankDetails[index].accountNum && reEnterAccountNumbers[index] && !isAccountNumberSame[index] && (
-            <p className="text-sm text-red-600">Account number does not match</p>
-          )}
+                                  <input
+                                    type={showReEnterAccountNumbers[index] ? "text" : "password"}
+                                    name="reAccountNum"
+                                    className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                                    placeholder="Re-Enter Account Number"
+                                    value={reEnterAccountNumbers[index]}
+                                    onChange={(e) => handleReEnterAccountNumberChange(index, e)}
+                                  />
+                                  <button
+                                    type="button"
+                                    className="absolute right-2 top-2 text-sm text-gray-600"
+                                    onClick={() => toggleShowReEnterAccountNumber(index)}
+                                  >
+                                    {showReEnterAccountNumbers[index] ? (
+                                      <Eye color={"currentColor"} />
+                                    ) : (
+                                      <EyeOff />
+                                    )}
+                                  </button>
+                                </div>
+                                {supplierdata.bankDetails[index].accountNum && reEnterAccountNumbers[index] && !isAccountNumberSame[index] && (
+                                  <p className="text-sm text-red-600">Account number does not match</p>
+                                )}
                               </div>
                             </div>
                           </>

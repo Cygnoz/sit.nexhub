@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
-import Ellipsis from "../../../assets/icons/Ellipsis";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
@@ -72,8 +71,7 @@ function BillsHomes({}: Props) {
         <div>
           <h3 className="font-bold text-2xl text-textColor">Bills</h3>
           <p className="text-sm text-gray mt-1">
-            Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla
-            egestas consectetur amet.
+          Comprehensive invoicing that includes purchase details such as order date, supplier name, total amounts due for clear and accurate financial tracking
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">
@@ -87,7 +85,7 @@ function BillsHomes({}: Props) {
           </Button>
 
           <div onClick={toggleDropdown} className="cursor-pointer">
-            <Ellipsis />
+            {/* <Ellipsis /> */}
           </div>
 
           {isDropdownOpen && (

@@ -1,171 +1,87 @@
-import { useEffect, useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomiseColmn from "../../../Components/CustomiseColum";
-import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
-import PrintButton from "../../../Components/PrintButton";
-import SearchBar from "../../../Components/SearchBar";
+import { TableResponseContext } from "../../../context/ContextShare";
+import { endponits } from "../../../Services/apiEndpoints";
 import DotIcon from "../../../assets/icons/DotIcon";
+import PurchaseTable from "../CommonComponents/PurchaseTable/PurchaseTable";
 import DateFormat from "../../../Components/DateFormat/DateFormta";
 
-interface Column {
-  id: string;
-  label: string;
-  visible: boolean;
-}
-
 const Table = () => {
-  const navigate = useNavigate();
-  const initialColumns: Column[] = [
+  const [columns,setColumns] = useState([
     { id: "billNumber", label: "Bill#", visible: true },
     { id: "billDate", label: "Bill Date", visible: true },
     { id: "supplierDisplayName", label: "Supplier Name", visible: true },
     { id: "grandTotal", label: "Amount", visible: true },
     { id: "dueDate", label: "Due Date", visible: true },
     { id: "paidStatus", label: "Status", visible: true },
-  ];
+  ]);
 
-  const [columns, setColumns] = useState<Column[]>(initialColumns);
-  const [searchValue, setSearchValue] = useState<string>("");
-  const [allBill, setAllBill] = useState<any[]>([]);
-
+  const [allBills, setAllBills] = useState<any[]>([]);
   const { request: getBills } = useApi("get", 5005);
+  const { loading, setLoading } = useContext(TableResponseContext)!;
+  const navigate = useNavigate();
 
-  const getAllBill = async () => {
+  const getAllBills = async () => {
     try {
+      setLoading({ ...loading, skeleton: true, noDataFound: false });
+
       const url = `${endponits.GET_ALL_BILLS}`;
       const { response, error } = await getBills(url);
+
       if (!error && response) {
-        setAllBill(response.data.PurchaseBills);
+        setAllBills(response.data.PurchaseBills);
+        setLoading({ ...loading, skeleton: false });
       } else {
         console.log(error);
+        setLoading({ ...loading, skeleton: false, noDataFound: true });
       }
     } catch (error) {
       console.error(error);
+      setLoading({ ...loading, skeleton: false, noDataFound: true });
     }
   };
 
   useEffect(() => {
-    getAllBill();
+    getAllBills();
   }, []);
 
-  const filteredAccounts = allBill?.filter((bill) => {
-    const searchValueLower = searchValue.toLowerCase().trim();
+  const handleRowClick = (id: string) => {
+    navigate(`/purchase/bills/view/${id}`);
+  };
 
-    // Check if billDate and supplierDisplayName are defined before calling startsWith
-    const billDateMatches =
-      bill.billDate && bill.billDate.startsWith(searchValueLower);
-    const supplierNameMatches =
-      bill.supplierDisplayName &&
-      bill.supplierDisplayName
-        .toLowerCase()
-        .trim()
-        .startsWith(searchValueLower);
-
-    return billDateMatches || supplierNameMatches;
-  });
-
-  const handleColumnChange = (newColumns: Column[]) => {
-    setColumns(newColumns);
+  const renderColumnContent = (colId: string, item: any) => {
+    if (colId === "paidStatus") {
+      return (
+        <div className="flex justify-center items-center">
+          <div
+            className={`${
+              item.paidStatus === "Pending" ? "bg-zinc-200" : "bg-[#94dca9]"
+            } text-[13px] rounded-lg text-center items-center text-textColor h-[18px] px-2 max-w-fit gap-2 py-2 flex justify-center`}
+          >
+            <DotIcon color="#495160" />
+            {item.paidStatus}
+          </div>
+       </div>
+      );
+    }
+    if (colId === "billDate" || colId === "dueDate") {
+      return <DateFormat date={item[colId]} />;
+    }
+    return item[colId as keyof typeof item];
   };
 
   return (
-    <>
-      <div className="flex w-full items-center gap-6">
-        <div className="w-full">
-          <SearchBar
-            onSearchChange={setSearchValue}
-            searchValue={searchValue}
-            placeholder="Search Bills"
-          />
-        </div>
-        <PrintButton />
-      </div>
-
-      <div className="overflow-x-auto mt-4">
-        <table className="min-w-full bg-white mb-5 w-full">
-          <thead className="text-[12px] text-center text-dropdownText">
-            <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">
-                <input type="checkbox" className="form-checkbox w-4 h-4" />
-              </th>
-              {columns.map(
-                (col) =>
-                  col.visible && (
-                    <th
-                      key={col.id}
-                      className="py-2 px-4 font-medium border-b border-tableBorder"
-                    >
-                      {col.label}
-                    </th>
-                  )
-              )}
-              <th className="py-2.5 px-4 border-y border-tableBorder">
-                {/* Add CustomiseColmn component here */}
-                <CustomiseColmn
-                  columns={columns}
-                  setColumns={handleColumnChange}
-                />
-              </th>
-            </tr>
-          </thead>
-          <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts && filteredAccounts.length > 0 ? (
-              filteredAccounts.map((item) => (
-                <tr key={item.id} className="relative">
-                  <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <input type="checkbox" className="form-checkbox w-4 h-4" />
-                  </td>
-                  {columns.map((col) => {
-                    let cellContent;
-                    if (col.id === "paidStatus") {
-                      cellContent = (
-                        <div
-                          className={`${
-                            item.paidStatus === "Pending"
-                              ? "bg-zinc-200"
-                              : "bg-[#78AA86]"
-                          } text-[13px] rounded-lg items-center ms-auto text-textColor h-[18px] gap-2 py-2 flex justify-center`}
-                        >
-                          <DotIcon color="#495160" />
-                          {item.paidStatus}
-                        </div>
-                      );
-                    } else if (col.id === "billDate" || col.id==="dueDate") {
-                      cellContent = <DateFormat date={item[col.id]} />;
-                    } else {
-                      cellContent = item[col.id as keyof typeof item];
-                    }
-
-                    return (
-                      col.visible && (
-                        <td
-                          key={col.id}
-                          className="py-2.5 px-4 border-y border-tableBorder cursor-pointer"
-                          onClick={() => navigate("/purchase/bills/view")}
-                        >
-                          {cellContent}
-                        </td>
-                      )
-                    );
-                  })}
-                  <td className="py-2.5 px-4 border-y border-tableBorder"></td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={columns.length + 2}
-                  className="text-center py-4 border-y border-tableBorder"
-                >
-                  <p className="text-red-500">No Data Found!</p>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </>
+    <PurchaseTable
+      columns={columns}
+      data={allBills}
+      onRowClick={handleRowClick}
+      renderColumnContent={renderColumnContent}
+      searchPlaceholder="Search Bills"
+      loading={loading.skeleton}
+      searchableFields={["billNumber", "supplierDisplayName"]}
+      setColumns={setColumns}
+    />
   );
 };
 

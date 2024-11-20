@@ -1,11 +1,11 @@
 import { useEffect, useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
+import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
+import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import { cashResponseContext } from "../../../context/ContextShare";
-import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
-import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
+import { cashResponseContext, TableResponseContext } from "../../../context/ContextShare";
 
 interface Account {
   _id: string;
@@ -21,12 +21,9 @@ const CashAccountsTable = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const { request: AllAccounts } = useApi("get", 5001);
   const { cashResponse } = useContext(cashResponseContext)!;
-
+  const navigate=useNavigate()
   // Loading state
-  const [loading, setLoading] = useState({
-    skeleton: false,
-    noDataFound: false,
-  });
+  const {loading,setLoading}=useContext(TableResponseContext)!;
 
   useEffect(() => {
     fetchAllAccounts();
@@ -77,7 +74,6 @@ const CashAccountsTable = () => {
     "Account Name",
     "Account Code",
     "Account Type",
-    "Documents",
     "Parent Account Type",
     ""
   ];
@@ -103,25 +99,24 @@ const CashAccountsTable = () => {
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
             {loading.skeleton ? (
-              [...Array(filteredAccounts.length ||5)].map((_, idx) => (
+              [...Array(filteredAccounts.length>0?filteredAccounts.length:5)].map((_, idx) => (
                 <TableSkelton key={idx} columns={tableHeaders} />
               ))
             ) : filteredAccounts.length > 0 ? (
               filteredAccounts.map((item: Account, index: number) => (
                 <tr
                   key={item._id}
-                  onClick={() => console.log(`View account: ${item._id}`)} // Navigate to account view
-                  className="relative"
+                  onClick={() => navigate(`/accountant/view/${item._id}?fromCash=true`)} // Navigate to account view
+                  className="relative cursor-pointer"
                 >
                   <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <Link to={`/accountant/view/${item._id}?fromCash=true`}>
+                 
                       {item.accountName}
-                    </Link>
+                  
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountCode}</td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountSubhead}</td>
-                  <td className="py-2.5 px-4 border-y border-tableBorder">{item.description}</td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountHead}</td>
                 </tr>
               ))

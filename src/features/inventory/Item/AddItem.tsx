@@ -15,6 +15,7 @@ import { endponits } from "../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
 import CategoryModal from "../Category/CategoryModal";
 import NewUnit from "../Unit/NewUnit";
+import AddSupplierModal from "../../Supplier/SupplierHome/AddSupplierModal";
 
 type Props = {};
 
@@ -103,6 +104,8 @@ const AddItem = ({ }: Props) => {
     useState<string>("");
   const [searchValueBrand, setSearchValueBrand] = useState<string>("");
   const [searchValueCategory, setSearchValueCategory] = useState<string>("");
+  const [searchValueVendor, setSearchValueVendor] = useState<string>("");
+
   const [searchValueRack, setSearchValueRack] = useState<string>("");
   const [searchValueTaxRate, setSearchValueTaxRate] = useState<string>("");
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
@@ -116,6 +119,7 @@ const AddItem = ({ }: Props) => {
   useEffect(() => {
     fetchAllItems();
     fetchAllItemName();
+    fetchAllSuppliers()
   }, []);
   useEffect(() => {
     window.scrollTo({
@@ -144,6 +148,20 @@ const AddItem = ({ }: Props) => {
       if (!error && response) {
         setItemsData(response.data);
         console.log(response.data, "As");
+      }
+    } catch (error) {
+      console.error("Error fetching items:", error);
+    }
+  };
+  const [suppliers, setSuppliers] = useState<any>([])
+
+  const { request: AllSuppliers } = useApi("get", 5009);
+  const fetchAllSuppliers = async () => {
+    try {
+      const url = `${endponits.GET_ALL_SUPPLIER}`;
+      const { response, error } = await AllSuppliers(url);
+      if (!error && response) {
+        setSuppliers(response.data)
       }
     } catch (error) {
       console.error("Error fetching items:", error);
@@ -207,6 +225,7 @@ const AddItem = ({ }: Props) => {
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     fetchAllItems();
+    fetchAllSuppliers()
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -384,7 +403,9 @@ const AddItem = ({ }: Props) => {
             </div>
           </Link>
           <div className="flex justify-center items-center">
-            <h4 className="font-bold text-xl text-textColor ">New Item</h4>
+            <h4 className="font-bold text-xl text-textColor ">{
+              selectedItem ? "Edit Item" :
+                "New Item"}</h4>
           </div>
         </div>
         <div className="grid grid-cols-12 gap-4 my-2">
@@ -1337,7 +1358,7 @@ const AddItem = ({ }: Props) => {
             </select>
 
           </div>}
-          <div className={`grid grid-cols-2  gap-4 ${isService ? 'mt-0' : 'mt-11'}`}>
+          <div className={`grid grid-cols-2  gap-4 ${isService ? 'mt-0' : 'mt-10'}`}>
             <div>
               <label
                 className="text-slate-600 flex text-sm items-center gap-2"
@@ -1387,7 +1408,7 @@ const AddItem = ({ }: Props) => {
                 </label>
                 <div className="flex">
                   <div className="w-16 text-sm  mt-0.5 rounded-l-md text-start bg-white text-zinc-400 border border-inputBorder h-10 items-center justify-center flex">
-                    {itemsData.organization.baseCurrency.toUpperCase() || "INR"}
+                    {itemsData?.organization?.baseCurrency?.toUpperCase() || "INR"}
                   </div>
                   <input
                     type="number"
@@ -1401,29 +1422,82 @@ const AddItem = ({ }: Props) => {
                   />
                 </div>
               </div>
-
-              <div className="relative w-full">
+              <div className="relative mt-2">
                 <label
-                  htmlFor="preferredVendor"
-                  className="text-slate-600 text-sm gap-2"
+                  htmlFor="vendor-input"
+                  className="text-slate-600 text-sm flex items-center gap-2"
                 >
                   Preferred Vendor
                 </label>
                 <div className="relative w-full">
-                  <select
-                    className="block appearance-none  w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    name="preferredVendor"
+                  <input
+                    id="vendor-input"
+                    type="text"
                     value={initialItemData.preferredVendor}
-                    onChange={handleInputChange}
-                  >
-                    <option value="">Select Vendor</option>
-                    {/* Add vendor options dynamically here */}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <CehvronDown color="gray" />
-                  </div>
+                    readOnly
+                    className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    placeholder="Select or add Preferred Vendor"
+                    onClick={() => toggleDropdown("preferredVendor")}
+                  />
+                  {initialItemData.preferredVendor.length === 0 ? (
+                    <div
+                      onClick={() => toggleDropdown("preferredVendor")}
+                      className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+                    >
+                      <CehvronDown color="gray" />
+                    </div>
+                  ) : (
+                    <div className="cursor-pointer absolute inset-y-0 right-0.5 -mt-1 flex items-center px-2 text-gray-700">
+                      <span
+                        onClick={() => handleClearFields("preferredVendor")}
+                        className="text-textColor text-2xl font-light"
+                      >
+                        &times;
+                      </span>
+                    </div>
+                  )}
                 </div>
+                {openDropdownIndex === "preferredVendor" && (
+                  <div
+                    ref={dropdownRef}
+                    className="absolute z-10 bg-white shadow rounded-md mt-1 max-h-[200px] overflow-y-scroll  p-2 w-full space-y-1"
+                  >
+                    <div className="mb-2.5">
+                      <SearchBar
+                        searchValue={searchValueVendor}
+                        onSearchChange={setSearchValueVendor}
+                        placeholder="Select Preferred Vendor"
+                      />
+                    </div>
+                    {suppliers
+                      .filter((supplier: any) =>
+                        supplier.supplierDisplayName
+                          .toLowerCase()
+                          .includes(searchValueVendor.toLowerCase())
+                      )
+                      .map((supplier: any, index: number) => (
+                        <div
+                          key={index}
+                          onClick={() =>
+                            handleDropdownSelect("preferredVendor", supplier.supplierDisplayName)
+                          }
+                          className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                        >
+                          <div className="col-span-10 flex">
+                            <div>
+                              <p className="font-bold text-sm">{supplier.supplierDisplayName}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                   <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
+                          <AddSupplierModal page="purchase" />
+                        </div>
+                  </div>
+                )}
               </div>
+
+
             </div>
           </div>
 
@@ -1432,7 +1506,7 @@ const AddItem = ({ }: Props) => {
               Sales Information
             </p>
             <div className="flex gap-4 my-1">
-              <div className="relative w-1/2">
+              <div className="relative w-1/2 mt-0.5">
                 <label
                   className="text-slate-600 flex text-sm gap-2"
                   htmlFor="sellingPrice"
@@ -1441,7 +1515,7 @@ const AddItem = ({ }: Props) => {
                 </label>
                 <div className="flex">
                   <div className="w-16 text-sm mt-0.5 rounded-l-md text-start bg-white text-zinc-400 border border-inputBorder h-10 items-center justify-center flex">
-                    {itemsData.organization.baseCurrency.toUpperCase() || "INR"}
+                    {itemsData?.organization?.baseCurrency?.toUpperCase() || "INR"}
                   </div>
                   <input
                     type="number"
@@ -1468,7 +1542,7 @@ const AddItem = ({ }: Props) => {
                 </label>
                 <div className="flex">
                   <div className="w-16 text-sm mt-0.5 rounded-l-md text-start bg-white text-zinc-400 border border-inputBorder h-10 items-center justify-center flex">
-                    {itemsData.organization.baseCurrency.toUpperCase() || "INR"}
+                    {itemsData?.organization?.baseCurrency?.toUpperCase() || "INR"}
                   </div>
                   <input
                     type="number"
@@ -1494,8 +1568,8 @@ const AddItem = ({ }: Props) => {
               Track Inventory for this item
             </label>
           </div>
-          <div className="flex justify-between gap-3 mt-1">
-            <div className="w-1/2 ">
+          <div className="flex gap-3 mt-1">
+            <div className="w-[30%] ">
               <label
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="openingStock"
@@ -1513,7 +1587,7 @@ const AddItem = ({ }: Props) => {
               />
             </div>
 
-            <div className="w-1/3">
+            {/* <div className="w-1/3">
               <label
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="openingStockRatePerUnit"
@@ -1529,9 +1603,9 @@ const AddItem = ({ }: Props) => {
                 value={initialItemData.openingStockRatePerUnit}
                 onChange={handleInputChange}
               />
-            </div>
+            </div> */}
 
-            <div className="w-1/3">
+            <div className="w-[30%]">
               <label
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="reorderPoint"

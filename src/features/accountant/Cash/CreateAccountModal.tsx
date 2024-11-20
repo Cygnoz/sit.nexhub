@@ -45,29 +45,36 @@ const CreateAccountModal = ({}: Props) => {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+    let processedValue = value;
+  
+    // If the value is negative and the field is openingBalance, reset it to 0
+    if (name === "openingBalance" && parseFloat(value) < 0) {
+      processedValue = "0";
+    }
   
     // Update openingType and related balances accordingly
     if (name === "openingType") {
-      setOpeningType(value);
+      setOpeningType(processedValue);
       setAccounts((prevFormValues) => ({
         ...prevFormValues,
-        debitOpeningBalance: value === "Debit" ? prevFormValues.openingBalance : "",
-        creditOpeningBalance: value === "Credit" ? prevFormValues.openingBalance : "",
+        debitOpeningBalance: processedValue === "Debit" ? prevFormValues.openingBalance : "",
+        creditOpeningBalance: processedValue === "Credit" ? prevFormValues.openingBalance : "",
       }));
     } else if (name === "openingBalance") {
       setAccounts((prevFormValues) => ({
         ...prevFormValues,
-        debitOpeningBalance: openingType === "Debit" ? value : prevFormValues.debitOpeningBalance,
-        creditOpeningBalance: openingType === "Credit" ? value : prevFormValues.creditOpeningBalance,
+        debitOpeningBalance: openingType === "Debit" ? processedValue : prevFormValues.debitOpeningBalance,
+        creditOpeningBalance: openingType === "Credit" ? processedValue : prevFormValues.creditOpeningBalance,
       }));
     } else {
       // Update any other fields normally
       setAccounts((prevBankAccount) => ({
         ...prevBankAccount,
-        [name]: value,
+        [name]: processedValue,
       }));
     }
   };
+  
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -75,13 +82,14 @@ const CreateAccountModal = ({}: Props) => {
       const url = `${endponits.Add_NEW_ACCOUNT}`;
       const body = accounts;
       const { response, error } = await CreateAccount(url, body);
-      closeModal();
+      
       if (!error && response) {
         toast.success(response.data.message);
         setCashResponse((prevCashResponse: any) => ({
           ...prevCashResponse,
           ...body,
         }));
+        closeModal();
         setAccounts(initialAccounts);
       } else {
         toast.error(error.response.data.message);
@@ -108,7 +116,7 @@ const CreateAccountModal = ({}: Props) => {
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
             <div
-              className="absolute top-0 -right-8 w-[178px] h-[89px]"
+              className="absolute top-0 -right-8 w-[px] h-[89px]"
               style={{
                 backgroundImage: `url(${bgImage})`,
                 backgroundRepeat: "no-repeat",
@@ -131,8 +139,8 @@ const CreateAccountModal = ({}: Props) => {
           </div>
 
           <form className="flex justify-between" onSubmit={onSubmit}>
-            <div className="mt-12">
-              <img src={CashImage} alt="Cash" />
+            <div className="mt-16 ms-3 ">
+              <img width={250} height={130} src={CashImage} alt="Cash" />
             </div>
             <div className="w-[65%]">
               <div className="mb-4">
@@ -182,7 +190,7 @@ const CreateAccountModal = ({}: Props) => {
                     </div>
                   </div>
                   <input
-                    type="text"
+                    type="number"
                     className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2"
                     placeholder="Enter Opening Balance"
                     name="openingBalance"

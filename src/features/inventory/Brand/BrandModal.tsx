@@ -96,13 +96,15 @@ const BrandManager = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
 
 
   const handleDelete = async (brand: any) => {
-
     try {
       const url = `${endponits.DELETE_BRMC}/${brand.id}`;
       const { response, error } = await deleteBrandRequest(url);
       if (!error && response) {
         toast.success("Brand deleted successfully!");
         loadBrands();
+        if (allBrandData.length == 1) {
+          setAllBrandData((prevData) => prevData.filter((m: any) => m._id !== brand._id));
+        }
       } else {
         toast.error(error.response.data.message);
       }
@@ -158,7 +160,14 @@ const BrandManager = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
           </div>
           <div className="grid grid-cols-3 gap-5">
             {allBrandData.length === 0 ? (
-              <p className="text-center col-span-3 text-red-500 font-semibold">No brands found !</p>
+              <div className="flex justify-center items-center p-2 ms-[100%] w-full">
+                <div className="border border-slate-200 text-textColor rounded-xl w-full h-auto p-3 flex justify-center items-center">
+                  <div className="text-center">
+                    <p className="text-xs text-red-600 text-center">No Brand Data !</p>
+                  </div>
+
+                </div>
+              </div>
             ) : (
               allBrandData.map((brand: any) => (
                 <div key={brand._id} className="flex p-2">

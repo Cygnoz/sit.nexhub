@@ -12,28 +12,47 @@ import MenuDropdown from '../../Components/menu/MenuDropdown';
 import Moon from "../../assets/icons/Moon";
 import { useNavigate } from "react-router-dom";
 import OrganizationIcon from "../../assets/icons/OrganizationIcon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../Components/model/Modal";
 import Button from "../../Components/Button";
 
 type Props = {
   setMode?: React.Dispatch<React.SetStateAction<boolean>>;
-  mode?: boolean
+  mode?: boolean;
 };
 
 function LandingHeader({ mode, setMode }: Props) {
   const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Retrieve mode from localStorage, if it exists
+    const storedMode = localStorage.getItem('mode');
+    if (storedMode !== null) {
+      setMode?.(storedMode === 'true');
+    }
+  }, [setMode]);
+
+  const toggleMode = () => {
+    if (setMode) {
+      setMode((prev) => {
+        const newMode = !prev;
+        localStorage.setItem('mode', newMode.toString());
+        return newMode;
+      });
+    }
+  };
+
   const confirmLogout = () => {
     setLogoutModalOpen(true);
   };
 
   const handleLogout = () => {
-    localStorage.clear();
+    ['authToken', 'savedIndex', 'savedSelectedIndex'].forEach(item => localStorage.removeItem(item));
     navigate("/login");
     setLogoutModalOpen(false);
-  };
+};
+
 
   const closeModal = () => {
     setLogoutModalOpen(false);
@@ -63,25 +82,17 @@ function LandingHeader({ mode, setMode }: Props) {
             {
               label: 'My Profile',
               icon: <UserRound color={mode ? '#4B5C79' : '#DFE1E2'} size="18" />,
-              onClick: () => {
-                // Directly use item properties
-              },
+              onClick: () => {},
             },
             {
               label: 'Support',
               icon: <UserRoundCog color={mode ? '#4B5C79' : '#DFE1E2'} size={18} />,
-              onClick: () => {
-                console.log('Delete clicked with id:', 1);
-                // handleDelete(item._id); // Directly use item properties
-              },
+              onClick: () => {},
             },
             {
               label: 'My Subscription',
               icon: <BellRing color={mode ? '#4B5C79' : '#DFE1E2'} />,
-              onClick: () => {
-                console.log('Delete clicked with id:', 1);
-                // handleDelete(item._id); // Directly use item properties
-              },
+              onClick: () => {},
             },
             {
               label: 'Log Out',
@@ -90,9 +101,9 @@ function LandingHeader({ mode, setMode }: Props) {
             },
           ]}
           backgroundColor={mode ? "bg-white" : "bg-[#3C474D]"}
-          textColor={mode ? 'text-[#4B5C79]' : 'text-[#DFE1E2]'}
           trigger={<OrganizationIcon height="10" width="10" />}
           position="center"
+          labelColor={mode ? "#4B5C79" : '#DFE1E2'}
           underline
           underlineColor='text-[#DFE1E2]'
         />
@@ -103,11 +114,25 @@ function LandingHeader({ mode, setMode }: Props) {
             <ArrowrightUp />
           </div>
         </button>
-        <button className={` ${mode ? 'bg-white' : 'bg-[#F3F3F3]'} ${mode ? 'border-[white]' : 'border-[#7A8087]'} p-1 rounded-full border-4 `}>
-          <div onClick={() => setMode && setMode(prev => !prev)} className={`${mode ? 'bg-[#F6F6F6]' : 'bg-[#F3F3F3]'} rounded-full`}>
-            {mode ? <Moon /> : <Sun />}
-          </div>
-        </button>
+        {mode ? (
+          <button
+            className="bg-white border-white rounded-full border-4"
+            onClick={toggleMode}
+          >
+            <div className="bg-[#EAEBEB] p-1 rounded-full">
+              <Moon />
+            </div>
+          </button>
+        ) : (
+          <button
+            className="bg-[#F3F3F3] border-[#7A8087] p-1 rounded-full border-4"
+            onClick={toggleMode}
+          >
+            <div className="bg-[#F3F3F3] rounded-full">
+              <Sun />
+            </div>
+          </button>
+        )}
       </div>
 
       {isLogoutModalOpen && (

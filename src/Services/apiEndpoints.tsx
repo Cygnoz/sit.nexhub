@@ -20,6 +20,7 @@ export const endponits = {
   GET_ALL_QUOTES: "get-all-sales-quotes",
   GET_ONE_QUOTES: "get-one-sales-quotes",
   GET_ONE_SALES_ORDER: "get-one-sales-order",
+
   //sales order
   GET_LAST_SALES_ORDER_PREFIX: "get-last-sales-order-prefix",
   ADD_SALES_ORDER: "add-sales-order",
@@ -49,7 +50,6 @@ export const endponits = {
   GET_DEFUALT_ACCOUNT: `get-default-account`,
 
   // items settings
-
   ADD_ITEMS: `add-item-settings`,
 
   // Prefreance settings
@@ -57,6 +57,7 @@ export const endponits = {
 
   // get settingsData
   GET_SETTINGS_DATA: `get-settings`,
+
   //Add Item Inventory
   ADD_ITEM: "add-item",
   GET_ALL_ITEM: "get-all-item",
@@ -117,7 +118,6 @@ export const endponits = {
   GET_ALL_ITEMS: "get-itemDropdown",
 
   // settings > slaes > creditNote
-
   ADD_CREDIT_NOTE_SETTINGS: `add-creditNote-settings`,
 
   // Inventory
@@ -137,6 +137,7 @@ export const endponits = {
   // bill
   ADD_BILL: `/add-Bills`,
   GET_ALL_BILLS: `/get-all-Bills`,
+  GET_A_BILL:`get-a-Bill`,
 
   // Purchase order
   ADD_PURCHASE_ORDER: `add-purchaseOrder`,
@@ -146,6 +147,17 @@ export const endponits = {
 
   // Payment Made
   ADD_PAYMET_MADE:`add-payment`,
+  GET_PAYMENTMADE:`getAllPayments`,
+  GET_PAYMENT:`getPayment`,
+
+  // Debit note
+ GET_DEBIT_NOTE_PREFIX:`get-last-debit-note-prefix`,
+ ADD_DEBIT_NOTE:`add-DebitNote`,
+ GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
+ GET_DEBIT_NOTE:`getDebitNote`,
+
+  //  Expense 
+  ADD_EXPENSES:`add-expense`,
 
   // Login
   LOGIN: "/login",

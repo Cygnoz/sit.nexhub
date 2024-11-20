@@ -1,26 +1,25 @@
 import { Link } from "react-router-dom"
 import PlusCircle from "../../../assets/icons/PlusCircle"
 import Button from "../../../Components/Button"
-import SearchBar from "../../../Components/SearchBar"
 import DebitDropdown from "./DebitDropdown"
-import DebitPrint from "./DebitPrint"
-import DebitSort from "./DebitSort"
 import DebitTable from "./DebitTable"
 import TypesOfDebits from "./TypesOfDebits"
-import { useState } from "react"
 
 type Props = {}
 
+
+
+
 function DebitNote({}: Props) {
-  const [searchValue, setSearchValue] = useState<string>("");
+ 
+
   return (
     <>
          <div className=" px-6 flex items-center relative">
         <div>
-          <h3 className="font-bold text-xl text-textColor">Create Supplier Debit Note</h3>
+          <h3 className="font-bold text-2xl text-textColor">Create Supplier Debit Note</h3>
           <p className="text-sm text-gray mt-1">
-            Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla
-            egestas consectetur amet.
+          Create a debit note for supplier returns, accounting adjustments etc...
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">
@@ -38,13 +37,7 @@ function DebitNote({}: Props) {
           <div className="w-[100%] p-3 bg-gray-100">
           <TypesOfDebits/>
           </div>
-          <div className="flex pl-3 pr-3 items-center gap-4 mt-2">
-            <div className="w-[90%]">
-              <SearchBar  onSearchChange={setSearchValue} searchValue={searchValue} placeholder="Search Sales Order" />
-            </div>
-            <DebitSort/>
-            <DebitPrint/>
-          </div>
+         
           <div className="p-5">
             {/* table */}
             <DebitTable/>

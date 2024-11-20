@@ -1,21 +1,24 @@
-import { Link, useNavigate } from "react-router-dom";
-import SearchBar from "../../Components/SearchBar";
-import SettingsIcons from "../../assets/icons/SettingsIcon";
-import Notification from "./HeaderIcons/Notification";
-import RefferEarn from "./HeaderIcons/RefferEarn";
-import Organization from "./HeaderIcons/Organization";
-import { useState, useEffect } from "react";
-import viewAppsIcon from "../../assets/Images/Frame 629925.png";
-import { endponits } from "../../Services/apiEndpoints";
-import useApi from "../../Hooks/useApi";
+import { useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-
+import { useNavigate } from "react-router-dom";
+import navlist from "../../assets/constants";
+import SettingsIcons from "../../assets/icons/SettingsIcon";
+import viewAppsIcon from "../../assets/Images/Frame 629925.png";
+import SearchBar from "../../Components/SearchBar";
+import { PreviousPathContext } from "../../context/ContextShare";
+import useApi from "../../Hooks/useApi";
+import { endponits } from "../../Services/apiEndpoints";
+import Notification from "./HeaderIcons/Notification";
+import Organization from "./HeaderIcons/Organization";
+import RefferEarn from "./HeaderIcons/RefferEarn";
 type Props = {};
 
-const Header = ({ }: Props) => {
+const Header = ({}: Props) => {
   const navigate = useNavigate();
+  const { setPreviousPath } = useContext(PreviousPathContext)!;
+  
   const handleNavigate = () => {
-    navigate('/landing#appsSection');
+    navigate("/landing#appsSection");
   };
 
   const [searchValue, setSearchValue] = useState<string>("");
@@ -23,7 +26,7 @@ const Header = ({ }: Props) => {
   const { request: getOneOrganization } = useApi("get", 5004);
 
   const handleLogout = () => {
-    localStorage.clear();
+    ['authToken', 'savedIndex', 'savedSelectedIndex'].forEach(item => localStorage.removeItem(item));
     navigate("/login");
     toast.error("Session expired. Please log in again.");
   };
@@ -46,6 +49,27 @@ const Header = ({ }: Props) => {
 
     fetchOrganization();
   }, []);
+
+  const handleGoToSettings = () => {
+    navigate("/settings");
+  
+    // Retrieve values from localStorage and parse them as numbers
+    const savedIndex = localStorage.getItem('savedIndex');
+    const savedSelectedIndex = localStorage.getItem('savedSelectedIndex');
+  
+    // Check if values are not null before parsing them as integers
+    const index = savedIndex !== null ? parseInt(savedIndex, 10) : 0;
+    const selectedIndex = savedSelectedIndex !== null ? parseInt(savedSelectedIndex, 10) : 0;
+  
+    // Ensure navlist has the appropriate structure and check index bounds
+    if (navlist[index]?.subhead?.[selectedIndex]?.subRoute) {
+      setPreviousPath(navlist[index].subhead[selectedIndex].subRoute);
+    } else {
+      console.warn("Invalid index or subhead in navlist.");
+    }
+  };
+  
+
 
   return (
     <div
@@ -76,14 +100,13 @@ const Header = ({ }: Props) => {
         <div className="tooltip" data-tooltip="Refer & Earn">
           <RefferEarn />
         </div>
-        <Link to="/settings" className="tooltip" data-tooltip="Settings">
+        <p onClick={handleGoToSettings} className="tooltip" data-tooltip="Settings">
           <SettingsIcons size="md" />
-        </Link>
+        </p>
         <div className="tooltip" data-tooltip="Organization">
           <Organization organizationData={organizationData} />
         </div>
       </div>
-
     </div>
   );
 };

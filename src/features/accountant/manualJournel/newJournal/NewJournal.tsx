@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AccountDropdown from "./AccountDropdown";
 // import ContactDropdown from "./ContactDropdown";
@@ -9,16 +9,16 @@ import PlusIcon from "../../../../assets/icons/PlusIcon";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
-import {  useOrganization } from "../../../../context/OrganizationContext";
+import { useOrganization } from "../../../../context/OrganizationContext";
 
 type Props = {};
 
-function NewJournal({}: Props) {
+function NewJournal({ }: Props) {
   const navigate = useNavigate();
   const { request: NewJournalAdd } = useApi("post", 5001);
   const { request: GetLastJournelPrefix } = useApi("get", 5001);
   const { request: GetAllAcounts } = useApi("get", 5001);
-  const {organization} = useOrganization()
+  const { organization } = useOrganization()
   // Initialize with two non-deletable rows
   const initialTransactions = [
     {
@@ -191,8 +191,8 @@ function NewJournal({}: Props) {
           typeof transaction.debitAmount === "string"
             ? parseFloat(transaction.debitAmount)
             : typeof transaction.debitAmount === "number"
-            ? transaction.debitAmount
-            : 0;
+              ? transaction.debitAmount
+              : 0;
         return total + (isNaN(debitAmount) ? 0 : debitAmount);
       },
       0
@@ -205,8 +205,8 @@ function NewJournal({}: Props) {
           typeof transaction.creditAmount === "string"
             ? parseFloat(transaction.creditAmount)
             : typeof transaction.creditAmount === "number"
-            ? transaction.creditAmount
-            : 0;
+              ? transaction.creditAmount
+              : 0;
         return total + (isNaN(creditAmount) ? 0 : creditAmount);
       },
       0
@@ -394,7 +394,7 @@ function NewJournal({}: Props) {
     });
   };
 
-  console.log(newJournalDatas);
+  console.log("new", newJournalDatas);
 
   return (
     <div className="p-5">
@@ -575,54 +575,64 @@ function NewJournal({}: Props) {
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <input
                         type="number"
+                        min={0}
                         style={{
                           margin: "0 !important", // Remove margins
                           paddingRight: "0 !important", // Remove extra padding
                         }}
                         className="mt-1 w-[150px] border border-inputBorder rounded-md text-sm p-2"
                         placeholder="0.00"
-                        // value={row.debitAmount}
-                        onChange={(e) =>
-                          !row.creditAmount
-                            ? handleInputChange(
-                                index,
-                                "debitAmount",
-                                e.target.value
-                              )
-                            : toast.error(
-                                "Clear credit before entering debit; both can’t be in one row."
-                              )
-                        }
+                        onChange={(e) => {
+                          let value = parseFloat(e.target.value);
+
+                          // If the entered value is negative, reset it to 0
+                          if (value < 0) {
+                            value = 0;
+                            e.target.value = "0"; // Update the displayed value to 0
+                          }
+
+                          if (!row.creditAmount) {
+                            handleInputChange(index, "debitAmount", value);
+                          } else {
+                            toast.error("Clear credit before entering debit; both can’t be in one row.");
+                          }
+                        }}
                       />
+
+
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <input
                         type="number"
+                        min={0}
                         style={{
                           margin: "0 !important", // Remove margins
                           paddingRight: "0 !important", // Remove extra padding
                         }}
                         className="mt-1 w-[130px] border border-inputBorder rounded-md text-sm p-2"
                         placeholder="0.00"
-                        // value={row.creditAmount}
-                        onChange={(e) =>
-                          !row.debitAmount
-                            ? handleInputChange(
-                                index,
-                                "creditAmount",
-                                e.target.value
-                              )
-                            : toast.error(
-                                "Clear debit before entering credit; both can’t be in one row."
-                              )
-                        }
+                        onChange={(e) => {
+                          let value = parseFloat(e.target.value);
+
+                          // If the entered value is negative, reset it to 0
+                          if (value < 0) {
+                            value = 0;
+                            e.target.value = "0"; // Update the displayed value to 0
+                          }
+
+                          if (!row.debitAmount) {
+                            handleInputChange(index, "creditAmount", value);
+                          } else {
+                            toast.error("Clear debit before entering credit; both can’t be in one row.");
+                          }
+                        }}
                       />
+
                     </td>
                     <td
                       onClick={() => deleteRow(index)}
-                      className={`px-6 py-6 items-center whitespace-nowrap text-sm flex justify-center cursor-pointer ${
-                        index < 2 ? "cursor-not-allowed text-gray-400" : ""
-                      }`}
+                      className={`px-6 py-6 items-center whitespace-nowrap text-sm flex justify-center cursor-pointer ${index < 2 ? "cursor-not-allowed text-gray-400" : ""
+                        }`}
                     >
                       <TrashCan color={index < 2 ? "gray" : "red"} />
                     </td>
@@ -653,16 +663,16 @@ function NewJournal({}: Props) {
               {organization?.baseCurrency} {totalResult.totalDebit.toFixed(2)}
             </h4>
             <span className="text-textColor font-bold text-xl">
-            {organization?.baseCurrency}{" "}{totalResult.totalDebit.toFixed(2)}
+              {organization?.baseCurrency}{" "}{totalResult.totalDebit.toFixed(2)}
             </span>
           </div>
 
           <div className="col-span-3 flex flex-col w-[130px]  gap-3 me-5">
             <h4 className="text-[14px] text-[#4B5C79] text-end">
-            {organization?.baseCurrency} {totalResult.totalCredit.toFixed(2)}
+              {organization?.baseCurrency} {totalResult.totalCredit.toFixed(2)}
             </h4>
             <span className="text-textColor font-bold text-xl text-end">
-            {organization?.baseCurrency} {totalResult.totalCredit.toFixed(2)}
+              {organization?.baseCurrency} {totalResult.totalCredit.toFixed(2)}
             </span>
           </div>
           <div className="col-span-2 flex flex-col gap-1 bg-[#FEF7F7] py-[4px] px-[14px]">

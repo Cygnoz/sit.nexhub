@@ -1,26 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import DotIcon from "../../../assets/icons/DotIcon";
-import CustomiseColmn from "../../../Components/CustomiseColum";
-import Print from "../../sales/salesOrder/Print";
-import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
-import SearchBar from "../../../Components/SearchBar";
-
-interface Column {
-  id: string;
-  label: string;
-  visible: boolean;
-}
+import { TableResponseContext } from "../../../context/ContextShare";
+import { endponits } from "../../../Services/apiEndpoints";
+import DotIcon from "../../../assets/icons/DotIcon";
+import PurchaseTable from "../CommonComponents/PurchaseTable/PurchaseTable";
 
 const PurchaseOrderTable = () => {
-  const navigate = useNavigate();
+  const [columns,setColumns] = useState([
 
-  const handleRowClick = (id: string) => {
-    navigate(`/purchase/viewpurchaseorder/${id}`);
-  };
-
-  const initialColumns: Column[] = [
     { id: "purchaseOrder", label: "Purchase Order#", visible: true },
     { id: "purchaseOrderDate", label: "Order Date", visible: true },
     { id: "reference", label: "Reference", visible: true },
@@ -30,38 +18,40 @@ const PurchaseOrderTable = () => {
     { id: "Recieved", label: "Received", visible: false },
     { id: "Billed", label: "Billed", visible: false },
     { id: "ExpectedDate", label: "Expected Date", visible: false },
-  ];
+  ]);
 
-  const [columns, setColumns] = useState<Column[]>(initialColumns);
-  const [searchValue, setSearchValue] = useState<string>("");
   const [allPoData, setAllPOData] = useState<any[]>([]);
   const { request: getPO } = useApi("get", 5005);
+  const { loading, setLoading } = useContext(TableResponseContext)!;
+  const navigate = useNavigate();
 
   const getAllPO = async () => {
     try {
+      setLoading({ ...loading, skeleton: true, noDataFound: false });
+
       const url = `${endponits.GET_ALL_PURCHASE_ORDER}`;
       const { response, error } = await getPO(url);
+
       if (!error && response) {
         setAllPOData(response.data.PurchaseOrders);
+        setLoading({ ...loading, skeleton: false });
       } else {
         console.log(error);
+        setLoading({ ...loading, skeleton: false, noDataFound: true });
       }
     } catch (error) {
       console.error(error);
+      setLoading({ ...loading, skeleton: false, noDataFound: true });
     }
   };
-
-  const filteredAccounts = allPoData.filter((PO) => {
-    const searchValueLower = searchValue.toLowerCase().trim();
-    return (
-      PO.purchaseOrder.toLowerCase().trim().startsWith(searchValueLower) ||
-      PO.supplierDisplayName.toLowerCase().trim().startsWith(searchValueLower)
-    );
-  });
 
   useEffect(() => {
     getAllPO();
   }, []);
+
+  const handleRowClick = (id: string) => {
+    navigate(`/purchase/purchase-order/view/${id}`);
+  };
 
   const renderColumnContent = (colId: string, item: any) => {
     if (colId === "Status") {
@@ -69,93 +59,30 @@ const PurchaseOrderTable = () => {
         <div className="flex justify-center items-center">
           <div className="flex justify-center items-center gap-1.5 bg-BgSubhead rounded-2xl px-2 pt-0.5 pb-0.5">
             <DotIcon color="#495160" />
-            <p className="text-outlineButton text-xs font-medium">
-              {item.status}
-            </p>
+            <p className="text-outlineButton text-xs font-medium">{item.status}</p>
           </div>
         </div>
       );
     }
-    return item[colId as keyof typeof item];
+  
+    const columnValue = item[colId as keyof typeof item];
+    
+    // Display `-` for empty values (null, undefined, or empty string)
+    return columnValue ? columnValue : <span className="text-gray-500 italic">-</span>;
   };
+  
 
   return (
-    <div>
-      <div className="flex items-center gap-4 justify-between">
-        <div className="w-full">
-          <SearchBar
-            placeholder="Search Purchase Order"
-            searchValue={searchValue}
-            onSearchChange={setSearchValue}
-          />
-        </div>
-        <div className="flex gap-4">
-          <Print />
-        </div>
-      </div>
-
-      <div className="overflow-x-auto mt-3  hide-scrollbar  overflow-y-scroll max-h-[25rem]">
-        <table className="min-w-full bg-white mb-5">
-          <thead className="text-[12px] text-center text-dropdownText">
-            <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">
-                <input type="checkbox" className="form-checkbox w-4 h-4" />
-              </th>
-              {columns.map(
-                (col) =>
-                  col.visible && (
-                    <th
-                      key={col.id}
-                      className="py-2 px-4 font-medium border-b border-tableBorder"
-                    >
-                      {col.label}
-                    </th>
-                  )
-              )}
-              <th className="py-3 px-14 font-medium border-b border-tableBorder">
-                <CustomiseColmn columns={columns} setColumns={setColumns} />
-              </th>
-            </tr>
-          </thead>
-          <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts && filteredAccounts.length > 0 ? (
-              filteredAccounts.map((item) => (
-                <tr
-                  key={item._id}
-                  className="relative cursor-pointer"
-                  onClick={() => handleRowClick(item._id)}
-                >
-                  <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <input type="checkbox" className="form-checkbox w-4 h-4" />
-                  </td>
-                  {columns.map(
-                    (col) =>
-                      col.visible && (
-                        <td
-                          key={col.id}
-                          className="py-2.5 px-4 border-y border-tableBorder"
-                        >
-                          {renderColumnContent(col.id, item)}
-                        </td>
-                      )
-                  )}
-                  <td className="py-3 px-4 border-b border-tableBorder"></td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={columns.length + 2}
-                  className="text-center py-4 border-y border-tableBorder"
-                >
-                  <p className="text-red-500">No Data Found!</p>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <PurchaseTable
+      columns={columns}
+      data={allPoData}
+      onRowClick={handleRowClick}
+      renderColumnContent={renderColumnContent}
+      searchPlaceholder="Search Purchase Order"
+      loading={loading.skeleton}
+      searchableFields={["purchaseOrder", "supplierDisplayName"]}
+      setColumns={setColumns}
+    />
   );
 };
 

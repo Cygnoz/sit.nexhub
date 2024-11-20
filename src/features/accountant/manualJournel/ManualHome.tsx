@@ -1,11 +1,10 @@
-import Ellipsis from "../../../assets/icons/Ellipsis";
-import Button from "../../../Components/Button";
-import PlusCircle from "../../../assets/icons/PlusCircle";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import Table from "../manualJournel/newJournal/Table";
 import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
-import { useEffect, useRef, useState } from "react";
+import PlusCircle from "../../../assets/icons/PlusCircle";
+import Button from "../../../Components/Button";
+import Table from "../manualJournel/newJournal/Table";
 
 type Props = {};
 
@@ -58,7 +57,7 @@ function ManualHome({}: Props) {
   ];
   return (
     <>
-      <div className="mx-5 my-4 bg-slate-50 h-[100vh]">
+      <div className="mx-5 my-4  h-[100vh]">
         <div className="flex items-center">
           <div>
             <h3 className="font-bold text-2xl text-textColor">
@@ -79,7 +78,7 @@ function ManualHome({}: Props) {
             </Link>
             <div className="relative">
               <div onClick={toggleDropdown} className="cursor-pointer">
-                <Ellipsis />
+                {/* <Ellipsis /> */}
               </div>
               {isDropdownOpen && (
                 <div

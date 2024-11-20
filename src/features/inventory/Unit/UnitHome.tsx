@@ -1,4 +1,3 @@
-import Ellipsis from "../../../assets/icons/Ellipsis";
 import NewUnit from "./NewUnit";
 import UnitTable from "./UnitTable";
 
@@ -10,7 +9,7 @@ const UnitHome = ({}: Props) => {
       <div className="mx-5 my-4  h-[100vh]  gap-3">
         <div className="flex">
           <div>
-            <h1 className="font-bold text-lg">
+            <h1 className="font-bold text-2xl">
               Unit Of Measurement
             </h1>
             <p className="text-sm text-gray mt-1">
@@ -20,7 +19,7 @@ const UnitHome = ({}: Props) => {
           <div className="ml-auto flex items-center">
             <NewUnit/>
             <div className="ms-5">
-              <Ellipsis />
+              {/* <Ellipsis /> */}
             </div>
           </div>
         </div>

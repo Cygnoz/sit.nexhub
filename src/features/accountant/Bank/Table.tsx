@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import Ellipsis from "../../../assets/icons/Ellipsis";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import SearchBar from "../../../Components/SearchBar";
-import { BankResponseContext } from "../../../context/ContextShare";
-import { Link } from "react-router-dom";
+import { BankResponseContext, TableResponseContext } from "../../../context/ContextShare";
+import { useNavigate } from "react-router-dom";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 
@@ -22,12 +21,9 @@ const Table = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [accountData, setAccountData] = useState<Account[]>([]);
   const { bankResponse } = useContext(BankResponseContext)!;
-
+  const navigate=useNavigate()
   // Loading state
-  const [loading, setLoading] = useState({
-    skeleton: false,
-    noDataFound: false,
-  });
+  const {loading,setLoading}=useContext(TableResponseContext)!;
 
   const tableHeaders = [
     "Sl No",
@@ -36,7 +32,7 @@ const Table = () => {
     "Account Type",
     "Documents",
     "Parent Account Type",
-    "",
+    // "",
   ];
 
   useEffect(() => {
@@ -113,39 +109,39 @@ const Table = () => {
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
             {loading.skeleton ? (
-              [...Array(filteredAccounts.length || 5)].map((_, idx) => (
+              [...Array(filteredAccounts.length>0?filteredAccounts.length: 5)].map((_, idx) => (
                 <TableSkelton key={idx} columns={tableHeaders} />
               ))
             ) : filteredAccounts.length > 0 ? (
               filteredAccounts.reverse().map((item, index) => (
-                <tr key={item._id} className="relative">
+                <tr key={item._id} className="relative cursor-pointer" onClick={()=>navigate(`/accountant/view/${item._id}?fromBank=true`)}>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {index + 1}
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <Link to={`/accountant/view/${item._id}?fromBank=true`}>
-                      {item.accountName}
-                    </Link>
+                   
+                      {item.accountName || '-'}
+                
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
-                    {item.accountCode}
+                    {item.accountCode || '-'}
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
-                    {item.accountSubhead}
+                    {item.accountSubhead || '-'}
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
-                    {item.description}
+                    {item.description || '-'}
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
-                    {item.accountHead}
+                    {item.accountHead || '-'}
                   </td>
-                  <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
+                  {/* <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
                     <div className="flex justify-end">
                       <Ellipsis height={17} />
                     </div>
-                  </td>
+                  </td> */}
                 </tr>
-              ))
+              ))              
             ) : (
               <NoDataFoundTable columns={tableHeaders} />
             )}

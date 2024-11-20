@@ -1,11 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import NewSupplierModal from "./AddSupplierModal";
 import Cards from "./Cards";
-import Dropdown from "./Dropdown";
 import SupplierTable from "./SupplierTable";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import { SupplierResponseContext } from "../../../context/ContextShare";
+import { SupplierResponseContext, TableResponseContext } from "../../../context/ContextShare";
 
 interface Supplier {
   _id: string;
@@ -27,10 +26,7 @@ const SupplierHome = () => {
   const { supplierResponse } = useContext(SupplierResponseContext)!;
   const [searchValue, setSearchValue] = useState<string>("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const [loading,setLoading]=useState<object | null>({
-    skelton:false,
-    noDataFound:false
-  })
+  const {loading,setLoading}=useContext(TableResponseContext)!;
 
 
 
@@ -113,7 +109,9 @@ const SupplierHome = () => {
         </div>
         <div className="ml-auto gap-3 flex items-center">
           <NewSupplierModal />
-          <Dropdown />
+          <div>
+          {/* <Dropdown /> */}
+          </div>
         </div>
       </div>
       <div>

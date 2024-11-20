@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import Cards from "./Cards";
-import Dropdown from "./Dropdown";
 import NewCustomerModal from "./NewCustomerModal";
 import CustomerTable from "./CustomerTable";
 // import Customers from "./Customers";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import { CustomerResponseContext } from "../../../context/ContextShare";
+import { CustomerResponseContext, TableResponseContext } from "../../../context/ContextShare";
+import Dropdown from "./Dropdown";
 
 interface Customer {
   _id: string;
@@ -30,21 +30,36 @@ function CustomerHome({}: Props) {
   const { request: AllCustomers } = useApi("get", 5002);
   const [searchValue, setSearchValue] = useState<string>("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
-
+  const { loading, setLoading } = useContext(TableResponseContext)!;
   const fetchAllCustomers = async () => {
     try {
+      // Set loading state to show the skeleton loader
+      setLoading({ ...loading, skeleton: true });
+  
       const url = `${endponits.GET_ALL_CUSTOMER}`;
       const { response, error } = await AllCustomers(url);
+  
       if (!error && response) {
         setCustomerData(response.data);
         console.log(response, "all customers");
+        
+        // Turn off the skeleton loader after data is received
+        setLoading({ ...loading, skeleton: false });
       } else {
+        // Handle error scenario
         console.log(error, "all customers error");
+  
+        // Update the loading state in case of error
+        setLoading({ ...loading, skeleton: false, noDataFound: true });
       }
     } catch (error) {
       console.error("Error fetching accounts:", error);
+  
+      // Handle error state
+      setLoading({ ...loading, skeleton: false, noDataFound: true });
     }
   };
+  
 
   useEffect(() => {
     fetchAllCustomers();
@@ -90,7 +105,7 @@ function CustomerHome({}: Props) {
 
   return (
     <>
-      <div className="mx-5 my-4 space-y-8 flex items-center relative">
+      <div className="mx-5 my-4 space-y-4 flex items-center relative">
         <div>
           <h3 className="font-bold text-2xl text-textColor">Customer</h3>
           <p className="text-sm text-gray mt-1">
@@ -100,7 +115,9 @@ function CustomerHome({}: Props) {
         </div>
         <div className="ml-auto gap-3 flex items-center">
           <NewCustomerModal page="" />
-          <Dropdown />
+          <div>
+          <Dropdown/>
+          </div>
         </div>
       </div>
       <div>
@@ -114,7 +131,7 @@ function CustomerHome({}: Props) {
       </div>
       <div className="px-6 mt-3">
         <div className="bg-white p-5">
-          <CustomerTable customerData={filteredCustomers} searchValue={searchValue} setSearchValue={setSearchValue} />
+          <CustomerTable loading={loading} customerData={filteredCustomers} searchValue={searchValue} setSearchValue={setSearchValue} />
         </div>
       </div>
     </>

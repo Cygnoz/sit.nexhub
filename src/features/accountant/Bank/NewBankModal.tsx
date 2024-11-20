@@ -1,15 +1,16 @@
-import { useState, ChangeEvent, FormEvent, useContext } from "react";
+import { useState, ChangeEvent, FormEvent, useContext,} from "react";
 import Button from "../../../Components/Button";
+import Modal from "../../../Components/model/Modal";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
 import bgImage from "../../../assets/Images/14.png";
 import savings from "../../../assets/Images/Savings.png";
 import CehvronDown from "../../../assets/icons/CehvronDown";
-import Modal from "../../../Components/model/Modal";
 import PlusCircle from "../../../assets/icons/PlusCircle";
-import toast from "react-hot-toast";
-import useApi from "../../../Hooks/useApi";
-import { endponits } from "../../../Services/apiEndpoints";
 // import BankHome from "./BankHome";
 import { BankResponseContext } from "../../../context/ContextShare";
+import toast from "react-hot-toast";
+// import { useOrganization } from "../../../context/OrganizationContext";
 
 type Props = {};
 
@@ -29,49 +30,71 @@ const initialBankAccount = {
   creditOpeningBalance: "",
 };
 
-const NewBankModal = ({}: Props) => {
+const NewBankModal = ({ }: Props) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [bankAccount, setBankAccount] = useState(initialBankAccount);
   const [openingType, setOpeningType] = useState("Debit");
   const { setBankResponse } = useContext(BankResponseContext)!;
   const { request: CreateAccount } = useApi("post", 5001);
-
+  // const {organization}=nization()
   const openModal = () => {
     setModalOpen(true);
+    getcurrencyData()
   };
+  const [currencyData, setcurrencyData] = useState<any | []>([]);
+  const { request: getCurrencyData } = useApi("get", 5004);
+  const getcurrencyData = async () => {
+    try {
+      const url = `${endponits.GET_CURRENCY_LIST}`;
+      const { response, error } = await getCurrencyData(url);
+      if (!error && response) {
+        setcurrencyData(response.data);
+        setBankAccount({ ...bankAccount, bankCurrency: response.data.find((item: any) => item.baseCurrency).currencyCode })
+      }
+    } catch (error) {
+      console.log("Error in fetching currency data", error);
+    }
+  };
+
+
 
   const closeModal = () => {
     setModalOpen(false);
   };
-
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-  
+    let processedValue = value;
+
+    // If the value is negative, reset it to 0
+    if (name === "openingBalance" && parseFloat(value) < 0) {
+      processedValue = "0";
+    }
+
     // Update openingType and related balances accordingly
     if (name === "openingType") {
-      setOpeningType(value);
+      setOpeningType(processedValue);
       setBankAccount((prevFormValues) => ({
         ...prevFormValues,
-        debitOpeningBalance: value === "Debit" ? prevFormValues.openingBalance : "",
-        creditOpeningBalance: value === "Credit" ? prevFormValues.openingBalance : "",
+        debitOpeningBalance: processedValue === "Debit" ? prevFormValues.openingBalance : "",
+        creditOpeningBalance: processedValue === "Credit" ? prevFormValues.openingBalance : "",
       }));
     } else if (name === "openingBalance") {
       setBankAccount((prevFormValues) => ({
         ...prevFormValues,
-        debitOpeningBalance: openingType === "Debit" ? value : prevFormValues.debitOpeningBalance,
-        creditOpeningBalance: openingType === "Credit" ? value : prevFormValues.creditOpeningBalance,
+        debitOpeningBalance: openingType === "Debit" ? processedValue : prevFormValues.debitOpeningBalance,
+        creditOpeningBalance: openingType === "Credit" ? processedValue : prevFormValues.creditOpeningBalance,
       }));
     } else {
       // Update any other fields normally
       setBankAccount((prevBankAccount) => ({
         ...prevBankAccount,
-        [name]: value,
+        [name]: processedValue,
       }));
     }
   };
-  
+
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -79,13 +102,13 @@ const NewBankModal = ({}: Props) => {
       const url = `${endponits.Add_NEW_ACCOUNT}`;
       const body = bankAccount;
       const { response, error } = await CreateAccount(url, body);
-      closeModal();
       if (!error && response) {
         toast.success(response.data.message);
         setBankResponse((prevBankResponse: any) => ({
           ...prevBankResponse,
           ...body,
         }));
+        closeModal()
         setBankAccount(initialBankAccount);
       } else {
         toast.error(error.response.data.message);
@@ -94,6 +117,9 @@ const NewBankModal = ({}: Props) => {
       console.error(error);
     }
   };
+
+
+
 
   return (
     <div>
@@ -180,7 +206,8 @@ const NewBankModal = ({}: Props) => {
                     </div>
                   </div>
                   <input
-                    type="text"
+                    type="number"
+                    min={0}
                     className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2"
                     placeholder="Enter Opening Balance"
                     name="openingBalance"
@@ -230,20 +257,25 @@ const NewBankModal = ({}: Props) => {
                         name="bankCurrency"
                         value={bankAccount.bankCurrency}
                         onChange={handleChange}
-                        className="block appearance-none w-full text-zinc-400 bg-white border border-slate-200 text-sm h-[39px] pl-9 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        className="block appearance-none w-full text-zinc-400 bg-white border border-slate-200 text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                       >
-                        <option value="" className="text-gray">
-                          Select currency
-                        </option>
-                        <option value="INR" className="text-slate-300">
-                          INR
-                        </option>
+                        {currencyData?.map((data: any) => (
+                          <option
+                            key={data._id}
+                            value={data.currencyCode}
+                            selected={data.currencyName} // Set as selected if baseCurrency is true
+                            className="text-slate-300"
+                          >
+                            {`${data.currencyName} (${data.currencySymbol})`}
+                          </option>
+                        ))}
                       </select>
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                         <CehvronDown color="gray" />
                       </div>
                     </div>
                   </div>
+
                 </div>
               </div>
               <div className="mb-4">
@@ -260,11 +292,10 @@ const NewBankModal = ({}: Props) => {
               </div>
               <br />
               <div className="flex justify-end gap-2 mb-3">
-                <Button onClick={closeModal} variant="secondary" size="lg">
+                <Button onClick={closeModal} className="pl-10 pr-10" variant="secondary" size="sm">
                   Cancel
                 </Button>
-
-                <Button type="submit" variant="primary" size="lg">
+                <Button type="submit" variant="primary" className="pl-10 pr-10" size="sm">
                   Save
                 </Button>
               </div>

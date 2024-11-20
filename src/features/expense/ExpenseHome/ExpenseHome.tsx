@@ -1,9 +1,10 @@
 import { useState } from "react";
 import Category from "../../inventory/Category/CategoryModal";
 import AddExpenseModal from "./AddExpenseModal";
-import ExpenseTable from "./ExpenseTable";
+
 import Button from "../../../Components/Button";
 import CirclePlus from "../../../assets/icons/circleplus";
+import ExpenseTable from "./ExpenseTable";
 
 type Props = {};
 
@@ -30,9 +31,9 @@ const ExpenseHome = ({}: Props) => {
     <div className="mx-6 my-4 text-textColor space-y-5">
       <div className="flex">
         <div>
-          <h1>Expense</h1>
-          <p className="text-sm">
-            Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla
+        <h3 className="font-bold text-2xl text-textColor">Expense</h3>
+        <p className="text-sm text-gray mt-1">
+        Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla
             egestas consectetur amet.
           </p>
         </div>

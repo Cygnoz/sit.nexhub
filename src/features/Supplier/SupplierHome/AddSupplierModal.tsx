@@ -40,7 +40,7 @@ type SupplierData = {
   websiteURL: string;
   department: string;
   designation: string;
-  // taxType:""
+  taxType: string;
   gstTreatment: string;
   gstinUin: string;
   vatNumber: string;
@@ -101,6 +101,8 @@ const AddSupplierModal = ({ page }: Props) => {
     companyName: false,
     firstName: false,
     lastName: false,
+    gstinUin: false,
+    sourceOfSupply: false,
   });
   const [openingType, setOpeningType] = useState<string>("credit");
   const { request: getCountryData } = useApi("get", 5004);
@@ -154,6 +156,7 @@ const AddSupplierModal = ({ page }: Props) => {
     creditOpeningBalance: "",
     paymentTerms: "",
     tds: "",
+    taxType: "",
     documents: "",
     websiteURL: "",
     department: "",
@@ -164,7 +167,7 @@ const AddSupplierModal = ({ page }: Props) => {
     vatNumber: "",
     msmeType: "",
     msmeNumber: "",
-    msmeRegistered: false, // boolean type
+    msmeRegistered: false,
     billingAttention: "",
     billingCountry: "",
     billingAddressStreet1: "",
@@ -476,10 +479,9 @@ const AddSupplierModal = ({ page }: Props) => {
         if (taxResponse) {
           setgstOrVat(taxResponse.data);
 
-          // Using functional update for supplier data
           setSupplierData((prevSupplierData) => ({
             ...prevSupplierData,
-            gstTreatment: taxResponse.data.gstTreatment[0],
+            taxType: taxResponse.data.taxType,
           }));
         }
       } else {
@@ -499,7 +501,6 @@ const AddSupplierModal = ({ page }: Props) => {
         const result = response.data;
         setOneOrganization(result);
 
-        // Update supplier data with the organization information
         setSupplierData((prevSupplierData) => ({
           ...prevSupplierData,
           currency: result.baseCurrency,
@@ -515,19 +516,41 @@ const AddSupplierModal = ({ page }: Props) => {
     }
   };
 
-  //api call for add supplier
   const handleSubmit = async () => {
-    // Validation logic before API call
     const newErrors = { ...errors };
+
+    // Check for other validation errors
     if (supplierdata.supplierDisplayName === "")
       newErrors.supplierDisplayName = true;
     if (supplierdata.companyName === "") newErrors.companyName = true;
     if (supplierdata.firstName === "") newErrors.firstName = true;
     if (supplierdata.lastName === "") newErrors.lastName = true;
-    if (Object.values(newErrors).some((error) => error)) {
-      setErrors(newErrors);
+    if (
+      supplierdata.gstTreatment !== "" &&
+      supplierdata.gstTreatment !== "Overseas" &&
+      supplierdata.sourceOfSupply === ""
+    )
+      newErrors.sourceOfSupply = true;
+    if (
+      supplierdata.gstTreatment !== "Overseas" &&
+      supplierdata.gstTreatment !== "Unregistered Business" &&
+      supplierdata.gstTreatment !== "" &&
+      supplierdata.gstinUin === ""
+    )
+      newErrors.gstinUin = true;
+    const isAccountNumberValid = isAccountNumberSame.every((isValid) => isValid);
+
+    if (!isAccountNumberValid) {
+      toast.error("Please ensure account numbers match before saving.");
       return;
     }
+
+    if (Object.values(newErrors).some((error) => error)) {
+      setErrors(newErrors);
+      console.log(newErrors);
+      return;
+    }
+
     try {
       const url = `${endponits.ADD_SUPPLIER}`;
       const { response, error } = await CreateSupplier(url, supplierdata);
@@ -541,7 +564,9 @@ const AddSupplierModal = ({ page }: Props) => {
         getAdditionalInfo();
         getOneOrganization();
 
+        // Reset supplier data
         setSupplierData({
+          taxType: "",
           supplierProfile: "",
           salutation: "",
           firstName: "",
@@ -619,6 +644,7 @@ const AddSupplierModal = ({ page }: Props) => {
     }
   };
 
+
   // compy billing address
   const handleCopyAddress = (e: any) => {
     e.preventDefault();
@@ -665,9 +691,9 @@ const AddSupplierModal = ({ page }: Props) => {
         toast.error("Only JPG and PNG images are supported.");
         return;
       }
-  
+
       const reader = new FileReader();
-  
+
       reader.onloadend = () => {
         const base64String = reader.result as string;
         setSupplierData((prevDetails: any) => ({
@@ -675,7 +701,7 @@ const AddSupplierModal = ({ page }: Props) => {
           customerProfile: base64String,
         }));
       };
-  
+
       reader.readAsDataURL(file);
     }
   };
@@ -721,9 +747,6 @@ const AddSupplierModal = ({ page }: Props) => {
               <b>Add new Supplier</b>
             </p>
           </div>
-          <div className=" col-span-2 text-end text-2xl cursor-pointer relative ">
-            &times;
-          </div>
         </div>
       ) : (
         <Button
@@ -762,11 +785,9 @@ const AddSupplierModal = ({ page }: Props) => {
               className="text-slate-600 text-sm overflow-scroll hide-scrollbar space-y-5 p-2"
               style={{ height: "480px" }}
             >
-
-
-<div className="grid grid-cols-12 gap-4">
-  <div className="col-span-2">
-  <div className=" border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
+              <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-2">
+                  <div className=" border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
                     <label htmlFor="image">
                       <div className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ">
                         {supplierdata.supplierProfile ? (
@@ -802,9 +823,9 @@ const AddSupplierModal = ({ page }: Props) => {
                       />
                     </label>
                   </div>
-  </div>
-  <div className="col-span-10">
-  <div className="grid grid-cols-12 gap-4 ">
+                </div>
+                <div className="col-span-10">
+                  <div className="grid grid-cols-12 gap-4 ">
                     <div className="col-span-2">
                       <label htmlFor="salutation">Salutation</label>
                       <div className="relative w-full">
@@ -957,10 +978,8 @@ const AddSupplierModal = ({ page }: Props) => {
                       />
                     </div>
                   </div>
-  </div>
-</div>
-
-             
+                </div>
+              </div>
 
               <div className="grid grid-cols-3 gap-4 mt-4">
                 <div>
@@ -1248,7 +1267,7 @@ const AddSupplierModal = ({ page }: Props) => {
                           className="hidden"
                           // value={supplierdata.documents}
                           name="documents"
-                          // onChange={(e)=>handleFileChange(e)}
+                        // onChange={(e)=>handleFileChange(e)}
                         />
                       </div>
                       <div className="">
@@ -1329,55 +1348,81 @@ const AddSupplierModal = ({ page }: Props) => {
                                 </div>
                               </div>
                             </div>
-                            <div>
-                              <label className="block mb-1">
-                                Source of Supply
-                              </label>
-
-                              <div className="relative w-full">
-                                <select className="block appearance-none w-full h-9  text-[#818894] bg-white border border-inputBorder text-sm  pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                                  <option
-                                    value={
-                                      supplierdata.sourceOfSupply
-                                        ? supplierdata.sourceOfSupply
-                                        : "Select Source of Supply"
-                                    }
-                                    className="text-gray"
+                            {supplierdata.gstTreatment !== "Overseas" && (
+                              <div>
+                                <label className="block mb-1">
+                                  Source of Supply
+                                </label>
+                                <div className="relative w-full">
+                                  <select
+                                    name="sourceOfSupply"
+                                    className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder text-sm pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    value={supplierdata.sourceOfSupply}
+                                    onChange={handleChange}
                                   >
-                                    {" "}
-                                    {supplierdata.sourceOfSupply
-                                      ? supplierdata.sourceOfSupply
-                                      : "Select Source of Supply"}
-                                  </option>
-                                  {placeOfSupplyList.length > 0 &&
-                                    placeOfSupplyList.map(
-                                      (item: any, index: number) => (
-                                        <option
-                                          key={index}
-                                          value={item}
-                                          className="text-gray"
-                                        >
-                                          {item}
-                                        </option>
-                                      )
-                                    )}
-                                </select>
-                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                  <CehvronDown color="gray" />
+                                    <option value="" className="text-gray">
+                                      Select Source of Supply
+                                    </option>
+                                    {placeOfSupplyList.length > 0 &&
+                                      placeOfSupplyList.map(
+                                        (item: any, index: number) => (
+                                          <option
+                                            key={index}
+                                            value={item}
+                                            className="text-gray"
+                                          >
+                                            {item}
+                                          </option>
+                                        )
+                                      )}
+                                  </select>
+                                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                    <CehvronDown color="gray" />
+                                  </div>
                                 </div>
+                                {supplierdata.gstTreatment !== "Overseas" &&
+                                  !supplierdata.sourceOfSupply && (
+                                    <p className="text-red-800 text-xs ms-2 mt-1">
+                                      Please select a Source of Supply.
+                                    </p>
+                                  )}
                               </div>
-                            </div>
-                            <div>
-                              <label className="block mb-1">GSTIN/UIN</label>
-                              <input
-                                type="text"
-                                name="gstinUin"
-                                className=" text-sm w-[100%]  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
-                                placeholder="Enter GSTIN/UIN"
-                                value={supplierdata.gstinUin}
-                                onChange={handleChange}
-                              />
-                            </div>
+                            )}
+
+                            {supplierdata.gstTreatment !== "Unregistered Business" && (
+                              <div>
+                                <div>
+                                  <label className="block mb-1">GSTIN/UIN</label>
+                                  <input
+                                    type="text"
+                                    name="gstinUin"
+                                    className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                                    placeholder="Enter GSTIN/UIN"
+                                    value={supplierdata.gstinUin}
+                                    onChange={handleChange}
+                                    onBlur={() => {
+                                      if (
+                                        supplierdata.gstTreatment !== "Overseas" &&
+                                        supplierdata.gstTreatment !== "Unregistered Business" &&
+                                        supplierdata.gstTreatment !== "" &&
+
+                                        supplierdata.gstinUin === ""
+                                      ) {
+                                        setErrors((prevErrors) => ({ ...prevErrors, gstinUin: true }));
+                                      } else {
+                                        setErrors((prevErrors) => ({ ...prevErrors, gstinUin: false }));
+                                      }
+                                    }}
+                                  />
+                                </div>
+                                {errors.gstinUin && (
+                                  <p className="text-red-800 text-xs ms-2 mt-1">
+                                    Please enter a valid GSTIN/UIN.
+                                  </p>
+                                )}
+                              </div>
+                            )}
+
                           </div>
                         )}
 
@@ -1411,68 +1456,72 @@ const AddSupplierModal = ({ page }: Props) => {
                            </div> */}
                           </div>
                         )}
-
-                        <div>
-                          <label htmlFor="" className="mb-1 block text-base">
+                          <label htmlFor="" className="mt-0 block text-base">
                             MSME Registered?
                           </label>
+                        <div className="flex items-center space-x-2">
                           <input
                             type="checkbox"
-                            className="customCheckbox h-6 w-6 mt-2"
+                            id="msmeCheckbox"
+                            className="customCheckbox h-4 w-4"
                             name="msmeRegistered"
                             checked={supplierdata.msmeRegistered}
                             onChange={handleChange}
-                          />{" "}
-                          <label htmlFor="" className="text-base">
+                          />
+                          <label htmlFor="msmeCheckbox" className="text-base cursor-pointer">
                             The Vendor is MSME Registered
                           </label>
                         </div>
-                        <div className="grid grid-cols-2 mt-1 gap-4">
-                          <div className="relative w-full">
-                            <label htmlFor="" className="mb-1 block">
-                              MSME/Udyam Registration Type
-                            </label>
-                            <select
-                              value={supplierdata.msmeType}
-                              name="msmeType"
-                              onChange={handleChange}
-                              className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder text-sm  pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            >
-                              <option value="" className="text-gray">
-                                {" "}
-                                Select the Registration Type
-                              </option>
-                              {gstOrVat.msmeType &&
-                                gstOrVat.msmeType.map(
-                                  (item: any, index: number) => (
-                                    <option
-                                      key={index}
-                                      value={item}
-                                      className="text-gray"
-                                    >
-                                      {item}
-                                    </option>
-                                  )
-                                )}
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-0 mt-6 flex items-center px-2 text-gray-700">
-                              <CehvronDown color="gray" />
+
+
+                        {supplierdata.msmeRegistered == true && (
+                          <div className="grid grid-cols-2 mt-1 gap-4">
+                            <div className="relative w-full">
+                              <label htmlFor="" className="mb-1 block">
+                                MSME/Udyam Registration Type
+                              </label>
+                              <select
+                                value={supplierdata.msmeType}
+                                name="msmeType"
+                                onChange={handleChange}
+                                className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder text-sm  pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                              >
+                                <option value="" className="text-gray">
+                                  {" "}
+                                  Select the Registration Type
+                                </option>
+                                {gstOrVat.msmeType &&
+                                  gstOrVat.msmeType.map(
+                                    (item: any, index: number) => (
+                                      <option
+                                        key={index}
+                                        value={item}
+                                        className="text-gray"
+                                      >
+                                        {item}
+                                      </option>
+                                    )
+                                  )}
+                              </select>
+                              <div className="pointer-events-none absolute inset-y-0 right-0 mt-6 flex items-center px-2 text-gray-700">
+                                <CehvronDown color="gray" />
+                              </div>
+                            </div>
+                            <div className="relative w-full">
+                              <label htmlFor="" className="mb-1 block">
+                                MSME/Udyam Registration Number
+                              </label>
+                              <input
+                                type="text"
+                                className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                                placeholder="Enetr MSME/Udyam Registration Number"
+                                name="msmeNumber"
+                                value={supplierdata.msmeNumber}
+                                onChange={handleChange}
+                              />
                             </div>
                           </div>
-                          <div className="relative w-full">
-                            <label htmlFor="" className="mb-1 block">
-                              MSME/Udyam Registration Number
-                            </label>
-                            <input
-                              type="text"
-                              className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                              placeholder="Enetr MSME/Udyam Registration Number"
-                              name="msmeNumber"
-                              value={supplierdata.msmeNumber}
-                              onChange={handleChange}
-                            />
-                          </div>
-                        </div>
+                        )}
                       </div>
                     </>
                   )}
@@ -1887,43 +1936,19 @@ const AddSupplierModal = ({ page }: Props) => {
                                 <td className="py-2.5 px- border-y border-tableBorder justify-center mt-4 gap-2 items-center flex-1">
                                   <div className="relative w-full">
                                     <select
-                                      className="block relative appearance-none w-full h-9 focus:border-none text-zinc-400 bg-white text-sm text-center border-none rounded-md leading-tight"
+                                      className="block relative w-full h-9 focus:border-none text-zinc-400 bg-white text-sm text-center border-none rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                       value={row.salutation}
                                       onChange={(e) =>
-                                        handleRowChange(
-                                          index,
-                                          "salutation",
-                                          e.target.value
-                                        )
+                                        handleRowChange(index, "salutation", e.target.value)
                                       }
                                     >
-                                      <option value="" className="text-gray">
-                                        {" "}
-                                        Select
-                                      </option>
-                                      <option value="Mr" className="text-gray">
-                                        {" "}
-                                        Mr
-                                      </option>
-                                      <option value="Mrs" className="text-gray">
-                                        {" "}
-                                        Mrs
-                                      </option>
-                                      <option
-                                        value="Miss"
-                                        className="text-gray"
-                                      >
-                                        {" "}
-                                        Miss
-                                      </option>
-                                      <option value="Dr" className="text-gray">
-                                        {" "}
-                                        Dr
-                                      </option>
+                                      <option value="" className="text-gray">Select</option>
+                                      <option value="Mr" className="text-gray">Mr</option>
+                                      <option value="Mrs" className="text-gray">Mrs</option>
+                                      <option value="Miss" className="text-gray">Miss</option>
+                                      <option value="Dr" className="text-gray">Dr</option>
                                     </select>
-                                    <div className="pointer-events-none absolute inset-y-0 -right-8 flex items-center px-2 text-gray-700">
-                                      <CehvronDown color="gray" />
-                                    </div>
+
                                   </div>
                                 </td>
                                 <td className="py-2.5 px-8 border-y border-tableBorder">

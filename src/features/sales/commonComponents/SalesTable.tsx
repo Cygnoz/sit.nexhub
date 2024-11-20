@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import { useNavigate } from "react-router-dom";
 import DotIcon from "../../../assets/icons/DotIcon";
@@ -8,13 +8,14 @@ import SearchBar from "../../../Components/SearchBar";
 import Print from "../salesOrder/Print";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
+import { TableResponseContext } from "../../../context/ContextShare";
 
 interface Column {
   id: string;
   label: string;
   visible: boolean;
-
 }
+
 type Props = {
   page?: string;
 };
@@ -28,18 +29,14 @@ interface QuoteData {
   status?: string;
   _id: string;
   salesInvoice: any;
-  salesOrder: any
+  salesOrder: any;
 }
 
-const QuoteTable = ({ page }: Props) => {
+const SalesTable = ({ page }: Props) => {
   const navigate = useNavigate();
-
+  const { loading, setLoading } = useContext(TableResponseContext)!;
   const { request: getAllQuotes } = useApi("get", 5007);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [loading, setLoading] = useState<any>({
-    skelton: false,
-    noDataFound: false
-  })
   const [data, setData] = useState<QuoteData[]>([]);
 
   const fetchAllQuotes = async () => {
@@ -49,7 +46,9 @@ const QuoteTable = ({ page }: Props) => {
           ? `${endponits.GET_ALL_SALES_INVOICE}`
           : page === "salesOrder"
             ? `${endponits.GET_ALL_SALES_ORDER}`
-            : `${endponits.GET_ALL_QUOTES}`;
+            : page === "quote"
+              ? `${endponits.GET_ALL_QUOTES}`
+              : "";
 
       setLoading({ ...loading, skelton: true });
       const { response, error } = await getAllQuotes(url);
@@ -58,7 +57,7 @@ const QuoteTable = ({ page }: Props) => {
         return;
       }
       console.log(response.data);
-      
+
       setData(response.data);
       setLoading({ ...loading, skelton: false });
     } catch (error) {
@@ -66,7 +65,6 @@ const QuoteTable = ({ page }: Props) => {
       setLoading({ ...loading, noDataFound: true, skelton: false });
     }
   };
-
 
   useEffect(() => {
     fetchAllQuotes();
@@ -86,22 +84,30 @@ const QuoteTable = ({ page }: Props) => {
       : page === "salesOrder" ? [
         { id: "salesOrder", label: "Order Number", visible: true },
         { id: "createdDate", label: "Order Date", visible: true },
-        { id: "salesOrder", label: "Sales Order#", visible: true },
+        // { id: "salesOrder", label: "Sales Order#", visible: true },
         { id: "customerName", label: "Customer Name", visible: true },
         { id: "totalAmount", label: "Total", visible: true },
         { id: "status", label: "Status", visible: true },
       ]
-        : [
+        : page === "quote" ? [
           { id: "customerName", label: "Customer Name", visible: true },
           { id: "createdDate", label: "Date", visible: true },
           { id: "reference", label: "Reference", visible: true },
           { id: "salesQuotes", label: "Quote Number", visible: true },
           { id: "status", label: "Status", visible: true },
           { id: "totalAmount", label: "Amount", visible: true },
-        ];
 
-
-
+        ]
+          :
+          page === "salesReturn" ? [
+            { id: "createdDate", label: "Date", visible: true },
+            { id: "customerRMA", label: "RMA#", visible: true },
+            { id: "salesOrder", label: "SalesOrder", visible: true },
+            { id: "status", label: "Status", visible: true },
+            { id: "customerName", label: "Customer Name", visible: true },
+            { id: "totalAmount", label: "Amount", visible: true },
+            { id: "returned", label: "Returned", visible: true },
+          ] : [];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
@@ -132,10 +138,9 @@ const QuoteTable = ({ page }: Props) => {
       <span className="text-gray-500 italic">-</span>
     );
   };
-
-
-  const filteredData = data.filter((quote) => {
-    const searchValueLower = searchValue.toLowerCase();
+  // Initialize `data` as an empty array if it's undefined
+  const filteredData = Array.isArray(data) ? data.filter((quote) => {
+    const searchValueLower = searchValue?.toLowerCase();
     return (
       quote?.customerName?.toLowerCase()?.includes(searchValueLower) ||
       quote?.reference?.toLowerCase()?.includes(searchValueLower) ||
@@ -143,26 +148,33 @@ const QuoteTable = ({ page }: Props) => {
       quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
       quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
     );
-  });
+  }) : []; // If `data` is not an array, default to an empty array
+
 
   const handleRowClick = (id: string) => {
-    page === "salesOrder" ?
-      navigate(`/sales/viewsalesorder/${id}`)
-      :
-      page === "invoice" ?
-        navigate(`/sales/invoice/view/${id}`)
-        :
-        navigate(`/sales/quote/view/${id}`);
+    const state = { page };
+
+    navigate(`/sales/viewsalesorder/${id}`, { state });
   };
-
-
 
   return (
     <div className="w-full">
       <div className="flex mb-4 items-center gap-5">
         <div className="w-[95%]">
-          <SearchBar onSearchChange={setSearchValue} searchValue={searchValue}
-            placeholder={page == "invoice" ? "Search Invoice" : page == "salesOrder" ? "Search Sales Order" : "Search Quote"} />
+          <SearchBar
+            onSearchChange={setSearchValue}
+            searchValue={searchValue}
+            placeholder={
+              page == "invoice"
+                ? "Search Invoice"
+                : page == "salesOrder"
+                  ? "Search Sales Order"
+                  : page == "salesReturn"
+                    ? "Search Sales Return"
+                    : "Search Quote"
+
+            }
+          />
         </div>
         <Print />
       </div>
@@ -188,38 +200,34 @@ const QuoteTable = ({ page }: Props) => {
           <tbody className="text-dropdownText text-center text-[13px]">
             {loading.skelton ? (
               // Render skeleton rows if loading
-              [...Array(filteredData.length || 5)].map((_, idx) => (
-                <TableSkelton key={idx} columns={columns} />
+              [...Array(filteredData?.length ? filteredData?.length : 5)].map((_, idx) => (
+                <TableSkelton key={idx} columns={page == 'salesOrder' || page == 'quote' ? [...columns, "ff", "tt"] : columns} />
               ))
             ) : filteredData && filteredData.length > 0 ? (
               // Render data rows if not loading and data is available
-              filteredData
-                .slice()
-                .reverse()
-                .map((item, index) => (
-                  <tr key={item._id} className="relative cursor-pointer" onClick={() => handleRowClick(item._id)}>
-                    <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
-                    {columns.map(
-                      (col) =>
-                        col.visible && (
-                          <td key={col.id} className="py-2.5 px-4 border-y border-tableBorder">
-                            {renderColumnContent(col.id, item)}
-                          </td>
-                        )
-                    )}
-                    <td className="py-2.5 px-4 border-y border-tableBorder"></td>
-                  </tr>
-                ))
+              filteredData.slice().reverse().map((item, index) => (
+                <tr key={item._id} className="relative cursor-pointer hover:bg-[#EAECF0]" onClick={() => handleRowClick(item._id)}>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
+                  {columns.map(
+                    (col) =>
+                      col.visible && (
+                        <td key={col.id} className="py-2.5 px-4 border-y border-tableBorder">
+                          {renderColumnContent(col.id, item)}
+                        </td>
+                      )
+                  )}
+                  <td className="py-2.5 px-4 border-y border-tableBorder"></td>
+                </tr>
+              ))
             ) : (
               // Render "no data found" row if data is empty
-              <NoDataFoundTable columns={columns} />
+              <NoDataFoundTable columns={page == 'salesOrder' || page == 'quote' ? [...columns, "ff", "tt"] : columns} />
             )}
           </tbody>
-
         </table>
       </div>
     </div>
   );
 };
 
-export default QuoteTable;
+export default SalesTable;

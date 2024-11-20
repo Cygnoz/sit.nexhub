@@ -26,7 +26,7 @@ const SideBar = ({ activeIndex, setActiveIndex }: Props) => {
     <aside className="bg-primary_main h-[100vh] overflow-y-scroll hide-scrollbar w-[72px]">
       <nav>
         <div onClick={()=>navigate('/landing')} className="flex justify-between items-center px-6 pt-7 pb-5 cursor-pointer">
-          <img src={logo} alt="logo" />
+        <img src={logo} alt="logo" style={{ boxShadow: '0 4px 15px rgba(0, 0, 0, 0.5)' }} className="shadow-xl" />
         </div>
       </nav>
       <ul className="flex-col">

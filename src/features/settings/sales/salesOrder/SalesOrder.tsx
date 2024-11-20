@@ -244,7 +244,7 @@ function SalesOrder({}: Props) {
         </div>
 
         <div className="mt-4 p-6 rounded-lg bg-white">
-          <p className="font-bold text-textColor text-sm mb-3">Terms & Condition</p>
+          <p className="font-bold text-textColor text-sm mb-3">Terms & Conditions</p>
           <textarea
             className="w-full h-32 p-3 border border-inputBorder rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-[#7E0D0B]"
             value={salesOrderState.termCondition}

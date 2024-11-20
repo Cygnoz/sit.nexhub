@@ -14,20 +14,20 @@ type Row = {
   itemImage?: string;
   itemId: string;
   itemName: string; 
-  itemQuantity: number;
-  itemCostPrice: number;
-  itemTax:number;
-  itemDiscount: number;
+  itemQuantity: number  | string;
+  itemCostPrice: number | string;
+  itemTax:number | string;
+  itemDiscount: number | string;
   itemDiscountType: string;
-  itemAmount: number;
-  itemSgst: number;
-  itemCgst: number;
-  itemIgst: number;
-  itemVat: number;
-  itemSgstAmount: number; 
-  itemCgstAmount: number; 
-  itemIgstAmount: number; 
-  itemVatAmount: number;  
+  itemAmount: number | string;
+  itemSgst: number | string;
+  itemCgst: number | string;
+  itemIgst: number | string;
+  itemVat: number | string;
+  itemSgstAmount: number | string; 
+  itemCgstAmount: number | string; 
+  itemIgstAmount: number | string; 
+  itemVatAmount: number | string;  
 };
 
 type Props = {
@@ -54,20 +54,20 @@ const NewOrderTable = ({
     {
       itemId: "",
       itemName: "",
-      itemQuantity: 0,
-      itemCostPrice: 0,
-      itemTax: 0,
-      itemDiscount: 0,
+      itemQuantity: "",
+      itemCostPrice: "",
+      itemTax: "",
+      itemDiscount: "",
       itemDiscountType: "percentage",
-      itemAmount: 0,
-      itemSgst: 0,
-      itemCgst: 0,
-      itemIgst: 0,
-      itemVat: 0,
-      itemSgstAmount: 0,
-      itemCgstAmount: 0,
-      itemIgstAmount: 0,
-      itemVatAmount: 0
+      itemAmount: "",
+      itemSgst: "",
+      itemCgst: "",
+      itemIgst: "",
+      itemVat: "",
+      itemSgstAmount: "",
+      itemCgstAmount: "",
+      itemIgstAmount: "",
+      itemVatAmount: ""
     },
   ]);
 
@@ -92,20 +92,20 @@ const NewOrderTable = ({
     const newRow: Row = {
       itemId: "",
       itemName: "",
-      itemQuantity: 0,
-      itemCostPrice: 0,
-      itemTax: 0,
-      itemDiscount: 0,
+      itemQuantity: "",
+      itemCostPrice: "",
+      itemTax: "",
+      itemDiscount: "",
       itemDiscountType: "percentage",
-      itemAmount: 0,
-      itemSgst: 0,
-      itemCgst: 0,
-      itemIgst: 0,
-      itemVat: 0,
-      itemSgstAmount: 0,
-      itemCgstAmount: 0,
-      itemIgstAmount: 0,
-      itemVatAmount: 0
+      itemAmount: "",
+      itemSgst: "",
+      itemCgst: "",
+      itemIgst: "",
+      itemVat: "",
+      itemSgstAmount: "",
+      itemCgstAmount: "",
+      itemIgstAmount: "",
+      itemVatAmount: ""
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
@@ -125,12 +125,16 @@ const NewOrderTable = ({
     newRows[index].itemSgst = item.sgst;
     newRows[index].itemIgst = item.igst;
   
-    const costPrice = newRows[index].itemCostPrice;
-    const discountedPrice = calculateDiscountPrice(
-      costPrice,
-      newRows[index].itemDiscount,
-      newRows[index].itemDiscountType
-    );
+    const costPrice = Number(newRows[index].itemCostPrice);
+const itemDiscount = Number(newRows[index].itemDiscount);
+const itemDiscountType = newRows[index].itemDiscountType;
+
+const discountedPrice = calculateDiscountPrice(
+  costPrice,
+  itemDiscount,
+  itemDiscountType
+);
+
   
     const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
       discountedPrice,
@@ -144,10 +148,13 @@ const NewOrderTable = ({
     newRows[index].itemIgstAmount = igstAmount;
     if(isInterState){
       newRows[index].itemTax=igstAmount
+      newRows[index].itemCgstAmount=""
+      newRows[index].itemSgstAmount=""
 
     }
     else{
       newRows[index].itemTax=cgstAmount+sgstAmount
+      newRows[index].itemIgstAmount=""
     }
   
     setRows(newRows);
@@ -228,15 +235,20 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   const newRows = [...rows];
   newRows[index] = { ...newRows[index], [field]: value };
 
-  const quantity = newRows[index].itemQuantity || 0;
-  const costPrice = newRows[index].itemCostPrice || 0;
-  const totalCostPrice = quantity * costPrice;
-
+  const quantity = Number(newRows[index].itemQuantity);
+  const costPrice = Number(newRows[index].itemCostPrice); 
+  
+  const totalCostPrice = quantity * costPrice; 
+  
+  const itemDiscount = Number(newRows[index].itemDiscount); 
+  const itemDiscountType = newRows[index].itemDiscountType; 
+  
   const discountedPrice = calculateDiscountPrice(
     totalCostPrice,
-    newRows[index].itemDiscount,
-    newRows[index].itemDiscountType
+    itemDiscount,
+    itemDiscountType
   );
+  
 
   // Pass the individual item to calculateTax
   const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
@@ -246,9 +258,19 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   );
 
   newRows[index].itemAmount = itemAmount;
-  newRows[index].itemCgstAmount = cgstAmount;
-  newRows[index].itemSgstAmount = sgstAmount;
-  newRows[index].itemIgstAmount = igstAmount;
+    newRows[index].itemCgstAmount = cgstAmount;
+    newRows[index].itemSgstAmount = sgstAmount;
+    newRows[index].itemIgstAmount = igstAmount;
+    if(isInterState){
+      newRows[index].itemTax=igstAmount
+      newRows[index].itemCgstAmount=""
+      newRows[index].itemSgstAmount=""
+
+    }
+    else{
+      newRows[index].itemTax=cgstAmount+sgstAmount
+      newRows[index].itemIgstAmount=""
+    }
 
   setRows(newRows);
 
@@ -292,55 +314,53 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       setRows(newRows);
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: newRows, // Directly use newRows without mapping
+        itemTable: newRows, 
       }));
     } else {
       const defaultRow = {
         itemId: "",
         itemName: "",
-        itemQuantity: 0,
-        itemCostPrice: 0,
-        itemTax: 0,
-        itemDiscount: 0,
+        itemQuantity: "",
+        itemCostPrice: "",
+        itemTax: "",
+        itemDiscount: "",
         itemDiscountType: "percentage",
-        itemAmount: 0,
-        itemSgst: 0,
-        itemCgst: 0,
-        itemIgst: 0,
-        itemVat: 0,
-        itemSgstAmount: 0,
-        itemCgstAmount: 0,
-        itemIgstAmount: 0,
-        itemVatAmount: 0,
+        itemAmount: "",
+        itemSgst: "",
+        itemCgst: "",
+        itemIgst: "",
+        itemVat: "",
+        itemSgstAmount: "",
+        itemCgstAmount: "",
+        itemIgstAmount: "",
+        itemVatAmount: "",
       };
   
-      // Reset rows to default row
       setRows([defaultRow]);
   
-      // Update purchaseOrderState with the default row
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: [defaultRow], // Set default row
+        itemTable: [defaultRow], 
       }));
     }
   };
   
   
   
-
   const calculateTotalSGST = () => {
     return rows.reduce((total, row) => {
-      const sgst = !isInterState ? (row.itemSgstAmount) || 0 : 0;
+      const sgst = !isInterState ? (Number(row.itemSgstAmount) || 0) : 0;
       return total + sgst;
     }, 0);
   };
+  
 
   // Function to calculate total CGST
   const calculateTotalCGST = () => {
     return rows.reduce((total, row) => {
       console.log(row.itemCgstAmount,"total cgst");
 
-      const cgst = !isInterState ? (row.itemCgstAmount) || 0 : 0;
+      const cgst = !isInterState ? (Number(row.itemCgstAmount) || 0 ): 0;
       return total + cgst;
     }, 0);
   };
@@ -348,7 +368,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   // Function to calculate total IGST
   const calculateTotalIGST = () => {
     return rows.reduce((total, row) => {
-      const igst = isInterState ? (row.itemIgstAmount) || 0 : 0;
+      const igst = isInterState ? (Number(row.itemIgstAmount) || 0) : 0;
       return total + igst;
     }, 0);
   };
@@ -363,9 +383,9 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   
   const calculateDiscount = () => {
     const totalDiscount = rows.reduce((total, row) => {
-      const discount = Number(row.itemDiscount) || 0; 
-            const quantity = row.itemQuantity || 0;
-      const costPrice = row.itemCostPrice || 0;
+      const discount = Number(row.itemDiscount) || 0;
+      const quantity = Number(row.itemQuantity) || 0;
+      const costPrice = Number(row.itemCostPrice) || 0;
   
       const totalCostPrice = costPrice * quantity;
   
@@ -381,16 +401,18 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
     return roundedTotalDiscount;
   };
   
+  
 
   // Function to calculate the total subtotal
   const calculateTotalSubtotal = () => {
     return rows.reduce((total, row) => {
-      const itemQuantity = (row.itemQuantity) || 0;
-      const itemPrice = (row.itemCostPrice) || 0;
+      const itemQuantity = Number(row.itemQuantity) || 0;
+      const itemPrice = Number(row.itemCostPrice) || 0;
       const subtotal = itemQuantity * itemPrice;
       return total + subtotal;
     }, 0);
   };
+  
   const filteredItems = () => {
     return items.filter((item: any) => {
       const isSelected = rows.find((row) => row.itemId === item._id);
@@ -400,6 +422,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       );
     });
   };
+  
 
   useEffect(() => {
     if (openDropdownId !== null) {
@@ -415,10 +438,11 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   useEffect(() => {
     const updatedRows = rows.map((row) => {
       const discountedPrice = calculateDiscountPrice(
-        row.itemCostPrice * row.itemQuantity, 
-        row.itemDiscount,
-        row.itemDiscountType
+        (Number(row.itemCostPrice) || 0) * (Number(row.itemQuantity) || 0), 
+        Number(row.itemDiscount) || 0,
+        row.itemDiscountType 
       );
+      
   
       const taxDetails = calculateTax(
         discountedPrice,
@@ -428,15 +452,23 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   
       return {
         ...row,
-
         itemAmount: taxDetails.itemAmount, 
-        itemCgstAmount: taxDetails.cgstAmount,
-        itemSgstAmount: taxDetails.sgstAmount,
-        itemIgstAmount: taxDetails.igstAmount,
+        itemCgstAmount: taxDetails.cgstAmount>0?taxDetails.cgstAmount:"",
+        itemSgstAmount: taxDetails.sgstAmount>0?taxDetails.sgstAmount:"",
+        itemIgstAmount: taxDetails.igstAmount>0?taxDetails.igstAmount:"",
       };
     });
   
     setRows(updatedRows);
+    setPurchaseOrderState?.((prevData: any) => ({
+      ...prevData,
+      itemTable: updatedRows.map((row) => {
+        const updatedItem = { ...row };
+        delete updatedItem.itemImage;
+        return updatedItem;
+      }),
+    }));
+    
   }, [
     purchaseOrderState?.destinationOfSupply,
     purchaseOrderState?.sourceOfSupply,
@@ -449,7 +481,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       const updatedRows = rows.map((row) => ({
         ...row,
         itemDiscountType: "",
-        itemDiscount: 0,
+        itemDiscount: "",
       }));
 
       setRows(updatedRows);
@@ -476,11 +508,11 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
     setPurchaseOrderState?.((prevData: PurchaseOrder) => ({
       ...prevData,
       totalItem: totalQuantity,
-      sgst: totalSGST,
-      cgst: totalCGST,
-      igst: totalIGST,
+      sgst: isInterState?"": totalSGST ,
+      cgst: isInterState?"":totalCGST,
+      igst: isInterState?totalIGST:"",
       subTotal: totalSellingPrice,
-      itemTotalDiscount: totalDiscount,
+      itemTotalDiscount: totalDiscount?totalDiscount:"",
       totalTaxAmount: isInterState 
       ? totalIGST 
       : totalSGST + totalCGST,    }));

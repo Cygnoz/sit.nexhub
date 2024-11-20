@@ -1,4 +1,3 @@
-import Ellipsis from "../../../assets/icons/Ellipsis";
 import NewBankModal from "./NewBankModal";
 import Table from "./Table";
 
@@ -18,7 +17,7 @@ function BankHome({}: Props) {
         <div className="ml-auto gap-3 flex items-center">
           <NewBankModal />
           <div className="cursor-pointer">
-            <Ellipsis />
+            {/* <Ellipsis /> */}
           </div>
         </div>
         <div></div>

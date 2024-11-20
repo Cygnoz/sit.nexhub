@@ -5,10 +5,7 @@ import Ellipsis from "../../../assets/icons/Ellipsis";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
-import SortBy from "./SortBy";
-import Print from "../../../Components/PrintButton";
 import Table from "./Table";
-import SearchBar from "../../../Components/SearchBar";
 import PaymentsType from "./PaymentsType";
 import { Link } from "react-router-dom";
 
@@ -16,7 +13,6 @@ type Props = {};
 
 const PaymentMade = ({}: Props) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState<string>("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
@@ -75,8 +71,7 @@ const PaymentMade = ({}: Props) => {
         <div>
           <h3 className="font-bold text-2xl text-textColor">Payment</h3>
           <p className="text-sm text-gray mt-1">
-            Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla
-            egestas consectetur amet.
+          Comprehensive invoicing that includes purchase details such as order date, supplier name, total amounts due for clear and accurate financial tracking
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">
@@ -116,17 +111,7 @@ const PaymentMade = ({}: Props) => {
           <div className="w-[100%] p-3 bg-gray-100">
             <PaymentsType />
           </div>
-          <div className="flex w-full pl-3 pr-3 items-center gap-6">
-            <div className="w-[85%]">
-              <SearchBar
-                onSearchChange={setSearchValue}
-                searchValue={searchValue}
-                placeholder="Search Payments"
-              />
-            </div>
-            <SortBy />
-            <Print />
-          </div>
+         
           <div className="p-3">
             {/* table */}
             <Table />

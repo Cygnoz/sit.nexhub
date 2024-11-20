@@ -10,6 +10,7 @@ import TrashCan from "../../../assets/icons/TrashCan";
 import "react-phone-input-2/lib/style.css";
 import Info from "../../../assets/icons/Info";
 import Tooltip from "../../../Components/tooltip/Tooltip";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 interface InputData {
   organizationLogo: string;
@@ -37,7 +38,6 @@ const CreateOrganizationForm = () => {
   const [additionalData, setAdditionalData] = useState<any | null>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<any>(null);
-
   const [countryData, setcountryData] = useState<any | []>([]);
   const [currencyData, setcurrencyData] = useState<any | []>([]);
   const [stateList, setStateList] = useState<any | []>([]);
@@ -45,6 +45,7 @@ const CreateOrganizationForm = () => {
   const { request: createOrganization } = useApi("post", 5004);
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCurrencyData } = useApi("get", 5004);
+  const { setOrganization} = useOrganization();
   const [tooltipState, setTooltipState] = useState<{ [key: string]: boolean }>({
     industry: false,
     address: false,
@@ -72,6 +73,9 @@ const CreateOrganizationForm = () => {
     dateSplit: "",
     phoneNumberCode: "",
   });
+
+
+  
 
   const getDropdownList = async () => {
     try {
@@ -121,9 +125,9 @@ const CreateOrganizationForm = () => {
         setInputData(response.data);
         setInputData((prevData: any) => ({
           ...prevData,
-          organizationName: response.data.organizationName,
-          
+          organizationName: response.data.organizationName,   
         }));
+        setOrganization(response.data);
         if (response.data.organizationPhNum) {
           const organizationPhNum = response.data.organizationPhNum;
           let matchingCountry = null;
@@ -181,8 +185,7 @@ const CreateOrganizationForm = () => {
     }));
   };
   
-  
-
+ 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -254,10 +257,12 @@ const CreateOrganizationForm = () => {
     try {
       const url = `${endponits.CREATE_ORGANIZATION}`;
       const apiResponse = await createOrganization(url, inputData);
-      // console.log(apiResponse, "api response");
       const { response, error } = apiResponse;
+  
       if (!error && response) {
         toast.success(response.data.message);
+       getOrganization()
+        
       } else {
         toast.error(error.response.data.message);
       }
@@ -265,6 +270,8 @@ const CreateOrganizationForm = () => {
       console.log(error, "Error in creating organization");
     }
   };
+  
+
   const handleDeleteImage = () => {
     setInputData((prevDetails: any) => ({
       ...prevDetails,
@@ -511,7 +518,7 @@ const CreateOrganizationForm = () => {
             <div>
               <input
                 className="pl-3 text-sm w-[100%] placeholder-[#495160] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2  leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                placeholder="Street 1"
+                placeholder="Street 2"
                 name="addline2"
                 value={inputData.addline2}
                 onChange={handleInputChange}

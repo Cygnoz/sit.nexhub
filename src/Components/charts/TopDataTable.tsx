@@ -45,32 +45,32 @@ function TopDataTable({ data }: Props) {
               </thead>
               <tbody>
                 {data.map((product) => (
-                  <tr key={product.itemId} className="border-b border-tableBorder">
+                  <tr key={product?.itemId} className="border-b border-tableBorder">
                     <td className="px-4 py-2 text-xs text-dropdownText">
-                      {product.itemName}
+                      {product?.itemName}
                     </td>
                     <td className="px-4 py-2">
                       <img
-                        src={product.itemImage}
-                        alt={product.itemName}
+                        src={product?.itemImage}
+                        alt={product?.itemName}
                         className="w-12 h-12 object-cover rounded"
                       />
                     </td>
                     <td className="px-4 py-2 text-xs text-gray-700">
-                      {organization?.baseCurrency} {product.saleVolume.toLocaleString()}
+                      {organization?.baseCurrency} {product?.saleVolume?.toLocaleString()}
                     </td>
                     <td className="px-4 py-2 text-xs text-gray-700">
-                      {product.unitBought} Units
+                      {product?.unitBought} Units
                     </td>
                     <td className="px-4 py-2">
                       <span
                         className={`inline-block px-2 py-1.5 text-xs font-semibold rounded-[4px] ${
-                          product.status === "In Stock"
+                          product?.status === "In Stock"
                             ? "bg-green-100 text-green-700"
                             : "bg-red-100 text-red-700"
                         }`}
                       >
-                        {product.status}
+                        {product?.status}
                       </span>
                     </td>
                   </tr>

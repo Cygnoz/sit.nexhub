@@ -8,6 +8,8 @@ import PrinterIcon from "@heroicons/react/20/solid/PrinterIcon";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import Calender from "../../../assets/icons/Calender";
 import SearchBar from "../../../Components/SearchBar";
+import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
+import { Link } from "react-router-dom";
 
 type Props = {};
 
@@ -62,14 +64,14 @@ function DayBook({}: Props) {
 
   return (
     <>
-      <div className="mx-5 my-4 bg-slate-50 h-[100vh]">
-        <div className="flex items-center">
-          <div>
-            <h3 className="font-bold text-2xl text-textColor">Day Book</h3>
-            <p className="text-sm text-gray mt-1">
-              Maintain a detailed record of all transactions in one place with
-              the Day Book section.
-            </p>
+      <div className="flex items-center mx-5 my-4">
+          <div className="flex justify-center items-center"> 
+          <Link to={"/reports"}>
+            <div className="flex justify-center items-center h-11 w-11 bg-[#F3F3F3] rounded-full">
+              <CheveronLeftIcon />
+            </div>
+          </Link>
+            <h3 className="font-bold text-2xl ms-4 text-textColor">Day Book</h3>
           </div>
           <div className="ml-auto gap-3 flex items-center">
             <div className="flex text-dropdownText gap-4">
@@ -122,6 +124,8 @@ function DayBook({}: Props) {
             </div>
           </div>
         </div>
+      <div className="mx-5 my-4 bg-slate-50 h-[100vh]">
+      
         <div className="mt-5 bg-white p-5 rounded-xl">
           <SearchBar
             searchValue={searchValue}

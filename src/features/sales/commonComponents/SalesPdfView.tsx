@@ -1,39 +1,47 @@
 import { useEffect, useState } from "react";
-import { endponits } from "../../../../Services/apiEndpoints";
-import useApi from "../../../../Hooks/useApi";
-import { useOrganization } from "../../../../context/OrganizationContext";
+import { useOrganization } from "../../../context/OrganizationContext";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
 
-interface QuoteItem {
+interface OrderItem {
   itemId: string;
   itemName: string;
   quantity: number;
   sellingPrice: number;
   amount: number;
   itemAmount: number;
+  sgstAmount:number;
+  cgstAmount:number;
 }
 
-interface QuoteData {
+interface SalesOrderData {
+  salesInvoiceDate?: string;
+  salesInvoice?: string;
+  salesQuotes?: string;
+  salesOrderDate: string;
+  salesOrder: string;
+  expectedShipmentDate: string;
+  customerName: string;
+  items: OrderItem[];
+  totalAmount: number;
+  status: string;
+  customerId: number;
+  subTotal: number;
+  totalTax: number;
+  totalDiscount: number;
   cgst: number;
   sgst: number;
   createdDate: string;
-  customerName: string;
   discountTransactionAmount: number;
   expiryDate: string;
-  items: QuoteItem[];
   placeOfSupply: string;
   salesQuoteDate: string;
-  salesQuotes: string;
-  status: string;
-  subTotal: number;
-  totalAmount: number;
-  totalDiscount: number;
   totalItem: number;
-  totalTax: number;
-  customerId: number;
 }
 
 interface SalesOrderViewProps {
-  data: QuoteData | null;
+  data: SalesOrderData | null;
+  page: string;
 }
 
 interface Customer {
@@ -54,7 +62,7 @@ interface Customer {
   [key: string]: any;
 }
 
-function SalesQuotePdfView({ data }: SalesOrderViewProps) {
+function SalesPdfView({ data, page }: SalesOrderViewProps) {
   const { request: getOneCustomer } = useApi("get", 5002);
   const [customerData, setCustomerData] = useState<Customer | null>(null);
   const { organization } = useOrganization();
@@ -81,15 +89,28 @@ function SalesQuotePdfView({ data }: SalesOrderViewProps) {
     <div className="mt-4">
       <div className="flex items-center justify-center mb-4">
         <p className="text-textColor border-r-[1px] border-borderRight pr-4 text-sm font-medium">
-          Quote Date:{" "}
+          {
+            page === "quote" ?
+              "Quote Date :" :
+              "Order Date :"
+          }
           <span className="ms-3 text-dropdownText text-base font-bold">
-            {data?.salesQuoteDate}
+            {
+              page == "salesOrder" ? `${data?.salesOrderDate || "N/A"}`
+                :
+                page == "invoice" ? `${data?.salesInvoiceDate || "N/A"}`
+                  : page === "quote" ? `${data?.salesQuoteDate || "N/A"}`
+                    : "Na"
+            }
           </span>
         </p>
         <p className="text-textColor pl-4 text-sm font-medium">
           Expected Shipment:{" "}
           <span className="ms-3 text-dropdownText text-base font-bold">
-            {data?.expiryDate}
+            {
+              page === "salesOrder" || page === "invoice" ? `${data?.expectedShipmentDate || "N/A"}`
+                : `${data?.expiryDate || "N/A"}`
+            }
           </span>
         </p>
       </div>
@@ -111,15 +132,23 @@ function SalesQuotePdfView({ data }: SalesOrderViewProps) {
               />
             </div>
             <div className="text-right">
-              <h2 className="text-xl font-bold text-textColor">QUOTE</h2>
+              <h2 className="text-xl font-bold text-textColor">{
+                page == "quote" ? "QUOTE"
+                  : page == "invoice" ? "TAX INVOICE"
+                    : page == "salesOrder" ? "SALES ORDER"
+                      : ""
+              }</h2>
               <p className="text-sm font-bold text-dropdownText mt-[5px]">
-                Quote# {data?.salesQuotes}
+                {page === "salesOrder" ? `Sales Order #${data?.salesOrder || "N/A"}` :
+                  page === "invoice" ? `Invoice Order #${data?.salesInvoice || "N/A"}`
+                    : page === "quote" ? `Quote #${data?.salesQuotes || "N/A"}`
+                      : ""}
               </p>
               <h3 className="font-normal text-xs mt-[14px] text-pdftext">
                 {organization?.organizationName}
               </h3>
               <p className="font-normal text-xs text-pdftext">
-                {organization?.organizationPhNum}
+                {customerData?.customerEmail} | {customerData?.mobile}
               </p>
             </div>
           </div>
@@ -140,10 +169,19 @@ function SalesQuotePdfView({ data }: SalesOrderViewProps) {
 
             <h3 className="font-normal text-xs text-pdftext">Details</h3>
             <p className="font-normal text-xs text-pdftext ">
-              Order Date: {data?.salesQuoteDate}
+              Order Date:   {
+                page == "salesOrder" ? `${data?.salesOrderDate || "N/A"}`
+                  :
+                  page == "invoice" ? `${data?.salesInvoiceDate || "N/A"}`
+                    : page === "quote" ? `${data?.salesQuoteDate || "N/A"}`
+                      : "Na"
+              }
             </p>
             <p className="font-normal text-xs text-pdftext">
-              Expected Shipment Date: {data?.expiryDate}
+              Expected Shipment Date:  {
+                page === "salesOrder" || page === "invoice" ? `${data?.expectedShipmentDate || "N/A"}`
+                  : `${data?.expiryDate || "N/A"}`
+              }
             </p>
           </div>
 
@@ -158,12 +196,12 @@ function SalesQuotePdfView({ data }: SalesOrderViewProps) {
               </tr>
             </thead>
             <tbody>
-              {data?.items.map((item: QuoteItem) => (
+              {data?.items.map((item: OrderItem) => (
                 <tr key={item.itemId} className="text-[10px] text-left">
                   <td className="py-2 px-4">{item.itemName}</td>
                   <td className="py-2 px-4 pl-16">{item.quantity}</td>
                   <td className="py-2 px-4">{item.sellingPrice.toFixed(2)}</td>
-                  <td className="py-2 px-4">{data.cgst + data.sgst}</td>
+                  <td className="py-2 px-4">{item.cgstAmount + item.sgstAmount}</td>
                   <td className="py-2 px-4">{item.itemAmount.toFixed(2)}</td>
                 </tr>
               ))}
@@ -199,4 +237,4 @@ function SalesQuotePdfView({ data }: SalesOrderViewProps) {
   );
 }
 
-export default SalesQuotePdfView;
+export default SalesPdfView;
