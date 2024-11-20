@@ -16,7 +16,7 @@ export interface PurchaseOrder {
   paymentTerms: string;
   paymentMode: string;
 
-  itemTable: Array<{
+  items: Array<{
     itemImage?: string;
     itemId: string;
     itemName: string; 

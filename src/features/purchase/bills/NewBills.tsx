@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import { useEffect, useRef, useState } from "react";
 import CehvronDown from "../../../assets/icons/CehvronDown";
@@ -13,6 +13,7 @@ import { Bill } from "./BillBody";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
 import toast from "react-hot-toast";
+
 
 type Props = {};
 
@@ -44,7 +45,12 @@ const NewBills = ({}: Props) => {
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: newBillApi } = useApi("post", 5005);
+  const { request: getOneBill } = useApi("get", 5005);
+
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const billid = queryParams.get("id");
 
   const [bill, setBill] = useState<Bill>({
     supplierId: "",
@@ -61,7 +67,7 @@ const NewBills = ({}: Props) => {
     PaidThrough:"",
     billDate: "",
     dueDate: "",
-    itemTable: [
+    items: [
       {
         itemId: "",
         itemName: "",
@@ -101,6 +107,7 @@ const NewBills = ({}: Props) => {
     grandTotal: "",
     balanceAmount:"",
     paidAmount:"",
+    purchaseOrderId:""
   });
 
   console.log(bill,"bill")
@@ -485,6 +492,33 @@ const NewBills = ({}: Props) => {
     }
   }, [bill?.sourceOfSupply, bill?.destinationOfSupply]);
 
+
+  const getBills = async () => {
+    try {
+      const url = `${endponits.GET_ONE_PURCHASE_ORDER}/${billid}`;
+      const { response, error } = await getOneBill(url);
+  
+      if (!error && response) {
+        console.log(response.data, "response");
+  
+        // Update bill state
+        setBill((prevData) => ({
+          ...prevData, 
+          ...response.data,
+          orderNumber:response.data.purchaseOrder,
+          purchaseOrderId:response.data._id
+        }));
+  
+        const matchingSupplier = supplierData.find((sup:any) => sup._id === response.data.supplierId);
+        if (matchingSupplier) {
+          setSelecetdSupplier(matchingSupplier); 
+        }
+      }
+    } catch (error) {
+      console.log("Error in fetching bill", error);
+    }
+  };
+  
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
@@ -494,6 +528,7 @@ const NewBills = ({}: Props) => {
   }, []);
 
   useEffect(() => {
+    getBills()
     handleDestination();
     handleplaceofSupply();
     fetchCountries();
