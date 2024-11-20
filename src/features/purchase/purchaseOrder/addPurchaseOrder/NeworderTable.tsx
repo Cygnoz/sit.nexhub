@@ -28,6 +28,7 @@ type Row = {
   itemCgstAmount: number | string; 
   itemIgstAmount: number | string; 
   itemVatAmount: number | string;  
+  taxPreference:string;
 };
 
 type Props = {
@@ -67,7 +68,8 @@ const NewOrderTable = ({
       itemSgstAmount: "",
       itemCgstAmount: "",
       itemIgstAmount: "",
-      itemVatAmount: ""
+      itemVatAmount: "",
+      taxPreference:""
     },
   ]);
 
@@ -105,7 +107,8 @@ const NewOrderTable = ({
       itemSgstAmount: "",
       itemCgstAmount: "",
       itemIgstAmount: "",
-      itemVatAmount: ""
+      itemVatAmount: "",
+      taxPreference:""
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
@@ -114,7 +117,7 @@ const NewOrderTable = ({
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
-  
+  console.log(item,"item szdxfcgvhb")
     const newRows = [...rows];
     newRows[index].itemName = item.itemName;
     newRows[index].itemImage = item.itemImage;
@@ -124,6 +127,7 @@ const NewOrderTable = ({
     newRows[index].itemCgst = item.cgst;
     newRows[index].itemSgst = item.sgst;
     newRows[index].itemIgst = item.igst;
+    newRows[index].taxPreference=item.taxPreference;
   
     const costPrice = Number(newRows[index].itemCostPrice);
 const itemDiscount = Number(newRows[index].itemDiscount);
@@ -334,6 +338,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
         itemCgstAmount: "",
         itemIgstAmount: "",
         itemVatAmount: "",
+        taxPreference:"",
       };
   
       setRows([defaultRow]);
@@ -358,7 +363,6 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   // Function to calculate total CGST
   const calculateTotalCGST = () => {
     return rows.reduce((total, row) => {
-      console.log(row.itemCgstAmount,"total cgst");
 
       const cgst = !isInterState ? (Number(row.itemCgstAmount) || 0 ): 0;
       return total + cgst;
@@ -523,7 +527,6 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       setRows(purchaseOrderState.items)
     }
   },[purchaseOrderState.orderNumber])
-  console.log(rows,"rows")
   useEffect(() => {
       setRows((prevData: any) => {
         if (Array.isArray(prevData)) {

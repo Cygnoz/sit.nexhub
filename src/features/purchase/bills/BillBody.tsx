@@ -27,6 +27,7 @@ export interface Bill {
         itemVat: number | string ;
         itemSgstAmount: number | string ;
         itemCgstAmount: number | string ;
+        taxPreference:string;
     }[];
     otherExpense: number | string ;
     otherExpenseReason: string;

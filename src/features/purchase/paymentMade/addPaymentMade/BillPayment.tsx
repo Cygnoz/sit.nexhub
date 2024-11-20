@@ -26,7 +26,7 @@ interface UnpaidBill {
 interface SupplierPayment {
   supplierId: string;
   supplierDisplayName: string;
-  paymentMade: number;
+  // paymentMade: number;
   paymentDate: string;
   paymentId: string;
   paymentMode: string;
@@ -48,7 +48,7 @@ interface SupplierPayment {
 const initialSupplierPayment: SupplierPayment = {
   supplierId: "",
   supplierDisplayName: "",
-  paymentMade: 0,
+  // paymentMade: 0,
   paymentDate: "",
   paymentId: "",
   paymentMode: "",
@@ -103,7 +103,7 @@ const NewPaymentMade = ({}: Props) => {
   const getBillsUrl = `${endponits.GET_ALL_BILLS}`;
   const accountsUrl = `${endponits.Get_ALL_Acounts}`;
 
-  console.log(paymentState);
+  // console.log(paymentState);
   // console.log(supplierBills, "supplierBills");
   // console.log(allAcoounts,"allAccounts")
 
@@ -161,7 +161,8 @@ const NewPaymentMade = ({}: Props) => {
       const { response, error } = await fetchFunction(url);
       if (!error && response) {
         if (url === getBillsUrl) {
-          setData(response.data.PurchaseBills);
+          setData(response.data.allBills);
+          console.log(response.data)
         } else if (url === accountsUrl) {
           const filteredData = response.data.filter(
             (item: any) => item.accountGroup === "Asset"
@@ -176,18 +177,18 @@ const NewPaymentMade = ({}: Props) => {
     }
   };
 
-  const handleChangeAmt = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      setIsFullAmount(true);
-      setPaymentState((prevData) => ({
-        ...prevData,
-        paymentMade: paymentState.totalBillAmount,
-      }));
-    } else {
-      setIsFullAmount(false);
+  // const handleChangeAmt = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.checked) {
+  //     setIsFullAmount(true);
+  //     setPaymentState((prevData) => ({
+  //       ...prevData,
+  //       paymentMade: paymentState.totalBillAmount,
+  //     }));
+  //   } else {
+  //     setIsFullAmount(false);
     
-    }
-  };
+  //   }
+  // };
 
   const handleSave = async () => {
     try {
@@ -205,8 +206,7 @@ const NewPaymentMade = ({}: Props) => {
   };
 
   useEffect(() => {
-    const grandTotal = supplierBills
-      .filter((bill: any) => bill.paidStatus === "Pending" || bill.paidStatus === "Overdue")
+    const grandTotal = supplierBills?.filter((bill: any) => bill.paidStatus === "Pending" || bill.paidStatus === "Overdue")
       .reduce((total: number, bill: any) => total + bill.grandTotal, 0);
   
     setPaymentState((prevData) => ({
@@ -238,7 +238,7 @@ const NewPaymentMade = ({}: Props) => {
 
   useEffect(() => {
     if (selectedSupplier) {
-      const filtered = allBillsData.filter(
+      const filtered = allBillsData?.filter(
         (item: any) => item.supplierId === selectedSupplier._id
       );
       setSupplierBills(filtered);
@@ -312,7 +312,7 @@ const NewPaymentMade = ({}: Props) => {
                                   supplierId: supplier._id,
                                   supplierDisplayName:
                                     supplier.supplierDisplayName,
-                                    paymentMade:0
+                                 
 
                                 }));
                                 setIsFullAmount(false)
@@ -355,7 +355,7 @@ const NewPaymentMade = ({}: Props) => {
               </div>
 
               <div className="grid grid-cols-2 gap-4 mt-2">
-                <div className="">
+                {/* <div className="">
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Made
                   </label>
@@ -380,7 +380,7 @@ const NewPaymentMade = ({}: Props) => {
                       Pay Full Amount ({paymentState.totalBillAmount})
                     </p>
                   </div>
-                </div>
+                </div> */}
                 <div className="">
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Date
@@ -568,16 +568,16 @@ const NewPaymentMade = ({}: Props) => {
                 </div>
               </div>
 
-              <div className="flex ">
+              {/* <div className="flex ">
                 <div className="w-[75%]">
                   <p> Amount Refunded</p>
                 </div>
                 <div className="w-full text-end">
                   <p className="text-end">0.00</p>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="flex ">
+              {/* <div className="flex ">
                 <div className="w-[75%]">
                   <p> Amount In Excess</p>
                 </div>
@@ -588,7 +588,7 @@ const NewPaymentMade = ({}: Props) => {
                       : "0.00"}
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>{" "}
           <div className="flex gap-4 m-5 justify-end">

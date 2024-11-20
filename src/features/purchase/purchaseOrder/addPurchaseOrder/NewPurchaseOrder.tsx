@@ -79,6 +79,7 @@ const NewPurchaseOrder = ({}: Props) => {
         itemCgstAmount: 0,
         itemIgstAmount: 0,
         itemVatAmount: 0,
+        taxPreference:""
       },
     ],
     otherExpense: 0,
