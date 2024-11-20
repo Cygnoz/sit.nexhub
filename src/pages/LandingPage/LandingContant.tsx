@@ -16,13 +16,14 @@ import salesVector from "../../assets/Images/salesVector.png";
 import supplierVector from "../../assets/Images/supplierVector.png";
 import droidBilly from '../../assets/Images/droidBilly.png'
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
  
 type Props = {
   setMode?: React.Dispatch<React.SetStateAction<boolean>>;
   mode?: boolean
 };
  
-const LandingContant = ({ mode }: Props) => {
+const LandingContant = ({ mode,setMode }: Props) => {
   const navigate = useNavigate()
  
   const handleNavigation = (route: string, index: number) => {
@@ -30,6 +31,15 @@ const LandingContant = ({ mode }: Props) => {
     localStorage.setItem('savedSelectedIndex','0')
     navigate(route);
   };
+
+  useEffect(() => {
+    // Retrieve mode from localStorage, if it exists
+    const storedMode = localStorage.getItem('mode');
+    if (storedMode !== null) {
+      setMode?.(storedMode === 'true');
+    }
+  }, [setMode]);
+
   return (
     <div className="grid grid-cols-12 relative">
       <div className="col-span-9 ">

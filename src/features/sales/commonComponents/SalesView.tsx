@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import CheveronDownIcon from "../../../../assets/icons/CheveronDownIcon";
-import CheveronUp from "../../../../assets/icons/CheveronUp";
-import Button from "../../../../Components/Button";
-import { useOrganization } from "../../../../context/OrganizationContext";
-import useApi from "../../../../Hooks/useApi";
-import { endponits } from "../../../../Services/apiEndpoints";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
+import Button from "../../../Components/Button";
+import CheveronDownIcon from "../../../assets/icons/CheveronDownIcon";
+import CheveronUp from "../../../assets/icons/CheveronUp";
+import { useParams } from "react-router-dom";
+import { useOrganization } from "../../../context/OrganizationContext";
 
-interface QuoteItem {
+interface OrderItem {
   itemId: string;
   itemName: string;
   quantity: number;
@@ -15,11 +16,14 @@ interface QuoteItem {
   itemAmount: number;
 }
 
-interface QuoteData {
-  salesQuoteDate: string;
-  expiryDate: string;
+interface SalesOrderData {
+  salesInvoiceDate?: string;
+  salesQuoteDate?: string;
+  expiryDate?: string;
+  salesOrderDate: string;
+  expectedShipmentDate: string;
   customerName: string;
-  items: QuoteItem[];
+  items: OrderItem[];
   totalAmount: number;
   status: string;
   customerId: number;
@@ -34,7 +38,6 @@ interface Customer {
   companyName: string;
   mobile: string;
   customerEmail: string;
-  skypeNameNumber?: string;
   billingAddressLine1: string;
   billingAddressLine2: string;
   billingPinCode: string;
@@ -43,23 +46,36 @@ interface Customer {
   billingCity: string;
   status: string;
   customerDisplayName: string;
-  [key: string]: any;
 }
 
 interface SalesOrderViewProps {
-  data: QuoteData | null;
+  data: SalesOrderData | null;
+  page?: string
 }
 
-function SalesQuoteView({ data }: SalesOrderViewProps) {
+function SalesView({ data, page }: SalesOrderViewProps) {
   const [openItemId, setOpenItemId] = useState<string | null>(null);
   const { request: getOneCustomer } = useApi("get", 5002);
   const [customerData, setCustomerData] = useState<Customer | null>(null);
+  const [invoiceJournal, setInvoiceJournal] = useState<any>([])
   const { organization } = useOrganization();
+  const { id } = useParams<{ id: string }>();
+  const { request: getOneInvoiceDetails } = useApi("get", 5007);
 
   const toggleItemDetails = (itemId: string) => {
     setOpenItemId((prev) => (prev === itemId ? null : itemId));
   };
-
+  const fetchOneInvoice = async () => {
+    try {
+      const url = `${endponits.GET_ONE_JOURNAL_INVOICE}/${id}`;
+      const { response, error } = await getOneInvoiceDetails(url);
+      if (!error && response) {
+        setInvoiceJournal(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching sales order:", error);
+    }
+  };
   const fetchOneCustomer = async () => {
     try {
       if (data?.customerId) {
@@ -76,32 +92,47 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
 
   useEffect(() => {
     fetchOneCustomer();
-  }, [data?.customerId]);
+    fetchOneInvoice()
+  }, [data?.customerId, id]);
 
   return (
     <div className="mt-4">
-      {/* Quote Date & Expected Shipment */}
+      {/* Order Date & Expected Shipment */}
       <div className="flex items-center justify-start mb-4">
         <p className="text-textColor border-r-[1px] border-borderRight pr-4 text-sm font-normal">
-          Quote Date:
+          Order Date:
           <span className="ms-3 text-dropdownText text-sm font-semibold">
-            {data?.salesQuoteDate || "N/A"}
+            {
+              page == "salesOrder" ? `${data?.salesOrderDate || "N/A"}`
+                :
+                page == "invoice" ? `${data?.salesInvoiceDate || "N/A"}`
+                  : page === "quote" ? `${data?.salesQuoteDate || "N/A"}`
+                    : "Na"
+            }
           </span>
         </p>
         <p className="text-textColor pl-4 text-sm font-normal">
           Expected Shipment:
           <span className="ms-3 text-dropdownText text-sm font-semibold">
-            {data?.expiryDate || "N/A"}
+            {
+              page === "salesOrder" || page === "invoice" ? `${data?.expectedShipmentDate || "N/A"}`
+                : `${data?.expiryDate || "N/A"}`
+            }
           </span>
         </p>
       </div>
 
-      {/* Send Purchase Order */}
+      {/* Send Sales Order */}
       <div className="mt-4 bg-cuscolumnbg p-4 rounded-lg flex justify-between items-center">
         <div>
-          <p className="text-base font-bold text-textColor">Send Sales Quote</p>
+          <p className="text-base font-bold text-textColor">{
+            page == "salesOrder" ? "Send Sales Order"
+              : page == "invoice" ? "Send Invoice"
+              :page == "quote" ? "Send Sales Quote"
+                : "Send"
+          }</p>
           <p className="text-sm font-normal text-dropdownText mt-2">
-            Sales quote has been created. You can email the Sales Quote to your
+            Sales order has been created. You can email the Sales Order to your
             customer or mark it as Confirmed.
           </p>
         </div>
@@ -110,7 +141,12 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
             <p className="text-sm font-medium">Mark as Confirmed</p>
           </Button>
           <Button className="pl-4 pr-4" size="sm">
-            <p className="text-sm font-medium">Send Sales Quote</p>
+            <p className="text-sm font-medium">{
+              page == "salesOrder" ? "Send Sales Order"
+                : page == "invoice" ? "Send Invoice"
+                : page == "quote" ? "Send Sales Quote"
+                  : "Send"
+            }</p>
           </Button>
         </div>
       </div>
@@ -182,6 +218,44 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
       </div>
 
       <hr className="mt-6 border-t border-inputBorder" />
+      {
+        page == "invoice" &&
+        <>
+          {/* Invoice Details */}
+          <div className="p-4 rounded-lg bg-[#F6F6F6] mt-6">
+            <h2 className="font-semibold text-base mb-4 text-textColor">Invoice</h2>
+
+            <div className="grid grid-cols-3 font-bold gap-x-4 text-base text-dropdownText mb-2">
+              <div>Account</div>
+              <div className="text-right">Debit</div>
+              <div className="text-right">Credit</div>
+            </div>
+
+            {/* Mapping over invoiceJournal to display each row */}
+            {invoiceJournal.map((item: any) => (
+              <div key={item._id} className="grid grid-cols-3 text-dropdownText gap-x-4 text-base mb-2">
+                <div className="text-sm">{item.accountName}</div>
+                <div className="text-right">{item.debitAmount.toFixed(2)}</div>
+                <div className="text-right">{item.creditAmount.toFixed(2)}</div>
+              </div>
+            ))}
+
+            {/* Total Row */}
+            <div className="grid grid-cols-3 gap-x-4 text-lg font-bold text-[#0B1320] mt-5">
+              <div className="text-base">Total</div>
+              <div className="text-right">
+                {invoiceJournal.reduce((total: any, item: any) => total + item.debitAmount, 0).toFixed(2)}
+              </div>
+              <div className="text-right">
+                {invoiceJournal.reduce((total: any, item: any) => total + item.creditAmount, 0).toFixed(2)}
+              </div>
+            </div>
+          </div>
+
+
+          <hr className="mt-6 border-t border-inputBorder" />
+        </>
+      }
 
       {/* Billing Address */}
       <div className="flex justify-between gap-6 mt-6">
@@ -245,4 +319,4 @@ function SalesQuoteView({ data }: SalesOrderViewProps) {
   );
 }
 
-export default SalesQuoteView;
+export default SalesView;

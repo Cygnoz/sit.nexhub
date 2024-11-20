@@ -20,7 +20,7 @@ interface TableProps {
   searchPlaceholder: string;
   loading: boolean;
   searchableFields: string[];
-  setColumns:any
+  setColumns?:any
 }
 
 const PurchaseTable: React.FC<TableProps> = ({

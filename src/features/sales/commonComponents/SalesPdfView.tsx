@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { endponits } from "../../../../Services/apiEndpoints";
-import useApi from "../../../../Hooks/useApi";
-import { useOrganization } from "../../../../context/OrganizationContext";
+import { useOrganization } from "../../../context/OrganizationContext";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
 
 interface OrderItem {
   itemId: string;
@@ -62,7 +62,7 @@ interface Customer {
   [key: string]: any;
 }
 
-function SalesQuotePdfView({ data, page }: SalesOrderViewProps) {
+function SalesPdfView({ data, page }: SalesOrderViewProps) {
   const { request: getOneCustomer } = useApi("get", 5002);
   const [customerData, setCustomerData] = useState<Customer | null>(null);
   const { organization } = useOrganization();
@@ -237,4 +237,4 @@ function SalesQuotePdfView({ data, page }: SalesOrderViewProps) {
   );
 }
 
-export default SalesQuotePdfView;
+export default SalesPdfView;

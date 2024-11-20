@@ -26,7 +26,7 @@ const Header = ({}: Props) => {
   const { request: getOneOrganization } = useApi("get", 5004);
 
   const handleLogout = () => {
-    localStorage.clear();
+    ['authToken', 'savedIndex', 'savedSelectedIndex'].forEach(item => localStorage.removeItem(item));
     navigate("/login");
     toast.error("Session expired. Please log in again.");
   };
