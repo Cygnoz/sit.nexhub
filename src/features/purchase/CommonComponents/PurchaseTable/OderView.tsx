@@ -16,11 +16,12 @@ type Props = {
 function OrderView({ data, page, organization }: Props) {
   const [supplier, setSupplier] = useState<any>({});
   const { request: getSupplier } = useApi("get", 5009);
-  const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState<string | null>(null);
 
-  const toggleAccordion = (id: string) => {
-    setExpandedItemId((prev) => (prev === id ? null : id));
+  const toggleDropdown = (key: string | null) => {
+    setIsExpanded(key === isExpanded ? null : key); 
   };
+  console.log(isExpanded)
 
   const getSupplierAddress = async () => {
     if (!data?.supplierId) return; 
@@ -42,108 +43,100 @@ function OrderView({ data, page, organization }: Props) {
     getSupplierAddress();
   }, [data]);
 
+
+
   const renderItemTable = () => {
     const items = data?.itemTable || data?.items;
-
+  
     if (!items || !items.length) return <p>No items available</p>;
-
-    return items.map((item: any) => (
-      
-    <div className="grid grid-cols-2 gap-4">
-   <p hidden>   {item._id}</p>
-        <div>
-      {items && items.length > 0 ? (
-        items.map((item: any) => (
+  
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        {items.map((item: any) => (
           <div
-            key={item.id}
-            className="mt-6 p-4 rounded-lg flex items-center flex-col" 
+            key={item.itemId}
+            className="mt-6 p-4 rounded-lg flex items-center flex-col"
             style={{
               background: "linear-gradient(89.66deg, #E3E6D5 -0.9%, #F7E7CE 132.22%)",
             }}
           >
-            {/* Accordion Header */}
             <div
               className="w-full flex items-center justify-between cursor-pointer"
-              onClick={() => toggleAccordion(item.id)}
+              onClick={() => toggleDropdown(item.itemId)}
             >
               <div className="flex items-center">
                 <img src={item.itemImage || ""} alt="Item" className="h-16 w-20" />
-               <div className="text-textColor">
-                  <p className="ml-4  text-sm text-blk">Item</p>
-  
+                <div className="text-textColor">
+                  <p className="ml-4 text-sm text-blk">Item</p>
                   <p className="ml-4 font-semibold text-base text-blk">{item.itemName}</p>
-               </div>
+                </div>
               </div>
               <p className="text-sm font-medium text-dropdownText">
-                {expandedItemId === item._id ? <CheveronUp color={"currentColor"}/> : <CheveronDownIcon color={"currentColor"} />}
+                {isExpanded === item.itemId ? (
+                  <CheveronUp color={"currentColor"} />
+                ) : (
+                  <CheveronDownIcon color={"currentColor"} />
+                )}
               </p>
             </div>
-
-            {/* Accordion Content */}
-            <div
-              className={`w-full grid grid-cols-5 mt-2 transition-all duration-300 ease-in-out text-center ${
-                expandedItemId === item._id ? "h-auto" : "h-0 overflow-hidden"
-              }`}
-            >
-              {/* Ordered */}
-              <div className=" flex items-center border-r border-borderRight p-4">
-                <div>
-                  <p className="text-dropdownText text-sm">Ordered</p>
-                  <p className="font-semibold text-sm text-textColor">
-                    {item?.itemQuantity} PCS
-                  </p>
+  
+            {/* Conditionally render expanded content */}
+            {isExpanded === item.itemId && (
+              <div className="w-full grid grid-cols-5 mt-2 text-center  border-borderRight pt-4">
+                <div className="flex items-center border-r border-borderRight p-4">
+                  <div>
+                    <p className="text-dropdownText text-sm">Ordered</p>
+                    <p className="font-semibold text-sm text-textColor">{item?.itemQuantity} PCS</p>
+                  </div>
+                </div>
+  
+                {/* Status */}
+                <div className="items-center border-r border-borderRight p-4">
+                  <div>
+                    <p className="text-dropdownText text-sm">Status</p>
+                    <p className="font-bold text-sm text-textColor">0 Invoiced</p>
+                  </div>
+                </div>
+  
+                {/* Rate */}
+                <div className="items-center border-r border-borderRight p-4">
+                  <div>
+                    <p className="text-dropdownText text-sm">Rate</p>
+                    <p className="font-bold text-sm text-textColor">
+                      {organization?.baseCurrency} {item.itemCostPrice}
+                    </p>
+                  </div>
+                </div>
+  
+                {/* Discount */}
+                <div className="items-center border-r border-borderRight p-4">
+                  <div>
+                    <p className="text-dropdownText text-sm">Discount</p>
+                    <p className="font-bold text-sm text-textColor">
+                      {item.discountType === "percentage"
+                        ? (item.itemCostPrice * item.itemDiscount) / 100
+                        : item.itemDiscount}
+                    </p>
+                  </div>
+                </div>
+  
+                {/* Amount */}
+                <div className="items-center p-4">
+                  <div>
+                    <p className="text-dropdownText text-sm">Amount</p>
+                    <p className="font-bold text-sm text-textColor">
+                      {organization?.baseCurrency} {item.itemAmount}
+                    </p>
+                  </div>
                 </div>
               </div>
-              
-              {/* Status */}
-              <div className=" items-center border-r border-borderRight p-4">
-                <div>
-                  <p className="text-dropdownText text-sm">Status</p>
-                  <p className="font-bold text-sm text-textColor">0 Invoiced</p>
-                </div>
-              </div>
-
-              {/* Rate */}
-              <div className=" items-center border-r border-borderRight p-4">
-                <div>
-                  <p className="text-dropdownText text-sm">Rate</p>
-                  <p className="font-bold text-sm text-textColor">
-                    {organization?.baseCurrency} {item.itemCostPrice}
-                  </p>
-                </div>
-              </div>
-
-              {/* Discount */}
-              <div className=" items-center border-r border-borderRight p-4">
-                <div>
-                  <p className="text-dropdownText text-sm">Discount</p>
-                  <p className="font-bold text-sm text-textColor">
-                    {item.discountType === "percentage"
-                      ? (item.itemCostPrice * item.itemDiscount) / 100
-                      : item.itemDiscount}
-                  </p>
-                </div>
-              </div>
-
-              {/* Amount */}
-              <div className=" items-center p-4">
-                <div>
-                  <p className="text-dropdownText text-sm">Amount</p>
-                  <p className="font-bold text-sm text-textColor">
-                    {organization?.baseCurrency} {item.itemAmount}
-                  </p>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
-        ))
-      ) : (
-        <p>No items available</p>
-      )}
-    </div>
-    </div >
-    ));
+        ))}
+      </div>
+    );
   };
+  
 
   return (
     <div className="mt-4">

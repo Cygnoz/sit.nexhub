@@ -82,6 +82,7 @@ const NewBills = ({}: Props) => {
         itemVat: "",
         itemSgstAmount: "",
         itemCgstAmount: "",
+        taxPreference:""
       },
     ],
     otherExpense: "",
