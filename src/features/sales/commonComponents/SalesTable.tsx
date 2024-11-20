@@ -32,7 +32,7 @@ interface QuoteData {
   salesOrder: any;
 }
 
-const QuoteTable = ({ page }: Props) => {
+const SalesTable = ({ page }: Props) => {
   const navigate = useNavigate();
   const { loading, setLoading } = useContext(TableResponseContext)!;
   const { request: getAllQuotes } = useApi("get", 5007);
@@ -45,10 +45,10 @@ const QuoteTable = ({ page }: Props) => {
         page === "invoice"
           ? `${endponits.GET_ALL_SALES_INVOICE}`
           : page === "salesOrder"
-          ? `${endponits.GET_ALL_SALES_ORDER}`
-          : page === "quote"
-          ? `${endponits.GET_ALL_QUOTES}`
-          : "";
+            ? `${endponits.GET_ALL_SALES_ORDER}`
+            : page === "quote"
+              ? `${endponits.GET_ALL_QUOTES}`
+              : "";
 
       setLoading({ ...loading, skelton: true });
       const { response, error } = await getAllQuotes(url);
@@ -98,16 +98,16 @@ const QuoteTable = ({ page }: Props) => {
           { id: "totalAmount", label: "Amount", visible: true },
 
         ]
-      : 
-      page === "salesReturn" ? [
-        { id: "createdDate", label: "Date", visible: true },
-        { id: "customerRMA", label: "RMA#", visible: true },
-        { id: "salesOrder", label: "SalesOrder", visible: true },
-        { id: "status", label: "Status", visible: true },
-        { id: "customerName", label: "Customer Name", visible: true },
-        { id: "totalAmount", label: "Amount", visible: true },
-        { id: "returned", label: "Returned", visible: true },
-      ]:[];
+          :
+          page === "salesReturn" ? [
+            { id: "createdDate", label: "Date", visible: true },
+            { id: "customerRMA", label: "RMA#", visible: true },
+            { id: "salesOrder", label: "SalesOrder", visible: true },
+            { id: "status", label: "Status", visible: true },
+            { id: "customerName", label: "Customer Name", visible: true },
+            { id: "totalAmount", label: "Amount", visible: true },
+            { id: "returned", label: "Returned", visible: true },
+          ] : [];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
@@ -138,29 +138,23 @@ const QuoteTable = ({ page }: Props) => {
       <span className="text-gray-500 italic">-</span>
     );
   };
-// Initialize `data` as an empty array if it's undefined
-const filteredData = Array.isArray(data) ? data.filter((quote) => {
-  const searchValueLower = searchValue?.toLowerCase();
-  return (
-    quote?.customerName?.toLowerCase()?.includes(searchValueLower) ||
-    quote?.reference?.toLowerCase()?.includes(searchValueLower) ||
-    quote?.salesQuotes?.toLowerCase()?.includes(searchValueLower) ||
-    quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
-    quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
-  );
-}) : []; // If `data` is not an array, default to an empty array
+  // Initialize `data` as an empty array if it's undefined
+  const filteredData = Array.isArray(data) ? data.filter((quote) => {
+    const searchValueLower = searchValue?.toLowerCase();
+    return (
+      quote?.customerName?.toLowerCase()?.includes(searchValueLower) ||
+      quote?.reference?.toLowerCase()?.includes(searchValueLower) ||
+      quote?.salesQuotes?.toLowerCase()?.includes(searchValueLower) ||
+      quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
+      quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
+    );
+  }) : []; // If `data` is not an array, default to an empty array
 
 
   const handleRowClick = (id: string) => {
     const state = { page };
 
-    if (page === "salesOrder") {
-      navigate(`/sales/viewsalesorder/${id}`, { state });
-    } else if (page === "invoice") {
-      navigate(`/sales/viewsalesorder/${id}`, { state });
-    } else if (page === "quote") {
-      navigate(`/sales/viewsalesorder/${id}`, { state });
-    }
+    navigate(`/sales/viewsalesorder/${id}`, { state });
   };
 
   return (
@@ -173,11 +167,11 @@ const filteredData = Array.isArray(data) ? data.filter((quote) => {
             placeholder={
               page == "invoice"
                 ? "Search Invoice"
-                : page == "salesOrder"               
-                ? "Search Sales Order"
-                :page=="salesReturn"
-                ? "Search Sales Return"
-                : "Search Quote"
+                : page == "salesOrder"
+                  ? "Search Sales Order"
+                  : page == "salesReturn"
+                    ? "Search Sales Return"
+                    : "Search Quote"
 
             }
           />
@@ -206,8 +200,8 @@ const filteredData = Array.isArray(data) ? data.filter((quote) => {
           <tbody className="text-dropdownText text-center text-[13px]">
             {loading.skelton ? (
               // Render skeleton rows if loading
-              [...Array(filteredData?.length?filteredData?.length:5)].map((_, idx) => (
-                <TableSkelton key={idx} columns={page=='salesOrder' || page=='quote' ?[...columns,"ff","tt"]:columns} />
+              [...Array(filteredData?.length ? filteredData?.length : 5)].map((_, idx) => (
+                <TableSkelton key={idx} columns={page == 'salesOrder' || page == 'quote' ? [...columns, "ff", "tt"] : columns} />
               ))
             ) : filteredData && filteredData.length > 0 ? (
               // Render data rows if not loading and data is available
@@ -227,7 +221,7 @@ const filteredData = Array.isArray(data) ? data.filter((quote) => {
               ))
             ) : (
               // Render "no data found" row if data is empty
-              <NoDataFoundTable columns={page=='salesOrder' || page=='quote' ?[...columns,"ff","tt"]:columns} />
+              <NoDataFoundTable columns={page == 'salesOrder' || page == 'quote' ? [...columns, "ff", "tt"] : columns} />
             )}
           </tbody>
         </table>
@@ -236,4 +230,4 @@ const filteredData = Array.isArray(data) ? data.filter((quote) => {
   );
 };
 
-export default QuoteTable;
+export default SalesTable;

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
-import Button from "../../../../Components/Button";
-import Pen from "../../../../assets/icons/Pen";
-import MailIcon from "../../../../assets/icons/MailIcon";
-import SalesOrderView from "./SalesOrderView";
-import useApi from "../../../../Hooks/useApi";
-import { endponits } from "../../../../Services/apiEndpoints";
-import SalesQuotePdfView from "../../quote/viewSalesQuote/SalesQuotePdfView";
+import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
+import Button from "../../../Components/Button";
+import Pen from "../../../assets/icons/Pen";
+import MailIcon from "../../../assets/icons/MailIcon";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
+import SalesPdfView from "../commonComponents/SalesPdfView";
+import SalesView from "../commonComponents/SalesView";
 
 interface SalesOrderData {
   salesInvoiceDate?: string;
@@ -44,7 +44,7 @@ interface OrderItem {
   cgstAmount:number;
 }
 
-function ViewDebitNote() {
+function ViewSales() {
   const [isPdfView, setIsPdfView] = useState(false);
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -171,11 +171,11 @@ function ViewDebitNote() {
         {/* Conditional rendering based on isPdfView */}
         {isPdfView ? (
           <div className="pdf-view-component">
-            <SalesQuotePdfView data={data} page={page} />
+            <SalesPdfView data={data} page={page} />
           </div>
         ) : (
           <div className="other-component">
-            <SalesOrderView data={data} page={page} />
+            <SalesView data={data} page={page} />
           </div>
         )}
       </div>
@@ -183,4 +183,4 @@ function ViewDebitNote() {
   );
 }
 
-export default ViewDebitNote;
+export default ViewSales;

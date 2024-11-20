@@ -7,8 +7,8 @@ import Button from "../../../Components/Button";
 // import SortBy from "./SortBy";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 // import QuoteCustomers from "./QuoteCustomers";
-import QuoteTable from "./QuoteTable";
 import { useNavigate } from "react-router-dom";
+import SalesTable from "../commonComponents/SalesTable";
 
 type Props = {};
 
@@ -136,7 +136,7 @@ const QuoteHome = ({}: Props) => {
        
         <div className="p-3">
           {/* table */}
-          <QuoteTable page="quote" />
+          <SalesTable page="quote" />
         </div>
       </div>
     </div>

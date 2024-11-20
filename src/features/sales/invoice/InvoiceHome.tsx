@@ -1,7 +1,7 @@
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import Button from "../../../Components/Button";
 import { Link } from "react-router-dom";
-import QuoteTable from "../quote/QuoteTable";
+import SalesTable from "../commonComponents/SalesTable";
 
 
 type Props = {};
@@ -34,7 +34,7 @@ const InvoiceHome = ({}: Props) => {
 
       {/* filter tabs */}
       <div className="bg-white p-5 rounded-lg space-y-4">
-      <QuoteTable
+      <SalesTable
       page="invoice"
       />
        
