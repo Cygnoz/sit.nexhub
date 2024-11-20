@@ -13,7 +13,7 @@ export interface Bill {
     PaidThrough:string;
     billDate: string;
     dueDate: string;
-    itemTable: {
+    items: {
         itemId: string;
         itemName: string;
         itemQuantity: number | string ;
@@ -51,4 +51,5 @@ export interface Bill {
     grandTotal: number | string ;
     balanceAmount:number | string ;
     paidAmount:number | string ;
+    purchaseOrderId?:string;
 }

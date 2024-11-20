@@ -37,7 +37,7 @@ const PurchaseTable: React.FC<TableProps> = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
   const rowsPerPage = 10;
 
-  const filteredData = data.filter((item) => {
+  const filteredData = data?.filter((item) => {
     return searchableFields
       .map((field) => item[field]?.toString().trim().toLowerCase())
       .some((fieldValue) =>
@@ -45,8 +45,8 @@ const PurchaseTable: React.FC<TableProps> = ({
       );
   });
 
-  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
-  const paginatedData = filteredData.slice(
+  const totalPages = Math.ceil(filteredData?.length / rowsPerPage);
+  const paginatedData = filteredData?.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );

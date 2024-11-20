@@ -33,7 +33,7 @@ const PurchaseOrderTable = () => {
       const { response, error } = await getPO(url);
 
       if (!error && response) {
-        setAllPOData(response.data.PurchaseOrders);
+        setAllPOData(response.data);
         setLoading({ ...loading, skeleton: false });
       } else {
         console.log(error);
@@ -67,7 +67,6 @@ const PurchaseOrderTable = () => {
   
     const columnValue = item[colId as keyof typeof item];
     
-    // Display `-` for empty values (null, undefined, or empty string)
     return columnValue ? columnValue : <span className="text-gray-500 italic">-</span>;
   };
   

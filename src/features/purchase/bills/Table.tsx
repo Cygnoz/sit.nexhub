@@ -30,7 +30,7 @@ const Table = () => {
       const { response, error } = await getBills(url);
 
       if (!error && response) {
-        setAllBills(response.data.PurchaseBills);
+        setAllBills(response.data.allBills);
         setLoading({ ...loading, skeleton: false });
       } else {
         console.log(error);
