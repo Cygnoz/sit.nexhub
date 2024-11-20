@@ -1053,7 +1053,7 @@ const NewInvoice = ({ }: Props) => {
             </div>
             <div>
               <label className="block text-sm mb-1 text-labelColor">
-                Deposite Account
+                Deposit Account
               </label>
               <div className="relative w-full">
                 <select

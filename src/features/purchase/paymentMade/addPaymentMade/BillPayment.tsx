@@ -206,8 +206,8 @@ const NewPaymentMade = ({}: Props) => {
 
   useEffect(() => {
     const grandTotal = supplierBills
-      .filter((bill: any) => bill.paidStatus === "Pending" || bill.paidStatus === "Overdue")
-      .reduce((total: number, bill: any) => total + bill.grandTotal, 0);
+      ?.filter((bill: any) => bill?.paidStatus === "Pending" || bill?.paidStatus === "Overdue")
+      ?.reduce((total: number, bill: any) => total + bill.grandTotal, 0);
   
     setPaymentState((prevData) => ({
       ...prevData,
@@ -238,7 +238,7 @@ const NewPaymentMade = ({}: Props) => {
 
   useEffect(() => {
     if (selectedSupplier) {
-      const filtered = allBillsData.filter(
+      const filtered = allBillsData?.filter(
         (item: any) => item.supplierId === selectedSupplier._id
       );
       setSupplierBills(filtered);
