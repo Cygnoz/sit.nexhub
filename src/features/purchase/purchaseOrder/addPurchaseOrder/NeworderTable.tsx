@@ -287,31 +287,46 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   const removeRow = (index: number) => {
     if (rows.length > 1) {
       const newRows = rows.filter((_, i) => i !== index);
+  
+      // Update both rows and purchaseOrderState
       setRows(newRows);
+      setPurchaseOrderState?.((prevData: any) => ({
+        ...prevData,
+        itemTable: newRows, // Directly use newRows without mapping
+      }));
     } else {
-      const newRows = [
-        {
-          itemId: "",
-          itemName: "",
-          itemQuantity: 0,
-          itemCostPrice: 0,
-          itemTax: 0,
-          itemDiscount: 0,
-          itemDiscountType: "percentage",
-          itemAmount: 0,
-          itemSgst: 0,
-          itemCgst: 0,
-          itemIgst: 0,
-          itemVat: 0,
-          itemSgstAmount: 0,
-          itemCgstAmount: 0,
-          itemIgstAmount: 0,
-          itemVatAmount: 0
-        },
-      ];
-      setRows(newRows);
+      const defaultRow = {
+        itemId: "",
+        itemName: "",
+        itemQuantity: 0,
+        itemCostPrice: 0,
+        itemTax: 0,
+        itemDiscount: 0,
+        itemDiscountType: "percentage",
+        itemAmount: 0,
+        itemSgst: 0,
+        itemCgst: 0,
+        itemIgst: 0,
+        itemVat: 0,
+        itemSgstAmount: 0,
+        itemCgstAmount: 0,
+        itemIgstAmount: 0,
+        itemVatAmount: 0,
+      };
+  
+      // Reset rows to default row
+      setRows([defaultRow]);
+  
+      // Update purchaseOrderState with the default row
+      setPurchaseOrderState?.((prevData: any) => ({
+        ...prevData,
+        itemTable: [defaultRow], // Set default row
+      }));
     }
   };
+  
+  
+  
 
   const calculateTotalSGST = () => {
     return rows.reduce((total, row) => {

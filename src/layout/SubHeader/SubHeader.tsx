@@ -9,7 +9,7 @@ type Props = {
 };
 
 const SubHeader = ({ activeIndex }: Props) => {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
 
   useEffect(() => {
     const savedSelectedIndex = localStorage.getItem("savedSelectedIndex");

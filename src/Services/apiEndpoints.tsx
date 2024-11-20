@@ -14,6 +14,7 @@ export const endponits = {
   ADD_PREFIX: "add-prefix",
   EDIT_PREFIX: "edit-prefix",
   STATUS_PREFIX: "status-prefix",
+  DELETE_PREFIX:"prefix",
   ADD_SALES_QUOTE: "add-sales-quotes",
   GET_LAST_SALES_QUOTE_PREFIX: "get-last-sales-quotes-prefix",
   GET_ALL_QUOTES: "get-all-sales-quotes",
@@ -26,6 +27,8 @@ export const endponits = {
   GET_INVOICE_PREFIX:"sales-invoice-prefix",
   ADD_SALES_INVOICE:"sales-invoice",
   GET_ALL_SALES_INVOICE:"sales-invoice",
+  GET_ONE_INVOICE:"sales-order",
+  GET_ONE_JOURNAL_INVOICE:"invoice-journal",
 
   //getall-item-sales
   GET_ALL_ITEMS_SALES: "get-all-item-xs",

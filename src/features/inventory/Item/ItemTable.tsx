@@ -72,7 +72,7 @@ const ItemTable = () => {
   };
 
   const [allCategoryData, setAllcategoryData] = useState<any[]>([]);
-  
+
   const { request: fetchAllCategories } = useApi("put", 5003);
   const loadCategories = async () => {
     try {
@@ -146,12 +146,17 @@ const ItemTable = () => {
   const closeDeleteImageModal = () => {
     setDeleteImageModalOpen(false);
   };
-
   const renderColumnContent = (colId: string, item: any) => {
     if (colId === "itemName") {
       return <span className="font-bold text-sm">{item[colId]}</span>;
     }
-    return item[colId as keyof typeof item];
+
+    const columnValue = item[colId as keyof typeof item];
+    return columnValue ? (
+      <span>{columnValue}</span>
+    ) : (
+      <span className="text-gray-500 italic">-</span> 
+    );
   };
 
   const Items = [
@@ -174,7 +179,7 @@ const ItemTable = () => {
   const filteredItems = itemsData.filter((item) => {
     const searchValueLower = searchValue.toLowerCase();
     const matchesSearch = item.itemName?.toLowerCase().includes(searchValueLower);
-  
+
     if (selected === "All") {
       return matchesSearch;
     } else if (selected === "Low Stock") {
@@ -183,32 +188,31 @@ const ItemTable = () => {
       return matchesSearch && item.categories === selected;
     }
   });
-  
-  
-  
+
+
+
 
   return (
     <div>
       <div>
-      <div className="flex gap-3 py-2 justify-between">
-      {Items.map((customer) => (
-        <button
-          key={customer.title}
-          onClick={() => setSelected(customer.title)}
-          className={`flex items-center gap-2 p-2 w-[100%] justify-center  rounded ${
-            selected === customer.title ? "bg-WhiteIce" : "bg-white"
-          }`}
-          style={{ border: "1px solid #DADBDD" }}
-        >
-          {customer.icon}
-          <span
-            style={{ color: "#4B5C79", fontSize: "12px", fontWeight: "600" }}
-          >
-            {customer.title}
-          </span>
-        </button>
-      ))}
-    </div>
+        <div className="flex gap-3 py-2 justify-between">
+          {Items.map((customer) => (
+            <button
+              key={customer.title}
+              onClick={() => setSelected(customer.title)}
+              className={`flex items-center gap-2 p-2 w-[100%] justify-center  rounded ${selected === customer.title ? "bg-WhiteIce" : "bg-white"
+                }`}
+              style={{ border: "1px solid #DADBDD" }}
+            >
+              {customer.icon}
+              <span
+                style={{ color: "#4B5C79", fontSize: "12px", fontWeight: "600" }}
+              >
+                {customer.title}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
       <div className="flex items-center justify-between gap-4">
         <div className="w-full ">
@@ -270,7 +274,7 @@ const ItemTable = () => {
                         </td>
                       )
                   )}
-                     <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
                     <div className="flex justify-center items-center">
                       <Button
                         variant="secondary"

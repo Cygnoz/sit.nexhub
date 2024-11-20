@@ -4,7 +4,8 @@ import Button from "../../../Components/Button";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import SearchBar from "../../../Components/SearchBar";
 import Print from "../../sales/salesOrder/Print";
-
+import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
+import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 interface Column {
   id: string;
   label: string;
@@ -29,12 +30,14 @@ interface SupplierTableProps {
   supplierData: Supplier[];
   searchValue: string;
   setSearchValue: (value: string) => void;
+  loading: any // Add loading prop
 }
 
 const SupplierTable = ({
   supplierData,
   searchValue,
   setSearchValue,
+  loading, // Destructure loading prop
 }: SupplierTableProps) => {
   const initialColumns: Column[] = [
     { id: "supplierDisplayName", label: "Name", visible: true },
@@ -78,11 +81,11 @@ const SupplierTable = ({
         </div>
       );
     }
-  
+
     if (colId === "status") {
       const statusStyles =
         item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400";
-  
+
       return (
         <p
           className={`${statusStyles} text-[13px] rounded text-white h-[18px] flex items-center justify-center`}
@@ -91,7 +94,7 @@ const SupplierTable = ({
         </p>
       );
     }
-  
+
     const columnValue = item[colId as keyof Supplier];
     return columnValue ? (
       <span>{columnValue}</span>
@@ -99,7 +102,6 @@ const SupplierTable = ({
       <span className="text-gray-500 italic">-</span>
     );
   };
-  
 
   return (
     <div>
@@ -139,33 +141,37 @@ const SupplierTable = ({
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
-            {filteredAccounts && filteredAccounts.length>0?filteredAccounts.reverse().map((item) => (
-              <tr key={item._id} className="relative">
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input type="checkbox" className="form-checkbox w-4 h-4" />
-                </td>
-                {columns.map(
-                  (col) =>
-                    col.visible && (
-                      <td
-                        key={col.id}
-                        className="py-2.5 px-4 border-y border-tableBorder"
-                      >
-                        {renderColumnContent(col.id, item)}
-                      </td>
-                    )
-                )}
-                <td className="py-2.5 px-4 border-y border-tableBorder"></td>
-              </tr>
-            )): <tr>
-            <td
-              colSpan={columns.length + 2}
-              className="text-center py-4 border-y border-tableBorder"
-            >
-              <p className="text-red-500">No Data Found!</p>
-            </td>
-          </tr>}
+            {loading.skelton ? (
+              [...Array(filteredAccounts.length || 5)].map((_, idx) => (
+                <TableSkelton key={idx} columns={columns} />
+              ))
+            ) : filteredAccounts && filteredAccounts.length > 0 ? (
+              filteredAccounts.reverse().map((item) => (
+                <tr key={item._id} className="relative">
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    <input type="checkbox" className="form-checkbox w-4 h-4" />
+                  </td>
+                  {columns.map(
+                    (col) =>
+                      col.visible && (
+                        <td
+                          key={col.id}
+                          className="py-2.5 px-4 border-y border-tableBorder"
+                        >
+                          {renderColumnContent(col.id, item)}
+                        </td>
+                      )
+                  )}
+                  <td className="py-2.5 px-4 border-y border-tableBorder"></td>
+                </tr>
+              ))
+            ) : (
+              <>
+                <NoDataFoundTable columns={columns} />
+              </>
+            )}
           </tbody>
+
         </table>
       </div>
     </div>
