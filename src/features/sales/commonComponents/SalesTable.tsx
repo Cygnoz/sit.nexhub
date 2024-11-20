@@ -206,7 +206,7 @@ const SalesTable = ({ page }: Props) => {
             ) : filteredData && filteredData.length > 0 ? (
               // Render data rows if not loading and data is available
               filteredData.slice().reverse().map((item, index) => (
-                <tr key={item._id} className="relative cursor-pointer" onClick={() => handleRowClick(item._id)}>
+                <tr key={item._id} className="relative cursor-pointer hover:bg-[#EAECF0]" onClick={() => handleRowClick(item._id)}>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
                   {columns.map(
                     (col) =>

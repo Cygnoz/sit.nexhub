@@ -20,14 +20,14 @@ interface Column {
 }
 
 const ItemTable = () => {
-  
+
   const initialColumns: Column[] = [
     { id: "itemName", label: "Name ", visible: true },
     { id: "sku", label: "SKU", visible: true },
     { id: "sellingPrice", label: "Sales Rate", visible: true },
     { id: "costPrice", label: "Purchase Rate", visible: true },
     { id: "currentStock", label: "Stock", visible: true },
-    {id:"itemsDetails",label:'Item Details',visible:true},
+    { id: "itemsDetails", label: 'Actions', visible: true },
     { id: "reorderPoint", label: "ReorderPoint", visible: false },
   ];
   const [selected, setSelected] = useState("All");
@@ -35,37 +35,37 @@ const ItemTable = () => {
   const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [itemsData, setItemsData] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
-  const {loading,setLoading}=useContext(TableResponseContext)!;
-  
+  const { loading, setLoading } = useContext(TableResponseContext)!;
+
   const { request: GetAllItems } = useApi("get", 5003);
   const fetchAllItems = async () => {
     try {
       const url = `${endponits.GET_ALL_ITEMS_TABLE}`;
       // Set loading state to show the skeleton loader
       setLoading({ ...loading, skeleton: true });
-  
+
       const { response, error } = await GetAllItems(url);
-  
+
       if (error || !response) {
         // Handle no data scenario
         setLoading({ ...loading, skeleton: false, noDataFound: true });
         return;
       }
-  
+
       // Set items data if response is valid
       setItemsData(response.data);
-  
+
       // Turn off the skeleton loader after data is received
       setLoading({ ...loading, skeleton: false });
-  
+
     } catch (error) {
       console.error("Error fetching items:", error);
       // Handle error state
       setLoading({ ...loading, noDataFound: true, skeleton: false });
     }
   };
- 
-  
+
+
 
   const [allCategoryData, setAllcategoryData] = useState<any[]>([]);
 
@@ -90,26 +90,26 @@ const ItemTable = () => {
     loadCategories();
   }, []);
 
- 
+
 
   useEffect(() => {
     fetchAllItems();
   }, []);
 
-  
+
   const renderColumnContent = (colId: string, item: any) => {
     if (colId === "itemName") {
       return <span className="font-bold text-sm">{item[colId]}</span>;
     } else if (colId === "itemsDetails") {
       return (
-        
-          <div className="flex justify-center items-center">
-            <ItemView fetchAllItems={fetchAllItems} item={item}/>
-          </div>
-       
+
+        <div className="flex justify-center items-center">
+          <ItemView fetchAllItems={fetchAllItems} item={item} />
+        </div>
+
       );
     }
-  
+
     const columnValue = item[colId as keyof typeof item];
     return columnValue ? (
       <span>{columnValue}</span>
@@ -117,7 +117,7 @@ const ItemTable = () => {
       <span className="text-gray-500 italic">-</span>
     );
   };
-  
+
   const Items = [
     {
       icon: <BookIcon color="#585953" />,
@@ -149,7 +149,7 @@ const ItemTable = () => {
   });
 
 
-  
+
 
 
 
@@ -193,65 +193,59 @@ const ItemTable = () => {
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         <table className="min-w-full bg-white mb-5">
-  <thead className="text-[12px] text-center text-dropdownText sticky top-0 z-10">
-    <tr style={{ backgroundColor: "#F9F7F0" }}>
-      <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
-      {columns.map((col, index) =>
-        col.visible ? (
-          <th
-            className="py-2 px-4 font-medium border-b border-tableBorder"
-            key={index}
-          >
-            {col.label}
-          </th>
-        ) : null
-      )}
-      
-      <th className="py-2.5 px-4 font-medium border-b border-tableBorder">
-        <CustomiseColmn columns={columns} setColumns={setColumns} />
-      </th>
-    </tr>
-  </thead>
-  <tbody className="text-dropdownText text-center text-[13px]">
-    {loading.skeleton ? (
-      [...Array(filteredItems?.length?filteredItems?.length:5)].map((_, idx) => (
-        <TableSkelton key={idx} columns={[...columns, "ee"]} />
-      )) // Skeleton loader
-    ) : filteredItems.length > 0 ? (
-      filteredItems.map((item, index) => (
-        <tr
-          key={item.id}
-          // onClick={() => openModal(item)} // Open modal on row click
-          className="relative cursor-pointer"
-        >
-          <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
-          {columns.map(
-            (col) =>
-              col.visible && (
-                <td
-                  key={col.id}
-                  className="py-2.5 px-4 border-y border-tableBorder"
+          <thead className="text-[12px] text-center text-dropdownText sticky top-0 z-10">
+            <tr style={{ backgroundColor: "#F9F7F0" }}>
+              <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
+              {columns.map((col, index) =>
+                col.visible ? (
+                  <th
+                    className="py-2 px-4 font-medium border-b border-tableBorder"
+                    key={index}
+                  >
+                    {col.label}
+                  </th>
+                ) : null
+              )}
+
+              <th className="py-2.5 px-4 font-medium border-b border-tableBorder">
+                <CustomiseColmn columns={columns} setColumns={setColumns} />
+              </th>
+            </tr>
+          </thead>
+          <tbody className="text-dropdownText text-center text-[13px]">
+            {loading.skeleton ? (
+              [...Array(filteredItems?.length ? filteredItems?.length : 5)].map((_, idx) => (
+                <TableSkelton key={idx} columns={[...columns, "ee"]} />
+              )) // Skeleton loader
+            ) : filteredItems.length > 0 ? (
+              filteredItems.map((item, index) => (
+                <tr
+                  key={item.id}
+                  // onClick={() => openModal(item)} // Open modal on row click
+                  className="relative cursor-pointer hover:bg-[#EAECF0]"
                 >
-                  {renderColumnContent(col.id, item)}
-                </td>
-              )
-          )}
-          
-          <td className="py-2.5 px-4 border-y border-tableBorder">{" "}</td> {/* Empty cell for consistent styling */}
-        </tr>
-      ))
-    ) : (
-      <NoDataFoundTable columns={[...columns, "ee"]} />
-    )}
-  </tbody>
-</table>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
+                  {columns.map(
+                    (col) =>
+                      col.visible && (
+                        <td
+                          key={col.id}
+                          className="py-2.5 px-4 border-y border-tableBorder"
+                        >
+                          {renderColumnContent(col.id, item)}
+                        </td>
+                      )
+                  )}
 
-
-
-
+                  <td className="py-2.5 px-4 border-y border-tableBorder">{" "}</td> {/* Empty cell for consistent styling */}
+                </tr>
+              ))
+            ) : (
+              <NoDataFoundTable columns={[...columns, "ee"]} />
+            )}
+          </tbody>
+        </table>
       </div>
-
-      
     </div>
   );
 };
