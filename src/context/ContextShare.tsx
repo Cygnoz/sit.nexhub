@@ -68,6 +68,10 @@ interface PreviousPathContextType {
   setPreviousPath: React.Dispatch<React.SetStateAction<any>>;
 }
 
+interface CustomerDeatilsContextType {
+  customerDatials: any;
+  setCustomerDatials: React.Dispatch<React.SetStateAction<any>>;
+}
 
 export const cashResponseContext = createContext<CashResponseContextType | undefined>(undefined);
 export const BankResponseContext = createContext<BankResponseContextType | undefined>(undefined);
@@ -82,12 +86,14 @@ export const UnitResponseContext=createContext<unitResponseContextType | undefin
 export const UnitEditResponseContext=createContext<unitEditResponseContextType | undefined>(undefined);
 export const TableResponseContext=createContext<TableLoadingContextType| undefined>(undefined);
 export const PreviousPathContext = createContext<PreviousPathContextType | undefined>(undefined);
+export const CustomerDeatilsContext = createContext<CustomerDeatilsContextType | undefined>(undefined);
 
 interface ContextShareProps {
   children: ReactNode;
 }
 
 const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
+  const [customerDatials, setCustomerDatials] = useState("");
   const [previousPath, setPreviousPath] = useState("");
   const [cashResponse, setCashResponse] = useState<any>({});
   const [bankResponse, setBankResponse] = useState<any>({});
@@ -124,6 +130,7 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
   
   
   return (
+    <CustomerDeatilsContext.Provider value={{customerDatials,setCustomerDatials}}>
     <UnitEditResponseContext.Provider value={{unitEditResponse,setEditUnitResponse }}>
     <UnitResponseContext.Provider value={{unitResponse,setUnitResponse }}>
     <cashResponseContext.Provider value={{ cashResponse, setCashResponse }}>
@@ -151,6 +158,7 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
     </cashResponseContext.Provider>
     </UnitResponseContext.Provider>
     </UnitEditResponseContext.Provider>
+    </CustomerDeatilsContext.Provider>
   );
 };
 

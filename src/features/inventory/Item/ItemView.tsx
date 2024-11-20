@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Button from '../../../Components/Button'
 import Modal from '../../../Components/model/Modal';
 import toast from 'react-hot-toast';
@@ -11,28 +11,34 @@ import Trash2 from '../../../assets/icons/Trash2';
 import FileSearchIcon from '../../../assets/icons/FileSearchIcon';
 import Ellipsis from '../../../assets/icons/Ellipsis';
 import noImage from '../../../assets/Images/noImage.png'
+import line from '../../../assets/Images/Rectangle 5557.png'
+
+import UserCheck from '../../../assets/icons/UserCheck';
+import ArrowRightLeft from '../../../assets/icons/ArrowRightLeft';
+import ListTreeIcon from '../../../assets/icons/ListTreeIcon';
 type Props = {
-    fetchAllItems: () => Promise<any>;
-    item:any
+  fetchAllItems: () => Promise<any>;
+  item: any
 }
 
-function ItemView({fetchAllItems,item}: Props) {
-    const [isDeleteImageModalOpen, setDeleteImageModalOpen] = useState(false);
+function ItemView({ fetchAllItems, item }: Props) {
+  const [isDeleteImageModalOpen, setDeleteImageModalOpen] = useState(false);
 
-    const { request: UpdateItem } = useApi("put", 5003);
-    const { organization: orgData } = useOrganization();
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [selectedItem, setSelectedItem] = useState<any | null>(null);
-    const openModal = (item: any) => {
-        setSelectedItem(item);
-        setModalOpen(true);
-      };
-    
-      const closeModal = () => {
-        setModalOpen(false);
-        setSelectedItem(null);
-      };
-      const navigate = useNavigate();
+  const { request: UpdateItem } = useApi("put", 5003);
+  const { organization: orgData } = useOrganization();
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [activeTab, setActiveTab] = useState("overview");
+  const openModal = (item: any) => {
+    setSelectedItem(item);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedItem(null);
+  };
+  const navigate = useNavigate();
 
   const handleEdit = () => {
     navigate("/inventory/Item/new", { state: { item: selectedItem } });
@@ -68,189 +74,378 @@ function ItemView({fetchAllItems,item}: Props) {
     setDeleteImageModalOpen(false);
   };
   console.log(selectedItem);
-  
+
   return (
     <div>
-    <Button
-              variant="secondary"
-              className="font-medium rounded-lg h-[1rem] text-[9.5px]"
-              onClick={()=>openModal(item)}
-            >
-              See details
-            </Button>
+      <Button
+        variant="secondary"
+        className="font-medium rounded-lg h-[1rem] text-[9.5px]"
+        onClick={() => openModal(item)}
+      >
+        See details
+      </Button>
 
-            <Modal open={isModalOpen} onClose={closeModal} style={{ width: '80%' }}>
-      {selectedItem ? (
-        <div className='text-[#303F58]'>
-        <div className="flex justify-end  me-3">
-        <div className="text-2xl font-normal cursor-pointer relative z-10" onClick={closeModal}>
-          &times;
-        </div>
-      </div>
-        <div className="px-5 pb-3 bg-white rounded-lg">
-          
-          <div className="grid grid-cols-12 gap-4">
-            <div className='col-span-3 space-y-2'> 
-            <div className=" w-full rounded-[4px] pb-2 border-[#F1F1F1] border-2 ">
-                <div className='h-16 bg-[#FFF0DA] items-center rounded-t-[2px] flex justify-between px-2'>
-                <div className='flex flex-col w-full items-start '>
-                <p className='text-lg font-bold '>{selectedItem.itemName}</p>
-                <p className='text'>{selectedItem.sku?selectedItem.sku:""}</p>
-                </div>
-                <div className='flex gap-1 w-full justify-end'>
-                    <Button
-                      variant="tertiary"
-                      className="text-xs font-medium h-[20px] pl-2 pr-2"
-                      onClick={handleEdit}
-                    >
-                      <Pen color="#585953" /> Edit
-                    </Button>
-                  <Ellipsis/>
-                </div>
-                </div>
-              <div className={`flex justify-center ${selectedItem?.itemImage&&'py-2'}`}>
-              <img
-                src={
-                  selectedItem?.itemImage ||
-                  noImage
-                }
-                width={200}
-                alt="Item image"
-                className="rounded-lg text-xs"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    'https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png';
-                }}
-              />
-              </div>
-              <div className=" flex gap-2 justify-end pe-3">
-                <Button
-                  onClick={handleEdit}
-                  variant="tertiary"
-                  className="text-xs font-medium h-[32px]"
-                >
-                  <Pen color="#585953" /> Change image
-                </Button>
-                <Button
-                  onClick={confirmDeleteImage}
-                  variant="tertiary"
-                  className="text-xs font-medium h-[32px]"
-                >
-                  <Trash2 color="#585953" /> Delete
-                </Button>
+      <Modal open={isModalOpen} onClose={closeModal} style={{ width: '80%' }}>
+        {selectedItem ? (
+          <div className='text-[#303F58]'>
+            <div className="flex justify-end  me-3">
+              <div className="text-2xl font-normal cursor-pointer relative z-10" onClick={closeModal}>
+                &times;
               </div>
             </div>
-            <div className='w-full rounded-lg border flex flex-col p-3 justify-between '>
-                <div className='flex justify-between'>
-                    <p className='text-[16px] font-semibold text-[#D4D4D4]'>Outstanding Stock</p>
-                    <div className='w-[34px] h-[34px] rounded-[3px] bg-[#741E1E] flex justify-center items-center'>
-                        <p>d</p>
+            <div className="px-5 pb-3 bg-white rounded-lg">
+
+              <div className="grid grid-cols-12 gap-4">
+                <div className='col-span-3 space-y-2'>
+                  <div className=" w-full rounded-[4px] pb-2 border-[#F1F1F1] border-2 ">
+                    <div className='h-16 bg-[#FFF0DA] items-center rounded-t-[2px] flex justify-between px-2'>
+                      <div className='flex flex-col w-full items-start '>
+                        <p className='text-lg font-bold '>{selectedItem.itemName}</p>
+                        <p className='text'>{selectedItem.sku ? selectedItem.sku : ""}</p>
+                      </div>
+                      <div className='flex gap-1 w-full justify-end'>
+                        <Button
+                          variant="tertiary"
+                          className="text-xs font-medium h-[20px] pl-2 pr-2"
+                          onClick={handleEdit}
+                        >
+                          <Pen color="#585953" /> Edit
+                        </Button>
+                        <Ellipsis />
+                      </div>
                     </div>
-                </div>
-                <div className='text-start'>
-  <p className="text-[48px] font-bold text-[#C04545]">
-    28<span className="text-[16px] text-[#8F99A9]"> units</span>
-  </p>
-</div>
-                <div className='bg-[#882626] w-full px-2 flex text-[#D4D4D4] text-[15px] font-medium py-1 justify-between rounded-md'>
-                <p>Expected Restock Date</p>
-                <p>10-03-26</p>
-                </div>
-            </div>
-            <div className="w-full  rounded-lg border flex flex-col p-4  justify-between bg-gradient-to-r from-[#4A0606] to-[#7D0C0C]  shadow-lg">
-  <div className="flex justify-between items-center">
-    <p className="text-[16px] font-semibold text-[#D4D4D4]">
-      Main <span className="text-[#DF3232]">Supplier</span>
-    </p>
-    <div className="w-[34px] h-[34px] rounded-[3px] bg-[#741E1E] flex justify-center items-center">
-      <p className="text-white">icon</p>
-    </div>
-  </div>
-  <div className="mt-4 space-y-2 text-start">
-    <p className="text-[#FFFFFF]">
-      <span >Name :</span> Ted Cravitz
-    </p>
-    <p className="text-[#FFFFFF]">
-      <span >Phone :</span> 023-3652-547
-    </p>
-    <p className="text-[#FFFFFF]">
-      <span >Address :</span> 2871 Meadowbrook Lane, Minneapolis, MN 55422
-    </p>
-  </div>
-</div>
+                    <div className={`flex justify-center ${selectedItem?.itemImage && 'py-2'}`}>
+                      <img
+                        src={
+                          selectedItem?.itemImage ||
+                          noImage
+                        }
+                        width={200}
+                        alt="Item image"
+                        className="rounded-lg text-xs"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            'https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png';
+                        }}
+                      />
+                    </div>
+                    <div className=" flex gap-2 justify-end pe-3">
+                      <Button
+                        onClick={handleEdit}
+                        variant="tertiary"
+                        className="text-xs font-medium h-[32px]"
+                      >
+                        <Pen color="#585953" /> Change image
+                      </Button>
+                      <Button
+                        onClick={confirmDeleteImage}
+                        variant="tertiary"
+                        className="text-xs font-medium h-[32px]"
+                      >
+                        <Trash2 color="#585953" /> Delete
+                      </Button>
+                    </div>
+                  </div>
+                  <div className='w-full rounded-lg border flex flex-col p-3 justify-between bg-gradient-to-r from-[#6B1515] to-[#240C0C]'>
+                    <div className='flex justify-between'>
+                      <p className='text-[16px] font-semibold text-[#D4D4D4]' >Outstanding Stock</p>
+                      <div className='w-[34px] h-[34px] rounded-[3px] bg-[#741E1E] flex justify-center items-center'>
+                        <ListTreeIcon />
+                      </div>
+                    </div>
+                    <div className='text-start'>
+                      <p className="text-[48px] font-bold text-[#C04545]">
+                        28<span className="text-[16px] text-[#8F99A9]"> units</span>
+                      </p>
+                    </div>
+                    <div className='bg-[#882626] w-full px-2 flex text-[#D4D4D4] text-[15px] font-medium py-1 justify-between rounded-md'>
+                      <p>Expected Restock Date</p>
+                      <p>10-03-26</p>
+                    </div>
+                  </div>
+                  <div className="w-full  rounded-lg border flex flex-col p-4  justify-between  bg-gradient-to-r from-[#6B1515] to-[#240C0C] ">
+                    <div className="flex justify-between items-center">
+                      <p className="text-[16px] font-semibold text-[#D4D4D4]">
+                        Main <span className="text-[#DF3232]">Supplier</span>
+                      </p>
+                      <div className="w-[34px] h-[34px] rounded-[3px] bg-[#741E1E] flex justify-center items-center">
+                        <UserCheck color='#FF7070' />
+                      </div>
+                    </div>
+                    <div className="mt-4 space-y-2 text-start">
+                      <p className="text-[#FFFFFF]">
+                        <span >Name :</span> Ted Cravitz
+                      </p>
+                      <p className="text-[#FFFFFF]">
+                        <span >Phone :</span> 023-3652-547
+                      </p>
+                      <p className="text-[#FFFFFF]">
+                        <span >Address :</span> 2871 Meadowbrook Lane, Minneapolis, MN 55422
+                      </p>
+                    </div>
+                  </div>
 
-            </div>
-            <div className=" col-span-9 border-2 px-3 py-2 rounded-lg border-[#E9E9E9]">
-              <div className="p-3 bg-[#F3F3F3] rounded-lg flex justify-start items-center text-[14px] gap-2 text">
-                <p>Overview</p>
-                <p>Transaction</p>
-              </div>
-              <div className="p-2 bg-[#F3F3F3] rounded-lg mt-4">
-                <button
-                  className="px-4 py-2 rounded-lg w-[185px] text-sm font-semibold bg-BgSubhead text-textColor"
-                >
-                  <span className="flex items-center justify-center gap-2">
-                    <FileSearchIcon color="#303F58" /> Overview
-                  </span>
-                </button>
-              </div>
-              <div className="bg-[#FDF8F0] rounded-lg mt-4 px-9 py-9">
-                <div className="grid grid-cols-2 gap-y-4">
-                  <div className="text-dropdownText font-normal text-sm space-y-4">
-                    <p>Item Type</p>
-                    <p>SKU</p>
-                    <p>Unit</p>
-                    <p>Date</p>
-                    <p>Returnable</p>
-                  </div>
-                  <div className="text-dropdownText font-semibold text-sm space-y-4">
-                    <p>
-                      {selectedItem?.itemType
-                        ? selectedItem.itemType.charAt(0).toUpperCase() +
-                          selectedItem.itemType.slice(1)
-                        : 'N/A'}
-                    </p>
-                    <p>{selectedItem?.sku || 'N/A'}</p>
-                    <p>{selectedItem?.unit || 'N/A'}</p>
-                    <p>{selectedItem?.createdDate?.split(' ')[0] || 'N/A'}</p>
-                    <p>{selectedItem?.returnableItem ? 'Yes' : 'No'}</p>
-                  </div>
                 </div>
-                <div className="mt-6">
-                  <p className="font-bold text-base text-textColor mb-2">
-                    Purchase Information
-                  </p>
-                  <div className="grid grid-cols-2 gap-y-4">
-                    <p className="text-dropdownText text-sm">Cost Price</p>
-                    <p className="text-dropdownText font-semibold text-sm">
-                      {orgData?.baseCurrency?.length === 1
-                        ? `${orgData.baseCurrency} ${selectedItem?.costPrice || 'N/A'}`
-                        : `${selectedItem?.costPrice || 'N/A'} ${orgData?.baseCurrency}`}
+                <div className="col-span-9 border-2 rounded-lg border-[#E9E9E9] h-[650px]">
+                  {/* Navigation Bar */}
+                  <div className="p-3 sticky top-0 z-10 flex items-center text-sm gap-6 ">
+                    {/* Overview Tab */}
+                    <p
+                      className={`cursor-pointer flex items-center gap-2 ${activeTab === "overview" ? "text-[#303F58] font-semibold" : "text-[#8F99A9]"
+                        }`}
+                      onClick={() => setActiveTab("overview")}
+                    >
+                      <FileSearchIcon color={activeTab === "overview" ? "#303F58" : "#8F99A9"} /> Overview
+                    </p>
+
+                    {/* Transaction Tab */}
+                    <p
+                      className={`cursor-pointer flex items-center gap-2 ${activeTab === "transaction" ? "text-[#303F58] font-semibold" : "text-[#8F99A9]"
+                        }`}
+                      onClick={() => setActiveTab("transaction")}
+                    >
+                      <ArrowRightLeft color={activeTab === "transaction" ? "#303F58" : "#8F99A9"} size={0} /> Transaction
                     </p>
                   </div>
-                </div>
-                <div className="mt-6">
-                  <p className="font-bold text-base text-textColor mb-2">
-                    Sales Information
-                  </p>
-                  <div className="grid grid-cols-2 gap-y-4">
-                    <p className="text-dropdownText text-sm">Selling Price</p>
-                    <p className="text-dropdownText font-semibold text-sm">
-                      {orgData?.baseCurrency?.length === 1
-                        ? `${orgData.baseCurrency} ${selectedItem?.sellingPrice || 'N/A'}`
-                        : `${selectedItem?.sellingPrice || 'N/A'} ${orgData?.baseCurrency}`}
-                    </p>
+
+                  <img className="w-[950px] ml-5 h-[4px]" src={line} alt="" />
+
+
+                  {/* Scrollable Content */}
+                  <div className="overflow-y-auto hide-scrollbar h-[580px] p-4 mt-8">
+                    {/* Conditional Rendering for Tabs */}
+                    {activeTab === "overview" && (
+                      <div className="space-y-5 text-[#303F58]">
+                        {/* General Information */}
+                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                          <div className="grid grid-cols-2 gap-y-4">
+                            <div className="text-dropdownText font-normal text-sm space-y-4">
+                              <p>Item Type</p>
+                              <p>SKU</p>
+                              <p>Unit</p>
+                              <p>Created Source</p>
+                            </div>
+                            <div className="text-dropdownText font-semibold text-sm space-y-4">
+                              <p>
+                                {selectedItem?.itemType
+                                  ? selectedItem.itemType.charAt(0).toUpperCase() +
+                                  selectedItem.itemType.slice(1)
+                                  : "N/A"}
+                              </p>
+                              <p>{selectedItem?.sku || "N/A"}</p>
+                              <p>{selectedItem?.unit || "N/A"}</p>
+                              <p>{selectedItem?.createdSource || "N/A"}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Purchase Information */}
+                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                          <p className="font-bold text-base text-textColor mb-4">Purchase Information</p>
+                          <div className="grid grid-cols-2 gap-y-4">
+                            <p className="text-dropdownText text-sm">Cost Price</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {orgData?.baseCurrency?.length === 1
+                                ? `${orgData.baseCurrency} ${selectedItem?.costPrice || "N/A"}`
+                                : `${selectedItem?.costPrice || "N/A"} ${orgData?.baseCurrency}`}
+                            </p>
+                            <p className="text-dropdownText text-sm">Purchase Account</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.purchaseAccount || "N/A"}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Sales Information */}
+                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                          <p className="font-bold text-base mb-4">Sales Information</p>
+                          <div className="grid grid-cols-2 gap-y-4">
+                            <p className="text-dropdownText text-sm">Selling Price</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {orgData?.baseCurrency?.length === 1
+                                ? `${orgData.baseCurrency} ${selectedItem?.sellingPrice || "N/A"}`
+                                : `${selectedItem?.sellingPrice || "N/A"} ${orgData?.baseCurrency}`}
+                            </p>
+                            <p className="text-dropdownText text-sm">Selling Account</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.sellingAccount || "N/A"}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* storage information */}
+
+                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                          <p className="font-bold text-base text-textColor mb-4">Storage Information</p>
+                          <div className="grid grid-cols-4 gap-y-4">
+                            {/* Row 1: Length and Warranty */}
+                            <p className="text-dropdownText text-sm">Length</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.length || "N/A"}
+                            </p>
+                            <p className="text-dropdownText text-sm">Warranty</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.warranty || "N/A"}
+                            </p>
+
+                            {/* Row 2: Width */}
+                            <p className="text-dropdownText text-sm">Width</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.width || "N/A"}
+                            </p>
+                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
+
+                            {/* Row 3: Weight */}
+                            <p className="text-dropdownText text-sm">Weight</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.weight || "N/A"} Kg
+                            </p>
+                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
+                          </div>
+                        </div>
+
+
+                        {/* Classification Details */}
+
+                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                          <p className="font-bold text-base text-textColor mb-4">Classification Details</p>
+                          <div className="grid grid-cols-4 gap-y-4">
+                            {/* Row 1: Manufacturer and Rack */}
+                            <p className="text-dropdownText text-sm">Manufacturer</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.manufacturer || "N/A"}
+                            </p>
+                            <p className="text-dropdownText text-sm">Rack</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.rack || "N/A"}
+                            </p>
+
+                            {/* Row 2: Brand */}
+                            <p className="text-dropdownText text-sm">Brand</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.brand || "N/A"}
+                            </p>
+                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
+
+                            {/* Row 3: Categories */}
+                            <p className="text-dropdownText text-sm">Categories</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.categories || "N/A"} Kg
+                            </p>
+                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
+                          </div>
+                        </div>
+
+
+
+
+                        {/* Item Code & Standards */}
+                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                          <p className="font-bold text-base mb-4">Item Code & Standards</p>
+                          <div className="grid grid-cols-4 gap-y-4">
+                            {/* Row 1: UPC and ISBN */}
+                            <p className="text-dropdownText text-sm">UPC</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.upc || "N/A"}
+                            </p>
+                            <p className="text-dropdownText text-sm">ISBN</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.isbn || "N/A"}
+                            </p>
+
+                            {/* Row 2: MPN */}
+                            <p className="text-dropdownText text-sm">MPN</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.mpn || "N/A"}
+                            </p>
+                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
+
+                            {/* Row 3: EAN */}
+                            <p className="text-dropdownText text-sm">EAN</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.ean || "N/A"}
+                            </p>
+                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
+                          </div>
+                        </div>
+
+                        {/* Purchase Information */}
+                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                          <p className="font-bold text-base mb-4">Purchase Information</p>
+                          <div className="grid grid-cols-4 gap-y-4">
+                            {/* Row 1: Cost and MRP */}
+                            <p className="text-dropdownText text-sm">Cost</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {orgData?.baseCurrency?.length === 1
+                                ? `${orgData.baseCurrency} ${selectedItem?.cost || "N/A"}`
+                                : `${selectedItem?.costPrice || "N/A"} ${orgData?.baseCurrency}`}
+                            </p>
+                            <p className="text-dropdownText text-sm">MRP</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {orgData?.baseCurrency?.length === 1
+                                ? `${orgData.baseCurrency} ${selectedItem?.mrp || "N/A"}`
+                                : `${selectedItem?.saleMrp || "N/A"} ${orgData?.baseCurrency}`}
+                            </p>
+
+                            {/* Row 2: Preferred Vendor */}
+                            <p className="text-dropdownText text-sm">Preferred Vendor</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.preferredVendor || "N/A"}
+                            </p>
+                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
+
+                            {/* Row 3: Selling Price */}
+                            <p className="text-dropdownText text-sm">Selling Price</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {orgData?.baseCurrency?.length === 1
+                                ? `${orgData.baseCurrency} ${selectedItem?.sellingPrice || "N/A"}`
+                                : `${selectedItem?.sellingPrice || "N/A"} ${orgData?.baseCurrency}`}
+                            </p>
+                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
+                          </div>
+                        </div>
+
+
+                        {/* Track Inventory */}
+                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                          <p className="font-bold text-base mb-4">Track Inventory</p>
+                          <div className="grid grid-cols-2 gap-y-4">
+                            <p className="text-dropdownText text-sm">Opening  stock</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.openingStock || "N/A"}
+                            </p>
+                            <p className="text-dropdownText text-sm">Opening  stock per unit</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.openingStockRatePerUnit || "N/A"}
+                            </p>
+                            <p className="text-dropdownText text-sm">Reorder point</p>
+                            <p className="text-dropdownText font-semibold text-sm">
+                              {selectedItem?.reorderPoint || "N/A"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {activeTab === "transaction" && (
+                      <div className="text-[#303F58]">
+                        {/* Transaction Tab Content */}
+                        <p>Transaction details will go here...</p>
+                      </div>
+                    )}
                   </div>
+
                 </div>
+
+
+
               </div>
             </div>
           </div>
-        </div>
-        </div>
-      ) : (
-        <p>No item selected</p>
-      )}
-    </Modal>
+        ) : (
+          <p>No item selected</p>
+        )}
+      </Modal>
 
       {/* Confirmation modal for deleting image */}
       {isDeleteImageModalOpen && (

@@ -2,6 +2,9 @@ import MailIcon from "../../../../assets/icons/MailIcon";
 import EditCustomerModal from "../EditCustomerModal";
 import PhoneIcon from "../../../../assets/icons/PhoneIcon";
 import CustomerStatusHistory from "./CustomerStatusHistory";
+import OtherDetails from "./ViewMore/OtherDetails";
+
+
 
 const Overview = ({
   customerData,
@@ -15,6 +18,8 @@ const Overview = ({
   handleStatusSubmit: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) => {
   return (
+
+
     <div>
 
 
@@ -170,8 +175,8 @@ const Overview = ({
                 <p>Portal Language</p>
                 <p className="ml-auto font-semibold">English</p>
               </div>
-              <div>
-                <p className="ml-auto font-semibold underline text-end">View More</p>
+              <div className="text-end">
+                <OtherDetails  />
               </div>
             </div>
           </div>
