@@ -1,5 +1,5 @@
 
-type Props = {color:string}
+type Props = {color?:string}
 
 function UserCheck({color}: Props) {
   return (
