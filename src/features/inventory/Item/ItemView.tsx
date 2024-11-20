@@ -186,9 +186,9 @@ function ItemView({ fetchAllItems, item }: Props) {
                   </div>
 
                 </div>
-                <div className="col-span-9 border-2 rounded-lg border-[#E9E9E9] h-[650px]">
+                <div className="col-span-9 border-2 rounded-lg border-[#E9E9E9] h-[650px] flex flex-col  ">
                   {/* Navigation Bar */}
-                  <div className="p-3 sticky top-0 z-10 flex items-center text-sm gap-6 ">
+                  <div className="p-3 sticky top-0 z-10 flex items-center text-sm gap-6 bg-white">
                     {/* Overview Tab */}
                     <p
                       className={`cursor-pointer flex items-center gap-2 ${activeTab === "overview" ? "text-[#303F58] font-semibold" : "text-[#8F99A9]"
@@ -208,16 +208,16 @@ function ItemView({ fetchAllItems, item }: Props) {
                     </p>
                   </div>
 
-                  <img className="w-[950px] ml-5 h-[4px]" src={line} alt="" />
+                  <img className="w-[95%] ml-5 h-[0.5%]" src={line} alt="" />
 
 
                   {/* Scrollable Content */}
-                  <div className="overflow-y-auto hide-scrollbar h-[580px] p-4 mt-8">
+                  <div className="flex-1 p-4 mt-8 overflow-y-auto hide-scrollbar">
                     {/* Conditional Rendering for Tabs */}
                     {activeTab === "overview" && (
                       <div className="space-y-5 text-[#303F58]">
                         {/* General Information */}
-                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <div className="grid grid-cols-2 gap-y-4">
                             <div className="text-dropdownText font-normal text-sm space-y-4">
                               <p>Item Type</p>
@@ -240,7 +240,7 @@ function ItemView({ fetchAllItems, item }: Props) {
                         </div>
 
                         {/* Purchase Information */}
-                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base text-textColor mb-4">Purchase Information</p>
                           <div className="grid grid-cols-2 gap-y-4">
                             <p className="text-dropdownText text-sm">Cost Price</p>
@@ -257,7 +257,7 @@ function ItemView({ fetchAllItems, item }: Props) {
                         </div>
 
                         {/* Sales Information */}
-                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base mb-4">Sales Information</p>
                           <div className="grid grid-cols-2 gap-y-4">
                             <p className="text-dropdownText text-sm">Selling Price</p>
@@ -275,7 +275,7 @@ function ItemView({ fetchAllItems, item }: Props) {
 
                         {/* storage information */}
 
-                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base text-textColor mb-4">Storage Information</p>
                           <div className="grid grid-cols-4 gap-y-4">
                             {/* Row 1: Length and Warranty */}
@@ -307,7 +307,7 @@ function ItemView({ fetchAllItems, item }: Props) {
 
                         {/* Classification Details */}
 
-                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base text-textColor mb-4">Classification Details</p>
                           <div className="grid grid-cols-4 gap-y-4">
                             {/* Row 1: Manufacturer and Rack */}
@@ -340,7 +340,7 @@ function ItemView({ fetchAllItems, item }: Props) {
 
 
                         {/* Item Code & Standards */}
-                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base mb-4">Item Code & Standards</p>
                           <div className="grid grid-cols-4 gap-y-4">
                             {/* Row 1: UPC and ISBN */}
@@ -370,7 +370,7 @@ function ItemView({ fetchAllItems, item }: Props) {
                         </div>
 
                         {/* Purchase Information */}
-                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base mb-4">Purchase Information</p>
                           <div className="grid grid-cols-4 gap-y-4">
                             {/* Row 1: Cost and MRP */}
@@ -407,7 +407,7 @@ function ItemView({ fetchAllItems, item }: Props) {
 
 
                         {/* Track Inventory */}
-                        <div className="bg-white rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base mb-4">Track Inventory</p>
                           <div className="grid grid-cols-2 gap-y-4">
                             <p className="text-dropdownText text-sm">Opening  stock</p>
