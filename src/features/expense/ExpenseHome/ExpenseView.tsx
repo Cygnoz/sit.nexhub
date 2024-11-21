@@ -82,7 +82,7 @@ const ExpenseView = ({}: Props) => {
             </div>
             <div className="flex gap-4 border-b py-4 border-slate-400">
               <div className="bg-white h-8 w-8 items-center justify-center flex rounded-full border-slate-400 border-[.01rem]">
-                <IndianRupee />
+                <IndianRupee  />
               </div>
               <div className="text-sm">
                 <p>Expense Amount</p>

@@ -162,7 +162,7 @@ const NewOrderTable = ({
 
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      items: newRows.map((row) => {
+      items: newRows?.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
@@ -282,7 +282,7 @@ const NewOrderTable = ({
 
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      items: newRows.map((row) => {
+      items: newRows?.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
@@ -431,7 +431,7 @@ const NewOrderTable = ({
   }, [openDropdownId]);
 
   useEffect(() => {
-    const updatedRows = rows.map((row) => {
+    const updatedRows = rows?.map((row) => {
       const discountedPrice = calculateDiscountPrice(
         (Number(row.itemCostPrice) || 0) * (Number(row.itemQuantity) || 0),
         Number(row.itemDiscount) || 0,
@@ -456,7 +456,7 @@ const NewOrderTable = ({
     setRows(updatedRows);
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      items: updatedRows.map((row) => {
+      items: updatedRows?.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
@@ -469,7 +469,7 @@ const NewOrderTable = ({
   ]);
 
   useEffect(() => {
-    const updatedRows = rows.map((row) => ({
+    const updatedRows = rows?.map((row) => ({
       ...row,
       itemDiscountType: "",
       itemDiscount: "",
@@ -479,7 +479,7 @@ const NewOrderTable = ({
 
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      items: updatedRows.map((row) => {
+      items: updatedRows?.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
@@ -515,7 +515,7 @@ const NewOrderTable = ({
   useEffect(() => {
     setRows((prevData: any) => {
       if (Array.isArray(prevData)) {
-        return prevData.map((item) => ({
+        return prevData?.map((item) => ({
           ...item,
           itemDiscountType: "percentage",
           itemDiscount: "",
@@ -535,7 +535,7 @@ const NewOrderTable = ({
         <table className="min-w-full bg-white rounded-lg relative pb-4 border-dropdownText">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr className="bg-lightPink">
-              {newPurchaseOrderTableHead.map((item, index) => (
+              {newPurchaseOrderTableHead?.map((item, index) => (
                 <th
                   className="py-2 px-4 font-medium border-b border-tableBorder relative"
                   key={index}
@@ -546,7 +546,7 @@ const NewOrderTable = ({
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px] ">
-            {rows.map((row: any, index: number) => (
+            {rows?.map((row: any, index: number) => (
               <tr key={index}>
                 <td className="border-y py-3 px-2 border-tableBorder">
                   <div
@@ -585,7 +585,7 @@ const NewOrderTable = ({
                           placeholder="Select Item"
                         />
                         {items.length > 0 ? (
-                          filteredItems().map((item: any, idx: number) => (
+                          filteredItems()?.map((item: any, idx: number) => (
                             <div
                               key={idx}
                               className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
