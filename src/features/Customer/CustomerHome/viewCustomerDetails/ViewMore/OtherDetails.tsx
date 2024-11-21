@@ -174,9 +174,6 @@ function OtherDetails({ }: Props) {
                     </div>
                 </div>
             </Modal>
-
-
-
         </div>
     )
 }
