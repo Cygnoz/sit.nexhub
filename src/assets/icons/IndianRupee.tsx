@@ -1,5 +1,5 @@
 
-type Props = { color: string , height?:number, width?:number, weight?:number};
+type Props = { color?: string , height?:number, width?:number, weight?:number};
 
 const IndianRupee = ({color ,weight ,width , height}: Props) => {
   return (
