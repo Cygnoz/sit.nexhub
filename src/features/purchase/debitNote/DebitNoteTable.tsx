@@ -152,11 +152,8 @@ const DebitNoteTable = ({
 
     if (isInterState) {
       newRows[index].itemTax = igstAmount;
-      newRows[index].itemCgstAmount = "";
-      newRows[index].itemSgstAmount = "";
     } else {
       newRows[index].itemTax = cgstAmount + sgstAmount;
-      newRows[index].itemIgstAmount = "";
     }
 
     setRows(newRows);
@@ -474,7 +471,7 @@ const DebitNoteTable = ({
   }, [selectedBill]);   
 
   const filterItems = () => {
-    return selectedBill?.itemTable?.filter((item: any) =>
+    return selectedBill?.items?.filter((item: any) =>
       item.itemName.toLowerCase().includes(searchValue.toLowerCase()) && 
       items.some((i: any) => i._id === item.itemId) 
     );

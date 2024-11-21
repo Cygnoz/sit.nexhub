@@ -552,11 +552,11 @@ const NewDebitNote = ({}: Props) => {
                   />
                   {selecteSupplier &&
                   Object.keys(selecteSupplier).length > 0 ? (
-                    allBills?.PurchaseBills.length > 0 ? (
-                      allBills.PurchaseBills.filter(
+                    allBills?.allBills?.length > 0 ? (
+                      allBills?.allBills?.filter(
                         (bill: any) => bill.supplierId === selecteSupplier?._id
                       ).length > 0 ? (
-                        allBills.PurchaseBills.filter(
+                        allBills?.allBills.filter(
                           (bill: any) =>
                             bill.supplierId === selecteSupplier?._id
                         ).map((bill: any) => (
