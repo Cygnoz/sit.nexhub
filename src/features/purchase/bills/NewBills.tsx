@@ -8,11 +8,11 @@ import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import AddSupplierModal from "../../Supplier/SupplierHome/AddSupplierModal";
 import NeworderTable from "../purchaseOrder/addPurchaseOrder/NeworderTable";
 import Upload from "../../../assets/icons/Upload";
-import ScanEye from "../../../assets/icons/ScanEye";
 import { Bill } from "./BillBody";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
 import toast from "react-hot-toast";
+import ViewDetails from "../purchaseOrder/addPurchaseOrder/ViewDetails";
 
 
 type Props = {};
@@ -23,7 +23,6 @@ const NewBills = ({}: Props) => {
     null
   );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
   // const [selected, setSelected] = useState<string | null>("organization");
   const [supplierData, setSupplierData] = useState<[]>([]);
   const [selecteSupplier, setSelecetdSupplier] = useState<any | []>([]);
@@ -32,6 +31,7 @@ const NewBills = ({}: Props) => {
   const [destinationList, setDestinationList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
   const [isInterState, setIsInterState] = useState<boolean>(false);
+  const [allAccounts, setAllAccounts] = useState<any>([]);
   const [errors,setErrors]=useState({
     billNumber:false,
     dueDate:false,
@@ -46,6 +46,7 @@ const NewBills = ({}: Props) => {
   const { request: getCountries } = useApi("get", 5004);
   const { request: newBillApi } = useApi("post", 5005);
   const { request: getOneBill } = useApi("get", 5005);
+  const { request: getAccounts } = useApi("get", 5001);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -85,9 +86,11 @@ const NewBills = ({}: Props) => {
         taxPreference:""
       },
     ],
+    otherExpenseAccountId:"",
     otherExpense: "",
     otherExpenseReason: "",
     vehicleNo: "",
+    freightAccountId:"",
     freight: "",
     addNotes: "",
     termsAndConditions: "",
@@ -108,6 +111,7 @@ const NewBills = ({}: Props) => {
     grandTotal: "",
     balanceAmount:"",
     paidAmount:"",
+    paidAccountId:"",
     purchaseOrderId:""
   });
 
@@ -127,9 +131,7 @@ const NewBills = ({}: Props) => {
       setOpenDropdownIndex(null);
     }
   };
-  const toggleView = () => {
-    setIsExpanded(!isExpanded);
-  };
+
   const fetchData = async (
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
@@ -523,9 +525,12 @@ const NewBills = ({}: Props) => {
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
+    const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
+
 
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
+    fetchData(allAccountsUrl, setAllAccounts, getAccounts);
   }, []);
 
   useEffect(() => {
@@ -534,6 +539,7 @@ const NewBills = ({}: Props) => {
     handleplaceofSupply();
     fetchCountries();
   }, [oneOrganization, selecteSupplier]);
+
   useEffect(() => {
     if (openDropdownIndex !== null) {
       document.addEventListener("mousedown", handleClickOutside);
@@ -884,117 +890,14 @@ const NewBills = ({}: Props) => {
             />
           </div>
 
-          <div>
-            <button className="mt-0" onClick={toggleView}>
-              <p className="text-black my-3 text-sm flex gap-1 items-center">
-                <ScanEye />
-                <b>{isExpanded ? "View less" : "View more"}</b>
-              </p>
-            </button>
+         
+          <ViewDetails
+          page="bill"
+                purchaseOrderState={bill}
+                setPurchaseOrderState={setBill}
+                allAccounts={allAccounts}
+              />
 
-            {isExpanded && (
-              <div>
-                <form>
-                  <div className="grid grid-cols-12 gap-4 py-5">
-                    <div className="bg-secondary_main p-0 min-h-max rounded-xl relative col-span-12">
-                      <div className="grid grid-cols-2 gap-5 mt-0">
-                        <div className="relative col-span-1">
-                          <div className="w-full">
-                            <label htmlFor="otherExpense" className="">
-                              Other expenses
-                              <input
-                                name="otherExpense"
-                                id="otherExpense"
-                                value={
-                                  bill.otherExpense == 0
-                                    ? ""
-                                    : bill.otherExpense
-                                }
-                                onChange={handleChange}
-                                placeholder="Other expense"
-                                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
-                              />
-                            </label>
-                          </div>
-                        </div>
-                        <div className="relative col-span-1">
-                          <div className="w-full">
-                            <label
-                              htmlFor="otherExpenseReason"
-                              className="block text-sm mb-1 text-labelColor"
-                            >
-                              Other Expense Reason
-                              <input
-                                name="otherExpenseReason"
-                                id="otherExpenseReason"
-                                onChange={handleChange}
-                                value={bill.otherExpenseReason}
-                                placeholder="other expense reason"
-                                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
-                              />
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-5 mt-0">
-                        <div className="relative col-span-1">
-                          <div className="w-full">
-                            <label htmlFor="vehicleNo" className="">
-                              Vehicle Number
-                              <input
-                                name="vehicleNo"
-                                id="vehicleNo"
-                                onChange={handleChange}
-                                value={bill.vehicleNo}
-                                placeholder="Enter vehicle number"
-                                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
-                              />
-                            </label>
-                          </div>
-                        </div>
-                        <div className="relative col-span-1">
-                          <div className="w-full">
-                            <label
-                              htmlFor="freight"
-                              className="block text-sm mb-1 text-labelColor"
-                            >
-                              Freight Amount
-                              <input
-                                name="freight"
-                                id="freight"
-                                value={bill.freight == 0 ? "" : bill.freight}
-                                onChange={handleChange}
-                                placeholder="Enter freight Amount"
-                                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
-                              />
-                            </label>
-                          </div>
-                        </div>
-                        <div className="relative col-span-1">
-                          <div className="w-full">
-                            <label
-                              htmlFor="roundOff"
-                              className="block text-sm mb-1 text-labelColor"
-                            >
-                              Round off Amount
-                              <input
-                                name="roundOff"
-                                id="roundOff"
-                                value={bill.roundOff==0?"":bill.roundOff}
-                                onChange={handleChange}
-                                placeholder="Enter round off amount"
-                                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
-                              />
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            )}
-          </div>
 
           <br />
         </div>
@@ -1254,6 +1157,31 @@ const NewBills = ({}: Props) => {
             </div>
 
     {bill.paymentTerms==="Pay Now"  &&   <>
+      <div>
+              <label className="block text-sm mb-1 text-labelColor">
+                Deposite Account
+              </label>
+              <div className="relative w-full">
+                <select
+                  onChange={handleChange}
+                  value={bill.paidAccountId}
+                  name="depositAccountId"
+                  className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                >
+                  <option value="" selected hidden disabled>Select Account</option>
+                  {allAccounts
+                    ?.filter((item: { accountSubhead: string }) => item.accountSubhead === "Bank" || item.accountSubhead === "Cash")
+                    ?.map((item: { _id: string; accountName: string }) => (
+                      <option key={item._id} value={item._id}>
+                        {item.accountName}
+                      </option>
+                    ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
+                </div>
+              </div>
+            </div>
              <div className="flex gap-4 items-center justify-center">
                 <label
                   className="block text-sm mb-1 text-labelColor max-w-fit"
