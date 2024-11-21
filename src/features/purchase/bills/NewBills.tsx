@@ -115,7 +115,6 @@ const NewBills = ({}: Props) => {
     purchaseOrderId:""
   });
 
-  console.log(bill,"bill")
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
@@ -230,7 +229,7 @@ const NewBills = ({}: Props) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-
+  
     if (name === "dueDate") {
       const selectedDueDate = new Date(value);
       const billDate = new Date(bill.billDate);
@@ -241,10 +240,26 @@ const NewBills = ({}: Props) => {
       }
     }
   
+    if (name === "paidAmount") {
+      let paidAmount = parseFloat(value) || 0;
+      const grandTotal = Number(bill.grandTotal) || 0;
+  
+      if (paidAmount > grandTotal) {
+        toast.error("Paid Amount cannot exceed Grand Total.");
+        paidAmount = grandTotal; 
+      }
+  
+      setBill((prevState: any) => ({
+        ...prevState,
+        paidAmount,
+      }));
+      return; 
+    }
+  
     if (name === "transactionDiscount") {
       let discountValue = parseFloat(value) || 0;
-      const totalAmount = Number(bill.subTotal) || 0; 
-    
+      const totalAmount = Number(bill.subTotal) || 0;
+  
       if (bill.transactionDiscountType === "percentage") {
         if (discountValue > 100) {
           discountValue = 100;
@@ -256,40 +271,42 @@ const NewBills = ({}: Props) => {
           toast.error("Discount cannot exceed the subtotal amount");
         }
       }
-    
+  
       setBill((prevState: any) => ({
         ...prevState,
         [name]: discountValue,
       }));
+      return;
     }
-     
-    else if (name === "purchaseOrderDate" || name === "expectedShipmentDate") {
-      // Set the date in the bill state
+  
+    if (name === "purchaseOrderDate" || name === "expectedShipmentDate") {
       setBill((prevState: any) => ({
         ...prevState,
         [name]: value,
       }));
   
-      // Validate dates if both are available
       if (
         name === "expectedShipmentDate" &&
         bill.purchaseOrderDate &&
         new Date(value) < new Date(bill.purchaseOrderDate)
       ) {
-        toast.error("Expected Shipment Date cannot be earlier than Purchase Order Date.");
+        toast.error(
+          "Expected Shipment Date cannot be earlier than Purchase Order Date."
+        );
         setBill((prevState: any) => ({
           ...prevState,
-          expectedShipmentDate: "", 
+          expectedShipmentDate: "",
         }));
       }
-    } 
-    else {
-      setBill((prevState: any) => ({
-        ...prevState,
-        [name]: value,
-      }));
+      return; 
     }
+  
+    setBill((prevState: any) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
+  
 
   const getLastDayOfMonth = (date:any, monthsToAdd = 0) => {
     const year = date.getFullYear();
@@ -384,7 +401,6 @@ const NewBills = ({}: Props) => {
       balanceAmount: balanceAmount,
     }));
   }, [bill.grandTotal, bill.paidAmount]);
-  console.log(errors,"errors");
 
 
   const handleSave = async () => {
@@ -1157,16 +1173,16 @@ const NewBills = ({}: Props) => {
             </div>
 
     {bill.paymentTerms==="Pay Now"  &&   <>
-      <div>
-              <label className="block text-sm mb-1 text-labelColor">
-                Deposite Account
+      <div className="flex gap-4 items-center justify-center mb-2">
+              <label className=" text-sm mb-1 text-labelColor min-w-fit left-0">
+                Paid Through Account
               </label>
-              <div className="relative w-full">
+              <div className="relative w-full  ml-auto  ps-5">
                 <select
                   onChange={handleChange}
                   value={bill.paidAccountId}
-                  name="depositAccountId"
-                  className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                  name="paidAccountId"
+                  className="block appearance-none w-full  text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                 >
                   <option value="" selected hidden disabled>Select Account</option>
                   {allAccounts
@@ -1182,25 +1198,31 @@ const NewBills = ({}: Props) => {
                 </div>
               </div>
             </div>
-             <div className="flex gap-4 items-center justify-center">
-                <label
-                  className="block text-sm mb-1 text-labelColor max-w-fit"
-                  htmlFor="paidAmount"
-                >
-                  Paid Amount
-                </label>
-  
-                <div className="ml-auto">
-                  <input
-                    className="border-inputBorder w-full text-sm border rounded-lg p-1.5 pl-2 h-9"
-                    type="number"
-                    placeholder="Enter paid amount"
-                    name="paidAmount"
-                    value={bill.paidAmount === 0 ? "" : bill.paidAmount}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
+            <div className="flex gap-4 items-center justify-center">
+  <label
+    className="block text-sm mb-1 text-labelColor max-w-fit"
+    htmlFor="paidAmount"
+  >
+    Paid Amount
+  </label>
+
+  <div className="ml-auto">
+    <input
+      className="border-inputBorder w-full text-sm border rounded-lg p-1.5 pl-2 h-9"
+      type="text" 
+      placeholder="Enter paid amount"
+      name="paidAmount"
+      value={bill.paidAmount === 0 ? "" : bill.paidAmount}
+      onChange={(e) => {
+        const { value } = e.target;
+        if (/^\d*\.?\d*$/.test(value)) { 
+          handleChange(e); 
+        }
+      }}
+    />
+  </div>
+</div>
+
               <div className=" flex gap-4 items-center justify-center">
                 <label
                   htmlFor="balanceAmount"
