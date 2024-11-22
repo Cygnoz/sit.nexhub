@@ -9,6 +9,7 @@ import Print from "../salesOrder/Print";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 import { TableResponseContext } from "../../../context/ContextShare";
+import SortBy from "./SortBy";
 
 interface Column {
   id: string;
@@ -177,6 +178,7 @@ const SalesTable = ({ page }: Props) => {
           />
         </div>
         <Print />
+        <SortBy/>
       </div>
       <div className="mt-3 max-h-[25rem] overflow-y-auto" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
         <table className="min-w-full bg-white mb-5">

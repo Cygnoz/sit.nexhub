@@ -325,7 +325,7 @@ function AddExpensePage({}: Props) {
                   name="employee"
                   value={expenseData.employee}
                   onChange={handleChange}
-                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   placeholder="Select an employee"
                 />
               </div>
@@ -471,7 +471,7 @@ function AddExpensePage({}: Props) {
                   name="invoice"
                   value={expenseData.invoice}
                   onChange={handleChange}
-                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   placeholder="Invoice #"
                 />
               </div>
@@ -508,7 +508,7 @@ function AddExpensePage({}: Props) {
                   name="employee"
                   value={expenseData.employee}
                   onChange={handleChange}
-                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   placeholder="Enter Distance"
                 />
               </div>
@@ -601,7 +601,7 @@ function AddExpensePage({}: Props) {
                   name="distance"
                   value={expenseData.distance}
                   onChange={handleChange}
-                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   placeholder="Enter distance"
                 />
               </div>
@@ -616,7 +616,7 @@ function AddExpensePage({}: Props) {
                   name="ratePerKm"
                   value={expenseData.ratePerKm}
                   onChange={handleChange}
-                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   placeholder="Enter Rate"
                 />
               </div>
@@ -739,7 +739,7 @@ function AddExpensePage({}: Props) {
                   name="invoice"
                   value={expenseData.invoice}
                   onChange={handleChange}
-                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   placeholder="Enter Invoice"
                 />
               </div>
