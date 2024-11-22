@@ -164,5 +164,10 @@ export const endponits = {
   GET_OTP: "/verify-otp",
 
   //Expense 
-  ADD_EXPENSES:`add-expense`,
+  // ADD_EXPENSES:`add-expense`,
+  ADD_EXPENSE_CATEGORY:`add-category`,
+  GET_ALL_EXPENSE_CATEGORY:`get-all-category`,
+  GET_ONE_EXPENSE_CATEGORY:`get-one-category`,
+  UPDATE_EXPENSE_CATEGORY:`update-category`,
+  DELETE_EXPENSE_CATEGORY:`delete category`
 };
