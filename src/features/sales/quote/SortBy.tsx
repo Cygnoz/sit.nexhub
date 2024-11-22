@@ -64,30 +64,48 @@ function SortBy({}: Props) {
   ];
 
   return (
-    <div>
-      <button onClick={toggleDropdown} className="w-[98px] h-[34.5px] text-sm flex items-center justify-center" style={{border:"0.5px solid #565148",borderRadius:"8px",color:"#565148"}}>
-        <span className="flex items-center px-2.5" style={{gap:"8px",fontWeight:"500"}}>
-          <ListIcon color="#565148" /> Sort By
-        </span>
-      </button>
-      {isDropdownOpen && (
-        <div ref={dropdownRef} className="absolute w-[14.5%] top-26 right-44 mt-2 p-2 bg-white shadow-xl z-10">
-          <ul className="py-1 text-dropdownText">
-            {dropdownItems.map((item, index) => (
-              <div key={index}>
-                <li onClick={item.onClick} className="px-4 py-2 flex items-center gap-2 hover:bg-orange-100 rounded-md text-sm cursor-pointer">
-                  {item.text}
-                </li>
-                <div className="pl-2 pr-2">
-                    <hr className='border-dropdownBorder' />
-                  </div>
-                
-              </div>
-            ))}
-          </ul>
-        </div>
-      )}
+    <div className="relative">
+  <button
+    onClick={toggleDropdown}
+    className="w-[98px] h-[34.5px] text-sm flex items-center justify-center"
+    style={{
+      border: "0.5px solid #565148",
+      borderRadius: "8px",
+      color: "#565148",
+    }}
+  >
+    <span
+      className="flex items-center px-2.5"
+      style={{ gap: "8px", fontWeight: "500" }}
+    >
+      <ListIcon color="#565148" /> Sort By
+    </span>
+  </button>
+  {isDropdownOpen && (
+    <div
+      ref={dropdownRef}
+      className="absolute w-[200px] rounded-lg mt-2 left-1/2 transform -translate-x-1/2  bg-white shadow-xl z-10"
+    >
+      <ul className=" text-dropdownText">
+        {dropdownItems.map((item, index) => (
+          <div key={index}>
+            <li
+              onClick={item.onClick}
+              className="px-4 py-2 flex items-center gap-2 hover:bg-orange-100  text-sm cursor-pointer"
+            >
+              {item.text}
+            </li>
+            <div className="">
+              <hr className="border-dropdownBorder" />
+            </div>
+          </div>
+        ))}
+      </ul>
     </div>
+  )}
+</div>
+
+
   );
 }
 
