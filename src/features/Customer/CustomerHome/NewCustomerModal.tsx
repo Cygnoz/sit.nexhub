@@ -121,15 +121,15 @@ const NewCustomerModal = ({ page }: Props) => {
     billingAttention: false,
     billingAddressLine1: false,
     billingAddressLine2: false,
-    billingPinCode:false,
-    billingCity:false,
+    billingPinCode: false,
+    billingCity: false,
     shippingAttention: false,
     shippingAddress1: false,
     shippingAddress2: false,
     shippingCity: false,
     shippingPinCode: false,
     shippingFaxNumber: false,
-    customerProfile:false,
+    customerProfile: false,
   });
 
   const addRow = () => {
@@ -198,9 +198,9 @@ const NewCustomerModal = ({ page }: Props) => {
         toast.error("Only JPG and PNG images are supported.");
         return;
       }
-  
+
       const reader = new FileReader();
-  
+
       reader.onloadend = () => {
         const base64String = reader.result as string;
         setCustomerData((prevDetails: any) => ({
@@ -208,7 +208,7 @@ const NewCustomerModal = ({ page }: Props) => {
           customerProfile: base64String,
         }));
       };
-  
+
       reader.readAsDataURL(file);
     }
   };
@@ -218,37 +218,37 @@ const NewCustomerModal = ({ page }: Props) => {
     value: string
   ) => {
     const updatedRows = [...rows];
-  
+
     updatedRows[index][field] = value;
-  
+
     if (field === "firstName") {
       updatedRows[index].firstNameError = value.trim() === ""
-        ? "" 
-        : /^[A-Za-z]+$/.test(value)
         ? ""
-        : "Only letters.";
+        : /^[A-Za-z]+$/.test(value)
+          ? ""
+          : "Only letters.";
     } else if (field === "lastName") {
       updatedRows[index].lastNameError = value.trim() === ""
-        ? "" 
-        : /^[A-Za-z]+$/.test(value)
         ? ""
-        : "Only letters.";
+        : /^[A-Za-z]+$/.test(value)
+          ? ""
+          : "Only letters.";
     } else if (field === "email") {
       updatedRows[index].emailError = value.trim() === ""
         ? ""
         : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-        ? ""
-        : "Invalid email.";
+          ? ""
+          : "Invalid email.";
     } else if (field === "mobile") {
       updatedRows[index].mobileError = value.trim() === ""
         ? ""
         : /^[0-9]+$/.test(value)
-        ? ""
-        : "Only numbers.";
+          ? ""
+          : "Only numbers.";
     }
-  
+
     setRows(updatedRows);
-  
+
     const updatedContactPerson = updatedRows.map((row) => ({
       salutation: row.salutation,
       firstName: row.firstName,
@@ -256,13 +256,13 @@ const NewCustomerModal = ({ page }: Props) => {
       email: row.email,
       mobile: row.mobile,
     }));
-  
+
     setCustomerData((prevFormData) => ({
       ...prevFormData,
       contactPerson: updatedContactPerson,
     }));
   };
-  
+
 
   // phone number change
   const handlePhoneChange = (phoneType: string, value: string) => {
@@ -597,40 +597,40 @@ const NewCustomerModal = ({ page }: Props) => {
               className="text-slate-600 text-sm overflow-scroll hide-scrollbar   p-2"
               style={{ height: "480px" }}
             >
-             <div className="grid grid-cols-12 gap-4">
-             <div className="col-span-2 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
-            <label htmlFor="image">
-              <div
-                className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg "
-                  
-              >
- {customerdata.customerProfile ? (
-                  <img src={customerdata.customerProfile} alt="Item"  className="max-h-16 max-w-36" />
-                ) : (                  <div className="gap-4 flex items-center ">
-                    <div className="bg-darkRed rounded-full flex items-center w-6 h-6 justify-center">
-                      <Plus color={"white"} classname="h-5" />
+              <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-2 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
+                  <label htmlFor="image">
+                    <div
+                      className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg "
+
+                    >
+                      {customerdata.customerProfile ? (
+                        <img src={customerdata.customerProfile} alt="Item" className="max-h-16 max-w-36" />
+                      ) : (<div className="gap-4 flex items-center ">
+                        <div className="bg-darkRed rounded-full flex items-center w-6 h-6 justify-center">
+                          <Plus color={"white"} classname="h-5" />
+                        </div>
+                        <p>Add Image</p>
+                      </div>
+                      )}
                     </div>
-                    <p>Add Image</p>
-                  </div>
-                )}
-              </div>
-              <div>
-                <p className="text-sm font-extrabold text-textColor mt-1">
-                Upload Photo
-                </p>
-                <p className="text-xs text-[#818894] mt-1">Support: JPG, PNG</p>
-              </div>
-              <input
-                type="file"
-                id="image"
-                onChange={handleFileChange}
-                className="hidden"
-                name="itemImage"
-                accept="image/*"
-              />
-            </label>
-          </div>
-              <div className="col-span-10">
+                    <div>
+                      <p className="text-sm font-extrabold text-textColor mt-1">
+                        Upload Photo
+                      </p>
+                      <p className="text-xs text-[#818894] mt-1">Support: JPG, PNG</p>
+                    </div>
+                    <input
+                      type="file"
+                      id="image"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      name="itemImage"
+                      accept="image/*"
+                    />
+                  </label>
+                </div>
+                <div className="col-span-10">
                   <div className="mt-3">
                     <label
                       className="block text-sm mb-1 text-labelColor"
@@ -645,22 +645,20 @@ const NewCustomerModal = ({ page }: Props) => {
                             id="Business"
                             type="radio"
                             name="customerType"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                              selected === "Business"
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${selected === "Business"
                                 ? "border-8 border-neutral-400"
                                 : "border-1 border-neutral-400"
-                            }`}
+                              }`}
                             checked={selected === "Business"}
                             onChange={() =>
                               handleRadioChange("Business", "customerType")
                             }
                           />
                           <div
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              selected === "Business"
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${selected === "Business"
                                 ? "bg-neutral-100"
                                 : "bg-transparent"
-                            }`}
+                              }`}
                           />
                         </div>
                         <label
@@ -676,22 +674,20 @@ const NewCustomerModal = ({ page }: Props) => {
                             id="Individual"
                             type="radio"
                             name="customerType"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                              selected === "Individual"
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${selected === "Individual"
                                 ? "border-8 border-neutral-400"
                                 : "border-1 border-neutral-400"
-                            }`}
+                              }`}
                             checked={selected === "Individual"}
                             onChange={() =>
                               handleRadioChange("Individual", "customerType")
                             }
                           />
                           <div
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              selected === "Individual"
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${selected === "Individual"
                                 ? "bg-neutral-100"
                                 : "bg-transparent"
-                            }`}
+                              }`}
                           />
                         </div>
                         <label
@@ -703,7 +699,7 @@ const NewCustomerModal = ({ page }: Props) => {
                       </div>
                     </div>
                   </div>
-    
+
                   <div className="grid grid-cols-12 gap-4 mt-2">
                     <div className="col-span-2">
                       <label htmlFor="salutation">Salutation</label>
@@ -755,7 +751,7 @@ const NewCustomerModal = ({ page }: Props) => {
                           </div>
                         )}
                       </div>
-    
+
                       <div>
                         <label htmlFor="lastName" className="text-slate-600">
                           Last Name
@@ -782,7 +778,7 @@ const NewCustomerModal = ({ page }: Props) => {
                             }
                           }}
                         />
-    
+
                         {errors.lastName && customerdata.lastName.length > 0 && (
                           <div className="text-red-800 text-xs ms-2 mt-1">
                             Please enter a valid first name (letters only).
@@ -791,8 +787,8 @@ const NewCustomerModal = ({ page }: Props) => {
                       </div>
                     </div>
                   </div>
+                </div>
               </div>
-             </div>
 
               <div className="grid grid-cols-3 gap-x-4 gap-y-2 mt-2 ">
                 <div>
@@ -1294,7 +1290,7 @@ const NewCustomerModal = ({ page }: Props) => {
                             className="hidden"
                             value={customerdata.documents}
                             name="documents"
-                            // onChange={(e)=>handleFileChange(e)}
+                          // onChange={(e)=>handleFileChange(e)}
                           />
                         </label>
                       </div>
@@ -1390,11 +1386,10 @@ const NewCustomerModal = ({ page }: Props) => {
                               <input
                                 id="Taxable"
                                 type="radio"
-                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                                  taxselected === "Taxable"
+                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${taxselected === "Taxable"
                                     ? "border-8 border-neutral-400"
                                     : "border-1 border-neutral-400"
-                                }`}
+                                  }`}
                                 checked={taxselected === "Taxable"}
                                 onClick={() => {
                                   SetTaxPreference("Taxable");
@@ -1402,11 +1397,10 @@ const NewCustomerModal = ({ page }: Props) => {
                                 }}
                               />
                               <div
-                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                                  taxselected === "Taxable"
+                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${taxselected === "Taxable"
                                     ? "bg-neutral-100"
                                     : "bg-transparent"
-                                }`}
+                                  }`}
                               />
                             </div>
                             <label
@@ -1421,11 +1415,10 @@ const NewCustomerModal = ({ page }: Props) => {
                               <input
                                 id="Tax Exempt"
                                 type="radio"
-                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                                  taxselected === "Tax Exempt"
+                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${taxselected === "Tax Exempt"
                                     ? "border-8 border-neutral-400"
                                     : "border-1 border-neutral-400"
-                                }`}
+                                  }`}
                                 checked={taxselected === "Tax Exempt"}
                                 onClick={() => {
                                   SetTaxPreference("Tax Exempt");
@@ -1433,11 +1426,10 @@ const NewCustomerModal = ({ page }: Props) => {
                                 }}
                               />
                               <div
-                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                                  taxselected === "Tax Exempt"
+                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${taxselected === "Tax Exempt"
                                     ? "bg-neutral-100"
                                     : "bg-transparent"
-                                }`}
+                                  }`}
                               />
                             </div>
                             <label
@@ -1796,72 +1788,72 @@ const NewCustomerModal = ({ page }: Props) => {
 
 
 
-      <div className="">
-        <input
-          className="pl-3 -mt-1.5 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-          placeholder="Street 1"
-          name="billingAddressLine1"
-          value={customerdata.billingAddressLine1}
-          onChange={(e) => {
-            const value = e.target.value;
+                          <div className="">
+                            <input
+                              className="pl-3 -mt-1.5 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              placeholder="Street 1"
+                              name="billingAddressLine1"
+                              value={customerdata.billingAddressLine1}
+                              onChange={(e) => {
+                                const value = e.target.value;
 
-            const addressPattern = /^[a-zA-Z0-9\s,]*$/;
+                                const addressPattern = /^[a-zA-Z0-9\s,]*$/;
 
-            if (addressPattern.test(value) || value === '') {
-              handleChange(e); 
-              setErrors((prevErrors) => ({
-                ...prevErrors,
-                billingAddressLine1: false, 
-              }));
-            } else {
-              handleChange(e); 
-              setErrors((prevErrors) => ({
-                ...prevErrors,
-                billingAddressLine1: true,
-              }));
-            }
-          }}
-        />
-        {errors.billingAddressLine1 && customerdata.billingAddressLine1 !== "" && (
-          <div className="text-red-800 text-xs mt-1">
-            Please enter a valid address (letter and numbers only).
-          </div>
-        )}
-      </div>
+                                if (addressPattern.test(value) || value === '') {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingAddressLine1: false,
+                                  }));
+                                } else {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingAddressLine1: true,
+                                  }));
+                                }
+                              }}
+                            />
+                            {errors.billingAddressLine1 && customerdata.billingAddressLine1 !== "" && (
+                              <div className="text-red-800 text-xs mt-1">
+                                Please enter a valid address (letter and numbers only).
+                              </div>
+                            )}
+                          </div>
 
-      <div>
-        <input
-          className="pl-3 text-sm w-full -mt-1.5 text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-          placeholder="Street 2"
-          name="billingAddressLine2"
-          value={customerdata.billingAddressLine2}
-          onChange={(e) => {
-            const value = e.target.value;
+                          <div>
+                            <input
+                              className="pl-3 text-sm w-full -mt-1.5 text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              placeholder="Street 2"
+                              name="billingAddressLine2"
+                              value={customerdata.billingAddressLine2}
+                              onChange={(e) => {
+                                const value = e.target.value;
 
-            const addressPattern = /^[a-zA-Z0-9\s,]*$/;
+                                const addressPattern = /^[a-zA-Z0-9\s,]*$/;
 
-            if (addressPattern.test(value) || value === '') {
-              handleChange(e); 
-              setErrors((prevErrors) => ({
-                ...prevErrors,
-                billingAddressLine2: false, 
-              }));
-            } else {
-              handleChange(e); 
-              setErrors((prevErrors) => ({
-                ...prevErrors,
-                billingAddressLine2: true,
-              }));
-            }
-          }}
-        />
-        {errors.billingAddressLine2 && (
-          <div className="text-red-800 text-xs mt-1">
-            Please enter a valid address (letters, numbers, spaces, and commas only).
-          </div>
-        )}
-      </div>
-  
+                                if (addressPattern.test(value) || value === '') {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingAddressLine2: false,
+                                  }));
+                                } else {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingAddressLine2: true,
+                                  }));
+                                }
+                              }}
+                            />
+                            {errors.billingAddressLine2 && (
+                              <div className="text-red-800 text-xs mt-1">
+                                Please enter a valid address (letters, numbers, spaces, and commas only).
+                              </div>
+                            )}
+                          </div>
+
 
 
                           <div>
@@ -1869,34 +1861,34 @@ const NewCustomerModal = ({ page }: Props) => {
                               City
                             </label>
                             <input
-        className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed" 
-        placeholder="Enter City"
-        name="billingCity"
-        value={customerdata.billingCity}
-        onChange={(e) => {
-          const value = e.target.value;
+                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              placeholder="Enter City"
+                              name="billingCity"
+                              value={customerdata.billingCity}
+                              onChange={(e) => {
+                                const value = e.target.value;
 
-          const cityPattern = /^[a-zA-Z\s]*$/; 
+                                const cityPattern = /^[a-zA-Z\s]*$/;
 
-          if (cityPattern.test(value) || value === '') {
-            handleChange(e);
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              billingCity: false,
-            }));
-          } else {
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              billingCity: true,
-            }));
-          }
-        }}
-      />
-      {errors.billingCity && customerdata.billingCity !== "" && (
-        <div className="text-red-800 text-xs mt-1">
-          Please enter a valid city name (letters only).
-        </div>
-      )}
+                                if (cityPattern.test(value) || value === '') {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingCity: false,
+                                  }));
+                                } else {
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingCity: true,
+                                  }));
+                                }
+                              }}
+                            />
+                            {errors.billingCity && customerdata.billingCity !== "" && (
+                              <div className="text-red-800 text-xs mt-1">
+                                Please enter a valid city name (letters only).
+                              </div>
+                            )}
                           </div>
 
                           <div className="relative ">
@@ -1945,21 +1937,21 @@ const NewCustomerModal = ({ page }: Props) => {
                               Pin / Zip / Post code
                             </label>
                             <input
-        className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-        placeholder="Pin / Zip / Post code"
-        type="text"
-        name="billingPinCode"
-        value={customerdata.billingPinCode}
-        onChange={(e) => {
-          const value = e.target.value;
+                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              placeholder="Pin / Zip / Post code"
+                              type="text"
+                              name="billingPinCode"
+                              value={customerdata.billingPinCode}
+                              onChange={(e) => {
+                                const value = e.target.value;
 
-          const pinCodePattern = /^[0-9]*$/;
+                                const pinCodePattern = /^[0-9]*$/;
 
-          if (pinCodePattern.test(value)) {
-            handleChange(e); 
-          }
-        }}
-      />
+                                if (pinCodePattern.test(value)) {
+                                  handleChange(e);
+                                }
+                              }}
+                            />
                           </div>
 
                           <div>
@@ -1994,11 +1986,11 @@ const NewCustomerModal = ({ page }: Props) => {
                               value={customerdata.billingFaxNumber}
                               onChange={(e) => {
                                 const value = e.target.value;
-                      
+
                                 const faxnumberPattern = /^[0-9]*$/;
-                      
+
                                 if (faxnumberPattern.test(value)) {
-                                  handleChange(e); 
+                                  handleChange(e);
                                 }
                               }}
                             />
@@ -2107,17 +2099,17 @@ const NewCustomerModal = ({ page }: Props) => {
                               value={customerdata.shippingAddress1}
                               onChange={(e) => {
                                 const value = e.target.value;
-                    
+
                                 const addressPattern = /^[a-zA-Z0-9\s,]*$/;
-                    
+
                                 if (addressPattern.test(value) || value === '') {
-                                  handleChange(e); 
+                                  handleChange(e);
                                   setErrors((prevErrors) => ({
                                     ...prevErrors,
-                                    shippingAddress1: false, 
+                                    shippingAddress1: false,
                                   }));
                                 } else {
-                                  handleChange(e); 
+                                  handleChange(e);
                                   setErrors((prevErrors) => ({
                                     ...prevErrors,
                                     shippingAddress1: true,
@@ -2139,17 +2131,17 @@ const NewCustomerModal = ({ page }: Props) => {
                               value={customerdata.shippingAddress2}
                               onChange={(e) => {
                                 const value = e.target.value;
-                    
+
                                 const addressPattern = /^[a-zA-Z0-9\s,]*$/;
-                    
+
                                 if (addressPattern.test(value) || value === '') {
-                                  handleChange(e); 
+                                  handleChange(e);
                                   setErrors((prevErrors) => ({
                                     ...prevErrors,
-                                    shippingAddress2: false, 
+                                    shippingAddress2: false,
                                   }));
                                 } else {
-                                  handleChange(e); 
+                                  handleChange(e);
                                   setErrors((prevErrors) => ({
                                     ...prevErrors,
                                     shippingAddress2: true,
@@ -2174,9 +2166,9 @@ const NewCustomerModal = ({ page }: Props) => {
                               value={customerdata.shippingCity}
                               onChange={(e) => {
                                 const value = e.target.value;
-                      
-                                const cityPattern = /^[a-zA-Z\s]*$/; 
-                      
+
+                                const cityPattern = /^[a-zA-Z\s]*$/;
+
                                 if (cityPattern.test(value) || value === '') {
                                   handleChange(e);
                                   setErrors((prevErrors) => ({
@@ -2291,11 +2283,11 @@ const NewCustomerModal = ({ page }: Props) => {
                               value={customerdata.shippingFaxNumber}
                               onChange={(e) => {
                                 const value = e.target.value;
-                      
+
                                 const pinCodePattern = /^[0-9]*$/;
-                      
+
                                 if (pinCodePattern.test(value)) {
-                                  handleChange(e); 
+                                  handleChange(e);
                                 }
                               }}
                             />
@@ -2333,7 +2325,7 @@ const NewCustomerModal = ({ page }: Props) => {
                               <tr key={index}>
                                 <td className="py-2.5 flex items-center border-y border-tableBorder">
                                   <select
-  className="block  w-full h-9  text-zinc-400 bg-white  text-sm  pl-2  rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"                                    value={row.salutation}
+                                    className="block  w-full h-9  text-zinc-400 bg-white  text-sm  pl-2  rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500" value={row.salutation}
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -2450,8 +2442,8 @@ const NewCustomerModal = ({ page }: Props) => {
                         <textarea
                           rows={3}
                           className="pl-2 text-sm w-[100%]  rounded-md text-start bg-white border border-slate-300   p-2 text-[#818894]"
-                          placeholder="Add any additional comments or notes here"                      
-                              name="remark"
+                          placeholder="Add any additional comments or notes here"
+                          name="remark"
                           value={customerdata.remark}
                           onChange={(e: any) => handleChange(e)}
                         />

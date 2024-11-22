@@ -1,12 +1,12 @@
 
-type Props = {color?:string, weight?:number};
+type Props = { color?: string , height?:number, width?:number, weight?:number};
 
-const IndianRupee = ({color ,weight}: Props) => {
+const IndianRupee = ({color ,weight ,width , height}: Props) => {
   return (
     <div>
       <svg
-        width="18"
-        height="18"
+        width={width?width:"18"}
+        height={height?height:"18"}
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import { useEffect, useRef, useState } from "react";
 import CehvronDown from "../../../assets/icons/CehvronDown";
@@ -8,11 +8,12 @@ import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import AddSupplierModal from "../../Supplier/SupplierHome/AddSupplierModal";
 import NeworderTable from "../purchaseOrder/addPurchaseOrder/NeworderTable";
 import Upload from "../../../assets/icons/Upload";
-import ScanEye from "../../../assets/icons/ScanEye";
 import { Bill } from "./BillBody";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
 import toast from "react-hot-toast";
+import ViewDetails from "../purchaseOrder/addPurchaseOrder/ViewDetails";
+
 
 type Props = {};
 
@@ -22,7 +23,6 @@ const NewBills = ({}: Props) => {
     null
   );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
   // const [selected, setSelected] = useState<string | null>("organization");
   const [supplierData, setSupplierData] = useState<[]>([]);
   const [selecteSupplier, setSelecetdSupplier] = useState<any | []>([]);
@@ -31,6 +31,7 @@ const NewBills = ({}: Props) => {
   const [destinationList, setDestinationList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
   const [isInterState, setIsInterState] = useState<boolean>(false);
+  const [allAccounts, setAllAccounts] = useState<any>([]);
   const [errors,setErrors]=useState({
     billNumber:false,
     dueDate:false,
@@ -44,7 +45,13 @@ const NewBills = ({}: Props) => {
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: newBillApi } = useApi("post", 5005);
+  const { request: getOneBill } = useApi("get", 5005);
+  const { request: getAccounts } = useApi("get", 5001);
+
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const billid = queryParams.get("id");
 
   const [bill, setBill] = useState<Bill>({
     supplierId: "",
@@ -61,7 +68,7 @@ const NewBills = ({}: Props) => {
     PaidThrough:"",
     billDate: "",
     dueDate: "",
-    itemTable: [
+    items: [
       {
         itemId: "",
         itemName: "",
@@ -76,11 +83,14 @@ const NewBills = ({}: Props) => {
         itemVat: "",
         itemSgstAmount: "",
         itemCgstAmount: "",
+        taxPreference:""
       },
     ],
+    otherExpenseAccountId:"",
     otherExpense: "",
     otherExpenseReason: "",
     vehicleNo: "",
+    freightAccountId:"",
     freight: "",
     addNotes: "",
     termsAndConditions: "",
@@ -101,9 +111,10 @@ const NewBills = ({}: Props) => {
     grandTotal: "",
     balanceAmount:"",
     paidAmount:"",
+    paidAccountId:"",
+    purchaseOrderId:""
   });
 
-  console.log(bill,"bill")
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
@@ -119,9 +130,7 @@ const NewBills = ({}: Props) => {
       setOpenDropdownIndex(null);
     }
   };
-  const toggleView = () => {
-    setIsExpanded(!isExpanded);
-  };
+
   const fetchData = async (
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
@@ -220,7 +229,7 @@ const NewBills = ({}: Props) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-
+  
     if (name === "dueDate") {
       const selectedDueDate = new Date(value);
       const billDate = new Date(bill.billDate);
@@ -231,10 +240,26 @@ const NewBills = ({}: Props) => {
       }
     }
   
+    if (name === "paidAmount") {
+      let paidAmount = parseFloat(value) || 0;
+      const grandTotal = Number(bill.grandTotal) || 0;
+  
+      if (paidAmount > grandTotal) {
+        toast.error("Paid Amount cannot exceed Grand Total.");
+        paidAmount = grandTotal; 
+      }
+  
+      setBill((prevState: any) => ({
+        ...prevState,
+        paidAmount,
+      }));
+      return; 
+    }
+  
     if (name === "transactionDiscount") {
       let discountValue = parseFloat(value) || 0;
-      const totalAmount = Number(bill.subTotal) || 0; 
-    
+      const totalAmount = Number(bill.subTotal) || 0;
+  
       if (bill.transactionDiscountType === "percentage") {
         if (discountValue > 100) {
           discountValue = 100;
@@ -246,40 +271,42 @@ const NewBills = ({}: Props) => {
           toast.error("Discount cannot exceed the subtotal amount");
         }
       }
-    
+  
       setBill((prevState: any) => ({
         ...prevState,
         [name]: discountValue,
       }));
+      return;
     }
-     
-    else if (name === "purchaseOrderDate" || name === "expectedShipmentDate") {
-      // Set the date in the bill state
+  
+    if (name === "purchaseOrderDate" || name === "expectedShipmentDate") {
       setBill((prevState: any) => ({
         ...prevState,
         [name]: value,
       }));
   
-      // Validate dates if both are available
       if (
         name === "expectedShipmentDate" &&
         bill.purchaseOrderDate &&
         new Date(value) < new Date(bill.purchaseOrderDate)
       ) {
-        toast.error("Expected Shipment Date cannot be earlier than Purchase Order Date.");
+        toast.error(
+          "Expected Shipment Date cannot be earlier than Purchase Order Date."
+        );
         setBill((prevState: any) => ({
           ...prevState,
-          expectedShipmentDate: "", 
+          expectedShipmentDate: "",
         }));
       }
-    } 
-    else {
-      setBill((prevState: any) => ({
-        ...prevState,
-        [name]: value,
-      }));
+      return; 
     }
+  
+    setBill((prevState: any) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
+  
 
   const getLastDayOfMonth = (date:any, monthsToAdd = 0) => {
     const year = date.getFullYear();
@@ -374,7 +401,6 @@ const NewBills = ({}: Props) => {
       balanceAmount: balanceAmount,
     }));
   }, [bill.grandTotal, bill.paidAmount]);
-  console.log(errors,"errors");
 
 
   const handleSave = async () => {
@@ -485,19 +511,51 @@ const NewBills = ({}: Props) => {
     }
   }, [bill?.sourceOfSupply, bill?.destinationOfSupply]);
 
+
+  const getBills = async () => {
+    try {
+      const url = `${endponits.GET_ONE_PURCHASE_ORDER}/${billid}`;
+      const { response, error } = await getOneBill(url);
+  
+      if (!error && response) {
+        console.log(response.data, "response");
+  
+        // Update bill state
+        setBill((prevData) => ({
+          ...prevData, 
+          ...response.data,
+          orderNumber:response.data.purchaseOrder,
+          purchaseOrderId:response.data._id
+        }));
+  
+        const matchingSupplier = supplierData.find((sup:any) => sup._id === response.data.supplierId);
+        if (matchingSupplier) {
+          setSelecetdSupplier(matchingSupplier); 
+        }
+      }
+    } catch (error) {
+      console.log("Error in fetching bill", error);
+    }
+  };
+  
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
+    const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
+
 
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
+    fetchData(allAccountsUrl, setAllAccounts, getAccounts);
   }, []);
 
   useEffect(() => {
+    getBills()
     handleDestination();
     handleplaceofSupply();
     fetchCountries();
   }, [oneOrganization, selecteSupplier]);
+
   useEffect(() => {
     if (openDropdownIndex !== null) {
       document.addEventListener("mousedown", handleClickOutside);
@@ -848,117 +906,14 @@ const NewBills = ({}: Props) => {
             />
           </div>
 
-          <div>
-            <button className="mt-0" onClick={toggleView}>
-              <p className="text-black my-3 text-sm flex gap-1 items-center">
-                <ScanEye />
-                <b>{isExpanded ? "View less" : "View more"}</b>
-              </p>
-            </button>
+         
+          <ViewDetails
+          page="bill"
+                purchaseOrderState={bill}
+                setPurchaseOrderState={setBill}
+                allAccounts={allAccounts}
+              />
 
-            {isExpanded && (
-              <div>
-                <form>
-                  <div className="grid grid-cols-12 gap-4 py-5">
-                    <div className="bg-secondary_main p-0 min-h-max rounded-xl relative col-span-12">
-                      <div className="grid grid-cols-2 gap-5 mt-0">
-                        <div className="relative col-span-1">
-                          <div className="w-full">
-                            <label htmlFor="otherExpense" className="">
-                              Other expenses
-                              <input
-                                name="otherExpense"
-                                id="otherExpense"
-                                value={
-                                  bill.otherExpense == 0
-                                    ? ""
-                                    : bill.otherExpense
-                                }
-                                onChange={handleChange}
-                                placeholder="Other expense"
-                                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
-                              />
-                            </label>
-                          </div>
-                        </div>
-                        <div className="relative col-span-1">
-                          <div className="w-full">
-                            <label
-                              htmlFor="otherExpenseReason"
-                              className="block text-sm mb-1 text-labelColor"
-                            >
-                              Other Expense Reason
-                              <input
-                                name="otherExpenseReason"
-                                id="otherExpenseReason"
-                                onChange={handleChange}
-                                value={bill.otherExpenseReason}
-                                placeholder="other expense reason"
-                                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
-                              />
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-5 mt-0">
-                        <div className="relative col-span-1">
-                          <div className="w-full">
-                            <label htmlFor="vehicleNo" className="">
-                              Vehicle Number
-                              <input
-                                name="vehicleNo"
-                                id="vehicleNo"
-                                onChange={handleChange}
-                                value={bill.vehicleNo}
-                                placeholder="Enter vehicle number"
-                                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
-                              />
-                            </label>
-                          </div>
-                        </div>
-                        <div className="relative col-span-1">
-                          <div className="w-full">
-                            <label
-                              htmlFor="freight"
-                              className="block text-sm mb-1 text-labelColor"
-                            >
-                              Freight Amount
-                              <input
-                                name="freight"
-                                id="freight"
-                                value={bill.freight == 0 ? "" : bill.freight}
-                                onChange={handleChange}
-                                placeholder="Enter freight Amount"
-                                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
-                              />
-                            </label>
-                          </div>
-                        </div>
-                        <div className="relative col-span-1">
-                          <div className="w-full">
-                            <label
-                              htmlFor="roundOff"
-                              className="block text-sm mb-1 text-labelColor"
-                            >
-                              Round off Amount
-                              <input
-                                name="roundOff"
-                                id="roundOff"
-                                value={bill.roundOff==0?"":bill.roundOff}
-                                onChange={handleChange}
-                                placeholder="Enter round off amount"
-                                className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-2"
-                              />
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            )}
-          </div>
 
           <br />
         </div>
@@ -1218,25 +1173,56 @@ const NewBills = ({}: Props) => {
             </div>
 
     {bill.paymentTerms==="Pay Now"  &&   <>
-             <div className="flex gap-4 items-center justify-center">
-                <label
-                  className="block text-sm mb-1 text-labelColor max-w-fit"
-                  htmlFor="paidAmount"
+      <div className="flex gap-4 items-center justify-center mb-2">
+              <label className=" text-sm mb-1 text-labelColor min-w-fit left-0">
+                Paid Through Account
+              </label>
+              <div className="relative w-full  ml-auto  ps-5">
+                <select
+                  onChange={handleChange}
+                  value={bill.paidAccountId}
+                  name="paidAccountId"
+                  className="block appearance-none w-full  text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                 >
-                  Paid Amount
-                </label>
-  
-                <div className="ml-auto">
-                  <input
-                    className="border-inputBorder w-full text-sm border rounded-lg p-1.5 pl-2 h-9"
-                    type="number"
-                    placeholder="Enter paid amount"
-                    name="paidAmount"
-                    value={bill.paidAmount === 0 ? "" : bill.paidAmount}
-                    onChange={handleChange}
-                  />
+                  <option value="" selected hidden disabled>Select Account</option>
+                  {allAccounts
+                    ?.filter((item: { accountSubhead: string }) => item.accountSubhead === "Bank" || item.accountSubhead === "Cash")
+                    ?.map((item: { _id: string; accountName: string }) => (
+                      <option key={item._id} value={item._id}>
+                        {item.accountName}
+                      </option>
+                    ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
                 </div>
               </div>
+            </div>
+            <div className="flex gap-4 items-center justify-center">
+  <label
+    className="block text-sm mb-1 text-labelColor max-w-fit"
+    htmlFor="paidAmount"
+  >
+    Paid Amount
+  </label>
+
+  <div className="ml-auto">
+    <input
+      className="border-inputBorder w-full text-sm border rounded-lg p-1.5 pl-2 h-9"
+      type="text" 
+      placeholder="Enter paid amount"
+      name="paidAmount"
+      value={bill.paidAmount === 0 ? "" : bill.paidAmount}
+      onChange={(e) => {
+        const { value } = e.target;
+        if (/^\d*\.?\d*$/.test(value)) { 
+          handleChange(e); 
+        }
+      }}
+    />
+  </div>
+</div>
+
               <div className=" flex gap-4 items-center justify-center">
                 <label
                   htmlFor="balanceAmount"

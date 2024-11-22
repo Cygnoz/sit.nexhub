@@ -26,6 +26,7 @@ type Row = {
   itemIgstAmount: number | string; 
   itemVatAmount: number | string; 
   itemPurchaseQuantity:number | string; 
+  taxPreference:string
 };
 
 type Props = {
@@ -67,7 +68,8 @@ const DebitNoteTable = ({
       itemCgstAmount: "",
       itemIgstAmount: "",
       itemVatAmount: "",
-      itemPurchaseQuantity:""
+      itemPurchaseQuantity:"",
+      taxPreference:""
     },
   ]);
 
@@ -104,7 +106,8 @@ const DebitNoteTable = ({
       itemIgstAmount: "",
       itemVat:"",
       itemVatAmount:"",
-      itemPurchaseQuantity:""
+      itemPurchaseQuantity:"",
+      taxPreference:"",
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
@@ -127,6 +130,7 @@ const DebitNoteTable = ({
     newRows[index].itemAmount = item.itemAmount;
     newRows[index].itemCostPrice = item.itemCostPrice;
     newRows[index].itemPurchaseQuantity=item.itemQuantity;
+    newRows[index].taxPreference=item.taxPreference;
 
 
     const costPrice = Number(newRows[index].itemCostPrice);
@@ -148,11 +152,8 @@ const DebitNoteTable = ({
 
     if (isInterState) {
       newRows[index].itemTax = igstAmount;
-      newRows[index].itemCgstAmount = "";
-      newRows[index].itemSgstAmount = "";
     } else {
       newRows[index].itemTax = cgstAmount + sgstAmount;
-      newRows[index].itemIgstAmount = "";
     }
 
     setRows(newRows);
@@ -161,7 +162,7 @@ const DebitNoteTable = ({
 
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      items: newRows.map((row) => {
+      items: newRows?.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
@@ -243,7 +244,7 @@ const DebitNoteTable = ({
 
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      items: newRows.map((row) => {
+      items: newRows?.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
@@ -274,7 +275,7 @@ const DebitNoteTable = ({
 
   const removeRow = (index: number) => {
     if (rows.length > 1) {
-      const newRows = rows.filter((_, i) => i !== index);
+      const newRows = rows?.filter((_, i) => i !== index);
   
       // Update both rows and purchaseOrderState
       setRows(newRows);
@@ -299,7 +300,8 @@ const DebitNoteTable = ({
         itemCgstAmount: "",
         itemIgstAmount: "",
         itemVatAmount: "",
-        itemPurchaseQuantity:""
+        itemPurchaseQuantity:"",
+        taxPreference:""
       };
   
       // Reset rows to default row
@@ -402,7 +404,7 @@ const DebitNoteTable = ({
   
 
   useEffect(() => {
-    const updatedRows = rows.map((row) => {
+    const updatedRows = rows?.map((row) => {
       const originalPrice = (Number(row.itemCostPrice) || 0) * (Number(row.itemQuantity) || 0);
   
       const taxDetails = calculateTax(
@@ -424,7 +426,7 @@ const DebitNoteTable = ({
     setRows(updatedRows);
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      items: updatedRows.map((row) => {
+      items: updatedRows?.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
@@ -454,7 +456,8 @@ const DebitNoteTable = ({
         itemCgstAmount: "",
         itemIgstAmount: "",
         itemVatAmount: "",
-        itemPurchaseQuantity:""
+        itemPurchaseQuantity:"",
+        taxPreference:"",
       };
   
       setRows([defaultRow]);
@@ -468,7 +471,7 @@ const DebitNoteTable = ({
   }, [selectedBill]);   
 
   const filterItems = () => {
-    return selectedBill?.itemTable?.filter((item: any) =>
+    return selectedBill?.items?.filter((item: any) =>
       item.itemName.toLowerCase().includes(searchValue.toLowerCase()) && 
       items.some((i: any) => i._id === item.itemId) 
     );
@@ -485,7 +488,7 @@ console.log(selectedBill,"slectedBill")
         <table className="min-w-full bg-white rounded-lg relative pb-4 border-dropdownText">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr className="bg-lightPink">
-              {newDebitTableHead.map((item, index) => (
+              {newDebitTableHead?.map((item, index) => (
                   <th
                     className="py-2 px-4 font-medium border-b border-tableBorder relative"
                     key={index}
@@ -496,7 +499,7 @@ console.log(selectedBill,"slectedBill")
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px] ">
-            {rows.map((row: any, index: number) => (
+            {rows?.map((row: any, index: number) => (
               <tr key={index}>
                 <td className="border-y py-3 px-2 border-tableBorder">
                   <div
@@ -536,7 +539,7 @@ console.log(selectedBill,"slectedBill")
     {selectedBill && Object.keys(selectedBill).length > 0 ? (
       items.length > 0 ? (
         filterItems()?.length > 0 ? (  // Check if filtered items exist
-          filterItems().map((item: any, idx: number) => (
+          filterItems()?.map((item: any, idx: number) => (
             <div
               key={idx}
               className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"

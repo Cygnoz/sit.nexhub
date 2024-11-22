@@ -3,19 +3,22 @@ import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { CustomerEditResponseContext } from "../../../context/ContextShare";
+import { CustomerDeatilsContext, CustomerEditResponseContext } from "../../../context/ContextShare";
 import toast from "react-hot-toast";
 import Overview from "./viewCustomerDetails/Overview";
 import SalesHistory from "./viewCustomerDetails/SalesHistory";
 import cardBg from "../../../assets/Images/Card 3 Mask.png";
-import walletImage from "../../../assets/Images/Frame 629221.png";
-import walletCashImage from "../../../assets/Images/Frame 629221 (1).png";
-import salesImage from "../../../assets/Images/Frame 629221 (3).png";
+import walletImage from "../../../assets/Images/shopping_13583280 11.png";
+import walletCashImage from "../../../assets/Images/wallet_1027927 1.png";
+import salesImage from "../../../assets/Images/shopping-cart_3706316 1.png";
 import CardSkeleton from "../../../Components/skeleton/CardSkeleton";
 import EditCustomerModal from "./EditCustomerModal";
 import Preview from "../../../assets/icons/Preview";
 import Payment from "../../../assets/icons/Payment";
 import HistoryIcon from "../../../assets/icons/HistoryIcon";
+import Button from "../../../Components/Button";
+import Trash2 from "../../../assets/icons/Trash2";
+
 interface Status {
   status: string;
 }
@@ -26,6 +29,8 @@ interface CardData {
 }
 
 function SeeCustomerDetails() {
+  const { setCustomerDatials } = useContext(CustomerDeatilsContext)!;
+
   const param = useParams();
   const [selectedTab, setSelectedTab] = useState("Overview");
   const [customerData, setCustomerData] = useState<any | []>([]);
@@ -48,8 +53,7 @@ function SeeCustomerDetails() {
       const { response, error } = apiResponse;
       if (!error && response) {
         setCustomerData(response.data);
-        console.log(response.data);
-        
+        setCustomerDatials(response.data)       
         setStatusData((prevData) => ({
           ...prevData,
           status: response.data.status,
@@ -128,20 +132,15 @@ function SeeCustomerDetails() {
             <p className="text-textColor mx-2 mt-1.5 text-xl font-bold">Customer Overview</p>
 
           </div>
-          <div className="flex mx-4">
+          <div className="flex mx-4 gap-2">
             <EditCustomerModal customerDataPorps={customerData} />
-            <div className="ml-auto w-[40%]  flex">
-              <select
-                className="text-[10px] h-6  bg-white border-blk rounded-md border text-textColor border-textColor"
-                value={statusData.status}
-                name="status"
-                onChange={handleStatusSubmit}
-              >
-                <option value="" className="disabled hidden"></option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </select>
-            </div>
+            <Button
+                  variant="secondary"
+                  size="sm"
+                  className="text-[10px] h-6 px-4 hidden"
+                >
+                  <Trash2 color="#585953" /> Delete
+                </Button>
 
           </div>
         </div>
@@ -179,7 +178,7 @@ function SeeCustomerDetails() {
               cards.length > 0
                 ? cards.map((card) => (
                   <div className=" p-5 w-[27.9%] h-[148px] ms-14 bg-cuscolumnbg rounded-lg ">
-                    <img className="w-8 h-8" src={card.icon} alt="" />
+                    <img className="w-6 h-6" src={card.icon} alt="" />
                     <h1 className="text-[#4B5C79] text-sm font-semibold my-2">{card.title}</h1>
                     <h1>{card.count}</h1>
                   </div>

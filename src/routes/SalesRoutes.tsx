@@ -1,15 +1,14 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
 import SalesDashboard from "../features/sales/dashboard/SalesDashboard";
+import ViewSales from "../features/sales/commonComponents/ViewSales";
 
 // Lazy load your components
 const SalesOrder = lazy(() => import("../features/sales/salesOrder/SalesOrder"));
-const ViewSalesOrder = lazy(() => import("../features/sales/salesOrder/viewSalesQuote/ViewSalesOrder"));
 const NewSalesOrder = lazy(() => import("../features/sales/salesOrder/NewSalesOrder"));
 const InvoiceHome = lazy(() => import("../features/sales/invoice/InvoiceHome"));
 const NewInvoice = lazy(() => import("../features/sales/invoice/NewInvoice"));
 const QuoteHome = lazy(() => import("../features/sales/quote/QuoteHome"));
-const ViewSalesQuote = lazy(() => import("../features/sales/quote/viewSalesQuote/ViewSalesQuote"));
 const NewSalesQuote = lazy(() => import("../features/sales/quote/NewSalesQuote"));
 const CreditNote = lazy(() => import("../features/sales/creditNote/CreditNote"));
 const NewCreditNote = lazy(() => import("../features/sales/creditNote/NewCreditNote"));
@@ -24,12 +23,11 @@ const NewSalesReturn = lazy(() => import("../features/sales/salesReturn/NewSales
 const SalesRoutes: RouteObject[] = [
   { path: "/sales", element: <SalesDashboard /> },
   { path: "/sales/salesorder", element: <SalesOrder /> },
-  { path: "/sales/viewsalesorder/:id", element: <ViewSalesOrder /> },
+  { path: "/sales/viewsalesorder/:id", element: <ViewSales /> },
   { path: "/sales/salesorder/new", element: <NewSalesOrder /> },
   { path: "/sales/invoice", element: <InvoiceHome /> },
   { path: "/sales/invoice/new", element: <NewInvoice /> },
   { path: "/sales/quote", element: <QuoteHome /> },
-  { path: "/sales/quote/view/:id", element: <ViewSalesQuote /> },
   { path: "/sales/quote/new", element: <NewSalesQuote /> },
   { path: "/sales/credit-note", element: <CreditNote /> },
   { path: "/sales/credit-note/new", element: <NewCreditNote /> },
