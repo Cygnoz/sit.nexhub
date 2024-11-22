@@ -26,7 +26,6 @@ function AddExpenseCategory({}: Props) {
    const {request:addCategory}=useApi('post',5008)
    const {request:updateCategory}=useApi('put',5008)
    const {request:deleteCategory}=useApi('delete',5008)
-   const {request:oneCategory}=useApi('get',5008)
    const {request:getAllCategory}=useApi('get',5008)
    const [allCategory,setAllCategory]=useState([])
     const [categories, setCategories] = useState<CategoryData>({
@@ -47,22 +46,24 @@ function AddExpenseCategory({}: Props) {
   }
 
   const handleSave = async () => {
-    console.log("dd",categories);
-    console.log(isOpen);
-    
     try {
-      const url = isOpen.edit ? `${endponits.UPDATE_EXPENSE_CATEGORY}` : `${endponits.ADD_EXPENSE_CATEGORY}`;
+      const url = isOpen.edit ? `${endponits.UPDATE_EXPENSE_CATEGORY}/${categories._id}` : `${endponits.ADD_EXPENSE_CATEGORY}`;
       const apiCall = isOpen.edit ? updateCategory :addCategory ;
       const { response, error } = await apiCall(url, categories);
       console.log("res",response);
-      console.log("err",error.status);
-      if (error) {
-        toast.error(error.response.data.message);
-        console.error(`Error saving category: ${error.message}`);
-      } else if (response) {
+      console.log("err",error);
+      if (!error || response) {
         toast.success(`Category ${isOpen.edit ? "updated" : "added"} successfully.`);
         closeModal(true,false,false)
+        setCategories({
+          expenseCategory: "",
+          description: "",
+          _id:""
+        })
         loadCategories();
+      } else{
+        toast.error(error.response.data.message);
+        console.error(`Error saving category: ${error.message}`);
       }
     } catch (error) {
       toast.error("Error in save operation.");
@@ -75,6 +76,8 @@ function AddExpenseCategory({}: Props) {
       const url = `${endponits.GET_ALL_EXPENSE_CATEGORY}`;
       const { response, error } = await getAllCategory(url)
       if (!error && response) {
+        console.log("fs",response.data);
+        
         setAllCategory(response.data);
       } else {
         console.error("Failed to fetch Category data.");
@@ -85,12 +88,16 @@ function AddExpenseCategory({}: Props) {
     }
   };
 
-  const handleDelete=async (id:number)=>{
+  const handleDelete=async (id:any)=>{
     try{
       const url=`${endponits.DELETE_EXPENSE_CATEGORY}/${id}`
       const {response , error}=await deleteCategory(url)
-      if(!error || response){
-        toast.success(response?.data)
+      if(!error || response){ 
+        toast.success(response?.data.message)
+        if(allCategory.length==1){
+          setAllCategory([])
+        }
+        loadCategories()
       }else{
         console.error("Failed to fetch Category data.");
       }
@@ -115,9 +122,18 @@ function AddExpenseCategory({}: Props) {
       ...prevData,
       [name]: value,
     }));
+    console.log(categories);
   }
-
+  
+  
   const [searchValue, setSearchValue] = useState<string>("");
+
+  const filteredCategories = allCategory?.filter((category: any) => {
+    return (
+      category.expenseCategory?.toLowerCase().includes(searchValue.toLowerCase()) ||
+      category.description?.toLowerCase().includes(searchValue.toLowerCase())
+    );
+  });
     
   return (
     <div >
@@ -153,12 +169,12 @@ function AddExpenseCategory({}: Props) {
             <div className="grid grid-flow-col items-center gap-3 ">
               <div className="w-96">
                 <SearchBar
-                  placeholder="Search Name or Mobile"
+                  placeholder="Search Name or Description"
                   searchValue={searchValue}
                   onSearchChange={setSearchValue}
                 />
               </div>
-              <div>
+              {/* <div>
                 <div className="relative w-full items-center justify-center flex">
                   <select className="block appearance-none w-full h-10 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                     <option value="" className="text-gray">
@@ -169,7 +185,7 @@ function AddExpenseCategory({}: Props) {
                     <CehvronDown color="gray" />
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           <div className="flex ml-auto me-2 my-4">
             <Button variant="primary" size="xl" onClick={()=>openModal(true,true,false)}>
@@ -185,36 +201,37 @@ function AddExpenseCategory({}: Props) {
               No categories found !
             </p> 
           ) : ( 
-           allCategory?.map((category: any) => ( 
-              <div 
-              key={category.id} 
-              className="flex p-2">
+            filteredCategories?.map((category: any) => (
+              <div key={category._id} className="flex p-2">
                 <div className="border border-slate-200 text-textColor rounded-xl w-96 h-auto p-3 flex justify-between">
                   <div>
-                    <h3 className="text-sm font-bold">
-                      {category.categoriesName}
-                    </h3>
-                    <p className="text-xs text-textColor">
-                      {category.description}
-                    </p>
+                    <h3 className="text-sm font-bold">{category.expenseCategory}</h3>
+                    <p className="text-xs text-textColor">{category.description}</p>
                   </div>
                   <div className="flex space-x-2">
                     <p
                       className="cursor-pointer"
-                      onClick={()=>openModal(true,false,true)}
+                      onClick={() => {
+                        openModal(true, false, true);
+                        setCategories({
+                          expenseCategory: category.expenseCategory,
+                          description: category.description,
+                          _id: category._id,
+                        });
+                      }}
                     >
                       <PencilEdit color="currentColor" />
                     </p>
                     <p
                       className="cursor-pointer"
-                      onClick={() => handleDelete(category._id)}
+                      onClick={() => handleDelete(category?._id)}
                     >
                       <TrashCan color="currentColor" />
                     </p>
                   </div>
                 </div>
               </div>
-             )) 
+            ))
          )} 
         </div>
 
