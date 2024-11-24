@@ -48,45 +48,67 @@ function OrderView({ data, page, organization }: Props) {
   const renderItemTable = () => {
     const items = data?.itemTable || data?.items;
   
-    if (!items || !items.length) return <p>No items available</p>;
+    if (!items || items.length === 0) {
+      return <p>No items available</p>;
+    }
+  
+    const currency = organization?.baseCurrency || "";
   
     return (
       <div className="grid grid-cols-2 gap-4">
-        {items.map((item: any) => (
-          <div
-            key={item.itemId}
-            className="mt-6 p-4 rounded-lg flex items-center flex-col"
-            style={{
-              background: "linear-gradient(89.66deg, #E3E6D5 -0.9%, #F7E7CE 132.22%)",
-            }}
-          >
-            <div
-              className="w-full flex items-center justify-between cursor-pointer"
-              onClick={() => toggleDropdown(item.itemId)}
-            >
-              <div className="flex items-center">
-                <img src={item.itemImage || ""} alt="Item" className="h-16 w-20" />
-                <div className="text-textColor">
-                  <p className="ml-4 text-sm text-blk">Item</p>
-                  <p className="ml-4 font-semibold text-base text-blk">{item.itemName}</p>
+        {items.map((item: {
+          itemId: string;
+          itemName: string;
+          itemImage?: string;
+          itemQuantity?: number;
+          itemCostPrice?: number;
+          itemDiscount?: number;
+          discountType?: string;
+          itemAmount?: number;
+        }) => (
+          <div key={item.itemId}> {/* Corrected div */}
+           <div
+  className={`mt-6 p-4 flex flex-col bg-gradient-to-r from-[#E3E6D5] to-[#F7E7CE] ${
+    isExpanded === item.itemId ? "rounded-t-lg" : "rounded-lg"
+  }`}
+>
+
+              {/* Header Section */}
+              <div
+                className="w-full flex items-center justify-between cursor-pointer "
+                onClick={() => toggleDropdown(item.itemId)}
+              >
+                <div className="flex items-center">
+                  <img
+                    src={item.itemImage || ""}
+                    alt="Item"
+                    className="h-16 w-20"
+                  />
+                  <div className="text-textColor ml-4">
+                    <p className="text-sm text-blk">Item</p>
+                    <p className="font-semibold text-base text-blk">{item.itemName}</p>
+                  </div>
                 </div>
+                <p className="text-sm font-medium text-dropdownText">
+                  {isExpanded === item.itemId ? (
+                    <CheveronUp color="currentColor" />
+                  ) : (
+                    <CheveronDownIcon color="currentColor" />
+                  )}
+                </p>
               </div>
-              <p className="text-sm font-medium text-dropdownText">
-                {isExpanded === item.itemId ? (
-                  <CheveronUp color={"currentColor"} />
-                ) : (
-                  <CheveronDownIcon color={"currentColor"} />
-                )}
-              </p>
             </div>
   
-            {/* Conditionally render expanded content */}
+            {/* Expandable Section */}
             {isExpanded === item.itemId && (
-              <div className="w-full grid grid-cols-5 mt-2 text-center  border-borderRight pt-4">
+              <div className=" w-full grid grid-cols-5 text-center rounded-b-lg border-borderRight py-3 bg-gradient-to-r from-[#E3E6D5] to-[#F7E7CE] ">
+                {/* Ordered */}
                 <div className="flex items-center border-r border-borderRight p-4">
                   <div>
                     <p className="text-dropdownText text-sm">Ordered</p>
-                    <p className="font-semibold text-sm text-textColor">{item?.itemQuantity} PCS</p>
+                    <p className="font-semibold text-sm text-textColor">
+                      {item.itemQuantity || 0} PCS
+                    </p>
                   </div>
                 </div>
   
@@ -103,7 +125,7 @@ function OrderView({ data, page, organization }: Props) {
                   <div>
                     <p className="text-dropdownText text-sm">Rate</p>
                     <p className="font-bold text-sm text-textColor">
-                      {organization?.baseCurrency} {item.itemCostPrice}
+                      {currency} {item.itemCostPrice || 0}
                     </p>
                   </div>
                 </div>
@@ -114,8 +136,8 @@ function OrderView({ data, page, organization }: Props) {
                     <p className="text-dropdownText text-sm">Discount</p>
                     <p className="font-bold text-sm text-textColor">
                       {item.discountType === "percentage"
-                        ? (item.itemCostPrice * item.itemDiscount) / 100
-                        : item.itemDiscount}
+                        ? ((item.itemCostPrice || 0) * (item.itemDiscount || 0)) / 100
+                        : item.itemDiscount || 0}
                     </p>
                   </div>
                 </div>
@@ -125,17 +147,21 @@ function OrderView({ data, page, organization }: Props) {
                   <div>
                     <p className="text-dropdownText text-sm">Amount</p>
                     <p className="font-bold text-sm text-textColor">
-                      {organization?.baseCurrency} {item.itemAmount}
+                      {currency} {item.itemAmount || 0}
                     </p>
                   </div>
                 </div>
               </div>
             )}
-          </div>
+          </div> 
         ))}
       </div>
     );
   };
+  
+  
+  
+  
   
 
   return (

@@ -23,7 +23,7 @@ const AddExpenseModal = ({}: Props) => {
           className="flex items-center"
           size="sm"
         >
-          <CirclePlus color="white" size="8" />{" "}
+          <CirclePlus color="white" size="14" />{" "}
           <p className="text-md">Add Expense</p>
         </Button>
       </div>

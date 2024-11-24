@@ -32,6 +32,8 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
     creditOpeningBalance: "",
   });
 
+
+
   const openModal = () => {
     setModalOpen(true);
   };
@@ -195,7 +197,8 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
                 <select
                   name="accountSubhead"
                   value={formValues.accountSubhead}
-                  onChange={handleChange}
+                  // onChange={handleChange}
+                  onChange={(e)=>setFormValues({...formValues,accountSubhead:e.target.value})}
                   className="w-full border border-inputBorder rounded p-1.5 pl-2 text-sm"
                 >
                   <option disabled hidden value="">Select type</option>

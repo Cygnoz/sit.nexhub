@@ -3,17 +3,15 @@ import { Link, useParams } from "react-router-dom";
 import ArrowRightLeft from "../../../../assets/icons/ArrowRightLeft";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
 import Info from "../../../../assets/icons/Info";
-// import MessageCircle from "../../../../assets/icons/MessageCircle";
-// import NewspaperIcon from "../../../../assets/icons/NewspaperIcon";
 import { SupplierResponseContext } from "../../../../context/ContextShare";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import { SupplierData } from "../../../../Types/Supplier";
-// import Comment from "./Comment";
 import Overview from "./Overview";
 import Transaction from "./Transaction";
-// import Statement from "./Statement";
-// import Transaction from "./Transaction";
+import EditSupplier from "../EditSupplier";
+import Button from "../../../../Components/Button";
+import Pen from "../../../../assets/icons/Pen";
 
 type Props = {};
 
@@ -28,6 +26,11 @@ function SeeSupplierDetails({ }: Props) {
   const [tabSwitch, setTabSwitch] = useState<string>("overview");
   const { supplierResponse } = useContext(SupplierResponseContext)!;
   const [statusData, setStatusData] = useState<Status>({ status: "" });
+
+  const [isModalOpen, setIsModalOpen] = useState(false); // Define modal state
+
+  const openModal = () => setIsModalOpen(true); // Function to open modal
+  const closeModal = () => setIsModalOpen(false); // Function to close modal
 
   const getOneSupplierData = async () => {
     if (!id) return;
@@ -61,23 +64,40 @@ function SeeSupplierDetails({ }: Props) {
 
   return (
     <div className="px-6">
-      <div className="flex flex-col bg-white h-auto rounded-md text-textColor p-5 space-y-4">
-        {/* Header */}
-        <div className="flex w-full justify-between">
-          <div className="flex gap-5 items-center">
-            <Link to="/supplier/home">
-              <div
-                style={{ borderRadius: "50%" }}
-                className="w-[40px] h-[40px] flex items-center justify-center bg-[#F6F6F6]"
-              >
-                <CheveronLeftIcon />
-              </div>
-            </Link>
-            <p className="text-textColor text-xl font-bold">Office Vendors</p>
-          </div>
+      <div className="bg-white shadow-md rounded-lg p-6 flex items-center justify-between">
+        {/* Left Section */}
+        <div className="flex gap-5 items-center">
+          <Link to="/supplier/home">
+            <div
+              style={{ borderRadius: "50%" }}
+              className="w-[40px] h-[40px] flex items-center justify-center bg-[#F6F6F6]"
+            >
+              <CheveronLeftIcon />
+            </div>
+          </Link>
+          <p className="text-textColor text-xl font-bold">Office Vendors</p>
         </div>
 
-        {/* Tabs */}
+        {/* Right Section */}
+        <div className="flex gap-4">
+          <Button
+            onClick={openModal}
+            variant="secondary"
+            className="h-[26px] w-[68px] text-[12px] flex items-center justify-center"
+          >
+            <Pen size={14} color="#565148" /> <p className="text-sm font-medium">Edit</p>
+          </Button>
+          <EditSupplier
+            isModalOpen={isModalOpen}
+            openModal={openModal}
+            closeModal={closeModal}
+            supplier={supplier}
+          />
+        </div>
+      </div>
+
+
+      <div className=" bg-white h-auto rounded-md text-textColor  px-2 mt-5 p-2">
         <div className="flex items-center w-full gap-2">
           <div
             onClick={() => handleTabSwitch("overview")}
@@ -85,38 +105,22 @@ function SeeSupplierDetails({ }: Props) {
           >
             <Info color="#303F58" size={20} /> Overview
           </div>
-          {/* <div
-            onClick={() => handleTabSwitch("comment")}
-            className={`text-[14px] font-semibold ${tabSwitch === "comment" ? "bg-[#F7E7CE]" : ""} w-[187px] py-2 justify-center flex gap-2 items-center rounded-[8px] cursor-pointer`}
-          >
-            <MessageCircle size={20} color="#303F58" /> Comments
-          </div> */}
+
           <div
             onClick={() => handleTabSwitch("transaction")}
             className={`text-[14px] font-semibold ${tabSwitch === "transaction" ? "bg-[#F7E7CE]" : ""} w-[187px] py-2 justify-center flex gap-2 items-center rounded-[8px] cursor-pointer`}
           >
             <ArrowRightLeft size={20} color="#303F58" /> Transaction
           </div>
-          {/* <div
-            onClick={() => handleTabSwitch("statement")}
-            className={`text-[14px] font-semibold ${tabSwitch === "statement" ? "bg-[#F7E7CE]" : ""} w-[187px] py-2 justify-center flex gap-2 items-center rounded-[8px] cursor-pointer`}
-          >
-            <NewspaperIcon color="#303F58" /> Statements
-          </div> */}
         </div>
+      </div>
 
+      <div className="flex flex-col bg-white h-auto rounded-md text-textColor p-5 space-y-4 mt-5">
+        {/* Tabs */}
         {tabSwitch === "overview" && (
-          <Overview
-            supplier={supplier}
-            statusData={statusData}
-            setStatusData={setStatusData}
-          />
+          <Overview supplier={supplier} statusData={statusData} setStatusData={setStatusData} />
         )}
-        {tabSwitch === "transaction" && (
-          <Transaction
-          />
-        )}
-
+        {tabSwitch === "transaction" && <Transaction />}
       </div>
     </div>
   );

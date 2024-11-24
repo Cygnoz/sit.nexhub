@@ -3,6 +3,7 @@ import EditCustomerModal from "../EditCustomerModal";
 import PhoneIcon from "../../../../assets/icons/PhoneIcon";
 import CustomerStatusHistory from "./CustomerStatusHistory";
 import OtherDetails from "./ViewMore/OtherDetails";
+import Factory from "../../../../assets/icons/Factory";
 
 
 
@@ -63,13 +64,22 @@ const Overview = ({
               <PhoneIcon color={"#303F58"} size={18} />
               <p> {customerData.mobile}</p>
             </div>
-            <div className="flex gap-2">
-              <p className="font-bold text-textColor ">Opening Balance :</p>
-              <p className="font-bold text-textColor">    N/A</p>
+            <div className="flex ">
+              
+              <p className="font-bold text-textColor">
+                Opening Balance {customerData.debitOpeningBalance ?
+                  `(Db) : ${customerData.debitOpeningBalance}` :
+                  customerData.creditOpeningBalance ?
+                    `(Cr) : ${customerData.creditOpeningBalance}` :
+                    "N/A"}
+              </p>
+
             </div>
+
             <div className="flex justify-between">
               {customerData.companyName &&
-                <p className="font-bold text-textColor  ">
+                <p className="font-bold text-textColor  flex gap-1">
+                  <Factory color={"#303F58"} width={14}/>
                   {customerData.companyName}
                 </p>}
               <div
@@ -176,7 +186,7 @@ const Overview = ({
                 <p className="ml-auto font-semibold">English</p>
               </div>
               <div className="text-end">
-                <OtherDetails  />
+                <OtherDetails />
               </div>
             </div>
           </div>

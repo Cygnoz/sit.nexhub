@@ -47,13 +47,20 @@ function PdfView({ data, organization }: Props) {
   };
   console.log(data, "data");
   const baseCurrency = currency.find((c: any) => c.baseCurrency === true);
+
   const formattedAmount = baseCurrency 
-  ? `${baseCurrency.currencyName} ${toWords.convert(data.amountPaid)} Only`
-  : "Currency not found";
+    ? `${baseCurrency?.currencyName} ${
+        data?.amountPaid && !isNaN(Number(data?.amountPaid))
+          ? toWords?.convert(Number(data?.amountPaid))
+          : "Zero"
+      } Only`
+    : "Currency not found";
+  
   useEffect(() => {
     getSupplierAddress();
-    getCurrencies()
+    getCurrencies();
   }, [data]);
+  
 
   return (
     <div className=" flex justify-center">
@@ -61,7 +68,7 @@ function PdfView({ data, organization }: Props) {
         <div className="flex justify-between items-center mb-8 mt-1">
           <div>
             <img
-                src={organization.organizationLogo}
+                src={organization?.organizationLogo}
                 alt="Company Logo"
               className="h-[49px] w-[71px]"
             />

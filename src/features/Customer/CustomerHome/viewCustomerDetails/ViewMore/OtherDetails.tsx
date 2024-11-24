@@ -1,6 +1,21 @@
 import { useContext, useEffect, useState } from "react";
 import Modal from "../../../../../Components/model/Modal";
 import { CustomerDeatilsContext } from "../../../../../context/ContextShare";
+import Taxes from "./Taxes";
+import ContactPerson from "./ContactPerson";
+import Wallet from "../../../../../assets/icons/Wallet";
+import CalendarDays from "../../../../../assets/icons/CalendarDays";
+import IndianRupee from "../../../../../assets/icons/IndianRupee";
+import TeenyIcon from "../../../../../assets/icons/TeenyIcon";
+import CalendarCheck from "../../../../../assets/icons/CalendarCheck";
+import Languages from "../../../../../assets/icons/Languages";
+import RecieptIndianRupee from "../../../../../assets/icons/RecieptIndianRupee";
+import Calender from "../../../../../assets/icons/Calender";
+import Percent from "../../../../../assets/icons/Percent";
+import FileCheck_2 from "../../../../../assets/icons/FileCheck_2";
+import UserRoundCog from "../../../../../assets/icons/UserRoundCog";
+import User from "../../../../../assets/icons/User";
+import line from '../../../../../assets/Images/Rectangle 5557.png'
 
 type Props = {}
 
@@ -23,63 +38,67 @@ function OtherDetails({ }: Props) {
 
     const OtherDetails = [
         {
-            icon: "",
+            icon: <Wallet color={"#303F58"} width={17} />,
             title: "Opening Balance",
-            item:"",
-        },{
-            icon: "",
+            item: (customerDatials.debitOpeningBalance ?
+                `(Db)  ${customerDatials.debitOpeningBalance}` :
+                customerDatials.creditOpeningBalance ?
+                    `(Cr)  ${customerDatials.creditOpeningBalance}` :
+                    "N/A"),
+        }, {
+            icon: <TeenyIcon color={"#303F58"} width={17} />,
             title: "PAN",
-            item:"",
+            item: (customerDatials.pan ? customerDatials.pan : "N/A"),
         },
         {
-            icon: "",
+            icon: <CalendarDays color={"#303F58"} width={16} />,
             title: "Credit Days",
-            item:"",
+            item: (customerDatials.creditDays ? customerDatials.creditDays : "N/A"),
         },
         {
-            icon: "",
+            icon: <IndianRupee color={"#303F58"} weight={2} />,
             title: "Currency",
-            item:"",
+            item: (customerDatials.currency ? customerDatials.currency : "N/A"),
         },
         {
-            icon: "",
+            icon: <CalendarCheck color={"#303F58"} width={16} />,
             title: "Payment Terms",
-            item:"",
+            item: (customerDatials.paymentTerms ? customerDatials.paymentTerms : "N/A"),
         },
         {
-            icon: "",
+            icon: <Languages color={"#303F58"} width={16} />,
             title: "Portal Language",
-            item:"",
+            item: "N/A",
         },
         {
-            icon: "",
+            icon: <RecieptIndianRupee color={"#303F58"} size={16} height={24} />,
             title: "Credit Limit",
-            item:"",
+            item: "N/A",
         },
         {
-            icon: "",
+            icon: <Calender color={"#303F58"} width={16} height={20} />,
             title: "Website URL",
-            item:"",
+            item: (customerDatials.websiteURL ? customerDatials.websiteURL : "N/A"),
         },
         {
-            icon: "",
+            icon: <Percent color={"#303F58"} width={16} />,
             title: "Interest Percentage",
-            item:"",
+            item: "N/A",
         },
         {
-            icon: "",
+            icon: <FileCheck_2 color={"#303F58"} width={16} />,
             title: "Documents",
-            item:"",
+            item: "N/A",
         },
         {
-            icon: "",
+            icon: <UserRoundCog color={"#303F58"} size={16} />,
             title: "Department",
-            item:"",
+            item: (customerDatials.department ? customerDatials.department : "N/A"),
         },
         {
-            icon: "",
+            icon: <User color={"#303F58"} width={16} />,
             title: "Designation",
-            item:"",
+            item: (customerDatials.designation ? customerDatials.designation : "N/A"),
         },
 
 
@@ -98,7 +117,7 @@ function OtherDetails({ }: Props) {
                 className=""
                 style={{ width: "50%" }}
             >
-                <div className="gap-6 bg-white px-5  rounded-lg">
+                <div className="gap-6 bg-white px-5 h-[450px] rounded-lg">
                     <div
                         className="ms-auto text-end text-3xl cursor-pointer relative z-10"
                         onClick={closeModal}
@@ -127,42 +146,34 @@ function OtherDetails({ }: Props) {
                         {/* Pass the required props to the Overview component */}
                         {selectedTab === "Other Details" && (
                             <div>
-                                <div className="flex-1 h-px bg-[#6c2a1f] ml-1"></div>
+                                <div >  <img className="w-[100%]  h-[0.5%]" src={line} alt="" /></div>
                                 <div className="text-start grid grid-cols-4 bg-[#F6F6F6] my-3">
-                                {
-                                    OtherDetails.map((Details)=>(
-                                        <div className="py-5 px-5 rounded border-b-2 border-[#E0E0E0]">
-                                            <p>22</p>
-                                            <p className="text-[#4B5C79] font-400 text-[12px] py-1">{Details.title}</p>
-                                            <p className="text-[#303F58] font-bold text-[14px]">ee</p>
-                                        </div>
-                                    ))
-                                }
+                                    {
+                                        OtherDetails.map((Details) => (
+                                            <div className="py-5 px-5 rounded border-b-2 border-[#E0E0E0]">
+                                                <p>{Details.icon}</p>
+                                                <p className="text-[#4B5C79] font-400 text-[12px] py-1">{Details.title}</p>
+
+                                                <p className="text-[#303F58] font-bold text-[14px] break-words max-w-[200px]">
+                                                    {Details.item}
+                                                </p>
+                                            </div>
+                                        ))
+                                    }
                                 </div>
                             </div>
 
                         )}
                         {selectedTab === "Taxes" && (
-                            // <Overview
-                            //   customerData={customerData}
-                            //   statusData={statusData}
-                            //   customerId={customerId}
-                            //   handleStatusSubmit={handleStatusSubmit}
-                            // />
-                            <h1>Taxes</h1>
+                            <Taxes />
                         )}
                         {selectedTab === "Contact Person" && (
-                            // <SalesHistory
-                            //   customerId={customerId}
-                            // />
-                            <h1>Person</h1>
+
+                            <ContactPerson />
                         )}
                     </div>
                 </div>
             </Modal>
-
-
-
         </div>
     )
 }

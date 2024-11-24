@@ -682,7 +682,6 @@ const AddSupplierModal = ({ page }: Props) => {
       console.log("No country selected");
     }
   };
-
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -691,20 +690,26 @@ const AddSupplierModal = ({ page }: Props) => {
         toast.error("Only JPG and PNG images are supported.");
         return;
       }
-
+  
       const reader = new FileReader();
-
+  
       reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setSupplierData((prevDetails: any) => ({
-          ...prevDetails,
-          customerProfile: base64String,
-        }));
+        if (reader.result) {
+          const base64String = reader.result as string;
+          setSupplierData((prevDetails: any) => ({
+            ...prevDetails,
+            supplierProfile: base64String, // Ensure you're updating the correct key
+          }));
+        }
       };
-
-      reader.readAsDataURL(file);
+  
+      reader.readAsDataURL(file); // Convert the file to a Base64 string
     }
   };
+  
+
+  console.log(supplierdata,"ht");
+  
 
   useEffect(() => {
     handleplaceofSupply();
