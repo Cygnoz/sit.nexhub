@@ -326,6 +326,14 @@ export const PaymentMadeUnpaidBillTable = [
   "Amount Due",
   "Payment",
 ];
+export const SalesRecieptTable = [
+  "Date",
+  "Due Date",
+  "Invoice Number",
+  "Invoice Amount",
+  "Amount Due",
+  "Payment",
+];
 
 export const bankAccountviewTableHaed = [
   "Date",

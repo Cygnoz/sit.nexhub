@@ -30,6 +30,8 @@ export const endponits = {
   GET_ALL_SALES_INVOICE:"sales-invoice",
   GET_ONE_INVOICE:"sales-order",
   GET_ONE_JOURNAL_INVOICE:"invoice-journal",
+  //sales reciept
+  ADD_SALES_RECIEPT:"sales-receipt",
 
   //getall-item-sales
   GET_ALL_ITEMS_SALES: "get-all-item-xs",

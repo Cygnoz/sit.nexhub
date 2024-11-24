@@ -2,7 +2,7 @@ import {useNavigate } from "react-router-dom"
 import Button from "../../../Components/Button"
 import PlusCircle from "../../../assets/icons/PlusCircle"
 import ChevronRight from "../../../assets/icons/ChevronRight"
-import QuoteTable from "../quote/QuoteTable"
+import SalesTable from "../commonComponents/SalesTable"
 
 type Props = {}
 const SalesReturn = ({}: Props) => {
@@ -40,7 +40,7 @@ const SalesReturn = ({}: Props) => {
     </div>
   </div>
   <div className="bg-white p-5 rounded-lg space-y-4 mt-4">
-      <QuoteTable
+      <SalesTable
       page="salesReturn"
       />
        
