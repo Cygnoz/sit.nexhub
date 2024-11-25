@@ -4,7 +4,6 @@ import PlusCircle from "../../../assets/icons/PlusCircle"
 import ChevronRight from "../../../assets/icons/ChevronRight"
 import SalesTable from "../commonComponents/SalesTable"
 
-
 type Props = {}
 const SalesReturn = ({}: Props) => {
     const Navigate = useNavigate();

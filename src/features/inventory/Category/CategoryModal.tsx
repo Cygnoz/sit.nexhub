@@ -40,14 +40,13 @@ function Category({ isOpen, onClose, page }: Props) {
   const [allCategoryData, setAllcategoryData] = useState<CategoryData[]>([]);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isModalOpen, setModalOpen] = useState(false);
-  console.log(isEdit);
+
 
   const [searchValue, setSearchValue] = useState<string>("");
 
   const closeModal = () => {
     setModalOpen(false);
   };
-  console.log(categories);
 
   const loadCategories = async () => {
     try {

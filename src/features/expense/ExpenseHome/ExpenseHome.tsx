@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Category from "../../inventory/Category/CategoryModal";
 import AddExpenseModal from "./AddExpenseModal";
-
 import Button from "../../../Components/Button";
 import CirclePlus from "../../../assets/icons/circleplus";
 import ExpenseTable from "./ExpenseTable";
+import AddExpenseCategory from "./AddExpenseCategory";
 
 type Props = {};
 
@@ -38,10 +38,7 @@ const ExpenseHome = ({}: Props) => {
           </p>
         </div>
         <div className="ml-auto flex items-center gap-4">
-        <Button variant="secondary" className="flex items-center" size="sm" onClick={toggleCategoryModal}>
-            <CirclePlus color="currentColor" size="14" />{" "}
-            <p className="text-md">Add Category</p>
-          </Button>
+           <AddExpenseCategory/>
           <AddExpenseModal />
         </div>
       </div>

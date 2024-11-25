@@ -30,6 +30,8 @@ export const endponits = {
   GET_ALL_SALES_INVOICE:"sales-invoice",
   GET_ONE_INVOICE:"sales-order",
   GET_ONE_JOURNAL_INVOICE:"invoice-journal",
+  //sales reciept
+  ADD_SALES_RECIEPT:"sales-receipt",
 
   //getall-item-sales
   GET_ALL_ITEMS_SALES: "get-all-item-xs",
@@ -162,4 +164,12 @@ export const endponits = {
   // Login
   LOGIN: "/login",
   GET_OTP: "/verify-otp",
+
+  //Expense 
+  // ADD_EXPENSES:`add-expense`,
+  ADD_EXPENSE_CATEGORY:`add-category`,
+  GET_ALL_EXPENSE_CATEGORY:`get-all-category`,
+  GET_ONE_EXPENSE_CATEGORY:`get-one-category`,
+  UPDATE_EXPENSE_CATEGORY:`update-category`,
+  DELETE_EXPENSE_CATEGORY:`delete-category`
 };
