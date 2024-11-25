@@ -31,6 +31,7 @@ interface QuoteData {
   _id: string;
   salesInvoice: any;
   salesOrder: any;
+  paidStatus: any;
 }
 
 const SalesTable = ({ page }: Props) => {
@@ -49,7 +50,9 @@ const SalesTable = ({ page }: Props) => {
             ? `${endponits.GET_ALL_SALES_ORDER}`
             : page === "quote"
               ? `${endponits.GET_ALL_QUOTES}`
-              : "";
+              : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}` 
+              :
+              "";
 
       setLoading({ ...loading, skelton: true });
       const { response, error } = await getAllQuotes(url);
@@ -58,8 +61,11 @@ const SalesTable = ({ page }: Props) => {
         return;
       }
       console.log(response.data);
-
-      setData(response.data);
+      if (page === "invoice") {
+        setData(response.data.updatedInvoices);
+      } else {
+        setData(response.data);
+      }
       setLoading({ ...loading, skelton: false });
     } catch (error) {
       console.error("Error fetching quotes:", error);
@@ -77,7 +83,7 @@ const SalesTable = ({ page }: Props) => {
       { id: "", label: "Due Date", visible: false },
       { id: "salesInvoice", label: "Invoice#", visible: true },
       { id: "reference", label: "Reference", visible: true },
-      { id: "status", label: "Status", visible: true },
+      { id: "paidStatus", label: "Status", visible: true },
       { id: "customerName", label: "Customer Name", visible: true },
       { id: "totalAmount", label: "Amount", visible: true },
       { id: "", label: "Balance Due", visible: false },
@@ -108,7 +114,16 @@ const SalesTable = ({ page }: Props) => {
             { id: "customerName", label: "Customer Name", visible: true },
             { id: "totalAmount", label: "Amount", visible: true },
             { id: "returned", label: "Returned", visible: true },
-          ] : [];
+          ] :
+            page == "reciept" ? [
+              { id: "createdDate", label: "Date", visible: true },
+              { id: "createdDate", label: "Payment#", visible: true },
+              { id: "createdDate", label: "Customer Name", visible: true },
+              { id: "createdDate", label: "Invoice#", visible: true },
+              { id: "createdDate", label: "Mode", visible: true },
+              { id: "createdDate", label: "Amount", visible: true },
+              { id: "createdDate", label: "Unsend Amount", visible: true },
+            ] : [];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
@@ -121,12 +136,12 @@ const SalesTable = ({ page }: Props) => {
       return extractDate(item.createdDate);
     }
 
-    if (colId === "status") {
+    if (colId === "paidStatus") {
       return (
         <div className="flex justify-center items-center">
           <div className="flex items-center gap-1.5 bg-BgSubhead rounded-2xl px-2 pt-0.5 pb-0.5">
             <DotIcon color="#495160" />
-            <p className="text-outlineButton text-xs font-medium">{item.status}</p>
+            <p className="text-outlineButton text-xs font-medium">{item.paidStatus}</p>
           </div>
         </div>
       );
@@ -172,8 +187,9 @@ const SalesTable = ({ page }: Props) => {
                   ? "Search Sales Order"
                   : page == "salesReturn"
                     ? "Search Sales Return"
-                    : "Search Quote"
-
+                    : page == "reciept"
+                      ? "Search Reciepts"
+                      : "Search Quote"
             }
           />
         </div>

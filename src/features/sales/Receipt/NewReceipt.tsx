@@ -66,9 +66,7 @@ const NewReceipt = ({ }: Props) => {
   const [customerData, setCustomerData] = useState<[]>([]);
   const [allAcoounts, setAllAccounts] = useState<[] | any>([]);
   const [allInvoiceData, setAllInvoiceData] = useState<[]>([]);
-  const [customerReciept,setCustomerReciept] = useState<[] | any>([]);
-  console.log(customerReciept,"customerreciept");
-  
+  const [customerReciept, setCustomerReciept] = useState<[] | any>([]);
   const [recieptState, setRecieptState] = useState<ReceiptType>(initialReceipt);
   console.log(recieptState);
 
@@ -105,18 +103,33 @@ const NewReceipt = ({ }: Props) => {
   useEffect(() => {
     const grandTotal = customerReciept?.filter((invoice: any) => invoice.paidStatus === "Pending" || invoice.paidStatus === "Overdue")
       .reduce((total: number, invoice: any) => total + invoice.grandTotal, 0);
-  
+
     setRecieptState((prevData) => ({
       ...prevData,
       total: grandTotal,
     }));
   }, [customerReciept]);
-  
+  const fetchAllInvoices = async () => {
+    try {
+      const url = `${endponits.GET_ALL_SALES_INVOICE}`;
+      const { response, error } = await getAllInvoice(url);
+      if (error || !response) {
+        setAllInvoiceData([]);
+        return;
+      }
+      setAllInvoiceData(response.data.updatedInvoices || []);
+    } catch (error) {
+      console.error("Error fetching invoices:", error);
+      setAllInvoiceData([]);
+    }
+  };
 
   useEffect(() => {
-    const allInvoiceUrl = `${endponits.GET_ALL_SALES_INVOICE}`;
+    fetchAllInvoices();
+  }, []);
+
+  useEffect(() => {
     const accountsUrl = `${endponits.Get_ALL_Acounts}`;
-    fetchData(allInvoiceUrl, setAllInvoiceData, getAllInvoice);
     fetchData(accountsUrl, setAllAccounts, getAccounts);
   }, [])
   const filterByDisplayName = (
@@ -162,21 +175,26 @@ const NewReceipt = ({ }: Props) => {
     }
   };
 
-  
+
   const handleSave = async () => {
     try {
-      const url = `${endponits.ADD_SALES_INVOICE}`;
+      const url = `${endponits.ADD_SALES_RECIEPT}`;
       const { response, error } = await addReciept(url, recieptState);
-      if (!error && response) {
-        toast.success(response.data.message);
-        setTimeout(() => {
-          navigate(-1);
-        }, 1000);
+      if (response && !error) {
+        const { message} = response.data;
+        toast.success(message || "Receipt saved successfully!");
+        navigate(-1);
       } else {
-        toast.error(error.response.data.message);
+        const errorMessage =
+          error?.response?.data?.message || "An error occurred while saving.";
+        toast.error(errorMessage);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error during save:", error);
+      toast.error("Unexpected error occurred. Please try again.");
+    }
   };
+  
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -200,7 +218,7 @@ const NewReceipt = ({ }: Props) => {
       );
       setCustomerReciept(filtered);
     }
-  }, [selectedCustomer,allInvoiceData]);
+  }, [selectedCustomer, allInvoiceData]);
 
 
   return (
@@ -392,14 +410,15 @@ const NewReceipt = ({ }: Props) => {
 
                 <div className="col-span-7">
                   <label className="block text-sm mb-1 text-labelColor">
-                  Deposit To
+                    Deposit To
                   </label>
                   <div className="relative w-full">
                     <select
                       onChange={handleChange}
                       value={recieptState.depositAccountId}
                       name="depositAccountId"
-                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border
+                       border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     >
                       <option>Select Payment Through</option>
                       {allAcoounts ? (
@@ -422,17 +441,19 @@ const NewReceipt = ({ }: Props) => {
               {/* table */}
 
               <NewRecieptTable
-              customerReciept={customerReciept}
-              recieptState={recieptState}
-              setRecieptState={setRecieptState}
+                customerReciept={customerReciept}
+                recieptState={recieptState}
+                setRecieptState={setRecieptState}
               />
 
               <div className="mt-5 text-textColor">
-                <label htmlFor="notes" className="text-sm">
+                <label htmlFor="note" className="text-sm">
                   Add Note
                   <input
-                    name="notes"
-                    id="notes"
+                    name="note"
+                    onChange={handleChange}
+                    value={recieptState.note}
+                    id="note"
                     placeholder="Note"
                     className="border-inputBorder w-full text-sm border rounded  p-2 h-[57px] mt-2 "
                   />
@@ -476,7 +497,7 @@ const NewReceipt = ({ }: Props) => {
                 </div>
                 <div className="flex-shrink-0">
                   {" "}
-                  <p className="text-end">0.00</p>
+                  <p className="text-end">{recieptState.amountReceived ? recieptState.amountReceived : "0.00"}</p>
                 </div>
               </div>
 
@@ -485,7 +506,7 @@ const NewReceipt = ({ }: Props) => {
                   <p className="whitespace-nowrap">Amount Used for Payments</p>
                 </div>
                 <div className="flex-shrink-0">
-                  <p>0.00</p>
+                  <p>{recieptState.amountUsedForPayments ? recieptState.amountUsedForPayments : "0.00"}</p>
                 </div>
               </div>
             </div>
@@ -508,4 +529,3 @@ const NewReceipt = ({ }: Props) => {
 };
 
 export default NewReceipt;
-
