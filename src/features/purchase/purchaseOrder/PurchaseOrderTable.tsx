@@ -14,7 +14,7 @@ const PurchaseOrderTable = () => {
     { id: "reference", label: "Reference", visible: true },
     { id: "supplierDisplayName", label: "Supplier Name", visible: true },
     { id: "grandTotal", label: "Amount", visible: true },
-    { id: "Status", label: "Status", visible: true },
+    // { id: "Status", label: "Status", visible: true },
     { id: "Recieved", label: "Received", visible: false },
     { id: "Billed", label: "Billed", visible: false },
     { id: "ExpectedDate", label: "Expected Date", visible: false },
