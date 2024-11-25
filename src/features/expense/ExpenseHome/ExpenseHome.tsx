@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Category from "../../inventory/Category/CategoryModal";
 import AddExpenseModal from "./AddExpenseModal";
-import Button from "../../../Components/Button";
-import CirclePlus from "../../../assets/icons/circleplus";
+// import Button from "../../../Components/Button";
+// import CirclePlus from "../../../assets/icons/circleplus";
 import ExpenseTable from "./ExpenseTable";
 import AddExpenseCategory from "./AddExpenseCategory";
 
