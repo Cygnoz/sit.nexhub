@@ -32,7 +32,7 @@ export const endponits = {
   GET_ONE_JOURNAL_INVOICE:"invoice-journal",
   //sales reciept
   ADD_SALES_RECIEPT:"sales-receipt",
-
+  GET_ALL_SALES_RECIEPT:"get-all-receipt",
   //getall-item-sales
   GET_ALL_ITEMS_SALES: "get-all-item-xs",
   GET_ALL_ITEMS_TABLE:"get-all-item-m",

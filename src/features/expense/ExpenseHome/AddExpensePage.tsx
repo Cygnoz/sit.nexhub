@@ -96,11 +96,13 @@ function AddExpensePage({}: Props) {
   });
 
   const { request: AllSuppliers } = useApi("get", 5009);
-  const { request: AddExpenses } = useApi("put", 5008);
+  const { request: AddExpenses } = useApi("post", 5008);
   const { request: getAllExpenseCategory } = useApi("get", 5008);
+  const {request : getTax}=useApi("get",5004)
   const [searchValue, setSearchValue] = useState<string>("");
   const [supplierData, setSupplierData] = useState<[]>([]);
   const [category,setCategory]=useState<[]>([])
+  const [taxRate,setTaxRate]=useState<[] | any>([])
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [Itemize, setItemize] = useState<boolean>(true);
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
@@ -239,9 +241,11 @@ function AddExpensePage({}: Props) {
     fetchAllAccounts();
 
     const categoryUrl = `${endponits.GET_ALL_EXPENSE_CATEGORY}`;
+    const taxRateUrl=`${endponits.GET_ALL_TAX}`
 
 
     fetchData(categoryUrl, setCategory, getAllExpenseCategory);
+    fetchData(taxRateUrl,setTaxRate, getTax );
 
   }, []);
 
@@ -349,7 +353,7 @@ function AddExpensePage({}: Props) {
                           const selectedValue = e.target.value; // Extract the selected value
                           // Find the selected account's object
                           const selectedAccount: any =
-                            accountData?.paidThrough?.find(
+                            accountData?.liabilities?.find(
                               (account: any) =>
                                 account.accountName === selectedValue
                             );
@@ -366,8 +370,8 @@ function AddExpensePage({}: Props) {
                         className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                       >
                         <option value="">Select an Account</option>
-                        {accountData?.paidThrough &&
-                          accountData.paidThrough.map(
+                        {accountData?.liabilities &&
+                          accountData.liabilities.map(
                             (account: any, index: number) => (
                               <option key={index} value={account.accountName}>
                                 {account.accountName}
@@ -465,7 +469,7 @@ function AddExpensePage({}: Props) {
                   className="relative w-full"
                   onClick={(e) => {
                     // Prevent the dropdown from opening when clicking the clear button
-                    if (!expenseData.supplierDisplayName) {
+                    if (!expenseData.expenseCategory) {
                       e.stopPropagation();
                       toggleDropdown("Category");
                     }
@@ -473,10 +477,10 @@ function AddExpensePage({}: Props) {
                 >
                   <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                     <p>
-                      {expenseData.supplierDisplayName &&
-                      expenseData.supplierDisplayName
-                        ? expenseData.supplierDisplayName
-                        : "Select Supplier"}
+                      {expenseData.expenseCategory &&
+                      expenseData.expenseCategory
+                        ? expenseData.expenseCategory
+                        : "Select Category"}
                     </p>
                   </div>
                   {expenseData.supplierDisplayName ? (
@@ -486,7 +490,7 @@ function AddExpensePage({}: Props) {
                           e.stopPropagation();
                           setExpenseData({
                             ...expenseData,
-                            supplierDisplayName: "",
+                            expenseCategory: "",
                           });
                         }}
                         className="text-textColor text-2xl font-light"
@@ -509,36 +513,29 @@ function AddExpensePage({}: Props) {
                       <SearchBar
                         searchValue={searchValue}
                         onSearchChange={setSearchValue}
-                        placeholder="Select Supplier"
+                        placeholder="Select Category"
                       />
-                      {filteredSupplier.length > 0 ? (
-                        filteredSupplier.map((supplier: any) => (
+                      {category.length > 0 ? (
+                        category?.map((category: any) => (
                           <div
-                            key={supplier._id}
+                            key={category._id}
                             className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
                             onClick={() => {
                               setExpenseData({
                                 ...expenseData,
-                                supplierDisplayName:
-                                  supplier.supplierDisplayName,
+                                expenseCategory:
+                                  category.expenseCategory,
                               });
                               setOpenDropdownIndex(null); // Close dropdown after selection
                             }}
                           >
-                            <div className="col-span-2 flex items-center justify-center">
-                              <img
-                                src="https://i.postimg.cc/MHdYrGVP/Ellipse-43.png"
-                                alt=""
-                              />
-                            </div>
+                           
                             <div className="col-span-10 flex cursor-pointer">
                               <div>
                                 <p className="font-bold text-sm">
-                                  {supplier.supplierDisplayName}
+                                  {category.expenseCategory}
                                 </p>
-                                <p className="text-xs text-gray-500">
-                                  Phone: {supplier.mobile}
-                                </p>
+                              
                               </div>
                             </div>
                           </div>
@@ -550,9 +547,7 @@ function AddExpensePage({}: Props) {
                           </p>
                         </div>
                       )}
-                      <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4">
-                        <AddSupplierModal page="expense" />
-                      </div>
+                     
                     </div>
                   )}
                 </div>
@@ -732,7 +727,7 @@ function AddExpensePage({}: Props) {
                                   supplier?.supplierDisplayName,
                                   supplierId:supplier?._id
                               });
-                              setOpenDropdownIndex(null); // Close dropdown after selection
+                              setOpenDropdownIndex(null); 
                             }}
                           >
                             <div className="col-span-2 flex items-center justify-center">
@@ -852,25 +847,20 @@ function AddExpensePage({}: Props) {
                       value={expenseData.taxGroup}
                       onChange={(e) => {
                         const selectedValue = e.target.value;
-                        const selectedAccount: any =
-                          accountData?.paidThrough?.find(
-                            (account: any) =>
-                              account.accountName === selectedValue
-                          );
+                        
                         setExpenseData({
                           ...expenseData,
-                          paidThrough: selectedValue,
-                          paidThroughId: selectedAccount?._id || "",
+                          taxGroup: selectedValue,
                         });
                       }}
                       className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                     >
                       <option value="">Select an Account</option>
-                      {accountData?.paidThrough &&
-                        accountData.paidThrough?.map(
+                      {taxRate?.gstTaxRate &&
+                        taxRate?.gstTaxRate ?.map(
                           (account: any, index: number) => (
-                            <option key={index} value={account.accountName}>
-                              {account.accountName}
+                            <option key={index} value={account.taxName}>
+                              {account.taxName}
                             </option>
                           )
                         )}
