@@ -3,6 +3,8 @@ import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import { ToWords } from "to-words";
 
+
+
 type Props = { data: any , organization?:any};
 
 function PdfView({ data, organization }: Props) {
