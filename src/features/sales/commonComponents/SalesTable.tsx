@@ -117,12 +117,12 @@ const SalesTable = ({ page }: Props) => {
           ] :
             page == "reciept" ? [
               { id: "createdDate", label: "Date", visible: true },
-              { id: "createdDate", label: "Payment#", visible: true },
-              { id: "createdDate", label: "Customer Name", visible: true },
-              { id: "createdDate", label: "Invoice#", visible: true },
-              { id: "createdDate", label: "Mode", visible: true },
-              { id: "createdDate", label: "Amount", visible: true },
-              { id: "createdDate", label: "Unsend Amount", visible: true },
+              { id: "", label: "Payment#", visible: true },
+              { id: "", label: "Customer Name", visible: true },
+              { id: "", label: "Invoice#", visible: true },
+              { id: "", label: "Mode", visible: true },
+              { id: "", label: "Amount", visible: true },
+              { id: "", label: "Unsend Amount", visible: true },
             ] : [];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
