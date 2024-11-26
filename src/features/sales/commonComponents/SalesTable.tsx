@@ -47,12 +47,11 @@ const SalesTable = ({ page }: Props) => {
         page === "invoice"
           ? `${endponits.GET_ALL_SALES_INVOICE}`
           : page === "salesOrder"
-            ? `${endponits.GET_ALL_SALES_ORDER}`
-            : page === "quote"
-              ? `${endponits.GET_ALL_QUOTES}`
-              : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}` 
-              :
-              "";
+          ? `${endponits.GET_ALL_SALES_ORDER}`
+          : page === "quote"
+          ? `${endponits.GET_ALL_QUOTES}`
+          : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}`
+          :"";
 
       setLoading({ ...loading, skelton: true });
       const { response, error } = await getAllQuotes(url);
@@ -117,12 +116,12 @@ const SalesTable = ({ page }: Props) => {
           ] :
             page == "reciept" ? [
               { id: "createdDate", label: "Date", visible: true },
-              { id: "", label: "Payment#", visible: true },
-              { id: "", label: "Customer Name", visible: true },
-              { id: "", label: "Invoice#", visible: true },
-              { id: "", label: "Mode", visible: true },
-              { id: "", label: "Amount", visible: true },
-              { id: "", label: "Unsend Amount", visible: true },
+              { id: "payment", label: "Payment#", visible: true },
+              { id: "customerName", label: "Customer Name", visible: true },
+              // { id: "", label: "Invoice#", visible: true },
+              { id: "paymentMode", label: "Mode", visible: true },
+              { id: "amountReceived", label: "Amount", visible: true },
+              // { id: "", label: "Unsend Amount", visible: true },
             ] : [];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
@@ -164,7 +163,7 @@ const SalesTable = ({ page }: Props) => {
       quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
       quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
     );
-  }) : []; // If `data` is not an array, default to an empty array
+  }) : []; 
 
 
   const handleRowClick = (id: string) => {
@@ -184,12 +183,12 @@ const SalesTable = ({ page }: Props) => {
               page == "invoice"
                 ? "Search Invoice"
                 : page == "salesOrder"
-                  ? "Search Sales Order"
-                  : page == "salesReturn"
-                    ? "Search Sales Return"
-                    : page == "reciept"
-                      ? "Search Reciepts"
-                      : "Search Quote"
+                ? "Search Sales Order"
+                : page == "salesReturn"
+                ? "Search Sales Return"
+                : page == "reciept"
+                ? "Search Reciepts"
+                : "Search Quote"
             }
           />
         </div>
