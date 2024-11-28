@@ -556,7 +556,7 @@ const NewPurchaseOrder = ({}: Props) => {
                           value={purchaseOrderState.destinationOfSupply}
                           className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         >
-                          <option value="">Select Source Of Supply</option>
+                          <option value="">Select Destination Of Supply</option>
                           {placeOfSupplyList &&
                             placeOfSupplyList.map((item: any, index: number) => (
                               <option
@@ -883,7 +883,7 @@ const NewPurchaseOrder = ({}: Props) => {
 
                   <input
                     type="date"
-                    value={purchaseOrderState.purchaseOrderDate}
+                    value={purchaseOrderState.purchaseOrderDate || new Date().toISOString().split("T")[0]}
                     name="purchaseOrderDate"
                     onChange={handleChange}
                     className="border-inputBorder w-full text-sm border rounded p-2 h-9  text-zinc-400"
@@ -895,7 +895,7 @@ const NewPurchaseOrder = ({}: Props) => {
                   </label>
                   <input
                     type="date"
-                    value={purchaseOrderState.expectedShipmentDate}
+                    value={purchaseOrderState.expectedShipmentDate || new Date().toISOString().split("T")[0] }
                     name="expectedShipmentDate"
                     onChange={handleChange}
                     disabled={purchaseOrderState.paymentTerms !== "due on receipt" && purchaseOrderState.paymentTerms !== "Custom"}

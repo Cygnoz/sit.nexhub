@@ -158,15 +158,19 @@ export const endponits = {
  GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
  GET_DEBIT_NOTE:`getDebitNote`,
 
-  //  Expense 
-  ADD_EXPENSES:`add-expense`,
+
 
   // Login
   LOGIN: "/login",
   GET_OTP: "/verify-otp",
 
-  //Expense 
-  // ADD_EXPENSES:`add-expense`,
+
+    //  Expense 
+    ADD_EXPENSES:`add-expense`,
+    GET_ALL_EXPENSE:`get-all-expense`,
+    GET_A_EXPENSE:`get-one-expense`,
+
+  //Expense > category
   ADD_EXPENSE_CATEGORY:`add-category`,
   GET_ALL_EXPENSE_CATEGORY:`get-all-category`,
   GET_ONE_EXPENSE_CATEGORY:`get-one-category`,

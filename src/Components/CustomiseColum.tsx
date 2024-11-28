@@ -4,7 +4,6 @@ import Modal from "./model/Modal";
 import SearchBar from "./SearchBar";
 import MoveIcon from "../assets/icons/MoveIcon";
 import Button from "./Button";
-// import PlusCircle from "../assets/icons/PlusCircle";
 
 type Column = {
   id: string;

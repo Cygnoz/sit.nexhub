@@ -519,8 +519,7 @@ const NewBills = ({}: Props) => {
   
       if (!error && response) {
         console.log(response.data, "response");
-  
-        // Update bill state
+
         setBill((prevData) => ({
           ...prevData, 
           ...response.data,
@@ -809,17 +808,18 @@ const NewBills = ({}: Props) => {
             </div>
 
             <div className=" w-full">
-            <label className="block text-sm  text-labelColor">
-            Bill Date <span className="text-[#bd2e2e] -ms-0.5">*</span>
-                <input
-                  name="billDate"
-                  id="billDate"
-                  type="date"
-                  value={bill.billDate}
-                  onChange={handleChange}
-                  className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-1 "
-                />
-              </label>
+            <label className="block text-sm text-labelColor">
+  Bill Date <span className="text-[#bd2e2e] -ms-0.5">*</span>
+  <input
+    name="billDate"
+    id="billDate"
+    type="date"
+    value={bill.billDate || new Date().toISOString().split("T")[0]} 
+    onChange={handleChange}
+    className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-1"
+  />
+</label>
+
             </div>
             <div>
               <div>
@@ -828,7 +828,7 @@ const NewBills = ({}: Props) => {
                   <input
                     name="dueDate"
                     id="dueDate"
-                    value={bill.dueDate}
+                    value={bill.dueDate || new Date().toISOString().split("T")[0]}
                     onChange={handleChange}
                     type="date"
                     disabled={bill.paymentTerms !== "due on receipt" && bill.paymentTerms !== "Custom"}
