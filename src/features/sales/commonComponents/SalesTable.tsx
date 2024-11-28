@@ -50,9 +50,8 @@ const SalesTable = ({ page }: Props) => {
             ? `${endponits.GET_ALL_SALES_ORDER}`
             : page === "quote"
               ? `${endponits.GET_ALL_QUOTES}`
-              : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}` 
-              :
-              "";
+              : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}`
+                : "";
 
       setLoading({ ...loading, skelton: true });
       const { response, error } = await getAllQuotes(url);
@@ -117,12 +116,12 @@ const SalesTable = ({ page }: Props) => {
           ] :
             page == "reciept" ? [
               { id: "createdDate", label: "Date", visible: true },
-              { id: "createdDate", label: "Payment#", visible: true },
-              { id: "createdDate", label: "Customer Name", visible: true },
-              { id: "createdDate", label: "Invoice#", visible: true },
-              { id: "createdDate", label: "Mode", visible: true },
-              { id: "createdDate", label: "Amount", visible: true },
-              { id: "createdDate", label: "Unsend Amount", visible: true },
+              { id: "payment", label: "Payment#", visible: true },
+              { id: "customerName", label: "Customer Name", visible: true },
+              // { id: "", label: "Invoice#", visible: true },
+              { id: "paymentMode", label: "Mode", visible: true },
+              { id: "amountReceived", label: "Amount", visible: true },
+              // { id: "", label: "Unsend Amount", visible: true },
             ] : [];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
@@ -139,9 +138,12 @@ const SalesTable = ({ page }: Props) => {
     if (colId === "paidStatus") {
       return (
         <div className="flex justify-center items-center">
-          <div className="flex items-center gap-1.5 bg-BgSubhead rounded-2xl px-2 pt-0.5 pb-0.5">
+          <div
+            className={`${item.paidStatus === "Pending" ? "bg-zinc-200" : item.paidStatus === "Completed" ? "bg-[#94dca9]" : "bg-[#dcd894]"
+              } text-[13px] rounded-lg text-center items-center text-textColor h-[18px] px-2 max-w-fit gap-2 py-2 flex justify-center`}
+          >
             <DotIcon color="#495160" />
-            <p className="text-outlineButton text-xs font-medium">{item.paidStatus}</p>
+            {item.paidStatus}
           </div>
         </div>
       );
@@ -164,13 +166,16 @@ const SalesTable = ({ page }: Props) => {
       quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
       quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
     );
-  }) : []; // If `data` is not an array, default to an empty array
+  }) : [];
 
 
   const handleRowClick = (id: string) => {
     const state = { page };
-
-    navigate(`/sales/viewsalesorder/${id}`, { state });
+    if (page === "reciept") {
+      navigate(`/sales/receipt/view/${id}`, { state }); 
+    } else {
+      navigate(`/sales/viewsalesorder/${id}`, { state });
+    }
   };
 
   return (

@@ -21,7 +21,7 @@ const SendPurchaseOrder=({data}:Props)=>{
 
 
   const handleRowClick = () => {
-    navigate(`/purchase/bills/new?id=${data._id}`);  };
+    navigate(`/purchase/bills/new?id=${data._id}`);};
 
 
 

@@ -14,7 +14,7 @@ const CreditNote = lazy(() => import("../features/sales/creditNote/CreditNote"))
 const NewCreditNote = lazy(() => import("../features/sales/creditNote/NewCreditNote"));
 const ViewCreditNote = lazy(() => import("../features/sales/creditNote/viewCreditNote/ViewCreditNote"));
 const ReceiptHome = lazy(() => import("../features/sales/Receipt/ReceiptHome"));
-const ReceiptView = lazy(() => import("../features/sales/Receipt/ReceiptView"));
+const RecieptView = lazy(() => import("../features/sales/Receipt/viewRecipet/RecieptView"));
 const NewReceipt = lazy(() => import("../features/sales/Receipt/NewReceipt"));
 const SalesInfo = lazy(() => import("../features/sales/SalesInfo"));
 const SalesReturn = lazy(() => import("../features/sales/salesReturn/SalesReturn"));
@@ -33,7 +33,7 @@ const SalesRoutes: RouteObject[] = [
   { path: "/sales/credit-note/new", element: <NewCreditNote /> },
   { path: "/sales/credit-note/view", element: <ViewCreditNote /> },
   { path: "/sales/receipt", element: <ReceiptHome /> },
-  { path: "/sales/receipt/view", element: <ReceiptView /> },
+  { path: "/sales/receipt/view/:id", element: <RecieptView /> },
   { path: "/sales/receipt/new", element: <NewReceipt /> },
   { path: "/sales/info", element: <SalesInfo /> },
   { path: "/sales/salesreturn", element: <SalesReturn/> },

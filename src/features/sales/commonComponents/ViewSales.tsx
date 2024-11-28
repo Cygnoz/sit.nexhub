@@ -58,9 +58,11 @@ function ViewSales() {
         page === "invoice"
           ? `${endponits.GET_ONE_INVOICE}/${id}`
           : page === "salesOrder"
-            ? `${endponits.GET_ONE_SALES_ORDER}/${id}`
-            : page === "quote" ? `${endponits.GET_ONE_QUOTES}/${id}`
-            :``;
+          ? `${endponits.GET_ONE_SALES_ORDER}/${id}`
+          : page === "quote" ? `${endponits.GET_ONE_QUOTES}/${id}`
+          :page === "reciept" ? `${endponits.GET_ONE_SALES_RECIEPT}/${id}`
+          :
+          ``;
       const { response, error } = await getOneSalesOrder(url);
       if (!error && response) {
         setData(response.data);
