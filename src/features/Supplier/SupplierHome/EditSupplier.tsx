@@ -19,7 +19,7 @@ import Plus from "../../../assets/icons/Plus";
 type Props = {
   supplier?: SupplierData | null;
   isModalOpen: boolean;
-  openModal: () => void;
+  openModal?: () => void;
   closeModal: () => void;
   addressEdit?: string
 };
@@ -160,7 +160,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
         const base64String = reader.result as string;
         setSupplierData((prevDetails: any) => ({
           ...prevDetails,
-          customerProfile: base64String,
+          supplierProfile: base64String,
         }));
       };
 
