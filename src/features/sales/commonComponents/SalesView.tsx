@@ -6,6 +6,7 @@ import CheveronDownIcon from "../../../assets/icons/CheveronDownIcon";
 import CheveronUp from "../../../assets/icons/CheveronUp";
 import { useParams } from "react-router-dom";
 import { useOrganization } from "../../../context/OrganizationContext";
+import SendSalesOrder from "./SendSalesOrder";
 
 interface OrderItem {
   itemId: string;
@@ -128,8 +129,8 @@ function SalesView({ data, page }: SalesOrderViewProps) {
           <p className="text-base font-bold text-textColor">{
             page == "salesOrder" ? "Send Sales Order"
               : page == "invoice" ? "Send Invoice"
-              :page == "quote" ? "Send Sales Quote"
-                : "Send"
+                : page == "quote" ? "Send Sales Quote"
+                  : "Send"
           }</p>
           <p className="text-sm font-normal text-dropdownText mt-2">
             Sales order has been created. You can email the Sales Order to your
@@ -137,17 +138,22 @@ function SalesView({ data, page }: SalesOrderViewProps) {
           </p>
         </div>
         <div className="flex gap-4">
-          <Button variant="secondary" className="pl-4 pr-4" size="sm">
-            <p className="text-sm font-medium">Mark as Confirmed</p>
-          </Button>
-          <Button className="pl-4 pr-4" size="sm">
-            <p className="text-sm font-medium">{
-              page == "salesOrder" ? "Send Sales Order"
-                : page == "invoice" ? "Send Invoice"
-                : page == "quote" ? "Send Sales Quote"
-                  : "Send"
-            }</p>
-          </Button>
+          {
+            page == "salesOrder" ? <SendSalesOrder data={data}/>
+              : ""
+          }
+          {
+            page == "salesOrder" ? ""
+              :
+              <Button className="pl-4 pr-4" size="sm">
+                <p className="text-sm font-medium">{
+                  page == "salesOrder" ? "Send Sales Order"
+                    : page == "invoice" ? "Send Invoice"
+                      : page == "quote" ? "Send Sales Quote"
+                        : "Send"
+                }</p>
+              </Button>
+          }
         </div>
       </div>
 

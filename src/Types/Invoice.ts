@@ -10,6 +10,7 @@ export interface invoice {
     paymentTerms:string;
     deliveryMethod:string;
     expectedShipmentDate:string;
+    salesOrderNumber:string;
     
     items: Array<{
       itemId: string;

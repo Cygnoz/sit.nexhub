@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../../../Components/Button";
 import SearchBar from "../../../Components/SearchBar";
 import CehvronDown from "../../../assets/icons/CehvronDown";
@@ -81,6 +81,7 @@ const initialSalesQuoteState: invoice = {
   paymentTerms: "Due on Receipt",
   deliveryMethod: "",
   expectedShipmentDate: "",
+  salesOrderNumber: "",
 
   items: [
     {
@@ -145,11 +146,9 @@ const NewInvoice = ({ }: Props) => {
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
-  // const [paymentTerms, setPaymentTerms] = useState<[]>([]);
   const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(true);
   const [prefix, setPrifix] = useState("")
   const [allAccounts, setAllAccounts] = useState<any>([]);
-
 
   const [invoiceState, setInvoiceState] = useState<invoice>(initialSalesQuoteState);
   console.log(invoiceState);
@@ -159,12 +158,46 @@ const NewInvoice = ({ }: Props) => {
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: getPrfix } = useApi("get", 5007);
-  // const { request: allPyamentTerms } = useApi("get", 5004);
   const { request: getAccounts } = useApi("get", 5001);
-
+  const { request: getOneInvoice } = useApi("get", 5007);
 
 
   const navigate = useNavigate()
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const invoiceId = queryParams.get("id");
+
+  const getBills = async () => {
+    try {
+      const url = `${endponits.GET_ONE_SALES_ORDER}/${invoiceId}`;
+      const { response, error } = await getOneInvoice(url);
+
+      if (!error && response) {
+        console.log(response.data, "response");
+        setInvoiceState((prevData) => ({
+          ...prevData,
+          ...response.data,
+          salesOrderNumber: response.data.salesOrder
+        }));
+
+        const matchingSupplier = customerData.find((sup: any) => sup._id === response.data.customerId);
+        if (matchingSupplier) {
+          setSelecetdCustomer(matchingSupplier);
+        }
+      }
+    } catch (error) {
+      console.log("Error in fetching bill", error);
+    }
+  };
+
+  useEffect(() => {
+    const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
+    fetchData(customerUrl, setCustomerData, AllCustomer);
+  }, [])
+  useEffect(() => {
+    getBills()
+  }, [selectedCustomer, oneOrganization])
+
   const handleGoBack = () => {
     navigate(-1)
     setInvoiceState(initialSalesQuoteState)
@@ -383,11 +416,9 @@ const NewInvoice = ({ }: Props) => {
 
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
-    // const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
 
     fetchData(allAccountsUrl, setAllAccounts, getAccounts);
-    // fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
     handleplaceofSupply();
     fetchCountries();
@@ -396,6 +427,7 @@ const NewInvoice = ({ }: Props) => {
       checkTaxType(selectedCustomer);
     }
   }, [selectedCustomer]);
+
 
   const filterByDisplayName = (
     data: any[],
@@ -601,6 +633,21 @@ const NewInvoice = ({ }: Props) => {
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />
                 </div>
+
+                {/* <div className={`col-span-${isPlaceOfSupplyVisible ? "7" : "5"} relative`}>
+                  <label className="block text-sm  text-labelColor">
+                   Sales Order Number
+                    <input
+                      name="salesOrderNumber"
+                      id="salesOrderNumber"
+                      value={invoiceState.salesOrderNumber}
+                      onChange={handleChange}
+                      placeholder="Enter Order Number"
+                      className="border-inputBorder w-full text-sm border rounded text-dropdownText  mt-1 p-2 h-9 "
+                    />
+                  </label>
+                </div> */}
+
 
                 <div className={`col-span-${isPlaceOfSupplyVisible ? "7" : "5"} relative`}>
                   <label className="block text-sm mb-1 text-labelColor">

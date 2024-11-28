@@ -47,11 +47,11 @@ const SalesTable = ({ page }: Props) => {
         page === "invoice"
           ? `${endponits.GET_ALL_SALES_INVOICE}`
           : page === "salesOrder"
-          ? `${endponits.GET_ALL_SALES_ORDER}`
-          : page === "quote"
-          ? `${endponits.GET_ALL_QUOTES}`
-          : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}`
-          :"";
+            ? `${endponits.GET_ALL_SALES_ORDER}`
+            : page === "quote"
+              ? `${endponits.GET_ALL_QUOTES}`
+              : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}`
+                : "";
 
       setLoading({ ...loading, skelton: true });
       const { response, error } = await getAllQuotes(url);
@@ -138,15 +138,14 @@ const SalesTable = ({ page }: Props) => {
     if (colId === "paidStatus") {
       return (
         <div className="flex justify-center items-center">
-        <div
-          className={`${
-            item.paidStatus === "Pending" ? "bg-zinc-200" :item.paidStatus==="Completed"? "bg-[#94dca9]":"bg-[#dcd894]"
-          } text-[13px] rounded-lg text-center items-center text-textColor h-[18px] px-2 max-w-fit gap-2 py-2 flex justify-center`}
-        >
-          <DotIcon color="#495160" />
-          {item.paidStatus}
+          <div
+            className={`${item.paidStatus === "Pending" ? "bg-zinc-200" : item.paidStatus === "Completed" ? "bg-[#94dca9]" : "bg-[#dcd894]"
+              } text-[13px] rounded-lg text-center items-center text-textColor h-[18px] px-2 max-w-fit gap-2 py-2 flex justify-center`}
+          >
+            <DotIcon color="#495160" />
+            {item.paidStatus}
+          </div>
         </div>
-     </div>
       );
     }
 
@@ -167,13 +166,16 @@ const SalesTable = ({ page }: Props) => {
       quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
       quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
     );
-  }) : []; 
+  }) : [];
 
 
   const handleRowClick = (id: string) => {
     const state = { page };
-
-    navigate(`/sales/viewsalesorder/${id}`, { state });
+    if (page === "reciept") {
+      navigate(`/sales/receipt/view/${id}`, { state }); 
+    } else {
+      navigate(`/sales/viewsalesorder/${id}`, { state });
+    }
   };
 
   return (
@@ -187,12 +189,12 @@ const SalesTable = ({ page }: Props) => {
               page == "invoice"
                 ? "Search Invoice"
                 : page == "salesOrder"
-                ? "Search Sales Order"
-                : page == "salesReturn"
-                ? "Search Sales Return"
-                : page == "reciept"
-                ? "Search Reciepts"
-                : "Search Quote"
+                  ? "Search Sales Order"
+                  : page == "salesReturn"
+                    ? "Search Sales Return"
+                    : page == "reciept"
+                      ? "Search Reciepts"
+                      : "Search Quote"
             }
           />
         </div>
