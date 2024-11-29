@@ -76,7 +76,6 @@ const initialSalesQuoteState: invoice = {
   salesInvoiceDate: getCurrentDate(),
   dueDate: getCurrentDate(),
 
-
   paymentMode: "",
   paymentTerms: "Due on Receipt",
   deliveryMethod: "",
@@ -413,7 +412,6 @@ const NewInvoice = ({ }: Props) => {
       console.error("Error fetching data:", error);
     }
   };
-
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
