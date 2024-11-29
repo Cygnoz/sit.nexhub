@@ -470,6 +470,8 @@ const DebitNoteTable = ({
     }
   }, [selectedBill]);   
 
+  console.log(items,"items")
+
   const filterItems = () => {
     return selectedBill?.items?.filter((item: any) =>
       item.itemName.toLowerCase().includes(searchValue.toLowerCase()) && 
@@ -536,49 +538,40 @@ console.log(selectedBill,"slectedBill")
       onSearchChange={setSearchValue}
       placeholder="Select Item"
     />
-    {selectedBill && Object.keys(selectedBill).length > 0 ? (
-      items.length > 0 ? (
-        filterItems()?.length > 0 ? (  // Check if filtered items exist
-          filterItems()?.map((item: any, idx: number) => (
-            <div
-              key={idx}
-              className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-              onClick={() => handleItemSelect(item, index)}
-            >
-              <div className="col-span-2 flex justify-center">
-                <img
-                  className="rounded-full h-10"
-                  src={item.itemImage}
-                  alt=""
-                />
-              </div>
-              <div className="col-span-10 flex">
-                <div className="text-start">
-                  <p className="font-bold text-sm text-black">
-                    {item.itemName}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Rate: {item.sellingPrice}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="text-center border-slate-400 border rounded-lg">
-            <p className="text-[red] text-sm py-4">Items Not Found!</p>
-          </div>
-        )
-      ) : (
-        <div className="text-center border-slate-400 border rounded-lg">
-          <p className="text-[darkRed] text-sm py-4 px-4">Please select a bill to view items !</p>
+  {selectedBill?.items?.length > 0 ? ( // Check if selectedBill has items
+  filterItems()?.length > 0 ? ( // Check if filtered items exist
+    filterItems()?.map((item: any, idx: number) => (
+      <div
+        key={idx}
+        className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+        onClick={() => handleItemSelect(item, index)}
+      >
+        <div className="col-span-2 flex justify-center">
+          <img
+            className="rounded-full h-10"
+            src={item.itemImage}
+            alt=""
+          />
         </div>
-      )
-    ) : (
-      <div className="text-center border-slate-400 border rounded-lg">
-        <p className="text-[darkRed] text-sm py-4 px-4">Please select a bill to view items !</p>
+        <div className="col-span-10 flex">
+          <div className="text-start">
+            <p className="font-bold text-sm text-black">{item.itemName}</p>
+            <p className="text-xs text-gray-500">Rate: {item.sellingPrice}</p>
+          </div>
+        </div>
       </div>
-    )}
+    ))
+  ) : (
+    <div className="text-center border-slate-400 border rounded-lg">
+      <p className="text-[red] text-sm py-4">Items Not Found!</p>
+    </div>
+  )
+) : (
+  <div className="text-center border-slate-400 border rounded-lg">
+    <p className="text-[darkRed] text-sm py-4 px-4">Please select a bill to view items!</p>
+  </div>
+)}
+
   </div>
 )}
 

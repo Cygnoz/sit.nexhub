@@ -52,7 +52,7 @@ function AddExpensePage({}: Props) {
     paidThrough: "",
     paidThroughId: "",
     expenseCategory: "",
-    expenseType: "",
+    expenseType: "Goods",
     hsnCode: "",
     sac: "",
     distance: "",
@@ -63,20 +63,15 @@ function AddExpensePage({}: Props) {
     gstin: "",
     sourceOfSupply: "",
     destinationOfSupply: "",
-    amount: 0,
     invoice: "",
     uploadFiles: "",
-    taxGroup: "",
     subTotal: 0,
     sgst: 0,
     cgst: 0,
     igst: 0,
     vat: 0,
     grandTotal: 0,
-    expenseAccount:"",
-    expenseAccountId: "",
-    amountIs:"",
-    note:"",
+    amountIs: "Tax Exclusive",
     expense: [
       {
         expenseAccountId: "",
@@ -90,33 +85,42 @@ function AddExpensePage({}: Props) {
         vat: 0,
         sgstAmount: 0,
         cgstAmount: 0,
+        igstAmount: 0,
         amount: 0,
       },
     ],
   });
 
+  const { request: AllAccounts } = useApi("get", 5001);
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: AddExpenses } = useApi("post", 5008);
   const { request: getAllExpenseCategory } = useApi("get", 5008);
-  const {request : getTax}=useApi("get",5004)
+  const { request: getTax } = useApi("get", 5004);
+  const { request: getCountries } = useApi("get", 5004);
+  const { request: getOrg } = useApi("get", 5004);
+  const [countryData, setcountryData] = useState<any | any>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [supplierData, setSupplierData] = useState<[]>([]);
-  const [category,setCategory]=useState<[]>([])
-  const [taxRate,setTaxRate]=useState<[] | any>([])
+  const [taxRate, setTaxRate] = useState<[] | any>([]);
+  const [selecteSupplier, setSelecetdSupplier] = useState<any | []>([]);
+  // const {organization} = useOrganization()
+  const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
+  const [organization, setOrganization] = useState<any | []>([]);
+  const [selectedTax, setSelectedTax] = useState("");
+    const [destinationList, setDestinationList] = useState<any | []>([]);
+  const [categories, setCategories] = useState<any | []>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [Itemize, setItemize] = useState<boolean>(true);
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
   );
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [accountData, setAccountData] = useState({
     paidThrough: [],
     liabilities: [],
   });
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const handleAddExpense = async () => {
-    console.log("expense", expenseData);
-
     try {
       const url = `${endponits.ADD_EXPENSES}`;
       const { response, error } = await AddExpenses(url, expenseData);
@@ -129,13 +133,12 @@ function AddExpensePage({}: Props) {
     } catch (error) {}
   };
 
-  console.log(category)
-
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
   };
+
   const handleFileChange = (
     e: ChangeEvent<HTMLInputElement>,
     key: "uploadFiles"
@@ -170,11 +173,13 @@ function AddExpensePage({}: Props) {
       console.error("Error fetching data:", error);
     }
   };
+
   const handleButtonClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
+
   const filterByDisplayName = (
     data: any[],
     displayNameKey: string,
@@ -189,9 +194,11 @@ function AddExpensePage({}: Props) {
     "supplierDisplayName",
     searchValue
   );
-  console.log(expenseData);
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
 
@@ -235,19 +242,17 @@ function AddExpensePage({}: Props) {
     }
   };
 
-  const { request: AllAccounts } = useApi("get", 5001);
-  console.log(expenseData, "expenseData");
-  useEffect(() => {
-    fetchAllAccounts();
-
-    const categoryUrl = `${endponits.GET_ALL_EXPENSE_CATEGORY}`;
-    const taxRateUrl=`${endponits.GET_ALL_TAX}`
-
-
-    fetchData(categoryUrl, setCategory, getAllExpenseCategory);
-    fetchData(taxRateUrl,setTaxRate, getTax );
-
-  }, []);
+  const fetchCountries = async () => {
+    try {
+      const url = `${endponits.GET_COUNTRY_DATA}`;
+      const { response, error } = await getCountries(url);
+      if (!error && response) {
+        setcountryData(response.data[0].countries);
+      }
+    } catch (error) {
+      console.log("Error in fetching Country", error);
+    }
+  };
 
   const fetchAllAccounts = async () => {
     try {
@@ -270,6 +275,186 @@ function AddExpensePage({}: Props) {
       console.error("Error fetching accounts:", error);
     }
   };
+
+  const findCountryStates = (countryName: string) =>
+    countryData.find(
+      (c: any) => c.name.toLowerCase() === countryName.toLowerCase()
+    )?.states || [];
+
+  const handlePlaceOfSupply = () => {
+    const countryName = organization?.organizationCountry;
+    const states = countryName ? findCountryStates(countryName) : [];
+
+    setPlaceOfSupplyList(states);
+    if (organization && selectedSection=="expense") {
+      setExpenseData((prev) => ({
+        ...prev,
+        destinationOfSupply: organization.state,
+      }));
+    }
+  };
+
+  const handleDestination = () => {
+    const countryName = selecteSupplier?.billingCountry;
+    const states = countryName ? findCountryStates(countryName) : [];
+
+    setDestinationList(states);
+    if (selecteSupplier && selectedSection==="expense") {
+      setExpenseData((prev) => ({
+        ...prev,
+        sourceOfSupply: selecteSupplier.billingState,
+        supplierDisplayName: selecteSupplier.supplierDisplayName,
+       
+      }));
+    }
+  };
+
+  const handleItemizeFlase = () => {
+    setItemize(false);
+   
+  };
+
+  const handleItemizeTrue = () => {
+    setItemize(true);
+  };
+
+  const handleExpenseChange = (
+    index: number,
+    updates: Partial<{
+      expenseAccountId: string;
+      expenseAccount: string;
+      note: string;
+      taxGroup: string;
+      taxExemption: string;
+      sgst: number;
+      cgst: number;
+      igst: number;
+      vat: number;
+      sgstAmount: number;
+      cgstAmount: number;
+      igstAmount: number;
+      amount: number;
+    }>
+  ) => {
+    setExpenseData((prevData) => {
+      const updatedExpenses = [...prevData.expense];
+      updatedExpenses[index] = {
+        ...updatedExpenses[index],
+        ...updates,
+      };
+
+      return {
+        ...prevData,
+        expense: updatedExpenses,
+      };
+    });
+  };
+
+  useEffect(() => {
+    setExpenseData((prevData) => ({
+      ...prevData,
+      expenseType: selectedSection === "expense" ? "Goods" : "",
+      amountIs: selectedSection === "expense" ? "Tax Exclusive" : "",
+      destinationOfSupply: selectedSection === "expense" ? organization.state : "",
+      expense: prevData.expense.map((expenseItem) => ({
+        ...expenseItem,
+        taxGroup: selectedSection === "mileage" ? "None" :"" ,
+      })),
+    }));
+  }, [selectedSection, organization.state]);
+  
+  
+
+  useEffect(() => {
+    if (expenseData?.expense?.length) {
+      const { sourceOfSupply, destinationOfSupply, amountIs } = expenseData;
+  
+      // Calculate updated expense data
+      const updatedExpenses = expenseData.expense.map((expenseItem) => {
+        const { amount, sgst, cgst, igst } = expenseItem;
+  
+        let sgstAmount = 0;
+        let cgstAmount = 0;
+        let igstAmount = 0;
+  
+        // Calculate SGST, CGST, or IGST
+        if (sourceOfSupply === destinationOfSupply) {
+          sgstAmount = (amount * sgst) / 100;
+          cgstAmount = (amount * cgst) / 100;
+        } else {
+          igstAmount = (amount * igst) / 100;
+        }
+  
+        return {
+          ...expenseItem,
+          sgstAmount,
+          cgstAmount,
+          igstAmount,
+        };
+      });
+  
+      // Calculate totals for all expenses
+      const subTotal = updatedExpenses.reduce((sum, item) => sum + item.amount, 0);
+      const totalTax = updatedExpenses.reduce(
+        (sum, item) => sum + item.sgstAmount + item.cgstAmount + item.igstAmount,
+        0
+      );
+      const grandTotal = amountIs === "Tax Exclusive" ? subTotal + totalTax : subTotal;
+  
+      // Aggregate SGST, CGST, IGST totals across all expenses
+      const totalSgst = updatedExpenses.reduce((sum, item) => sum + item.sgstAmount, 0);
+      const totalCgst = updatedExpenses.reduce((sum, item) => sum + item.cgstAmount, 0);
+      const totalIgst = updatedExpenses.reduce((sum, item) => sum + item.igstAmount, 0);
+  
+      // Update state
+      setExpenseData((prevData) => ({
+        ...prevData,
+        subTotal,
+        grandTotal,
+        sgst: totalSgst,
+        cgst: totalCgst,
+        igst: totalIgst,
+        expense: updatedExpenses,
+      }));
+    }
+  }, [
+    JSON.stringify(
+      expenseData?.expense?.map(({ amount, sgst, cgst, igst }) => ({
+        amount,
+        sgst,
+        cgst,
+        igst,
+      }))
+    ),
+    expenseData?.sourceOfSupply,
+    expenseData?.destinationOfSupply,
+    expenseData?.amountIs,
+  ]);
+  
+  
+  
+  
+
+  console.log(expenseData, "expenseData");
+
+  useEffect(() => {
+    fetchAllAccounts();
+    fetchCountries();
+    const categoryUrl = `${endponits.GET_ALL_EXPENSE_CATEGORY}`;
+    const taxRateUrl = `${endponits.GET_ALL_TAX}`;
+    const organizationURL = `${endponits.GET_ONE_ORGANIZATION}`;
+
+    fetchData(organizationURL, setOrganization, getOrg);
+    fetchData(categoryUrl, setCategories, getAllExpenseCategory);
+    fetchData(taxRateUrl, setTaxRate, getTax);
+  }, []);
+
+  useEffect(() => {
+    handlePlaceOfSupply();
+    handleDestination();
+  }, [expenseData.supplierId, organization]);
+
+  console.log(taxRate.gstTaxRate, "taxRate");
 
   return (
     <>
@@ -348,23 +533,28 @@ function AddExpensePage({}: Props) {
                     <div className="relative w-full">
                       <select
                         name="expenseAccount"
-                        value={expenseData.expenseAccount}
+                        value={expenseData?.expense[0]?.expenseAccount || ""}
                         onChange={(e) => {
-                          const selectedValue = e.target.value; // Extract the selected value
-                          // Find the selected account's object
+                          const selectedValue = e.target.value;
                           const selectedAccount: any =
                             accountData?.liabilities?.find(
                               (account: any) =>
                                 account.accountName === selectedValue
                             );
 
-                          // Update both paidThrough and paidThroughId in expenseData
+  
+
                           setExpenseData({
                             ...expenseData,
-                            expenseAccount: selectedValue,
-                            expenseAccountId: selectedAccount
-                              ? selectedAccount._id
-                              : "", // Safely handle undefined
+                            expense: [
+                              {
+                                ...expenseData.expense[0],
+                                expenseAccount: selectedValue,
+                                expenseAccountId: selectedAccount
+                                  ? selectedAccount._id
+                                  : "",
+                              },
+                            ],
                           });
                         }}
                         className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
@@ -386,7 +576,7 @@ function AddExpensePage({}: Props) {
                     </div>
                     <button
                       className="flex items-center  gap-2"
-                      onClick={() => setItemize(false)}
+                      onClick={handleItemizeFlase}
                     >
                       <List />{" "}
                       <p className="font-semibold text-[#680000]">Itemize</p>
@@ -401,11 +591,11 @@ function AddExpensePage({}: Props) {
                       <input
                         type="number"
                         name="amount"
-                        value={expenseData.amount ? expenseData.amount : ""}
+                        value={expenseData.expense[0]?.amount || ""}
                         onChange={(e) => {
                           const value = e.target.value;
                           if (value === "" || !isNaN(Number(value))) {
-                            handleChange(e);
+                            handleExpenseChange(0, { amount: Number(value) });
                           }
                         }}
                         className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -425,21 +615,18 @@ function AddExpensePage({}: Props) {
                     name="paidThrough"
                     value={expenseData.paidThrough}
                     onChange={(e) => {
-                      const selectedValue = e.target.value; // Extract the selected value
-                      // Find the selected account's object
+                      const selectedValue = e.target.value;
                       const selectedAccount: any =
                         accountData?.paidThrough?.find(
                           (account: any) =>
                             account.accountName === selectedValue
                         );
-
-                      // Update both paidThrough and paidThroughId in expenseData
                       setExpenseData({
                         ...expenseData,
                         paidThrough: selectedValue,
                         paidThroughId: selectedAccount
                           ? selectedAccount._id
-                          : "", // Safely handle undefined
+                          : "",
                       });
                     }}
                     className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
@@ -468,7 +655,6 @@ function AddExpensePage({}: Props) {
                 <div
                   className="relative w-full"
                   onClick={(e) => {
-                    // Prevent the dropdown from opening when clicking the clear button
                     if (!expenseData.expenseCategory) {
                       e.stopPropagation();
                       toggleDropdown("Category");
@@ -503,7 +689,6 @@ function AddExpensePage({}: Props) {
                       <CehvronDown color="gray" />
                     </div>
                   )}
-                  {/* Dropdown menu */}
                   {openDropdownIndex === "Category" && (
                     <div
                       ref={dropdownRef}
@@ -515,27 +700,24 @@ function AddExpensePage({}: Props) {
                         onSearchChange={setSearchValue}
                         placeholder="Select Category"
                       />
-                      {category.length > 0 ? (
-                        category?.map((category: any) => (
+                      {categories.length > 0 ? (
+                        categories?.map((category: any) => (
                           <div
                             key={category._id}
                             className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
                             onClick={() => {
                               setExpenseData({
                                 ...expenseData,
-                                expenseCategory:
-                                  category.expenseCategory,
+                                expenseCategory: category.expenseCategory,
                               });
-                              setOpenDropdownIndex(null); // Close dropdown after selection
+                              setOpenDropdownIndex(null); 
                             }}
                           >
-                           
                             <div className="col-span-10 flex cursor-pointer">
                               <div>
                                 <p className="font-bold text-sm">
                                   {category.expenseCategory}
                                 </p>
-                              
                               </div>
                             </div>
                           </div>
@@ -543,11 +725,10 @@ function AddExpensePage({}: Props) {
                       ) : (
                         <div className="text-center border-slate-400 border rounded-lg">
                           <p className="text-[red] text-sm py-4">
-                            Supplier Not Found!
+                            Categories Not Found!
                           </p>
                         </div>
                       )}
-                     
                     </div>
                   )}
                 </div>
@@ -569,33 +750,33 @@ function AddExpensePage({}: Props) {
                           onClick={() => {
                             setExpenseData((prev) => ({
                               ...prev,
-                              expenseType: "goods", // Use consistent property name
+                              expenseType: "Goods", // Use consistent property name
                             }));
                           }}
                         >
                           <input
-                            id="goods"
+                            id="Goods"
                             type="radio"
-                            name="itemType"
-                            value="goods"
+                            name="expenseType"
+                            value="Goods"
                             className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                              expenseData.expenseType === "goods"
+                              expenseData.expenseType === "Goods"
                                 ? "border-8 border-[#97998E]"
                                 : "border-1 border-[#97998E]"
                             }`}
-                            checked={expenseData.expenseType === "goods"}
+                            checked={expenseData.expenseType === "Goods"}
                             readOnly // Avoid unnecessary onChange handling
                           />
                           <div
                             className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              expenseData.expenseType === "goods"
+                              expenseData.expenseType === "Goods"
                                 ? "bg-neutral-50"
                                 : "bg-transparent"
                             }`}
                           />
                         </div>
                         <label
-                          htmlFor="goods"
+                          htmlFor="Goods"
                           className="text-start font-medium mt-1"
                         >
                           Goods
@@ -614,28 +795,28 @@ function AddExpensePage({}: Props) {
                           }}
                         >
                           <input
-                            id="service"
+                            id="Service"
                             type="radio"
-                            name="itemType"
-                            value="service"
+                            name="expenseType"
+                            value="Service"
                             className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                              expenseData.expenseType === "service"
+                              expenseData.expenseType === "Service"
                                 ? "border-8 border-[#97998E]"
                                 : "border-1 border-[#97998E]"
                             }`}
-                            checked={expenseData.expenseType === "service"}
+                            checked={expenseData.expenseType === "Service"}
                             readOnly // Avoid unnecessary onChange handling
                           />
                           <div
                             className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              expenseData.expenseType === "service"
+                              expenseData.expenseType === "Service"
                                 ? "bg-neutral-50"
                                 : "bg-transparent"
                             }`}
                           />
                         </div>
                         <label
-                          htmlFor="service"
+                          htmlFor="Service"
                           className="text-start font-medium mt-1"
                         >
                           Service
@@ -644,21 +825,39 @@ function AddExpensePage({}: Props) {
                     </div>
                   </div>
 
-                  <div className="col-span-1 space-y-2">
-                    <label className="text-sm mb-1 text-labelColor">
-                      HSN Code
-                    </label>
-                    <div className="relative w-full">
-                      <input
-                        type="text"
-                        name="hsnCode"
-                        value={expenseData.hsnCode}
-                        onChange={handleChange}
-                        className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        placeholder="Select an employee"
-                      />
+                  {expenseData.expenseType === "Goods" ? (
+                    <div className="col-span-1 space-y-2">
+                      <label className="text-sm mb-1 text-labelColor">
+                        HSN Code
+                      </label>
+                      <div className="relative w-full">
+                        <input
+                          type="text"
+                          name="hsnCode"
+                          value={expenseData.hsnCode}
+                          onChange={handleChange}
+                          className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                          placeholder="Enter HSN code"
+                        />
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="col-span-1 space-y-2">
+                      <label className="text-sm mb-1 text-labelColor">
+                        SAC
+                      </label>
+                      <div className="relative w-full">
+                        <input
+                          type="text"
+                          name="sac"
+                          value={expenseData.sac}
+                          onChange={handleChange}
+                          className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                          placeholder="Enter SAC"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </>
               )}
 
@@ -687,7 +886,8 @@ function AddExpensePage({}: Props) {
                     <div className="cursor-pointer absolute inset-y-0 right-0.5 -mt-1 flex items-center px-2 text-gray-700">
                       <span
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevent dropdown toggle when clicking clear button
+                          e.stopPropagation();
+                          // Prevent dropdown toggle when clicking clear button
                           setExpenseData({
                             ...expenseData,
                             supplierDisplayName: "",
@@ -725,9 +925,10 @@ function AddExpensePage({}: Props) {
                                 ...expenseData,
                                 supplierDisplayName:
                                   supplier?.supplierDisplayName,
-                                  supplierId:supplier?._id
+                                supplierId: supplier?._id,
                               });
-                              setOpenDropdownIndex(null); 
+                              setSelecetdSupplier(supplier);
+                              setOpenDropdownIndex(null);
                             }}
                           >
                             <div className="col-span-2 flex items-center justify-center">
@@ -771,18 +972,27 @@ function AddExpensePage({}: Props) {
                   <select
                     name="gstTreatment"
                     value={expenseData.gstTreatment}
-                  onChange={()=>handleChange}
+                    onChange={handleChange}
                     className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                   >
                     <option value="">Select an Account</option>
-                    {accountData?.paidThrough &&
-                      accountData.paidThrough?.map(
-                        (account: any, index: number) => (
-                          <option key={index} value={account.accountName}>
-                            {account.accountName}
-                          </option>
-                        )
-                      )}
+                    <option value="Registered Business - Regular">
+                      Registered Business - Regular
+                    </option>
+                    <option value="Registered Business - Composition">
+                      Registered Business - Composition
+                    </option>
+                    <option value="Unregistered Business">
+                      Unregistered Business
+                    </option>
+                    <option value="Consumer">Consumer</option>
+                    <option value="Overseas">Overseas</option>
+                    <option value="Special Economic Zone">
+                      Special Economic Zone
+                    </option>
+                    <option value="Deemed Export">Deemed Export</option>
+                    <option value="Tax Deductor">Tax Deductor</option>
+                    <option value="SEZ Developer">SEZ Developer</option>
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <CehvronDown color="gray" />
@@ -801,7 +1011,7 @@ function AddExpensePage({}: Props) {
                     value={expenseData.gstin}
                     onChange={handleChange}
                     className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    placeholder="Select an employee"
+                    placeholder="Enter GSTIN"
                   />
                 </div>
               </div>
@@ -811,14 +1021,23 @@ function AddExpensePage({}: Props) {
                   Source of Supply
                 </label>
                 <div className="relative w-full">
-                  <input
-                    type="text"
+                  <select
+                    onChange={handleChange}
                     name="sourceOfSupply"
                     value={expenseData.sourceOfSupply}
-                    onChange={handleChange}
-                    className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    placeholder="Select an employee"
-                  />
+                    className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  >
+                    <option value="">Select Source Of Supply</option>
+                    {destinationList &&
+                      destinationList.map((item: any, index: number) => (
+                        <option key={index} value={item} className="text-gray">
+                          {item}
+                        </option>
+                      ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
+                  </div>
                 </div>
               </div>
 
@@ -827,50 +1046,73 @@ function AddExpensePage({}: Props) {
                   Destination of Supply
                 </label>
                 <div className="relative w-full">
-                  <input
-                    type="text"
+                  <select
+                    onChange={handleChange}
                     name="destinationOfSupply"
                     value={expenseData.destinationOfSupply}
-                    onChange={handleChange}
-                    className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    placeholder="Select an employee"
-                  />
+                    className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  >
+                    <option value="">Select Destination Of Supply</option>
+                    {placeOfSupplyList.length > 0 &&
+                      placeOfSupplyList.map((item: any, index: number) => (
+                        <option key={index} value={item} className="text-gray">
+                          {item}
+                        </option>
+                      ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
+                  </div>
                 </div>
               </div>
 
               {Itemize && (
-                <div className="col-span-1 space-y-2">
-                  <label className="text-sm mb-1 text-labelColor">Tax</label>
-                  <div className="relative w-full">
-                    <select
-                      name="taxGroup"
-                      value={expenseData.taxGroup}
-                      onChange={(e) => {
-                        const selectedValue = e.target.value;
-                        
-                        setExpenseData({
-                          ...expenseData,
-                          taxGroup: selectedValue,
-                        });
-                      }}
-                      className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
-                    >
-                      <option value="">Select an Account</option>
-                      {taxRate?.gstTaxRate &&
-                        taxRate?.gstTaxRate ?.map(
-                          (account: any, index: number) => (
-                            <option key={index} value={account.taxName}>
-                              {account.taxName}
-                            </option>
-                          )
-                        )}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
-                  </div>
-                </div>
-              )}
+  <div className="col-span-1 space-y-2">
+    <label className="text-sm mb-1 text-labelColor">Tax</label>
+    <div className="relative w-full">
+    <select
+  name="taxGroup"
+  value={JSON.stringify(selectedTax) || ""} 
+  onChange={(e) => {
+    const selectedValue = JSON.parse(e.target.value); 
+    console.log(selectedValue, "selected value");
+
+    setExpenseData((prevData) => {
+      const updatedExpenses = [...prevData.expense];
+      updatedExpenses[0] = {
+        ...updatedExpenses[0],
+        taxGroup: selectedValue.taxName, 
+        cgst: selectedValue.cgst,
+        sgst: selectedValue.sgst,
+        igst: selectedValue.igst,
+      };
+
+      return {
+        ...prevData,
+        expense: updatedExpenses,
+      };
+    });
+
+    setSelectedTax(selectedValue); 
+  }}
+  className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+>
+  <option value="">Select Tax Rate</option>
+  {taxRate?.gstTaxRate?.map((account: any, index: number) => (
+    <option key={index} value={JSON.stringify(account)}>
+      {account?.taxName}
+    </option>
+  ))}
+</select>
+
+
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+        <CehvronDown color="gray" />
+      </div>
+    </div>
+  </div>
+)}
+
 
               <div className="col-span-1 space-y-2">
                 <label className="text-sm mb-1 text-labelColor">
@@ -878,7 +1120,7 @@ function AddExpensePage({}: Props) {
                 </label>
                 <div className="relative w-full">
                   <input
-                    type="number"
+                    type="text"
                     name="invoice"
                     value={expenseData.invoice}
                     onChange={handleChange}
@@ -897,101 +1139,110 @@ function AddExpensePage({}: Props) {
                       <input
                         type="text"
                         name="note"
-                        value={expenseData.note}
-                        onChange={handleChange}
-                        className="appearance-none w-full  h-16 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                        value={expenseData.expense[0]?.note || ""}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          handleExpenseChange(0, { note: value });
+                        }}
+                        className="appearance-none w-full h-16 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                         placeholder="Enter Notes"
                       />
                     </div>
                   </div>
                 </>
               )}
-         <div className="mb-5">
-  <label className="block text-sm text-labelColor" htmlFor="amountIs">
-    Amount Is
-  </label>
-  <div className="flex items-center space-x-4 text-textColor text-sm">
-    {/* Tax Inclusive Option */}
-    <div className="flex gap-2 justify-center items-center">
-      <div
-        className="grid place-items-center mt-1"
-        onClick={() => {
-          setExpenseData((prev) => ({
-            ...prev,
-            amountIs: "taxInclusive", // Correct property name for taxInclusive
-          }));
-        }}
-      >
-        <input
-          id="taxInclusive"
-          type="radio"
-          name="amountIs" // Corrected name
-          value="taxInclusive"
-          className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-            expenseData.amountIs === "taxInclusive"
-              ? "border-8 border-[#97998E]"
-              : "border-1 border-[#97998E]"
-          }`}
-          checked={expenseData.amountIs === "taxInclusive"} // Correct checked logic
-          readOnly // Prevent unnecessary onChange handling
-        />
-        <div
-          className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-            expenseData.amountIs === "taxInclusive"
-              ? "bg-neutral-50"
-              : "bg-transparent"
-          }`}
-        />
-      </div>
-      <label htmlFor="taxInclusive" className="text-start font-medium mt-1">
-        Tax Inclusive
-      </label>
-    </div>
+              <div className="">
+                <label
+                  className="block text-sm text-labelColor"
+                  htmlFor="amountIs"
+                >
+                  Amount Is
+                </label>
+                <div className="flex items-center space-x-4 text-textColor text-sm">
+                  <div className="flex gap-2 justify-center items-center">
+                    <div
+                      className="grid place-items-center mt-1"
+                      onClick={() => {
+                        setExpenseData((prev) => ({
+                          ...prev,
+                          amountIs: "Tax Inclusive", // Correct property name for taxInclusive
+                        }));
+                      }}
+                    >
+                      <input
+                        id="Tax Inclusive"
+                        type="radio"
+                        name="amountIs" // Corrected name
+                        value="Tax Inclusive"
+                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                          expenseData.amountIs === "Tax Inclusive"
+                            ? "border-8 border-[#97998E]"
+                            : "border-1 border-[#97998E]"
+                        }`}
+                        checked={expenseData.amountIs === "Tax Inclusive"}
+                        readOnly
+                      />
+                      <div
+                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                          expenseData.amountIs === "Tax Inclusive"
+                            ? "bg-neutral-50"
+                            : "bg-transparent"
+                        }`}
+                      />
+                    </div>
+                    <label
+                      htmlFor="Tax Inclusive"
+                      className="text-start font-medium mt-1"
+                    >
+                      Tax Inclusive
+                    </label>
+                  </div>
 
-    {/* Tax Exclusive Option */}
-    <div className="flex gap-2 justify-center items-center">
-      <div
-        className="grid place-items-center mt-1"
-        onClick={() => {
-          setExpenseData((prev) => ({
-            ...prev,
-            amountIs: "taxExclusive", // Correct property name for taxExclusive
-          }));
-        }}
-      >
-        <input
-          id="taxExclusive"
-          type="radio"
-          name="amountIs" // Corrected name (should match the previous radio group)
-          value="taxExclusive"
-          className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-            expenseData.amountIs === "taxExclusive"
-              ? "border-8 border-[#97998E]"
-              : "border-1 border-[#97998E]"
-          }`}
-          checked={expenseData.amountIs === "taxExclusive"} // Correct checked logic
-          readOnly // Prevent unnecessary onChange handling
-        />
-        <div
-          className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-            expenseData.amountIs === "taxExclusive"
-              ? "bg-neutral-50"
-              : "bg-transparent"
-          }`}
-        />
-      </div>
-      <label htmlFor="taxExclusive" className="text-start font-medium mt-1">
-        Tax Exclusive
-      </label>
-    </div>
-  </div>
-</div>
-
+                  <div className="flex gap-2 justify-center items-center">
+                    <div
+                      className="grid place-items-center mt-1"
+                      onClick={() => {
+                        setExpenseData((prev) => ({
+                          ...prev,
+                          amountIs: "Tax Exclusive",
+                        }));
+                      }}
+                    >
+                      <input
+                        id="Tax Exclusive"
+                        type="radio"
+                        name="amountIs"
+                        value="Tax Exclusive"
+                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                          expenseData.amountIs === "Tax Exclusive"
+                            ? "border-8 border-[#97998E]"
+                            : "border-1 border-[#97998E]"
+                        }`}
+                        checked={expenseData.amountIs === "Tax Exclusive"} // Correct checked logic
+                        readOnly // Prevent unnecessary onChange handling
+                      />
+                      <div
+                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                          expenseData.amountIs === "Tax Exclusive"
+                            ? "bg-neutral-50"
+                            : "bg-transparent"
+                        }`}
+                      />
+                    </div>
+                    <label
+                      htmlFor="Tax Exclusive"
+                      className="text-start font-medium mt-1"
+                    >
+                      Tax Exclusive
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
             {!Itemize && (
               <button
-                className="flex items-center  gap-2"
-                onClick={() => setItemize(true)}
+                className="flex items-center  gap-2 mt-5"
+                onClick={handleItemizeTrue}
               >
                 <CheveronLeftIcon color="#680000" />{" "}
                 <p className="text-sm text-[#680000]">
@@ -1004,6 +1255,7 @@ function AddExpensePage({}: Props) {
               <AddExpenseTable
                 liabilities={accountData.liabilities}
                 expenseData={expenseData}
+                taxRate={taxRate}
                 setExpenseData={setExpenseData}
               />
             )}
@@ -1024,7 +1276,7 @@ function AddExpensePage({}: Props) {
                 />
               </div>
             </div>
-            <div className="col-span-1 space-y-2">
+            {/* <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">Employee</label>
               <div className="relative w-full">
                 <input
@@ -1036,49 +1288,58 @@ function AddExpensePage({}: Props) {
                   placeholder="Enter Distance"
                 />
               </div>
-            </div>
-            <div className="col-span-1 space-y-2">
-              <label className="text-sm mb-1 text-labelColor">
-                Expense Account
-              </label>
-              <div className="relative w-full">
-                <select
-                  className="text-zinc-400"
-                  name="expenseAccount"
-                  value={expenseData.expense[0].expenseAccount}
-                  onChange={(e) => {
-                    const selectedValue = e.target.value;
-                    // Find the selected account's ID
-                    const selectedAccount: any = accountData.liabilities?.find(
-                      (account: any) => account.accountName === selectedValue
-                    );
-                    // Update expenseAccount and expenseAccountId
-                    setExpenseData((prevData) => {
-                      const updatedExpense = [...prevData.expense]; // Clone the expense array
-                      updatedExpense[0] = {
-                        ...updatedExpense[0], // Retain other properties
-                        expenseAccount: selectedValue, // Set selected expense account
-                        expenseAccountId: selectedAccount?._id || "", // Set selected account's ID
-                      };
-                      return {
-                        ...prevData,
-                        expense: updatedExpense, // Update the expense array
-                      };
-                    });
-                  }}
-                >
-                  <option value="">Select an Account</option>
-                  {accountData.liabilities?.map((account: any) => (
-                    <option key={account._id} value={account.accountName}>
-                      {account.accountName}
-                    </option>
-                  ))}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
-              </div>
-            </div>
+            </div> */}
+              <div className="col-span-1 space-y-2">
+                    <label className="text-sm mb-1 text-labelColor">
+                      Expense Account
+                    </label>
+                    <div className="relative w-full">
+                      <select
+                        name="expenseAccount"
+                        value={expenseData?.expense[0]?.expenseAccount || ""}
+                        onChange={(e) => {
+                          const selectedValue = e.target.value;
+                          const selectedAccount: any =
+                            accountData?.liabilities?.find(
+                              (account: any) =>
+                                account.accountName === selectedValue
+                            );
+
+  
+
+                          setExpenseData({
+                            ...expenseData,
+                            expense: [
+                              {
+                                ...expenseData.expense[0],
+                                expenseAccount: selectedValue,
+                                expenseAccountId: selectedAccount
+                                  ? selectedAccount._id
+                                  : "",
+                              },
+                            ],
+                          });
+                        }}
+                        className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                      >
+                        <option value="">Select an Account</option>
+                        {accountData?.liabilities &&
+                          accountData.liabilities.map(
+                            (account: any, index: number) => (
+                              <option key={index} value={account.accountName}>
+                                {account.accountName}
+                              </option>
+                            )
+                          )}
+                      </select>
+
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <CehvronDown color="gray" />
+                      </div>
+                    </div>
+                   
+                  </div>
+
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">
                 Paid Through
@@ -1167,7 +1428,6 @@ function AddExpensePage({}: Props) {
               <div
                 className="relative w-full"
                 onClick={(e) => {
-                  // Prevent the dropdown from opening when clicking the clear button
                   if (!expenseData.supplierDisplayName) {
                     e.stopPropagation();
                     toggleDropdown("supplier");
@@ -1182,7 +1442,6 @@ function AddExpensePage({}: Props) {
                       : "Select Supplier"}
                   </p>
                 </div>
-                {/* Clear button for selected vendor */}
                 {expenseData.supplierDisplayName ? (
                   <div className="cursor-pointer absolute inset-y-0 right-0.5 -mt-1 flex items-center px-2 text-gray-700">
                     <span
@@ -1224,8 +1483,9 @@ function AddExpensePage({}: Props) {
                             setExpenseData({
                               ...expenseData,
                               supplierDisplayName: supplier.supplierDisplayName,
+                              supplierId:supplier._id
                             });
-                            setOpenDropdownIndex(null); // Close dropdown after selection
+                            setOpenDropdownIndex(null); 
                           }}
                         >
                           <div className="col-span-2 flex items-center justify-center">
@@ -1275,19 +1535,24 @@ function AddExpensePage({}: Props) {
               </div>
             </div>
 
-            <div className="col-span-2 space-y-2">
-              <label className="text-sm mb-1 text-labelColor">Notes</label>
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  name="note"
-                  value={expenseData.expense[0].note}
-                  onChange={handleChange}
-                  className="appearance-none w-full h-16 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
-                  placeholder="Enter Notes"
-                />
-              </div>
-            </div>
+            <div className="col-span-1 space-y-2">
+                    <label className="text-sm mb-1 text-labelColor">
+                      Notes
+                    </label>
+                    <div className="relative w-full">
+                      <input
+                        type="text"
+                        name="note"
+                        value={expenseData.expense[0]?.note || ""}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          handleExpenseChange(0, { note: value });
+                        }}
+                        className="appearance-none w-full h-16 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                        placeholder="Enter Notes"
+                      />
+                    </div>
+                  </div>
             <br></br>
           </div>
         )}

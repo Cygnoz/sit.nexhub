@@ -512,6 +512,7 @@ const NewOrderTable = ({
       setRows(purchaseOrderState.items);
     }
   }, [purchaseOrderState.orderNumber]);
+  
   useEffect(() => {
     setRows((prevData: any) => {
       if (Array.isArray(prevData)) {

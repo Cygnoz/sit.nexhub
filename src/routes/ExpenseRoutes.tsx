@@ -10,7 +10,7 @@ const ExpenseView = lazy(() => import("../features/expense/ExpenseHome/ExpenseVi
 const ExpenseRoutes: RouteObject[] = [
   { path: "/expense", element: <Expense /> },
   { path: "/expense/home", element: <ExpenseHome /> },
-  { path: "/expense/view", element: <ExpenseView /> },
+  { path: "/expense/view/:id", element: <ExpenseView /> },
   {path:"/expense/add-expense",element:<AddExpensePage/>},
   
   
