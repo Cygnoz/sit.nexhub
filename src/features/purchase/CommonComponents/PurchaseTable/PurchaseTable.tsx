@@ -40,13 +40,17 @@ const PurchaseTable: React.FC<TableProps> = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
   const rowsPerPage = 10;
 
-  const filteredData = data?.filter((item) => {
-    return searchableFields
-      .map((field) => item[field]?.toString().trim().toLowerCase())
-      .some((fieldValue) =>
-        fieldValue?.includes(searchValue.toLowerCase().trim())
-      );
-  });
+  const filteredData = Array.isArray(data)
+  ? data.filter((item) => {
+      return searchableFields
+        .map((field) => item[field]?.toString().trim().toLowerCase())
+        .some((fieldValue) =>
+          fieldValue?.includes(searchValue.toLowerCase().trim())
+        );
+    })
+  : [];
+  
+
 
   const totalPages = Math.ceil(filteredData?.length / rowsPerPage);
   const paginatedData = filteredData?.slice(
@@ -80,7 +84,7 @@ const PurchaseTable: React.FC<TableProps> = ({
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
               <th className="py-3 px-4 border-b border-tableBorder">SL No.</th>
-              {columns.map(
+              {columns?.map(
                 (col) =>
                   col.visible && (
                     <th

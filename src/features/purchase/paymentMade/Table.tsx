@@ -28,7 +28,7 @@ const PaymentMadeTable = () => {
       const { response, error } = await getBills(url);
 
       if (!error && response) {
-        setAllBill(response.data);
+        setAllBill(response.data.allPayments);
         setLoading({ ...loading, skeleton: false });
       } else {
         console.error(error);

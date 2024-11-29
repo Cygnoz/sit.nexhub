@@ -55,20 +55,20 @@ const NewOrderTable = ({
     {
       itemId: "",
       itemName: "",
-      itemQuantity: "",
-      itemCostPrice: "",
-      itemTax: "",
-      itemDiscount: "",
+      itemQuantity: 0,
+      itemCostPrice: 0,
+      itemTax: 0,
+      itemDiscount: 0,
       itemDiscountType: "percentage",
-      itemAmount: "",
-      itemSgst: "",
-      itemCgst: "",
-      itemIgst: "",
-      itemVat: "",
-      itemSgstAmount: "",
-      itemCgstAmount: "",
-      itemIgstAmount: "",
-      itemVatAmount: "",
+      itemAmount: 0,
+      itemSgst: 0,
+      itemCgst: 0,
+      itemIgst: 0,
+      itemVat: 0,
+      itemSgstAmount: 0,
+      itemCgstAmount: 0,
+      itemIgstAmount: 0,
+      itemVatAmount: 0,
       taxPreference: "",
     },
   ]);
@@ -94,20 +94,20 @@ const NewOrderTable = ({
     const newRow: Row = {
       itemId: "",
       itemName: "",
-      itemQuantity: "",
-      itemCostPrice: "",
-      itemTax: "",
-      itemDiscount: "",
+      itemQuantity: 0,
+      itemCostPrice: 0,
+      itemTax: 0,
+      itemDiscount: 0,
       itemDiscountType: "percentage",
-      itemAmount: "",
-      itemSgst: "",
-      itemCgst: "",
-      itemIgst: "",
-      itemVat: "",
-      itemSgstAmount: "",
-      itemCgstAmount: "",
-      itemIgstAmount: "",
-      itemVatAmount: "",
+      itemAmount: 0,
+      itemSgst: 0,
+      itemCgst: 0,
+      itemIgst: 0,
+      itemVat: 0,
+      itemSgstAmount: 0,
+      itemCgstAmount: 0,
+      itemIgstAmount: 0,
+      itemVatAmount: 0,
       taxPreference: "",
     };
     const updatedRows = [...rows, newRow];
@@ -271,11 +271,11 @@ const NewOrderTable = ({
     newRows[index].itemIgstAmount = igstAmount;
     if (isInterState) {
       newRows[index].itemTax = igstAmount;
-      newRows[index].itemCgstAmount = "";
-      newRows[index].itemSgstAmount = "";
+      newRows[index].itemCgstAmount = 0;
+      newRows[index].itemSgstAmount = 0;
     } else {
       newRows[index].itemTax = cgstAmount + sgstAmount;
-      newRows[index].itemIgstAmount = "";
+      newRows[index].itemIgstAmount = 0;
     }
 
     setRows(newRows);
@@ -322,20 +322,20 @@ const NewOrderTable = ({
       const defaultRow = {
         itemId: "",
         itemName: "",
-        itemQuantity: "",
-        itemCostPrice: "",
-        itemTax: "",
-        itemDiscount: "",
+        itemQuantity: 0,
+        itemCostPrice: 0,
+        itemTax: 0,
+        itemDiscount: 0,
         itemDiscountType: "percentage",
-        itemAmount: "",
-        itemSgst: "",
-        itemCgst: "",
-        itemIgst: "",
-        itemVat: "",
-        itemSgstAmount: "",
-        itemCgstAmount: "",
-        itemIgstAmount: "",
-        itemVatAmount: "",
+        itemAmount: 0,
+        itemSgst: 0,
+        itemCgst: 0,
+        itemIgst: 0,
+        itemVat: 0,
+        itemSgstAmount: 0,
+        itemCgstAmount: 0,
+        itemIgstAmount: 0,
+        itemVatAmount: 0,
         taxPreference: "",
       };
 
@@ -374,7 +374,7 @@ const NewOrderTable = ({
   // Function to calculate total item quantity
   const calculateTotalQuantity = () => {
     return rows.reduce((total, row) => {
-      const quantity = parseFloat(row.itemQuantity?.toString() || "0");
+      const quantity = parseFloat((row.itemQuantity).toString() || "0");
       return total + quantity;
     }, 0);
   };
@@ -447,9 +447,9 @@ const NewOrderTable = ({
       return {
         ...row,
         itemAmount: taxDetails.itemAmount,
-        itemCgstAmount: taxDetails.cgstAmount > 0 ? taxDetails.cgstAmount : "",
-        itemSgstAmount: taxDetails.sgstAmount > 0 ? taxDetails.sgstAmount : "",
-        itemIgstAmount: taxDetails.igstAmount > 0 ? taxDetails.igstAmount : "",
+        itemCgstAmount: taxDetails.cgstAmount > 0 ? taxDetails.cgstAmount : 0,
+        itemSgstAmount: taxDetails.sgstAmount > 0 ? taxDetails.sgstAmount : 0,
+        itemIgstAmount: taxDetails.igstAmount > 0 ? taxDetails.igstAmount : 0,
       };
     });
 
@@ -472,7 +472,7 @@ const NewOrderTable = ({
     const updatedRows = rows?.map((row) => ({
       ...row,
       itemDiscountType: "",
-      itemDiscount: "",
+      itemDiscount: 0,
     }));
 
     setRows(updatedRows);
@@ -498,9 +498,9 @@ const NewOrderTable = ({
     setPurchaseOrderState?.((prevData: PurchaseOrder) => ({
       ...prevData,
       totalItem: totalQuantity,
-      sgst: isInterState ? "" : totalSGST,
-      cgst: isInterState ? "" : totalCGST,
-      igst: isInterState ? totalIGST : "",
+      sgst: isInterState ? 0 : totalSGST,
+      cgst: isInterState ? 0 : totalCGST,
+      igst: isInterState ? totalIGST : 0,
       subTotal: totalSellingPrice,
       itemTotalDiscount: totalDiscount,
       totalTaxAmount: isInterState ? totalIGST : totalSGST + totalCGST,
@@ -519,7 +519,7 @@ const NewOrderTable = ({
         return prevData?.map((item) => ({
           ...item,
           itemDiscountType: "percentage",
-          itemDiscount: "",
+          itemDiscount: 0,
         }));
       }
       return [];

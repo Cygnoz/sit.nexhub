@@ -7,12 +7,15 @@ import CircleDollerSign from "../../../assets/icons/CircleDollerSign";
 import { useEffect, useState } from "react";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 type Props = {};
 
 const ExpenseView = ({}: Props) => {
   const [expense, setExpense] = useState<any | []>([]);
+  const [expensedata,setExpenseData]=useState<any |[]>([])
   const { request: getExpense } = useApi("get", 5008);
+  const {organization}=useOrganization()
   const { id } = useParams();
 
   const historyData = [
@@ -43,6 +46,7 @@ const ExpenseView = ({}: Props) => {
 
       if (!error && response) {
         setExpense(response.data);
+        setExpenseData(response.data.expense)
         console.log(response.data, "response");
       } else {
       }
@@ -50,6 +54,8 @@ const ExpenseView = ({}: Props) => {
       console.log("Error in fetching expense", error);
     }
   };
+
+  console.log(expensedata,"ksjhdguyftgyhjjhgfdxxcfgvbh")
 
   useEffect(() => {
     getExpenses();
@@ -72,7 +78,7 @@ const ExpenseView = ({}: Props) => {
       <div className="flex border-b py-3 border-slate-400">
         <div className="text-textColor text-lg font-semibold ">
           <p>
-            {/* {expense?.expense[0]?.expenseAccount ? expense?.expense[0]?.expenseAccount:  " "}<span className="font-light px-3"> |</span>{" "} */}
+            {expensedata[0]?.expenseAccount}<span className="font-light px-3"> |</span>{" "}
             Materials
           </p>
         </div>
@@ -99,24 +105,20 @@ const ExpenseView = ({}: Props) => {
               <span className="font-semibold ">| Expense Amount </span>{" "}
             </p>
           </div>
-          <div className="grid grid-cols-2 mt-5 space-y-5 justify-beteween border-b">
+          <div className="grid grid-cols-2 mt-5 space-y-5 justify-beteween border-b border-gray-400 py-4 ">
             <div>
               <p className=" text-currentColor">Paid Through</p>
               <p className="font-bold text-textColor">{expense.paidThrough}</p>
             </div>
 
             <div>
-              <p className=" text-currentColor -mt-4">Tax</p>
-              {expense?.expense?.map((item: any, index: any) => (
-                <p className="font-bold text-textColor" key={index}>
-                  {item?.taxGroup || "N/A"}
-                </p>
-              ))}
+              <p className=" font-bold text-textColor -mt-4">Tax</p>
+              {expensedata[0]?.igstAmount>0? `IGST[${expensedata[0]?.igst}%]`: `SGST[${expensedata[0]?.sgst}%] CGST[${expensedata[0]?.cgst}%]`}
             </div>
 
             <div>
               <p className=" text-currentColor">Tax Amount</p>
-              <p className="font-bold text-textColor">{expense.grandTotal}</p>
+              <p className="font-bold text-textColor">{organization?.baseCurrency} {expense.grandTotal} {expense.amountIs=="Tax Inclusive"? "(Inclusive)":"(Exclusive)"}</p>
             </div>
 
             <div>
@@ -149,6 +151,28 @@ const ExpenseView = ({}: Props) => {
                 {expense.destinationOfSupply}
               </p>
             </div>
+          </div>
+
+          <div className="my-5">
+            <p className="font-bold text-xl">Journal</p>
+            <table className="w-full">
+            <thead>
+    <tr className="border-b py-2 border-gray ">
+        <th className="w-[70%] text-start font-[300] text-sm">Account</th>
+        <th className="text-start font-[300] text-sm">Debit</th>
+        <th className="text-start font-[300] text-sm">Credit</th>
+    </tr>
+</thead>
+
+    <tbody>
+        <tr>
+            <td>Cost of goods sold</td>
+            <td>0.00</td>
+            <td>5000.00</td>
+        </tr>
+    </tbody>
+</table>
+
           </div>
         </div>
 
