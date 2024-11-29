@@ -10,6 +10,7 @@ interface ExpenseDetail {
     vat: number;
     sgstAmount: number;
     cgstAmount: number;
+    igstAmount:number;
     amount: number;
   }
   
@@ -29,20 +30,15 @@ interface ExpenseDetail {
     gstin: string;
     sourceOfSupply: string;
     destinationOfSupply: string;
-    amount: number;
     invoice: string;
     uploadFiles: string;
-    subTotal: number;
-    taxGroup:string;
-    sgst: number;
-    cgst: number;
-    igst: number;
-    vat: number;
+    subTotal: number;  
     grandTotal: number;
-    expenseAccount:string;
-    expenseAccountId: string;
-    note:string;
     amountIs:string;
+    sgst:number;
+    cgst:number;
+    igst:number;
+    vat:number;
     expense: ExpenseDetail[];
   }
   
