@@ -85,6 +85,7 @@ useEffect(() => {
     const newData = [...data];
     newData[index] = { ...newData[index], [field]: value };
     const billAmount = newData[index].billAmount;
+    const amountDue=newData[index].amountDue;
     let paymentValue = typeof value === "number" ? value : parseFloat(value);
 
     if (isFullAmt) {
@@ -92,11 +93,11 @@ useEffect(() => {
     } else {
       newData[index].payment = 0;
 
-      if (paymentValue > billAmount) {
+      if (paymentValue > amountDue) {
         toast.error(
-          `Payment cannot exceed the bill amount of ${billAmount}. Setting payment to bill amount.`
+          `Payment cannot exceed the balance amount of ${amountDue}. Setting payment to bill amount.`
         );
-        paymentValue = billAmount;
+        paymentValue = amountDue;
       }
 
       // const totalPayment =

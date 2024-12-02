@@ -18,7 +18,7 @@ const CircleChevronLeft: React.FC<Props> = ({ className }) => {
           stroke="currentColor"
           strokeWidth="1"
           stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinejoin="round"
         />
       </svg>
     </div>

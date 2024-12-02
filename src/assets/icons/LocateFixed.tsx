@@ -15,7 +15,7 @@ const LocateFixed = ({ color, size }: Props) => {
           stroke={color}
           strokeWidth="1.5"
           stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinejoin="round"
         />
       </svg>
     </div>

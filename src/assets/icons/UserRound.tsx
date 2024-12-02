@@ -16,7 +16,7 @@ const UserRound = ({ color,size }: Props) => {
           stroke={color || "black"}
           strokeWidth="2"
           stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinejoin="round"
         />
       </svg>
     </div>

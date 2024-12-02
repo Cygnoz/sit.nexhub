@@ -15,7 +15,7 @@ const List = () => {
           stroke="#3A0000"
           strokeWidth="1.5"
           stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinejoin="round"
         />
       </svg>
     </div>
