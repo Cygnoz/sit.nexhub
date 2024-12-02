@@ -370,7 +370,7 @@ const NewInvoice = ({ }: Props) => {
       if (oneOrganization) {
         setInvoiceState((preData) => ({
           ...preData,
-          placeOfSupply: oneOrganization.state,
+          placeOfSupply: selectedCustomer.billingState,
         }));
       }
       if (country) {

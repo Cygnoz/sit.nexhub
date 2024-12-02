@@ -25,26 +25,6 @@ function AddExpensePage({}: Props) {
 
   const handleRecordClick = (section: "expense" | "mileage") => {
     setSelectedSection(section);
-    // setExpenseData({
-    //   ...expenseData,
-    //   expenseDate: "",
-    //   employee: "",
-    //   paidThrough: "",
-    //   paidThroughId: "",
-    //   distance: "",
-    //   ratePerKm: "",
-    //   vendor: "",
-    //   invoice: "",
-    //   expenseType: "",
-    //   expense: [
-    //     {
-    //       expenseAccountId: "",
-    //       expenseAccount: "",
-    //       note: "",
-    //       amount: "",
-    //     },
-    //   ],
-    // });
   };
 
   const [expenseData, setExpenseData] = useState<ExpenseData>({
@@ -120,18 +100,60 @@ function AddExpensePage({}: Props) {
     liabilities: [],
   });
 
+  
   const handleAddExpense = async () => {
     try {
+      let hasErrors = false;
+  
+      const updatedErrors:any = {
+        expenseDate: !expenseData.expenseDate,
+        paidThrough: !expenseData.paidThrough,
+        gstTreatment: selectedSection === "expense" ? !expenseData.gstTreatment : false,
+        distance: selectedSection === "mileage" ? !expenseData.distance : false,
+        ratePerKm: selectedSection === "mileage" ? !expenseData.ratePerKm : false,
+      };
+  
+      if (expenseData.expense && Array.isArray(expenseData.expense)) {
+        expenseData.expense.forEach((expense, index) => {
+          if (!expense.amount) {
+            updatedErrors[`expense_${index}_amount`] = true;
+          }
+          if (!expense.expenseAccount) {
+            updatedErrors[`expense_${index}_expenseAccount`] = true;
+          }
+        });
+      }
+  
+      const emptyFields = Object.keys(updatedErrors).filter(
+        (key) => updatedErrors[key as keyof typeof updatedErrors]
+      );
+  
+      hasErrors = emptyFields.length > 0;
+  
+      if (hasErrors) {
+        const fieldNames = emptyFields.join(", ");
+        toast.error(`Please fill in the following fields: ${fieldNames}`);
+        return;
+      }
+  
       const url = `${endponits.ADD_EXPENSES}`;
       const { response, error } = await AddExpenses(url, expenseData);
-      if (!error && response) {
+  
+      if (response) {
         toast.success(response.data.message);
         navigate("/expense/home");
       } else {
-        toast.error(error?.response.data.message);
+        toast.error(error?.response?.data?.message || "An error occurred.");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error in handleAddExpense:", error);
+      toast.error("An unexpected error occurred.");
+    }
   };
+  
+  
+  
+
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
@@ -511,7 +533,7 @@ function AddExpensePage({}: Props) {
           <>
             <div className="grid grid-cols-3 gap-4 mt-5 mx-4">
               <div className="col-span-1 space-y-2">
-                <label className="text-sm mb-1 text-labelColor">Date</label>
+                <label className="text-sm mb-1 text-labelColor">Date<span className="text-[#bd2e2e] ">*</span></label>
                 <div className="relative w-full">
                   <input
                     type="date"
@@ -528,7 +550,7 @@ function AddExpensePage({}: Props) {
                 <>
                   <div className="col-span-1 space-y-2">
                     <label className="text-sm mb-1 text-labelColor">
-                      Expense Account
+                      Expense Account<span className="text-[#bd2e2e] ">*</span>
                     </label>
                     <div className="relative w-full">
                       <select
@@ -585,7 +607,7 @@ function AddExpensePage({}: Props) {
 
                   <div className="col-span-1 space-y-2">
                     <label className="text-sm mb-1 text-labelColor">
-                      Expense Amount
+                      Expense Amount<span className="text-[#bd2e2e] ">*</span>
                     </label>
                     <div className="relative w-full">
                       <input
@@ -608,7 +630,7 @@ function AddExpensePage({}: Props) {
 
               <div className="col-span-1 space-y-2">
                 <label className="text-sm mb-1 text-labelColor">
-                  Paid Through
+                  Paid Through<span className="text-[#bd2e2e] ">*</span>
                 </label>
                 <div className="relative w-full">
                   <select
@@ -966,7 +988,7 @@ function AddExpensePage({}: Props) {
 
               <div className="col-span-1 space-y-2">
                 <label className="text-sm mb-1 text-labelColor">
-                  GST Treatment
+                  GST Treatment<span className="text-[#bd2e2e] ">*</span>
                 </label>
                 <div className="relative w-full">
                   <select
@@ -1264,7 +1286,7 @@ function AddExpensePage({}: Props) {
         {selectedSection === "mileage" && (
           <div className="grid grid-cols-3 gap-4 mt-5 mx-4">
             <div className="col-span-1 space-y-2">
-              <label className="text-sm mb-1 text-labelColor">Date</label>
+              <label className="text-sm mb-1 text-labelColor">Date<span className="text-[#bd2e2e] ">*</span></label>
               <div className="relative w-full">
                 <input
                   type="date"
@@ -1291,7 +1313,7 @@ function AddExpensePage({}: Props) {
             </div> */}
               <div className="col-span-1 space-y-2">
                     <label className="text-sm mb-1 text-labelColor">
-                      Expense Account
+                      Expense Account<span className="text-[#bd2e2e] ">*</span>
                     </label>
                     <div className="relative w-full">
                       <select
@@ -1342,7 +1364,7 @@ function AddExpensePage({}: Props) {
 
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">
-                Paid Through
+                Paid Through<span className="text-[#bd2e2e] ">*</span>
               </label>
               <div className="relative w-full">
                 <select
@@ -1379,7 +1401,7 @@ function AddExpensePage({}: Props) {
               </div>
             </div>
             <div className="col-span-1 space-y-2">
-              <label className="text-sm mb-1 text-labelColor">Distance</label>
+              <label className="text-sm mb-1 text-labelColor">Distance<span className="text-[#bd2e2e] ">*</span></label>
               <div className="relative w-full">
                 <input
                   type="number"
@@ -1393,7 +1415,7 @@ function AddExpensePage({}: Props) {
             </div>
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">
-                Rate Per Km
+                Rate Per Km <span className="text-[#bd2e2e] ">*</span>
               </label>
               <div className="relative w-full">
                 <input

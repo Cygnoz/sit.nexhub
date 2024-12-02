@@ -57,7 +57,7 @@ const NewPurchaseOrder = ({}: Props) => {
     customerId: "",
     reference: "",
     shipmentPreference: "",
-    purchaseOrderDate: "",
+    purchaseOrderDate: new Date().toISOString().slice(0, 10),
     expectedShipmentDate: "",
     paymentTerms: "",
     paymentMode: "",
@@ -883,7 +883,7 @@ const NewPurchaseOrder = ({}: Props) => {
 
                   <input
                     type="date"
-                    value={purchaseOrderState.purchaseOrderDate || new Date().toISOString().split("T")[0]}
+                    value={purchaseOrderState.purchaseOrderDate }
                     name="purchaseOrderDate"
                     onChange={handleChange}
                     className="border-inputBorder w-full text-sm border rounded p-2 h-9  text-zinc-400"
@@ -895,7 +895,7 @@ const NewPurchaseOrder = ({}: Props) => {
                   </label>
                   <input
                     type="date"
-                    value={purchaseOrderState.expectedShipmentDate || new Date().toISOString().split("T")[0] }
+                    value={purchaseOrderState.expectedShipmentDate  }
                     name="expectedShipmentDate"
                     onChange={handleChange}
                     disabled={purchaseOrderState.paymentTerms !== "due on receipt" && purchaseOrderState.paymentTerms !== "Custom"}
