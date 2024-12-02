@@ -81,8 +81,6 @@ const NewSalesQuoteTable = ({
       itemStock: "",
     },
   ]);
-  console.log(rows,"rows");
-  
 
   const toggleDropdown = (id: number | null, type: string | null, row: Row) => {
     if (!row.itemName) {
@@ -383,9 +381,6 @@ const NewSalesQuoteTable = ({
       console.error("Error fetching items:", error);
     }
   };
-  useEffect(() => {
-    getAllItems()
-  }, [])
 
   const removeRow = (index: number) => {
     if (rows.length > 1) {
@@ -538,15 +533,13 @@ const NewSalesQuoteTable = ({
   useEffect(() => {
     if (salesQuoteState?.items) {
       setRows(salesQuoteState.items);
-    } else {
-      setRows([]);
     }
-  }, [salesQuoteState?.salesOrderNumber]);
+  }, [items]);
 
   useEffect(() => {
     setRows((prevData: any) => {
       if (Array.isArray(prevData)) {
-        return prevData.map((item) => ({
+        return prevData?.map((item) => ({
           ...item,
           itemDiscountType: "Percentage",
           itemDiscount: "",
@@ -556,6 +549,9 @@ const NewSalesQuoteTable = ({
     });
   }, []);
 
+  useEffect(() => {
+    getAllItems()
+  }, [])
 
   return (
     <div>
@@ -575,7 +571,7 @@ const NewSalesQuoteTable = ({
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px] ">
-            {salesQuoteState?.items?.map((row: any, index: number) => (
+            {rows.map((row: any, index: number) => (
               <tr key={index}>
                 <td className="border-y py-3 px-2 border-tableBorder">
                   <div

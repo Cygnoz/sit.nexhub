@@ -6,7 +6,7 @@ import CehvronDown from "../../../assets/icons/CehvronDown";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import NewCustomerModal from "../../Customer/CustomerHome/NewCustomerModal";
-import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
+// import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
 import Upload from "../../../assets/icons/Upload";
 import { invoice } from "../../../Types/Invoice";
 import useApi from "../../../Hooks/useApi";
@@ -632,9 +632,9 @@ const NewInvoice = ({ }: Props) => {
                   />
                 </div>
 
-                {/* <div className={`col-span-${isPlaceOfSupplyVisible ? "7" : "5"} relative`}>
+                <div className={`col-span-${isPlaceOfSupplyVisible ? "7" : "5"} relative`}>
                   <label className="block text-sm  text-labelColor">
-                   Sales Order Number
+                    Sales Order Number
                     <input
                       name="salesOrderNumber"
                       id="salesOrderNumber"
@@ -644,10 +644,16 @@ const NewInvoice = ({ }: Props) => {
                       className="border-inputBorder w-full text-sm border rounded text-dropdownText  mt-1 p-2 h-9 "
                     />
                   </label>
-                </div> */}
+                </div>
 
 
-                <div className={`col-span-${isPlaceOfSupplyVisible ? "7" : "5"} relative`}>
+              </div>
+
+
+              <div className="grid grid-cols-12 gap-4">
+
+
+                <div className={`col-span-${isPlaceOfSupplyVisible ? "5" : "5"} relative`}>
                   <label className="block text-sm mb-1 text-labelColor">
                     Reference#
                   </label>
@@ -661,12 +667,7 @@ const NewInvoice = ({ }: Props) => {
                   />
                 </div>
 
-              </div>
-
-
-              <div className="grid grid-cols-12 gap-4">
-
-                <div className="col-span-5">
+                <div className="col-span-7">
                   <label className="block text-sm mb-1 text-labelColor">
                     Invoice Date
                   </label>
@@ -681,7 +682,11 @@ const NewInvoice = ({ }: Props) => {
                   </div>
                 </div>
 
-                <div className="col-span-7">
+
+
+              </div>
+              <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Expected Shipment Date
                   </label>
@@ -695,11 +700,7 @@ const NewInvoice = ({ }: Props) => {
                     />
                   </div>
                 </div>
-
-              </div>
-              <div className="grid grid-cols-12 gap-4">
-
-                <div className="col-span-5">
+                <div className="col-span-7">
                   <label className="block text-sm mb-1 text-labelColor">
                     Due Date
                   </label>
@@ -716,37 +717,9 @@ const NewInvoice = ({ }: Props) => {
                 </div>
 
 
-                <div className="col-span-7">
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Payment Terms
-                  </label>
-                  <div className="relative w-full">
-                    <select
-                      value={invoiceState.paymentTerms}
-                      onChange={handleChange}
-                      name="paymentTerms"
-                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <option value="" className="text-gray">
-                        Select Payment Terms
-                      </option>
-                      <option value="Due on Receipt" selected>Due on Receipt</option>
-                      <option value="Due end of the month">Due end of the month</option>
-                      <option value="Due end of next month">Due end of next month</option>
-                      <option value="Net 15">Net 15</option>
-                      <option value="Net 30">Net 30</option>
-                      <option value="Net 45">Net 45</option>
-                      <option value="Net 60">Net 60</option>
-                      <option value="Custom">Custom</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
-                  </div>
-                </div>
-
               </div>
               <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5 relative">
+                {/* <div className="col-span-5 relative">
                   <label className="block text-sm mb-1 text-labelColor">
                     Sales Person
                   </label>
@@ -785,7 +758,36 @@ const NewInvoice = ({ }: Props) => {
                       <ManageSalesPerson />
                     </div>
                   )}
+                </div> */}
+
+                <div className="col-span-5">
+                  <label className="block text-sm mb-1 text-labelColor">
+                    Payment Terms
+                  </label>
+                  <div className="relative w-full">
+                    <select
+                      value={invoiceState.paymentTerms}
+                      onChange={handleChange}
+                      name="paymentTerms"
+                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                      <option value="" className="text-gray">
+                        Select Payment Terms
+                      </option>
+                      <option value="Due on Receipt" selected>Due on Receipt</option>
+                      <option value="Due end of the month">Due end of the month</option>
+                      <option value="Due end of next month">Due end of next month</option>
+                      <option value="Net 15">Net 15</option>
+                      <option value="Net 30">Net 30</option>
+                      <option value="Net 45">Net 45</option>
+                      <option value="Net 60">Net 60</option>
+                      <option value="Custom">Custom</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
                 </div>
+
 
                 <div className="col-span-7">
                   <label className="block text-sm mb-1 text-labelColor">
