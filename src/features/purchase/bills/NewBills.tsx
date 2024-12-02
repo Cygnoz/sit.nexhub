@@ -73,44 +73,44 @@ const NewBills = ({}: Props) => {
         itemId: "",
         itemName: "",
         itemQuantity: "",
-        itemCostPrice: "",
-        itemDiscount: "",
-        itemDiscountType: "",
-        itemTax:"",
-        itemSgst: "",
-        itemCgst: "",
-        itemIgst: "",
-        itemVat: "",
-        itemSgstAmount: "",
-        itemCgstAmount: "",
+        itemCostPrice: 0,
+        itemDiscount: 0,
+        itemDiscountType: "percentage",
+        itemTax:0,
+        itemSgst: 0,
+        itemCgst: 0,
+        itemIgst: 0,
+        itemVat: 0,
+        itemSgstAmount: 0,
+        itemCgstAmount: 0,
         taxPreference:""
       },
     ],
     otherExpenseAccountId:"",
-    otherExpense: "",
+    otherExpense: 0,
     otherExpenseReason: "",
     vehicleNo: "",
     freightAccountId:"",
-    freight: "",
+    freight: 0,
     addNotes: "",
     termsAndConditions: "",
     attachFiles: "",
-    subTotal: "",
+    subTotal: 0,
     totalItem: "",
-    sgst: "",
-    cgst: "",
-    igst: "",
+    sgst: 0,
+    cgst: 0,
+    igst: 0,
     transactionDiscountType: "percentage",
-    transactionDiscount: "",
-    transactionDiscountAmount: "",
-    totalTaxAmount: "",
-    itemTotalDiscount: "",
-    roundOff: "",
+    transactionDiscount: 0,
+    transactionDiscountAmount: 0,
+    totalTaxAmount: 0,
+    itemTotalDiscount: 0,
+    roundOff: 0,
     paidStatus: "",
     shipmentPreference: "",
-    grandTotal: "",
-    balanceAmount:"",
-    paidAmount:"",
+    grandTotal: 0,
+    balanceAmount:0,
+    paidAmount:0,
     paidAccountId:"",
     purchaseOrderId:""
   });
@@ -308,6 +308,8 @@ const NewBills = ({}: Props) => {
   };
   
 
+  console.log(bill,"bill")
+
   const getLastDayOfMonth = (date:any, monthsToAdd = 0) => {
     const year = date.getFullYear();
     const month = date.getMonth() + monthsToAdd + 1; 
@@ -402,6 +404,7 @@ const NewBills = ({}: Props) => {
     }));
   }, [bill.grandTotal, bill.paidAmount]);
 
+  console.log(errors,"errors")
 
   const handleSave = async () => {
     const newErrors = { ...errors };
@@ -814,7 +817,7 @@ const NewBills = ({}: Props) => {
     name="billDate"
     id="billDate"
     type="date"
-    value={bill.billDate || new Date().toISOString().split("T")[0]} 
+    value={bill.billDate } 
     onChange={handleChange}
     className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-1"
   />
@@ -828,7 +831,7 @@ const NewBills = ({}: Props) => {
                   <input
                     name="dueDate"
                     id="dueDate"
-                    value={bill.dueDate || new Date().toISOString().split("T")[0]}
+                    value={bill.dueDate }
                     onChange={handleChange}
                     type="date"
                     disabled={bill.paymentTerms !== "due on receipt" && bill.paymentTerms !== "Custom"}

@@ -35,8 +35,8 @@ const DebitTable = () => {
       const url = `${endponits.GET_ALL_DEBIT_NOTE}`;
       const { response, error } = await getDN(url);
 
-      if (!error && response && response.data.length > 0) {
-        setAllDNdata(response.data);
+      if (!error && response ) {
+        setAllDNdata(response.data.allDebitNote);
         setLoading({ ...loading, skeleton: false, noDataFound: false });
       } else {
         setLoading({ ...loading, skeleton: false, noDataFound: true });
