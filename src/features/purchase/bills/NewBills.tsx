@@ -66,8 +66,8 @@ const NewBills = ({}: Props) => {
     paymentTerms: "",
     paymentMode: "",
     PaidThrough:"",
-    billDate: "",
-    dueDate: "",
+    billDate: new Date().toISOString().slice(0, 10), 
+       dueDate: "",
     items: [
       {
         itemId: "",

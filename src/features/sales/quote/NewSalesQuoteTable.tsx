@@ -24,7 +24,7 @@ type Row = {
   cgstAmount: string;
   sgstAmount: string;
   igstAmount: string;
-  vatAmount: string;
+  vatAmount: string | number;
   itemTotaltax: string;
   discountType: string;
   discountAmount: string;
@@ -72,7 +72,7 @@ const NewSalesQuoteTable = ({
       cgstAmount: "",
       sgstAmount: "",
       igstAmount: "",
-      vatAmount: "",
+      vatAmount: 0,
       itemTotaltax: "",
       discountType: "Percentage",
       discountAmount: "",
@@ -571,7 +571,7 @@ const NewSalesQuoteTable = ({
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px] ">
-            {rows.map((row: any, index: number) => (
+            {salesQuoteState?.items?.map((row: any, index: number) => (
               <tr key={index}>
                 <td className="border-y py-3 px-2 border-tableBorder">
                   <div

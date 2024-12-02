@@ -173,13 +173,13 @@ function OrderView({ data, page, organization }: Props) {
             {page === "PurchaseOrder" ? data?.purchaseOrderDate : data?.billDate}
           </span>
         </p>
-        <p className="text-textColor border-r-[1px] border-borderRight px-4 text-sm font-normal">
+      {page!=="DebitNote" &&   <p className="text-textColor border-r-[1px] border-borderRight px-4 text-sm font-normal">
           Expected Shipment:{" "}
           <span className="ms-3 text-dropdownText text-sm font-semibold">
             {page === "PurchaseOrder" ? data?.expectedShipmentDate : data?.dueDate}
           </span>
-        </p>
-        {page !== "PurchaseOrder" && (
+        </p>}
+        {page == "Bills" && (
           <p className="text-textColor pl-4 text-sm font-normal">
             Payment Terms:{" "}
             <span className="ms-3 text-dropdownText text-sm font-semibold">
@@ -187,6 +187,16 @@ function OrderView({ data, page, organization }: Props) {
             </span>
           </p>
         )}
+        {
+          page==="DebitNote" &&(
+            <p className="text-textColor pl-4 text-sm font-normal">
+          Supplier Debit Date:{" "}
+            <span className="ms-3 text-dropdownText text-sm font-semibold">
+              {data?.supplierDebitDate}
+            </span>
+          </p>
+          )
+        }
       </div>
       {page === "PurchaseOrder" && <SendPurchaseOrder data={data} />}
       {renderItemTable()}

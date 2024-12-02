@@ -39,7 +39,9 @@ const ExpenseTable = () => {
     return (
       account?.expenseAccount?.toLowerCase()?.trim()?.startsWith(searchValueLower) ||
       account?.expenseCategory?.toLowerCase()?.trim()?.startsWith(searchValueLower) ||
-      account?.expenseDate.toLowerCase().trim().startsWith(searchValueLower) 
+      account?.expenseDate?.toLowerCase()?.trim()?.startsWith(searchValueLower) ||
+      account?.supplierDisplayName?.toLowerCase()?.trim()?.startsWith(searchValueLower) 
+
     );
   });
   
