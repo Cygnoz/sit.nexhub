@@ -161,7 +161,7 @@ const discountedPrice = calculateDiscountPrice(
   
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      itemTable: newRows.map((row) => {
+      items: newRows.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
@@ -276,7 +276,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
 
   setPurchaseOrderState?.((prevData: any) => ({
     ...prevData,
-    itemTable: newRows.map((row) => {
+    items: newRows.map((row) => {
       const updatedItem = { ...row };
       delete updatedItem.itemImage;
       return updatedItem;
@@ -314,7 +314,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       setRows(newRows);
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: newRows, 
+        items: newRows, 
       }));
     } else {
       const defaultRow = {
@@ -340,7 +340,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: [defaultRow], 
+        items: [defaultRow], 
       }));
     }
   };
@@ -462,7 +462,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
     setRows(updatedRows);
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      itemTable: updatedRows.map((row) => {
+      items: updatedRows.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
@@ -488,7 +488,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
 
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        itemTable: updatedRows.map((row) => {
+        items: updatedRows.map((row) => {
           const updatedItem = { ...row };
           delete updatedItem.itemImage;
           return updatedItem;
@@ -512,13 +512,18 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       cgst: isInterState?"":totalCGST,
       igst: isInterState?totalIGST:"",
       subTotal: totalSellingPrice,
-      itemTotalDiscount: totalDiscount?totalDiscount:"",
+      itemTotalDiscount: totalDiscount,
       totalTaxAmount: isInterState 
       ? totalIGST 
       : totalSGST + totalCGST,    }));
   }, [rows]);  
   
-
+  useEffect(()=>{
+    if(purchaseOrderState){
+      setRows(purchaseOrderState.items)
+    }
+  },[purchaseOrderState.orderNumber])
+  console.log(rows,"rows")
   useEffect(() => {
       setRows((prevData: any) => {
         if (Array.isArray(prevData)) {
