@@ -35,7 +35,7 @@ const calculateDueDate = (invoiceDate: string, term: string) => {
 
   switch (term) {
     case "Due on Receipt":
-      return invoiceDate; // Return the invoiceDate directly
+      return invoiceDate; 
     case "Due end of the month":
       const endOfMonthDate = getEndOfMonthDate(date);
       const endOfMonth = new Date(endOfMonthDate);
@@ -134,7 +134,8 @@ const initialSalesQuoteState: invoice = {
   igst: "",
   vat: "",
   totalTax: "",
-  totalAmount: ""
+  totalAmount: "",
+  salesOrderId:""
 };
 const NewInvoice = ({ }: Props) => {
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
@@ -176,7 +177,8 @@ const NewInvoice = ({ }: Props) => {
         setInvoiceState((prevData) => ({
           ...prevData,
           ...response.data,
-          salesOrderNumber: response.data.salesOrder
+          salesOrderNumber: response.data.salesOrder,
+          salesOrderId:response.data._id
         }));
 
         const matchingSupplier = customerData.find((sup: any) => sup._id === response.data.customerId);

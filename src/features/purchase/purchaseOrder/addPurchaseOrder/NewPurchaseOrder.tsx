@@ -467,7 +467,7 @@ const NewPurchaseOrder = ({}: Props) => {
                 <div className="grid grid-cols-12 gap-4">
                   <div className="col-span-6">
                     <label className="block text-sm mb-1 text-labelColor">
-                      Supplier Name
+                      Supplier Name <span className="text-[#bd2e2e] ">*</span>
                     </label>
                     <div
                       className="relative w-full"

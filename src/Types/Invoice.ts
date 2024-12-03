@@ -11,6 +11,7 @@ export interface invoice {
     deliveryMethod:string;
     expectedShipmentDate:string;
     salesOrderNumber:string;
+    salesOrderId:string;
     
     items: Array<{
       itemId: string;
