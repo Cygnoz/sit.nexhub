@@ -98,7 +98,7 @@ const initialSalesQuoteState: invoice = {
       igstAmount: "",
       vatAmount: "",
       itemTotaltax: "",
-      discountType: "",
+      discountType: "Percentage",
       discountAmount: "",
       amount: "",
       itemAmount: ""

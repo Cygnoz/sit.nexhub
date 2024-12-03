@@ -531,7 +531,7 @@ const NewSalesQuoteTable = ({
   };
 
   useEffect(() => {
-    if (salesQuoteState?.items) {
+    if (salesQuoteState?.salesOrderNumber) {
       setRows(salesQuoteState.items);
     }
   }, [items]);

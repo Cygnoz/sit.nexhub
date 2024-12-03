@@ -84,10 +84,10 @@ const navlist = [
       //   headName: "POS",
       //   subRoute: "/inventory",
       // },
-      {
-        headName: "Sales Return",
-        subRoute: "/sales/salesreturn",
-      },
+      // {
+      //   headName: "Sales Return",
+      //   subRoute: "/sales/salesreturn",
+      // },
       {
         headName: "Credit Note",
         subRoute: "/sales/credit-note",
