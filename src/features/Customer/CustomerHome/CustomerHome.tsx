@@ -5,7 +5,7 @@ import CustomerTable from "./CustomerTable";
 // import Customers from "./Customers";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import { CustomerResponseContext, TableResponseContext } from "../../../context/ContextShare";
+import { CustomerEditResponseContext, CustomerResponseContext, TableResponseContext } from "../../../context/ContextShare";
 import Dropdown from "./Dropdown";
 
 interface Customer {
@@ -31,6 +31,8 @@ function CustomerHome({}: Props) {
   const [searchValue, setSearchValue] = useState<string>("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const { loading, setLoading } = useContext(TableResponseContext)!;
+  const { customerEditResponse } = useContext(CustomerEditResponseContext)!;
+
   const fetchAllCustomers = async () => {
     try {
       // Set loading state to show the skeleton loader
@@ -63,7 +65,7 @@ function CustomerHome({}: Props) {
 
   useEffect(() => {
     fetchAllCustomers();
-  }, [customerResponse]);
+  }, [customerResponse,customerEditResponse]);
 
   const activeCustomers = customerData.filter(customer => customer.status === "Active").length;
   const inactiveCustomers = customerData.filter(customer => customer.status === "Inactive").length;

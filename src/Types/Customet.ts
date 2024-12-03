@@ -1,5 +1,6 @@
 export interface CustomerData {
     customerProfile:string;
+    _id?:string;
     customerType: string;
     salutation: string;
     firstName: string;
