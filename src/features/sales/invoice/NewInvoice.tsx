@@ -926,7 +926,7 @@ const NewInvoice = ({ }: Props) => {
                 </div>
               </div>
 
-              {isIntraState ? (
+              {isIntraState ===false ? (
                 <div className="flex ">
                   <div className="w-[75%]">
                     {" "}
@@ -1138,9 +1138,6 @@ const NewInvoice = ({ }: Props) => {
                 />
               </label>
             </div>
-
-
-
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}
