@@ -926,7 +926,7 @@ const NewInvoice = ({ }: Props) => {
                 </div>
               </div>
 
-              {isIntraState ===false ? (
+              {isIntraState ? (
                 <div className="flex ">
                   <div className="w-[75%]">
                     {" "}
