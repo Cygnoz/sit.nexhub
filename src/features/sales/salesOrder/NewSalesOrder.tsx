@@ -6,7 +6,7 @@ import CehvronDown from "../../../assets/icons/CehvronDown";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import NewCustomerModal from "../../Customer/CustomerHome/NewCustomerModal";
-import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
+// import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
 import Upload from "../../../assets/icons/Upload";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
@@ -633,7 +633,7 @@ const NewSalesOrder = ({ }: Props) => {
                   </div>
 
                 </div> */}
-                <div className="col-span-5 relative">
+                {/* <div className="col-span-5 relative">
                   <label className="block text-sm mb-1 text-labelColor">
                     Sales Person
                   </label>
@@ -656,6 +656,29 @@ const NewSalesOrder = ({ }: Props) => {
                       <ManageSalesPerson />
                     </div>
                   )}
+                </div> */}
+                     <div className="col-span-5">
+                  <label className="block text-sm mb-1 text-labelColor">
+                    Delivery Method
+                  </label>
+                  <div className="relative w-full">
+                    <select
+                      value={salesOrderState.deliveryMethod}
+                      name="deliveryMethod"
+                      onChange={handleChange}
+                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                      <option value="" disabled hidden selected className="text-gray">
+                        Select Shipment Preference
+                      </option>
+                      <option value="Road">Road</option>
+                      <option value="Rail">Rail</option>
+                      <option value="Air">Air</option>
+                      <option value="Sea">Sea</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="col-span-7">
@@ -683,35 +706,7 @@ const NewSalesOrder = ({ }: Props) => {
                     </div>
                   </div>
                 </div>
-              </div>
-
-
-
-
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5">
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Delivery Method
-                  </label>
-                  <div className="relative w-full">
-                    <select
-                      value={salesOrderState.deliveryMethod}
-                      name="deliveryMethod"
-                      onChange={handleChange}
-                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <option value="" disabled hidden selected className="text-gray">
-                        Select Shipment Preference
-                      </option>
-                      <option value="Road">Road</option>
-                      <option value="Rail">Rail</option>
-                      <option value="Air">Air</option>
-                      <option value="Sea">Sea</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
-                  </div>
-                </div>
+           
               </div>
 
               <div className="mt-9">
