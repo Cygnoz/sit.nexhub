@@ -14,6 +14,7 @@ import LayoutSkeleton from "./Components/skeleton/LayoutSkeleton";
 import { OrganizationProvider } from "./context/OrganizationContext";
 import ReportsRoutes from "./routes/ReportsRoutes";
 import ReportsLayout from "./layout/ReportsLayout";
+import Pos from "./features/pos/Pos";
 
 // Lazy imports of components
 const Login = lazy(() => import("./features/login/Login"));
@@ -79,6 +80,10 @@ const App: React.FC = () => {
     {
       path: "/login",
       element: <Login />,
+    },
+    {
+      path: "/pos",
+      element: <Pos />,
     },
     {
       path: "/otp",

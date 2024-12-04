@@ -44,8 +44,8 @@ function CustomerStatusHistory({ id }: Props) {
         }
     };
     const formatDateTime = (dateString: string) => {
-        const [datePart, timePart] = dateString.split(" ");
-        const [hoursString, minutes] = timePart.split(":");
+        const [datePart, timePart] = dateString?.split(" ");
+        const [hoursString, minutes] = timePart?.split(":");
         let period = "AM";
 
         let hours = parseInt(hoursString);

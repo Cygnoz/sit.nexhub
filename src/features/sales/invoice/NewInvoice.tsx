@@ -398,6 +398,7 @@ const NewInvoice = ({ }: Props) => {
     }
   }, [
     invoiceState?.placeOfSupply,
+    oneOrganization.state
   ]);
 
   const fetchData = async (
