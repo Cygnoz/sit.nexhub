@@ -5,11 +5,19 @@ import ServicesIcon from "../../assets/icons/ServicesIcon";
 import ProductsIcon from "../../assets/icons/ProductsIcon";
 import defaultCustomerImage from "../../assets/Images/Rectangle 5558.png";
 import Info from "../../assets/icons/Info";
+import PosServices from "./posServices/PosServices";
+import AddItemsPos from "./AddItemsPos";
+import PosProducts from "./posProducts/PosProducts";
 type Props = {};
 
 function Pos({ }: Props) {
   const [tabSwitch, setTabSwitch] = useState<string>("services");
+  const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
 
+  const handleSelectCustomer = (customer: any) => {
+    setSelectedCustomer(customer);
+    console.log("Customer selected in POS:", customer);
+  };
   const handleTabSwitch = (tabName: string) => {
     setTabSwitch(tabName);
   };
@@ -17,9 +25,9 @@ function Pos({ }: Props) {
   return (
     <>
       <Header />
-      <PosHeader />
-      <div className="flex justify-between mt-4 px-5 gap-7">
-        <div className="w-[70%]">
+      <PosHeader onSelectCustomer={handleSelectCustomer} />
+      <div className="flex justify-between px-5 gap-7">
+        <div className="w-[65%]">
           <div className="flex justify-between items-center gap-3">
             {/* Services Tab */}
             <div
@@ -55,31 +63,32 @@ function Pos({ }: Props) {
           </div>
 
           {/* Tabs Content */}
-          <div className="mt-4">
+          <div className="mt-2">
             {tabSwitch === "services" && (
               <div>
-                <p>Services Component Content</p>
+                <PosServices/>
               </div>
             )}
             {tabSwitch === "products" && (
               <div>
-                <p>Products Component Content</p>
+                <PosProducts/>
               </div>
             )}
           </div>
         </div>
 
-        <div className="w-[30%]">
-          <div className="bg-white py-2 px-4 rounded-lg flex gap-3">
-            <img src={defaultCustomerImage} className="w-10 h-10 rounded-full" alt="" />
+        <div className="w-[35%]">
+          <div className="bg-white py-1.5 px-4 rounded-lg flex gap-3">
+            <img src={selectedCustomer?.customerProfile || defaultCustomerImage} className="w-10 h-10 rounded-full" alt="" />
             <p className="text-[#495160] text-xs">Customer <br />
-            <span className="text-[#37393A] text-xs font-bold">Mr. Ralph Edwards</span>
+            <span className="text-[#37393A] text-xs font-bold">{selectedCustomer?.customerDisplayName}</span>
             </p>
             <div className="border border-[#DDDDDD] ms-2"></div>
            <p className="flex justify-center items-center text-[#585953] text-xs
            font-semibold gap-1
            "><Info color="#585953" size={14}/> See more details</p>
           </div>
+         <AddItemsPos/>
         </div>
       </div>
     </>
