@@ -3,7 +3,7 @@ import DebitCardIcon from "../../assets/icons/DebitCardIcon";
 import RsIcon from "../../assets/icons/RsIcon";
 import UpiIcon from "../../assets/icons/UpiIcon";
 import Button from "../../Components/Button";
-import PosDiscount from "./PosDiscount";
+// import PosDiscount from "./PosDiscount";
 
 type Props = {};
 
