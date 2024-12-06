@@ -3,7 +3,7 @@ import DebitCardIcon from "../../assets/icons/DebitCardIcon";
 import RsIcon from "../../assets/icons/RsIcon";
 import UpiIcon from "../../assets/icons/UpiIcon";
 import Button from "../../Components/Button";
-// import PosDiscount from "./PosDiscount";
+import PosDiscount from "./PosDiscount";
 
 type Props = {};
 
@@ -26,7 +26,7 @@ function AddItemsPos({}: Props) {
     "https://s3-alpha-sig.figma.com/img/adbf/47a1/e4cf9bcbe51bf2e2269e437ef4b9fc1e?Expires=1734307200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=FnQgpyawViSDtLKOyUekpS6dA0fzReAzztFYAfjQU3aXl-bthXudtxhPMRVxbVBr5R5di0tT1eTc7rPDBcqkWf3i96Wq5qmn0F9xhviMSseGh4NAoELpvC5wST1uLDqnkH3C1y~Qv0f0371Mk6s7E8Gm6slZrLPKyVIzoMs7i5Cf9YsnR3nqbS4V9AL3yaolGrdNP623ab1Ov1R7c~kK7IUdzJaPF-Jb4t4uHLR910sI2BxRIUfDnWD8h5skHe7sDWeP5jwHfPpIOlYuY97i6Zmlkp~vfU4Gy~pUNaa93ZWSZXVxqmRjSFZ1caaXuFs5fJRv8FNBUGVD09Cyl-IWaA__";
 
   return (
-    <div className="bg-white p-6 mt-3 rounded-lg h-[90%] relative">
+    <div className="bg-white p-6 mt-3 rounded-lg h-auto">
       <div className="flex justify-between items-center">
         <p className="text-textColor text-sm font-bold">Selected Item</p>
         <p className="text-dropdownText text-sm font-semibold">
@@ -65,11 +65,11 @@ function AddItemsPos({}: Props) {
       </div>
 
       <div className="mt-8"> 
-        {/* <p className="text-[#495160] text-xs">Discount</p>
-        <PosDiscount/> */}
+        <p className="text-[#495160] text-xs">Discount</p>
+        <PosDiscount/>
       </div>
       
-      <div className="mt-5 bg-white p-4 rounded-lg">
+      <div className="mt-4 bg-white rounded-lg">
           {/* Subtotal */}
           <div className="flex justify-between items-center">
             <p className="text-xs text-dropdownText font-semibold">Sub total</p>
@@ -89,7 +89,7 @@ function AddItemsPos({}: Props) {
         </div>
 
 
-      <div className="absolute bottom-0 left-0 w-full px-6 py-4">
+      <div className="w-full mt-8">
         <p className="text-[#495160] text-sm font-semibold">Payment Method</p>
         <div className="flex items-center justify-between mt-3">
           {paymentMethods.map((method) => (
