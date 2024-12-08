@@ -35,7 +35,7 @@ import onlinePayment from "../../assets/AppsIcons/Online Payment.png"
 import customization from "../../assets/AppsIcons/Customization.png"
 import reminder from "../../assets/AppsIcons/reminder_16766291.png"
 import reward from "../../assets/AppsIcons/Reward.png"
-
+import posIcon from "../../assets/AppsIcons/POS.png"
 
 
 
@@ -48,6 +48,7 @@ const iconDataMap: any = {
     { icon: creditNote, label: "Credit Note", route: "/sales/credit-note", index: 3, subIndex: 7 },
     { icon: salesReturn, label: "Sales Return", route: "/item-tracking", index: 5, subIndex: 2 },
     { icon: purchasOrder, label: "Purchase Order", route: "/purchase/purchase-order", index: 8, subIndex: 1 },
+    { icon: posIcon, label: "POS", route: "/pos", index: 0, subIndex: 0 },
     { icon: bills, label: "Bills", route: "/purchase/bills", index: 8, subIndex: 2 },
     { icon: PaymentMade, label: "Payment Made", route: "/purchase/payment-made", index: 8, subIndex: 3 },
     { icon: debitNote, label: "Debit Note", route: "/purchase/debitnote", index: 8, subIndex: 4 },
