@@ -5,7 +5,7 @@ import UpiIcon from "../../assets/icons/UpiIcon";
 import Button from "../../Components/Button";
 import PosDiscount from "./PosDiscount";
 
-type Props = {};
+type Props = { selectedItems: any[] };
 
 const paymentMethods = [
   { id: 1, label: "Cash", icon: <RsIcon /> },
@@ -13,81 +13,131 @@ const paymentMethods = [
   { id: 3, label: "UPI", icon: <UpiIcon /> },
 ];
 
-function AddItemsPos({}: Props) {
+function AddItemsPos({ selectedItems }: Props) {
   const [selectedMethod, setSelectedMethod] = useState<number | null>(1);
-  const [count, setCount] = useState<number>(1);
+const [quantities, setQuantities] = useState<{ [key: string]: number }>(
+  () =>
+    selectedItems.reduce(
+      (acc, item) => ({
+        ...acc,
+        [item._id]: quantities[item._id] || 1,
+      }),
+      {}
+    )
+);
 
-  const handleIncrement = () => setCount((prev) => prev + 1);
-  const handleDecrement = () => {
-    if (count > 1) setCount((prev) => prev - 1); // Prevent count from going below 1
-  };
+const handleIncrement = (itemId: string, currentStock: number) => {
+  setQuantities((prev) => {
+    const newQuantity = (prev[itemId] || 1) + 1;
 
-  const imga =
-    "https://s3-alpha-sig.figma.com/img/adbf/47a1/e4cf9bcbe51bf2e2269e437ef4b9fc1e?Expires=1734307200&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=FnQgpyawViSDtLKOyUekpS6dA0fzReAzztFYAfjQU3aXl-bthXudtxhPMRVxbVBr5R5di0tT1eTc7rPDBcqkWf3i96Wq5qmn0F9xhviMSseGh4NAoELpvC5wST1uLDqnkH3C1y~Qv0f0371Mk6s7E8Gm6slZrLPKyVIzoMs7i5Cf9YsnR3nqbS4V9AL3yaolGrdNP623ab1Ov1R7c~kK7IUdzJaPF-Jb4t4uHLR910sI2BxRIUfDnWD8h5skHe7sDWeP5jwHfPpIOlYuY97i6Zmlkp~vfU4Gy~pUNaa93ZWSZXVxqmRjSFZ1caaXuFs5fJRv8FNBUGVD09Cyl-IWaA__";
+    if (newQuantity > currentStock) {
+      alert("Quantity exceeds current stock!"); 
+      return prev;
+    }
+
+    return { ...prev, [itemId]: newQuantity };
+  });
+};
+
+const handleDecrement = (itemId: string) => {
+  setQuantities((prev) => {
+    const newQuantity = (prev[itemId] || 1) - 1;
+
+    if (newQuantity < 1) {
+      return prev; 
+    }
+
+    return { ...prev, [itemId]: newQuantity };
+  });
+};
+
+  const subtotal = selectedItems.reduce(
+    (total, item) => total + item.sellingPrice * (quantities[item._id] || 1),
+    0
+  );
+
+  const tax = selectedItems.reduce((total, item) => {
+    const igst = item.igst && item.igst > 0 ? item.igst : 0; 
+    return total + igst * (quantities[item._id] || 1);
+  }, 0);
+  
+
+  const discount = 0; 
+  const total = subtotal + tax - discount;
 
   return (
     <div className="bg-white p-6 mt-3 rounded-lg h-auto">
       <div className="flex justify-between items-center">
         <p className="text-textColor text-sm font-bold">Selected Item</p>
-        <p className="text-dropdownText text-sm font-semibold">
-          Order no: 001343
-        </p>
+        <p className="text-dropdownText text-sm font-semibold">Order no: 001343</p>
       </div>
-      <div className="mt-3 bg-[#F6F6F6] p-[10px] rounded-xl">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center w-[60%]">
-            <img src={imga} className="w-20 rounded-lg" alt="" />
-            <p className="text-dropdownText text-xs font-semibold ms-3">
-              Laptop Motherboard Repair
-              <br />
-              <span className="text-textColor font-bold text-xs block mt-1.5">
-                ₹ 1000.00
-              </span>
-            </p>
-          </div>
-          <div>
-            <div className="flex justify-center items-center gap-5 me-4">
-              <div
-                className="bg-white rounded-full p-[6px] w-6 h-6 flex items-center justify-center cursor-pointer"
-                onClick={handleDecrement}>
-                -
-              </div>
-              <input type="text" value={count} readOnly className="bg-white border border-[#CECECE] p-2 w-12 rounded-lg h-8 text-center text-sm"/>
-              <div
-                className="bg-white rounded-full p-[6px] w-6 h-6 flex items-center justify-center cursor-pointer"
-                onClick={handleIncrement}
-              >
-                +
+
+      {selectedItems.map((item) => (
+        <div key={item._id} className="mt-3 bg-[#F6F6F6] p-[10px] rounded-xl">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center w-[60%]">
+              <img
+                src={item.itemImage || "defaultImageURL"} // Replace with a default image if needed
+                className="w-20 rounded-lg"
+                alt={item.itemName}
+              />
+              <p className="text-dropdownText text-xs font-semibold ms-3">
+                {item.itemName}
+                <br />
+                <span className="text-textColor font-bold text-xs block mt-1.5">
+                  ₹ {item.sellingPrice.toFixed(2)}
+                </span>
+              </p>
+            </div>
+            <div>
+              <div className="flex justify-center items-center gap-5 me-4">
+                <div
+                  className="bg-white rounded-full p-[6px] w-6 h-6 flex items-center justify-center cursor-pointer"
+                  onClick={() => handleDecrement(item._id)}
+                >
+                  -
+                </div>
+                <input
+                  type="text"
+                  value={quantities[item._id] || 1}
+                  readOnly
+                  className="bg-white border border-[#CECECE] p-2 w-12 rounded-lg h-8 text-center text-sm"
+                />
+                <div
+                  className="bg-white rounded-full p-[6px] w-6 h-6 flex items-center justify-center cursor-pointer"
+                  onClick={() => handleIncrement(item._id, item.currentStock)}
+                >
+                  +
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      ))}
 
-      <div className="mt-8"> 
+      <div className="mt-8">
         <p className="text-[#495160] text-xs">Discount</p>
-        <PosDiscount/>
+        <PosDiscount />
       </div>
-      
-      <div className="mt-4 bg-white rounded-lg">
-          {/* Subtotal */}
-          <div className="flex justify-between items-center">
-            <p className="text-xs text-dropdownText font-semibold">Sub total</p>
-            <p className="text-sm text-textColor font-semibold">₹ 1000.00</p>
-          </div>
-          {/* Tax */}
-          <div className="flex justify-between items-center mt-2">
-            <p className="text-xs text-dropdownText font-semibold">Tax</p>
-            <p className="text-sm text-textColor font-semibold">₹ 100.00</p>
-          </div>
-          <hr style={{borderTop:"2px dashed #CECECE",fontWeight:"lighter"}} className="my-3" /> 
-          {/* Total */}
-          <div className="flex justify-between items-center">
-            <p className="text-base text-[#2C3E50] font-bold">Total</p>
-            <p className="text-base text-[#2C3E50] font-bold">₹ 1100.00</p>
-          </div>
-        </div>
 
+      <div className="mt-4 bg-white rounded-lg">
+        {/* Subtotal */}
+        <div className="flex justify-between items-center">
+          <p className="text-xs text-dropdownText font-semibold">Sub total</p>
+          <p className="text-sm text-textColor font-semibold">₹ {subtotal.toFixed(2)}</p>
+        </div>
+        {/* Tax */}
+        <div className="flex justify-between items-center mt-2">
+          <p className="text-xs text-dropdownText font-semibold">Tax</p>
+          <p className="text-sm text-textColor font-semibold">₹ {tax.toFixed(2)}</p>
+        </div>
+        <hr style={{ borderTop: "2px dashed #CECECE", fontWeight: "lighter" }} className="my-3" />
+        {/* Total */}
+        <div className="flex justify-between items-center">
+          <p className="text-base text-[#2C3E50] font-bold">Total</p>
+          <p className="text-base text-[#2C3E50] font-bold">₹ {total.toFixed(2)}</p>
+        </div>
+      </div>
 
       <div className="w-full mt-8">
         <p className="text-[#495160] text-sm font-semibold">Payment Method</p>
@@ -96,10 +146,14 @@ function AddItemsPos({}: Props) {
             <div key={method.id} onClick={() => setSelectedMethod(method.id)}>
               <div
                 className={`border w-32 px-[10px] py-2 rounded-lg flex justify-center items-center cursor-pointer border-[#C7CACF] ${
-                  selectedMethod === method.id? "bg-[#DADCCD]": "bg-[#FFFFFF]"}`}>
+                  selectedMethod === method.id ? "bg-[#DADCCD]" : "bg-[#FFFFFF]"
+                }`}
+              >
                 <div
                   className={`p-2 rounded-full ${
-                    selectedMethod === method.id? "bg-[#FFFFFF]": "bg-[#EBEBEB]"}`}>
+                    selectedMethod === method.id ? "bg-[#FFFFFF]" : "bg-[#EBEBEB]"
+                  }`}
+                >
                   {method.icon}
                 </div>
               </div>
