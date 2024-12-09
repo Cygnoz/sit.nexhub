@@ -88,6 +88,13 @@ function Pos({}: Props) {
   const handleCategoryClick = (categoryName: string) => {
     setSelectedCategory(categoryName);
   };
+  const handleRemoveItem = (itemToRemove: any) => {
+    setSelectedItems((prevItems) =>
+      prevItems.filter((item) => item.itemName !== itemToRemove.itemName)
+    );
+  };
+  
+
   const currentItems = tabSwitch === "products" ? goodsItems : serviceItems;
   const uniqueCategories = allCategoryData.filter((category) =>
     currentItems.some((item) => item.categories === category.categoriesName)
@@ -240,7 +247,7 @@ function Pos({}: Props) {
            font-semibold gap-1
            "><Info color="#585953" size={14} /> See more details</p>
           </div>
-          <AddItemsPos  selectedItems={selectedItems}/>
+          <AddItemsPos  selectedItems={selectedItems}   onRemoveItem={handleRemoveItem}/>
         </div>
       </div>
     </>

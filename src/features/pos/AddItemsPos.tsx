@@ -4,8 +4,9 @@ import RsIcon from "../../assets/icons/RsIcon";
 import UpiIcon from "../../assets/icons/UpiIcon";
 import Button from "../../Components/Button";
 import PosDiscount from "./PosDiscount";
+import OutlineTrashIcon from "../../assets/icons/OutlineTrashIcon";
 
-type Props = { selectedItems: any[] };
+type Props = { selectedItems: any[]; onRemoveItem: (item: any) => void; };
 
 const paymentMethods = [
   { id: 1, label: "Cash", icon: <RsIcon /> },
@@ -13,43 +14,43 @@ const paymentMethods = [
   { id: 3, label: "UPI", icon: <UpiIcon /> },
 ];
 
-function AddItemsPos({ selectedItems }: Props) {
+function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
   const [selectedMethod, setSelectedMethod] = useState<number | null>(1);
-const [quantities, setQuantities] = useState<{ [key: string]: number }>(
-  () =>
-    selectedItems.reduce(
-      (acc, item) => ({
-        ...acc,
-        [item._id]: quantities[item._id] || 1,
-      }),
-      {}
-    )
-);
+  const [quantities, setQuantities] = useState<{ [key: string]: number }>(
+    () =>
+      selectedItems.reduce(
+        (acc, item) => ({
+          ...acc,
+          [item._id]: quantities[item._id] || 1,
+        }),
+        {}
+      )
+  );
 
-const handleIncrement = (itemId: string, currentStock: number) => {
-  setQuantities((prev) => {
-    const newQuantity = (prev[itemId] || 1) + 1;
+  const handleIncrement = (itemId: string, currentStock: number) => {
+    setQuantities((prev) => {
+      const newQuantity = (prev[itemId] || 1) + 1;
 
-    if (newQuantity > currentStock) {
-      alert("Quantity exceeds current stock!"); 
-      return prev;
-    }
+      if (newQuantity > currentStock) {
+        alert("Quantity exceeds current stock!");
+        return prev;
+      }
 
-    return { ...prev, [itemId]: newQuantity };
-  });
-};
+      return { ...prev, [itemId]: newQuantity };
+    });
+  };
 
-const handleDecrement = (itemId: string) => {
-  setQuantities((prev) => {
-    const newQuantity = (prev[itemId] || 1) - 1;
+  const handleDecrement = (itemId: string) => {
+    setQuantities((prev) => {
+      const newQuantity = (prev[itemId] || 1) - 1;
 
-    if (newQuantity < 1) {
-      return prev; 
-    }
+      if (newQuantity < 1) {
+        return prev;
+      }
 
-    return { ...prev, [itemId]: newQuantity };
-  });
-};
+      return { ...prev, [itemId]: newQuantity };
+    });
+  };
 
   const subtotal = selectedItems.reduce(
     (total, item) => total + item.sellingPrice * (quantities[item._id] || 1),
@@ -57,12 +58,12 @@ const handleDecrement = (itemId: string) => {
   );
 
   const tax = selectedItems.reduce((total, item) => {
-    const igst = item.igst && item.igst > 0 ? item.igst : 0; 
+    const igst = item.igst && item.igst > 0 ? item.igst : 0;
     return total + igst * (quantities[item._id] || 1);
   }, 0);
-  
 
-  const discount = 0; 
+
+  const discount = 0;
   const total = subtotal + tax - discount;
 
   return (
@@ -78,7 +79,7 @@ const handleDecrement = (itemId: string) => {
             <div className="flex items-center w-[60%]">
               <img
                 src={item.itemImage || "defaultImageURL"} // Replace with a default image if needed
-                className="w-20 rounded-lg"
+                className="w-20 h-11 object-cover rounded-lg"
                 alt={item.itemName}
               />
               <p className="text-dropdownText text-xs font-semibold ms-3">
@@ -108,6 +109,9 @@ const handleDecrement = (itemId: string) => {
                   onClick={() => handleIncrement(item._id, item.currentStock)}
                 >
                   +
+                </div>
+                <div className="cursor-pointer" onClick={() => onRemoveItem(item)}>
+                  <OutlineTrashIcon color="red" />
                 </div>
               </div>
             </div>
@@ -145,14 +149,13 @@ const handleDecrement = (itemId: string) => {
           {paymentMethods.map((method) => (
             <div key={method.id} onClick={() => setSelectedMethod(method.id)}>
               <div
-                className={`border w-32 px-[10px] py-2 rounded-lg flex justify-center items-center cursor-pointer border-[#C7CACF] ${
-                  selectedMethod === method.id ? "bg-[#DADCCD]" : "bg-[#FFFFFF]"
-                }`}
+                className={`border w-32 px-[10px] py-2 rounded-lg flex justify-center items-center 
+                  cursor-pointer border-[#C7CACF] ${selectedMethod === method.id ? "bg-[#DADCCD]" : "bg-[#FFFFFF]"
+                  }`}
               >
                 <div
-                  className={`p-2 rounded-full ${
-                    selectedMethod === method.id ? "bg-[#FFFFFF]" : "bg-[#EBEBEB]"
-                  }`}
+                  className={`p-2 rounded-full ${selectedMethod === method.id ? "bg-[#FFFFFF]" : "bg-[#EBEBEB]"
+                    }`}
                 >
                   {method.icon}
                 </div>
