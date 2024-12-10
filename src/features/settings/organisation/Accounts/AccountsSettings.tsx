@@ -32,7 +32,7 @@ type Props = {};
 function AccountsSettings({}: Props) {
   // const [isVat, setIsVat] = useState(true);
   const [allAccounts, setAllAccounts] = useState<any>([]);
-  const [tax, setTax] = useState<any>([]);
+  const [ setTax] = useState<any>([]);
   const [accounts, setAccounts] = useState<any>([]);
 
   const { request: getAccounts } = useApi("get", 5001);
@@ -280,7 +280,7 @@ function AccountsSettings({}: Props) {
               </div>
 
               {/* Account Receivable */}
-              <div>
+              {/* <div>
                 <label
                   htmlFor="accountReceivableAccount"
                   className="text-slate-600 flex items-center gap-1"
@@ -310,10 +310,10 @@ function AccountsSettings({}: Props) {
                     <CehvronDown color="gray" />
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Account Payable */}
-              <div>
+              {/* <div>
                 <label
                   htmlFor="accountPayableAccount"
                   className="text-slate-600 flex items-center gap-1"
@@ -343,10 +343,10 @@ function AccountsSettings({}: Props) {
                     <CehvronDown color="gray" />
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
-          <p className="mt-4 text-textColor">
+          {/* <p className="mt-4 text-textColor">
             <b>Tax Selection</b>
           </p>
           {tax.taxType !== "" && (
@@ -597,7 +597,7 @@ function AccountsSettings({}: Props) {
                 </div>
               )}
             </div>
-          )}
+          )} */}
           {/* <p className="mt-4 text-textColor">
             <b>Others</b>
           </p> */}
