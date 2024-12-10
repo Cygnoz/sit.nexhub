@@ -67,6 +67,7 @@ const NewReceipt = ({ }: Props) => {
   const [allAcoounts, setAllAccounts] = useState<[] | any>([]);
   const [allInvoiceData, setAllInvoiceData] = useState<[]>([]);
   const [customerReciept, setCustomerReciept] = useState<[] | any>([]);
+  const [prefix, setPrifix] = useState("")
   const [recieptState, setRecieptState] = useState<ReceiptType>(initialReceipt);
   console.log(recieptState);
 
@@ -75,7 +76,7 @@ const NewReceipt = ({ }: Props) => {
   const { request: getAllInvoice } = useApi("get", 5007);
   const { request: getAccounts } = useApi("get", 5001);
   const { request: addReciept } = useApi("post", 5007);
-
+  const { request: getPrfix } = useApi("get", 5007);
 
   const fetchData = async (
     url: string,
@@ -123,9 +124,25 @@ const NewReceipt = ({ }: Props) => {
       setAllInvoiceData([]);
     }
   };
+  const getSalesRecieptPrefix = async () => {
+    try {
+      const prefixUrl = `${endponits. GET_LAST_SALES_RECIEPT_PREFIX}`;
+      const { response, error } = await getPrfix(prefixUrl);
+
+      if (!error && response) {
+        setPrifix(response.data)
+      } else {
+        console.log(error);
+      }
+    } catch (error) {
+      console.log("Error in fetching Purchase Order Prefix", error);
+    }
+  };
+
 
   useEffect(() => {
     fetchAllInvoices();
+    getSalesRecieptPrefix();
   }, []);
 
   useEffect(() => {
@@ -329,8 +346,8 @@ const NewReceipt = ({ }: Props) => {
 
                     <input
                       onChange={handleChange}
-                      value={recieptState.payment}
-                      name="payment"
+                      value={prefix}
+                      readOnly
                       type="text"
                       className="w-full text-sm p-1.5 pl-2 h-9 border-none outline-none rounded-l-lg"
                     />
