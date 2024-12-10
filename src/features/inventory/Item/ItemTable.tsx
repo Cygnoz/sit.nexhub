@@ -207,14 +207,20 @@ const ItemTable = () => {
   return (
     <div>
       <div>
-        <div className="flex gap-3 py-2 justify-between">
+        <div
+          className="flex gap-3 py-2 overflow-x-auto hide-scrollbar"
+          style={{ maxWidth: "100%" }} 
+        >
           {Items.map((customer) => (
             <button
               key={customer.title}
               onClick={() => setSelected(customer.title)}
-              className={`flex items-center gap-2 p-2 w-[100%] justify-center  rounded ${selected === customer.title ? "bg-WhiteIce" : "bg-white"
+              className={`flex w-[15%] items-center gap-2 p-2 justify-center rounded ${selected === customer.title ? "bg-WhiteIce" : "bg-white"
                 }`}
-              style={{ border: "1px solid #DADBDD" }}
+              style={{
+                border: "1px solid #DADBDD",
+                flexShrink: 0, // Prevent the button from shrinking
+              }}
             >
               {customer.icon}
               <span
@@ -225,6 +231,7 @@ const ItemTable = () => {
             </button>
           ))}
         </div>
+
       </div>
       <div className="flex items-center justify-between gap-4">
         <div className="w-full ">

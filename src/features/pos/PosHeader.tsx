@@ -32,7 +32,7 @@ function PosHeader({onSelectCustomer }: Props) {
     Navigate(-1)
   }
   return (
-    <div className="px-5 py-3 flex items-center justify-between">
+    <div className="px-5 py-3 flex items-center justify-between mt-2">
       <div className="flex items-center">
         <div className="rounded-[22px] px-2 py-1 gap-1 flex justify-center items-center cursor-pointer bg-white w-28" onClick={handleGoBack}>
           <img src={backHomeIcon} className="w-6" alt="Back to Home Icon" />
