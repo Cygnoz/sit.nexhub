@@ -159,7 +159,11 @@ export const endponits = {
  GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
  GET_DEBIT_NOTE:`getDebitNote`,
 
-
+ // credit note
+ GET_CREDIT_NOTE_PREFIX:`get-last-creditNote-prefix`,
+ ADD_CREDIT_NOTE:`add-creditNote`,
+ GET_ALL_CREDIT_NOTE:`get-all-creditNote`,
+//  GET_ONE_CREDIT_NOTE: `get-one-creditNote`,
 
   // Login
   LOGIN: "/login",
