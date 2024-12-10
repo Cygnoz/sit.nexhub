@@ -1,6 +1,5 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
-import Purchaseview from "../features/purchase/CommonComponents/PurchaseTable/Purchaseview";
 
 // Lazy load your components
 const Purchase = lazy(() => import("../pages/Purchase"));
@@ -13,6 +12,10 @@ const PaymentView = lazy(() => import("../features/purchase/paymentMade/PaymentV
 const PurchaseOrder = lazy(() => import("../features/purchase/purchaseOrder/PurchaseOrder"));
 const NewPurchaseOrder = lazy(() => import("../features/purchase/purchaseOrder/addPurchaseOrder/NewPurchaseOrder"));
 const AddPaymentMade = lazy(() => import("../features/purchase/paymentMade/addPaymentMade/AddPaymentMade"));
+const Purchaseview =lazy(()=>import("../features/purchase/CommonComponents/PurchaseTable/Purchaseview"))
+const AllInvoiceHome =lazy(()=>import("../features/purchase/bills/OCR/Invoice/AllInvoiceHome"))
+const OCRInvoiceView =lazy(()=>import("../features/purchase/bills/OCR/Invoice/OCRInvoiceView"))
+
 
 const PurchaseRoutes: RouteObject[] = [
   { path: "/purchase", element: <Purchase /> },
@@ -29,6 +32,10 @@ const PurchaseRoutes: RouteObject[] = [
   { path: "/purchase/bills/view/:id", element: <Purchaseview page="Bills" /> },
   { path: "/purchase/debit-note/view/:id", element: <Purchaseview page="DebitNote" /> },
   { path: "/purchase/payment-made/new-payment-made", element: <AddPaymentMade /> },
+  { path: "/purchase/bills/invoice", element: <AllInvoiceHome /> },
+  { path: "/purchase/bills/invoice/view", element: <OCRInvoiceView /> },
+
+
 ];
 
 export default PurchaseRoutes;

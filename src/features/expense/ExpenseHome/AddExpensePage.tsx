@@ -979,7 +979,7 @@ function AddExpensePage({}: Props) {
                         </div>
                       )}
                       <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4">
-                        <AddSupplierModal page="expense" />
+                        <AddSupplierModal page="purchase" />
                       </div>
                     </div>
                   )}
@@ -997,7 +997,7 @@ function AddExpensePage({}: Props) {
                     onChange={handleChange}
                     className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                   >
-                    <option value="">Select an Account</option>
+                    <option value="">Select GST Treatment</option>
                     <option value="Registered Business - Regular">
                       Registered Business - Regular
                     </option>
