@@ -954,10 +954,11 @@ function AddExpensePage({}: Props) {
                             }}
                           >
                             <div className="col-span-2 flex items-center justify-center">
-                              <img
-                                src="https://i.postimg.cc/MHdYrGVP/Ellipse-43.png"
-                                alt=""
-                              />
+                            <img
+                                className="rounded-full "
+                                  src={supplier.supplierProfile?supplier.supplierProfile:"https://i.postimg.cc/sDnbrRWP/avatar-3814049-1280.webp"}
+                                  alt=""
+                                />
                             </div>
                             <div className="col-span-10 flex cursor-pointer">
                               <div>

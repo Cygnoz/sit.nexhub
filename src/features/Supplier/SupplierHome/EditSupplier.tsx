@@ -21,7 +21,7 @@ type Props = {
   isModalOpen: boolean;
   openModal?: () => void;
   closeModal: () => void;
-  addressEdit?: string
+  addressEdit?: string;
 };
 
 const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addressEdit }) => {
@@ -143,7 +143,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     remarks: "",
     status: ""
   });
-  console.log(supplierdata, "supplierData")
+  console.log(supplier, "supplierData")
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
