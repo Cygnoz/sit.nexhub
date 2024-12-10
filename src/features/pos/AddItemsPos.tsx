@@ -6,7 +6,7 @@ import Button from "../../Components/Button";
 import PosDiscount from "./PosDiscount";
 import OutlineTrashIcon from "../../assets/icons/OutlineTrashIcon";
 
-type Props = { selectedItems: any[]; onRemoveItem: (item: any) => void; };
+type Props = { selectedItems: any[]; onRemoveItem: (item: any) => void };
 
 const paymentMethods = [
   { id: 1, label: "Cash", icon: <RsIcon /> },
@@ -16,12 +16,14 @@ const paymentMethods = [
 
 function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
   const [selectedMethod, setSelectedMethod] = useState<number | null>(1);
+  const [discount, setDiscount] = useState<number>(0);
+  const [discountType, setDiscountType] = useState<string>("%");
   const [quantities, setQuantities] = useState<{ [key: string]: number }>(
     () =>
       selectedItems.reduce(
         (acc, item) => ({
           ...acc,
-          [item._id]: quantities[item._id] || 1,
+          [item._id]: 1,
         }),
         {}
       )
@@ -30,12 +32,10 @@ function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
   const handleIncrement = (itemId: string, currentStock: number) => {
     setQuantities((prev) => {
       const newQuantity = (prev[itemId] || 1) + 1;
-
       if (newQuantity > currentStock) {
         alert("Quantity exceeds current stock!");
         return prev;
       }
-
       return { ...prev, [itemId]: newQuantity };
     });
   };
@@ -43,11 +43,9 @@ function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
   const handleDecrement = (itemId: string) => {
     setQuantities((prev) => {
       const newQuantity = (prev[itemId] || 1) - 1;
-
       if (newQuantity < 1) {
         return prev;
       }
-
       return { ...prev, [itemId]: newQuantity };
     });
   };
@@ -62,9 +60,13 @@ function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
     return total + igst * (quantities[item._id] || 1);
   }, 0);
 
+  // Calculate discount
+  const discountValue =
+    discountType === "%"
+      ? (subtotal * discount) / 100
+      : Math.min(discount, subtotal);
 
-  const discount = 0;
-  const total = subtotal + tax - discount;
+  const total = subtotal + tax - discountValue;
 
   return (
     <div className="bg-white p-6 mt-3 rounded-lg h-auto">
@@ -73,12 +75,13 @@ function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
         <p className="text-dropdownText text-sm font-semibold">Order no: 001343</p>
       </div>
 
+      {/* Selected Items */}
       {selectedItems.map((item) => (
         <div key={item._id} className="mt-3 bg-[#F6F6F6] p-[10px] rounded-xl">
           <div className="flex justify-between items-center">
             <div className="flex items-center w-[60%]">
               <img
-                src={item.itemImage || "defaultImageURL"} // Replace with a default image if needed
+                src={item.itemImage || "defaultImageURL"}
                 className="w-20 h-11 object-cover rounded-lg"
                 alt={item.itemName}
               />
@@ -119,30 +122,35 @@ function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
         </div>
       ))}
 
+      {/* Discount Section */}
       <div className="mt-8">
         <p className="text-[#495160] text-xs">Discount</p>
-        <PosDiscount />
+        <PosDiscount
+          discount={discount}
+          discountType={discountType}
+          onDiscountChange={setDiscount}
+          onDiscountTypeChange={setDiscountType}
+        />
       </div>
 
+      {/* Totals */}
       <div className="mt-4 bg-white rounded-lg">
-        {/* Subtotal */}
         <div className="flex justify-between items-center">
           <p className="text-xs text-dropdownText font-semibold">Sub total</p>
           <p className="text-sm text-textColor font-semibold">₹ {subtotal.toFixed(2)}</p>
         </div>
-        {/* Tax */}
         <div className="flex justify-between items-center mt-2">
           <p className="text-xs text-dropdownText font-semibold">Tax</p>
           <p className="text-sm text-textColor font-semibold">₹ {tax.toFixed(2)}</p>
         </div>
         <hr style={{ borderTop: "2px dashed #CECECE", fontWeight: "lighter" }} className="my-3" />
-        {/* Total */}
         <div className="flex justify-between items-center">
           <p className="text-base text-[#2C3E50] font-bold">Total</p>
           <p className="text-base text-[#2C3E50] font-bold">₹ {total.toFixed(2)}</p>
         </div>
       </div>
 
+      {/* Payment Methods */}
       <div className="w-full mt-8">
         <p className="text-[#495160] text-sm font-semibold">Payment Method</p>
         <div className="flex items-center justify-between mt-3">
