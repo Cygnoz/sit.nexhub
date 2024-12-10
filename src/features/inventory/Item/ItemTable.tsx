@@ -71,6 +71,8 @@ const ItemTable = () => {
 
       if (!error && response) {
         setItemsData(response.data);
+        console.log(response.data);
+        
       } else {
         console.error("Error in response:", error);
       }

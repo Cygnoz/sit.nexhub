@@ -5,6 +5,7 @@ import UpiIcon from "../../assets/icons/UpiIcon";
 import Button from "../../Components/Button";
 import PosDiscount from "./PosDiscount";
 import OutlineTrashIcon from "../../assets/icons/OutlineTrashIcon";
+import PosPayment from "./PosPayment";
 
 type Props = { selectedItems: any[]; onRemoveItem: (item: any) => void };
 
@@ -16,7 +17,7 @@ const paymentMethods = [
 
 function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
   const [selectedMethod, setSelectedMethod] = useState<number | null>(1);
-  const [discount, setDiscount] = useState<number>(0);
+  const [discount, setDiscount] = useState<any>("");
   const [discountType, setDiscountType] = useState<string>("%");
   const [quantities, setQuantities] = useState<{ [key: string]: number }>(
     () =>
@@ -76,51 +77,53 @@ function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
       </div>
 
       {/* Selected Items */}
-      {selectedItems.map((item) => (
-        <div key={item._id} className="mt-3 bg-[#F6F6F6] p-[10px] rounded-xl">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center w-[60%]">
-              <img
-                src={item.itemImage || "defaultImageURL"}
-                className="w-20 h-11 object-cover rounded-lg"
-                alt={item.itemName}
-              />
-              <p className="text-dropdownText text-xs font-semibold ms-3">
-                {item.itemName}
-                <br />
-                <span className="text-textColor font-bold text-xs block mt-1.5">
-                  ₹ {item.sellingPrice.toFixed(2)}
-                </span>
-              </p>
-            </div>
-            <div>
-              <div className="flex justify-center items-center gap-5 me-4">
-                <div
-                  className="bg-white rounded-full p-[6px] w-6 h-6 flex items-center justify-center cursor-pointer"
-                  onClick={() => handleDecrement(item._id)}
-                >
-                  -
-                </div>
-                <input
-                  type="text"
-                  value={quantities[item._id] || 1}
-                  readOnly
-                  className="bg-white border border-[#CECECE] p-2 w-12 rounded-lg h-8 text-center text-sm"
+      <div className="overflow-y-scroll max-h-[300px] hide-scrollbar">
+        {selectedItems.map((item) => (
+          <div key={item._id} className="mt-3 bg-[#F6F6F6] p-[10px] rounded-xl">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center w-[60%]">
+                <img
+                  src={item.itemImage || "defaultImageURL"}
+                  className="w-20 h-11 object-cover rounded-lg"
+                  alt={item.itemName}
                 />
-                <div
-                  className="bg-white rounded-full p-[6px] w-6 h-6 flex items-center justify-center cursor-pointer"
-                  onClick={() => handleIncrement(item._id, item.currentStock)}
-                >
-                  +
-                </div>
-                <div className="cursor-pointer" onClick={() => onRemoveItem(item)}>
-                  <OutlineTrashIcon color="red" />
+                <p className="text-dropdownText text-xs font-semibold ms-3">
+                  {item.itemName}
+                  <br />
+                  <span className="text-textColor font-bold text-xs block mt-1.5">
+                    ₹ {item.sellingPrice.toFixed(2)}
+                  </span>
+                </p>
+              </div>
+              <div>
+                <div className="flex justify-center items-center gap-5 me-4">
+                  <div
+                    className="bg-white rounded-full p-[6px] w-6 h-6 flex items-center justify-center cursor-pointer"
+                    onClick={() => handleDecrement(item._id)}
+                  >
+                    -
+                  </div>
+                  <input
+                    type="text"
+                    value={quantities[item._id] || 1}
+                    readOnly
+                    className="bg-white border border-[#CECECE] p-2 w-12 rounded-lg h-8 text-center text-sm"
+                  />
+                  <div
+                    className="bg-white rounded-full p-[6px] w-6 h-6 flex items-center justify-center cursor-pointer"
+                    onClick={() => handleIncrement(item._id, item.currentStock)}
+                  >
+                    +
+                  </div>
+                  <div className="cursor-pointer" onClick={() => onRemoveItem(item)}>
+                    <OutlineTrashIcon color="red" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
       {/* Discount Section */}
       <div className="mt-8">
@@ -178,7 +181,7 @@ function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
           <Button className="text-sm pl-14 h-10 pr-14" variant="secondary">
             Cancel
           </Button>
-          <Button className="text-sm pl-16 h-10 pr-16">Go to Payment</Button>
+         <PosPayment/>
         </div>
       </div>
     </div>

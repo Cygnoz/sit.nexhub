@@ -318,6 +318,7 @@ export const newDebitTableHead = [
   "Actions",
 ];
 
+
 export const PaymentMadeUnpaidBillTable = [
   "Date",
   "Due Date",
@@ -326,6 +327,16 @@ export const PaymentMadeUnpaidBillTable = [
   "Amount Due",
   "Payment",
 ];
+
+export const newCreditTableHead = [
+  "Product",
+  "Quantity",
+  "Rate",
+  "Tax",
+  "Amount",
+  "Actions",
+];
+
 export const SalesRecieptTable = [
   "Date",
   "Due Date",
