@@ -3,6 +3,9 @@ import Drawer from "../../../Components/drawer/drawer";
 import UserRound from "../../../assets/icons/user-round";
 import Button from "../../../Components/Button";
 import Pen from "../../../assets/icons/Pen";
+import EditSupplier from "../../Supplier/SupplierHome/EditSupplier";
+
+
 
 type Props = {
   selectedSupplier: any;
@@ -10,6 +13,12 @@ type Props = {
 
 function SupplierView({ selectedSupplier }: Props) {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+
+
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+
+  const openModal = () => setIsModalOpen(true); 
+  const closeModal = () => setIsModalOpen(false); 
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
@@ -142,8 +151,14 @@ function SupplierView({ selectedSupplier }: Props) {
               size="sm"
               variant="secondary"
             >
-              <Pen color="#565148" /> Edit Customer
+              <Pen color="#565148" /> Edit Supplier
             </Button>
+            <EditSupplier
+            isModalOpen={isModalOpen}
+            openModal={openModal}
+            closeModal={closeModal}
+            supplier={selectedSupplier}
+          />
           </div>
         </div>}
       </Drawer>

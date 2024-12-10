@@ -435,26 +435,27 @@ const CreateOrganizationForm = () => {
             </div>
 
             <div className=" ">
-              <label
-                htmlFor="organizationIndustry"
-                className="text-slate-600 flex items-center gap-1"
-              >
-                <p> Industry </p>
-                <div
-                  className="mt-1"
-                  onMouseEnter={() => handleTooltipToggle("industry", true)}
-                  onMouseLeave={() => handleTooltipToggle("industry", false)}
-                >
-                  <Info size={18} color={"currentColor"} stroke={3} />
-                  {tooltipState.industry && (
-                    <div className="absolute z-10 -mt-32 -ms-28">
-                      {renderCustomTooltip(
-                        "Select your industry type to help us fine-tune your experience. If you can't find your industry type from the list of options, you can input your own."
-                      )}
-                    </div>
-                  )}
-                </div>
-              </label>
+            <label
+  htmlFor="organizationIndustry"
+  className="text-slate-600 flex items-center gap-1"
+>
+  <p> Industry </p>
+  <div
+    className="relative mt-1"
+    onMouseEnter={() => handleTooltipToggle("industry", true)}
+    onMouseLeave={() => handleTooltipToggle("industry", false)}
+  >
+    <Info size={18} color={"currentColor"} stroke={3} />
+    {tooltipState.industry && (
+      <div className="absolute left-full -top-10 ml-2 w-[250px] p-2  rounded-md text-sm text-slate-700 z-10">
+        {renderCustomTooltip(
+          "Select your industry type to help us fine-tune your experience. If you can't find your industry type from the list of options, you can input your own."
+        )}
+      </div>
+    )}
+  </div>
+</label>
+
               <div className=" w-full mt-2.5 relative">
                 <select
                   value={inputData.organizationIndustry}
@@ -483,27 +484,28 @@ const CreateOrganizationForm = () => {
             </div>
           </div>
           <div className="pt-3">
-            <label
-              className="text-slate-600 flex items-center gap-1"
-              htmlFor="organizationAddress"
-            >
-              Organization Address{" "}
-              <div
-                className="mt-1"
-                onMouseEnter={() => handleTooltipToggle("address", true)}
-                onMouseLeave={() => handleTooltipToggle("address", false)}
-              >
-                <Info size={18} color={"currentColor"} stroke={3} />
-                {tooltipState.address && (
-                  <div className="absolute -mt-24 -ms-28">
-                    {renderCustomTooltip(
-                      "You can display your organization's address in your preferred style. Edit  it in Settings > Preferences > General."
-                    )}
-                  </div>
-                )}
-              </div>
-            </label>
-          </div>
+  <label
+    className="text-slate-600 flex items-center gap-1"
+    htmlFor="organizationAddress"
+  >
+    Organization Address{" "}
+    <div
+      className="relative mt-1"
+      onMouseEnter={() => handleTooltipToggle("address", true)}
+      onMouseLeave={() => handleTooltipToggle("address", false)}
+    >
+      <Info size={18} color={"currentColor"} stroke={3} />
+      {tooltipState.address && (
+        <div className="absolute left-full -top-7 ml-2 w-[200px] p-2  rounded-md text-sm text-slate-700">
+          {renderCustomTooltip(
+            "You can display your organization's address in your preferred style. Edit it in Settings > Preferences > General."
+          )}
+        </div>
+      )}
+    </div>
+  </label>
+</div>
+
           <div className="grid grid-cols-2 gap-4 -mt-2 space-y-4 ">
             <div>
               <input
