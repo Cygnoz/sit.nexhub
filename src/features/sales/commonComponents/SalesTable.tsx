@@ -195,9 +195,7 @@ const SalesTable = ({ page }: Props) => {
       navigate(`/sales/receipt/view/${id}`, { state });
 
     } 
-    else if (page === "credit-Note"){
-      navigate(`/sales/credit-note/view/${id}`, { state });
-    }
+   
     else {
       navigate(`/sales/viewsalesorder/${id}`, { state });
     }

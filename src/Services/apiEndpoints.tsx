@@ -164,7 +164,7 @@ export const endponits = {
  GET_CREDIT_NOTE_PREFIX:`get-last-creditNote-prefix`,
  ADD_CREDIT_NOTE:`add-creditNote`,
  GET_ALL_CREDIT_NOTE:`get-all-creditNote`,
-//  GET_ONE_CREDIT_NOTE: `get-one-creditNote`,
+ GET_ONE_CREDIT_NOTE: `get-one-creditNote`,
 
   // Login
   LOGIN: "/login",

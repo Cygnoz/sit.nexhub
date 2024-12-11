@@ -89,16 +89,16 @@ const NewCreditNote = () => {
     initialCreditNoteState
   );
 
- 
-  const [errors,setErrors]=useState({
-    invoiceNumber:false,
-    invoiceDate:false,
-    customerId:false,
-    placeOfSupply:false,
-    paymentMode:false,
-    depositTo:false,
-    itemTable:false,
-    orderNumber:false,
+
+  const [errors, setErrors] = useState({
+    invoiceNumber: false,
+    invoiceDate: false,
+    customerId: false,
+    placeOfSupply: false,
+    paymentMode: false,
+    depositTo: false,
+    itemTable: false,
+    orderNumber: false,
   })
 
 
@@ -128,7 +128,7 @@ const NewCreditNote = () => {
       console.error("Error fetching data:", error);
     }
   };
-  
+
   const filterByDisplayName = (
     data: any[],
     displayNameKey: string,
@@ -206,9 +206,9 @@ const NewCreditNote = () => {
     fetchData(allAccountsUrl, setAccounts, getAccountData);
   }, []);
 
-  
+
   useEffect(() => {
-    setCreditNoteState((preData:any) => ({
+    setCreditNoteState((preData: any) => ({
       ...preData,
       creditNote: DBPrefix,
     }));
@@ -235,24 +235,24 @@ const NewCreditNote = () => {
     searchValue
   );
 
- 
+
   const handleSave = async () => {
     const newErrors = { ...errors };
-  
-    newErrors.invoiceNumber = 
-    typeof creditNoteState.invoiceNumber === "string" 
-      ? creditNoteState.invoiceNumber.trim() === "" 
-      : false;
-  
-  
+
+    newErrors.invoiceNumber =
+      typeof creditNoteState.invoiceNumber === "string"
+        ? creditNoteState.invoiceNumber.trim() === ""
+        : false;
+
+
     if (creditNoteState.customerId.trim() === "") {
       newErrors.customerId = true;
     } else {
       newErrors.customerId = false;
     }
-  
-   
-  
+
+
+
     if (creditNoteState.placeOfSupply.trim() === "") {
       newErrors.placeOfSupply = true;
     } else {
@@ -273,7 +273,7 @@ const NewCreditNote = () => {
     } else {
       newErrors.depositTo = false;
     }
-  
+
     if (Object.values(newErrors).some((error) => error)) {
       setErrors(newErrors);
       toast.error("Fill the required fields");
@@ -301,7 +301,7 @@ const NewCreditNote = () => {
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
-   
+
     const checkTaxType = (customer: Customer) => {
       if (customer.taxType === "GST") {
         setIsPlaceOfSupplyVisible(true);
@@ -359,7 +359,7 @@ const NewCreditNote = () => {
 
   console.log(allInvoice, "test");
 
-console.log(creditNoteState,"hyy");
+  console.log(creditNoteState, "hyy");
 
 
   return (
@@ -381,92 +381,92 @@ console.log(creditNoteState,"hyy");
           <div className="bg-[#FFFFFF] p-5 min-h-max rounded-xl relative ">
             <div className=" mt-5 space-y-4">
               <div className="grid grid-cols-12 gap-4">
-              <div className="col-span-6">
-  <label className="text-sm mb-1 text-labelColor">
-    Customer Name<span className="text-[#bd2e2e]">*</span>
-  </label>
-  <div
-    className="relative w-full"
-    onClick={() => toggleDropdown("customer")}
-  >
-    <div
-      className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border
+                <div className="col-span-6">
+                  <label className="text-sm mb-1 text-labelColor">
+                    Customer Name<span className="text-[#bd2e2e]">*</span>
+                  </label>
+                  <div
+                    className="relative w-full"
+                    onClick={() => toggleDropdown("customer")}
+                  >
+                    <div
+                      className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border
            border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
-    >
-      <p>
-        {(
-          selectedCustomer as { customerDisplayName?: string }
-        )?.customerDisplayName ?? "Select Customer"}
-      </p>
-    </div>
-    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-      <CehvronDown color="gray" />
-    </div>
-  </div>
-  {openDropdownIndex === "customer" && (
-    <div
-      ref={dropdownRef}
-      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 space-y-1 max-w-72 overflow-y-auto hide-scrollbar"
-      style={{ width: "80%" }}
-    >
-      <SearchBar
-        searchValue={searchValue}
-        onSearchChange={setSearchValue}
-        placeholder="Search customer"
-      />
-      {filteredCustomer ? (
-        filteredCustomer.map((customer: any) => (
-          <div
-            className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer
+                    >
+                      <p>
+                        {(
+                          selectedCustomer as { customerDisplayName?: string }
+                        )?.customerDisplayName ?? "Select Customer"}
+                      </p>
+                    </div>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
+                  {openDropdownIndex === "customer" && (
+                    <div
+                      ref={dropdownRef}
+                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 space-y-1 max-w-72 overflow-y-auto hide-scrollbar"
+                      style={{ width: "80%" }}
+                    >
+                      <SearchBar
+                        searchValue={searchValue}
+                        onSearchChange={setSearchValue}
+                        placeholder="Search customer"
+                      />
+                      {filteredCustomer ? (
+                        filteredCustomer.map((customer: any) => (
+                          <div
+                            className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer
                 border border-slate-400 rounded-lg bg-lightPink"
-            onClick={() => {
-              // Set the selected customer data in the state
-              setCreditNoteState((prevState: any) => ({
-                ...prevState,
-                customerId: customer._id, 
-                customerDisplayName: customer.customerDisplayName, // Fix this assignment
-                orderNumber: "",
-                invoiceNumber: "",
-                invoiceId: "",
-                invoiceDate: "",
-              }));
-              setOpenDropdownIndex(null);
-              setSelecetdCustomer(customer); // Ensure selectedCustomer is updated
-              setSelectedInvoice([]);
-            }}
-          >
-            <div className="col-span-2 flex items-center justify-center">
-              <img
-                src="https://i.postimg.cc/MHdYrGVP/Ellipse-43.png"
-                alt=""
-              />
-            </div>
-            <div className="col-span-10 flex">
-              <div>
-                <p className="font-bold text-sm">
-                  {customer.customerDisplayName}
-                </p>
-                <p className="text-xs text-gray-500">
-                  Phone: {customer.mobile}
-                </p>
-              </div>
-              <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                &times;
-              </div>
-            </div>
-          </div>
-        ))
-      ) : (
-        <div className="text-center border-slate-400 border rounded-lg">
-          <p className="text-[darkRed] text-sm py-4">Customer Not Found!</p>
-        </div>
-      )}
-      <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4">
-        <NewCustomerModal page="customer" />
-      </div>
-    </div>
-  )}
-</div>
+                            onClick={() => {
+                              // Set the selected customer data in the state
+                              setCreditNoteState((prevState: any) => ({
+                                ...prevState,
+                                customerId: customer._id,
+                                customerDisplayName: customer.customerDisplayName, // Fix this assignment
+                                orderNumber: "",
+                                invoiceNumber: "",
+                                invoiceId: "",
+                                invoiceDate: "",
+                              }));
+                              setOpenDropdownIndex(null);
+                              setSelecetdCustomer(customer); // Ensure selectedCustomer is updated
+                              setSelectedInvoice([]);
+                            }}
+                          >
+                            <div className="col-span-2 flex items-center justify-center">
+                              <img
+                                src="https://i.postimg.cc/MHdYrGVP/Ellipse-43.png"
+                                alt=""
+                              />
+                            </div>
+                            <div className="col-span-10 flex">
+                              <div>
+                                <p className="font-bold text-sm">
+                                  {customer.customerDisplayName}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  Phone: {customer.mobile}
+                                </p>
+                              </div>
+                              <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
+                                &times;
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center border-slate-400 border rounded-lg">
+                          <p className="text-[darkRed] text-sm py-4">Customer Not Found!</p>
+                        </div>
+                      )}
+                      <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4">
+                        <NewCustomerModal page="customer" />
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 {isPlaceOfSupplyVisible && (
                   <div className="col-span-6">
@@ -508,8 +508,8 @@ console.log(creditNoteState,"hyy");
                     <input
                       readOnly
                       value={creditNoteState.creditNote}
-                       name="creditNote"
-                       onChange={handleChange}         
+                      name="creditNote"
+                      onChange={handleChange}
                       className="w-full text-sm p-1.5 pl-2 h-9 border-none outline-none rounded-l-lg"
                     />
                     <div className="p-1.5">
@@ -518,7 +518,7 @@ console.log(creditNoteState,"hyy");
                   </div>
                 </div>
 
-                <div className="col-span-6">
+                <div className="col-span-6 hidden">
                   <label className="block text-sm mb-1 text-labelColor">
                     Sales Order Number
                   </label>
@@ -535,78 +535,78 @@ console.log(creditNoteState,"hyy");
 
 
                 <div className="col-span-6">
-  <label
-    htmlFor=""
-    className="block text-sm mb-1 text-labelColor"
-    onClick={() => toggleDropdown("invoice")}
-  >
-    Invoice#<span className="text-[#bd2e2e]">*</span>
-  </label>
-  <div
-    className="relative w-full"
-    onClick={() => toggleDropdown("invoice")}
-  >
-    <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-      <p>
-        {selectedInvoice && selectedInvoice.salesInvoice
-          ? selectedInvoice.salesInvoice
-          : "Select Invoice"}
-      </p>
-    </div>
-    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-      <CehvronDown color="gray" />
-    </div>
-  </div>
-  {openDropdownIndex === "invoice" && (
-    <div
-      ref={dropdownRef}
-      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[47%] space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
-    >
-      <SearchBar
-        searchValue={searchValue}
-        onSearchChange={setSearchValue}
-        placeholder="Search Invoice"
-      />
-      {filteredInvoices.length > 0 ? (
-        filteredInvoices.map((invoice: any) => (
-          <div
-            key={invoice._id}
-            className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-            onClick={() => {
-              // Map salesInvoice to invoiceNumber
-              setCreditNoteState((prevState: any) => ({
-                ...prevState,
-                invoiceId: invoice._id,
-                invoiceNumber: invoice.salesInvoice, // Map salesInvoice to invoiceNumber
-                invoiceDate: invoice.salesInvoiceDate,
-                orderNumber: invoice.salesOrderNumber,
-              }));
-              setOpenDropdownIndex(null);
-              setSelectedInvoice(invoice);
-            }}
-          >
-            <div className="flex cursor-pointer">
-              <div>
-                <p className="font-bold text-sm">{invoice.salesInvoice}</p>
-                <p className="text-xs text-gray-500">
-                  Customer: {invoice.customerName}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))
-      ) : (
-        <div className="text-center border-slate-400 border rounded-lg">
-          <p className="text-[red] text-sm py-4">
-            {selectedCustomer && Object.keys(selectedCustomer).length > 0
-              ? "Invoice Not Found!"
-              : "Please select a customer to view invoices!"}
-          </p>
-        </div>
-      )}
-    </div>
-  )}
-</div>
+                  <label
+                    htmlFor=""
+                    className="block text-sm mb-1 text-labelColor"
+                    onClick={() => toggleDropdown("invoice")}
+                  >
+                    Invoice#<span className="text-[#bd2e2e]">*</span>
+                  </label>
+                  <div
+                    className="relative w-full"
+                    onClick={() => toggleDropdown("invoice")}
+                  >
+                    <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                      <p>
+                        {selectedInvoice && selectedInvoice.salesInvoice
+                          ? selectedInvoice.salesInvoice
+                          : "Select Invoice"}
+                      </p>
+                    </div>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
+                  {openDropdownIndex === "invoice" && (
+                    <div
+                      ref={dropdownRef}
+                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[47%] space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
+                    >
+                      <SearchBar
+                        searchValue={searchValue}
+                        onSearchChange={setSearchValue}
+                        placeholder="Search Invoice"
+                      />
+                      {filteredInvoices.length > 0 ? (
+                        filteredInvoices.map((invoice: any) => (
+                          <div
+                            key={invoice._id}
+                            className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                            onClick={() => {
+                              // Map salesInvoice to invoiceNumber
+                              setCreditNoteState((prevState: any) => ({
+                                ...prevState,
+                                invoiceId: invoice._id,
+                                invoiceNumber: invoice.salesInvoice, // Map salesInvoice to invoiceNumber
+                                invoiceDate: invoice.salesInvoiceDate,
+                                orderNumber: invoice.salesOrderNumber,
+                              }));
+                              setOpenDropdownIndex(null);
+                              setSelectedInvoice(invoice);
+                            }}
+                          >
+                            <div className="flex cursor-pointer">
+                              <div>
+                                <p className="font-bold text-sm">{invoice.salesInvoice}</p>
+                                <p className="text-xs text-gray-500">
+                                  Customer: {invoice.customerName}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center border-slate-400 border rounded-lg">
+                          <p className="text-[red] text-sm py-4">
+                            {selectedCustomer && Object.keys(selectedCustomer).length > 0
+                              ? "Invoice Not Found!"
+                              : "Please select a customer to view invoices!"}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 <div className="col-span-6">
                   <label className="block text-sm mb-1 text-labelColor">
@@ -665,7 +665,7 @@ console.log(creditNoteState,"hyy");
                   <div className="relative w-full">
                     <select
                       onChange={handleChange}
-                       name="paymentMode"
+                      name="paymentMode"
                       value={creditNoteState.paymentMode}
                       className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     >
@@ -731,18 +731,18 @@ console.log(creditNoteState,"hyy");
               />{""}
               <br />
               <div className="mt-2">
-            <label htmlFor="" className="block text-sm mb-1 text-labelColor">
-              Add Note
-              <input
-                name="addNotes"
-                id=""
-                value={creditNoteState.addNotes}
-                onChange={handleChange}
-                placeholder="Note"
-                className="border-inputBorder w-full text-sm border rounded  p-2 h-[57px] "
-              />
-            </label>
-          </div>
+                <label htmlFor="" className="block text-sm mb-1 text-labelColor">
+                  Add Note
+                  <input
+                    name="addNotes"
+                    id=""
+                    value={creditNoteState.addNotes}
+                    onChange={handleChange}
+                    placeholder="Note"
+                    className="border-inputBorder w-full text-sm border rounded  p-2 h-[57px] "
+                  />
+                </label>
+              </div>
 
             </div>
           </div>
@@ -900,7 +900,7 @@ console.log(creditNoteState,"hyy");
                 <PrinterIcon height={18} width={18} color="currentColor" />
                 Print
               </Button>
-              <Button variant="primary" size="sm" onClick={handleSave}> 
+              <Button variant="primary" size="sm" onClick={handleSave}>
                 Save & send
               </Button>{" "}
             </div>

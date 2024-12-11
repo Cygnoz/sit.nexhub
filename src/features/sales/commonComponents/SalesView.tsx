@@ -108,7 +108,7 @@ function SalesView({ data, page }: SalesOrderViewProps) {
                 :
                 page == "invoice" ? `${data?.salesInvoiceDate || "N/A"}`
                   : page === "quote" ? `${data?.salesQuoteDate || "N/A"}`
-                    : "Na"
+                    :page == "credit-Note" ? `${data?.salesQuoteDate || "N/A"}`:"Na"
             }
           </span>
         </p>

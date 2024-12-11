@@ -136,7 +136,7 @@ const CreditNoteTable = ({
     newRows[index].igst = item.igst;
     newRows[index].itemAmount = item.itemAmount;
     newRows[index].sellingPrice = item.sellingPrice;
-    newRows[index].itemSalesQuantity=item.itemSalesQuantity;
+    newRows[index].itemSalesQuantity=item.quantity;
     newRows[index].taxPreference=item.taxPreference;
 
 

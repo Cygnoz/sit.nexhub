@@ -61,8 +61,15 @@ function ViewSales() {
           ? `${endponits.GET_ONE_SALES_ORDER}/${id}`
           : page === "quote" ? `${endponits.GET_ONE_QUOTES}/${id}`
           :page === "reciept" ? `${endponits.GET_ONE_SALES_RECIEPT}/${id}`
-          :
-          ``;
+          :page === "credit-Note" ? `${endponits.GET_ONE_CREDIT_NOTE}/${id}`
+          : ``;
+
+          console.log("Page:", page);
+console.log("ID:", id);
+console.log("URL:", url);
+
+
+          
       const { response, error } = await getOneSalesOrder(url);
       if (!error && response) {
         setData(response.data);
@@ -102,6 +109,7 @@ function ViewSales() {
               : page === "invoice" ?
                 "View Invoice Order" 
                 : page === "quote" ? "View Sales Quote"
+                : page === "credit-Note" ? "View CreditNote"
                 : "Na"
           }</p>
         </div>
@@ -114,7 +122,8 @@ function ViewSales() {
                 page == "salesOrder" ?
                   "Sales Order"
                   : page == "invoice" ? " Invoice Order" 
-                  : page == "quote" ? "Quote" :
+                  : page == "quote" ? "Quote" 
+                  : page == "credit-Note" ? "Credit Note":
                   "Na"
               }
             </p>
