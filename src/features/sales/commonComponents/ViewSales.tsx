@@ -12,10 +12,12 @@ import SalesView from "../commonComponents/SalesView";
 interface SalesOrderData {
   salesInvoiceDate?: string;
   salesInvoice?: string;
-  salesQuotes?: string; 
+  salesQuotes?: string;
+  invoiceNumber?: string;
   salesOrderDate: string;
   salesOrder: string;
   expectedShipmentDate: string;
+  customerCreditDate: string;
   customerName: string;
   items: OrderItem[];
   totalAmount: number;
@@ -24,7 +26,7 @@ interface SalesOrderData {
   subTotal: number;
   totalTax: number;
   totalDiscount: number;
-  cgst: number; 
+  cgst: number;
   sgst: number;
   createdDate: string;
   discountTransactionAmount: number;
@@ -40,8 +42,8 @@ interface OrderItem {
   sellingPrice: number;
   amount: number;
   itemAmount: number;
-  sgstAmount:number;
-  cgstAmount:number;
+  sgstAmount: number;
+  cgstAmount: number;
 }
 
 function ViewSales() {
@@ -58,18 +60,14 @@ function ViewSales() {
         page === "invoice"
           ? `${endponits.GET_ONE_INVOICE}/${id}`
           : page === "salesOrder"
-          ? `${endponits.GET_ONE_SALES_ORDER}/${id}`
-          : page === "quote" ? `${endponits.GET_ONE_QUOTES}/${id}`
-          :page === "reciept" ? `${endponits.GET_ONE_SALES_RECIEPT}/${id}`
-          :page === "credit-Note" ? `${endponits.GET_ONE_CREDIT_NOTE}/${id}`
-          : ``;
-
-          console.log("Page:", page);
-console.log("ID:", id);
-console.log("URL:", url);
+            ? `${endponits.GET_ONE_SALES_ORDER}/${id}`
+            : page === "quote" ? `${endponits.GET_ONE_QUOTES}/${id}`
+              : page === "reciept" ? `${endponits.GET_ONE_SALES_RECIEPT}/${id}`
+                : page === "credit-Note" ? `${endponits.GET_ONE_CREDIT_NOTE}/${id}`
+                  : ``;
 
 
-          
+
       const { response, error } = await getOneSalesOrder(url);
       if (!error && response) {
         setData(response.data);
@@ -107,10 +105,10 @@ console.log("URL:", url);
             page === "salesOrder" ?
               "View Order"
               : page === "invoice" ?
-                "View Invoice Order" 
+                "View Invoice Order"
                 : page === "quote" ? "View Sales Quote"
-                : page === "credit-Note" ? "View CreditNote"
-                : "Na"
+                  : page === "credit-Note" ? "View CreditNote"
+                    : "Na"
           }</p>
         </div>
         <br />
@@ -121,22 +119,26 @@ console.log("URL:", url);
               {
                 page == "salesOrder" ?
                   "Sales Order"
-                  : page == "invoice" ? " Invoice Order" 
-                  : page == "quote" ? "Quote" 
-                  : page == "credit-Note" ? "Credit Note":
-                  "Na"
+                  : page == "invoice" ? " Invoice Order"
+                    : page == "quote" ? "Quote"
+                      : page == "credit-Note" ? "Credit Note" :
+                        "Na"
               }
             </p>
             <p className="text-lg text-textColor font-bold pr-4 border-r-[1px] border-borderRight">
               {page === "salesOrder" ? `Sales Order #${data?.salesOrder || "N/A"}` :
-                page === "invoice" ? `Invoice Order #${data?.salesInvoice || "N/A"}` 
-                : page === "quote" ? `Quote #${data?.salesQuotes || "N/A"}`
-                : ""}
+                page === "invoice" ? `Invoice Order #${data?.salesInvoice || "N/A"}`
+                  : page === "quote" ? `Quote #${data?.salesQuotes || "N/A"}`
+                    : page === "credit-Note" ? `Invoice #${data?.invoiceNumber || "N/A"}`
+                      : ""}
             </p>
 
-            <p className="text-sm font-semibold text-textColor bg-cuscolumnbg p-1 text-center rounded-sm">
-              {data?.status || "Draft"}
-            </p>
+            {page !== "credit-Note" && (
+              <p className="text-sm font-semibold text-textColor bg-cuscolumnbg p-1 text-center rounded-sm">
+                {data?.status || "Draft"}
+              </p>
+            )}
+
           </div>
           <div className="flex gap-3 items-center">
             <Button variant="secondary" className="pl-6 pr-6" size="sm">
