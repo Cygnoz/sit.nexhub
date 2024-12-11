@@ -7,6 +7,7 @@ import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
 // import BillsType from "./BillsType";
 import Table from "./Table";
+import SacnIcon from "../../../assets/icons/SacnIcon";
 
 type Props = {};
 
@@ -75,6 +76,15 @@ function BillsHomes({}: Props) {
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">
+        <Button
+            onClick={() => navigate("/purchase/bills/invoice")}
+            variant="secondary"
+            size="sm"
+          >
+            <SacnIcon/>
+            <p className="text-sm font-medium">Scan Invoice</p>
+          </Button>
+
           <Button
             onClick={() => navigate("/purchase/bills/new")}
             variant="primary"
