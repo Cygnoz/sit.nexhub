@@ -20,7 +20,8 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
   const [selectedMethod, setSelectedMethod] = useState<number | null>(1);
   const [selectedMethodLabel, setSelectedMethodLabel] = useState<string>("Cash");
   const [discount, setDiscount] = useState<any>("");
-  const [discountType, setDiscountType] = useState<string>("%");
+  const [discountType, setDiscountType] = useState<string>("Percentage");
+
   const [quantities, setQuantities] = useState<{ [key: string]: number }>(
     () =>
       selectedItems.reduce(
@@ -63,15 +64,20 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
   );
 
   const tax = selectedItems.reduce((total, item) => {
-    const igst = item.igst && item.igst > 0 ? item.igst : 0;
-    return total + igst * (quantities[item._id] || 1);
+    const igst = item.igst && item.igst > 0 ? parseFloat(item.igst) : 0; 
+    const quantity = quantities[item._id] || 1; 
+    const sellingPrice = parseFloat(item.sellingPrice) || 0;
+    const itemTax = (sellingPrice * quantity * igst) / 100;
+    return total + itemTax;
   }, 0);
-
+  
   // Calculate discount
   const discountValue =
-    discountType === "%"
-      ? (subtotal * discount) / 100
+    discountType === "Percentage"
+      ? ((subtotal +tax) * discount) / 100
       : Math.min(discount, subtotal);
+      console.log(discountValue);
+      
 
   const total = subtotal + tax - discountValue;
 
@@ -188,7 +194,9 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
           <Button className="text-sm pl-14 h-10 pr-14" variant="secondary">
             Cancel
           </Button>
-          <PosPayment selectedItems={selectedItems} total={total} selectedMethodLabel={selectedMethodLabel} selectedCustomer={selectedCustomer} />
+          <PosPayment selectedItems={selectedItems} total={total} selectedMethodLabel={selectedMethodLabel} selectedCustomer={selectedCustomer}
+          quantities={quantities}
+          discountType={discountType} discount={discountValue} discounts={discount} subtotal={subtotal} />
         </div>
       </div>
      </div>

@@ -5,6 +5,7 @@ import Button from "../../Components/Button";
 import PlusCircle from "../../assets/icons/PlusCircle";
 import SelectCustomerModal from "./SelectCustomerModal";
 import { useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 type Props = {
   onSelectCustomer: (customer: any) => void; 
@@ -57,6 +58,7 @@ function PosHeader({onSelectCustomer }: Props) {
          <PlusCircle/> Create Customer   
         </Button>     
       </div>
+      <Toaster reverseOrder={false} />
     </div>
   );
 }
