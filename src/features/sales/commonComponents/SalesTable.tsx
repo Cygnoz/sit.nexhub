@@ -193,7 +193,9 @@ const SalesTable = ({ page }: Props) => {
     const state = { page };
     if (page === "reciept") {
       navigate(`/sales/receipt/view/${id}`, { state });
-    }
+
+    } 
+   
     else {
       navigate(`/sales/viewsalesorder/${id}`, { state });
     }

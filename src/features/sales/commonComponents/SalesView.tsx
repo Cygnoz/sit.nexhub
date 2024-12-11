@@ -23,6 +23,7 @@ interface SalesOrderData {
   expiryDate?: string;
   salesOrderDate: string;
   expectedShipmentDate: string;
+  customerCreditDate: string;
   customerName: string;
   items: OrderItem[];
   totalAmount: number;
@@ -31,6 +32,10 @@ interface SalesOrderData {
   subTotal: number;
   totalTax: number;
   totalDiscount: number;
+  invoiceNumber?: string;
+  
+paymentMode?:string
+  
 }
 
 interface Customer {
@@ -101,26 +106,31 @@ function SalesView({ data, page }: SalesOrderViewProps) {
       {/* Order Date & Expected Shipment */}
       <div className="flex items-center justify-start mb-4">
         <p className="text-textColor border-r-[1px] border-borderRight pr-4 text-sm font-normal">
-          Order Date:
+          {page === "credit-Note" ? "Credit Date:" : "Order Date:"}
           <span className="ms-3 text-dropdownText text-sm font-semibold">
             {
-              page == "salesOrder" ? `${data?.salesOrderDate || "N/A"}`
-                :
-                page == "invoice" ? `${data?.salesInvoiceDate || "N/A"}`
+              page === "salesOrder" ? `${data?.salesOrderDate || "N/A"}`
+                : page === "invoice" ? `${data?.salesInvoiceDate || "N/A"}`
                   : page === "quote" ? `${data?.salesQuoteDate || "N/A"}`
-                    : "Na"
+                    : page === "credit-Note" ? `${data?.customerCreditDate || "N/A"}`
+                      : "N/A"
             }
           </span>
         </p>
-        <p className="text-textColor pl-4 text-sm font-normal">
-          Expected Shipment:
-          <span className="ms-3 text-dropdownText text-sm font-semibold">
-            {
-              page === "salesOrder" || page === "invoice" ? `${data?.expectedShipmentDate || "N/A"}`
-                : `${data?.expiryDate || "N/A"}`
-            }
-          </span>
-        </p>
+
+        {page !== "credit-Note" && (
+          <p className="text-textColor pl-4 text-sm font-normal">
+            Expected Shipment:
+            <span className="ms-3 text-dropdownText text-sm font-semibold">
+              {
+                page === "salesOrder" || page === "invoice"
+                  ? `${data?.expectedShipmentDate || "N/A"}`
+                  : `${data?.expiryDate || "N/A"}`
+              }
+            </span>
+          </p>
+        )}
+
       </div>
 
       {/* Send Sales Order */}
@@ -139,7 +149,7 @@ function SalesView({ data, page }: SalesOrderViewProps) {
         </div>
         <div className="flex gap-4">
           {
-            page == "salesOrder" ? <SendSalesOrder data={data}/>
+            page == "salesOrder" ? <SendSalesOrder data={data} />
               : ""
           }
           {
@@ -158,70 +168,96 @@ function SalesView({ data, page }: SalesOrderViewProps) {
       </div>
 
       {/* Item Details */}
-      <div className="grid grid-cols-4 gap-6 mt-4">
-        {data?.items.map((item) => (
-          <div
-            key={item.itemId}
-            className="p-4 rounded-lg relative"
-            style={{
-              background:
-                "linear-gradient(89.66deg, #E3E6D5 -0.9%, #F7E7CE 132.22%)",
-            }}
-          >
-            {/* Toggle Button */}
-            <button
-              onClick={() => toggleItemDetails(item.itemId)}
-              className="absolute top-3 right-3 focus:outline-none"
-              aria-label={
-                openItemId === item.itemId ? "Hide details" : "Show details"
-              }
+        <div className="grid grid-cols-2 gap-6 mt-4">
+          {data?.items.map((item) => (
+            <div
+              key={item.itemId}
+              className="p-4 rounded-lg relative"
+              style={{
+                background:
+                  "linear-gradient(89.66deg, #E3E6D5 -0.9%, #F7E7CE 132.22%)",
+              }}
             >
-              {openItemId === item.itemId ? (
-                <CheveronUp color="black" />
-              ) : (
-                <CheveronDownIcon color="black" />
+              {/* Toggle Button */}
+              <button
+                onClick={() => toggleItemDetails(item.itemId)}
+                className="absolute top-3 right-3 focus:outline-none"
+                aria-label={
+                  openItemId === item.itemId ? "Hide details" : "Show details"
+                }
+              >
+                {openItemId === item.itemId ? (
+                  <CheveronUp color="black" />
+                ) : (
+                  <CheveronDownIcon color="black" />
+                )}
+              </button>
+
+              {/* Main Content */}
+              <div className="flex items-center">
+                <div className="flex items-center border-borderRight pr-4">
+                  <div>
+                    <p className="text-blk font-semibold">{item.itemName}</p>
+                    <p className="text-dropdownText text-sm">
+                      Qty: {item.quantity}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Details */}
+              {openItemId === item.itemId && (
+                <div className="mt-4 bg-gray-100 rounded-lg w-full flex flex-wrap">
+                  {/* Rate */}
+                  <div className="border-r flex items-center border-borderRight pr-[28px] h-[62px] pl-6">
+                    <div>
+                      <p className="text-dropdownText text-sm">Rate</p>
+                      <p className="font-bold text-sm text-textColor">
+                        {organization?.baseCurrency}. {item.sellingPrice}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Amount */}
+                  <div className="flex items-center h-[62px]   pr-[28px] pl-6 border-r border-borderRight">
+                    <div>
+                      <p className="text-dropdownText text-sm">Amount</p>
+                      <p className="font-bold text-sm text-textColor">
+                        {organization?.baseCurrency}. {item.itemAmount}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Additional Fields for Credit Note */}
+                  {page === "credit-Note" && (
+                    <>
+                     {/* Mode */}
+                      <div className="flex items-center h-[62px] pl-6  pr-[28px]  border-r border-borderRight">
+                        <div>
+                          <p className="text-dropdownText text-sm ">PaymentMode</p>
+                          <p className="font-bold text-sm text-textColor">
+                            {data.paymentMode|| "N/A"}
+                          </p>
+                        </div> 
+                      </div>
+
+                      {/* Invoice Number */}
+                      <div className="flex  items-center h-[62px] pl-6 ">
+                        <div>
+                          <p className="text-dropdownText text-sm">Invoice Number</p>
+                          <p className="font-bold text-sm text-textColor">
+                            {data.invoiceNumber || "N/A"}
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
               )}
-            </button>
-
-            {/* Main Content */}
-            <div className="flex items-center">
-              <div className="flex items-center border-borderRight pr-4">
-                <div>
-                  <p className="text-blk font-semibold">{item.itemName}</p>
-                  <p className="text-dropdownText text-sm">
-                    Qty: {item.quantity}
-                  </p>
-                </div>
-              </div>
             </div>
+          ))}
+        </div>
 
-            {/* Additional Details */}
-            {openItemId === item.itemId && (
-              <div className="mt-4 bg-gray-100 rounded-lg w-full flex">
-                {/* Rate */}
-                <div className="border-r flex items-center border-borderRight pr-[28px] h-[62px] pl-6">
-                  <div>
-                    <p className="text-dropdownText text-sm">Rate</p>
-                    <p className="font-bold text-sm text-textColor">
-                      {organization?.baseCurrency}. {item.sellingPrice}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Amount */}
-                <div className="flex items-center h-[62px] pl-6">
-                  <div>
-                    <p className="text-dropdownText text-sm">Amount</p>
-                    <p className="font-bold text-sm text-textColor">
-                      {organization?.baseCurrency}. {item.itemAmount}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
 
       <hr className="mt-6 border-t border-inputBorder" />
       {
