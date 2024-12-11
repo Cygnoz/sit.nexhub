@@ -6,8 +6,9 @@ import Button from "../../Components/Button";
 import PosDiscount from "./PosDiscount";
 import OutlineTrashIcon from "../../assets/icons/OutlineTrashIcon";
 import PosPayment from "./PosPayment";
+// import noItemFoundIMage from "../../assets/Images/no item added.png"
 
-type Props = { selectedItems: any[]; onRemoveItem: (item: any) => void };
+type Props = { selectedItems: any[]; onRemoveItem: (item: any) => void ; selectedCustomer:any };
 
 const paymentMethods = [
   { id: 1, label: "Cash", icon: <RsIcon /> },
@@ -15,8 +16,9 @@ const paymentMethods = [
   { id: 3, label: "UPI", icon: <UpiIcon /> },
 ];
 
-function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
+function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
   const [selectedMethod, setSelectedMethod] = useState<number | null>(1);
+  const [selectedMethodLabel, setSelectedMethodLabel] = useState<string>("Cash");
   const [discount, setDiscount] = useState<any>("");
   const [discountType, setDiscountType] = useState<string>("%");
   const [quantities, setQuantities] = useState<{ [key: string]: number }>(
@@ -30,6 +32,10 @@ function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
       )
   );
 
+  const handleMethodSelect = (method: { id: number; label: string }) => {
+    setSelectedMethod(method.id); 
+    setSelectedMethodLabel(method.label);
+  };
   const handleIncrement = (itemId: string, currentStock: number) => {
     setQuantities((prev) => {
       const newQuantity = (prev[itemId] || 1) + 1;
@@ -71,7 +77,8 @@ function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
 
   return (
     <div className="bg-white p-6 mt-3 rounded-lg h-auto">
-      <div className="flex justify-between items-center">
+     <div>
+     <div className="flex justify-between items-center">
         <p className="text-textColor text-sm font-bold">Selected Item</p>
         <p className="text-dropdownText text-sm font-semibold">Order no: 001343</p>
       </div>
@@ -157,33 +164,34 @@ function AddItemsPos({ selectedItems, onRemoveItem }: Props) {
       <div className="w-full mt-8">
         <p className="text-[#495160] text-sm font-semibold">Payment Method</p>
         <div className="flex items-center justify-between mt-3">
-          {paymentMethods.map((method) => (
-            <div key={method.id} onClick={() => setSelectedMethod(method.id)}>
-              <div
-                className={`border w-32 px-[10px] py-2 rounded-lg flex justify-center items-center 
-                  cursor-pointer border-[#C7CACF] ${selectedMethod === method.id ? "bg-[#DADCCD]" : "bg-[#FFFFFF]"
-                  }`}
-              >
-                <div
-                  className={`p-2 rounded-full ${selectedMethod === method.id ? "bg-[#FFFFFF]" : "bg-[#EBEBEB]"
-                    }`}
-                >
-                  {method.icon}
-                </div>
-              </div>
-              <p className="text-center text-[#2C3E50] font-semibold text-[10px] mt-1.5">
-                {method.label}
-              </p>
+      {paymentMethods.map((method) => (
+        <div key={method.id} onClick={() => handleMethodSelect(method)}>
+          <div
+            className={`border w-32 px-[10px] py-2 rounded-lg flex justify-center items-center 
+              cursor-pointer border-[#C7CACF] ${selectedMethod === method.id ? "bg-[#DADCCD]" : "bg-[#FFFFFF]"
+              }`}
+          >
+            <div
+              className={`p-2 rounded-full ${selectedMethod === method.id ? "bg-[#FFFFFF]" : "bg-[#EBEBEB]"
+                }`}
+            >
+              {method.icon}
             </div>
-          ))}
+          </div>
+          <p className="text-center text-[#2C3E50] font-semibold text-[10px] mt-1.5">
+            {method.label}
+          </p>
         </div>
+      ))}
+    </div>
         <div className="flex justify-between mt-7">
           <Button className="text-sm pl-14 h-10 pr-14" variant="secondary">
             Cancel
           </Button>
-         <PosPayment/>
+          <PosPayment selectedItems={selectedItems} total={total} selectedMethodLabel={selectedMethodLabel} selectedCustomer={selectedCustomer} />
         </div>
       </div>
+     </div>
     </div>
   );
 }

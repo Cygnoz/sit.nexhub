@@ -193,10 +193,6 @@ const SalesTable = ({ page }: Props) => {
     const state = { page };
     if (page === "reciept") {
       navigate(`/sales/receipt/view/${id}`, { state });
-
-    } 
-    else if (page === "credit-Note"){
-      navigate(`/sales/credit-note/view/${id}`, { state });
     }
     else {
       navigate(`/sales/viewsalesorder/${id}`, { state });

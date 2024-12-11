@@ -247,7 +247,7 @@ function Pos({}: Props) {
            font-semibold gap-1
            "><Info color="#585953" size={14} /> See more details</p>
           </div>
-          <AddItemsPos  selectedItems={selectedItems}   onRemoveItem={handleRemoveItem}/>
+          <AddItemsPos  selectedItems={selectedItems} selectedCustomer={selectedCustomer}   onRemoveItem={handleRemoveItem}/>
         </div>
       </div>
     </>
