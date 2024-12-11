@@ -30,7 +30,10 @@ export const endponits = {
   GET_ALL_SALES_INVOICE:"sales-invoice",
   GET_ONE_INVOICE:"sales-order",
   GET_ONE_JOURNAL_INVOICE:"invoice-journal",
-
+  //sales reciept
+  ADD_SALES_RECIEPT:"sales-receipt",
+  GET_ALL_SALES_RECIEPT:"get-all-receipt",
+  GET_ONE_SALES_RECIEPT:"get-receipt",
   //getall-item-sales
   GET_ALL_ITEMS_SALES: "get-all-item-xs",
   GET_ALL_ITEMS_TABLE:"get-all-item-m",
@@ -156,10 +159,22 @@ export const endponits = {
  GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
  GET_DEBIT_NOTE:`getDebitNote`,
 
-  //  Expense 
-  ADD_EXPENSES:`add-expense`,
+
 
   // Login
   LOGIN: "/login",
   GET_OTP: "/verify-otp",
+
+
+    //  Expense 
+    ADD_EXPENSES:`add-expense`,
+    GET_ALL_EXPENSE:`get-all-expense`,
+    GET_A_EXPENSE:`get-one-expense`,
+
+  //Expense > category
+  ADD_EXPENSE_CATEGORY:`add-category`,
+  GET_ALL_EXPENSE_CATEGORY:`get-all-category`,
+  GET_ONE_EXPENSE_CATEGORY:`get-one-category`,
+  UPDATE_EXPENSE_CATEGORY:`update-category`,
+  DELETE_EXPENSE_CATEGORY:`delete-category`
 };

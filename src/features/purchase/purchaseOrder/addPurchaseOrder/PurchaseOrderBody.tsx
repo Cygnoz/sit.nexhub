@@ -34,6 +34,7 @@ export interface PurchaseOrder {
     itemCgstAmount: number; 
     itemIgstAmount: number; 
     itemVatAmount: number;  
+    taxPreference:string;
   }>;
 
   otherExpense: number;

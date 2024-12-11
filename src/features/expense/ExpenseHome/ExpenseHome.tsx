@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Category from "../../inventory/Category/CategoryModal";
 import AddExpenseModal from "./AddExpenseModal";
-
-import Button from "../../../Components/Button";
-import CirclePlus from "../../../assets/icons/circleplus";
+// import Button from "../../../Components/Button";
+// import CirclePlus from "../../../assets/icons/circleplus";
 import ExpenseTable from "./ExpenseTable";
+import AddExpenseCategory from "./AddExpenseCategory";
 
 type Props = {};
 
@@ -14,53 +14,22 @@ const ExpenseHome = ({}: Props) => {
   const toggleCategoryModal = () => {
     setOpenCategoryModal(!openCategoryModal);
   };
-  const cardData = [
-    { head: "Today's", note: "Lorem ipsum dolor sit amet", RS: "1000" },
-    {
-      head: "This Week Expense",
-      note: "Lorem ipsum dolor sit amet",
-      RS: "1000",
-    },
-    {
-      head: "This Month Expense",
-      note: "Lorem ipsum dolor sit amet",
-      RS: "1000",
-    },
-  ];
+  
   return (
     <div className="mx-6 my-4 text-textColor space-y-5">
       <div className="flex">
         <div>
         <h3 className="font-bold text-2xl text-textColor">Expense</h3>
         <p className="text-sm text-gray mt-1">
-        Lorem ipsum dolor sit amet consectetur. Commodo enim odio fringilla
-            egestas consectetur amet.
+        Gain a clear understanding of your financial outflows with the Expense Overview section.
           </p>
         </div>
         <div className="ml-auto flex items-center gap-4">
-        <Button variant="secondary" className="flex items-center" size="sm" onClick={toggleCategoryModal}>
-            <CirclePlus color="currentColor" size="14" />{" "}
-            <p className="text-md">Add Category</p>
-          </Button>
+           <AddExpenseCategory/>
           <AddExpenseModal />
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-4 ">
-        {cardData.map((item, index) => (
-          <div
-            className="bg-white h-[72px] flex items-center p-4 rounded-lg"
-            key={index}
-          >
-            <div>
-              <p className="text-base font-semibold">{item.head}</p>
-              <p className="text-xs text-dropdownText">{item.note}</p>
-            </div>
-            <div className="ml-auto items-center flex">
-              <p className="font-bold text-2xl ml-auto">RS {item.RS}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+    
 
       <div className="bg-white p-3 rounded-lg">
         <ExpenseTable />

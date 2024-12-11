@@ -27,11 +27,14 @@ export interface Bill {
         itemVat: number | string ;
         itemSgstAmount: number | string ;
         itemCgstAmount: number | string ;
+        taxPreference:string;
     }[];
     otherExpense: number | string ;
+    otherExpenseAccountId:string;
     otherExpenseReason: string;
     vehicleNo: string;
     freight: number | string ;
+    freightAccountId:string;
     addNotes: string;
     termsAndConditions: string;
     attachFiles: string;
@@ -51,5 +54,6 @@ export interface Bill {
     grandTotal: number | string ;
     balanceAmount:number | string ;
     paidAmount:number | string ;
+    paidAccountId:string;
     purchaseOrderId?:string;
 }

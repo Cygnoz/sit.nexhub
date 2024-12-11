@@ -21,7 +21,7 @@ const SendPurchaseOrder=({data}:Props)=>{
 
 
   const handleRowClick = () => {
-    navigate(`/purchase/bills/new?id=${data._id}`);  };
+    navigate(`/purchase/bills/new?id=${data._id}`);};
 
 
 
@@ -37,43 +37,45 @@ const SendPurchaseOrder=({data}:Props)=>{
           </p>
         </div>
         <div className="flex gap-4">
-          <Button variant="secondary" className="pl-4 pr-4" size="sm"  onClick={openModal}>
+          <Button variant="primary" className="pl-4 pr-4" size="sm"  onClick={openModal}>
             <p className="text-sm font-medium">Mark as Confirmed</p>
           </Button>
         
         </div>
         <Modal open={isModalOpen} onClose={closeModal} style={{ width: "55%" }}>
-        <div className="p-5 mt-3 text-center">
-          <div className="mb-5 flex py-3 px-3 rounded-xl bg-CreamBg relative overflow-hidden">
-            <div
-              className="absolute top-0 -right-8 w-[178px] h-[70px]"
-              style={{
-                backgroundImage: `url(${bgImage})`,
-                backgroundRepeat: "no-repeat",
-              }}
-            ></div>
-            <div className=" flex items-center justify-center">
-              <p className="font-bold text-base mt-2 text-center text-textColor">
-               Purchase Order Has Been Marked as Confirmed
-              </p>
-            </div>
-            <div
-              className="ms-auto text-3xl cursor-pointer  z-10"
-              onClick={closeModal}
-            >
-              &times;
-            </div>
-          </div>
+        <div className="p-5 ">
+        
+        <div
+  className="mb-5 flex items-center justify-center py-3 rounded-xl bg-CreamBg relative overflow-hidden"
+  style={{
+    backgroundImage: `url(${bgImage})`,
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right center"
+  }}
+>
+  <div className="relative flex flex-col items-center text-center">
+    <p className="font-bold text-base mt-2 text-textColor">
+      Purchase Order Has Been Marked as Confirmed
+    </p>
+  </div>
+  <div
+    className="absolute top-3 right-3 text-3xl cursor-pointer z-10"
+    onClick={closeModal}
+  >
+    <p>&times;</p>
+  </div>
+</div>
+
       
           <form>
-            <div >
+            <div className="text-center" >
             
             <p className="text-textColor px-2 text-sm">
          Purchase Order Has Been Marked as Confirmed would to like to proceed to bill
 
          </p>
 
-              <div className="flex justify-center items-center gap-2 my-3">
+              <div className="flex justify-center items-center gap-4 my-4">
                   <Button variant="primary" size="sm" className="px-3" onClick={handleRowClick}>
                     Yes
                 </Button>

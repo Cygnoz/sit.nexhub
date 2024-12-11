@@ -1,17 +1,20 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import Button from "../../../Components/Button";
+import { useNavigate } from "react-router-dom";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import SearchBar from "../../../Components/SearchBar";
 import Print from "../../sales/salesOrder/Print";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
+import Eye from "../../../assets/icons/Eye";
+import PencilEdit from "../../../assets/icons/PencilEdit";
+import EditSupplier from "./EditSupplier"; // Import the EditSupplier component
+import { SupplierData } from "../../../Types/Supplier";
+
 interface Column {
   id: string;
   label: string;
   visible: boolean;
 }
-
 interface Supplier {
   _id: string;
   billingAttention: string;
@@ -27,10 +30,10 @@ interface Supplier {
 }
 
 interface SupplierTableProps {
-  supplierData: Supplier[];
+  supplierData: Supplier[]; 
   searchValue: string;
   setSearchValue: (value: string) => void;
-  loading: any // Add loading prop
+  loading: any; // Add loading prop
 }
 
 const SupplierTable = ({
@@ -53,6 +56,24 @@ const SupplierTable = ({
   ];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSupplier, setSelectedSupplier] = useState<SupplierData | null>(null);
+
+  const navigate = useNavigate();
+
+  const handleView = (id: string) => {
+    navigate(`/supplier/view/${id}`);
+  };
+
+  const handleEdit = (supplier: SupplierData) => {
+    setSelectedSupplier(supplier);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedSupplier(null);
+  };
 
   const filteredAccounts = supplierData.filter((account) => {
     const searchValueLower = searchValue.toLowerCase();
@@ -65,26 +86,23 @@ const SupplierTable = ({
     );
   });
 
-  const renderColumnContent = (colId: string, item: Supplier) => {
-    // Check if the column is "supplierDetails" first
+  const renderColumnContent = (colId: string, item: SupplierData) => {
     if (colId === "supplierDetails") {
       return (
-        <div className="flex justify-center">
-          <Link to={`/supplier/view/${item._id}`}>
-            <Button
-              variant="secondary"
-              className="font-medium rounded-lg h-[1rem] text-[9.5px]"
-            >
-              See details
-            </Button>
-          </Link>
+        <div className="flex justify-center items-center gap-3">
+          <div onClick={() => handleView(item._id)} className="cursor-pointer">
+            <Eye color={"#569FBC"} />
+          </div>
+          <div onClick={() => handleEdit(item)} className="cursor-pointer">
+            <PencilEdit color={"#0B9C56"} />
+          </div>
         </div>
       );
     }
-  
+
     if (colId === "status") {
       const statusStyles = item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400";
-  
+
       return (
         <p
           className={`${statusStyles} text-[13px] rounded text-white h-[18px] flex items-center justify-center`}
@@ -93,22 +111,19 @@ const SupplierTable = ({
         </p>
       );
     }
-  
-    const columnValue = item[colId as keyof Supplier];
-    
-    // Render `-` for empty values, including null, undefined, and empty string
+
+    const columnValue = item[colId as keyof SupplierData];
     return columnValue ? (
-      <span>{columnValue}</span>
+      <span>{columnValue as string}</span>
     ) : (
       <span className="text-gray-500 italic">-</span>
     );
   };
-  
 
   return (
     <div>
       <div className="flex items-center justify-between gap-4">
-        <div className="w-full ">
+        <div className="w-full">
           <SearchBar
             placeholder="Search"
             searchValue={searchValue}
@@ -121,11 +136,9 @@ const SupplierTable = ({
       </div>
       <div className="mt-3 overflow-y-scroll max-h-[25rem]">
         <table className="min-w-full bg-white mb-5">
-          <thead className="text-[12px] text-center  text-dropdownText">
+          <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">
-                SI No
-              </th>
+              <th className="py-3 px-4 border-b border-tableBorder">SI No</th>
               {columns.map(
                 (col) =>
                   col.visible && (
@@ -150,7 +163,9 @@ const SupplierTable = ({
             ) : filteredAccounts && filteredAccounts.length > 0 ? (
               filteredAccounts.reverse().map((item,index) => (
                 <tr key={item._id} className="relative">
-                  <td className="py-2.5 px-4 border-y border-tableBorder">{index+1}</td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    {index + 1}
+                  </td>
                   {columns.map(
                     (col) =>
                       col.visible && (
@@ -158,7 +173,7 @@ const SupplierTable = ({
                           key={col.id}
                           className="py-2.5 px-4 border-y border-tableBorder"
                         >
-                          {renderColumnContent(col.id, item)}
+                          {renderColumnContent(col.id, item as any)}
                         </td>
                       )
                   )}
@@ -166,14 +181,20 @@ const SupplierTable = ({
                 </tr>
               ))
             ) : (
-              <>
-                <NoDataFoundTable columns={columns} />
-              </>
+              <NoDataFoundTable columns={columns} />
             )}
           </tbody>
-
         </table>
       </div>
+
+      {/* Edit Supplier Modal */}
+      {isModalOpen && selectedSupplier && (
+        <EditSupplier
+          isModalOpen={isModalOpen}
+          closeModal={closeModal}
+          supplier={selectedSupplier}
+        />
+      )}
     </div>
   );
 };

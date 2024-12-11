@@ -3,12 +3,11 @@ import Button from '../../../../Components/Button';
 import CheveronLeftIcon from '../../../../assets/icons/CheveronLeftIcon';
 import PencilEdit from '../../../../assets/icons/PencilEdit';
 import PdfView from './PdfView';
-import SideBar from '../../../sales/salesOrder/SideBar';
 import { useEffect, useState } from 'react';
 import useApi from '../../../../Hooks/useApi';
 import { endponits } from '../../../../Services/apiEndpoints';
 import { useOrganization } from '../../../../context/OrganizationContext';
-
+import SideBar from './SideBar';
 
 type Props = {};
 
@@ -81,7 +80,6 @@ function PaymentView({}: Props) {
       <div className="grid grid-cols-3 space-x-4">
         {/* Sidebar */}
        <SideBar data={paymentData}/>
-
         {/* Main content */}
         <div className='col-span-2'>
         <PdfView data={paymentData} organization={organization}/>

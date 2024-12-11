@@ -13,9 +13,9 @@ function CheveronUp({color}: Props) {
         <path
           d="M18 15L12 9L6 15"
           stroke={color}
-          stroke-width="4"
+          strokeWidth="4"
           stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinejoin="round"
         />
       </svg>
     </div>

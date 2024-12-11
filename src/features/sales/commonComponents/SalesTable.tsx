@@ -10,6 +10,7 @@ import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 import { TableResponseContext } from "../../../context/ContextShare";
 
+
 interface Column {
   id: string;
   label: string;
@@ -30,6 +31,7 @@ interface QuoteData {
   _id: string;
   salesInvoice: any;
   salesOrder: any;
+  paidStatus: any;
 }
 
 const SalesTable = ({ page }: Props) => {
@@ -48,7 +50,8 @@ const SalesTable = ({ page }: Props) => {
             ? `${endponits.GET_ALL_SALES_ORDER}`
             : page === "quote"
               ? `${endponits.GET_ALL_QUOTES}`
-              : "";
+              : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}`
+                : "";
 
       setLoading({ ...loading, skelton: true });
       const { response, error } = await getAllQuotes(url);
@@ -57,8 +60,11 @@ const SalesTable = ({ page }: Props) => {
         return;
       }
       console.log(response.data);
-
-      setData(response.data);
+      if (page === "invoice") {
+        setData(response.data.updatedInvoices);
+      } else {
+        setData(response.data);
+      }
       setLoading({ ...loading, skelton: false });
     } catch (error) {
       console.error("Error fetching quotes:", error);
@@ -76,7 +82,7 @@ const SalesTable = ({ page }: Props) => {
       { id: "", label: "Due Date", visible: false },
       { id: "salesInvoice", label: "Invoice#", visible: true },
       { id: "reference", label: "Reference", visible: true },
-      { id: "status", label: "Status", visible: true },
+      { id: "paidStatus", label: "Status", visible: true },
       { id: "customerName", label: "Customer Name", visible: true },
       { id: "totalAmount", label: "Amount", visible: true },
       { id: "", label: "Balance Due", visible: false },
@@ -107,7 +113,16 @@ const SalesTable = ({ page }: Props) => {
             { id: "customerName", label: "Customer Name", visible: true },
             { id: "totalAmount", label: "Amount", visible: true },
             { id: "returned", label: "Returned", visible: true },
-          ] : [];
+          ] :
+            page == "reciept" ? [
+              { id: "createdDate", label: "Date", visible: true },
+              { id: "payment", label: "Payment#", visible: true },
+              { id: "customerName", label: "Customer Name", visible: true },
+              // { id: "", label: "Invoice#", visible: true },
+              { id: "paymentMode", label: "Mode", visible: true },
+              { id: "amountReceived", label: "Amount", visible: true },
+              // { id: "", label: "Unsend Amount", visible: true },
+            ] : [];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
@@ -120,12 +135,15 @@ const SalesTable = ({ page }: Props) => {
       return extractDate(item.createdDate);
     }
 
-    if (colId === "status") {
+    if (colId === "paidStatus") {
       return (
         <div className="flex justify-center items-center">
-          <div className="flex items-center gap-1.5 bg-BgSubhead rounded-2xl px-2 pt-0.5 pb-0.5">
+          <div
+            className={`${item.paidStatus === "Pending" ? "bg-zinc-200" : item.paidStatus === "Completed" ? "bg-[#94dca9]" : "bg-[#dcd894]"
+              } text-[13px] rounded-lg text-center items-center text-textColor h-[18px] px-2 max-w-fit gap-2 py-2 flex justify-center`}
+          >
             <DotIcon color="#495160" />
-            <p className="text-outlineButton text-xs font-medium">{item.status}</p>
+            {item.paidStatus}
           </div>
         </div>
       );
@@ -148,13 +166,16 @@ const SalesTable = ({ page }: Props) => {
       quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
       quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
     );
-  }) : []; // If `data` is not an array, default to an empty array
+  }) : [];
 
 
   const handleRowClick = (id: string) => {
     const state = { page };
-
-    navigate(`/sales/viewsalesorder/${id}`, { state });
+    if (page === "reciept") {
+      navigate(`/sales/receipt/view/${id}`, { state }); 
+    } else {
+      navigate(`/sales/viewsalesorder/${id}`, { state });
+    }
   };
 
   return (
@@ -171,12 +192,14 @@ const SalesTable = ({ page }: Props) => {
                   ? "Search Sales Order"
                   : page == "salesReturn"
                     ? "Search Sales Return"
-                    : "Search Quote"
-
+                    : page == "reciept"
+                      ? "Search Reciepts"
+                      : "Search Quote"
             }
           />
         </div>
         <Print />
+        {/* <SortBy/> */}
       </div>
       <div className="mt-3 max-h-[25rem] overflow-y-auto" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
         <table className="min-w-full bg-white mb-5">

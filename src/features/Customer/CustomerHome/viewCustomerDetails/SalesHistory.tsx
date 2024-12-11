@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import Button from "../../../../Components/Button";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
+import Calender from "../../../../assets/icons/Calender";
 
 type Props = {
   customerId: string;
@@ -17,13 +17,13 @@ function SalesHistory({ customerId }: Props) {
       const apiResponse = await getCustomerTransaction(url);
       const { response, error } = apiResponse;
       if (!error && response) {
-        console.log('API Response:', response);  
-        console.log('Transaction Data:', response.data); 
+        console.log('API Response:', response);
+        console.log('Transaction Data:', response.data);
       } else {
-        console.error('API Error:', error);  
+        console.error('API Error:', error);
       }
     } catch (error) {
-      console.error('Catch Error:', error); 
+      console.error('Catch Error:', error);
     }
   };
 
@@ -31,33 +31,57 @@ function SalesHistory({ customerId }: Props) {
     getCustomerTransactionResponse();
   }, []);
 
+  const History = [
+    {
+      fields:
+      {
+        titel: 'Invoice No',
+        field_1: "Order No",
+        field_2: "Amount",
+        field_3: "Balance Due",
+      }
+      ,
+      date: "21/02/09",
+      invoiceNo: "IN-002",
+      orderNo: "234",
+      amount: "1000",
+      balanceDue: "300",
+    }
+  ]
+
   return (
-    <div className="p-4 bg-[#F3F3F3] w-full rounded-lg">
-      <div className="px-4 py-2 bg-white rounded-lg shadow mb-4 flex justify-between items-center text-start">
-        <div className="flex flex-col space-y-1">
-          <span className="text-labelColor text-sm">Sl no</span>
-          <span className="font-bold text-[#0B1320] text-sm">01</span>
-        </div>
+    <div className="px-6 py-3 bg-[#F3F3F3] w-[25%] rounded-lg ">
 
-        <div className="flex flex-col space-y-1">
-          <span className="text-labelColor text-sm">Inv no</span>
-          <span className="font-bold text-[#0B1320] text-sm">IN-0122</span>
-        </div>
+      {
+        History.map((history) => (
+          <div>
+            <div className="flex justify-end">
+              <p className="bg-white w-20 px-1 py-0.5 rounded-md flex gap-2 text-[12px] text-[#A9A2A2]">
+                <span className="mt-0.5">  <Calender color={"#A9A2A2"} width={12} height={12} /></span> {history.date}</p>
+            </div>
+            <div className="flex gap-2">
+              <div className="w-3 h-3 mt-1 bg-[#9747FF] rounded-full"></div>
+              <p className="text-[#303F58] text-[14px] font-bold">{history.fields.titel} :</p>
+              <p className="text-[#303F58] text-[14px] font-bold">{history.invoiceNo}</p>
 
-        <div className="flex flex-col space-y-1">
-          <span className="text-labelColor text-sm">Date</span>
-          <span className="font-bold text-[#0B1320] text-sm">12/06/24</span>
-        </div>
+            </div>
+            <div className="grid grid-cols-2 mt-2">
+              <div>
+                <p className="text-[#4B5C79] text-[13px]">{history.fields.field_1} </p>
+                <p className="text-[#4B5C79] text-[13px]" >{history.fields.field_2}</p>
+                <p className="text-[#4B5C79] text-[13px]">{history.fields.field_3}</p>
+              </div>
+              <div>
+                <p className="text-[#4B5C79] text-[13px]" >{history.orderNo}</p>
+                <p className="text-[#4B5C79] text-[13px]">&#8377; {history.amount}</p>
+                <p className="text-[#4B5C79] text-[13px]">&#8377; {history.balanceDue}</p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
 
-        <div className="flex flex-col space-y-1">
-          <span className="text-labelColor text-sm">Amount</span>
-          <span className="font-bold text-[#0B1320] text-sm">500.00</span>
-        </div>
 
-        <Button variant="secondary" size="sm" className="text-xs h-6 pl-6 pr-6">
-          View
-        </Button>
-      </div>
     </div>
   );
 }

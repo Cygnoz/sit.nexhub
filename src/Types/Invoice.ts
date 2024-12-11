@@ -10,6 +10,8 @@ export interface invoice {
     paymentTerms:string;
     deliveryMethod:string;
     expectedShipmentDate:string;
+    salesOrderNumber:string;
+    salesOrderId:string;
     
     items: Array<{
       itemId: string;
@@ -24,11 +26,11 @@ export interface invoice {
       taxGroup: string;
       cgst: string;
       sgst: string;
-      igst: string;
-      cgstAmount: string;
-      sgstAmount: string;
-      igstAmount: string;
-      vatAmount: string;
+      igst: string ;
+      cgstAmount: string | number;
+      sgstAmount: string | number;
+      igstAmount: string | number;
+      vatAmount: string | number;
       itemTotaltax: string;
     }>;
     totalItemDiscount:string;
@@ -55,7 +57,7 @@ export interface invoice {
     cgst: string;
     sgst: string;
     igst: string;
-    vat: string;
+    vat: string | number;
     totalDiscount: string;
     totalTax: string;
     totalAmount: string;

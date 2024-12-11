@@ -151,7 +151,7 @@ const NewDebitNote = ({}: Props) => {
     displayNameKey: string,
     searchValue: string
   ) => {
-    return data.filter((item: any) =>
+    return data?.filter((item: any) =>
       item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
     );
   };
@@ -221,6 +221,7 @@ const NewDebitNote = ({}: Props) => {
       console.log("No country selected");
     }
   };
+  
 
   const filteredSupplier = filterByDisplayName(
     supplierData,
@@ -391,8 +392,8 @@ const NewDebitNote = ({}: Props) => {
                     onSearchChange={setSearchValue}
                     placeholder="Select Supplier"
                   />
-                  {filteredSupplier.length > 0 ? (
-                    filteredSupplier.map((supplier: any) => (
+                  {filteredSupplier?.length > 0 ? (
+                    filteredSupplier?.map((supplier: any) => (
                       <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer">
                         <div className="col-span-2 flex items-center justify-center">
                           <img
@@ -470,7 +471,7 @@ const NewDebitNote = ({}: Props) => {
                     >
                       <option value="">Select Source Of Supply</option>
                       {debitNoteState &&
-                        placeOfSupplyList.map((item: any, index: number) => (
+                        placeOfSupplyList?.map((item: any, index: number) => (
                           <option
                             key={index}
                             value={item}
@@ -498,7 +499,7 @@ const NewDebitNote = ({}: Props) => {
                     >
                       <option value="">Select Destination Of Supply</option>
                       {destinationList &&
-                        destinationList.map((item: any, index: number) => (
+                        destinationList?.map((item: any, index: number) => (
                           <option
                             key={index}
                             value={item}
@@ -552,14 +553,14 @@ const NewDebitNote = ({}: Props) => {
                   />
                   {selecteSupplier &&
                   Object.keys(selecteSupplier).length > 0 ? (
-                    allBills?.PurchaseBills.length > 0 ? (
-                      allBills.PurchaseBills.filter(
+                    allBills?.allBills?.length > 0 ? (
+                      allBills?.allBills?.filter(
                         (bill: any) => bill.supplierId === selecteSupplier?._id
                       ).length > 0 ? (
-                        allBills.PurchaseBills.filter(
+                        allBills?.allBills?.filter(
                           (bill: any) =>
                             bill.supplierId === selecteSupplier?._id
-                        ).map((bill: any) => (
+                        )?.map((bill: any) => (
                           <div
                             key={bill._id}
                             className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
@@ -714,8 +715,8 @@ const NewDebitNote = ({}: Props) => {
                 >
                   <option value="">Select Account</option>
                   {accounts
-                      .filter((item: any) => item.accountSubhead === "Bank" || item.accountSubhead=="Cash")
-                      .map((item: any) => (
+                      ?.filter((item: any) => item.accountSubhead === "Bank" || item.accountSubhead=="Cash")
+                      ?.map((item: any) => (
                         <option key={item._id} value={item._id}>
                           {item.accountName}
                         </option>

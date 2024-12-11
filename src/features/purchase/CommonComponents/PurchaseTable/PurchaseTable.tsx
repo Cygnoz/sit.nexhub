@@ -5,6 +5,9 @@ import NoDataFoundTable from "../../../../Components/skeleton/Table/NoDataFoundT
 import CustomiseColmn from "../../../../Components/CustomiseColum";
 import PrintButton from "../../../../Components/PrintButton";
 import Pagination from "../../../../Components/Pagination/Pagination";
+import Eye from "../../../../assets/icons/Eye";
+import Pen from "../../../../assets/icons/Pen";
+import Trash2 from "../../../../assets/icons/Trash2";
 
 interface Column {
   id: string;
@@ -20,7 +23,7 @@ interface TableProps {
   searchPlaceholder: string;
   loading: boolean;
   searchableFields: string[];
-  setColumns?:any
+  setColumns?: any;
 }
 
 const PurchaseTable: React.FC<TableProps> = ({
@@ -31,19 +34,23 @@ const PurchaseTable: React.FC<TableProps> = ({
   searchPlaceholder,
   loading,
   searchableFields,
-  setColumns
+  setColumns,
 }) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const rowsPerPage = 10;
 
-  const filteredData = data?.filter((item) => {
-    return searchableFields
-      .map((field) => item[field]?.toString().trim().toLowerCase())
-      .some((fieldValue) =>
-        fieldValue?.includes(searchValue.toLowerCase().trim())
-      );
-  });
+  const filteredData = Array.isArray(data)
+  ? data.filter((item) => {
+      return searchableFields
+        .map((field) => item[field]?.toString().trim().toLowerCase())
+        .some((fieldValue) =>
+          fieldValue?.includes(searchValue.toLowerCase().trim())
+        );
+    })
+  : [];
+  
+
 
   const totalPages = Math.ceil(filteredData?.length / rowsPerPage);
   const paginatedData = filteredData?.slice(
@@ -56,7 +63,7 @@ const PurchaseTable: React.FC<TableProps> = ({
   };
 
   const visibleColumns = columns.filter((col) => col.visible);
-  const skeletonColumns = [...visibleColumns, {}, {}]; 
+  const skeletonColumns = [...visibleColumns, {}, {}, {}];
 
   return (
     <div>
@@ -77,7 +84,7 @@ const PurchaseTable: React.FC<TableProps> = ({
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
               <th className="py-3 px-4 border-b border-tableBorder">SL No.</th>
-              {columns.map(
+              {columns?.map(
                 (col) =>
                   col.visible && (
                     <th
@@ -88,6 +95,9 @@ const PurchaseTable: React.FC<TableProps> = ({
                     </th>
                   )
               )}
+              <th className="py-3 px-2 font-medium border-b border-tableBorder">
+                Action
+              </th>
               <th className="py-3 px-2 font-medium border-b border-tableBorder">
                 <CustomiseColmn columns={columns} setColumns={setColumns} />
               </th>
@@ -103,7 +113,6 @@ const PurchaseTable: React.FC<TableProps> = ({
                 <tr
                   key={item.id}
                   className="relative cursor-pointer"
-                  onClick={() => onRowClick && onRowClick(item._id)}
                 >
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {(currentPage - 1) * rowsPerPage + rowIndex + 1}
@@ -117,12 +126,20 @@ const PurchaseTable: React.FC<TableProps> = ({
                         >
                           {renderColumnContent
                             ? renderColumnContent(col.id, item) || "-"
-                            : item[col.id] !== undefined && item[col.id] !== null
+                            : item[col.id] !== undefined &&
+                              item[col.id] !== null
                             ? item[col.id]
                             : "-"}
                         </td>
                       )
                   )}
+                  <td className="py-3 px-4 border-b border-tableBorder flex items-center justify-center gap-2">
+                    <Pen color="#0B9C56" size={18} />
+                   <button                   onClick={() => onRowClick && onRowClick(item._id)}
+                   > <Eye color={"#569FBC"} />{" "}</button>
+                    <Trash2 color="#EA1E4F" size={18} />{" "}
+                  </td>
+
                   <td className="py-3 px-4 border-b border-tableBorder"></td>
                 </tr>
               ))

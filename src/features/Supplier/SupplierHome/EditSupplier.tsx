@@ -19,7 +19,7 @@ import Plus from "../../../assets/icons/Plus";
 type Props = {
   supplier?: SupplierData | null;
   isModalOpen: boolean;
-  openModal: () => void;
+  openModal?: () => void;
   closeModal: () => void;
   addressEdit?: string
 };
@@ -160,7 +160,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
         const base64String = reader.result as string;
         setSupplierData((prevDetails: any) => ({
           ...prevDetails,
-          customerProfile: base64String,
+          supplierProfile: base64String,
         }));
       };
 
@@ -169,23 +169,40 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
   };
 
   useEffect(() => {
-    setSupplierData(prev => ({ ...prev, ...supplier }));
+    if (supplier) {
+      // Update supplier data
+      setSupplierData(prev => ({ ...prev, ...supplier }));
+  
+      // Populate "Re-enter Account Numbers" with account numbers from bankDetails
+      setReEnterAccountNumbers(
+        supplier.bankDetails.map(detail => detail.accountNum || "")
+      );
+  
+      // Set initial state for account number visibility
+      setShowAccountNumbers(supplier.bankDetails.map(() => false));
+      setShowReEnterAccountNumbers(supplier.bankDetails.map(() => false));
+  
+      // Set initial state for account number match
+      setIsaccountNumbersame(supplier.bankDetails.map(() => true));
+    }
   }, [supplier]);
-
+  
+  // States
   const [showAccountNumbers, setShowAccountNumbers] = useState(
     supplierdata.bankDetails.map(() => false)
   );
   const [showReEnterAccountNumbers, setShowReEnterAccountNumbers] = useState(
     supplierdata.bankDetails.map(() => false)
   );
-
-  // check account number
+    // check account number
   const [reEnterAccountNumbers, setReEnterAccountNumbers] = useState(
     supplierdata.bankDetails.map(() => "")
   );
+  
   const [isAccountNumberSame, setIsaccountNumbersame] = useState(
     supplierdata.bankDetails.map(() => true)
   );
+  
 
   const handleReEnterAccountNumberChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const newReEnterAccountNumbers = [...reEnterAccountNumbers];
@@ -204,52 +221,71 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { name, value } = e.target;
-
-    type BankDetailKeys =
-      | "accountHolderName"
-      | "bankName"
-      | "accountNum"
-      | "ifscCode";
-
+  
+    type BankDetailKeys = "accountHolderName" | "bankName" | "accountNum" | "ifscCode";
+  
     const updatedBankDetails = [...supplierdata.bankDetails];
     updatedBankDetails[index][name as BankDetailKeys] = value;
-
+  
+    // If account number is changed, reset re-entered value
+    if (name === "accountNum") {
+      const newReEnterAccountNumbers = [...reEnterAccountNumbers];
+      newReEnterAccountNumbers[index] = ""; // Clear the re-entered account number
+      setReEnterAccountNumbers(newReEnterAccountNumbers);
+  
+      const newIsAccountNumberSame = [...isAccountNumberSame];
+      newIsAccountNumberSame[index] = false; // Mark as not matching
+      setIsaccountNumbersame(newIsAccountNumberSame);
+    }
+  
     setSupplierData((prevState) => ({
       ...prevState,
       bankDetails: updatedBankDetails,
     }));
   };
+  
 
   const handleEditSupplier = async () => {
     const newErrors = { ...errors };
+  
+    // Validate basic supplier fields
     if (supplierdata.firstName === "") newErrors.firstName = true;
     if (supplierdata.lastName === "") newErrors.lastName = true;
-    if (supplierdata.supplierDisplayName === "")
-      newErrors.supplierDisplayName = true;
+    if (supplierdata.supplierDisplayName === "") newErrors.supplierDisplayName = true;
     if (supplierdata.companyName === "") newErrors.companyName = true;
-
+  
+    // Validate account numbers
+    const unmatchedAccounts = supplierdata.bankDetails.some((bankDetail, index) => {
+      const reEnteredAccount = reEnterAccountNumbers[index];
+      return bankDetail.accountNum !== reEnteredAccount;
+    });
+  
+    if (unmatchedAccounts) {
+      toast.error("Account numbers do not match their re-entered values. Please correct them.");
+      return;
+    }
+  
     if (Object.values(newErrors).some((error) => error)) {
       setErrors(newErrors);
       return;
     }
+  
     try {
       const url = `${endponits.EDIT_SUPPLIER}/${supplier?._id}`;
       const { response, error } = await editSupplier(url, supplierdata);
-      console.log("res", response?.data);
-      console.log("err", error);
+  
       if (!error && response) {
         setsupplierResponse(response.data);
-        console.log(response.data);
-
-        toast.success(response.data.message)
-        console.log(response.data);
-
-        closeModal()
+        toast.success(response.data.message);
+        closeModal();
+      } else {
+        console.error("Error saving supplier:", error);
       }
     } catch (error) {
       console.error("Error fetching suppliers:", error);
     }
-  }
+  };
+  
 
   //  bank details change
   useEffect(() => {

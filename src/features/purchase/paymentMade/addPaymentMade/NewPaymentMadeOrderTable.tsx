@@ -42,13 +42,12 @@ const NewPaymentMadeOrderTable = ({
   console.log(supplierBills, "supplierBills");
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-console.log(data,"data");
 
 
 
 useEffect(() => {
   if (supplierBills && Array.isArray(supplierBills)) {
-    const filteredBills = supplierBills.filter(
+    const filteredBills = supplierBills?.filter(
       (bill: any) => bill.paidStatus === "Pending" || bill.paidStatus === "Overdue"
     );
 
@@ -86,6 +85,7 @@ useEffect(() => {
     const newData = [...data];
     newData[index] = { ...newData[index], [field]: value };
     const billAmount = newData[index].billAmount;
+    const amountDue=newData[index].amountDue;
     let paymentValue = typeof value === "number" ? value : parseFloat(value);
 
     if (isFullAmt) {
@@ -93,28 +93,28 @@ useEffect(() => {
     } else {
       newData[index].payment = 0;
 
-      if (paymentValue > billAmount) {
+      if (paymentValue > amountDue) {
         toast.error(
-          `Payment cannot exceed the bill amount of ${billAmount}. Setting payment to bill amount.`
+          `Payment cannot exceed the balance amount of ${amountDue}. Setting payment to bill amount.`
         );
-        paymentValue = billAmount;
+        paymentValue = amountDue;
       }
 
-      const totalPayment =
-        newData.reduce((acc, row) => acc + (row.payment || 0), 0) +
-        paymentValue -
-        (newData[index].payment || 0);
+      // const totalPayment =
+      //   newData.reduce((acc, row) => acc + (row.payment || 0), 0) +
+      //   paymentValue -
+      //   (newData[index].payment || 0);
 
-      if (totalPayment > paymentState.paymentMade) {
-        const remainingAmount =
-          paymentState.paymentMade - (totalPayment - paymentValue);
-        toast.error(
-          `Payment cannot exceed the available amount of ${paymentState.paymentMade}. Adjusting payment to ${remainingAmount}.`
-        );
-        newData[index].payment = Math.min(remainingAmount, paymentValue);
-      } else {
+      // if (totalPayment > paymentState.paymentMade) {
+      //   const remainingAmount =
+      //     paymentState.paymentMade - (totalPayment - paymentValue);
+      //   toast.error(
+      //     `Payment cannot exceed the available amount of ${paymentState.paymentMade}. Adjusting payment to ${remainingAmount}.`
+      //   );
+      //   newData[index].payment = Math.min(remainingAmount, paymentValue);
+      // } else {
         newData[index].payment = paymentValue;
-      }
+      // }
     }
 
 

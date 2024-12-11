@@ -8,9 +8,9 @@ import toast from "react-hot-toast";
 import Overview from "./viewCustomerDetails/Overview";
 import SalesHistory from "./viewCustomerDetails/SalesHistory";
 import cardBg from "../../../assets/Images/Card 3 Mask.png";
-import walletImage from "../../../assets/Images/Frame 629221.png";
-import walletCashImage from "../../../assets/Images/Frame 629221 (1).png";
-import salesImage from "../../../assets/Images/Frame 629221 (3).png";
+import walletImage from "../../../assets/Images/shopping_13583280 11.png";
+import walletCashImage from "../../../assets/Images/wallet_1027927 1.png";
+import salesImage from "../../../assets/Images/shopping-cart_3706316 1.png";
 import CardSkeleton from "../../../Components/skeleton/CardSkeleton";
 import EditCustomerModal from "./EditCustomerModal";
 import Preview from "../../../assets/icons/Preview";
@@ -178,7 +178,7 @@ function SeeCustomerDetails() {
               cards.length > 0
                 ? cards.map((card) => (
                   <div className=" p-5 w-[27.9%] h-[148px] ms-14 bg-cuscolumnbg rounded-lg ">
-                    <img className="w-8 h-8" src={card.icon} alt="" />
+                    <img className="w-6 h-6" src={card.icon} alt="" />
                     <h1 className="text-[#4B5C79] text-sm font-semibold my-2">{card.title}</h1>
                     <h1>{card.count}</h1>
                   </div>

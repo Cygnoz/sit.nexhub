@@ -13,10 +13,10 @@ import toast from "react-hot-toast";
 type Row = {
   itemImage?: string;
   itemId: string;
-  itemName: string; 
-  itemQuantity: number  | string;
+  itemName: string;
+  itemQuantity: number | string;
   itemCostPrice: number | string;
-  itemTax:number | string;
+  itemTax: number | string;
   itemDiscount: number | string;
   itemDiscountType: string;
   itemAmount: number | string;
@@ -24,10 +24,11 @@ type Row = {
   itemCgst: number | string;
   itemIgst: number | string;
   itemVat: number | string;
-  itemSgstAmount: number | string; 
-  itemCgstAmount: number | string; 
-  itemIgstAmount: number | string; 
-  itemVatAmount: number | string;  
+  itemSgstAmount: number | string;
+  itemCgstAmount: number | string;
+  itemIgstAmount: number | string;
+  itemVatAmount: number | string;
+  taxPreference: string;
 };
 
 type Props = {
@@ -54,20 +55,21 @@ const NewOrderTable = ({
     {
       itemId: "",
       itemName: "",
-      itemQuantity: "",
-      itemCostPrice: "",
-      itemTax: "",
-      itemDiscount: "",
+      itemQuantity: 0,
+      itemCostPrice: 0,
+      itemTax: 0,
+      itemDiscount: 0,
       itemDiscountType: "percentage",
-      itemAmount: "",
-      itemSgst: "",
-      itemCgst: "",
-      itemIgst: "",
-      itemVat: "",
-      itemSgstAmount: "",
-      itemCgstAmount: "",
-      itemIgstAmount: "",
-      itemVatAmount: ""
+      itemAmount: 0,
+      itemSgst: 0,
+      itemCgst: 0,
+      itemIgst: 0,
+      itemVat: 0,
+      itemSgstAmount: 0,
+      itemCgstAmount: 0,
+      itemIgstAmount: 0,
+      itemVatAmount: 0,
+      taxPreference: "",
     },
   ]);
 
@@ -92,20 +94,21 @@ const NewOrderTable = ({
     const newRow: Row = {
       itemId: "",
       itemName: "",
-      itemQuantity: "",
-      itemCostPrice: "",
-      itemTax: "",
-      itemDiscount: "",
+      itemQuantity: 0,
+      itemCostPrice: 0,
+      itemTax: 0,
+      itemDiscount: 0,
       itemDiscountType: "percentage",
-      itemAmount: "",
-      itemSgst: "",
-      itemCgst: "",
-      itemIgst: "",
-      itemVat: "",
-      itemSgstAmount: "",
-      itemCgstAmount: "",
-      itemIgstAmount: "",
-      itemVatAmount: ""
+      itemAmount: 0,
+      itemSgst: 0,
+      itemCgst: 0,
+      itemIgst: 0,
+      itemVat: 0,
+      itemSgstAmount: 0,
+      itemCgstAmount: 0,
+      itemIgstAmount: 0,
+      itemVatAmount: 0,
+      taxPreference: "",
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
@@ -114,7 +117,7 @@ const NewOrderTable = ({
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
-  
+    console.log(item, "item szdxfcgvhb");
     const newRows = [...rows];
     newRows[index].itemName = item.itemName;
     newRows[index].itemImage = item.itemImage;
@@ -124,21 +127,21 @@ const NewOrderTable = ({
     newRows[index].itemCgst = item.cgst;
     newRows[index].itemSgst = item.sgst;
     newRows[index].itemIgst = item.igst;
-  
+    newRows[index].taxPreference = item.taxPreference;
+
     const costPrice = Number(newRows[index].itemCostPrice);
-const itemDiscount = Number(newRows[index].itemDiscount);
-const itemDiscountType = newRows[index].itemDiscountType;
+    const itemDiscount = Number(newRows[index].itemDiscount);
+    const itemDiscountType = newRows[index].itemDiscountType;
 
-const discountedPrice = calculateDiscountPrice(
-  costPrice,
-  itemDiscount,
-  itemDiscountType
-);
+    const discountedPrice = calculateDiscountPrice(
+      costPrice,
+      itemDiscount,
+      itemDiscountType
+    );
 
-  
     const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
       discountedPrice,
-      newRows[index], 
+      newRows[index],
       isInterState as boolean
     );
 
@@ -146,147 +149,146 @@ const discountedPrice = calculateDiscountPrice(
     newRows[index].itemCgstAmount = cgstAmount;
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
-    if(isInterState){
-      newRows[index].itemTax=igstAmount
-      newRows[index].itemCgstAmount=""
-      newRows[index].itemSgstAmount=""
+    if (isInterState) {
+      newRows[index].itemTax = igstAmount;
+      newRows[index].itemCgstAmount = "";
+      newRows[index].itemSgstAmount = "";
+    } else {
+      newRows[index].itemTax = cgstAmount + sgstAmount;
+      newRows[index].itemIgstAmount = "";
+    }
 
-    }
-    else{
-      newRows[index].itemTax=cgstAmount+sgstAmount
-      newRows[index].itemIgstAmount=""
-    }
-  
     setRows(newRows);
-  
+
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      items: newRows.map((row) => {
+      items: newRows?.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
       }),
     }));
   };
-  
-  
+
   const calculateDiscountPrice = (
     totalCostPrice: number,
-    discountValue: number,
+    discountValue: number | string,
     discountType: string
-): number => {
-  let discount = typeof discountValue === 'string' ? Number(discountValue) : discountValue;
+  ): number => {
+    let discount =
+      typeof discountValue === "string" ? Number(discountValue) : discountValue;
+    console.log(discount, "total");
     if (discount < 0) {
-        toast.error("Discount cannot be negative");
-        return totalCostPrice; 
+      toast.error("Discount cannot be negative");
+      return totalCostPrice;
     }
 
     if (discountType === "percentage") {
-        if (discount > 100) {
-            discount = 100; 
-            toast.error("Discount cannot exceed 100%");
-        }
-        return totalCostPrice - (totalCostPrice * discount) / 100;
+      if (discount > 100) {
+        discount = 100;
+        toast.error("Discount cannot exceed 100%");
+      }
+      return totalCostPrice - (totalCostPrice * discount) / 100;
     } else {
-        if (discount > totalCostPrice) {
-            discount = totalCostPrice; 
-            toast.error("Discount cannot exceed the selling price");
-        }
-        return totalCostPrice - discount;
+      if (discount > totalCostPrice) {
+        discount = totalCostPrice;
+        toast.error("Discount cannot exceed the selling price");
+      }
+      // Calculate flat discount
+      return totalCostPrice - discount;
     }
-};
-
-  
-  
-
-const calculateTax = (
-  discountedPrice: number,
-  item: any, 
-  isInterState: boolean
-) => { 
-  
-  const cgstPercentage = item.itemCgst || 0;
-  const sgstPercentage = item.itemSgst || 0;
-  const igstPercentage = item.itemIgst || 0;
-
-
-  let cgstAmount = 0;
-  let sgstAmount = 0;
-  let igstAmount = 0;
-
-  if (!isInterState) {
-    cgstAmount = (discountedPrice * cgstPercentage) / 100;
-    sgstAmount = (discountedPrice * sgstPercentage) / 100;
-  } else {
-    igstAmount = (discountedPrice * igstPercentage) / 100;
-  }
-
-  return {
-    itemAmount: discountedPrice,
-    cgstAmount,
-    sgstAmount,
-    igstAmount,
   };
-};
 
-  
+  const calculateTax = (
+    discountedPrice: number,
+    item: any,
+    isInterState: boolean
+  ) => {
+    const cgstPercentage = item.itemCgst || 0;
+    const sgstPercentage = item.itemSgst || 0;
+    const igstPercentage = item.itemIgst || 0;
 
-const handleRowChange = (index: number, field: keyof Row, value: string) => {
-  const newRows = [...rows];
-  newRows[index] = { ...newRows[index], [field]: value };
+    let cgstAmount = 0;
+    let sgstAmount = 0;
+    let igstAmount = 0;
 
-  const quantity = Number(newRows[index].itemQuantity);
-  const costPrice = Number(newRows[index].itemCostPrice); 
-  
-  const totalCostPrice = quantity * costPrice; 
-  
-  const itemDiscount = Number(newRows[index].itemDiscount); 
-  const itemDiscountType = newRows[index].itemDiscountType; 
-  
-  const discountedPrice = calculateDiscountPrice(
-    totalCostPrice,
-    itemDiscount,
-    itemDiscountType
-  );
-  
+    if (!isInterState) {
+      cgstAmount = (discountedPrice * cgstPercentage) / 100;
+      sgstAmount = (discountedPrice * sgstPercentage) / 100;
+    } else {
+      igstAmount = (discountedPrice * igstPercentage) / 100;
+    }
 
-  // Pass the individual item to calculateTax
-  const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
-    discountedPrice,
-    newRows[index],
-    isInterState as boolean
-  );
+    return {
+      itemAmount: discountedPrice,
+      cgstAmount,
+      sgstAmount,
+      igstAmount,
+    };
+  };
 
-  newRows[index].itemAmount = itemAmount;
+  const handleRowChange = (index: number, field: keyof Row, value: string) => {
+    const newRows = [...rows];
+    newRows[index] = { ...newRows[index], [field]: value };
+
+    const quantity = Number(newRows[index].itemQuantity);
+    const costPrice = Number(newRows[index].itemCostPrice);
+
+    const totalCostPrice = quantity * costPrice;
+
+    const itemDiscount = Number(newRows[index].itemDiscount);
+    const itemDiscountType = newRows[index].itemDiscountType;
+    if (newRows[index].itemDiscountType === "percentage") {
+      const itemDiscount = Number(newRows[index].itemDiscount);
+
+      if (itemDiscount > 100) {
+        newRows[index].itemDiscount = 100;
+      }
+    } else {
+      const itemDiscount = Number(newRows[index].itemDiscount);
+
+      if (itemDiscount > costPrice) {
+        newRows[index].itemDiscount = costPrice;
+      }
+    }
+
+    const discountedPrice = calculateDiscountPrice(
+      totalCostPrice,
+      itemDiscount,
+      itemDiscountType
+    );
+
+    // Pass the individual item to calculateTax
+    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+      discountedPrice,
+      newRows[index],
+      isInterState as boolean
+    );
+
+    newRows[index].itemAmount = itemAmount;
     newRows[index].itemCgstAmount = cgstAmount;
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
-    if(isInterState){
-      newRows[index].itemTax=igstAmount
-      newRows[index].itemCgstAmount=""
-      newRows[index].itemSgstAmount=""
-
-    }
-    else{
-      newRows[index].itemTax=cgstAmount+sgstAmount
-      newRows[index].itemIgstAmount=""
+    if (isInterState) {
+      newRows[index].itemTax = igstAmount;
+      newRows[index].itemCgstAmount = 0;
+      newRows[index].itemSgstAmount = 0;
+    } else {
+      newRows[index].itemTax = cgstAmount + sgstAmount;
+      newRows[index].itemIgstAmount = 0;
     }
 
-  setRows(newRows);
+    setRows(newRows);
 
-  setPurchaseOrderState?.((prevData: any) => ({
-    ...prevData,
-    items: newRows.map((row) => {
-      const updatedItem = { ...row };
-      delete updatedItem.itemImage;
-      return updatedItem;
-    }),
-  }));
-};
-
-  
-  
-
+    setPurchaseOrderState?.((prevData: any) => ({
+      ...prevData,
+      items: newRows?.map((row) => {
+        const updatedItem = { ...row };
+        delete updatedItem.itemImage;
+        return updatedItem;
+      }),
+    }));
+  };
 
   const getAllItems = async () => {
     try {
@@ -309,58 +311,54 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   const removeRow = (index: number) => {
     if (rows.length > 1) {
       const newRows = rows.filter((_, i) => i !== index);
-  
+
       // Update both rows and purchaseOrderState
       setRows(newRows);
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        items: newRows, 
+        items: newRows,
       }));
     } else {
       const defaultRow = {
         itemId: "",
         itemName: "",
-        itemQuantity: "",
-        itemCostPrice: "",
-        itemTax: "",
-        itemDiscount: "",
+        itemQuantity: 0,
+        itemCostPrice: 0,
+        itemTax: 0,
+        itemDiscount: 0,
         itemDiscountType: "percentage",
-        itemAmount: "",
-        itemSgst: "",
-        itemCgst: "",
-        itemIgst: "",
-        itemVat: "",
-        itemSgstAmount: "",
-        itemCgstAmount: "",
-        itemIgstAmount: "",
-        itemVatAmount: "",
+        itemAmount: 0,
+        itemSgst: 0,
+        itemCgst: 0,
+        itemIgst: 0,
+        itemVat: 0,
+        itemSgstAmount: 0,
+        itemCgstAmount: 0,
+        itemIgstAmount: 0,
+        itemVatAmount: 0,
+        taxPreference: "",
       };
-  
+
       setRows([defaultRow]);
-  
+
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        items: [defaultRow], 
+        items: [defaultRow],
       }));
     }
   };
-  
-  
-  
+
   const calculateTotalSGST = () => {
     return rows.reduce((total, row) => {
-      const sgst = !isInterState ? (Number(row.itemSgstAmount) || 0) : 0;
+      const sgst = !isInterState ? Number(row.itemSgstAmount) || 0 : 0;
       return total + sgst;
     }, 0);
   };
-  
 
   // Function to calculate total CGST
   const calculateTotalCGST = () => {
     return rows.reduce((total, row) => {
-      console.log(row.itemCgstAmount,"total cgst");
-
-      const cgst = !isInterState ? (Number(row.itemCgstAmount) || 0 ): 0;
+      const cgst = !isInterState ? Number(row.itemCgstAmount) || 0 : 0;
       return total + cgst;
     }, 0);
   };
@@ -368,7 +366,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   // Function to calculate total IGST
   const calculateTotalIGST = () => {
     return rows.reduce((total, row) => {
-      const igst = isInterState ? (Number(row.itemIgstAmount) || 0) : 0;
+      const igst = isInterState ? Number(row.itemIgstAmount) || 0 : 0;
       return total + igst;
     }, 0);
   };
@@ -376,32 +374,30 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   // Function to calculate total item quantity
   const calculateTotalQuantity = () => {
     return rows.reduce((total, row) => {
-      const quantity = parseFloat(row.itemQuantity?.toString() || '0'); 
+      const quantity = parseFloat((row.itemQuantity).toString() || "0");
       return total + quantity;
     }, 0);
   };
-  
+
   const calculateDiscount = () => {
     const totalDiscount = rows.reduce((total, row) => {
       const discount = Number(row.itemDiscount) || 0;
       const quantity = Number(row.itemQuantity) || 0;
       const costPrice = Number(row.itemCostPrice) || 0;
-  
+
       const totalCostPrice = costPrice * quantity;
-  
+
       if (row.itemDiscountType === "percentage") {
         return total + (totalCostPrice * discount) / 100;
       } else {
         return total + discount;
       }
     }, 0);
-  
+
     const roundedTotalDiscount = Math.round(totalDiscount * 100) / 100;
-  
+
     return roundedTotalDiscount;
   };
-  
-  
 
   // Function to calculate the total subtotal
   const calculateTotalSubtotal = () => {
@@ -412,7 +408,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       return total + subtotal;
     }, 0);
   };
-  
+
   const filteredItems = () => {
     return items.filter((item: any) => {
       const isSelected = rows.find((row) => row.itemId === item._id);
@@ -422,7 +418,6 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       );
     });
   };
-  
 
   useEffect(() => {
     if (openDropdownId !== null) {
@@ -436,65 +431,60 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
   }, [openDropdownId]);
 
   useEffect(() => {
-    const updatedRows = rows.map((row) => {
+    const updatedRows = rows?.map((row) => {
       const discountedPrice = calculateDiscountPrice(
-        (Number(row.itemCostPrice) || 0) * (Number(row.itemQuantity) || 0), 
+        (Number(row.itemCostPrice) || 0) * (Number(row.itemQuantity) || 0),
         Number(row.itemDiscount) || 0,
-        row.itemDiscountType 
+        row.itemDiscountType
       );
-      
-  
+
       const taxDetails = calculateTax(
         discountedPrice,
-        row, 
+        row,
         isInterState as boolean
       );
-  
+
       return {
         ...row,
-        itemAmount: taxDetails.itemAmount, 
-        itemCgstAmount: taxDetails.cgstAmount>0?taxDetails.cgstAmount:"",
-        itemSgstAmount: taxDetails.sgstAmount>0?taxDetails.sgstAmount:"",
-        itemIgstAmount: taxDetails.igstAmount>0?taxDetails.igstAmount:"",
+        itemAmount: taxDetails.itemAmount,
+        itemCgstAmount: taxDetails.cgstAmount > 0 ? taxDetails.cgstAmount : 0,
+        itemSgstAmount: taxDetails.sgstAmount > 0 ? taxDetails.sgstAmount : 0,
+        itemIgstAmount: taxDetails.igstAmount > 0 ? taxDetails.igstAmount : 0,
       };
     });
-  
+
     setRows(updatedRows);
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      items: updatedRows.map((row) => {
+      items: updatedRows?.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
       }),
     }));
-    
   }, [
     purchaseOrderState?.destinationOfSupply,
     purchaseOrderState?.sourceOfSupply,
     isInterState,
   ]);
-  
-  
 
   useEffect(() => {
-      const updatedRows = rows.map((row) => ({
-        ...row,
-        itemDiscountType: "",
-        itemDiscount: "",
-      }));
+    const updatedRows = rows?.map((row) => ({
+      ...row,
+      itemDiscountType: "",
+      itemDiscount: 0,
+    }));
 
-      setRows(updatedRows);
+    setRows(updatedRows);
 
-      setPurchaseOrderState?.((prevData: any) => ({
-        ...prevData,
-        items: updatedRows.map((row) => {
-          const updatedItem = { ...row };
-          delete updatedItem.itemImage;
-          return updatedItem;
-        }),
-      }));
-    
+    setPurchaseOrderState?.((prevData: any) => ({
+      ...prevData,
+      items: updatedRows?.map((row) => {
+        const updatedItem = { ...row };
+        delete updatedItem.itemImage;
+        return updatedItem;
+      }),
+    }));
   }, []);
 
   useEffect(() => {
@@ -504,38 +494,36 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
     const totalIGST = calculateTotalIGST();
     const totalSellingPrice = calculateTotalSubtotal();
     const totalDiscount = calculateDiscount();
-  
+
     setPurchaseOrderState?.((prevData: PurchaseOrder) => ({
       ...prevData,
       totalItem: totalQuantity,
-      sgst: isInterState?"": totalSGST ,
-      cgst: isInterState?"":totalCGST,
-      igst: isInterState?totalIGST:"",
+      sgst: isInterState ? 0 : totalSGST,
+      cgst: isInterState ? 0 : totalCGST,
+      igst: isInterState ? totalIGST : 0,
       subTotal: totalSellingPrice,
       itemTotalDiscount: totalDiscount,
-      totalTaxAmount: isInterState 
-      ? totalIGST 
-      : totalSGST + totalCGST,    }));
-  }, [rows]);  
-  
-  useEffect(()=>{
-    if(purchaseOrderState){
-      setRows(purchaseOrderState.items)
-    }
-  },[purchaseOrderState.orderNumber])
-  console.log(rows,"rows")
+      totalTaxAmount: isInterState ? totalIGST : totalSGST + totalCGST,
+    }));
+  }, [rows]);
+
   useEffect(() => {
-      setRows((prevData: any) => {
-        if (Array.isArray(prevData)) {
-          return prevData.map((item) => ({
-            ...item,
-            itemDiscountType: "percentage",
-            itemDiscount: "",
-          }));
-        }
-        return [];
-      });
-    
+    if (purchaseOrderState) {
+      setRows(purchaseOrderState.items);
+    }
+  }, [purchaseOrderState.orderNumber]);
+  
+  useEffect(() => {
+    setRows((prevData: any) => {
+      if (Array.isArray(prevData)) {
+        return prevData?.map((item) => ({
+          ...item,
+          itemDiscountType: "percentage",
+          itemDiscount: 0,
+        }));
+      }
+      return [];
+    });
   }, []);
 
   useEffect(() => {
@@ -548,18 +536,18 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
         <table className="min-w-full bg-white rounded-lg relative pb-4 border-dropdownText">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr className="bg-lightPink">
-              {newPurchaseOrderTableHead.map((item, index) => (
-                  <th
-                    className="py-2 px-4 font-medium border-b border-tableBorder relative"
-                    key={index}
-                  >
-                    {item}
-                  </th>
-                ))}
+              {newPurchaseOrderTableHead?.map((item, index) => (
+                <th
+                  className="py-2 px-4 font-medium border-b border-tableBorder relative"
+                  key={index}
+                >
+                  {item}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px] ">
-            {rows.map((row: any, index: number) => (
+            {rows?.map((row: any, index: number) => (
               <tr key={index}>
                 <td className="border-y py-3 px-2 border-tableBorder">
                   <div
@@ -598,7 +586,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
                           placeholder="Select Item"
                         />
                         {items.length > 0 ? (
-                          filteredItems().map((item: any, idx: number) => (
+                          filteredItems()?.map((item: any, idx: number) => (
                             <div
                               key={idx}
                               className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
@@ -654,7 +642,6 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
                       handleRowChange(index, "itemQuantity", e.target.value)
                     }
                   />
-               
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input
@@ -670,62 +657,63 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   {
-                   <input
-                   disabled
-                   type="text"
-                   placeholder="0"
-                   className="w-[50px] focus:outline-none text-center"
-                   value={
-                     !isInterState
-                       ? (
-                           ((row.itemCgstAmount) || 0) + ((row.itemSgstAmount) || 0) === 0
-                             ? "nil"
-                             : ((row.itemCgstAmount) + (row.itemSgstAmount))
-                         )
-                       : ((row.itemIgstAmount) || 0) === 0
-                       ? "nil"
-                       : (row.itemIgstAmount)
-                   }
-                 />
-                 
-                 
+                    <input
+                      disabled
+                      type="text"
+                      placeholder="0"
+                      className="w-[50px] focus:outline-none text-center"
+                      value={
+                        !isInterState
+                          ? (row.itemCgstAmount || 0) +
+                              (row.itemSgstAmount || 0) ===
+                            0
+                            ? "nil"
+                            : row.itemCgstAmount + row.itemSgstAmount
+                          : (row.itemIgstAmount || 0) === 0
+                          ? "nil"
+                          : row.itemIgstAmount
+                      }
+                    />
                   }
                 </td>
-                  <td className="py-2.5 px-4 border-y border-tableBorder">
-                    <div className="flex items-center justify-center gap-2 w-full">
-                      <input
-                        type="text"
-                        placeholder="0"
-                        className="w-[50px]  focus:outline-none text-center"
-                        value={row.itemDiscount}
-                        onChange={(e) =>
-                          handleRowChange(index, "itemDiscount", e.target.value)
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  <div className="flex items-center justify-center gap-2 w-full">
+                    <input
+                      type="text"
+                      placeholder="0"
+                      className="w-[50px] focus:outline-none text-center"
+                      value={row.itemDiscount}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^\d*\.?\d*$/.test(value)) {
+                          handleRowChange(index, "itemDiscount", value);
                         }
-                      />
-                      <div className="relative">
-                        <select
-                          onChange={(e) =>
-                            handleRowChange(
-                              index,
-                              "itemDiscountType",
-                              e.target.value
-                            )
-                          }
-                          value={row.itemDiscountType}
-                          className="text-xs appearance-none w-[60px] p-1 text-zinc-400 bg-white border border-inputBorder rounded-lg"
-                        >
-                          <option value="percentage">%</option>
-                          <option value="currency">
-                            {oneOrganization?.baseCurrency}
-                          </option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                          <ChevronDown color="gray" height={15} width={15} />
-                        </div>
+                      }}
+                    />
+
+                    <div className="relative">
+                      <select
+                        onChange={(e) =>
+                          handleRowChange(
+                            index,
+                            "itemDiscountType",
+                            e.target.value
+                          )
+                        }
+                        value={row.itemDiscountType}
+                        className="text-xs appearance-none w-[60px] p-1 text-zinc-400 bg-white border border-inputBorder rounded-lg"
+                      >
+                        <option value="percentage">%</option>
+                        <option value="currency">
+                          {oneOrganization?.baseCurrency}
+                        </option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <ChevronDown color="gray" height={15} width={15} />
                       </div>
                     </div>
-                  </td>
-                
+                  </div>
+                </td>
 
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input
@@ -755,7 +743,7 @@ const handleRowChange = (index: number, field: keyof Row, value: string) => {
       <div className="w-[60%] mt-0">
         <button
           type="button"
-          className="bg-darkGreen text-darkRed rounded-lg py-2 px-6 flex items-center text-sm font-bold"
+          className="bg-darkGreen text-darkRed rounded-lg py-5 flex items-center text-sm font-bold"
           onClick={addRow}
         >
           <PlusCircle color="darkRed" />

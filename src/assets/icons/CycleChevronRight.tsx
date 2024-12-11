@@ -14,9 +14,9 @@ const CycleChevronRight: React.FC<Props> = ({ className }) => {
         <path
           d="M9 18L15 12L9 6"
           stroke="currentColor"
-          stroke-width="1"
+          strokeWidth="1"
           stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinejoin="round"
         />
       </svg>
     </div>

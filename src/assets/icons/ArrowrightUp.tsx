@@ -17,9 +17,9 @@ const ArrowrightUp = ({size,stroke,color}: Props) => {
         <path
           d="M7 7H17M17 7V17M17 7L7 17"
           stroke={color||"currentColor"}
-          stroke-width={stroke||"2"}
+          strokeWidth={stroke||"2"}
           stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinejoin="round"
         />
       </svg>
     </div>

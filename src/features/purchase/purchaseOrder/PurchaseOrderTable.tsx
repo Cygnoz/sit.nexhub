@@ -33,7 +33,7 @@ const PurchaseOrderTable = () => {
       const { response, error } = await getPO(url);
 
       if (!error && response) {
-        setAllPOData(response.data);
+        setAllPOData(response.data.allPurchaseOrder);
         setLoading({ ...loading, skeleton: false });
       } else {
         console.log(error);

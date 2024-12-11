@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Button from "../../../Components/Button";
 import SearchBar from "../../../Components/SearchBar";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import NewCustomerModal from "../../Customer/CustomerHome/NewCustomerModal";
-import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
+// import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
 import Upload from "../../../assets/icons/Upload";
 import { invoice } from "../../../Types/Invoice";
 import useApi from "../../../Hooks/useApi";
@@ -35,7 +35,7 @@ const calculateDueDate = (invoiceDate: string, term: string) => {
 
   switch (term) {
     case "Due on Receipt":
-      return invoiceDate; // Return the invoiceDate directly
+      return invoiceDate; 
     case "Due end of the month":
       const endOfMonthDate = getEndOfMonthDate(date);
       const endOfMonth = new Date(endOfMonthDate);
@@ -76,11 +76,11 @@ const initialSalesQuoteState: invoice = {
   salesInvoiceDate: getCurrentDate(),
   dueDate: getCurrentDate(),
 
-
   paymentMode: "",
   paymentTerms: "Due on Receipt",
   deliveryMethod: "",
   expectedShipmentDate: "",
+  salesOrderNumber: "",
 
   items: [
     {
@@ -134,7 +134,8 @@ const initialSalesQuoteState: invoice = {
   igst: "",
   vat: "",
   totalTax: "",
-  totalAmount: ""
+  totalAmount: "",
+  salesOrderId:""
 };
 const NewInvoice = ({ }: Props) => {
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
@@ -145,11 +146,9 @@ const NewInvoice = ({ }: Props) => {
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
-  // const [paymentTerms, setPaymentTerms] = useState<[]>([]);
   const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(true);
   const [prefix, setPrifix] = useState("")
   const [allAccounts, setAllAccounts] = useState<any>([]);
-
 
   const [invoiceState, setInvoiceState] = useState<invoice>(initialSalesQuoteState);
   console.log(invoiceState);
@@ -159,12 +158,47 @@ const NewInvoice = ({ }: Props) => {
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: getPrfix } = useApi("get", 5007);
-  // const { request: allPyamentTerms } = useApi("get", 5004);
   const { request: getAccounts } = useApi("get", 5001);
-
+  const { request: getOneInvoice } = useApi("get", 5007);
 
 
   const navigate = useNavigate()
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const invoiceId = queryParams.get("id");
+
+  const getBills = async () => {
+    try {
+      const url = `${endponits.GET_ONE_SALES_ORDER}/${invoiceId}`;
+      const { response, error } = await getOneInvoice(url);
+
+      if (!error && response) {
+        console.log(response.data, "response");
+        setInvoiceState((prevData) => ({
+          ...prevData,
+          ...response.data,
+          salesOrderNumber: response.data.salesOrder,
+          salesOrderId:response.data._id
+        }));
+
+        const matchingSupplier = customerData.find((sup: any) => sup._id === response.data.customerId);
+        if (matchingSupplier) {
+          setSelecetdCustomer(matchingSupplier);
+        }
+      }
+    } catch (error) {
+      console.log("Error in fetching bill", error);
+    }
+  };
+
+  useEffect(() => {
+    const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
+    fetchData(customerUrl, setCustomerData, AllCustomer);
+  }, [])
+  useEffect(() => {
+    getBills()
+  }, [selectedCustomer, oneOrganization])
+
   const handleGoBack = () => {
     navigate(-1)
     setInvoiceState(initialSalesQuoteState)
@@ -338,7 +372,7 @@ const NewInvoice = ({ }: Props) => {
       if (oneOrganization) {
         setInvoiceState((preData) => ({
           ...preData,
-          placeOfSupply: oneOrganization.state,
+          placeOfSupply: selectedCustomer.billingState,
         }));
       }
       if (country) {
@@ -380,14 +414,11 @@ const NewInvoice = ({ }: Props) => {
       console.error("Error fetching data:", error);
     }
   };
-
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
-    // const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
 
     fetchData(allAccountsUrl, setAllAccounts, getAccounts);
-    // fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
     handleplaceofSupply();
     fetchCountries();
@@ -396,6 +427,7 @@ const NewInvoice = ({ }: Props) => {
       checkTaxType(selectedCustomer);
     }
   }, [selectedCustomer]);
+
 
   const filterByDisplayName = (
     data: any[],
@@ -603,6 +635,27 @@ const NewInvoice = ({ }: Props) => {
                 </div>
 
                 <div className={`col-span-${isPlaceOfSupplyVisible ? "7" : "5"} relative`}>
+                  <label className="block text-sm  text-labelColor">
+                    Sales Order Number
+                    <input
+                      name="salesOrderNumber"
+                      id="salesOrderNumber"
+                      value={invoiceState.salesOrderNumber}
+                      onChange={handleChange}
+                      placeholder="Enter Order Number"
+                      className="border-inputBorder w-full text-sm border rounded text-dropdownText  mt-1 p-2 h-9 "
+                    />
+                  </label>
+                </div>
+
+
+              </div>
+
+
+              <div className="grid grid-cols-12 gap-4">
+
+
+                <div className={`col-span-${isPlaceOfSupplyVisible ? "5" : "5"} relative`}>
                   <label className="block text-sm mb-1 text-labelColor">
                     Reference#
                   </label>
@@ -616,12 +669,7 @@ const NewInvoice = ({ }: Props) => {
                   />
                 </div>
 
-              </div>
-
-
-              <div className="grid grid-cols-12 gap-4">
-
-                <div className="col-span-5">
+                <div className="col-span-7">
                   <label className="block text-sm mb-1 text-labelColor">
                     Invoice Date
                   </label>
@@ -636,7 +684,11 @@ const NewInvoice = ({ }: Props) => {
                   </div>
                 </div>
 
-                <div className="col-span-7">
+
+
+              </div>
+              <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Expected Shipment Date
                   </label>
@@ -650,11 +702,7 @@ const NewInvoice = ({ }: Props) => {
                     />
                   </div>
                 </div>
-
-              </div>
-              <div className="grid grid-cols-12 gap-4">
-
-                <div className="col-span-5">
+                <div className="col-span-7">
                   <label className="block text-sm mb-1 text-labelColor">
                     Due Date
                   </label>
@@ -671,37 +719,9 @@ const NewInvoice = ({ }: Props) => {
                 </div>
 
 
-                <div className="col-span-7">
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Payment Terms
-                  </label>
-                  <div className="relative w-full">
-                    <select
-                      value={invoiceState.paymentTerms}
-                      onChange={handleChange}
-                      name="paymentTerms"
-                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <option value="" className="text-gray">
-                        Select Payment Terms
-                      </option>
-                      <option value="Due on Receipt" selected>Due on Receipt</option>
-                      <option value="Due end of the month">Due end of the month</option>
-                      <option value="Due end of next month">Due end of next month</option>
-                      <option value="Net 15">Net 15</option>
-                      <option value="Net 30">Net 30</option>
-                      <option value="Net 45">Net 45</option>
-                      <option value="Net 60">Net 60</option>
-                      <option value="Custom">Custom</option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
-                  </div>
-                </div>
-
               </div>
               <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5 relative">
+                {/* <div className="col-span-5 relative">
                   <label className="block text-sm mb-1 text-labelColor">
                     Sales Person
                   </label>
@@ -740,7 +760,36 @@ const NewInvoice = ({ }: Props) => {
                       <ManageSalesPerson />
                     </div>
                   )}
+                </div> */}
+
+                <div className="col-span-5">
+                  <label className="block text-sm mb-1 text-labelColor">
+                    Payment Terms
+                  </label>
+                  <div className="relative w-full">
+                    <select
+                      value={invoiceState.paymentTerms}
+                      onChange={handleChange}
+                      name="paymentTerms"
+                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                      <option value="" className="text-gray">
+                        Select Payment Terms
+                      </option>
+                      <option value="Due on Receipt" selected>Due on Receipt</option>
+                      <option value="Due end of the month">Due end of the month</option>
+                      <option value="Due end of next month">Due end of next month</option>
+                      <option value="Net 15">Net 15</option>
+                      <option value="Net 30">Net 30</option>
+                      <option value="Net 45">Net 45</option>
+                      <option value="Net 60">Net 60</option>
+                      <option value="Custom">Custom</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
                 </div>
+
 
                 <div className="col-span-7">
                   <label className="block text-sm mb-1 text-labelColor">
@@ -1053,7 +1102,7 @@ const NewInvoice = ({ }: Props) => {
             </div>
             <div>
               <label className="block text-sm mb-1 text-labelColor">
-                Deposite Account
+                Deposit Account
               </label>
               <div className="relative w-full">
                 <select

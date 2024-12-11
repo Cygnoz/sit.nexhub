@@ -10,16 +10,16 @@ import { endponits } from "../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
 import PhoneInput from "react-phone-input-2";
 import Pen from "../../../assets/icons/Pen";
-import { useParams } from "react-router-dom";
 import { CustomerEditResponseContext } from "../../../context/ContextShare";
 import { CustomerData } from "../../../Types/Customet";
 import Plus from "../../../assets/icons/Plus";
+import PencilEdit from "../../../assets/icons/PencilEdit";
 
 
-type Props = { customerDataPorps?: CustomerData; addressEdit?: string };
+type Props = { customerDataPorps?: any; addressEdit?: string, page?: string };
 
 
-const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
+const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<string | null>(null);
   const [currencyData, setcurrencyData] = useState<any | []>([]);
@@ -42,7 +42,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
   const { request: getPaymentTerms } = useApi("get", 5004);
   const { request: getOrganization } = useApi("get", 5004);
   const { request: getTax } = useApi("get", 5002);
-  const param = useParams();
+  
 
   const { setcustomereditResponse } = useContext(CustomerEditResponseContext)!;
   const [errors, setErrors] = useState({
@@ -50,26 +50,27 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     lastName: false,
     companyName: false,
     customerDisplayName: false,
-    customerEmail:false,
-    pan:false,
-    creditDays:false,
-    creditLimit:false,
-    websiteURL:false,
-    gstin_uin:false,
-    businessLegalName:false,
-    businessTradeName:false,
-    billingAttention:false,
-    billingAddressLine1:false,
-    billingAddressLine2:false,
-    billingCity:false,
-    shippingAttention:false,
-    shippingAddress1:false,
-    shippingAddress2:false,
-    shippingCity:false,
-    shippingFaxNumber:false,
+    customerEmail: false,
+    pan: false,
+    creditDays: false,
+    creditLimit: false,
+    websiteURL: false,
+    gstin_uin: false,
+    businessLegalName: false,
+    businessTradeName: false,
+    billingAttention: false,
+    billingAddressLine1: false,
+    billingAddressLine2: false,
+    billingCity: false,
+    shippingAttention: false,
+    shippingAddress1: false,
+    shippingAddress2: false,
+    shippingCity: false,
+    shippingFaxNumber: false,
   });
   const [customerdata, setCustomerData] = useState<CustomerData>({
-    customerProfile:"",
+    customerProfile: "",
+    _id:"",
     customerType: "Individual",
     salutation: "Mr.",
     firstName: "",
@@ -131,20 +132,20 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
       },
     ],
     remark: "",
-    });
-    const [rows, setRows] = useState([
-      {
-        salutation: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        mobile: "",
-        firstNameError: "",
-        lastNameError: "",
-        emailError: "",
-        mobileError: "",
-      },
-    ]);
+  });
+  const [rows, setRows] = useState([
+    {
+      salutation: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      mobile: "",
+      firstNameError: "",
+      lastNameError: "",
+      emailError: "",
+      mobileError: "",
+    },
+  ]);
 
   const addRow = () => {
     setRows((prevRows) => [
@@ -180,7 +181,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     return activeTab === tabName ? "border-darkRed" : "border-neutral-300";
   };
 
-  const addressscroll=()=>{
+  const addressscroll = () => {
     if (addressEdit === "shippingAddressEdit" && shippingAddressRef.current) {
       shippingAddressRef.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -208,37 +209,37 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     value: string
   ) => {
     const updatedRows = [...rows];
-  
+
     updatedRows[index][field] = value;
-  
+
     if (field === "firstName") {
       updatedRows[index].firstNameError = value.trim() === ""
         ? ""
         : /^[A-Za-z]+$/.test(value)
-        ? ""
-        : "Only letters.";
+          ? ""
+          : "Only letters.";
     } else if (field === "lastName") {
       updatedRows[index].lastNameError = value.trim() === ""
         ? ""
         : /^[A-Za-z]+$/.test(value)
-        ? ""
-        : "Only letters.";
+          ? ""
+          : "Only letters.";
     } else if (field === "email") {
       updatedRows[index].emailError = value.trim() === ""
         ? ""
         : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-        ? ""
-        : "Invalid email.";
+          ? ""
+          : "Invalid email.";
     } else if (field === "mobile") {
       updatedRows[index].mobileError = value.trim() === ""
         ? ""
         : /^[0-9]+$/.test(value)
-        ? ""
-        : "Only numbers.";
+          ? ""
+          : "Only numbers.";
     }
-  
+
     setRows(updatedRows);
-  
+
     const updatedContactPerson = updatedRows.map((row) => ({
       salutation: row.salutation,
       firstName: row.firstName,
@@ -250,14 +251,14 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
       emailError: row.emailError || "",
       mobileError: row.mobileError || ""
     }));
-  
+
     setCustomerData((prevFormData) => ({
       ...prevFormData,
       contactPerson: updatedContactPerson
     }));
   };
-  
-  
+
+
 
   const handlePhoneChange = (phoneType: string, value: string) => {
     setCustomerData((prevData) => ({
@@ -273,9 +274,9 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
         toast.error("Only JPG and PNG images are supported.");
         return;
       }
-  
+
       const reader = new FileReader();
-  
+
       reader.onloadend = () => {
         const base64String = reader.result as string;
         setCustomerData((prevDetails: any) => ({
@@ -283,7 +284,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
           customerProfile: base64String,
         }));
       };
-  
+
       reader.readAsDataURL(file);
     }
   };
@@ -292,11 +293,11 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, type, value } = e.target;
-  
+
     if (name === "companyName") {
       setCustomerData({ ...customerdata, customerDisplayName: value });
     }
-  
+
     if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
       setCustomerData((prevData) => ({
@@ -311,10 +312,10 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
         }));
       }
     }
-  
+
     if (name === "openingType") {
       setOpeningtype(value);
-  
+
       if (value === "Debit") {
         setCustomerData((prevData) => {
           const updatedData = {
@@ -335,7 +336,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
         });
       }
     }
-  
+
     if (name === "openingBalance") {
       if (openingType === "Credit") {
         setCustomerData((prevData) => {
@@ -343,7 +344,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
             ...prevData,
             creditOpeningBalance: value,
           };
-          delete updatedData.debitOpeningBalance; 
+          delete updatedData.debitOpeningBalance;
           return updatedData;
         });
       } else if (openingType === "Debit") {
@@ -358,10 +359,10 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
       }
     }
   };
-  
-  
+
+
   console.log(customerdata);
-  
+
 
   const getAdditionalData = async () => {
     try {
@@ -426,9 +427,9 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     }));
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     addressscroll()
-  },[addressscroll])
+  }, [addressscroll])
 
   useEffect(() => {
     if (customerdata.billingCountry) {
@@ -450,7 +451,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     }
   }, [customerdata.shippingCountry, customerdata.billingCountry, countryData]);
 
-  const { id } = param;
+ 
 
   const handleEdit = async () => {
     const newErrors = { ...errors };
@@ -462,7 +463,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
       setErrors(newErrors);
       return;
     }
-    const url = `${endponits.EDIT_CUSTOMER}/${id}`;
+    const url = `${endponits.EDIT_CUSTOMER}/${customerdata._id}`;
     try {
       const apiResponse = await editCustomerDetails(url, customerdata);
       // console.log(apiResponse);
@@ -533,7 +534,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
     getAdditionalData();
     if (customerDataPorps) {
       setCustomerData(customerDataPorps);
-      const mappedContactPerson = (customerDataPorps.contactPerson || []).map((person) => ({
+      const mappedContactPerson = (customerDataPorps.contactPerson || []).map((person:any) => ({
         ...person,
         firstNameError: "",
         lastNameError: "",
@@ -544,7 +545,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
       setSelected(customerDataPorps.customerType);
     }
   }, [customerDataPorps]);
-  
+
 
 
   useEffect(() => {
@@ -557,7 +558,10 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
         <button onClick={() => setModalOpen(true)}>
           <Pen color={"#303F58"} />
         </button>
-      ) : (
+      ) : page === "editCustomer" ? (
+        <div onClick={() => setModalOpen(true)} className="cursor-pointer">
+          <PencilEdit color={"#0B9C56"} />
+        </div>) : (
         <Button
           onClick={() => setModalOpen(true)}
           variant="secondary"
@@ -569,6 +573,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
         </Button>
       )}
 
+
       <Modal
         open={isModalOpen}
         onClose={() => setModalOpen(false)}
@@ -576,7 +581,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
         style={{ width: "80%" }}
       >
         <>
-          <div className="p-5 mt-3">
+          <div className="text-start p-5 mt-3">
             <div className="mb-5 flex p-2 rounded-xl bg-CreamBg relative overflow-hidden items-center">
               <div className="relative ">
                 <h3 className="text-lg font-bold text-textColor">
@@ -594,40 +599,40 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
               className="text-slate-600 text-sm overflow-scroll hide-scrollbar space-y-2 p-2"
               style={{ height: "480px" }}
             >
-               <div className="grid grid-cols-12 gap-4">
-             <div className="col-span-2 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
-            <label htmlFor="image">
-              <div
-                className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg "
-                  
-              >
- {customerdata.customerProfile ? (
-                  <img src={customerdata.customerProfile} alt="Item"  className="max-h-16 max-w-36" />
-                ) : (                  <div className="gap-4 flex items-center ">
-                    <div className="bg-darkRed rounded-full flex items-center w-6 h-6 justify-center">
-                      <Plus color={"white"} classname="h-5" />
+              <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-2 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
+                  <label htmlFor="image">
+                    <div
+                      className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg "
+
+                    >
+                      {customerdata.customerProfile ? (
+                        <img src={customerdata.customerProfile} alt="Item" className="max-h-16 max-w-36" />
+                      ) : (<div className="gap-4 flex items-center ">
+                        <div className="bg-darkRed rounded-full flex items-center w-6 h-6 justify-center">
+                          <Plus color={"white"} classname="h-5" />
+                        </div>
+                        <p>Add Image</p>
+                      </div>
+                      )}
                     </div>
-                    <p>Add Image</p>
-                  </div>
-                )}
-              </div>
-              <div>
-                <p className="text-sm font-extrabold text-textColor mt-1">
-                Upload Photo
-                </p>
-                <p className="text-xs text-[#818894] mt-1">Support: JPG, PNG</p>
-              </div>
-              <input
-                type="file"
-                id="image"
-                onChange={handleFileChange}
-                className="hidden"
-                name="itemImage"
-                accept="image/*"
-              />
-            </label>
-          </div>
-              <div className="col-span-10">
+                    <div>
+                      <p className="text-sm font-extrabold text-textColor mt-1">
+                        Upload Photo
+                      </p>
+                      <p className="text-xs text-[#818894] mt-1">Support: JPG, PNG</p>
+                    </div>
+                    <input
+                      type="file"
+                      id="image"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      name="itemImage"
+                      accept="image/*"
+                    />
+                  </label>
+                </div>
+                <div className="col-span-10">
                   <div className="mt-3">
                     <label
                       className="block text-sm mb-1 text-labelColor"
@@ -642,22 +647,20 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             id="Business"
                             type="radio"
                             name="customerType"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                              selected === "Business"
-                                ? "border-8 border-neutral-400"
-                                : "border-1 border-neutral-400"
-                            }`}
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${selected === "Business"
+                              ? "border-8 border-neutral-400"
+                              : "border-1 border-neutral-400"
+                              }`}
                             checked={selected === "Business"}
                             onChange={() =>
                               handleRadioChange("Business", "customerType")
                             }
                           />
                           <div
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              selected === "Business"
-                                ? "bg-neutral-100"
-                                : "bg-transparent"
-                            }`}
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${selected === "Business"
+                              ? "bg-neutral-100"
+                              : "bg-transparent"
+                              }`}
                           />
                         </div>
                         <label
@@ -673,22 +676,20 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             id="Individual"
                             type="radio"
                             name="customerType"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                              selected === "Individual"
-                                ? "border-8 border-neutral-400"
-                                : "border-1 border-neutral-400"
-                            }`}
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${selected === "Individual"
+                              ? "border-8 border-neutral-400"
+                              : "border-1 border-neutral-400"
+                              }`}
                             checked={selected === "Individual"}
                             onChange={() =>
                               handleRadioChange("Individual", "customerType")
                             }
                           />
                           <div
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              selected === "Individual"
-                                ? "bg-neutral-100"
-                                : "bg-transparent"
-                            }`}
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${selected === "Individual"
+                              ? "bg-neutral-100"
+                              : "bg-transparent"
+                              }`}
                           />
                         </div>
                         <label
@@ -700,7 +701,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                       </div>
                     </div>
                   </div>
-    
+
                   <div className="grid grid-cols-12 gap-x-4 mt-2">
                     <div className="col-span-2">
                       <label htmlFor="salutation">Salutation</label>
@@ -752,7 +753,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                           </div>
                         )}
                       </div>
-    
+
                       <div>
                         <label htmlFor="lastName" className="text-slate-600">
                           Last Name
@@ -779,7 +780,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             }
                           }}
                         />
-    
+
                         {errors.lastName && customerdata.lastName.length > 0 && (
                           <div className="text-red-800 text-xs ms-2 mt-1">
                             Please enter a valid first name (letters only).
@@ -788,10 +789,10 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                       </div>
                     </div>
                   </div>
+                </div>
               </div>
-             </div>
 
-             <div className="grid grid-cols-3 gap-x-4  ">
+              <div className="grid grid-cols-3 gap-x-4  ">
                 <div>
                   <label htmlFor="companyName">Company Name </label>
                   <input
@@ -1005,7 +1006,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                    text-sm pl-2 pr-2 rounded-l-md leading-tight 
                                    focus:outline-none focus:bg-white focus:border-gray-500"
                                 name="openingType"
-                                value={customerdata.creditOpeningBalance?"Credit":"Debit"}
+                                value={customerdata.creditOpeningBalance ? "Credit" : "Debit"}
                                 onChange={handleChange}
                               >
                                 <option value="Debit">Dr</option>
@@ -1018,7 +1019,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             </div>
                             <input
                               type="text"
-                              value={customerdata.creditOpeningBalance?customerdata.creditOpeningBalance:customerdata.debitOpeningBalance}
+                              value={customerdata.creditOpeningBalance ? customerdata.creditOpeningBalance : customerdata.debitOpeningBalance}
                               className="text-sm w-[100%] rounded-r-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                               placeholder={`Enter ${openingType} Opening Balance`}
                               onChange={(e) => {
@@ -1041,7 +1042,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                 }
                               }}
                               name="openingBalance"
-                             
+
                             />
                           </div>
                         </div>
@@ -1293,7 +1294,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                             className="hidden"
                             value={customerdata.documents}
                             name="documents"
-                            // onChange={(e)=>handleFileChange(e)}
+                          // onChange={(e)=>handleFileChange(e)}
                           />
                         </label>
                       </div>
@@ -1389,11 +1390,10 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               <input
                                 id="Taxable"
                                 type="radio"
-                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                                  taxselected === "Taxable"
-                                    ? "border-8 border-neutral-400"
-                                    : "border-1 border-neutral-400"
-                                }`}
+                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${taxselected === "Taxable"
+                                  ? "border-8 border-neutral-400"
+                                  : "border-1 border-neutral-400"
+                                  }`}
                                 checked={taxselected === "Taxable"}
                                 onClick={() => {
                                   SetTaxPreference("Taxable");
@@ -1401,11 +1401,10 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                 }}
                               />
                               <div
-                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                                  taxselected === "Taxable"
-                                    ? "bg-neutral-100"
-                                    : "bg-transparent"
-                                }`}
+                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${taxselected === "Taxable"
+                                  ? "bg-neutral-100"
+                                  : "bg-transparent"
+                                  }`}
                               />
                             </div>
                             <label
@@ -1420,11 +1419,10 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               <input
                                 id="Tax Exempt"
                                 type="radio"
-                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                                  taxselected === "Tax Exempt"
-                                    ? "border-8 border-neutral-400"
-                                    : "border-1 border-neutral-400"
-                                }`}
+                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${taxselected === "Tax Exempt"
+                                  ? "border-8 border-neutral-400"
+                                  : "border-1 border-neutral-400"
+                                  }`}
                                 checked={taxselected === "Tax Exempt"}
                                 onClick={() => {
                                   SetTaxPreference("Tax Exempt");
@@ -1432,11 +1430,10 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                                 }}
                               />
                               <div
-                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                                  taxselected === "Tax Exempt"
-                                    ? "bg-neutral-100"
-                                    : "bg-transparent"
-                                }`}
+                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${taxselected === "Tax Exempt"
+                                  ? "bg-neutral-100"
+                                  : "bg-transparent"
+                                  }`}
                               />
                             </div>
                             <label
@@ -1795,72 +1792,72 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
 
 
 
-      <div className="">
-        <input
-          className="pl-3 -mt-1.5 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-          placeholder="Street 1"
-          name="billingAddressLine1"
-          value={customerdata.billingAddressLine1}
-          onChange={(e) => {
-            const value = e.target.value;
+                          <div className="">
+                            <input
+                              className="pl-3 -mt-1.5 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              placeholder="Street 1"
+                              name="billingAddressLine1"
+                              value={customerdata.billingAddressLine1}
+                              onChange={(e) => {
+                                const value = e.target.value;
 
-            const addressPattern = /^[a-zA-Z0-9\s,]*$/;
+                                const addressPattern = /^[a-zA-Z0-9\s,]*$/;
 
-            if (addressPattern.test(value) || value === '') {
-              handleChange(e); 
-              setErrors((prevErrors) => ({
-                ...prevErrors,
-                billingAddressLine1: false, 
-              }));
-            } else {
-              handleChange(e); 
-              setErrors((prevErrors) => ({
-                ...prevErrors,
-                billingAddressLine1: true,
-              }));
-            }
-          }}
-        />
-        {errors.billingAddressLine1 && customerdata.billingAddressLine1 !== "" && (
-          <div className="text-red-800 text-xs mt-1">
-            Please enter a valid address (letter and numbers only).
-          </div>
-        )}
-      </div>
+                                if (addressPattern.test(value) || value === '') {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingAddressLine1: false,
+                                  }));
+                                } else {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingAddressLine1: true,
+                                  }));
+                                }
+                              }}
+                            />
+                            {errors.billingAddressLine1 && customerdata.billingAddressLine1 !== "" && (
+                              <div className="text-red-800 text-xs mt-1">
+                                Please enter a valid address (letter and numbers only).
+                              </div>
+                            )}
+                          </div>
 
-      <div>
-        <input
-          className="pl-3 text-sm w-full -mt-1.5 text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-          placeholder="Street 2"
-          name="billingAddressLine2"
-          value={customerdata.billingAddressLine2}
-          onChange={(e) => {
-            const value = e.target.value;
+                          <div>
+                            <input
+                              className="pl-3 text-sm w-full -mt-1.5 text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              placeholder="Street 2"
+                              name="billingAddressLine2"
+                              value={customerdata.billingAddressLine2}
+                              onChange={(e) => {
+                                const value = e.target.value;
 
-            const addressPattern = /^[a-zA-Z0-9\s,]*$/;
+                                const addressPattern = /^[a-zA-Z0-9\s,]*$/;
 
-            if (addressPattern.test(value) || value === '') {
-              handleChange(e); 
-              setErrors((prevErrors) => ({
-                ...prevErrors,
-                billingAddressLine2: false, 
-              }));
-            } else {
-              handleChange(e); 
-              setErrors((prevErrors) => ({
-                ...prevErrors,
-                billingAddressLine2: true,
-              }));
-            }
-          }}
-        />
-        {errors.billingAddressLine2 && (
-          <div className="text-red-800 text-xs mt-1">
-            Please enter a valid address (letters, numbers, spaces, and commas only).
-          </div>
-        )}
-      </div>
-  
+                                if (addressPattern.test(value) || value === '') {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingAddressLine2: false,
+                                  }));
+                                } else {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingAddressLine2: true,
+                                  }));
+                                }
+                              }}
+                            />
+                            {errors.billingAddressLine2 && (
+                              <div className="text-red-800 text-xs mt-1">
+                                Please enter a valid address (letters, numbers, spaces, and commas only).
+                              </div>
+                            )}
+                          </div>
+
 
 
                           <div>
@@ -1868,34 +1865,34 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               City
                             </label>
                             <input
-        className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed" 
-        placeholder="Enter City"
-        name="billingCity"
-        value={customerdata.billingCity}
-        onChange={(e) => {
-          const value = e.target.value;
+                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              placeholder="Enter City"
+                              name="billingCity"
+                              value={customerdata.billingCity}
+                              onChange={(e) => {
+                                const value = e.target.value;
 
-          const cityPattern = /^[a-zA-Z\s]*$/; 
+                                const cityPattern = /^[a-zA-Z\s]*$/;
 
-          if (cityPattern.test(value) || value === '') {
-            handleChange(e);
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              billingCity: false,
-            }));
-          } else {
-            setErrors((prevErrors) => ({
-              ...prevErrors,
-              billingCity: true,
-            }));
-          }
-        }}
-      />
-      {errors.billingCity && customerdata.billingCity !== "" && (
-        <div className="text-red-800 text-xs mt-1">
-          Please enter a valid city name (letters only).
-        </div>
-      )}
+                                if (cityPattern.test(value) || value === '') {
+                                  handleChange(e);
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingCity: false,
+                                  }));
+                                } else {
+                                  setErrors((prevErrors) => ({
+                                    ...prevErrors,
+                                    billingCity: true,
+                                  }));
+                                }
+                              }}
+                            />
+                            {errors.billingCity && customerdata.billingCity !== "" && (
+                              <div className="text-red-800 text-xs mt-1">
+                                Please enter a valid city name (letters only).
+                              </div>
+                            )}
                           </div>
 
                           <div className="relative ">
@@ -1944,21 +1941,21 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               Pin / Zip / Post code
                             </label>
                             <input
-        className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-        placeholder="Pin / Zip / Post code"
-        type="text"
-        name="billingPinCode"
-        value={customerdata.billingPinCode}
-        onChange={(e) => {
-          const value = e.target.value;
+                              className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 mt-0.5 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                              placeholder="Pin / Zip / Post code"
+                              type="text"
+                              name="billingPinCode"
+                              value={customerdata.billingPinCode}
+                              onChange={(e) => {
+                                const value = e.target.value;
 
-          const pinCodePattern = /^[0-9]*$/;
+                                const pinCodePattern = /^[0-9]*$/;
 
-          if (pinCodePattern.test(value)) {
-            handleChange(e); 
-          }
-        }}
-      />
+                                if (pinCodePattern.test(value)) {
+                                  handleChange(e);
+                                }
+                              }}
+                            />
                           </div>
 
                           <div>
@@ -1993,11 +1990,11 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               value={customerdata.billingFaxNumber}
                               onChange={(e) => {
                                 const value = e.target.value;
-                      
+
                                 const faxnumberPattern = /^[0-9]*$/;
-                      
+
                                 if (faxnumberPattern.test(value)) {
-                                  handleChange(e); 
+                                  handleChange(e);
                                 }
                               }}
                             />
@@ -2106,17 +2103,17 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               value={customerdata.shippingAddress1}
                               onChange={(e) => {
                                 const value = e.target.value;
-                    
+
                                 const addressPattern = /^[a-zA-Z0-9\s,]*$/;
-                    
+
                                 if (addressPattern.test(value) || value === '') {
-                                  handleChange(e); 
+                                  handleChange(e);
                                   setErrors((prevErrors) => ({
                                     ...prevErrors,
-                                    shippingAddress1: false, 
+                                    shippingAddress1: false,
                                   }));
                                 } else {
-                                  handleChange(e); 
+                                  handleChange(e);
                                   setErrors((prevErrors) => ({
                                     ...prevErrors,
                                     shippingAddress1: true,
@@ -2138,17 +2135,17 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               value={customerdata.shippingAddress2}
                               onChange={(e) => {
                                 const value = e.target.value;
-                    
+
                                 const addressPattern = /^[a-zA-Z0-9\s,]*$/;
-                    
+
                                 if (addressPattern.test(value) || value === '') {
-                                  handleChange(e); 
+                                  handleChange(e);
                                   setErrors((prevErrors) => ({
                                     ...prevErrors,
-                                    shippingAddress2: false, 
+                                    shippingAddress2: false,
                                   }));
                                 } else {
-                                  handleChange(e); 
+                                  handleChange(e);
                                   setErrors((prevErrors) => ({
                                     ...prevErrors,
                                     shippingAddress2: true,
@@ -2173,9 +2170,9 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               value={customerdata.shippingCity}
                               onChange={(e) => {
                                 const value = e.target.value;
-                      
-                                const cityPattern = /^[a-zA-Z\s]*$/; 
-                      
+
+                                const cityPattern = /^[a-zA-Z\s]*$/;
+
                                 if (cityPattern.test(value) || value === '') {
                                   handleChange(e);
                                   setErrors((prevErrors) => ({
@@ -2290,11 +2287,11 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               value={customerdata.shippingFaxNumber}
                               onChange={(e) => {
                                 const value = e.target.value;
-                      
+
                                 const pinCodePattern = /^[0-9]*$/;
-                      
+
                                 if (pinCodePattern.test(value)) {
-                                  handleChange(e); 
+                                  handleChange(e);
                                 }
                               }}
                             />
@@ -2332,7 +2329,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                               <tr key={index}>
                                 <td className="py-2.5 flex items-center border-y border-tableBorder">
                                   <select
-  className="block  w-full h-9  text-zinc-400 bg-white  text-sm  pl-2  rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"                                    value={row.salutation}
+                                    className="block  w-full h-9  text-zinc-400 bg-white  text-sm  pl-2  rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500" value={row.salutation}
                                     onChange={(e) =>
                                       handleRowChange(
                                         index,
@@ -2449,8 +2446,8 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit }: Props) => {
                         <textarea
                           rows={3}
                           className="pl-2 text-sm w-[100%]  rounded-md text-start bg-white border border-slate-300   p-2 text-[#818894]"
-                          placeholder="Add any additional comments or notes here"                      
-                              name="remark"
+                          placeholder="Add any additional comments or notes here"
+                          name="remark"
                           value={customerdata.remark}
                           onChange={(e: any) => handleChange(e)}
                         />

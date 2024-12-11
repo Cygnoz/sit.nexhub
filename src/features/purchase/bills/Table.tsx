@@ -56,7 +56,7 @@ const Table = () => {
         <div className="flex justify-center items-center">
           <div
             className={`${
-              item.paidStatus === "Pending" ? "bg-zinc-200" : "bg-[#94dca9]"
+              item.paidStatus === "Pending" ? "bg-zinc-200" :item.paidStatus==="Completed"? "bg-[#94dca9]":"bg-[#dcd894]"
             } text-[13px] rounded-lg text-center items-center text-textColor h-[18px] px-2 max-w-fit gap-2 py-2 flex justify-center`}
           >
             <DotIcon color="#495160" />

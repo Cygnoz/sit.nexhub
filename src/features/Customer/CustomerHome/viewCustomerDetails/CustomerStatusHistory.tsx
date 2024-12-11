@@ -80,7 +80,7 @@ function CustomerStatusHistory({ id }: Props) {
                 {!isLoading && !error && historyData.length === 0 && (
                     <p>No history available.</p>
                 )}
-                <div className="flex max-w-full px-2 overflow-x-auto mt-3">
+                <div className="flex max-w-full px-2 overflow-x-auto hide-scrollbar mt-3">
                     {historyData.map((item: any, index: number) => {
                         const circleStyle = getCircleStyle(item.title);
                         const { date, time } = formatDateTime(item.date);

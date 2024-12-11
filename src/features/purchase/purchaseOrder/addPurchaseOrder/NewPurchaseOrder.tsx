@@ -57,7 +57,7 @@ const NewPurchaseOrder = ({}: Props) => {
     customerId: "",
     reference: "",
     shipmentPreference: "",
-    purchaseOrderDate: "",
+    purchaseOrderDate: new Date().toISOString().slice(0, 10),
     expectedShipmentDate: "",
     paymentTerms: "",
     paymentMode: "",
@@ -79,6 +79,7 @@ const NewPurchaseOrder = ({}: Props) => {
         itemCgstAmount: 0,
         itemIgstAmount: 0,
         itemVatAmount: 0,
+        taxPreference:""
       },
     ],
     otherExpense: 0,
@@ -344,6 +345,44 @@ const NewPurchaseOrder = ({}: Props) => {
     } catch (error) {}
   };
 
+
+  const getLastDayOfMonth = (date:any, monthsToAdd = 0) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + monthsToAdd + 1; 
+    return new Date(year, month, 1); 
+  };
+  useEffect(() => {
+    if (purchaseOrderState.purchaseOrderDate) {
+      const billDate = new Date(purchaseOrderState.purchaseOrderDate);
+      let dueDate = new Date(billDate);
+  
+      switch (purchaseOrderState.paymentTerms) {
+        case "Net 15":
+        case "Net 30":
+        case "Net 45":
+        case "Net 60":
+          const daysToAdd = parseInt(purchaseOrderState.paymentTerms.split(" ")[1], 10);
+          dueDate.setDate(billDate.getDate() + daysToAdd);
+          break;
+        case "End of Next Month":
+          dueDate = getLastDayOfMonth(billDate, 1);
+          break;
+        case "End of This Month":
+          dueDate = getLastDayOfMonth(billDate);
+          break;
+        case "Pay Now":
+        case "due on receipt":
+          dueDate = billDate;
+          break;
+      }
+  
+      setPurchaseOrderState((prevState) => ({
+        ...prevState,
+        expectedShipmentDate: dueDate.toISOString().split("T")[0],
+      }));
+    }
+  }, [purchaseOrderState.paymentTerms, purchaseOrderState.purchaseOrderDate]);
+
   useEffect(() => {
     if (purchaseOrderState?.destinationOfSupply == "") {
       setIsInterState(false);
@@ -428,7 +467,7 @@ const NewPurchaseOrder = ({}: Props) => {
                 <div className="grid grid-cols-12 gap-4">
                   <div className="col-span-6">
                     <label className="block text-sm mb-1 text-labelColor">
-                      Supplier Name
+                      Supplier Name <span className="text-[#bd2e2e] ">*</span>
                     </label>
                     <div
                       className="relative w-full"
@@ -517,7 +556,7 @@ const NewPurchaseOrder = ({}: Props) => {
                           value={purchaseOrderState.destinationOfSupply}
                           className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                         >
-                          <option value="">Select Source Of Supply</option>
+                          <option value="">Select Destination Of Supply</option>
                           {placeOfSupplyList &&
                             placeOfSupplyList.map((item: any, index: number) => (
                               <option
@@ -844,7 +883,7 @@ const NewPurchaseOrder = ({}: Props) => {
 
                   <input
                     type="date"
-                    value={purchaseOrderState.purchaseOrderDate}
+                    value={purchaseOrderState.purchaseOrderDate }
                     name="purchaseOrderDate"
                     onChange={handleChange}
                     className="border-inputBorder w-full text-sm border rounded p-2 h-9  text-zinc-400"
@@ -856,9 +895,11 @@ const NewPurchaseOrder = ({}: Props) => {
                   </label>
                   <input
                     type="date"
-                    value={purchaseOrderState.expectedShipmentDate}
+                    value={purchaseOrderState.expectedShipmentDate  }
                     name="expectedShipmentDate"
                     onChange={handleChange}
+                    disabled={purchaseOrderState.paymentTerms !== "due on receipt" && purchaseOrderState.paymentTerms !== "Custom"}
+
                     className="border-inputBorder w-full text-sm border rounded p-2 h-9  text-zinc-400"
                   />
                 </div>
@@ -891,32 +932,7 @@ const NewPurchaseOrder = ({}: Props) => {
                     </div>
                   </div>
                 </div>
-                {/* <div>
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Tax Type
-                  </label>
-                  <div className="relative w-full">
-                    <select
-                      onChange={handleChange}
-                      name="taxType"
-                      value={purchaseOrderState.taxType}
-                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    >
-                      <option value="" className="text-gray">
-                        Select Tax Type
-                      </option>
-                      <option value="GST" className="text-gray" >
-                        GST
-                      </option>{" "}
-                      <option value="Non Taxable" className="text-gray">
-                        Non Taxable
-                      </option>
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
-                  </div>
-                </div> */}
+               
               </div>
 
               <p className="font-bold mt-3">Add Item</p>
@@ -928,6 +944,7 @@ const NewPurchaseOrder = ({}: Props) => {
               />
               <br />
               <ViewDetails
+              page="purchaseOrder"
                 purchaseOrderState={purchaseOrderState}
                 setPurchaseOrderState={setPurchaseOrderState}
               />
