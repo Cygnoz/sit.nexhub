@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CirclePlus from "../../../assets/icons/circleplus";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 
@@ -141,7 +141,11 @@ const AddExpenseTable: React.FC<Props> = ({
     });
   };
     
-  
+  useEffect(()=>{
+   if(expenseData.expense){
+    setRows(expenseData.expense)
+   }
+  },[])
 
 
   return (

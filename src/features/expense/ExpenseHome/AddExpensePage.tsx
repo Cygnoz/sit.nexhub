@@ -87,7 +87,7 @@ function AddExpensePage({}: Props) {
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [organization, setOrganization] = useState<any | []>([]);
   const [selectedTax, setSelectedTax] = useState("");
-    const [destinationList, setDestinationList] = useState<any | []>([]);
+  const [destinationList, setDestinationList] = useState<any | []>([]);
   const [categories, setCategories] = useState<any | []>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [Itemize, setItemize] = useState<boolean>(true);
@@ -100,45 +100,95 @@ function AddExpensePage({}: Props) {
     liabilities: [],
   });
 
-  
   const handleAddExpense = async () => {
     try {
       let hasErrors = false;
-  
-      const updatedErrors:any = {
+
+      const updatedErrors: any = {
         expenseDate: !expenseData.expenseDate,
         paidThrough: !expenseData.paidThrough,
-        gstTreatment: selectedSection === "expense" ? !expenseData.gstTreatment : false,
+        gstTreatment:
+          selectedSection === "expense" ? !expenseData.gstTreatment : false,
         distance: selectedSection === "mileage" ? !expenseData.distance : false,
-        ratePerKm: selectedSection === "mileage" ? !expenseData.ratePerKm : false,
+        ratePerKm:
+          selectedSection === "mileage" ? !expenseData.ratePerKm : false,
       };
-  
+
+      if (selectedSection === "expense" && expenseData.gstTreatment) {
+        if (
+          [
+            "Registered Business - Regular",
+            "Registered Business - Composition",
+            "Special Economic Zone",
+            "Deemed Export",
+            "Tax Deductor",
+            "SEZ Developer",
+          ].includes(expenseData.gstTreatment)
+        ) {
+          if (!expenseData.destinationOfSupply) {
+            updatedErrors.destinationOfSupply = true;
+          }
+          if (!expenseData.sourceOfSupply) {
+            updatedErrors.sourceOfSupply = true;
+          }
+          if (!expenseData.gstin) {
+            updatedErrors.gstin = true;
+          }
+          if (!expenseData.invoice) {
+            updatedErrors.invoice = true;
+          }
+        }
+      }
+
+      if (selectedSection === "expense" && expenseData.gstTreatment) {
+        if (
+          ["Unregistered Business", "Consumer"].includes(
+            expenseData.gstTreatment
+          )
+        ) {
+          if (!expenseData.destinationOfSupply) {
+            updatedErrors.destinationOfSupply = true;
+          }
+          if (!expenseData.sourceOfSupply) {
+            updatedErrors.sourceOfSupply = true;
+          }
+        
+        }
+      }
+      if (selectedSection === "expense" && expenseData.gstTreatment) {
+        if (["Overseas"].includes(expenseData.gstTreatment)) {
+          if (!expenseData.destinationOfSupply) {
+            updatedErrors.destinationOfSupply = true;
+          }
+        }
+      }
+
       if (expenseData.expense && Array.isArray(expenseData.expense)) {
-        expenseData.expense.forEach((expense, index) => {
+        expenseData.expense.forEach((expense) => {
           if (!expense.amount) {
-            updatedErrors[`expense_${index}_amount`] = true;
+            updatedErrors[`expense amount`] = true;
           }
           if (!expense.expenseAccount) {
-            updatedErrors[`expense_${index}_expenseAccount`] = true;
+            updatedErrors[`expense Account`] = true;
           }
         });
       }
-  
+
       const emptyFields = Object.keys(updatedErrors).filter(
         (key) => updatedErrors[key as keyof typeof updatedErrors]
       );
-  
+
       hasErrors = emptyFields.length > 0;
-  
+
       if (hasErrors) {
         const fieldNames = emptyFields.join(", ");
         toast.error(`Please fill in the following fields: ${fieldNames}`);
         return;
       }
-  
+
       const url = `${endponits.ADD_EXPENSES}`;
       const { response, error } = await AddExpenses(url, expenseData);
-  
+
       if (response) {
         toast.success(response.data.message);
         navigate("/expense/home");
@@ -150,10 +200,6 @@ function AddExpensePage({}: Props) {
       toast.error("An unexpected error occurred.");
     }
   };
-  
-  
-  
-
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
@@ -224,44 +270,41 @@ function AddExpensePage({}: Props) {
   ) => {
     const { name, value } = e.target;
 
+    // Ensure ratePerKm and distance are valid numbers
     const ratePerKm = name === "ratePerKm" ? value : expenseData.ratePerKm;
     const distance = name === "distance" ? value : expenseData.distance;
 
-    const amount = parseFloat(ratePerKm) * parseFloat(distance);
+    // Validate that both ratePerKm and distance are valid numbers
+    const validRatePerKm = parseFloat(ratePerKm);
+    const validDistance = parseFloat(distance);
+    const amount =
+      !isNaN(validRatePerKm) && !isNaN(validDistance)
+        ? validRatePerKm * validDistance
+        : 0;
 
-    setExpenseData({
-      ...expenseData,
-      [name]: value,
-      expense: [
-        {
-          ...expenseData.expense[0],
-          amount: amount,
-        },
-      ],
-    });
+    setExpenseData((prevData) => {
+      const updatedExpense = [...prevData.expense];
+      updatedExpense[0] = {
+        ...updatedExpense[0],
+        amount: amount,
+      };
 
-    if (
-      selectedSection === "mileage" &&
-      (name === "expenseAccount" || name === "note" || name === "amount")
-    ) {
-      setExpenseData((prevData) => {
-        const updatedExpense = [...prevData.expense];
-        updatedExpense[0] = {
-          ...updatedExpense[0],
-          [name]: value,
-        };
-
+      // If expense data for mileage section is being updated
+      if (
+        selectedSection === "mileage" &&
+        (name === "expenseAccount" || name === "note" || name === "amount")
+      ) {
         return {
           ...prevData,
           expense: updatedExpense,
         };
-      });
-    } else {
-      setExpenseData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+      } else {
+        return {
+          ...prevData,
+          [name]: value,
+        };
+      }
+    });
   };
 
   const fetchCountries = async () => {
@@ -281,7 +324,6 @@ function AddExpensePage({}: Props) {
       const url = `${endponits.Get_ALL_Acounts}`;
       const { response, error } = await AllAccounts(url);
       if (!error || response) {
-        console.log(response?.data);
         setAccountData({
           paidThrough: response?.data.filter(
             (acc: any) =>
@@ -308,7 +350,7 @@ function AddExpensePage({}: Props) {
     const states = countryName ? findCountryStates(countryName) : [];
 
     setPlaceOfSupplyList(states);
-    if (organization && selectedSection=="expense") {
+    if (organization && selectedSection == "expense") {
       setExpenseData((prev) => ({
         ...prev,
         destinationOfSupply: organization.state,
@@ -321,19 +363,17 @@ function AddExpensePage({}: Props) {
     const states = countryName ? findCountryStates(countryName) : [];
 
     setDestinationList(states);
-    if (selecteSupplier && selectedSection==="expense") {
+    if (selecteSupplier && selectedSection === "expense") {
       setExpenseData((prev) => ({
         ...prev,
         sourceOfSupply: selecteSupplier.billingState,
         supplierDisplayName: selecteSupplier.supplierDisplayName,
-       
       }));
     }
   };
 
   const handleItemizeFlase = () => {
     setItemize(false);
-   
   };
 
   const handleItemizeTrue = () => {
@@ -377,28 +417,26 @@ function AddExpensePage({}: Props) {
       ...prevData,
       expenseType: selectedSection === "expense" ? "Goods" : "",
       amountIs: selectedSection === "expense" ? "Tax Exclusive" : "",
-      destinationOfSupply: selectedSection === "expense" ? organization.state : "",
+      destinationOfSupply:
+        selectedSection === "expense" ? organization.state : "",
       expense: prevData.expense.map((expenseItem) => ({
         ...expenseItem,
-        taxGroup: selectedSection === "mileage" ? "None" :"" ,
+        taxGroup: selectedSection === "mileage" ? "None" : "",
       })),
     }));
   }, [selectedSection, organization.state]);
-  
-  
 
   useEffect(() => {
     if (expenseData?.expense?.length) {
       const { sourceOfSupply, destinationOfSupply, amountIs } = expenseData;
-  
-      // Calculate updated expense data
+
       const updatedExpenses = expenseData.expense.map((expenseItem) => {
         const { amount, sgst, cgst, igst } = expenseItem;
-  
+
         let sgstAmount = 0;
         let cgstAmount = 0;
         let igstAmount = 0;
-  
+
         // Calculate SGST, CGST, or IGST
         if (sourceOfSupply === destinationOfSupply) {
           sgstAmount = (amount * sgst) / 100;
@@ -406,7 +444,7 @@ function AddExpensePage({}: Props) {
         } else {
           igstAmount = (amount * igst) / 100;
         }
-  
+
         return {
           ...expenseItem,
           sgstAmount,
@@ -414,21 +452,32 @@ function AddExpensePage({}: Props) {
           igstAmount,
         };
       });
-  
-      // Calculate totals for all expenses
-      const subTotal = updatedExpenses.reduce((sum, item) => sum + item.amount, 0);
-      const totalTax = updatedExpenses.reduce(
-        (sum, item) => sum + item.sgstAmount + item.cgstAmount + item.igstAmount,
+
+      const subTotal = updatedExpenses.reduce(
+        (sum, item) => sum + item.amount,
         0
       );
-      const grandTotal = amountIs === "Tax Exclusive" ? subTotal + totalTax : subTotal;
-  
-      // Aggregate SGST, CGST, IGST totals across all expenses
-      const totalSgst = updatedExpenses.reduce((sum, item) => sum + item.sgstAmount, 0);
-      const totalCgst = updatedExpenses.reduce((sum, item) => sum + item.cgstAmount, 0);
-      const totalIgst = updatedExpenses.reduce((sum, item) => sum + item.igstAmount, 0);
-  
-      // Update state
+      const totalTax = updatedExpenses.reduce(
+        (sum, item) =>
+          sum + item.sgstAmount + item.cgstAmount + item.igstAmount,
+        0
+      );
+      const grandTotal =
+        amountIs === "Tax Exclusive" ? subTotal + totalTax : subTotal;
+
+      const totalSgst = updatedExpenses.reduce(
+        (sum, item) => sum + item.sgstAmount,
+        0
+      );
+      const totalCgst = updatedExpenses.reduce(
+        (sum, item) => sum + item.cgstAmount,
+        0
+      );
+      const totalIgst = updatedExpenses.reduce(
+        (sum, item) => sum + item.igstAmount,
+        0
+      );
+
       setExpenseData((prevData) => ({
         ...prevData,
         subTotal,
@@ -452,10 +501,6 @@ function AddExpensePage({}: Props) {
     expenseData?.destinationOfSupply,
     expenseData?.amountIs,
   ]);
-  
-  
-  
-  
 
   console.log(expenseData, "expenseData");
 
@@ -476,7 +521,28 @@ function AddExpensePage({}: Props) {
     handleDestination();
   }, [expenseData.supplierId, organization]);
 
-  console.log(taxRate.gstTaxRate, "taxRate");
+  useEffect(() => {
+    setExpenseData((prevData) => ({
+      ...prevData,
+      expense: [
+        {
+          expenseAccountId: "",
+          expenseAccount: "",
+          note: "",
+          taxGroup: "",
+          taxExemption: "",
+          sgst: 0,
+          cgst: 0,
+          igst: 0,
+          vat: 0,
+          sgstAmount: 0,
+          cgstAmount: 0,
+          igstAmount: 0,
+          amount: 0,
+        },
+      ],
+    }));
+  }, [Itemize]);
 
   return (
     <>
@@ -533,7 +599,9 @@ function AddExpensePage({}: Props) {
           <>
             <div className="grid grid-cols-3 gap-4 mt-5 mx-4">
               <div className="col-span-1 space-y-2">
-                <label className="text-sm mb-1 text-labelColor">Date<span className="text-[#bd2e2e] ">*</span></label>
+                <label className="text-sm mb-1 text-labelColor">
+                  Date<span className="text-[#bd2e2e] ">*</span>
+                </label>
                 <div className="relative w-full">
                   <input
                     type="date"
@@ -563,8 +631,6 @@ function AddExpensePage({}: Props) {
                               (account: any) =>
                                 account.accountName === selectedValue
                             );
-
-  
 
                           setExpenseData({
                             ...expenseData,
@@ -691,7 +757,7 @@ function AddExpensePage({}: Props) {
                         : "Select Category"}
                     </p>
                   </div>
-                  {expenseData.supplierDisplayName ? (
+                  {expenseData.expenseCategory ? (
                     <div className="cursor-pointer absolute inset-y-0 right-0.5 -mt-1 flex items-center px-2 text-gray-700">
                       <span
                         onClick={(e) => {
@@ -732,7 +798,7 @@ function AddExpensePage({}: Props) {
                                 ...expenseData,
                                 expenseCategory: category.expenseCategory,
                               });
-                              setOpenDropdownIndex(null); 
+                              setOpenDropdownIndex(null);
                             }}
                           >
                             <div className="col-span-10 flex cursor-pointer">
@@ -929,8 +995,8 @@ function AddExpensePage({}: Props) {
                   {openDropdownIndex === "supplier" && (
                     <div
                       ref={dropdownRef}
-                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-full space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
-                      onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the dropdown
+                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[80%] space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <SearchBar
                         searchValue={searchValue}
@@ -954,11 +1020,15 @@ function AddExpensePage({}: Props) {
                             }}
                           >
                             <div className="col-span-2 flex items-center justify-center">
-                            <img
-                                className="rounded-full "
-                                  src={supplier.supplierProfile?supplier.supplierProfile:"https://i.postimg.cc/sDnbrRWP/avatar-3814049-1280.webp"}
-                                  alt=""
-                                />
+                              <img
+                                className="rounded-full h-10 w-10"
+                                src={
+                                  supplier.supplierProfile
+                                    ? supplier.supplierProfile
+                                    : "https://i.postimg.cc/sDnbrRWP/avatar-3814049-1280.webp"
+                                }
+                                alt=""
+                              />
                             </div>
                             <div className="col-span-10 flex cursor-pointer">
                               <div>
@@ -1023,26 +1093,54 @@ function AddExpensePage({}: Props) {
                 </div>
               </div>
 
-              <div className="col-span-1 space-y-2">
-                <label className="text-sm mb-1 text-labelColor">
-                  Vendor GSTIN
-                </label>
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    name="gstin"
-                    value={expenseData.gstin}
-                    onChange={handleChange}
-                    className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    placeholder="Enter GSTIN"
-                  />
-                </div>
-              </div>
+              { 
+  expenseData.gstTreatment !== "Unregistered Business" &&
+  expenseData.gstTreatment !== "Consumer" && (
+    <div className="col-span-1 space-y-2">
+      <label className="text-sm mb-1 text-labelColor">
+        Vendor GSTIN{" "}
+        {(
+          expenseData.gstTreatment === "Registered Business - Regular" ||
+          expenseData.gstTreatment === "Registered Business - Composition" ||
+          expenseData.gstTreatment === "Special Economic Zone" ||
+          expenseData.gstTreatment === "Deemed Export" ||
+          expenseData.gstTreatment === "Tax Deductor" ||
+          expenseData.gstTreatment === "SEZ Developer"
+        ) && <span className="text-[#bd2e2e]">*</span>}
+      </label>
+      <div className="relative w-full">
+        <input
+          type="text"
+          name="gstin"
+          value={expenseData.gstin}
+          onChange={handleChange}
+          className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          placeholder="Enter GSTIN"
+        />
+      </div>
+    </div>
+  )
+}
 
-              <div className="col-span-1 space-y-2">
+
+            { expenseData.gstTreatment!="Overseas" &&  <div className="col-span-1 space-y-2">
                 <label className="text-sm mb-1 text-labelColor">
                   Source of Supply
+                  {(expenseData.gstTreatment ===
+                    "Registered Business - Regular" ||
+                    expenseData.gstTreatment ===
+                      "Registered Business - Composition" ||
+                    expenseData.gstTreatment === "Special Economic Zone" ||
+                    expenseData.gstTreatment === "Deemed Export" ||
+                    expenseData.gstTreatment === "Tax Deductor" ||
+                    expenseData.gstTreatment === "Overseas" ||
+                    expenseData.gstTreatment === "Unregistered Business" ||
+                    expenseData.gstTreatment === "Consumer"  ||         
+                    expenseData.gstTreatment === "SEZ Developer") && (
+                    <span className="text-[#bd2e2e]">*</span>
+                  )}
                 </label>
+
                 <div className="relative w-full">
                   <select
                     onChange={handleChange}
@@ -1062,11 +1160,25 @@ function AddExpensePage({}: Props) {
                     <CehvronDown color="gray" />
                   </div>
                 </div>
-              </div>
+              </div>}
 
               <div className="col-span-1 space-y-2">
                 <label className="text-sm mb-1 text-labelColor">
-                  Destination of Supply
+                  Destination of Supply{" "}
+                  {(expenseData.gstTreatment ===
+                    "Registered Business - Regular" ||
+                    expenseData.gstTreatment ===
+                      "Registered Business - Composition" ||
+                    expenseData.gstTreatment === "Special Economic Zone" ||
+                    expenseData.gstTreatment === "Deemed Export" ||
+                    expenseData.gstTreatment === "Unregistered Business" ||
+                    expenseData.gstTreatment === "Consumer"  ||  
+                    expenseData.gstTreatment === "Tax Deductor" ||
+                    expenseData.gstTreatment === "Overseas" ||
+
+                    expenseData.gstTreatment === "SEZ Developer") && (
+                    <span className="text-[#bd2e2e]">*</span>
+                  )}
                 </label>
                 <div className="relative w-full">
                   <select
@@ -1090,56 +1202,64 @@ function AddExpensePage({}: Props) {
               </div>
 
               {Itemize && (
-  <div className="col-span-1 space-y-2">
-    <label className="text-sm mb-1 text-labelColor">Tax</label>
-    <div className="relative w-full">
-    <select
-  name="taxGroup"
-  value={JSON.stringify(selectedTax) || ""} 
-  onChange={(e) => {
-    const selectedValue = JSON.parse(e.target.value); 
-    console.log(selectedValue, "selected value");
+                <div className="col-span-1 space-y-2">
+                  <label className="text-sm mb-1 text-labelColor">Tax</label>
+                  <div className="relative w-full">
+                    <select
+                      name="taxGroup"
+                      value={JSON.stringify(selectedTax) || ""}
+                      onChange={(e) => {
+                        const selectedValue = JSON.parse(e.target.value);
+                        setExpenseData((prevData) => {
+                          const updatedExpenses = [...prevData.expense];
+                          updatedExpenses[0] = {
+                            ...updatedExpenses[0],
+                            taxGroup: selectedValue.taxName,
+                            cgst: selectedValue.cgst,
+                            sgst: selectedValue.sgst,
+                            igst: selectedValue.igst,
+                          };
 
-    setExpenseData((prevData) => {
-      const updatedExpenses = [...prevData.expense];
-      updatedExpenses[0] = {
-        ...updatedExpenses[0],
-        taxGroup: selectedValue.taxName, 
-        cgst: selectedValue.cgst,
-        sgst: selectedValue.sgst,
-        igst: selectedValue.igst,
-      };
+                          return {
+                            ...prevData,
+                            expense: updatedExpenses,
+                          };
+                        });
 
-      return {
-        ...prevData,
-        expense: updatedExpenses,
-      };
-    });
+                        setSelectedTax(selectedValue);
+                      }}
+                      className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                    >
+                      <option value="">Select Tax Rate</option>
+                      {taxRate?.gstTaxRate?.map(
+                        (account: any, index: number) => (
+                          <option key={index} value={JSON.stringify(account)}>
+                            {account?.taxName}
+                          </option>
+                        )
+                      )}
+                    </select>
 
-    setSelectedTax(selectedValue); 
-  }}
-  className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
->
-  <option value="">Select Tax Rate</option>
-  {taxRate?.gstTaxRate?.map((account: any, index: number) => (
-    <option key={index} value={JSON.stringify(account)}>
-      {account?.taxName}
-    </option>
-  ))}
-</select>
-
-
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-        <CehvronDown color="gray" />
-      </div>
-    </div>
-  </div>
-)}
-
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="col-span-1 space-y-2">
                 <label className="text-sm mb-1 text-labelColor">
-                  Invoice #
+                  Invoice #{" "}
+                  {(expenseData.gstTreatment ===
+                    "Registered Business - Regular" ||
+                    expenseData.gstTreatment ===
+                      "Registered Business - Composition" ||
+                    expenseData.gstTreatment === "Special Economic Zone" ||
+                    expenseData.gstTreatment === "Deemed Export" ||
+                    expenseData.gstTreatment === "Tax Deductor" ||
+                    expenseData.gstTreatment === "SEZ Developer") && (
+                    <span className="text-[#bd2e2e]">*</span>
+                  )}
                 </label>
                 <div className="relative w-full">
                   <input
@@ -1287,7 +1407,9 @@ function AddExpensePage({}: Props) {
         {selectedSection === "mileage" && (
           <div className="grid grid-cols-3 gap-4 mt-5 mx-4">
             <div className="col-span-1 space-y-2">
-              <label className="text-sm mb-1 text-labelColor">Date<span className="text-[#bd2e2e] ">*</span></label>
+              <label className="text-sm mb-1 text-labelColor">
+                Date<span className="text-[#bd2e2e] ">*</span>
+              </label>
               <div className="relative w-full">
                 <input
                   type="date"
@@ -1312,56 +1434,51 @@ function AddExpensePage({}: Props) {
                 />
               </div>
             </div> */}
-              <div className="col-span-1 space-y-2">
-                    <label className="text-sm mb-1 text-labelColor">
-                      Expense Account<span className="text-[#bd2e2e] ">*</span>
-                    </label>
-                    <div className="relative w-full">
-                      <select
-                        name="expenseAccount"
-                        value={expenseData?.expense[0]?.expenseAccount || ""}
-                        onChange={(e) => {
-                          const selectedValue = e.target.value;
-                          const selectedAccount: any =
-                            accountData?.liabilities?.find(
-                              (account: any) =>
-                                account.accountName === selectedValue
-                            );
+            <div className="col-span-1 space-y-2">
+              <label className="text-sm mb-1 text-labelColor">
+                Expense Account<span className="text-[#bd2e2e] ">*</span>
+              </label>
+              <div className="relative w-full">
+                <select
+                  name="expenseAccount"
+                  value={expenseData?.expense[0]?.expenseAccount || ""}
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    const selectedAccount: any = accountData?.liabilities?.find(
+                      (account: any) => account.accountName === selectedValue
+                    );
 
-  
+                    setExpenseData({
+                      ...expenseData,
+                      expense: [
+                        {
+                          ...expenseData.expense[0],
+                          expenseAccount: selectedValue,
+                          expenseAccountId: selectedAccount
+                            ? selectedAccount._id
+                            : "",
+                        },
+                      ],
+                    });
+                  }}
+                  className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                >
+                  <option value="">Select an Account</option>
+                  {accountData?.liabilities &&
+                    accountData.liabilities.map(
+                      (account: any, index: number) => (
+                        <option key={index} value={account.accountName}>
+                          {account.accountName}
+                        </option>
+                      )
+                    )}
+                </select>
 
-                          setExpenseData({
-                            ...expenseData,
-                            expense: [
-                              {
-                                ...expenseData.expense[0],
-                                expenseAccount: selectedValue,
-                                expenseAccountId: selectedAccount
-                                  ? selectedAccount._id
-                                  : "",
-                              },
-                            ],
-                          });
-                        }}
-                        className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
-                      >
-                        <option value="">Select an Account</option>
-                        {accountData?.liabilities &&
-                          accountData.liabilities.map(
-                            (account: any, index: number) => (
-                              <option key={index} value={account.accountName}>
-                                {account.accountName}
-                              </option>
-                            )
-                          )}
-                      </select>
-
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <CehvronDown color="gray" />
-                      </div>
-                    </div>
-                   
-                  </div>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
+                </div>
+              </div>
+            </div>
 
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">
@@ -1402,7 +1519,9 @@ function AddExpensePage({}: Props) {
               </div>
             </div>
             <div className="col-span-1 space-y-2">
-              <label className="text-sm mb-1 text-labelColor">Distance<span className="text-[#bd2e2e] ">*</span></label>
+              <label className="text-sm mb-1 text-labelColor">
+                Distance<span className="text-[#bd2e2e] ">*</span>
+              </label>
               <div className="relative w-full">
                 <input
                   type="number"
@@ -1506,9 +1625,9 @@ function AddExpensePage({}: Props) {
                             setExpenseData({
                               ...expenseData,
                               supplierDisplayName: supplier.supplierDisplayName,
-                              supplierId:supplier._id
+                              supplierId: supplier._id,
                             });
-                            setOpenDropdownIndex(null); 
+                            setOpenDropdownIndex(null);
                           }}
                         >
                           <div className="col-span-2 flex items-center justify-center">
@@ -1559,23 +1678,21 @@ function AddExpensePage({}: Props) {
             </div>
 
             <div className="col-span-1 space-y-2">
-                    <label className="text-sm mb-1 text-labelColor">
-                      Notes
-                    </label>
-                    <div className="relative w-full">
-                      <input
-                        type="text"
-                        name="note"
-                        value={expenseData.expense[0]?.note || ""}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          handleExpenseChange(0, { note: value });
-                        }}
-                        className="appearance-none w-full h-16 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
-                        placeholder="Enter Notes"
-                      />
-                    </div>
-                  </div>
+              <label className="text-sm mb-1 text-labelColor">Notes</label>
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  name="note"
+                  value={expenseData.expense[0]?.note || ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    handleExpenseChange(0, { note: value });
+                  }}
+                  className="appearance-none w-full h-16 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                  placeholder="Enter Notes"
+                />
+              </div>
+            </div>
             <br></br>
           </div>
         )}
