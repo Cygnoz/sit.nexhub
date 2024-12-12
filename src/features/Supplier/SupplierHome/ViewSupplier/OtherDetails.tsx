@@ -1,33 +1,32 @@
 import { useContext, useEffect, useState } from "react";
-import Modal from "../../../../../Components/model/Modal";
-import { CustomerDeatilsContext } from "../../../../../context/ContextShare";
+import { SupplierDetailsContext } from "../../../../context/ContextShare";
+import User from "../../../../assets/icons/User";
+import UserRoundCog from "../../../../assets/icons/UserRoundCog";
+import FileCheck_2 from "../../../../assets/icons/FileCheck_2";
+import Percent from "../../../../assets/icons/Percent";
+import Calender from "../../../../assets/icons/Calender";
+import RecieptIndianRupee from "../../../../assets/icons/RecieptIndianRupee";
+import Languages from "../../../../assets/icons/Languages";
+import Wallet from "../../../../assets/icons/Wallet";
+import TeenyIcon from "../../../../assets/icons/TeenyIcon";
+import CalendarDays from "../../../../assets/icons/CalendarDays";
+import IndianRupee from "../../../../assets/icons/IndianRupee";
+import CalendarCheck from "../../../../assets/icons/CalendarCheck";
+import Modal from "../../../../Components/model/Modal";
 import Taxes from "./Taxes";
 import ContactPerson from "./ContactPerson";
-import Wallet from "../../../../../assets/icons/Wallet";
-import CalendarDays from "../../../../../assets/icons/CalendarDays";
-import IndianRupee from "../../../../../assets/icons/IndianRupee";
-import TeenyIcon from "../../../../../assets/icons/TeenyIcon";
-import CalendarCheck from "../../../../../assets/icons/CalendarCheck";
-import Languages from "../../../../../assets/icons/Languages";
-import RecieptIndianRupee from "../../../../../assets/icons/RecieptIndianRupee";
-import Calender from "../../../../../assets/icons/Calender";
-import Percent from "../../../../../assets/icons/Percent";
-import FileCheck_2 from "../../../../../assets/icons/FileCheck_2";
-import UserRoundCog from "../../../../../assets/icons/UserRoundCog";
-import User from "../../../../../assets/icons/User";
-import line from '../../../../../assets/Images/Rectangle 5557.png'
+// import line from '../../../../../assets/Images/Rectangle 5557.png'
 
 type Props = {}
 
-function OtherDetails({ }: Props) {
-    const { customerDatials } = useContext(CustomerDeatilsContext)!;
+const OtherDetails = ({}: Props) => {
+    const { supplierDetails } = useContext(SupplierDetailsContext)!;
 
     useEffect(() => {
-        console.log(customerDatials, "data");
-    }, [customerDatials]); // Dependency array ensures it logs whenever the context data changes
+        console.log(supplierDetails, "data");
+    }, [supplierDetails]); // Dependency array ensures it logs whenever the context data changes
 
-    
-
+  
     const [selectedTab, setSelectedTab] = useState("Other Details");
     const [isModalOpen, setModalOpen] = useState(false);
 
@@ -41,30 +40,30 @@ function OtherDetails({ }: Props) {
         {
             icon: <Wallet color={"#303F58"} width={17} />,
             title: "Opening Balance",
-            item: (customerDatials.debitOpeningBalance ?
-                `(Db)  ${customerDatials.debitOpeningBalance}` :
-                customerDatials.creditOpeningBalance ?
-                    `(Cr)  ${customerDatials.creditOpeningBalance}` :
+            item: (supplierDetails.debitOpeningBalance ?
+                `(Db)  ${supplierDetails.debitOpeningBalance}` :
+                supplierDetails.creditOpeningBalance ?
+                    `(Cr)  ${supplierDetails.creditOpeningBalance}` :
                     "N/A"),
         }, {
             icon: <TeenyIcon color={"#303F58"} width={17} />,
             title: "PAN",
-            item: (customerDatials.pan ? customerDatials.pan : "N/A"),
+            item: (supplierDetails.pan ? supplierDetails.pan : "N/A"),
         },
         {
             icon: <CalendarDays color={"#303F58"} width={16} />,
             title: "Credit Days",
-            item: (customerDatials.creditDays ? customerDatials.creditDays : "N/A"),
+            item: (supplierDetails.creditDays ? supplierDetails.creditDays : "N/A"),
         },
         {
             icon: <IndianRupee color={"#303F58"} weight={2} />,
             title: "Currency",
-            item: (customerDatials.currency ? customerDatials.currency : "N/A"),
+            item: (supplierDetails.currency ? supplierDetails.currency : "N/A"),
         },
         {
             icon: <CalendarCheck color={"#303F58"} width={16} />,
             title: "Payment Terms",
-            item: (customerDatials.paymentTerms ? customerDatials.paymentTerms : "N/A"),
+            item: (supplierDetails.paymentTerms ? supplierDetails.paymentTerms : "N/A"),
         },
         {
             icon: <Languages color={"#303F58"} width={16} />,
@@ -79,7 +78,7 @@ function OtherDetails({ }: Props) {
         {
             icon: <Calender color={"#303F58"} width={16} height={20} />,
             title: "Website URL",
-            item: (customerDatials.websiteURL ? customerDatials.websiteURL : "N/A"),
+            item: (supplierDetails.websiteURL ? supplierDetails.websiteURL : "N/A"),
         },
         {
             icon: <Percent color={"#303F58"} width={16} />,
@@ -94,12 +93,12 @@ function OtherDetails({ }: Props) {
         {
             icon: <UserRoundCog color={"#303F58"} size={16} />,
             title: "Department",
-            item: (customerDatials.department ? customerDatials.department : "N/A"),
+            item: (supplierDetails.department ? supplierDetails.department : "N/A"),
         },
         {
             icon: <User color={"#303F58"} width={16} />,
             title: "Designation",
-            item: (customerDatials.designation ? customerDatials.designation : "N/A"),
+            item: (supplierDetails.designation ? supplierDetails.designation : "N/A"),
         },
 
 
@@ -109,9 +108,9 @@ function OtherDetails({ }: Props) {
         setModalOpen(false);
     };
 
-    return (
-        <div>
-            <button onClick={() => setModalOpen(true)} className=" font-semibold underline">View More</button>
+  return (
+    <div>
+         <button onClick={() => setModalOpen(true)} className=" font-semibold underline">View More</button>
             <Modal
                 open={isModalOpen}
                 onClose={() => setModalOpen(false)}
@@ -147,7 +146,7 @@ function OtherDetails({ }: Props) {
                         {/* Pass the required props to the Overview component */}
                         {selectedTab === "Other Details" && (
                             <div>
-                                <div >  <img className="w-[100%]  h-[0.5%]" src={line} alt="" /></div>
+                                {/* <div >  <img className="w-[100%]  h-[0.5%]" src={""} alt="" /></div> */}
                                 <div className="text-start grid grid-cols-4 bg-[#F6F6F6] my-3">
                                     {
                                         OtherDetails.map((Details) => (
@@ -169,14 +168,13 @@ function OtherDetails({ }: Props) {
                             <Taxes />
                         )}
                         {selectedTab === "Contact Person" && (
-
-                            <ContactPerson />
+                          <ContactPerson/>
                         )}
                     </div>
                 </div>
             </Modal>
-        </div>
-    )
+    </div>
+  )
 }
 
 export default OtherDetails

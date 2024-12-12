@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import ArrowRightLeft from "../../../../assets/icons/ArrowRightLeft";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
 import Info from "../../../../assets/icons/Info";
-import { SupplierResponseContext } from "../../../../context/ContextShare";
+import { SupplierDetailsContext, SupplierResponseContext } from "../../../../context/ContextShare";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import { SupplierData } from "../../../../Types/Supplier";
@@ -20,6 +20,9 @@ interface Status {
 }
 
 function SeeSupplierDetails({ }: Props) {
+  
+  const {setSupplierDetails} = useContext(SupplierDetailsContext)!;
+
   const { request: getOneSupplier } = useApi("get", 5009);
   const { id } = useParams<{ id: string }>();
   const [supplier, setSupplier] = useState<SupplierData | null>(null);
@@ -40,6 +43,11 @@ function SeeSupplierDetails({ }: Props) {
       const { response, error } = await getOneSupplier(url, body);
       if (!error && response) {
         setSupplier(response.data);
+        setSupplierDetails(response.data)
+        // setStatusData((prevData) => ({
+        //   ...prevData,
+        //   status: response.data.status,
+        // }));
       }
     } catch (error) {
       console.error("Error fetching supplier:", error);

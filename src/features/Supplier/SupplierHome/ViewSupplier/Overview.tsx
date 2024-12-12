@@ -12,6 +12,7 @@ import EditSupplier from "../EditSupplier";
 import avatar from '../../../../assets/Images/Rectangle 5558.png'
 import line25 from '../../../../assets/Images/Line 25.png'
 import LocateFixed from "../../../../assets/icons/LocateFixed";
+import OtherDetails from "./OtherDetails";
 
 // import ExpensesGraph from "./ExpensesGraph";
 
@@ -224,7 +225,8 @@ const Overview: React.FC<OverviewProps> = ({
               <p className="text-xl font-semibold text-[#2C353B] mx-8">
                 Opening Balance:{" "}
                 <span>
-                  ₹{supplier?.openingBalance || "10,000"}
+                  ₹{supplier?.creditOpeningBalance
+                    || "10,000"}
                 </span>
               </p>
 
@@ -308,7 +310,7 @@ const Overview: React.FC<OverviewProps> = ({
           </div>
 
           {/* Other Details Section */}
-          <div className="mt-4 w-full p-4 rounded-lg bg-[#F6F6F6] shadow-md">
+          <div className="mt-4 w-full p-4 rounded-lg bg-[#E9EFF7] shadow-md">
             {/* Heading */}
             <h3 className="font-bold text-[14px] mb-4">Other Details</h3>
 
@@ -329,12 +331,13 @@ const Overview: React.FC<OverviewProps> = ({
 
               {/* View Customer Button */}
               <div className="flex justify-center">
-                <button
-                  className="text-sm font-medium text-[#303F58] underline"
+                <div
+                  className="text-sm font-medium text-[#303F58] underline cursor-pointer"
                   onClick={() => console.log("View Customer Details")}
                 >
-                  View More
-                </button>
+                  <OtherDetails />
+                </div>
+
               </div>
             </div>
 
