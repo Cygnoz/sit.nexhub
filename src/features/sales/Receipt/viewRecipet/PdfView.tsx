@@ -8,9 +8,11 @@ import { ToWords } from "to-words";
 type Props = { data: any , organization?:any};
 
 function PdfView({ data, organization }: Props) {
-  const { request: getSupplier } = useApi("get", 5009);
+  const { request: getCustomer } = useApi("get", 5002);
   const { request: getCurrency } = useApi("get", 5004);
   const [supplier, setSupplier] = useState<[] | any>([]);
+  console.log(supplier,"supplier");
+  
   const [currency, stecurrency] = useState<[] | any>([]);
 
   const toWords = new ToWords({
@@ -20,10 +22,10 @@ function PdfView({ data, organization }: Props) {
       ignoreZeroCurrency: true,
     },
   });
-  const getSupplierAddress = async () => {
+  const getCustomerAddress = async () => {
     try {
-      const url = `${endponits.GET_ONE_SUPPLIER}/${data.supplierId}`;
-      const { response, error } = await getSupplier(url);
+      const url = `${endponits.GET_ONE_CUSTOMER}/${data.customerId}`;
+      const { response, error } = await getCustomer(url);
       if (!error && response) {
         setSupplier(response.data);
       } else {
@@ -49,17 +51,19 @@ function PdfView({ data, organization }: Props) {
   };
   console.log(data, "data");
   const baseCurrency = currency.find((c: any) => c.baseCurrency === true);
+console.log(baseCurrency);
+
 
   const formattedAmount = baseCurrency 
     ? `${baseCurrency?.currencyName} ${
-        data?.amountPaid && !isNaN(Number(data?.amountPaid))
-          ? toWords?.convert(Number(data?.amountPaid))
+        data?.amountReceived && !isNaN(Number(data?.amountReceived))
+          ? toWords?.convert(Number(data?.amountReceived))
           : "Zero"
       } Only`
     : "Currency not found";
   
   useEffect(() => {
-    getSupplierAddress();
+    getCustomerAddress();
     getCurrencies();
   }, [data]);
   
@@ -72,21 +76,21 @@ function PdfView({ data, organization }: Props) {
             <img
                 src={organization?.organizationLogo}
                 alt="Company Logo"
-              className="h-[49px] w-[71px]"
+              className="h-[49px] w-[71px] object-cover"
             />
           </div>
           <div className="text-right">
             <h2 className="text-xl font-bold text-textColor">
-              Supplier Payment
+            Customer Receipt
             </h2>
-            <p className="text-sm font-bold text-dropdownText mt-[5px]">
-              {data?.paymentId}
-            </p>
-            <h3 className="font-normal text-xs mt-[14px] text-pdftext">
-              {data?.supplierDisplayName}
+            {/* <p className="text-sm font-bold text-dropdownText mt-[5px]">
+              {data?.paymentId}CR-01
+            </p> */}
+            <h3 className="font-normal text-sm mt-[14px] text-pdftext">
+              {supplier?.companyName}
             </h3>
-            <p className="font-normal text-xs text-pdftext">
-              {supplier.supplierEmail && supplier.Supplier}{" "}
+            <p className="font-normal text-sm text-pdftext">
+              {supplier.customerEmail && supplier.customerEmail}{" "}
               {supplier?.mobile && `| +${supplier.mobile}`}
             </p>
           </div>
@@ -94,34 +98,24 @@ function PdfView({ data, organization }: Props) {
 
         <div className="grid grid-cols-2 gap-4 mb-2">
           <div className="grid grid-cols-2 items-center space-y-3">
-            <p className="font-normal text-xs text-pdftext">Payment ID</p>
-            <p className="text-xs  text-pdftext text-end">{data?.paymentId}</p>
             <p className="font-normal text-xs text-pdftext">Payment Date</p>
             <p className="text-xs  text-pdftext text-end">
-              {data?.paymentdate ? data?.paymentDate : "-"}
+              {data?.paymentDate ? data?.paymentDate : "-"}
             </p>
-            <p className="font-normal text-xs text-pdftext">Reference Number</p>
+            {/* <p className="font-normal text-xs text-pdftext">Reference Number</p>
             <p className="text-xs  text-pdftext text-end">
               {data?.reference ? data.reference : "-"}
-            </p>
-            <p className="font-normal text-xs text-pdftext">Paid To</p>
-            <p className="text-xs  text-pdftext text-end">Mr. Aman Rasheedh</p>
-            <p className="font-normal text-xs text-pdftext">Place of Supply</p>
-            <p className="text-xs  text-pdftext text-end">Kerala</p>
+            </p> */}
             <p className="font-normal text-xs text-pdftext">Payment Mode</p>
             <p className="text-xs  text-pdftext text-end">
               {data?.paymentMode ? data.paymentMode : "-"}
             </p>
-            <p className="font-normal text-xs text-pdftext">Paid Through</p>
-            <p className="text-xs  text-pdftext text-end">
-              {data?.paidThrough ? data.paidThrough : "-"}
-            </p>
           </div>
           <div className="flex items-center justify-center ">
-            <div className="bg-gradient-to-r from-[#E3E6D5] to-[#F7E7CE] w-full flex justify-center items-center flex-col py-5 rounded-sm">
-              <h3 className="text-[14px] font-bold ">Amount Paid</h3>
-              <p className="text-xs  text-pdftext text-end">
-                {data?.amountPaid ? data.amountPaid : "-"}
+            <div className="bg-gradient-to-r from-[#E3E6D5] to-[#F7E7CE] px-8 flex justify-center items-center flex-col py-5 rounded-sm">
+              <h3 className="text-[14px] font-bold ">Amount Received</h3>
+              <p className="text-base  font-bold text-end">
+              {baseCurrency?.currencySymbol}   {data?.amountReceived ? data.amountReceived : "-"}
               </p>
             </div>
           </div>
@@ -129,29 +123,29 @@ function PdfView({ data, organization }: Props) {
         <div className="flex gap-4 pb-5">
           {" "}
           <p className="font-normal text-xs text-pdftext">
-            Amount Paid in Words
+          Amount Received in Words
           </p>
           <p className="text-xs  text-pdftext text-end">
           {formattedAmount?formattedAmount:"-"}
           </p>
         </div>
 
-        <table className="w-full mb-8 border border-dropdownBorder">
+        <table className="w-full mb-8 border border-dropdownBorder mt-5">
           <thead className="border-b border-dropdownBorder bg-gray-100">
             <tr className="font-bold text-[10px] text-pdftext text-center">
-              <th className="py-2 px-4">Bill number</th>
-              <th className="py-2 px-4">Bill Date</th>
-              <th className="py-2 px-4">Bill Amount</th>
+              <th className="py-2 px-4">Invoice Number</th>
+              <th className="py-2 px-4">Invoice Date </th>
+              <th className="py-2 px-4">Invoice Amount</th>
               <th className="py-2 px-4">Payment Amount</th>
             </tr>
           </thead>
-          {data?.unpaidBills?.map((item: any) => (
+          {data?.invoice?.map((item: any) => (
             <tbody>
               <tr className="text-[10px] text-center">
-                <td className="py-2 px-4">{item?.billNumber}</td>
-                <td className="py-2 px-4">{item?.billDate}</td>
-                <td className="py-2 px-4">{item?.billAmount}</td>
-                <td className="py-2 px-4">{item?.payment}</td>
+                <td className="py-2 px-4">{item?.salesInvoice}</td>
+                <td className="py-2 px-4">{item?.salesInvoiceDate}</td>
+                <td className="py-2 px-4">{item?.totalAmount}</td>
+                <td className="py-2 px-4">{item?.paymentAmount}</td>
               </tr>
             </tbody>
           ))}
@@ -160,13 +154,12 @@ function PdfView({ data, organization }: Props) {
         <div className="mb-8 text-xs space-y-2">
           <h3 className="font-normal text-xs text-pdftext">Bill to</h3>
           <p className="text-pdftext text-sm font-bold ">
-            {supplier.supplierDisplayName}
+            {supplier.companyName}
           </p>
-          <p className="font-normal text-xs text-pdftext ">
-            {supplier?.supplierEmail && supplier.Supplier}
-            {supplier.supplierEmail && supplier.mobile && "|"}{" "}
-            {supplier?.mobile && `+${supplier.mobile}`}
-          </p>
+          <p className="font-normal text-xs text-pdftext">
+              {supplier.customerEmail && supplier.customerEmail}{" "}
+              {supplier?.mobile && `| +${supplier.mobile}`}
+            </p>
           <p className="font-normal text-xs text-pdftext ">
             {supplier?.billingAddressStreet1}
             {supplier?.billingAddressStreet1 &&

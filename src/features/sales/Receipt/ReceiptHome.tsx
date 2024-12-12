@@ -1,7 +1,7 @@
 import Button from "../../../Components/Button";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import Ellipsis from "../../../assets/icons/Ellipsis";
-import BookIcon from "../../../assets/icons/BookIcon";
+// import BookIcon from "../../../assets/icons/BookIcon";
 import { Link } from "react-router-dom";
 import SalesTable from "../commonComponents/SalesTable";
 
@@ -31,7 +31,7 @@ const ReceiptHome = ({ }: Props) => {
       </div>
 
       <div className="bg-white rounded-lg p-4 space-y-4 mt-6">
-        <div className="flex gap-4">
+        {/* <div className="flex gap-4">
           <div className="flex items-center justify-center bg-[#E3E6D5] text-sm  rounded-[4px] h-9 w-48 ">
             <BookIcon color={"#585953"} />
             All
@@ -41,7 +41,7 @@ const ReceiptHome = ({ }: Props) => {
             <PlusCircle color="darkRed" />
             New Custom View
           </div>
-        </div>
+        </div> */}
         {/* table */}
         <SalesTable page="reciept" />
       </div>
