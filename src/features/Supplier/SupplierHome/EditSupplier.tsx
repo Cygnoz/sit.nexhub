@@ -143,7 +143,6 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     remarks: "",
     status: ""
   });
-  console.log(supplier, "supplierData")
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -601,27 +600,26 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     getOneOrganization()
   }, []);
 
-  const shippingAddressRef = useRef<HTMLDivElement | null>(null);
+  const ShippingAddressRef = useRef<HTMLDivElement | null>(null);
   const BillingAddressRef = useRef<HTMLDivElement | null>(null);
-
-
+  
   const addressscroll = () => {
-    if (addressEdit === "shippingAddressEdit" && shippingAddressRef.current) {
-      shippingAddressRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (addressEdit === "shippingAddressEdit" && ShippingAddressRef.current) {
+      ShippingAddressRef.current.scrollIntoView({ behavior: "smooth" });
     }
     if (addressEdit === "billingAddressEdit" && BillingAddressRef.current) {
-      BillingAddressRef.current.scrollIntoView({ behavior: 'smooth' });
+      BillingAddressRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }
+  };
 
+  // console.log(addressEdit,"addressEdit")
+  
   useEffect(() => {
-    setActiveTab(addressEdit ? 'address' : 'otherDetails')
+    setActiveTab(addressEdit ? "address" : "otherDetails");
+    if (addressEdit) {
+      addressscroll();
+    }
   }, [addressEdit]);
-
-  useEffect(() => {
-    addressscroll()
-  }, [addressscroll])
-
   return (
     <div>
 
@@ -1593,7 +1591,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                       </div>
 
                       {/* Shipping Address */}
-                      <div ref={shippingAddressRef} className="space-y-3 p-5 text-sm">
+                      <div ref={ShippingAddressRef} className="space-y-3 p-5 text-sm">
                         <div className="flex">
                           <p>
                             <b>Shipping Address</b>

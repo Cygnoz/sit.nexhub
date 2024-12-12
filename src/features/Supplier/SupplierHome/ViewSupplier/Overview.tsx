@@ -41,16 +41,19 @@ const Overview: React.FC<OverviewProps> = ({
   const [addressEdit, setAddressEdit] = useState<string>();
   const [supplierHis, setSupplierHis] = useState<any>();
   const [isModalOpen, setModalOpen] = useState(false);
-  const openModal = (billing?: string, shipping?: string) => {
+ 
+ 
+  const openModal = (address?:string) => {
     setModalOpen((prev) => !prev);
-    if (billing === "billing") {
+    if (address === "billing") {
       setAddressEdit("billingAddressEdit");
-    } else if (shipping === "shipping") {
+    } else if (address === "shipping") {
       setAddressEdit("shippingAddressEdit");
     } else {
       setAddressEdit("");
     }
   };
+  console.log(addressEdit,"addressEdit")
 
   const closeModal = () => {
     setModalOpen((prev) => !prev);
@@ -60,7 +63,6 @@ const Overview: React.FC<OverviewProps> = ({
     supplierHistory();
   }, []);
 
-  console.log(id);
 
   const supplierHistory = async () => {
     try {
@@ -119,7 +121,6 @@ const Overview: React.FC<OverviewProps> = ({
     setStatusData({ ...statusData, status: supplier?.status });
   }, [supplier]);
 
-  console.log(supplier?.status);
   const formatDateTime = (dateString: any) => {
     if (!dateString) {
       return { date: "", time: "" };
@@ -227,6 +228,11 @@ const Overview: React.FC<OverviewProps> = ({
                 <span>
                   ₹{supplier?.creditOpeningBalance
                     || "10,000"}
+                ₹{supplier?.creditOpeningBalance 
+  ? `${supplier?.creditOpeningBalance} (CR)` 
+  : supplier?.debitOpeningBalance 
+  ? `${supplier?.debitOpeningBalance} (DR)` 
+  : "0"}
                 </span>
               </p>
 
@@ -385,7 +391,6 @@ const Overview: React.FC<OverviewProps> = ({
             {supplierHis?.map((item: any, index: number) => {
               const circleStyle = getCircleStyle(item.title);
               const { date, time } = formatDateTime(item.date);
-              console.log(circleStyle.bgColor);
 
               return (
                 <div key={index} className="space-y-4 pb-8">
