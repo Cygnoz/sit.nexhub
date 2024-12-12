@@ -30,7 +30,7 @@ function PosHeader({onSelectCustomer }: Props) {
   };
   const Navigate=useNavigate()
   const handleGoBack =()=>{
-    Navigate(-1)
+    Navigate("/landing")
   }
   return (
     <div className="px-5 py-3 flex items-center justify-between mt-2">

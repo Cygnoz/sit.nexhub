@@ -197,7 +197,7 @@ function GstSettings({ }: GstSettingsProps) {
                 </div>
                 <div className="mt-5">
                   <label htmlFor="gstRegisteredDate" className="block mb-1">
-                    GST Registered On
+                  GST Registered On Date
                   </label>
                   <div className="relative w-full">
                     <div className="pointer-events-none absolute inset-y-0  flex items-center px-3 text-gray-700 w-[100%]">

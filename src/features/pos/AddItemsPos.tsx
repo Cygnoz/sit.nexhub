@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DebitCardIcon from "../../assets/icons/DebitCardIcon";
 import RsIcon from "../../assets/icons/RsIcon";
 import UpiIcon from "../../assets/icons/UpiIcon";
@@ -6,6 +6,8 @@ import Button from "../../Components/Button";
 import PosDiscount from "./PosDiscount";
 import OutlineTrashIcon from "../../assets/icons/OutlineTrashIcon";
 import PosPayment from "./PosPayment";
+import { endponits } from "../../Services/apiEndpoints";
+import useApi from "../../Hooks/useApi";
 // import noItemFoundIMage from "../../assets/Images/no item added.png"
 
 type Props = { selectedItems: any[]; onRemoveItem: (item: any) => void ; selectedCustomer:any };
@@ -21,6 +23,7 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
   const [selectedMethodLabel, setSelectedMethodLabel] = useState<string>("Cash");
   const [discount, setDiscount] = useState<any>("");
   const [discountType, setDiscountType] = useState<string>("Percentage");
+  const [prefix, setPrifix] = useState("")
 
   const [quantities, setQuantities] = useState<{ [key: string]: number }>(
     () =>
@@ -32,6 +35,25 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
         {}
       )
   );
+  const { request: getPrfix } = useApi("get", 5007);
+  const getSalesInvoicePrefix = async () => {
+    try {
+      const prefixUrl = `${endponits.GET_INVOICE_PREFIX}`;
+      const { response, error } = await getPrfix(prefixUrl);
+
+      if (!error && response) {
+        setPrifix(response.data)
+      } else {
+        console.log(error);
+      }
+    } catch (error) {
+      console.log("Error in fetching Purchase Order Prefix", error);
+    }
+  };
+  useEffect(()=>{
+    getSalesInvoicePrefix()
+  },[])
+
 
   const handleMethodSelect = (method: { id: number; label: string }) => {
     setSelectedMethod(method.id); 
@@ -86,7 +108,7 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
      <div>
      <div className="flex justify-between items-center">
         <p className="text-textColor text-sm font-bold">Selected Item</p>
-        <p className="text-dropdownText text-sm font-semibold">Order no: 001343</p>
+        <p className="text-dropdownText text-sm font-semibold">Invoice No: {prefix}</p>
       </div>
 
       {/* Selected Items */}

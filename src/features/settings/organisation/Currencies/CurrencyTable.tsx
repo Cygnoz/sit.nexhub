@@ -87,7 +87,7 @@ const CurrencyTable = () => {
               <td className="py-2.5 px-4 border-y border-tableBorder">
                 <div className="flex justify-center gap-2 items-center">
                   {/* View Exchange Rate (Placeholder for now) */}
-                  <div className="h-[26px] justify-start items-start inline-flex">
+                  <div className="h-[26px]">
                     <div className="#fefdfa">
                       <div className="#565148 border px-[10px] py-1 rounded-lg">
                         <p>View Exchange Rate</p>

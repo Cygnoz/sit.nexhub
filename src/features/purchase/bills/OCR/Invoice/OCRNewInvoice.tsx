@@ -7,6 +7,7 @@ import bgImage from "../../../../../assets/Images/6.png";
 import { endponits } from "../../../../../Services/apiEndpoints";
 import useApi from "../../../../../Hooks/useApi";
 import toast from "react-hot-toast";
+import "../../../../../App.css"
 
 const OCRNewInvoice = () => {
   const [isModalOpen, setModalOpen] = useState(false);

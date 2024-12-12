@@ -187,7 +187,9 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
       const { response, error } = await newSalesInvoiceApi(url, invoiceState);
       if (!error && response) {
         toast.success(response.data.message);
-        handleGoBack();
+        setTimeout(() => {
+          handleGoBack();
+        }, 500); 
       } else {
         toast.error(error?.response.data.message);
       }
@@ -195,6 +197,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
       toast.error("Something went wrong.");
     }
   };
+  
 
   return (
     <>
