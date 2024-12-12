@@ -34,10 +34,10 @@ const navlist = [
         headName: "Unit of Measurement",
         subRoute: "/inventory/unit",
       },
-      {
-        headName:"Item Tracking",
-        subRoute: "/inventory/item-tracking",
-      }
+      // {
+      //   headName:"Item Tracking",
+      //   subRoute: "/inventory/item-tracking",
+      // }
     ],
   },
   {
