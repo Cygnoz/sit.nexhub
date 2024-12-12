@@ -228,11 +228,7 @@ const Overview: React.FC<OverviewProps> = ({
                 <span>
                   ₹{supplier?.creditOpeningBalance
                     || "10,000"}
-                ₹{supplier?.creditOpeningBalance 
-  ? `${supplier?.creditOpeningBalance} (CR)` 
-  : supplier?.debitOpeningBalance 
-  ? `${supplier?.debitOpeningBalance} (DR)` 
-  : "0"}
+               
                 </span>
               </p>
 
