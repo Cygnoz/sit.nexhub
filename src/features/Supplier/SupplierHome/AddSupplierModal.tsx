@@ -123,6 +123,8 @@ const AddSupplierModal = ({ page }: Props) => {
     },
   ]);
 
+
+
   const addRow = () => {
     setRows([
       ...rows,
@@ -235,6 +237,9 @@ const AddSupplierModal = ({ page }: Props) => {
     newIsAccountNumberSame[index] = isMatch;
     setIsaccountNumbersame(newIsAccountNumberSame);
   };
+
+  console.log(supplierdata,"supplierData")
+
 
   // add bank account
   const handleBankDetailsChange = (
@@ -1786,7 +1791,7 @@ const AddSupplierModal = ({ page }: Props) => {
                             <input
                               className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                               placeholder="Street 1"
-                              name="shippingAddressLine1"
+                              name="shippingAddressStreet1"
                               value={supplierdata.shippingAddressStreet1}
                               onChange={handleChange}
                             />
@@ -1795,7 +1800,7 @@ const AddSupplierModal = ({ page }: Props) => {
                             <input
                               className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                               placeholder="Street 2"
-                              name="shippingAddressLine2"
+                              name="shippingAddressStreet2"
                               value={supplierdata.shippingAddressStreet2}
                               onChange={handleChange}
                             />
@@ -2096,34 +2101,35 @@ const AddSupplierModal = ({ page }: Props) => {
                                 />
                               </div>
                               <div>
-  <label className="block mb-1">Account Number</label>
-  <div className="relative">
-    <input
-      type="text"
-      name="accountNum"
-      className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-      placeholder="Enter Account Number"
-      value={
-        showAccountNumbers[index]
-          ? bankDetail.accountNum
-          : bankDetail.accountNum.replace(/./g, "*") // Mask account number
-      }
-    
-    />
-    <button
-      type="button"
-      className="absolute right-2 top-2 text-sm text-gray-600"
-      onClick={() => toggleShowAccountNumber(index)}
-    >
-      {showAccountNumbers[index] ? (
-        <Eye color={"currentColor"} />
-      ) : (
-        <EyeOff />
-      )}
-    </button>
-  </div>
-</div>
-
+                                <label className="block mb-1">
+                                  Account Number
+                                </label>
+                                <div className="relative">
+                                  <input
+                                    type="text"
+                                    name="accountNum"
+                                    className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                                    placeholder="Enter Account Number"
+                                    value={bankDetail.accountNum}
+                                    onChange={(e) =>
+                                      handleBankDetailsChange(index, e)
+                                    }
+                                  />
+                                  <button
+                                    type="button"
+                                    className="absolute right-2 top-2 text-sm text-gray-600"
+                                    onClick={() =>
+                                      toggleShowAccountNumber(index)
+                                    }
+                                  >
+                                    {showAccountNumbers[index] ? (
+                                      <Eye color={"currentColor"} />
+                                    ) : (
+                                      <EyeOff />
+                                    )}
+                                  </button>
+                                </div>
+                              </div>
                               <div>
                                 <label className="block mb-1">IFSC Code</label>
                                 <input

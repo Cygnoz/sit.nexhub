@@ -225,7 +225,11 @@ const Overview: React.FC<OverviewProps> = ({
               <p className="text-xl font-semibold text-[#2C353B] mx-8">
                 Opening Balance:{" "}
                 <span>
-                  ₹{supplier?.openingBalance || "10,000"}
+                ₹{supplier?.creditOpeningBalance 
+  ? `${supplier?.creditOpeningBalance} (CR)` 
+  : supplier?.debitOpeningBalance 
+  ? `${supplier?.debitOpeningBalance} (DR)` 
+  : "0"}
                 </span>
               </p>
 
