@@ -43,24 +43,30 @@ function CustomerStatusHistory({ id }: Props) {
                 return { bgColor: "bg-[#820000]", text: "" };
         }
     };
-    const formatDateTime = (dateString: string) => {
-        const [datePart, timePart] = dateString?.split(" ");
-        const [hoursString, minutes] = timePart?.split(":");
+    const formatDateTime = (dateString?: string) => {
+        if (!dateString || !dateString.includes(" ")) {
+            return { date: "Invalid Date", time: "Invalid Time" };
+        }
+        const [datePart, timePart] = dateString.split(" ");
+        if (!timePart || !timePart.includes(":")) {
+            return { date: datePart || "Invalid Date", time: "Invalid Time" };
+        }
+        const [hoursString, minutes] = timePart.split(":");
         let period = "AM";
-
-        let hours = parseInt(hoursString);
-
+        let hours = parseInt(hoursString, 10);
+        if (isNaN(hours) || isNaN(parseInt(minutes, 10))) {
+            return { date: datePart || "Invalid Date", time: "Invalid Time" };
+        }
         if (hours >= 12) {
             period = "PM";
             hours = hours > 12 ? hours - 12 : hours;
         } else if (hours === 0) {
             hours = 12;
         }
-
         const formattedTime = `${hours}:${minutes} ${period}`;
-
         return { date: datePart, time: formattedTime };
     };
+    
     return (
         <div>
             <div className=" ">
@@ -82,8 +88,8 @@ function CustomerStatusHistory({ id }: Props) {
                 )}
                 <div className="flex max-w-full px-2 overflow-x-auto hide-scrollbar mt-3">
                     {historyData.map((item: any, index: number) => {
-                        const circleStyle = getCircleStyle(item.title);
-                        const { date, time } = formatDateTime(item.date);
+                        const circleStyle = getCircleStyle(item?.title);
+                        const { date, time } = formatDateTime(item?.date);
                         return (
                             <div key={index} className="min-w-[250px] max-w-[250px] mx-2 flex-shrink-0 py-3">
                                 <div>

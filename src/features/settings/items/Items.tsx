@@ -132,7 +132,7 @@ function Items({}: Props) {
       <p className="text-[20px] font-bold mt-3">Item</p>
       <div className="space-y-4 mt-2">
         {/* Quantity */}
-        <div className="bg-white h-[192px] w-full p-6 rounded-lg">
+        <div className="bg-white w-full p-6 rounded-lg">
           <div className="space-y-4">
             <div className="grid grid-cols-12 items-center space-x-20">
               <p className="col-span-4 text-[14px] font-semibold">
@@ -207,7 +207,7 @@ function Items({}: Props) {
               </div>
             </div>
 
-            <div className="grid grid-cols-12 items-center space-x-20">
+            {/* <div className="grid grid-cols-12 items-center space-x-20">
               <p className="col-span-4 text-[14px] font-semibold">
                 Selected items when barcodes are scanned using:
               </p>
@@ -227,7 +227,7 @@ function Items({}: Props) {
                   <CehvronDown bold={2} height={18} width={18} color="gray" />
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* Duplicate Item name */}
@@ -407,7 +407,7 @@ function Items({}: Props) {
               zero 
             </label>
           </div>
-          <div className="flex items-center space-x-2 mt-3">
+          {/* <div className="flex items-center space-x-2 mt-3">
             <input
               type="checkbox"
               id="customCheckbox"
@@ -437,7 +437,7 @@ function Items({}: Props) {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
           <div className="flex items-center space-x-2 mt-3">
             <input
               type="checkbox"
