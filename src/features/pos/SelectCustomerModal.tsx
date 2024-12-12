@@ -92,11 +92,11 @@ function SelectCustomerModal({ onButtonClick }: Props) {
         />
 
         <div className="flex justify-between mt-4">
-          <div className="w-[40%] pr-4 overflow-y-scroll max-h-[500px] hide-scrollbar grid grid-cols-2 gap-4">
+          <div className="w-[40%]  pr-4 overflow-y-scroll max-h-[500px] hide-scrollbar grid grid-cols-2 gap-4">
             {filteredCustomers.map((customer: any) => (
               <div
                 key={customer.id}
-                className={`bg-[#F5F2EE] rounded-lg p-4 flex flex-col items-center justify-center cursor-pointer ${selectedCustomer?._id === customer._id
+                className={`bg-[#F5F2EE] rounded-lg p-4 flex flex-col h-32 items-center justify-center cursor-pointer ${selectedCustomer?._id === customer._id
                     ? "border-2 border-[#948B7C]"
                     : ""
                   }`}

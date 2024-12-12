@@ -39,7 +39,7 @@ const SalesTable = ({ page }: Props) => {
   const { loading, setLoading } = useContext(TableResponseContext)!;
   const { request: getAllQuotes } = useApi("get", 5007);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [data, setData] = useState<QuoteData[]>([]);
+  const [data, setData] = useState<any | []>([]);
 
   const fetchAllQuotes = async () => {
     try {
@@ -51,7 +51,8 @@ const SalesTable = ({ page }: Props) => {
             : page === "quote"
               ? `${endponits.GET_ALL_QUOTES}`
               : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}`
-                : "";
+                : page === "credit-Note" ? `${endponits.GET_ALL_CREDIT_NOTE}`
+                  : "";
 
       setLoading({ ...loading, skelton: true });
       const { response, error } = await getAllQuotes(url);
@@ -76,6 +77,8 @@ const SalesTable = ({ page }: Props) => {
     fetchAllQuotes();
   }, []);
 
+  console.log(data,"oo");
+  
   const initialColumns: Column[] =
     page === "invoice" ? [
       { id: "createdDate", label: "Date", visible: true },
@@ -122,6 +125,13 @@ const SalesTable = ({ page }: Props) => {
               { id: "paymentMode", label: "Mode", visible: true },
               { id: "amountReceived", label: "Amount", visible: true },
               // { id: "", label: "Unsend Amount", visible: true },
+            ] :
+             page == "credit-Note" ? [
+              { id: "creditNote", label: "Credit Note", visible: true },
+              { id: "customerDisplayName", label: "Customer Name", visible: true },
+              { id: "customerCreditDate", label: "Date", visible: true },
+              { id: "orderNumber", label: "orderNumber", visible: true },
+              { id: "totalAmount", label: "Balance", visible: true },
             ] : [];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
@@ -130,7 +140,7 @@ const SalesTable = ({ page }: Props) => {
     return dateTimeString.split("T")[0];
   };
 
-  const renderColumnContent = (colId: string, item: QuoteData) => {
+  const renderColumnContent = (colId: string, item: any) => {
     if (colId === "createdDate") {
       return extractDate(item.createdDate);
     }
@@ -157,23 +167,36 @@ const SalesTable = ({ page }: Props) => {
     );
   };
   // Initialize `data` as an empty array if it's undefined
-  const filteredData = Array.isArray(data) ? data.filter((quote) => {
-    const searchValueLower = searchValue?.toLowerCase();
-    return (
-      quote?.customerName?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.reference?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.salesQuotes?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
-      quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
-    );
-  }) : [];
+  const filteredData = Array.isArray(data)
+  ? data.filter((quote) => {
+      const searchValueLower = searchValue?.toLowerCase();
+      if (page === "credit-Note") {
+        return (
+          quote?.customerDisplayName?.toLowerCase()?.includes(searchValueLower) ||
+          quote?.creditNote?.toLowerCase()?.includes(searchValueLower) ||
+          quote?.orderNumber?.toLowerCase()?.includes(searchValueLower)
+        );
+      } else {
+        return (
+          quote?.customerName?.toLowerCase()?.includes(searchValueLower) ||
+          quote?.reference?.toLowerCase()?.includes(searchValueLower) ||
+          quote?.salesQuotes?.toLowerCase()?.includes(searchValueLower) ||
+          quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
+          quote?.salesOrder?.toLowerCase()?.includes(searchValueLower)
+        );
+      }
+    })
+  : [];
 
-
+ 
   const handleRowClick = (id: string) => {
     const state = { page };
     if (page === "reciept") {
-      navigate(`/sales/receipt/view/${id}`, { state }); 
-    } else {
+      navigate(`/sales/receipt/view/${id}`, { state });
+
+    } 
+   
+    else {
       navigate(`/sales/viewsalesorder/${id}`, { state });
     }
   };
@@ -186,17 +209,20 @@ const SalesTable = ({ page }: Props) => {
             onSearchChange={setSearchValue}
             searchValue={searchValue}
             placeholder={
-              page == "invoice"
+              page === "invoice"
                 ? "Search Invoice"
-                : page == "salesOrder"
+                : page === "salesOrder"
                   ? "Search Sales Order"
-                  : page == "salesReturn"
+                  : page === "salesReturn"
                     ? "Search Sales Return"
-                    : page == "reciept"
-                      ? "Search Reciepts"
-                      : "Search Quote"
+                    : page === "reciept"
+                      ? "Search Receipts"
+                      : page === "credit-Note"
+                        ? "Search Credit Note"
+                        : "Search Quote"
             }
           />
+
         </div>
         <Print />
         {/* <SortBy/> */}

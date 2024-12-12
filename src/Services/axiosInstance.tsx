@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const BASE_URLS: Record<number, string> = {
+  5000:import.meta.env.VITE_REACT_APP_OCR,
   5001: import.meta.env.VITE_REACT_APP_ACCOUNTS,
   5002: import.meta.env.VITE_REACT_APP_CUSTOMERS,
   5003: import.meta.env.VITE_REACT_APP_INVENTORY,
@@ -11,7 +12,6 @@ const BASE_URLS: Record<number, string> = {
   5008: import.meta.env.VITE_REACT_APP_STAFF,
   5009: import.meta.env.VITE_REACT_APP_SUPPLIER,
 };
-// console.log(import.meta.env.VITE_REACT_APP_ORGANIZATION,"api");
 
 const createInstance = (
   port: number,
@@ -23,6 +23,9 @@ const createInstance = (
     "Content-Type": contentType,
     Accept: "application/json",
   };
+
+  console.log(contentType,"api");
+
 
   if (useAuth) {
     const authToken: string | null = localStorage.getItem("authToken");
