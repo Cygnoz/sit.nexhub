@@ -974,7 +974,7 @@ const AddSupplierModal = ({ page }: Props) => {
                     <div>
                       <label htmlFor="">Supplier Email</label>
                       <input
-                        type="email"
+                        type="text"
                         name="supplierEmail"
                         className="pl-3 text-sm w-[100%] mt-1  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
                         placeholder="Enter Email"
@@ -2096,39 +2096,34 @@ const AddSupplierModal = ({ page }: Props) => {
                                 />
                               </div>
                               <div>
-                                <label className="block mb-1">
-                                  Account Number
-                                </label>
-                                <div className="relative">
-                                  <input
-                                    type={
-                                      showAccountNumbers[index]
-                                        ? "text"
-                                        : "password"
-                                    }
-                                    name="accountNum"
-                                    className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                                    placeholder="Enter Account Number"
-                                    value={bankDetail.accountNum}
-                                    onChange={(e) =>
-                                      handleBankDetailsChange(index, e)
-                                    }
-                                  />
-                                  <button
-                                    type="button"
-                                    className="absolute right-2 top-2 text-sm text-gray-600"
-                                    onClick={() =>
-                                      toggleShowAccountNumber(index)
-                                    }
-                                  >
-                                    {showAccountNumbers[index] ? (
-                                      <Eye color={"currentColor"} />
-                                    ) : (
-                                      <EyeOff />
-                                    )}
-                                  </button>
-                                </div>
-                              </div>
+  <label className="block mb-1">Account Number</label>
+  <div className="relative">
+    <input
+      type="text"
+      name="accountNum"
+      className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+      placeholder="Enter Account Number"
+      value={
+        showAccountNumbers[index]
+          ? bankDetail.accountNum
+          : bankDetail.accountNum.replace(/./g, "*") // Mask account number
+      }
+    
+    />
+    <button
+      type="button"
+      className="absolute right-2 top-2 text-sm text-gray-600"
+      onClick={() => toggleShowAccountNumber(index)}
+    >
+      {showAccountNumbers[index] ? (
+        <Eye color={"currentColor"} />
+      ) : (
+        <EyeOff />
+      )}
+    </button>
+  </div>
+</div>
+
                               <div>
                                 <label className="block mb-1">IFSC Code</label>
                                 <input
@@ -2149,11 +2144,7 @@ const AddSupplierModal = ({ page }: Props) => {
 
                                 <div className="relative">
                                   <input
-                                    type={
-                                      showReEnterAccountNumbers[index]
-                                        ? "text"
-                                        : "password"
-                                    }
+                                    type="text"
                                     name="reAccountNum"
                                     className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                                     placeholder="Re-Enter Account Number"
