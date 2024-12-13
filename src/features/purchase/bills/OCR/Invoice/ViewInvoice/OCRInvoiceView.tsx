@@ -11,7 +11,73 @@ import ItemsTable from "./ItemsTable";
 import Button from "../../../../../../Components/Button";
 
 const OCRInvoiceView = () => {
-  const lineItems = ["Item 1", "Item 2", "Item 3", "Item 4", "item 5"];
+  const lineItems = [
+    "Item 1",
+    "Item 2",
+    "Item 3",
+    "Item 4",
+    "Item 5",
+    "Item 6",
+    "Item 7",
+    "Item 8",
+    "Item 9",
+    "Item 10",
+    "Item 11",
+    "Item 12",
+    "Item 13",
+    "Item 14",
+    "Item 15",
+    "Item 16",
+    "Item 17",
+    "Item 18",
+    "Item 19",
+    "Item 20",
+    "Item 21",
+    "Item 22",
+    "Item 23",
+    "Item 24",
+    "Item 25",
+    "Item 26",
+    "Item 27",
+    "Item 28",
+    "Item 29",
+    "Item 30",
+    "Item 31",
+    "Item 32",
+    "Item 33",
+    "Item 34",
+    "Item 35",
+    "Item 36",
+    "Item 37",
+    "Item 38",
+    "Item 39",
+    "Item 40",
+    "Item 41",
+    "Item 42",
+    "Item 43",
+    "Item 44",
+    "Item 45",
+    "Item 46",
+    "Item 47",
+    "Item 48",
+    "Item 49",
+    "Item 50",
+    "Item 51",
+    "Item 52",
+    "Item 53",
+    "Item 54",
+    "Item 55",
+  ];
+  
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = lineItems.slice(startIndex, endIndex);
+
+  const totalPages = Math.ceil(lineItems.length / itemsPerPage);
 
   const items = [
     {
@@ -155,8 +221,6 @@ const OCRInvoiceView = () => {
       batchNo: "B0123",
     },
   ];
-  
-  
 
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
@@ -358,23 +422,58 @@ const OCRInvoiceView = () => {
               </div>
             </div>
 
-            {/* Line Items */}
-            <div className="border-b-[0.5px] border-[#c5c6c7] text-sm pb-2 mb-4 text-textColor font-semibold mt-5">
-              Line Items
+            <div>
+      {/* Line Items Header */}
+      <div className="border-b-[0.5px] border-[#c5c6c7] text-sm pb-2 mb-4 text-textColor font-semibold mt-5">
+        Line Items
+      </div>
+
+      {/* Grid Layout for Line Items */}
+      <div className="mt-2 grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          {currentItems.slice(0, 5).map((item, index) => (
+            <div
+              onClick={() => console.log("Clicked on item:", item)}
+              key={index}
+              className="flex gap-4 items-center font-semibold p-2"
+            >
+              <DotIcon color={"#32A370"} size={10} />
+              <p className="text-textColor">Line Item</p>
+              <p className="text-[#32A370]">{item}</p>
             </div>
-            <div className="space-y-1 mt-2">
-              {lineItems.map((item, index) => (
-                <div
-                  onClick={() => toggleDropdown("items")}
-                  key={index}
-                  className="flex gap-4 items-center font-semibold p-2"
-                >
-                  <DotIcon color={"#32A370"} size={10} />
-                  <p className="text-textColor">Line Item </p>
-                  <p className="">{item}</p>
-                </div>
-              ))}
+          ))}
+        </div>
+        <div className="space-y-2">
+          {currentItems.slice(5, 10).map((item, index) => (
+            <div
+              onClick={() => console.log("Clicked on item:", item)}
+              key={index}
+              className="flex gap-4 items-center font-semibold p-2"
+            >
+              <DotIcon color={"#32A370"} size={10} />
+              <p className="text-textColor">Line Item</p>
+              <p className="text-[#32A370]">{item}</p>
             </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex gap-1 mt-4">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <p
+            key={index}
+            onClick={() => setCurrentPage(index + 1)}
+            className={`p-1 font-bold rounded-md ${
+              currentPage === index + 1
+                ? "bg-darkRed text-white"
+                : "bg-gray-200 text-darkRed cursor-pointer"
+            }`}
+          >
+            [{index + 1}]
+          </p>
+        ))}
+      </div>
+    </div>
 
             {/* Transaction Details */}
             <div className="border-b-[1px] border-[#c5c6c7] text-sm pb-2 mb-4 text-textColor font-semibold mt-5">
