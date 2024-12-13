@@ -529,13 +529,20 @@ const NewSalesQuoteTable = ({
       );
     });
   };
-
+    
   useEffect(() => {
-    if (salesQuoteState?.items) {
-      setRows(salesQuoteState.items);
+    if (salesQuoteState?.salesOrderNumber) {
+      const updatedItems = salesQuoteState.items.map((item: any) => {
+        const matchingItem = items.find((data: any) => data._id === item.itemId);
+        return {
+          ...item,
+          itemStock: matchingItem?.currentStock || "",
+        };
+      });
+      setRows(updatedItems);
     }
-  }, [items]);
-
+  }, [ items]);
+  
   useEffect(() => {
     setRows((prevData: any) => {
       if (Array.isArray(prevData)) {

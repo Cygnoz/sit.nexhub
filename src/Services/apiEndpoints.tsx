@@ -34,6 +34,7 @@ export const endponits = {
   ADD_SALES_RECIEPT:"sales-receipt",
   GET_ALL_SALES_RECIEPT:"get-all-receipt",
   GET_ONE_SALES_RECIEPT:"get-receipt",
+  GET_LAST_SALES_RECIEPT_PREFIX:"get-last-salesReceipt-prefix",
   //getall-item-sales
   GET_ALL_ITEMS_SALES: "get-all-item-xs",
   GET_ALL_ITEMS_TABLE:"get-all-item-m",
@@ -159,7 +160,11 @@ export const endponits = {
  GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
  GET_DEBIT_NOTE:`getDebitNote`,
 
-
+ // credit note
+ GET_CREDIT_NOTE_PREFIX:`get-last-creditNote-prefix`,
+ ADD_CREDIT_NOTE:`add-creditNote`,
+ GET_ALL_CREDIT_NOTE:`get-all-creditNote`,
+//  GET_ONE_CREDIT_NOTE: `get-one-creditNote`,
 
   // Login
   LOGIN: "/login",

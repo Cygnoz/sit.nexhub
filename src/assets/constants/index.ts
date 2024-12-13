@@ -84,10 +84,10 @@ const navlist = [
       //   headName: "POS",
       //   subRoute: "/inventory",
       // },
-      {
-        headName: "Sales Return",
-        subRoute: "/sales/salesreturn",
-      },
+      // {
+      //   headName: "Sales Return",
+      //   subRoute: "/sales/salesreturn",
+      // },
       {
         headName: "Credit Note",
         subRoute: "/sales/credit-note",
@@ -318,6 +318,7 @@ export const newDebitTableHead = [
   "Actions",
 ];
 
+
 export const PaymentMadeUnpaidBillTable = [
   "Date",
   "Due Date",
@@ -326,6 +327,16 @@ export const PaymentMadeUnpaidBillTable = [
   "Amount Due",
   "Payment",
 ];
+
+export const newCreditTableHead = [
+  "Product",
+  "Quantity",
+  "Rate",
+  "Tax",
+  "Amount",
+  "Actions",
+];
+
 export const SalesRecieptTable = [
   "Date",
   "Due Date",

@@ -37,19 +37,19 @@ const NewUnit = ({ page }: Props) => {
 
     });
 
-
-
-
-
-  console.log(initialUnitData);
-
-
   const openModal = () => {
     setModalOpen(true);
   };
 
   const closeModal = () => {
     setModalOpen(false);
+    setInitialUnitData({
+      unitName: "",
+      symbol: "",
+      quantityCode: "",
+      precision: "",
+
+    })
   };
 
 

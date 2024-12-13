@@ -5,13 +5,13 @@ import SearchBar from "../../../../Components/SearchBar";
 // import CirclePlus from "../../../../assets/icons/circleplus";
 import NewPaymentMadeOrderTable from "./NewPaymentMadeOrderTable";
 import Upload from "../../../../assets/icons/Upload";
-import UserRound from "../../../../assets/icons/user-round";
 // import ScanEye from "../../../../assets/icons/ScanEye";
 // import { PrinterIcon } from "@heroicons/react/16/solid";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import SupplierView from "../../CommonComponents/SupplierView";
 
 interface UnpaidBill {
   billDate: string;
@@ -299,10 +299,11 @@ const NewPaymentMade = ({}: Props) => {
                         filteredSupplier.map((supplier: any) => (
                           <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer">
                             <div className="col-span-2 flex items-center justify-center">
-                              <img
-                                src="https://i.postimg.cc/MHdYrGVP/Ellipse-43.png"
-                                alt=""
-                              />
+                            <img
+                                className="rounded-full "
+                                  src={supplier.supplierProfile?supplier.supplierProfile:"https://i.postimg.cc/sDnbrRWP/avatar-3814049-1280.webp"}
+                                  alt=""
+                                />
                             </div>
                             <div
                               className="col-span-10 flex cursor-pointer "
@@ -346,12 +347,8 @@ const NewPaymentMade = ({}: Props) => {
                 </div>
               </div>
               <div className="cols-12">
-                <p
-                  className="font-bold inline-flex items-center text-sm"
-                  style={{ color: "#820000" }}
-                >
-                  <UserRound color="#820000" /> &nbsp; See vendor details
-                </p>
+              <SupplierView selectedSupplier={selectedSupplier}/>
+               
               </div>
 
               <div className="grid grid-cols-2 gap-4 mt-2">

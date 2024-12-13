@@ -98,7 +98,7 @@ const initialSalesQuoteState: invoice = {
       igstAmount: "",
       vatAmount: "",
       itemTotaltax: "",
-      discountType: "",
+      discountType: "Percentage",
       discountAmount: "",
       amount: "",
       itemAmount: ""
@@ -398,6 +398,7 @@ const NewInvoice = ({ }: Props) => {
     }
   }, [
     invoiceState?.placeOfSupply,
+    oneOrganization.state
   ]);
 
   const fetchData = async (
@@ -1138,9 +1139,6 @@ const NewInvoice = ({ }: Props) => {
                 />
               </label>
             </div>
-
-
-
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}
