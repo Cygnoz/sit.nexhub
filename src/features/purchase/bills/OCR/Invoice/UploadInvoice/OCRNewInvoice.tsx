@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import Button from "../../../../../Components/Button";
-import PlusCircle from "../../../../../assets/icons/PlusCircle";
-import Modal from "../../../../../Components/model/Modal";
-import UploadFile from "../../../../../assets/icons/UploadFile";
-import bgImage from "../../../../../assets/Images/6.png";
-import { endponits } from "../../../../../Services/apiEndpoints";
-import useApi from "../../../../../Hooks/useApi";
+import Button from "../../../../../../Components/Button";
+import PlusCircle from "../../../../../../assets/icons/PlusCircle";
+import Modal from "../../../../../../Components/model/Modal";
+import UploadFile from "../../../../../../assets/icons/UploadFile";
+import bgImage from "../../../../../../assets/Images/6.png";
+import { endponits } from "../../../../../../Services/apiEndpoints";
+import useApi from "../../../../../../Hooks/useApi";
 import toast from "react-hot-toast";
-import "../../../../../App.css"
+import "../../../../../../App.css"
 
 const OCRNewInvoice = () => {
   const [isModalOpen, setModalOpen] = useState(false);
