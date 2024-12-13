@@ -49,9 +49,7 @@ const Overview: React.FC<OverviewProps> = ({
       setAddressEdit("billingAddressEdit");
     } else if (address === "shipping") {
       setAddressEdit("shippingAddressEdit");
-    } else {
-      setAddressEdit("");
-    }
+    } 
   };
   console.log(addressEdit,"addressEdit")
 
