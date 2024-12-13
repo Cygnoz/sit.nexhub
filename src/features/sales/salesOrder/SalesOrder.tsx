@@ -4,7 +4,7 @@ import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
 // import Ellipsis from "../../../assets/icons/Ellipsis";
-import SalesOrderCard from "./SalesOrderCard";
+// import SalesOrderCard from "./SalesOrderCard";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import { useNavigate } from "react-router-dom";
 import SalesTable from "../commonComponents/SalesTable";
@@ -120,7 +120,7 @@ const Sales = ({}: Props) => {
         </div>
       </div>
       <div className="px-7 w-[100%] mt-4">
-        <SalesOrderCard />
+        {/* <SalesOrderCard /> */}
       </div>
 
       <div className="px-7 mt-4">

@@ -200,7 +200,7 @@ const NewInvoice = ({ }: Props) => {
   }, [selectedCustomer, oneOrganization])
 
   const handleGoBack = () => {
-    navigate(-1)
+    navigate("/sales/invoice")
     setInvoiceState(initialSalesQuoteState)
   }
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

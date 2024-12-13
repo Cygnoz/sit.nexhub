@@ -73,6 +73,11 @@ interface CustomerDeatilsContextType {
   setCustomerDatials: React.Dispatch<React.SetStateAction<any>>;
 }
 
+interface SupplierDetailsContextType {
+  supplierDetails : any;
+  setSupplierDetails :React.Dispatch<React.SetStateAction<any>>;
+}
+
 export const cashResponseContext = createContext<CashResponseContextType | undefined>(undefined);
 export const BankResponseContext = createContext<BankResponseContextType | undefined>(undefined);
 export const CurrencyResponseContext = createContext<CurrencyResponseContextType | undefined>(undefined);
@@ -87,12 +92,15 @@ export const UnitEditResponseContext=createContext<unitEditResponseContextType |
 export const TableResponseContext=createContext<TableLoadingContextType| undefined>(undefined);
 export const PreviousPathContext = createContext<PreviousPathContextType | undefined>(undefined);
 export const CustomerDeatilsContext = createContext<CustomerDeatilsContextType | undefined>(undefined);
+export const SupplierDetailsContext = createContext<SupplierDetailsContextType | undefined>(undefined);
+
 
 interface ContextShareProps {
   children: ReactNode;
 }
 
 const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
+  const [supplierDetails, setSupplierDetails] = useState("")
   const [customerDatials, setCustomerDatials] = useState("");
   const [previousPath, setPreviousPath] = useState("");
   const [cashResponse, setCashResponse] = useState<any>({});
@@ -129,7 +137,9 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
 
   
   
+  
   return (
+    <SupplierDetailsContext.Provider value={{supplierDetails,setSupplierDetails}}>
     <CustomerDeatilsContext.Provider value={{customerDatials,setCustomerDatials}}>
     <UnitEditResponseContext.Provider value={{unitEditResponse,setEditUnitResponse }}>
     <UnitResponseContext.Provider value={{unitResponse,setUnitResponse }}>
@@ -159,6 +169,8 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
     </UnitResponseContext.Provider>
     </UnitEditResponseContext.Provider>
     </CustomerDeatilsContext.Provider>
+    </SupplierDetailsContext.Provider>
+
   );
 };
 

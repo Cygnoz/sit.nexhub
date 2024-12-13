@@ -61,7 +61,7 @@ const ItemTable = ({}: Props) => {
 
       // Turn off the skeleton loader after data is received
       setLoading({ ...loading, skeleton: false });
-      console.log(response);
+      console.log(response.data);
     } catch (error) {
       console.error("Error in getItemTracking", error);
 
@@ -159,11 +159,11 @@ const ItemTable = ({}: Props) => {
                       {item.action}
                     </td>
                     <td className="py-2.5 px-4 border-y border-tableBorder">
-                      {item.creditQuantity}
+                      {item.creditQuantity} 
                     </td>
-                    <td className="py-2.5 px-4 border-y border-tableBorder">
+                    {/* <td className="py-2.5 px-4 border-y border-tableBorder">
                       {item.stakeholder}
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               ) : (

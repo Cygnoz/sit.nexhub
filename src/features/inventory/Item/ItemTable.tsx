@@ -14,7 +14,6 @@ import toast from "react-hot-toast";
 import BookIcon from "../../../assets/icons/BookIcon";
 import BookXIcon from "../../../assets/icons/BookXIcon";
 import NewspaperIcon from "../../../assets/icons/NewspaperIcon";
-import Ellipsis from "../../../assets/icons/Ellipsis";
 import noImage from '../../../assets/Images/noImage.png'
 import ListTreeIcon from "../../../assets/icons/ListTreeIcon";
 import UserCheck from "../../../assets/icons/UserCheck";
@@ -34,6 +33,8 @@ const ItemTable = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isDeleteImageModalOpen, setDeleteImageModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  console.log(selectedItem, "selectedItem");
+
   const { request: UpdateItem } = useApi("put", 5003);
   const { organization: orgData } = useOrganization();
 
@@ -72,7 +73,7 @@ const ItemTable = () => {
       if (!error && response) {
         setItemsData(response.data);
         console.log(response.data);
-        
+
       } else {
         console.error("Error in response:", error);
       }
@@ -211,7 +212,7 @@ const ItemTable = () => {
       <div>
         <div
           className="flex gap-3 py-2 overflow-x-auto hide-scrollbar"
-          style={{ maxWidth: "100%" }} 
+          style={{ maxWidth: "100%" }}
         >
           {Items.map((customer) => (
             <button
@@ -343,7 +344,6 @@ const ItemTable = () => {
                         >
                           <Pen color="#585953" /> Edit
                         </Button>
-                        <Ellipsis />
                       </div>
                     </div>
                     <div className={`flex justify-center ${selectedItem?.itemImage && 'py-2'}`}>
@@ -387,18 +387,18 @@ const ItemTable = () => {
                     </div>
                     <div className='text-start'>
                       <p className="text-[48px] font-bold text-[#C04545]">
-                        28<span className="text-[16px] text-[#8F99A9]"> units</span>
+                        {selectedItem?.openingStock}<span className="text-[16px] text-[#8F99A9]"> units</span>
                       </p>
                     </div>
                     <div className='bg-[#882626] w-full px-2 flex text-[#D4D4D4] text-[15px] font-medium py-1 justify-between rounded-md'>
-                      <p>Expected Restock Date</p>
-                      <p>10-03-26</p>
+                      <p>Restock Point</p>
+                      <p>{selectedItem?.reorderPoint} Units</p>
                     </div>
                   </div>
                   <div className="w-full  rounded-lg border flex flex-col p-4  justify-between  bg-gradient-to-r from-[#6B1515] to-[#240C0C] ">
                     <div className="flex justify-between items-center">
                       <p className="text-[16px] font-semibold text-[#D4D4D4]">
-                        Main <span className="text-[#DF3232]">Supplier</span>
+                        Main <span className="text-[#DF3232]">Vendor</span>
                       </p>
                       <div className="w-[34px] h-[34px] rounded-[3px] bg-[#741E1E] flex justify-center items-center">
                         <UserCheck color='#FF7070' />
@@ -454,7 +454,7 @@ const ItemTable = () => {
                             <div className="text-dropdownText font-normal text-sm space-y-4">
                               <p>Item Type</p>
                               <p>SKU</p>
-                              <p>Unit</p>
+                              <p>{selectedItem?.unit ? "Unit" : ""}</p>
                               <p>Created Source</p>
                             </div>
                             <div className="text-dropdownText font-semibold text-sm space-y-4">
@@ -465,7 +465,7 @@ const ItemTable = () => {
                                   : "N/A"}
                               </p>
                               <p>{selectedItem?.sku || "N/A"}</p>
-                              <p>{selectedItem?.unit || "N/A"}</p>
+                              <p>{selectedItem?.unit || ""}</p>
                               <p>{selectedItem?.createdSource || "N/A"}</p>
                             </div>
                           </div>
@@ -481,10 +481,10 @@ const ItemTable = () => {
                                 ? `${orgData.baseCurrency} ${selectedItem?.costPrice || "N/A"}`
                                 : `${selectedItem?.costPrice || "N/A"} ${orgData?.baseCurrency}`}
                             </p>
-                            <p className="text-dropdownText text-sm">Purchase Account</p>
+                            {/* <p className="text-dropdownText text-sm">Purchase Account</p>
                             <p className="text-dropdownText font-semibold text-sm">
                               {selectedItem?.purchaseAccount || "N/A"}
-                            </p>
+                            </p> */}
                           </div>
                         </div>
 
@@ -498,75 +498,83 @@ const ItemTable = () => {
                                 ? `${orgData.baseCurrency} ${selectedItem?.sellingPrice || "N/A"}`
                                 : `${selectedItem?.sellingPrice || "N/A"} ${orgData?.baseCurrency}`}
                             </p>
-                            <p className="text-dropdownText text-sm">Selling Account</p>
+                            {/* <p className="text-dropdownText text-sm">Selling Account</p>
                             <p className="text-dropdownText font-semibold text-sm">
                               {selectedItem?.sellingAccount || "N/A"}
-                            </p>
+                            </p> */}
                           </div>
                         </div>
 
                         {/* storage information */}
-
                         <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base text-textColor mb-4">Storage Information</p>
                           <div className="grid grid-cols-4 gap-y-4">
-                            {/* Row 1: Length and Warranty */}
-                            <p className="text-dropdownText text-sm">Length</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.length || "N/A"}
-                            </p>
-                            <p className="text-dropdownText text-sm">Warranty</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.warranty || "N/A"}
-                            </p>
-
-                            {/* Row 2: Width */}
-                            <p className="text-dropdownText text-sm">Width</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.width || "N/A"}
-                            </p>
+                            {selectedItem?.length && (
+                              <>
+                                <p className="text-dropdownText text-sm">Length</p>
+                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.length}</p>
+                              </>
+                            )}
+                            {selectedItem?.warranty && (
+                              <>
+                                <p className="text-dropdownText text-sm">Warranty</p>
+                                <p className="text-dropdownText font-semibold text-sm">{selectedItem?.warranty || "N/A"}</p>
+                              </>
+                            )
+                            }
+                            {selectedItem?.width && (
+                              <>
+                                <p className="text-dropdownText text-sm">Width</p>
+                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.width}</p>
+                              </>
+                            )}
                             <div className="col-span-2"></div> {/* Empty cells for alignment */}
-
-                            {/* Row 3: Weight */}
-                            <p className="text-dropdownText text-sm">Weight</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.weight || "N/A"} Kg
-                            </p>
+                            {selectedItem?.weight && (
+                              <>
+                                <p className="text-dropdownText text-sm">Weight</p>
+                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.weight} Kg</p>
+                              </>
+                            )}
                             <div className="col-span-2"></div> {/* Empty cells for alignment */}
                           </div>
                         </div>
+
 
 
                         {/* Classification Details */}
 
                         <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base text-textColor mb-4">Classification Details</p>
-                          <div className="grid grid-cols-4 gap-y-4">
-                            {/* Row 1: Manufacturer and Rack */}
-                            <p className="text-dropdownText text-sm">Manufacturer</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.manufacturer || "N/A"}
-                            </p>
-                            <p className="text-dropdownText text-sm">Rack</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.rack || "N/A"}
-                            </p>
-
-                            {/* Row 2: Brand */}
-                            <p className="text-dropdownText text-sm">Brand</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.brand || "N/A"}
-                            </p>
-                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
-
-                            {/* Row 3: Categories */}
-                            <p className="text-dropdownText text-sm">Categories</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.categories || "N/A"} Kg
-                            </p>
-                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
+                          <div className="grid grid-cols gap-y-2">
+                          {selectedItem?.manufacturer && (
+                              <>
+                                <p className="text-dropdownText text-sm">Manufacturer</p>
+                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.manufacturer}</p>
+                              </>
+                            )}
+                            {selectedItem?.rack && (
+                              <>
+                                <p className="text-dropdownText text-sm">Rack</p>
+                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.rack}</p>
+                              </>
+                            )}
+                            {selectedItem?.brand && (
+                              <>
+                                <p className="text-dropdownText text-sm">Brand</p>
+                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.brand}</p>
+                              </>
+                            )}
+                            <div className="col-span-2"></div>
+                            {selectedItem?.categories && (
+                              <>
+                                <p className="text-dropdownText text-sm">Categories</p>
+                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.categories}</p>
+                              </>
+                            )}
+                            <div className="col-span-2"></div>
                           </div>
                         </div>
+
 
 
 

@@ -119,11 +119,11 @@ const SalesTable = ({ page }: Props) => {
           ] :
             page == "reciept" ? [
               { id: "createdDate", label: "Date", visible: true },
-              { id: "payment", label: "Payment#", visible: true },
+              // { id: "payment", label: "Payment#", visible: true },
               { id: "customerName", label: "Customer Name", visible: true },
               // { id: "", label: "Invoice#", visible: true },
               { id: "paymentMode", label: "Mode", visible: true },
-              { id: "amountReceived", label: "Amount", visible: true },
+              { id: "amountReceived", label: "Amount Received", visible: true },
               // { id: "", label: "Unsend Amount", visible: true },
             ] :
              page == "credit-Note" ? [
