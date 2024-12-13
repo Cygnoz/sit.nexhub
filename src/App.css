@@ -6,6 +6,27 @@
     height: 25px;
     animation: spin 2s linear infinite;
   }
+
+  .invoice-input {
+    border: 1px #CECECE solid;
+    background-color: transparent;
+   
+    border-radius: 4px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-right: 12px;
+    padding-left: 12px;
+    font-size: 11px;
+    color: #818894;
+    box-sizing: border-box;
+    display: inline-block;
+}
+
+
+
+  .invoice-input:hover{
+    border: 1px #CECECE solid;
+  }
    
   @keyframes spin {
     0% { transform: rotate(0deg); }

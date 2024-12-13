@@ -802,7 +802,7 @@ const NewPurchaseOrder = ({}: Props) => {
                         className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9 text-textColor"
                       />
                 </div> */}
-                <div>
+                {/* <div>
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Mode
                   </label>
@@ -828,7 +828,7 @@ const NewPurchaseOrder = ({}: Props) => {
                       <CehvronDown color="gray" />
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 {selected !== "customer" && (
                   <div>
