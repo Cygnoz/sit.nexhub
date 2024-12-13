@@ -103,7 +103,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     vatNumber: "",
     msmeType: "",
     msmeNumber: "",
-    msmeRegistered: false, // boolean type
+    msmeRegistered: false, 
     billingAttention: "",
     billingCountry: "",
     billingAddressStreet1: "",
