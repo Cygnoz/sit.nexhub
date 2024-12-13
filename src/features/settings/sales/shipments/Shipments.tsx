@@ -1,6 +1,6 @@
 import bgimage from "../../../../assets/Images/Organization-banner.png";
 import Button from "../../../../Components/Button";
-import AddAddress from "./AddAddress";
+// import AddAddress from "./AddAddress";
 
 type Props = {}
 
@@ -39,7 +39,7 @@ function Shipments({}: Props) {
         </div>
       </div>
 
-      <div className="mt-[10px] p-6 rounded-lg bg-white flex items-center justify-between">
+      {/* <div className="mt-[10px] p-6 rounded-lg bg-white flex items-center justify-between">
         <div>
       <p className="font-semibold text-dropdownText text-sm mb-3">
       Choose Default Dispatch Address
@@ -49,7 +49,7 @@ function Shipments({}: Props) {
         <div className="flex gap-4">
          <AddAddress/>
         </div>
-        </div>
+        </div> */}
         <div className="flex justify-end mt-4">
         <Button size="sm" className="text-sm  pl-10 pr-10">Save</Button>
         </div>

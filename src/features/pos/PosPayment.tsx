@@ -19,7 +19,6 @@ const initialSalesQuoteState: any = {
   customerName: "",
   placeOfSupply: "",
   salesInvoiceDate: getCurrentDate(),
-//   paymentMode: "",
 
   items: [
     {
@@ -37,67 +36,123 @@ const initialSalesQuoteState: any = {
       igstAmount: "",
       vatAmount: "",
       itemTotaltax: "",
-      discountType: "Percentage",
       amount: "",
       itemAmount: ""
     },
   ],
+  totalDiscount: "",
+  discountTransactionType: "",
+  discountTransactionAmount: "",
+
+  subTotal: "",
+  totalItem: "",
+
+  totalTax: "",
+  totalAmount: "",
+
 };
 
-type Props = { selectedItems: any[]; total: number; selectedCustomer: any ;selectedMethodLabel:any};
+type Props = {
+  selectedItems: any[]; total: number; selectedCustomer: any; selectedMethodLabel: any; quantities: { [key: string]: number; };
+  discountType: any, discount: any, subtotal: any, discounts: any
+};
 
-function PosPayment({ selectedItems, total, selectedCustomer ,selectedMethodLabel}: Props) {
-    console.log(selectedItems);
-    
+function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabel, quantities, discountType, discount, subtotal
+  , discounts
+}: Props) {
+  console.log(discountType);
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [paidAmount, setPaidAmount] = useState<any>("");
   const [invoiceState, setInvoiceState] = useState<any>(initialSalesQuoteState);
   console.log(invoiceState);
-  
+
+
   const { organization: orgData } = useOrganization();
-  
+
   useEffect(() => {
     if (selectedCustomer && orgData) {
       setInvoiceState((prevState: any) => ({
         ...prevState,
-        customerId: selectedCustomer._id || "",
-        customerName: selectedCustomer.customerDisplayName || "",
+        customerId: selectedCustomer?._id || "",
+        customerName: selectedCustomer?.customerDisplayName || "",
         placeOfSupply: orgData.state || "",
-        // paymentMode:selectedMethodLabel || ""
+        totalDiscount: discount || "0",
+        discountTransactionAmount: discounts || "0"
       }));
     }
-  }, [selectedCustomer, orgData,selectedMethodLabel]);
+  }, [selectedCustomer, orgData, selectedMethodLabel, discount, discounts]);
   useEffect(() => {
     if (selectedItems.length > 0) {
-      const mappedItems = selectedItems.map((item) => ({
-        itemId: item._id || "",
-        itemName: item.itemName || "",
-        quantity: 1, 
-        sellingPrice: item.sellingPrice || "",
-        taxPreference: item.taxPreference || "",
-        taxGroup: item.taxRate || "",
-        cgst: item.cgst || "",
-        sgst: item.sgst || "",
-        igst: item.igst || "",
-        cgstAmount: ((item.sellingPrice * item.cgst) / 100).toFixed(2) || "0.00",
-        sgstAmount: ((item.sellingPrice * item.sgst) / 100).toFixed(2) || "0.00",
-        igstAmount: ((item.sellingPrice * item.igst) / 100).toFixed(2) || "0.00",
-        vatAmount: "0.00", // If VAT is not applicable, keep it as 0
-        itemTotaltax: (
-          
-          ((item.sellingPrice * (item.igst || 0)) / 100)
-        ).toFixed(2),
-        amount: item.sellingPrice || "", // Total amount (selling price + tax)
-        itemAmount: item.sellingPrice +(item.igst) || "",
-      }));
-  
+      const mappedItems = selectedItems.map((item) => {
+        const sellingPrice = parseFloat(item.sellingPrice) || 0;
+        const quantity = quantities[item._id] || 1; 
+
+        const cgst = item.cgst && !isNaN(parseFloat(item.cgst)) ? parseFloat(item.cgst) : undefined;
+        const sgst = item.sgst && !isNaN(parseFloat(item.sgst)) ? parseFloat(item.sgst) : undefined;
+        const igst = item.igst && !isNaN(parseFloat(item.igst)) ? parseFloat(item.igst) : undefined;
+
+        const cgstAmount = cgst !== undefined ? ((sellingPrice * cgst * quantity) / 100).toFixed(2) : "0.00";
+        const sgstAmount = sgst !== undefined ? ((sellingPrice * sgst * quantity) / 100).toFixed(2) : "0.00";
+        const igstAmount =
+          selectedCustomer?.taxType === "GST"
+            ? "0.00" 
+            : igst !== undefined
+              ? ((sellingPrice * igst * quantity) / 100).toFixed(2)
+              : "0.00";
+
+
+        const itemTotaltax =
+          selectedCustomer?.taxType === "GST"
+            ? (parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+            : parseFloat(igstAmount).toFixed(2);
+
+        const itemAmount =
+          selectedCustomer?.taxType === "GST"
+            ? sellingPrice * quantity + parseFloat(cgstAmount) + parseFloat(sgstAmount)
+            : sellingPrice * quantity + parseFloat(igstAmount);
+
+        return {
+          itemId: item._id || "",
+          itemName: item.itemName || "",
+          quantity,
+          sellingPrice,
+          taxPreference: item.taxPreference || "",
+          taxGroup: item.taxRate || undefined,
+          cgst,
+          sgst,
+          igst,
+          cgstAmount,
+          sgstAmount,
+          igstAmount,
+          vatAmount: "0.00",
+          itemTotaltax,
+          amount: sellingPrice * quantity,
+          itemAmount: itemAmount.toFixed(2),
+        };
+      });
+
+      // Calculate totals
+      const subTotal = mappedItems.reduce((sum, item) => sum + parseFloat(item.itemAmount), 0).toFixed(2);
+      const totalTax = mappedItems.reduce((sum, item) => sum + parseFloat(item.itemTotaltax), 0).toFixed(2);
+      const totalAmount = (subtotal + parseFloat(totalTax)) - discount
+      const totalItem = mappedItems.reduce((sum, item) => sum + item.quantity, 0); // Sum of all quantities
+
+      // Update invoice state
       setInvoiceState((prevState: any) => ({
         ...prevState,
         items: mappedItems,
+        subTotal,
+        totalTax,
+        totalAmount,
+        totalItem: totalItem.toString(),
+        discountTransactionType: discountType,
       }));
     }
-  }, [selectedItems]);
-  
+  }, [selectedItems, selectedCustomer?.taxType, quantities, discountType, total, discount, subtotal]);
+
+
+
 
   const openModal = () => {
     setModalOpen(true);
@@ -132,7 +187,9 @@ function PosPayment({ selectedItems, total, selectedCustomer ,selectedMethodLabe
       const { response, error } = await newSalesInvoiceApi(url, invoiceState);
       if (!error && response) {
         toast.success(response.data.message);
-        handleGoBack();
+        setTimeout(() => {
+          handleGoBack();
+        }, 500); 
       } else {
         toast.error(error?.response.data.message);
       }
@@ -140,13 +197,13 @@ function PosPayment({ selectedItems, total, selectedCustomer ,selectedMethodLabe
       toast.error("Something went wrong.");
     }
   };
+  
 
   return (
     <>
       <Button
-        className={`text-sm pl-16 h-10 pr-16 ${
-          selectedItems.length === 0 ? "cursor-not-allowed" : "cursor-pointer"
-        }`}
+        className={`text-sm pl-16 h-10 pr-16 ${selectedItems.length === 0 ? "cursor-not-allowed" : "cursor-pointer"
+          }`}
         onClick={selectedItems.length === 0 ? undefined : openModal}
       >
         Go to Payment

@@ -12,6 +12,7 @@ import EditSupplier from "../EditSupplier";
 import avatar from '../../../../assets/Images/Rectangle 5558.png'
 import line25 from '../../../../assets/Images/Line 25.png'
 import LocateFixed from "../../../../assets/icons/LocateFixed";
+import OtherDetails from "./OtherDetails";
 
 // import ExpensesGraph from "./ExpensesGraph";
 
@@ -40,16 +41,19 @@ const Overview: React.FC<OverviewProps> = ({
   const [addressEdit, setAddressEdit] = useState<string>();
   const [supplierHis, setSupplierHis] = useState<any>();
   const [isModalOpen, setModalOpen] = useState(false);
-  const openModal = (billing?: string, shipping?: string) => {
+ 
+ 
+  const openModal = (address?:string) => {
     setModalOpen((prev) => !prev);
-    if (billing === "billing") {
+    if (address === "billing") {
       setAddressEdit("billingAddressEdit");
-    } else if (shipping === "shipping") {
+    } else if (address === "shipping") {
       setAddressEdit("shippingAddressEdit");
     } else {
       setAddressEdit("");
     }
   };
+  console.log(addressEdit,"addressEdit")
 
   const closeModal = () => {
     setModalOpen((prev) => !prev);
@@ -59,7 +63,6 @@ const Overview: React.FC<OverviewProps> = ({
     supplierHistory();
   }, []);
 
-  console.log(id);
 
   const supplierHistory = async () => {
     try {
@@ -118,7 +121,6 @@ const Overview: React.FC<OverviewProps> = ({
     setStatusData({ ...statusData, status: supplier?.status });
   }, [supplier]);
 
-  console.log(supplier?.status);
   const formatDateTime = (dateString: any) => {
     if (!dateString) {
       return { date: "", time: "" };
@@ -224,7 +226,9 @@ const Overview: React.FC<OverviewProps> = ({
               <p className="text-xl font-semibold text-[#2C353B] mx-8">
                 Opening Balance:{" "}
                 <span>
-                  ₹{supplier?.openingBalance || "10,000"}
+                  ₹{supplier?.creditOpeningBalance
+                    || "10,000"}
+               
                 </span>
               </p>
 
@@ -308,7 +312,7 @@ const Overview: React.FC<OverviewProps> = ({
           </div>
 
           {/* Other Details Section */}
-          <div className="mt-4 w-full p-4 rounded-lg bg-[#F6F6F6] shadow-md">
+          <div className="mt-4 w-full p-4 rounded-lg bg-[#E9EFF7] shadow-md">
             {/* Heading */}
             <h3 className="font-bold text-[14px] mb-4">Other Details</h3>
 
@@ -329,12 +333,13 @@ const Overview: React.FC<OverviewProps> = ({
 
               {/* View Customer Button */}
               <div className="flex justify-center">
-                <button
-                  className="text-sm font-medium text-[#303F58] underline"
+                <div
+                  className="text-sm font-medium text-[#303F58] underline cursor-pointer"
                   onClick={() => console.log("View Customer Details")}
                 >
-                  View More
-                </button>
+                  <OtherDetails />
+                </div>
+
               </div>
             </div>
 
@@ -382,7 +387,6 @@ const Overview: React.FC<OverviewProps> = ({
             {supplierHis?.map((item: any, index: number) => {
               const circleStyle = getCircleStyle(item.title);
               const { date, time } = formatDateTime(item.date);
-              console.log(circleStyle.bgColor);
 
               return (
                 <div key={index} className="space-y-4 pb-8">

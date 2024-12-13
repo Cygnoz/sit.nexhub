@@ -123,6 +123,8 @@ const AddSupplierModal = ({ page }: Props) => {
     },
   ]);
 
+
+
   const addRow = () => {
     setRows([
       ...rows,
@@ -235,6 +237,9 @@ const AddSupplierModal = ({ page }: Props) => {
     newIsAccountNumberSame[index] = isMatch;
     setIsaccountNumbersame(newIsAccountNumberSame);
   };
+
+  console.log(supplierdata,"supplierData")
+
 
   // add bank account
   const handleBankDetailsChange = (
@@ -974,7 +979,7 @@ const AddSupplierModal = ({ page }: Props) => {
                     <div>
                       <label htmlFor="">Supplier Email</label>
                       <input
-                        type="email"
+                        type="text"
                         name="supplierEmail"
                         className="pl-3 text-sm w-[100%] mt-1  rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
                         placeholder="Enter Email"
@@ -1786,7 +1791,7 @@ const AddSupplierModal = ({ page }: Props) => {
                             <input
                               className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                               placeholder="Street 1"
-                              name="shippingAddressLine1"
+                              name="shippingAddressStreet1"
                               value={supplierdata.shippingAddressStreet1}
                               onChange={handleChange}
                             />
@@ -1795,7 +1800,7 @@ const AddSupplierModal = ({ page }: Props) => {
                             <input
                               className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] p-2 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                               placeholder="Street 2"
-                              name="shippingAddressLine2"
+                              name="shippingAddressStreet2"
                               value={supplierdata.shippingAddressStreet2}
                               onChange={handleChange}
                             />
@@ -2101,11 +2106,7 @@ const AddSupplierModal = ({ page }: Props) => {
                                 </label>
                                 <div className="relative">
                                   <input
-                                    type={
-                                      showAccountNumbers[index]
-                                        ? "text"
-                                        : "password"
-                                    }
+                                    type="text"
                                     name="accountNum"
                                     className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                                     placeholder="Enter Account Number"
@@ -2149,11 +2150,7 @@ const AddSupplierModal = ({ page }: Props) => {
 
                                 <div className="relative">
                                   <input
-                                    type={
-                                      showReEnterAccountNumbers[index]
-                                        ? "text"
-                                        : "password"
-                                    }
+                                    type="text"
                                     name="reAccountNum"
                                     className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                                     placeholder="Re-Enter Account Number"

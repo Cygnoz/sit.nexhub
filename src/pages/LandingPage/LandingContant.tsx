@@ -217,7 +217,7 @@ const LandingContant = ({ mode,setMode }: Props) => {
   onClick={() => {
     document.getElementById('appsSection')?.scrollIntoView({ behavior: 'smooth' });
   }}>
-  More Apps <CehvronDown color={mode ? '#C2A270' : 'white'} />
+  More Apps <CehvronDown color={mode ? '#C2A270' : 'white'} />  
 </button>
 
 

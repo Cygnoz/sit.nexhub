@@ -5,6 +5,7 @@ import Button from "../../Components/Button";
 import PlusCircle from "../../assets/icons/PlusCircle";
 import SelectCustomerModal from "./SelectCustomerModal";
 import { useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 type Props = {
   onSelectCustomer: (customer: any) => void; 
@@ -29,7 +30,7 @@ function PosHeader({onSelectCustomer }: Props) {
   };
   const Navigate=useNavigate()
   const handleGoBack =()=>{
-    Navigate(-1)
+    Navigate("/landing")
   }
   return (
     <div className="px-5 py-3 flex items-center justify-between mt-2">
@@ -57,6 +58,7 @@ function PosHeader({onSelectCustomer }: Props) {
          <PlusCircle/> Create Customer   
         </Button>     
       </div>
+      <Toaster reverseOrder={false} />
     </div>
   );
 }

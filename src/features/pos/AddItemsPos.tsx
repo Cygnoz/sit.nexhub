@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DebitCardIcon from "../../assets/icons/DebitCardIcon";
 import RsIcon from "../../assets/icons/RsIcon";
 import UpiIcon from "../../assets/icons/UpiIcon";
@@ -6,6 +6,8 @@ import Button from "../../Components/Button";
 import PosDiscount from "./PosDiscount";
 import OutlineTrashIcon from "../../assets/icons/OutlineTrashIcon";
 import PosPayment from "./PosPayment";
+import { endponits } from "../../Services/apiEndpoints";
+import useApi from "../../Hooks/useApi";
 // import noItemFoundIMage from "../../assets/Images/no item added.png"
 
 type Props = { selectedItems: any[]; onRemoveItem: (item: any) => void ; selectedCustomer:any };
@@ -20,7 +22,9 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
   const [selectedMethod, setSelectedMethod] = useState<number | null>(1);
   const [selectedMethodLabel, setSelectedMethodLabel] = useState<string>("Cash");
   const [discount, setDiscount] = useState<any>("");
-  const [discountType, setDiscountType] = useState<string>("%");
+  const [discountType, setDiscountType] = useState<string>("Percentage");
+  const [prefix, setPrifix] = useState("")
+
   const [quantities, setQuantities] = useState<{ [key: string]: number }>(
     () =>
       selectedItems.reduce(
@@ -31,6 +35,25 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
         {}
       )
   );
+  const { request: getPrfix } = useApi("get", 5007);
+  const getSalesInvoicePrefix = async () => {
+    try {
+      const prefixUrl = `${endponits.GET_INVOICE_PREFIX}`;
+      const { response, error } = await getPrfix(prefixUrl);
+
+      if (!error && response) {
+        setPrifix(response.data)
+      } else {
+        console.log(error);
+      }
+    } catch (error) {
+      console.log("Error in fetching Purchase Order Prefix", error);
+    }
+  };
+  useEffect(()=>{
+    getSalesInvoicePrefix()
+  },[])
+
 
   const handleMethodSelect = (method: { id: number; label: string }) => {
     setSelectedMethod(method.id); 
@@ -63,15 +86,20 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
   );
 
   const tax = selectedItems.reduce((total, item) => {
-    const igst = item.igst && item.igst > 0 ? item.igst : 0;
-    return total + igst * (quantities[item._id] || 1);
+    const igst = item.igst && item.igst > 0 ? parseFloat(item.igst) : 0; 
+    const quantity = quantities[item._id] || 1; 
+    const sellingPrice = parseFloat(item.sellingPrice) || 0;
+    const itemTax = (sellingPrice * quantity * igst) / 100;
+    return total + itemTax;
   }, 0);
-
+  
   // Calculate discount
   const discountValue =
-    discountType === "%"
-      ? (subtotal * discount) / 100
+    discountType === "Percentage"
+      ? ((subtotal +tax) * discount) / 100
       : Math.min(discount, subtotal);
+      console.log(discountValue);
+      
 
   const total = subtotal + tax - discountValue;
 
@@ -80,7 +108,7 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
      <div>
      <div className="flex justify-between items-center">
         <p className="text-textColor text-sm font-bold">Selected Item</p>
-        <p className="text-dropdownText text-sm font-semibold">Order no: 001343</p>
+        <p className="text-dropdownText text-sm font-semibold">Invoice No: {prefix}</p>
       </div>
 
       {/* Selected Items */}
@@ -188,7 +216,9 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
           <Button className="text-sm pl-14 h-10 pr-14" variant="secondary">
             Cancel
           </Button>
-          <PosPayment selectedItems={selectedItems} total={total} selectedMethodLabel={selectedMethodLabel} selectedCustomer={selectedCustomer} />
+          <PosPayment selectedItems={selectedItems} total={total} selectedMethodLabel={selectedMethodLabel} selectedCustomer={selectedCustomer}
+          quantities={quantities}
+          discountType={discountType} discount={discountValue} discounts={discount} subtotal={subtotal} />
         </div>
       </div>
      </div>

@@ -6,6 +6,7 @@ import PurchaseTable from "../../../CommonComponents/PurchaseTable/PurchaseTable
 import { useNavigate } from "react-router-dom";
 // import useApi from "../../../../../Hooks/useApi";
 import { TableResponseContext } from "../../../../../context/ContextShare";
+import DotIcon from "../../../../../assets/icons/DotIcon";
 
 
 const AllInvoiceTable = () => {
@@ -66,6 +67,21 @@ const AllInvoiceTable = () => {
 
   const renderColumnContent = (colId: string, item: any) => {
     const columnValue = item[colId as keyof typeof item];
+    if (colId === "reviewStatus") {
+      return (
+        <div className="flex justify-center items-center">
+          <div
+            className={`${
+              item.reviewStatus === "Need Review" ? "bg-[#F7E7CE]" :"bg-[#DADCCD]"
+            } text-[13px] rounded-lg text-center items-center text-textColor h-[18px] px-2 max-w-fit gap-2 py-2 flex justify-center`}
+          >
+                        <DotIcon color="#495160" />
+
+            {item.reviewStatus}
+          </div>
+       </div>
+      );
+    }
     return columnValue ? columnValue : <span className="text-gray-500 italic">-</span>;
   };
 

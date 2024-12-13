@@ -10,8 +10,8 @@ interface OrderItem {
   sellingPrice: number;
   amount: number;
   itemAmount: number;
-  sgstAmount:number;
-  cgstAmount:number;
+  sgstAmount: number;
+  cgstAmount: number;
 }
 
 interface SalesOrderData {
@@ -19,6 +19,7 @@ interface SalesOrderData {
   salesInvoice?: string;
   salesQuotes?: string;
   salesOrderDate: string;
+  customerCreditDate: string
   salesOrder: string;
   expectedShipmentDate: string;
   customerName: string;
@@ -90,29 +91,33 @@ function SalesPdfView({ data, page }: SalesOrderViewProps) {
       <div className="flex items-center justify-center mb-4">
         <p className="text-textColor border-r-[1px] border-borderRight pr-4 text-sm font-medium">
           {
-            page === "quote" ?
-              "Quote Date :" :
-              "Order Date :"
+            page === "quote" ? "Quote Date :" :
+              page === "credit-Note" ? "Credit Date :" :
+                "Order Date :"
           }
           <span className="ms-3 text-dropdownText text-base font-bold">
             {
-              page == "salesOrder" ? `${data?.salesOrderDate || "N/A"}`
-                :
-                page == "invoice" ? `${data?.salesInvoiceDate || "N/A"}`
-                  : page === "quote" ? `${data?.salesQuoteDate || "N/A"}`
-                    : "Na"
+              page === "salesOrder" ? `${data?.salesOrderDate || "N/A"}` :
+                page === "invoice" ? `${data?.salesInvoiceDate || "N/A"}` :
+                  page === "quote" ? `${data?.salesQuoteDate || "N/A"}` :
+                    page === "credit-Note" ? `${data?.customerCreditDate || "N/A"}` :
+                      "N/A"
             }
           </span>
         </p>
-        <p className="text-textColor pl-4 text-sm font-medium">
-          Expected Shipment:{" "}
-          <span className="ms-3 text-dropdownText text-base font-bold">
-            {
-              page === "salesOrder" || page === "invoice" ? `${data?.expectedShipmentDate || "N/A"}`
-                : `${data?.expiryDate || "N/A"}`
-            }
-          </span>
-        </p>
+        {page !== "credit-Note" && (
+          <p className="text-textColor pl-4 text-sm font-medium">
+            Expected Shipment:{" "}
+            <span className="ms-3 text-dropdownText text-base font-bold">
+              {
+                page === "salesOrder" || page === "invoice" ?
+                  `${data?.expectedShipmentDate || "N/A"}` :
+                  `${data?.expiryDate || "N/A"}`
+              }
+            </span>
+          </p>
+        )}
+
       </div>
       <div className="flex justify-center items-center">
         <div className="bg-white drop-shadow-2xl w-[595px] p-8 pl-[24px] pr-[24px]">
@@ -168,21 +173,25 @@ function SalesPdfView({ data, page }: SalesOrderViewProps) {
             </p>
 
             <h3 className="font-normal text-xs text-pdftext">Details</h3>
-            <p className="font-normal text-xs text-pdftext ">
-              Order Date:   {
-                page == "salesOrder" ? `${data?.salesOrderDate || "N/A"}`
-                  :
-                  page == "invoice" ? `${data?.salesInvoiceDate || "N/A"}`
-                    : page === "quote" ? `${data?.salesQuoteDate || "N/A"}`
-                      : "Na"
-              }
-            </p>
             <p className="font-normal text-xs text-pdftext">
-              Expected Shipment Date:  {
-                page === "salesOrder" || page === "invoice" ? `${data?.expectedShipmentDate || "N/A"}`
-                  : `${data?.expiryDate || "N/A"}`
+              {page === "credit-Note" ? "Credit Date: " : "Order Date: "}
+              {
+                page === "salesOrder" ? `${data?.salesOrderDate || "N/A"}` :
+                  page === "invoice" ? `${data?.salesInvoiceDate || "N/A"}` :
+                    page === "quote" ? `${data?.salesQuoteDate || "N/A"}` :
+                      page === "credit-Note" ? `${data?.customerCreditDate || "N/A"}` :
+                        "N/A"
               }
             </p>
+            {page !== "credit-Note" && (
+              <p className="font-normal text-xs text-pdftext">
+                Expected Shipment Date: {
+                  page === "salesOrder" || page === "invoice" ? `${data?.expectedShipmentDate || "N/A"}` :
+                    `${data?.expiryDate || "N/A"}`
+                }
+              </p>
+            )}
+
           </div>
 
           <table className="w-full mb-7 border border-dropdownBorder">
