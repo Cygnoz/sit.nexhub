@@ -455,7 +455,7 @@ const ItemTable = () => {
                               <p>Item Type</p>
                               <p>SKU</p>
                               <p>{selectedItem?.unit ? "Unit" : ""}</p>
-                              <p>Created Source</p>
+                              <p>{selectedItem?.createdSource ? "Created Source" : ""}</p>
                             </div>
                             <div className="text-dropdownText font-semibold text-sm space-y-4">
                               <p>
@@ -466,7 +466,7 @@ const ItemTable = () => {
                               </p>
                               <p>{selectedItem?.sku || "N/A"}</p>
                               <p>{selectedItem?.unit || ""}</p>
-                              <p>{selectedItem?.createdSource || "N/A"}</p>
+                              <p>{selectedItem?.createdSource || ""}</p>
                             </div>
                           </div>
                         </div>
@@ -546,7 +546,7 @@ const ItemTable = () => {
                         <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base text-textColor mb-4">Classification Details</p>
                           <div className="grid grid-cols gap-y-2">
-                          {selectedItem?.manufacturer && (
+                            {selectedItem?.manufacturer && (
                               <>
                                 <p className="text-dropdownText text-sm">Manufacturer</p>
                                 <p className="text-dropdownText font-semibold text-sm">{selectedItem.manufacturer}</p>
@@ -582,66 +582,80 @@ const ItemTable = () => {
                         {/* Item Code & Standards */}
                         <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base mb-4">Item Code & Standards</p>
-                          <div className="grid grid-cols-4 gap-y-4">
-                            {/* Row 1: UPC and ISBN */}
-                            <p className="text-dropdownText text-sm">UPC</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.upc || "N/A"}
-                            </p>
-                            <p className="text-dropdownText text-sm">ISBN</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.isbn || "N/A"}
-                            </p>
-
-                            {/* Row 2: MPN */}
-                            <p className="text-dropdownText text-sm">MPN</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.mpn || "N/A"}
-                            </p>
-                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
-
-                            {/* Row 3: EAN */}
-                            <p className="text-dropdownText text-sm">EAN</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.ean || "N/A"}
-                            </p>
-                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
+                          <div className="grid grid-cols gap-y-4">
+                            {selectedItem?.upc && (
+                              <>
+                                <p className="text-dropdownText text-sm">UPC</p>
+                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.upc}</p>
+                              </>
+                            )}
+                            {selectedItem?.isbn && (
+                              <>
+                                <p className="text-dropdownText text-sm">ISBN</p>
+                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.isbn}</p>
+                              </>
+                            )}
+                            {selectedItem?.mpn && (
+                              <>
+                                <p className="text-dropdownText text-sm">MPN</p>
+                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.mpn}</p>
+                              </>
+                            )}
+                            <div className="col-span-2"></div>
+                            {selectedItem?.ean && (
+                              <>
+                                <p className="text-dropdownText text-sm">EAN</p>
+                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.ean}</p>
+                              </>
+                            )}
+                            <div className="col-span-2"></div>
                           </div>
                         </div>
+
 
                         {/* Purchase Information */}
                         <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base mb-4">Purchase Information</p>
-                          <div className="grid grid-cols-4 gap-y-4">
-                            {/* Row 1: Cost and MRP */}
-                            <p className="text-dropdownText text-sm">Cost</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {orgData?.baseCurrency?.length === 1
-                                ? `${orgData.baseCurrency} ${selectedItem?.cost || "N/A"}`
-                                : `${selectedItem?.costPrice || "N/A"} ${orgData?.baseCurrency}`}
-                            </p>
-                            <p className="text-dropdownText text-sm">MRP</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {orgData?.baseCurrency?.length === 1
-                                ? `${orgData.baseCurrency} ${selectedItem?.mrp || "N/A"}`
-                                : `${selectedItem?.saleMrp || "N/A"} ${orgData?.baseCurrency}`}
-                            </p>
-
-                            {/* Row 2: Preferred Vendor */}
-                            <p className="text-dropdownText text-sm">Preferred Vendor</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.preferredVendor || "N/A"}
-                            </p>
-                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
-
-                            {/* Row 3: Selling Price */}
-                            <p className="text-dropdownText text-sm">Selling Price</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {orgData?.baseCurrency?.length === 1
-                                ? `${orgData.baseCurrency} ${selectedItem?.sellingPrice || "N/A"}`
-                                : `${selectedItem?.sellingPrice || "N/A"} ${orgData?.baseCurrency}`}
-                            </p>
-                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
+                          <div className="grid grid-col gap-y-2">
+                            {selectedItem?.cost && (
+                              <>
+                                <p className="text-dropdownText text-sm">Cost</p>
+                                <p className="text-dropdownText font-semibold text-sm">
+                                  {orgData?.baseCurrency?.length === 1
+                                    ? `${orgData.baseCurrency} ${selectedItem.cost}`
+                                    : `${selectedItem.costPrice} ${orgData?.baseCurrency}`}
+                                </p>
+                              </>
+                            )}
+                            {selectedItem?.mrp && (
+                              <>
+                                <p className="text-dropdownText text-sm">MRP</p>
+                                <p className="text-dropdownText font-semibold text-sm">
+                                  {orgData?.baseCurrency?.length === 1
+                                    ? `${orgData.baseCurrency} ${selectedItem.mrp}`
+                                    : `${selectedItem.saleMrp} ${orgData?.baseCurrency}`}
+                                </p>
+                              </>
+                            )}
+                            {selectedItem?.preferredVendor && (
+                              <>
+                                <p className="text-dropdownText text-sm">Preferred Vendor</p>
+                                <p className="text-dropdownText font-semibold text-sm">
+                                  {selectedItem.preferredVendor}
+                                </p>
+                              </>
+                            )}
+                            <div className="col-span-2"></div>
+                            {selectedItem?.sellingPrice && (
+                              <>
+                                <p className="text-dropdownText text-sm">Selling Price</p>
+                                <p className="text-dropdownText font-semibold text-sm">
+                                  {orgData?.baseCurrency?.length === 1
+                                    ? `${orgData.baseCurrency} ${selectedItem.sellingPrice}`
+                                    : `${selectedItem.sellingPrice} ${orgData?.baseCurrency}`}
+                                </p>
+                              </>
+                            )}
                           </div>
                         </div>
 
@@ -650,20 +664,33 @@ const ItemTable = () => {
                         <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                           <p className="font-bold text-base mb-4">Track Inventory</p>
                           <div className="grid grid-cols-2 gap-y-4">
-                            <p className="text-dropdownText text-sm">Opening  stock</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.openingStock || "N/A"}
-                            </p>
-                            <p className="text-dropdownText text-sm">Opening  stock per unit</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.openingStockRatePerUnit || "N/A"}
-                            </p>
-                            <p className="text-dropdownText text-sm">Reorder point</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.reorderPoint || "N/A"}
-                            </p>
+                            {selectedItem?.openingStock && (
+                              <>
+                                <p className="text-dropdownText text-sm">Opening Stock</p>
+                                <p className="text-dropdownText font-semibold text-sm">
+                                  {selectedItem.openingStock}
+                                </p>
+                              </>
+                            )}
+                            {selectedItem?.openingStockRatePerUnit && (
+                              <>
+                                <p className="text-dropdownText text-sm">Opening Stock Per Unit</p>
+                                <p className="text-dropdownText font-semibold text-sm">
+                                  {selectedItem.openingStockRatePerUnit}
+                                </p>
+                              </>
+                            )}
+                            {selectedItem?.reorderPoint && (
+                              <>
+                                <p className="text-dropdownText text-sm">Reorder Point</p>
+                                <p className="text-dropdownText font-semibold text-sm">
+                                  {selectedItem.reorderPoint}
+                                </p>
+                              </>
+                            )}
                           </div>
                         </div>
+
                       </div>
                     )}
 
