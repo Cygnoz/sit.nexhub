@@ -50,6 +50,7 @@ const initialSalesQuoteState: any = {
   totalTax: "",
   totalAmount: "",
 
+  paymentMethod:"",
 };
 
 type Props = {
@@ -60,13 +61,10 @@ type Props = {
 function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabel, quantities, discountType, discount, subtotal
   , discounts
 }: Props) {
-  console.log(discountType);
-
   const [isModalOpen, setModalOpen] = useState(false);
   const [paidAmount, setPaidAmount] = useState<any>("");
   const [invoiceState, setInvoiceState] = useState<any>(initialSalesQuoteState);
   console.log(invoiceState);
-
 
   const { organization: orgData } = useOrganization();
 
@@ -78,7 +76,8 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
         customerName: selectedCustomer?.customerDisplayName || "",
         placeOfSupply: orgData.state || "",
         totalDiscount: discount || "0",
-        discountTransactionAmount: discounts || "0"
+        discountTransactionAmount: discounts || "0",
+        paymentMethod: selectedMethodLabel || "",
       }));
     }
   }, [selectedCustomer, orgData, selectedMethodLabel, discount, discounts]);

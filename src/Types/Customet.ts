@@ -26,7 +26,7 @@ export interface CustomerData {
     designation: string;
     websiteURL: string;
     taxType: string;
-    exemptionReason: string;
+    taxReason: string;
     taxPreference: string;
     gstTreatment: string;
     gstin_uin: string;
