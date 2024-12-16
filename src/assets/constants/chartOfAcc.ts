@@ -1,10 +1,11 @@
 const chartOfAcc = [
   {
-    head: "Assets",
+    head: "Asset",
     subhead: [
+      "Asset",
       "Current asset",
-      // "Cash",
-      // "Bank",
+      "Cash",
+      "Bank",
       "Fixed asset",
       "Stock",
       "Payment Clearing",
@@ -16,19 +17,23 @@ const chartOfAcc = [
     subhead: ["Equity"],
   },
   {
+    head: "Income",
+    subhead: ["Income", "Other Income"],
+  },
+  {
     head: "Liabilities",
     subhead: [
-      "Current liability",
-      "Credit card",
-      "Long term liability",
-      "Other liability",
+      "Current Liability",
+      "Credit Card",
+      "Long Term Liability",
+      "Other Liability",
       "Overseas Tax Payable",
       "Sundry Creditors",
     ],
   },
   {
     head: "Expenses",
-    subhead: ["Expense", "Cost of goods sold", "Other Expense"],
+    subhead: ["Expense", "Cost of Goods Sold", "Other Expense"],
   },
 ];
 
