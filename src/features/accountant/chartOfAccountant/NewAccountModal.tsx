@@ -7,75 +7,40 @@ import chartOfAcc from "../../../assets/constants/chartOfAcc";
 import Modal from "../../../Components/model/Modal";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import toast from 'react-hot-toast'; // Import react-hot-toast
+import toast from 'react-hot-toast';
 import CehvronDown from "../../../assets/icons/CehvronDown";
 
 interface NewAccountModalProps {
   fetchAllAccounts: () => void;
 }
 
+const initialFormValues:any={
+  accountName: "",
+  accountCode: "",
+  accountSubhead: "",
+  accountHead: "",
+  accountGroup: "",
+  description: "",
+  bankAccNum: "",
+  bankIfsc: "",
+  bankCurrency: "",
+  debitOpeningBalance: "",
+  creditOpeningBalance: "",
+}
+
 function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
   const [isModalOpen, setModalOpen] = useState(false);
   const { request: NewAccount } = useApi("post", 5001);
-  const [openingType, setOpeningType] = useState("Debit"); // Ensure openingType is a string
-  const [formValues, setFormValues] = useState({
-    accountName: "",
-    accountCode: "",
-    accountSubhead: "",
-    accountHead: "",
-    accountGroup: "",
-    description: "",
-    bankAccNum: "",
-    bankIfsc: "",
-    bankCurrency: "",
-    debitOpeningBalance: "",
-    creditOpeningBalance: "",
-  });
-
-
-
-  const openModal = () => {
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-  };
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formValues.accountSubhead) {
-      toast.error("Please select an account type.");
-      return;
-    }
-
-    const toastId = toast.loading('Adding new account...'); // Show loading toast
-
-    try {
-      const url = `${endponits.Add_NEW_ACCOUNT}`;
-      const body = formValues;
-      const { response, error } = await NewAccount(url, body);
-
-      if (!error && response) {
-        toast.dismiss(toastId); // Dismiss the loading toast
-        closeModal();
-        fetchAllAccounts(); // Fetch updated data
-      } else {
-        throw new Error(error?.response?.data?.message || 'Something went wrong');
-      }
-    } catch (error: any) {
-      toast.dismiss(toastId); // Dismiss the loading toast
-      toast.error(
-        error.response?.data?.message || error.message || 'Failed to add account'
-      ); // Display error message
-    }
-  };
-
+  const [openingType, setOpeningType] = useState("Debit");
+  const [formValues, setFormValues] = useState(initialFormValues);
+  
   const accountCategories = {
     Asset: {
       Asset: [
         "Asset",
         "Current asset",
+        "Cash",
+        "Bank",
         "Fixed asset",
         "Stock",
         "Payment Clearing",
@@ -96,6 +61,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
       Expenses: ["Expense", "Cost of Goods Sold", "Other Expense"],
     },
   };
+  
 
   const headGroup = (accountSubhead: any) => {
     for (const [group, heads] of Object.entries(accountCategories)) {
@@ -108,6 +74,44 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
     return null;
   };
 
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setFormValues(initialFormValues)
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formValues.accountSubhead) {
+      toast.error("Please select an account type.");
+      return;
+    }
+
+    const toastId = toast.loading('Adding new account...');
+
+    try {
+      const url = `${endponits.Add_NEW_ACCOUNT}`;
+      const body = formValues;
+      const { response, error } = await NewAccount(url, body);
+
+      if (!error && response) {
+        toast.dismiss(toastId);
+        closeModal();
+        fetchAllAccounts();
+      } else {
+        throw new Error(error?.response?.data?.message || 'Something went wrong');
+      }
+    } catch (error: any) {
+      toast.dismiss(toastId);
+      toast.error(
+        error.response?.data?.message || error.message || 'Failed to add account'
+      );
+    }
+  };
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -118,32 +122,31 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
     if (name === "accountSubhead") {
       const result = headGroup(value);
       if (result) {
-        setFormValues((prevFormValues) => ({
+        setFormValues((prevFormValues:any) => ({
           ...prevFormValues,
-          [name]: value,
+          accountSubhead: value,
           accountHead: result.accountHead,
           accountGroup: result.accountGroup,
         }));
       } else {
-        setFormValues((prevFormValues) => ({
+        setFormValues((prevFormValues:any) => ({
           ...prevFormValues,
-          [name]: value,
+          accountSubhead: value,
           accountHead: "",
           accountGroup: "",
         }));
       }
     } else if (name === "openingType") {
       setOpeningType(value);
-      setFormValues((prevFormValues) => ({
+      setFormValues((prevFormValues:any) => ({
         ...prevFormValues,
         debitOpeningBalance: value === "Debit" ? prevFormValues.debitOpeningBalance : "",
         creditOpeningBalance: value === "Credit" ? prevFormValues.creditOpeningBalance : "",
       }));
     } else if (name === "openingBalance") {
-      // Check if the entered value is non-negative
       if (parseFloat(value) < 0) return;
 
-      setFormValues((prevFormValues) => ({
+      setFormValues((prevFormValues:any) => ({
         ...prevFormValues,
         debitOpeningBalance:
           openingType === "Debit" ? value : prevFormValues.debitOpeningBalance,
@@ -151,7 +154,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
           openingType === "Credit" ? value : prevFormValues.creditOpeningBalance,
       }));
     } else {
-      setFormValues((prevFormValues) => ({
+      setFormValues((prevFormValues:any) => ({
         ...prevFormValues,
         [name]: value,
       }));
@@ -197,8 +200,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
                 <select
                   name="accountSubhead"
                   value={formValues.accountSubhead}
-                  // onChange={handleChange}
-                  onChange={(e)=>setFormValues({...formValues,accountSubhead:e.target.value})}
+                  onChange={handleChange}
                   className="w-full border border-inputBorder rounded p-1.5 pl-2 text-sm"
                 >
                   <option disabled hidden value="">Select type</option>
