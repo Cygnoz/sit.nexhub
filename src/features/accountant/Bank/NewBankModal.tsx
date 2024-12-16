@@ -87,7 +87,6 @@ const NewBankModal = ({ }: Props) => {
         creditOpeningBalance: openingType === "Credit" ? processedValue : prevFormValues.creditOpeningBalance,
       }));
     } else {
-      // Update any other fields normally
       setBankAccount((prevBankAccount) => ({
         ...prevBankAccount,
         [name]: processedValue,

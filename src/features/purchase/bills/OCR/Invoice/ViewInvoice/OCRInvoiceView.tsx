@@ -68,16 +68,50 @@ const OCRInvoiceView = () => {
     "Item 54",
     "Item 55",
   ];
-  
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const totalPages = Math.ceil(lineItems.length / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentItems = lineItems.slice(startIndex, endIndex);
 
-  const totalPages = Math.ceil(lineItems.length / itemsPerPage);
+  // Function to generate the page numbers dynamically
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+
+    if (totalPages <= 5) {
+      // Show all pages if there are 5 or fewer
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      // Show a subset of pages
+      if (currentPage <= 3) {
+        pageNumbers.push(1, 2, 3, 4, "...");
+      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(
+          "...",
+          totalPages - 3,
+          totalPages - 2,
+          totalPages - 1,
+          totalPages
+        );
+      } else {
+        pageNumbers.push(
+          "...",
+          currentPage - 1,
+          currentPage + 1,
+          currentPage,
+          currentPage + 2,
+          "..."
+        );
+      }
+    }
+
+    return pageNumbers;
+  };
 
   const items = [
     {
@@ -286,7 +320,7 @@ const OCRInvoiceView = () => {
             {openDropdownIndex === "items" && (
               <div
                 ref={dropdownRef}
-                className="absolute z-10 w-[100%] bg-white shadow rounded-md items-baseline p-2 space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
+                className="absolute z-10 w-[100%] bg-white shadow rounded-md items-baseline p-2 space-y-1 max-h-96 overflow-y-auto hide-scrollbar"
                 style={{
                   bottom: "10px",
                   left: "0",
@@ -423,57 +457,75 @@ const OCRInvoiceView = () => {
             </div>
 
             <div>
-      {/* Line Items Header */}
-      <div className="border-b-[0.5px] border-[#c5c6c7] text-sm pb-2 mb-4 text-textColor font-semibold mt-5">
-        Line Items
-      </div>
+              {/* Line Items Header */}
+              <div className="border-b-[0.5px] border-[#c5c6c7] text-sm pb-2 mb-4 text-textColor font-semibold mt-5">
+                Line Items
+              </div>
 
-      {/* Grid Layout for Line Items */}
-      <div className="mt-2 grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          {currentItems.slice(0, 5).map((item, index) => (
-            <div
-              onClick={() => console.log("Clicked on item:", item)}
-              key={index}
-              className="flex gap-4 items-center font-semibold p-2"
-            >
-              <DotIcon color={"#32A370"} size={10} />
-              <p className="text-textColor">Line Item</p>
-              <p className="text-[#32A370]">{item}</p>
+              {/* Grid Layout for Line Items */}
+              <div className="mt-2 grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  {currentItems.slice(0, 5).map((item, index) => (
+                    <div
+                    onClick={() => toggleDropdown("items")}
+                    key={index}
+                      className="flex gap-4 items-center font-semibold p-2"
+                    >
+                      <DotIcon color={"#32A370"} size={10} />
+                      <p className="text-textColor">Line Item</p>
+                      <p className="text-[#32A370]">{item}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="space-y-2">
+                  {currentItems.slice(5, 10).map((item, index) => (
+                    <div
+                      onClick={() => console.log("Clicked on item:", item)}
+                      key={index}
+                      className="flex gap-4 items-center font-semibold p-2"
+                    >
+                      <DotIcon color={"#32A370"} size={10} />
+                      <p className="text-textColor">Line Item</p>
+                      <p className="text-[#32A370]">{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-1 mt-4 justify-end">
+                {/* Page Numbers */}
+                {getPageNumbers().map((page, index) => (
+                  <p
+                    key={index}
+                    onClick={() =>
+                      typeof page === "number" && setCurrentPage(page)
+                    }
+                    className={`p-1 font-bold rounded-md ${
+                      currentPage === page
+                        ? "bg-darkRed text-white"
+                        : "bg-gray-200 text-darkRed cursor-pointer hover:bg-darkRed hover:text-white"
+                    }`}
+                  >
+                    [{page}]
+                  </p>
+                ))}
+                <p
+                  onClick={() =>
+                    currentPage > 1 && setCurrentPage(currentPage - 1)
+                  }
+                  className="p-1 font-bold text-darkRed cursor-pointer hover:bg-darkRed hover:text-white rounded-md"
+                >
+                  [Previous]
+                </p>
+                <p
+                  onClick={() =>
+                    currentPage < totalPages && setCurrentPage(currentPage + 1)
+                  }
+                  className="p-1 font-bold text-darkRed cursor-pointer hover:bg-darkRed hover:text-white rounded-md"
+                >
+                  [Next]
+                </p>
+              </div>
             </div>
-          ))}
-        </div>
-        <div className="space-y-2">
-          {currentItems.slice(5, 10).map((item, index) => (
-            <div
-              onClick={() => console.log("Clicked on item:", item)}
-              key={index}
-              className="flex gap-4 items-center font-semibold p-2"
-            >
-              <DotIcon color={"#32A370"} size={10} />
-              <p className="text-textColor">Line Item</p>
-              <p className="text-[#32A370]">{item}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex gap-1 mt-4">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <p
-            key={index}
-            onClick={() => setCurrentPage(index + 1)}
-            className={`p-1 font-bold rounded-md ${
-              currentPage === index + 1
-                ? "bg-darkRed text-white"
-                : "bg-gray-200 text-darkRed cursor-pointer"
-            }`}
-          >
-            [{index + 1}]
-          </p>
-        ))}
-      </div>
-    </div>
 
             {/* Transaction Details */}
             <div className="border-b-[1px] border-[#c5c6c7] text-sm pb-2 mb-4 text-textColor font-semibold mt-5">
