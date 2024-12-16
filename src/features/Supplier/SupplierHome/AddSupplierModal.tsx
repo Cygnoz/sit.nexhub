@@ -123,8 +123,6 @@ const AddSupplierModal = ({ page }: Props) => {
     },
   ]);
 
-
-
   const addRow = () => {
     setRows([
       ...rows,
@@ -238,8 +236,7 @@ const AddSupplierModal = ({ page }: Props) => {
     setIsaccountNumbersame(newIsAccountNumberSame);
   };
 
-  console.log(supplierdata,"supplierData")
-
+  console.log(supplierdata, "supplierData");
 
   // add bank account
   const handleBankDetailsChange = (
@@ -543,7 +540,9 @@ const AddSupplierModal = ({ page }: Props) => {
       supplierdata.gstinUin === ""
     )
       newErrors.gstinUin = true;
-    const isAccountNumberValid = isAccountNumberSame.every((isValid) => isValid);
+    const isAccountNumberValid = isAccountNumberSame.every(
+      (isValid) => isValid
+    );
 
     if (!isAccountNumberValid) {
       toast.error("Please ensure account numbers match before saving.");
@@ -649,7 +648,6 @@ const AddSupplierModal = ({ page }: Props) => {
     }
   };
 
-
   // compy billing address
   const handleCopyAddress = (e: any) => {
     e.preventDefault();
@@ -695,9 +693,9 @@ const AddSupplierModal = ({ page }: Props) => {
         toast.error("Only JPG and PNG images are supported.");
         return;
       }
-  
+
       const reader = new FileReader();
-  
+
       reader.onloadend = () => {
         if (reader.result) {
           const base64String = reader.result as string;
@@ -707,14 +705,12 @@ const AddSupplierModal = ({ page }: Props) => {
           }));
         }
       };
-  
+
       reader.readAsDataURL(file); // Convert the file to a Base64 string
     }
   };
-  
 
-  console.log(supplierdata,"ht");
-  
+  console.log(supplierdata, "ht");
 
   useEffect(() => {
     handleplaceofSupply();
@@ -758,6 +754,16 @@ const AddSupplierModal = ({ page }: Props) => {
             </p>
           </div>
         </div>
+      ) : page == "ocr" ? (
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={openModal}
+          className="w-[100%] px-[140px] "
+        >
+          <PlusCircle color="white" />{" "}
+          <p className="text-sm font-medium">Create</p>
+        </Button>
       ) : (
         <Button
           onClick={openModal}
@@ -1277,7 +1283,7 @@ const AddSupplierModal = ({ page }: Props) => {
                           className="hidden"
                           // value={supplierdata.documents}
                           name="documents"
-                        // onChange={(e)=>handleFileChange(e)}
+                          // onChange={(e)=>handleFileChange(e)}
                         />
                       </div>
                       <div className="">
@@ -1399,10 +1405,13 @@ const AddSupplierModal = ({ page }: Props) => {
                               </div>
                             )}
 
-                            {supplierdata.gstTreatment !== "Unregistered Business" && (
+                            {supplierdata.gstTreatment !==
+                              "Unregistered Business" && (
                               <div>
                                 <div>
-                                  <label className="block mb-1">GSTIN/UIN</label>
+                                  <label className="block mb-1">
+                                    GSTIN/UIN
+                                  </label>
                                   <input
                                     type="text"
                                     name="gstinUin"
@@ -1412,15 +1421,22 @@ const AddSupplierModal = ({ page }: Props) => {
                                     onChange={handleChange}
                                     onBlur={() => {
                                       if (
-                                        supplierdata.gstTreatment !== "Overseas" &&
-                                        supplierdata.gstTreatment !== "Unregistered Business" &&
+                                        supplierdata.gstTreatment !==
+                                          "Overseas" &&
+                                        supplierdata.gstTreatment !==
+                                          "Unregistered Business" &&
                                         supplierdata.gstTreatment !== "" &&
-
                                         supplierdata.gstinUin === ""
                                       ) {
-                                        setErrors((prevErrors) => ({ ...prevErrors, gstinUin: true }));
+                                        setErrors((prevErrors) => ({
+                                          ...prevErrors,
+                                          gstinUin: true,
+                                        }));
                                       } else {
-                                        setErrors((prevErrors) => ({ ...prevErrors, gstinUin: false }));
+                                        setErrors((prevErrors) => ({
+                                          ...prevErrors,
+                                          gstinUin: false,
+                                        }));
                                       }
                                     }}
                                   />
@@ -1432,7 +1448,6 @@ const AddSupplierModal = ({ page }: Props) => {
                                 )}
                               </div>
                             )}
-
                           </div>
                         )}
 
@@ -1466,9 +1481,9 @@ const AddSupplierModal = ({ page }: Props) => {
                            </div> */}
                           </div>
                         )}
-                          <label htmlFor="" className="mt-0 block text-base">
-                            MSME Registered?
-                          </label>
+                        <label htmlFor="" className="mt-0 block text-base">
+                          MSME Registered?
+                        </label>
                         <div className="flex items-center space-x-2">
                           <input
                             type="checkbox"
@@ -1478,11 +1493,13 @@ const AddSupplierModal = ({ page }: Props) => {
                             checked={supplierdata.msmeRegistered}
                             onChange={handleChange}
                           />
-                          <label htmlFor="msmeCheckbox" className="text-base cursor-pointer">
+                          <label
+                            htmlFor="msmeCheckbox"
+                            className="text-base cursor-pointer"
+                          >
                             The Vendor is MSME Registered
                           </label>
                         </div>
-
 
                         {supplierdata.msmeRegistered == true && (
                           <div className="grid grid-cols-2 mt-1 gap-4">
@@ -1949,16 +1966,32 @@ const AddSupplierModal = ({ page }: Props) => {
                                       className="block relative w-full h-9 focus:border-none text-zinc-400 bg-white text-sm text-center border-none rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                       value={row.salutation}
                                       onChange={(e) =>
-                                        handleRowChange(index, "salutation", e.target.value)
+                                        handleRowChange(
+                                          index,
+                                          "salutation",
+                                          e.target.value
+                                        )
                                       }
                                     >
-                                      <option value="" className="text-gray">Select</option>
-                                      <option value="Mr" className="text-gray">Mr</option>
-                                      <option value="Mrs" className="text-gray">Mrs</option>
-                                      <option value="Miss" className="text-gray">Miss</option>
-                                      <option value="Dr" className="text-gray">Dr</option>
+                                      <option value="" className="text-gray">
+                                        Select
+                                      </option>
+                                      <option value="Mr" className="text-gray">
+                                        Mr
+                                      </option>
+                                      <option value="Mrs" className="text-gray">
+                                        Mrs
+                                      </option>
+                                      <option
+                                        value="Miss"
+                                        className="text-gray"
+                                      >
+                                        Miss
+                                      </option>
+                                      <option value="Dr" className="text-gray">
+                                        Dr
+                                      </option>
                                     </select>
-
                                   </div>
                                 </td>
                                 <td className="py-2.5 px-8 border-y border-tableBorder">
@@ -2122,11 +2155,13 @@ const AddSupplierModal = ({ page }: Props) => {
                                       toggleShowAccountNumber(index)
                                     }
                                   >
-                                    {showAccountNumbers[index] ? (
-                                      <Eye color={"currentColor"} />
-                                    ) : (
-                                      <EyeOff />
-                                    )}
+                                  <div className="hidden">
+                                      {showAccountNumbers[index] ? (
+                                        <Eye color={"currentColor"} />
+                                      ) : (
+                                        <EyeOff />
+                                      )}
+                                  </div>
                                   </button>
                                 </div>
                               </div>
@@ -2166,11 +2201,13 @@ const AddSupplierModal = ({ page }: Props) => {
                                       toggleShowReEnterAccountNumber(index)
                                     }
                                   >
-                                    {showReEnterAccountNumbers[index] ? (
-                                      <Eye color={"currentColor"} />
-                                    ) : (
-                                      <EyeOff />
-                                    )}
+                                   <div className="hidden">
+                                      {showReEnterAccountNumbers[index] ? (
+                                        <Eye color={"currentColor"} />
+                                      ) : (
+                                        <EyeOff />
+                                      )}
+                                   </div>
                                   </button>
                                 </div>
                                 {supplierdata.bankDetails[index].accountNum &&
