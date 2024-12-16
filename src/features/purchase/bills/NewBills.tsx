@@ -570,6 +570,16 @@ const NewBills = ({}: Props) => {
     };
   }, [openDropdownIndex]);
 
+  useEffect(() => {
+    if (bill.paymentTerms !== "Pay Now") {
+      setBill((prevData) => ({
+        ...prevData,
+        paidAmount: "",
+        paidAccountId: "",
+      }));
+    }
+  }, [bill.paymentTerms]); 
+
   return (
     <div className="mx-5 my-4 text-sm">
       <div className="flex gap-5">
