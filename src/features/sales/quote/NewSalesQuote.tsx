@@ -4,7 +4,7 @@ import SearchBar from "../../../Components/SearchBar";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import NewCustomerModal from "../../Customer/CustomerHome/NewCustomerModal";
-import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
+// import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
 import SettingsIcons from "../../../assets/icons/SettingsIcon";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import Upload from "../../../assets/icons/Upload";
 import NewSalesQuoteTable from "./NewSalesQuoteTable"
 import Button from "../../../Components/Button";
-import { PrinterIcon } from "@heroicons/react/20/solid";
+// import { PrinterIcon } from "@heroicons/react/20/solid";
 
 type Props = {};
 
@@ -611,7 +611,7 @@ console.log(customerData);
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />
                 </div>
-                <div className="col-span-7 relative">
+                {/* <div className="col-span-7 relative">
                   <label className="block text-sm mb-1 text-labelColor">
                     Sales Person
                   </label>
@@ -654,7 +654,7 @@ console.log(customerData);
                       <ManageSalesPerson />
                     </div>
                   )}
-                </div>
+                </div> */}
               </div>
 
 
@@ -901,10 +901,10 @@ console.log(customerData);
           <Button variant="secondary" size="sm"  onClick={handleGoBack}>
             Cancel
           </Button>
-          <Button variant="secondary" size="sm">
+          {/* <Button variant="secondary" size="sm">
             <PrinterIcon height={18} width={18} color="currentColor" />
             Print
-          </Button>
+          </Button> */}
           <Button variant="primary" size="sm" type="submit" onClick={handleSave} >
             Save & Send
           </Button>{" "}

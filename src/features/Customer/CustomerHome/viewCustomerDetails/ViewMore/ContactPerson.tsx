@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { CustomerDeatilsContext } from "../../../../../context/ContextShare";
-import line from '../../../../../assets/Images/Rectangle 5557.png'
 import User from "../../../../../assets/icons/User";
 import MailIcon from "../../../../../assets/icons/MailIcon";
 import PhoneIcon from "../../../../../assets/icons/PhoneIcon";
 import Factory from "../../../../../assets/icons/Factory";
+import line from "../../../../../assets/Images/Rectangle 5557.png"
 
 type Props = {}
 

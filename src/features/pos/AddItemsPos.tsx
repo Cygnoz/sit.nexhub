@@ -85,13 +85,15 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
     0
   );
 
-  const tax = selectedItems.reduce((total, item) => {
-    const igst = item.igst && item.igst > 0 ? parseFloat(item.igst) : 0; 
-    const quantity = quantities[item._id] || 1; 
-    const sellingPrice = parseFloat(item.sellingPrice) || 0;
-    const itemTax = (sellingPrice * quantity * igst) / 100;
-    return total + itemTax;
-  }, 0);
+  const tax = selectedCustomer?.taxType === "Non-Tax" 
+  ? 0 
+  : selectedItems.reduce((total, item) => {
+      const igst = item.igst && item.igst > 0 ? parseFloat(item.igst) : 0; 
+      const quantity = quantities[item._id] || 1; 
+      const sellingPrice = parseFloat(item.sellingPrice) || 0;
+      const itemTax = (sellingPrice * quantity * igst) / 100;
+      return total + itemTax;
+    }, 0);
   
   // Calculate discount
   const discountValue =

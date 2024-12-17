@@ -96,7 +96,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
     designation: "",
     websiteURL: "",
     taxType: "",
-    exemptionReason: "",
+    taxReason: "",
     taxPreference: "",
     gstTreatment: "",
     gstin_uin: "",
@@ -1692,8 +1692,8 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
                             type="text"
                             className="pl-2 text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                             placeholder="Value"
-                            name="exemptionReason"
-                            value={customerdata.exemptionReason}
+                            name="taxReason"
+                            value={customerdata.taxReason}
                             onChange={handleChange}
                           />
                         </div>
