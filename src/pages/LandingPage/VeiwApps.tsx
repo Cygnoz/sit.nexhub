@@ -71,6 +71,7 @@ const iconDataMap: any = {
     { icon: quotes, label: "Quotes", route: "/sales/quote", index: 3, subIndex: 2 },
     { icon: invoice, label: "Invoice", route: "/sales/invoice", index: 3, subIndex: 3 },
     { icon: reciept, label: "Receipt", route: "/sales/receipt", index: 3, subIndex: 4 },
+    { icon: posIcon, label: "POS", route: "/pos", index: 0, subIndex: 0 },
     { icon: creditNote, label: "Credit Note", route: "/sales/credit-note", index: 3, subIndex: 7 },
   ],
   Purchase: [

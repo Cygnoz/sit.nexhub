@@ -43,12 +43,12 @@ const navlist = [
   {
     nav: "Customer",
     icon: userRound,
-    route: "/customer",
+    route: "/customer/home",
     subhead: [
-      {
-        headName: "Dashboard",
-        subRoute: "/customer",
-      },
+      // {
+      //   headName: "Dashboard",
+      //   subRoute: "/customer",
+      // },
       {
         headName: "Customer",
         subRoute: "/customer/home",
@@ -58,12 +58,12 @@ const navlist = [
   {
     nav: "Sales",
     icon: shoppingCart,
-    route: "/sales",
+    route: "/sales/salesorder",
     subhead: [
-      {
-        headName: "Dashboard",
-        subRoute: "/sales",
-      },
+      // {
+      //   headName: "Dashboard",
+      //   subRoute: "/sales",
+      // },
       {
         headName: "Sales Order",
         subRoute: "/sales/salesorder",
@@ -80,10 +80,10 @@ const navlist = [
         headName: "Receipt",
         subRoute: "/sales/receipt",
       },
-      // {
-      //   headName: "POS",
-      //   subRoute: "/inventory",
-      // },
+      {
+        headName: "POS",
+        subRoute: "/pos",
+      },
       // {
       //   headName: "Sales Return",
       //   subRoute: "/sales/salesreturn",
@@ -97,12 +97,12 @@ const navlist = [
   {
     nav: "Accounts",
     icon: squreUserRound,
-    route: "/accountant",
+    route: "/accountant/chart-OF-accountant",
     subhead: [
-      {
-        headName: "Dashboard",
-        subRoute: "/accountant",
-      },
+      // {
+      //   headName: "Dashboard",
+      //   subRoute: "/accountant",
+      // },
       {
         headName: "Chart Of Account",
         subRoute: "/accountant/chart-OF-accountant",
@@ -124,12 +124,12 @@ const navlist = [
   {
     nav: "Supplier",
     icon: truck,
-    route: "/supplier",
+    route: "/supplier/home",
     subhead: [
-      {
-        headName: "Dashboard",
-        subRoute: "/supplier",
-      },
+      // {
+      //   headName: "Dashboard",
+      //   subRoute: "/supplier",
+      // },
       {
         headName: "Supplier",
         subRoute: "/supplier/home",
@@ -139,21 +139,21 @@ const navlist = [
   {
     nav: "Expense",
     icon: circleDollar,
-    route: "/expense",
+    route: "/expense/home",
     subhead: [
-      { headName: "Dashboard", subRoute: "/expense" },
+      // { headName: "Dashboard", subRoute: "/expense" },
       { headName: "Expense", subRoute: "/expense/home" },
     ],
   },
   {
     nav: "Staff",
     icon: usersRound,
-    route: "/staffs",
+    route: "/staffs/home",
     subhead: [
-      {
-        headName: "Dashboard",
-        subRoute: "/",
-      },
+      // {
+      //   headName: "Dashboard",
+      //   subRoute: "/",
+      // },
       {
         headName: "Staff",
         subRoute: "/staffs/home",
@@ -163,12 +163,12 @@ const navlist = [
   {
     nav: "Purchase",
     icon: shoppingBag,
-    route: "/purchase",
+    route: "/purchase/purchase-order",
     subhead: [
-      {
-        headName: "Dashboard",
-        subRoute: "/purchase",
-      },
+      // {
+      //   headName: "Dashboard",
+      //   subRoute: "/purchase",
+      // },
       {
         headName: "Purchase Order",
         subRoute: "/purchase/purchase-order",
