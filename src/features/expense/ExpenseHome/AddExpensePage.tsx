@@ -100,6 +100,8 @@ function AddExpensePage({}: Props) {
     liabilities: [],
   });
 
+ 
+
   const handleAddExpense = async () => {
     try {
       let hasErrors = false;
