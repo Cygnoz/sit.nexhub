@@ -9,7 +9,7 @@ import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
 import NewCustomerModal from "../../Customer/CustomerHome/NewCustomerModal";
 import Button from "../../../Components/Button";
-import PrinterIcon from "../../../assets/icons/PrinterIcon";
+// import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import CreditNoteTable from "./CreditNoteTable";
 import { CreditNoteBody } from "../../../Types/Creditnote";
 import toast from "react-hot-toast";
@@ -896,10 +896,10 @@ const NewCreditNote = () => {
               <Button variant="secondary" size="sm">
                 Cancel
               </Button>
-              <Button variant="secondary" size="sm">
+              {/* <Button variant="secondary" size="sm">
                 <PrinterIcon height={18} width={18} color="currentColor" />
                 Print
-              </Button>
+              </Button> */}
               <Button variant="primary" size="sm" onClick={handleSave}>
                 Save & send
               </Button>{" "}
