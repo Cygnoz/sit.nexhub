@@ -9,6 +9,7 @@ import CehvronDown from "../../../../../../assets/icons/CehvronDown";
 import Check from "../../../../../../assets/icons/Check";
 import ItemsTable from "./ItemsTable";
 import Button from "../../../../../../Components/Button";
+import Expand from "../../../../../../assets/icons/Expand";
 
 const OCRInvoiceView = () => {
   const lineItems = [
@@ -68,8 +69,12 @@ const OCRInvoiceView = () => {
     "Item 54",
     "Item 55",
   ];
-
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
+    null
+  );
+  const [expandDropDown, setExpandDropDown] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isImageExpanded,setImageExpanded]=useState(false)
   const itemsPerPage = 10;
   const totalPages = Math.ceil(lineItems.length / itemsPerPage);
 
@@ -77,17 +82,14 @@ const OCRInvoiceView = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentItems = lineItems.slice(startIndex, endIndex);
 
-  // Function to generate the page numbers dynamically
   const getPageNumbers = () => {
     const pageNumbers = [];
 
     if (totalPages <= 5) {
-      // Show all pages if there are 5 or fewer
       for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
       }
     } else {
-      // Show a subset of pages
       if (currentPage <= 3) {
         pageNumbers.push(1, 2, 3, 4, "...");
       } else if (currentPage >= totalPages - 2) {
@@ -256,10 +258,6 @@ const OCRInvoiceView = () => {
     },
   ];
 
-  const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
-    null
-  );
-  const [expandDropDown, setExpandDropDown] = useState<string | null>(null);
 
   const handleExpand = (key: string) => {
     setExpandDropDown((prevKey) => (prevKey === key ? null : key));
@@ -277,6 +275,10 @@ const OCRInvoiceView = () => {
     ) {
       setOpenDropdownIndex(null);
     }
+  };
+
+  const handleImageExpand = () => {
+    setImageExpanded(!isImageExpanded);
   };
 
   useEffect(() => {
@@ -308,10 +310,15 @@ const OCRInvoiceView = () => {
       </div>
 
       <div className="bg-white rounded-lg grid grid-cols-12 gap-4 mx-5 p-5">
-        <div className="col-span-7 rounded-lg relative">
+      <div className={`rounded-lg relative ${isImageExpanded ? "col-span-12" : "col-span-7"}`}>
           {/* Header Section */}
           <div className="h-10 bg-[#E5E5E5] rounded-t-lg text-xs font-bold text-[#4B5C79] flex items-center px-4">
             <p>INV-001.png</p>
+
+            
+            <button className="flex justify-end ml-auto" onClick={handleImageExpand}>
+              <Expand/>
+            </button>
           </div>
 
           <div className="flex items-center justify-center h-[760px] py-2 bg-[#F3F3F3] relative">
@@ -336,7 +343,7 @@ const OCRInvoiceView = () => {
           </div>
         </div>
 
-        <div className="col-span-5">
+    { ! isImageExpanded &&   <div className="col-span-5">
           <div className="h-10 bg-[#E5E5E5] rounded-t-lg text-xs font-bold text-[#4B5C79] flex items-center px-4 relative">
             <p>Fields</p>
           </div>
@@ -612,7 +619,7 @@ const OCRInvoiceView = () => {
               Confirm Document
             </Button>
           </div>
-        </div>
+        </div>}
       </div>
     </>
   );

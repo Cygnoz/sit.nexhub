@@ -212,7 +212,12 @@ const AddExpenseTable: React.FC<Props> = ({
                 </td>
                 <td className="p-2">
                   <div className="relative w-full">
-                    <select
+                    <select 
+                     disabled={
+                      expenseData.gstTreatment ===
+                        "Registered Business - Composition" ||
+                      expenseData.gstTreatment === "Unregistered Business" ||
+                      expenseData.gstTreatment === "Overseas"}
                       value={row.taxGroup}
                       onChange={(e) =>
                         handleTaxGroupChange(index, e.target.value)

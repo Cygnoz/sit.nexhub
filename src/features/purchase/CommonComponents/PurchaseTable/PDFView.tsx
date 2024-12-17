@@ -109,9 +109,9 @@ const PDFView = ({ data, page , organization}: Props) => {
               )}
 
               <p className="font-normal text-xs text-pdftext mt-2">
-                {supplier?.billingAddressStreet1} |{" "}
-                {supplier?.billingAddressStreet2},<br />
-                {supplier.billingState} {supplier.billingPinCode}
+                {supplier?.billingAddressStreet1}{supplier?.billingAddressStreet1 && <p>|</p>} 
+                {supplier?.billingAddressStreet2}{supplier?.billingAddressStreet2 &&<p>, </p>}<br />
+                {supplier.billingState}  {supplier.billingCountry} {supplier.billingPinCode}
               </p>
             </div>
             {page == "PurchaseOrder" ? (
@@ -129,18 +129,20 @@ const PDFView = ({ data, page , organization}: Props) => {
               </div>
             ) : (
               <div className="mt-2 text-xs">
-                <p className="text-pdftext mt-2 flex">
-                  <b>Bill Date</b>{" "}
-                  <span className="text-end ml-auto">{data.billDate}</span>
-                </p>
-                <p className="text-pdftext mt-2 flex">
-                  <b>Due Date</b>{" "}
-                  <span className="text-end ml-auto">{data.dueDate}</span>
-                </p>
-                <p className="text-pdftext mt-2 flex">
-                  <b className="me-5">Terms</b>
-                  <span className="text-end ml-auto"> {data.paymentTerms}</span>
-                </p>
+             { page!=="DebitNote" && <>
+                  <p className="text-pdftext mt-2 flex">
+                    <b>Bill Date</b>{" "}
+                    <span className="text-end ml-auto">{data.billDate}</span>
+                  </p>
+                  <p className="text-pdftext mt-2 flex">
+                    <b>Due Date</b>{" "}
+                    <span className="text-end ml-auto">{data.dueDate}</span>
+                  </p>
+                  <p className="text-pdftext mt-2 flex">
+                    <b className="me-5">Terms</b>
+                    <span className="text-end ml-auto"> {data.paymentTerms}</span>
+                  </p>
+              </>}
               </div>
             )}
           </div>
@@ -199,8 +201,8 @@ const PDFView = ({ data, page , organization}: Props) => {
           </div>
 
           {page==="DebitNote" &&
-             <div className="w-[58.4%] border border-dropdownBorder rounded bg-pdfbg">
-             <div className="px-4 mt-4  bg-gray-100 rounded-lg flex justify-between">
+             <div className="w-[58.4%] border mt-4 ml-auto border-dropdownBorder rounded bg-pdfbg">
+             <div className="px-4 my-4  bg-gray-100 rounded-lg flex justify-between">
                <h4 className="text-pdftext text-xs font-normal">
                 Credit Remaining
                </h4>

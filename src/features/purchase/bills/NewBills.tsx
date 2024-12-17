@@ -63,7 +63,7 @@ const NewBills = ({}: Props) => {
     orderNumber: "",
     purchaseOrderDate: "",
     expectedShipmentDate: "",
-    paymentTerms: "Pay Now",
+    paymentTerms: "",
     paymentMode: "",
     PaidThrough:"",
     billDate: new Date().toISOString().slice(0, 10), 
@@ -87,11 +87,11 @@ const NewBills = ({}: Props) => {
       },
     ],
     otherExpenseAccountId:"",
-    otherExpense: "",
+    otherExpenseAmount: "",
     otherExpenseReason: "",
     vehicleNo: "",
     freightAccountId:"",
-    freight: "",
+    freightAmount: "",
     addNotes: "",
     termsAndConditions: "",
     attachFiles: "",
@@ -105,7 +105,7 @@ const NewBills = ({}: Props) => {
     transactionDiscountAmount: "",
     totalTaxAmount: "",
     itemTotalDiscount: "",
-    roundOff: "",
+    roundOffAmount: "",
     paidStatus: "",
     shipmentPreference: "",
     grandTotal: "",
@@ -366,9 +366,9 @@ const NewBills = ({}: Props) => {
 
   const calculateTotalAmount = () => {
     const {
-      roundOff,
-      otherExpense,
-      freight,
+      roundOffAmount,
+      otherExpenseAmount,
+      freightAmount,
       itemTotalDiscount,
       totalTaxAmount,
       subTotal,
@@ -376,10 +376,10 @@ const NewBills = ({}: Props) => {
 
     const totalAmount =
       Number(subTotal) +
-      Number(otherExpense) +
+      Number(otherExpenseAmount) +
       Number(totalTaxAmount) +
-      Number(freight) -
-      (Number(itemTotalDiscount) + Number(roundOff));
+      Number(freightAmount) -
+      (Number(itemTotalDiscount) + Number(roundOffAmount));
     return totalAmount.toFixed(2);
   };
 
@@ -469,7 +469,7 @@ const NewBills = ({}: Props) => {
     const {
       transactionDiscountType,
       transactionDiscount = "",
-      transactionDiscountAmount = "",
+      transactionDiscountAmount = 0,
     } = bill;
     const transactionDiscountValueAMT =
     transactionDiscountType === "percentage"
@@ -495,11 +495,11 @@ const NewBills = ({}: Props) => {
     bill.transactionDiscount,
     bill.transactionDiscountType,
     bill.subTotal,
-    bill.otherExpense,
+    bill.otherExpenseAmount,
     bill.totalTaxAmount,
-    bill.freight,
+    bill.freightAmount,
     bill.itemTotalDiscount,
-    bill.roundOff,
+    bill.roundOffAmount,
   ]);
 
   useEffect(() => {
@@ -1093,7 +1093,7 @@ const NewBills = ({}: Props) => {
                   {" "}
                   <p className="text-end">
                     {oneOrganization?.baseCurrency}{" "}
-                    {bill.otherExpense ? bill.otherExpense : "0.00"}
+                    {bill.otherExpenseAmount ? bill.otherExpenseAmount : "0.00"}
                   </p>
                 </div>
               </div>
@@ -1106,7 +1106,7 @@ const NewBills = ({}: Props) => {
                   {" "}
                   <p className="text-end">
                     {oneOrganization?.baseCurrency}{" "}
-                    {bill.freight ? bill.freight : "0.00"}
+                    {bill.freightAmount ? bill.freightAmount : "0.00"}
                   </p>
                 </div>
               </div>
@@ -1120,7 +1120,7 @@ const NewBills = ({}: Props) => {
                   {" "}
                   <p className="text-end">
                     {oneOrganization.baseCurrency}{" "}
-                    {bill.roundOff ? bill.roundOff : "0.00"}
+                    {bill.roundOffAmount ? bill.roundOffAmount : "0.00"}
                   </p>
                 </div>
               </div>
@@ -1186,6 +1186,7 @@ const NewBills = ({}: Props) => {
               </div>
             </div>
 
+    {bill.paymentTerms==="Pay Now"  &&   <>
       <div className="flex gap-4 items-center justify-center mb-2">
               <label className=" text-sm mb-1 text-labelColor min-w-fit left-0">
                 Paid Through Account
@@ -1255,7 +1256,7 @@ const NewBills = ({}: Props) => {
                   />
                 </div>
               </div>
- 
+       </>}
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}
