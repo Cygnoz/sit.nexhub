@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
 // import DotIcon from "../../../../../assets/icons/DotIcon";
 // import DateFormat from "../../../../../Components/DateFormat/DateFormta";
-import PurchaseTable from "../../../CommonComponents/PurchaseTable/PurchaseTable";
+import PurchaseTable from "../../../../CommonComponents/PurchaseTable/PurchaseTable";
 // import { endponits } from "../../../../../Services/apiEndpoints";
 import { useNavigate } from "react-router-dom";
 // import useApi from "../../../../../Hooks/useApi";
-import { TableResponseContext } from "../../../../../context/ContextShare";
-import DotIcon from "../../../../../assets/icons/DotIcon";
+import { TableResponseContext } from "../../../../../../context/ContextShare";
+import DotIcon from "../../../../../../assets/icons/DotIcon";
 
 
 const AllInvoiceTable = () => {

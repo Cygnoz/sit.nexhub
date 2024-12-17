@@ -15,7 +15,7 @@ import CalendarCheck from "../../../../assets/icons/CalendarCheck";
 import Modal from "../../../../Components/model/Modal";
 import Taxes from "./Taxes";
 import ContactPerson from "./ContactPerson";
-// import line from '../../../../../assets/Images/Rectangle 5557.png'
+import line from "../../../../assets/Images/Rectangle 5557.png"
 
 type Props = {}
 
@@ -146,7 +146,7 @@ const OtherDetails = ({}: Props) => {
                         {/* Pass the required props to the Overview component */}
                         {selectedTab === "Other Details" && (
                             <div>
-                                {/* <div >  <img className="w-[100%]  h-[0.5%]" src={""} alt="" /></div> */}
+                                <div >  <img className="w-[100%]  h-[0.5%]" src={line} alt="" /></div>
                                 <div className="text-start grid grid-cols-4 bg-[#F6F6F6] my-3">
                                     {
                                         OtherDetails.map((Details) => (

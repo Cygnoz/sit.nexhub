@@ -4,6 +4,7 @@ import Factory from "../../../../assets/icons/Factory";
 import Locate from "../../../../assets/icons/Locate";
 import Dock from "../../../../assets/icons/Dock";
 import HandCoins from "../../../../assets/icons/HandCoins";
+import line from "../../../../assets/Images/Rectangle 5557.png"
 
 
 type Props = {}
@@ -40,7 +41,7 @@ function Taxes({ }: Props) {
     ];
     return (
         <div >
-            {/* <div >  <img className="w-[100%]  h-[0.5%]" src={line} alt="" /></div> */}
+            <div >  <img className="w-[100%]  h-[0.5%]" src={line} alt="" /></div>
             <div className="text-start grid grid-cols-3 bg-[#F6F6F6] my-3">
                 {
                     OtherDetails.map((Details) => (

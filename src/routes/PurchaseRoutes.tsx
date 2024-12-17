@@ -13,8 +13,8 @@ const PurchaseOrder = lazy(() => import("../features/purchase/purchaseOrder/Purc
 const NewPurchaseOrder = lazy(() => import("../features/purchase/purchaseOrder/addPurchaseOrder/NewPurchaseOrder"));
 const AddPaymentMade = lazy(() => import("../features/purchase/paymentMade/addPaymentMade/AddPaymentMade"));
 const Purchaseview =lazy(()=>import("../features/purchase/CommonComponents/PurchaseTable/Purchaseview"))
-const AllInvoiceHome =lazy(()=>import("../features/purchase/bills/OCR/Invoice/AllInvoiceHome"))
-const OCRInvoiceView =lazy(()=>import("../features/purchase/bills/OCR/Invoice/OCRInvoiceView"))
+const AllInvoiceHome =lazy(()=>import("../features/purchase/bills/OCR/Invoice/OCRInvoiceHome/AllInvoiceHome"))
+const OCRInvoiceView =lazy(()=>import("../features/purchase/bills/OCR/Invoice/ViewInvoice/OCRInvoiceView"))
 
 
 const PurchaseRoutes: RouteObject[] = [

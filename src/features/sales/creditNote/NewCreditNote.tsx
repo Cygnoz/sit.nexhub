@@ -92,13 +92,15 @@ const NewCreditNote = () => {
 
   const [errors, setErrors] = useState({
     invoiceNumber: false,
-    invoiceDate: false,
+    // invoiceDate: false,
     customerId: false,
     placeOfSupply: false,
     paymentMode: false,
     depositTo: false,
     itemTable: false,
     orderNumber: false,
+  customerCreditDate: false,
+
   })
 
 
@@ -258,10 +260,10 @@ const NewCreditNote = () => {
     } else {
       newErrors.placeOfSupply = false;
     }
-    if (creditNoteState.invoiceDate.trim() === "") {
-      newErrors.invoiceDate = true;
+    if (creditNoteState.customerCreditDate.trim() === "") {
+      newErrors.customerCreditDate = true;
     } else {
-      newErrors.invoiceDate = false;
+      newErrors.customerCreditDate = false;
     }
     if (creditNoteState.paymentMode.trim() === "") {
       newErrors.paymentMode = true;
@@ -360,6 +362,12 @@ const NewCreditNote = () => {
   console.log(allInvoice, "test");
 
   console.log(creditNoteState, "hyy");
+
+  
+
+const handleGoBack = () => {
+  navigate(-1); // Go back to the previous page
+};
 
 
   return (
@@ -771,6 +779,7 @@ const NewCreditNote = () => {
               </div>
               <p className="text-xs mt-1 text-gray-600"></p>
               <input
+                disabled
                 type="file"
                 className="hidden"
                 value=""
@@ -893,11 +902,16 @@ const NewCreditNote = () => {
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}
-              <Button variant="secondary" size="sm">
+              <Button variant="secondary" size="sm" onClick={handleGoBack}>
                 Cancel
               </Button>
+<<<<<<< HEAD
               {/* <Button variant="secondary" size="sm">
                 <PrinterIcon height={18} width={18} color="currentColor" />
+=======
+              <Button variant="secondary" size="sm">
+                <PrinterIcon height={18} width={18} color="currentColor"/>
+>>>>>>> 078e9dd2bf005f508612ad79d52240739cf6a33e
                 Print
               </Button> */}
               <Button variant="primary" size="sm" onClick={handleSave}>
