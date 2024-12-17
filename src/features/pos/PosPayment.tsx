@@ -81,6 +81,9 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
       }));
     }
   }, [selectedCustomer, orgData, selectedMethodLabel, discount, discounts]);
+
+
+  
   useEffect(() => {
     if (selectedItems.length > 0) {
       const mappedItems = selectedItems.map((item) => {
@@ -91,25 +94,38 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
         const sgst = item.sgst && !isNaN(parseFloat(item.sgst)) ? parseFloat(item.sgst) : undefined;
         const igst = item.igst && !isNaN(parseFloat(item.igst)) ? parseFloat(item.igst) : undefined;
 
-        const cgstAmount = cgst !== undefined ? ((sellingPrice * cgst * quantity) / 100).toFixed(2) : "0.00";
-        const sgstAmount = sgst !== undefined ? ((sellingPrice * sgst * quantity) / 100).toFixed(2) : "0.00";
-        const igstAmount =
-          selectedCustomer?.taxType === "GST"
-            ? "0.00" 
-            : igst !== undefined
-              ? ((sellingPrice * igst * quantity) / 100).toFixed(2)
-              : "0.00";
-
-
-        const itemTotaltax =
-          selectedCustomer?.taxType === "GST"
-            ? (parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
-            : parseFloat(igstAmount).toFixed(2);
-
-        const itemAmount =
-          selectedCustomer?.taxType === "GST"
-            ? sellingPrice * quantity + parseFloat(cgstAmount) + parseFloat(sgstAmount)
-            : sellingPrice * quantity + parseFloat(igstAmount);
+        const cgstAmount = selectedCustomer?.taxType === "Non-Tax" 
+        ? "0.00" 
+        : cgst !== undefined 
+          ? ((sellingPrice * cgst * quantity) / 100).toFixed(2) 
+          : "0.00";
+      
+      const sgstAmount = selectedCustomer?.taxType === "Non-Tax" 
+        ? "0.00" 
+        : sgst !== undefined 
+          ? ((sellingPrice * sgst * quantity) / 100).toFixed(2) 
+          : "0.00";
+      
+      const igstAmount = selectedCustomer?.taxType === "Non-Tax" 
+        ? "0.00" 
+        : selectedCustomer?.taxType === "GST"
+          ? "0.00" 
+          : igst !== undefined 
+            ? ((sellingPrice * igst * quantity) / 100).toFixed(2) 
+            : "0.00";
+      
+      const itemTotaltax = selectedCustomer?.taxType === "Non-Tax" 
+        ? "0.00" 
+        : selectedCustomer?.taxType === "GST"
+          ? (parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+          : parseFloat(igstAmount).toFixed(2);
+      
+      const itemAmount = selectedCustomer?.taxType === "Non-Tax" 
+        ? (sellingPrice * quantity).toFixed(2) // No tax added
+        : selectedCustomer?.taxType === "GST"
+          ? (sellingPrice * quantity + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+          : (sellingPrice * quantity + parseFloat(igstAmount)).toFixed(2);
+      
 
         return {
           itemId: item._id || "",
@@ -127,7 +143,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
           vatAmount: "0.00",
           itemTotaltax,
           amount: sellingPrice * quantity,
-          itemAmount: itemAmount.toFixed(2),
+          itemAmount: Number(itemAmount)?.toFixed(2),
         };
       });
 

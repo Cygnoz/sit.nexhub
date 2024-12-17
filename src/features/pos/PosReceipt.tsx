@@ -76,7 +76,7 @@ function PosReceipt({}: Props) {
                 </div>
                 <div className="flex justify-between mt-2">
                   <span className="text-sm">Payment</span>
-                  <span className="text-[#37393A] font-semibold">Cash</span>
+                  <span className="text-[#37393A] font-semibold">{lastInvoice?.paymentMethod}</span>
                 </div>
               </div>
 
