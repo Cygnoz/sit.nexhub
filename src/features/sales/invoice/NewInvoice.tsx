@@ -4,7 +4,7 @@ import Button from "../../../Components/Button";
 import SearchBar from "../../../Components/SearchBar";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
-import PrinterIcon from "../../../assets/icons/PrinterIcon";
+// import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import NewCustomerModal from "../../Customer/CustomerHome/NewCustomerModal";
 // import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
 import Upload from "../../../assets/icons/Upload";
@@ -1145,10 +1145,10 @@ const NewInvoice = ({ }: Props) => {
               <Button variant="secondary" size="sm" onClick={handleGoBack}>
                 Cancel
               </Button>
-              <Button variant="secondary" size="sm">
+              {/* <Button variant="secondary" size="sm">
                 <PrinterIcon height={18} width={18} color="currentColor" />
                 Print
-              </Button>
+              </Button> */}
               <Button variant="primary" size="sm" onClick={handleSave}>
                 Save & send
               </Button>{" "}
