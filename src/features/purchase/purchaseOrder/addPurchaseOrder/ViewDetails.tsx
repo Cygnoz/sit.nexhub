@@ -68,21 +68,34 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
                 </div>
               </div>
             )}
-            <div className="text-sm">
-              <label htmlFor="otherExpense" className="">
-                Other Expense Amount
-                <input
-                  type="number"
-                  step="0.01"
-                  value={purchaseOrderState.otherExpenseAmount || ''}
-                  name="otherExpenseAmount"
-                  onChange={handleChange}
-                  placeholder="Enter expense amount"
-                  className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-1 text-[#495160]"
-                />
+        <div className="text-sm">
+  <label htmlFor="otherExpense" className="">
+    Other Expense Amount
+    <input
+      type="text" // Use 'text' instead of 'number' to have better control
+      value={purchaseOrderState.otherExpenseAmount || ''}
+      name="otherExpenseAmount"
+      onChange={(e) => {
+        const value = e.target.value;
 
-              </label>
-            </div>
+        if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
+          handleChange(e); // Update state only if the input is valid
+        }
+      }}
+      onKeyDown={(e) => {
+        // Prevent 'e', 'E', '+', and '-' keys
+        if (['e', 'E', '+', '-'].includes(e.key)) {
+          e.preventDefault();
+        }
+      }}
+      placeholder="Enter expense amount"
+      className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-1 text-[#495160]"
+    />
+  </label>
+</div>
+
+
+
             <div className="text-sm">
               <label htmlFor="otherExpenseReason" className="">
                 Other Expense Reason
@@ -130,7 +143,19 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
                   step="0.01"
                   value={purchaseOrderState.freightAmount || ""}
                   name="freightAmount"
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    const value = e.target.value;
+            
+                    if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
+                      handleChange(e); // Update state only if the input is valid
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    // Prevent 'e', 'E', '+', and '-' keys
+                    if (['e', 'E', '+', '-'].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                   placeholder="Enter freight amount"
                   className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-1"
                 />
@@ -140,11 +165,23 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
               <label htmlFor="roundOff" className="">
                 Round Off Amount
                 <input
-                  type="number"
+                  type="text"
                   step="0.01"
                   value={purchaseOrderState.roundOffAmount || ""}
                   name="roundOffAmount"
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    const value = e.target.value;
+            
+                    if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
+                      handleChange(e); // Update state only if the input is valid
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    // Prevent 'e', 'E', '+', and '-' keys
+                    if (['e', 'E', '+', '-'].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                   placeholder="Enter round-off amount"
                   className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-1"
                 />

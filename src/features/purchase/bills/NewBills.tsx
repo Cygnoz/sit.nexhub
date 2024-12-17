@@ -63,7 +63,7 @@ const NewBills = ({}: Props) => {
     orderNumber: "",
     purchaseOrderDate: "",
     expectedShipmentDate: "",
-    paymentTerms: "",
+    paymentTerms: "Pay Now",
     paymentMode: "",
     PaidThrough:"",
     billDate: new Date().toISOString().slice(0, 10), 
@@ -1186,7 +1186,6 @@ const NewBills = ({}: Props) => {
               </div>
             </div>
 
-    {bill.paymentTerms==="Pay Now"  &&   <>
       <div className="flex gap-4 items-center justify-center mb-2">
               <label className=" text-sm mb-1 text-labelColor min-w-fit left-0">
                 Paid Through Account
@@ -1256,7 +1255,7 @@ const NewBills = ({}: Props) => {
                   />
                 </div>
               </div>
-       </>}
+
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}
