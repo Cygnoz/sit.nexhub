@@ -487,7 +487,7 @@ const NewBills = ({}: Props) => {
     ) {
       setBill((prevState: any) => ({
         ...prevState,
-        transactionDiscountAmount: roundedDiscountValue,
+        transactionDiscountAmount: roundedDiscountValue<0?roundedDiscountValue:"",
         grandTotal: updatedGrandTotal,
       }));
     }

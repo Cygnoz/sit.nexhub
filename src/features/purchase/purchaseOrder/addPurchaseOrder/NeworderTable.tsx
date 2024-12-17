@@ -502,7 +502,7 @@ const NewOrderTable = ({
       cgst: isInterState ? "" : totalCGST,
       igst: isInterState ? totalIGST : "",
       subTotal: totalSellingPrice,
-      itemTotalDiscount: totalDiscount<0?"":totalDiscount,
+      itemTotalDiscount: totalDiscount<=0?"":totalDiscount,
       totalTaxAmount: isInterState ? totalIGST : totalSGST + totalCGST,
     }));
   }, [rows]);
