@@ -63,7 +63,7 @@ const NewBills = ({}: Props) => {
     orderNumber: "",
     purchaseOrderDate: "",
     expectedShipmentDate: "",
-    paymentTerms: "",
+    paymentTerms: "Pay Now",
     paymentMode: "",
     PaidThrough:"",
     billDate: new Date().toISOString().slice(0, 10), 
@@ -73,44 +73,44 @@ const NewBills = ({}: Props) => {
         itemId: "",
         itemName: "",
         itemQuantity: "",
-        itemCostPrice: 0,
-        itemDiscount: 0,
+        itemCostPrice: "",
+        itemDiscount: "",
         itemDiscountType: "percentage",
-        itemTax:0,
-        itemSgst: 0,
-        itemCgst: 0,
-        itemIgst: 0,
-        itemVat: 0,
-        itemSgstAmount: 0,
-        itemCgstAmount: 0,
+        itemTax:"",
+        itemSgst: "",
+        itemCgst: "",
+        itemIgst: "",
+        itemVat: "",
+        itemSgstAmount: "",
+        itemCgstAmount: "",
         taxPreference:""
       },
     ],
     otherExpenseAccountId:"",
-    otherExpense: 0,
+    otherExpense: "",
     otherExpenseReason: "",
     vehicleNo: "",
     freightAccountId:"",
-    freight: 0,
+    freight: "",
     addNotes: "",
     termsAndConditions: "",
     attachFiles: "",
-    subTotal: 0,
+    subTotal: "",
     totalItem: "",
-    sgst: 0,
-    cgst: 0,
-    igst: 0,
+    sgst: "",
+    cgst: "",
+    igst: "",
     transactionDiscountType: "percentage",
-    transactionDiscount: 0,
-    transactionDiscountAmount: 0,
-    totalTaxAmount: 0,
-    itemTotalDiscount: 0,
-    roundOff: 0,
+    transactionDiscount: "",
+    transactionDiscountAmount: "",
+    totalTaxAmount: "",
+    itemTotalDiscount: "",
+    roundOff: "",
     paidStatus: "",
     shipmentPreference: "",
-    grandTotal: 0,
-    balanceAmount:0,
-    paidAmount:0,
+    grandTotal: "",
+    balanceAmount:"",
+    paidAmount:"",
     paidAccountId:"",
     purchaseOrderId:""
   });
@@ -241,8 +241,8 @@ const NewBills = ({}: Props) => {
     }
   
     if (name === "paidAmount") {
-      let paidAmount = parseFloat(value) || 0;
-      const grandTotal = Number(bill.grandTotal) || 0;
+      let paidAmount = parseFloat(value) || "";
+      const grandTotal = Number(bill.grandTotal) || "";
   
       if (paidAmount > grandTotal) {
         toast.error("Paid Amount cannot exceed Grand Total.");
@@ -468,8 +468,8 @@ const NewBills = ({}: Props) => {
 
     const {
       transactionDiscountType,
-      transactionDiscount = 0,
-      transactionDiscountAmount = 0,
+      transactionDiscount = "",
+      transactionDiscountAmount = "",
     } = bill;
     const transactionDiscountValueAMT =
     transactionDiscountType === "percentage"
@@ -569,6 +569,16 @@ const NewBills = ({}: Props) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openDropdownIndex]);
+
+  useEffect(() => {
+    if (bill.paymentTerms !== "Pay Now") {
+      setBill((prevData) => ({
+        ...prevData,
+        paidAmount: "",
+        paidAccountId: "",
+      }));
+    }
+  }, [bill.paymentTerms]); 
 
   return (
     <div className="mx-5 my-4 text-sm">
@@ -1176,7 +1186,6 @@ const NewBills = ({}: Props) => {
               </div>
             </div>
 
-    {bill.paymentTerms==="Pay Now"  &&   <>
       <div className="flex gap-4 items-center justify-center mb-2">
               <label className=" text-sm mb-1 text-labelColor min-w-fit left-0">
                 Paid Through Account
@@ -1246,7 +1255,7 @@ const NewBills = ({}: Props) => {
                   />
                 </div>
               </div>
-       </>}
+ 
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}

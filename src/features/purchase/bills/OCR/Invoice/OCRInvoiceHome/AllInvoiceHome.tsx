@@ -1,7 +1,7 @@
-import AllInvoiceTable from "./AllInvoiceTable";
 import { Link } from "react-router-dom";
-import CheveronLeftIcon from "../../../../../assets/icons/CheveronLeftIcon";
-import NewInvoice from "./OCRNewInvoice";
+import CheveronLeftIcon from "../../../../../../assets/icons/CheveronLeftIcon";
+import NewInvoice from "../UploadInvoice/OCRNewInvoice";
+import AllInvoiceTable from "./AllInvoiceTable";
 
 
 const AllInvoiceHome = () => {

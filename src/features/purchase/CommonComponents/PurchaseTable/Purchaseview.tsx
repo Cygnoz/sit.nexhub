@@ -111,10 +111,12 @@ function Purchaseview({ page }: Props) {
               </p>
             </div>
             <div className="flex gap-3 items-center">
-              <Button variant="secondary" className="pl-6 pr-6" size="sm">
-                <Pen color="#565148" />
-                <p className="text-sm font-medium">Edit</p>
-              </Button>
+             <div className="hidden">
+                <Button variant="secondary" className="pl-6 pr-6" size="sm">
+                  <Pen color="#565148" />
+                  <p className="text-sm font-medium">Edit</p>
+                </Button>
+             </div>
              {page!=="PurchaseOrder" &&
               <>
                <Button variant="secondary" className="pl-5 pr-5" size="sm">
