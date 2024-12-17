@@ -103,7 +103,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     vatNumber: "",
     msmeType: "",
     msmeNumber: "",
-    msmeRegistered: false, // boolean type
+    msmeRegistered: false, 
     billingAttention: "",
     billingCountry: "",
     billingAddressStreet1: "",
@@ -243,6 +243,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     }));
   };
   
+  console.log(supplierdata,"supplierData")
 
   const handleEditSupplier = async () => {
     const newErrors = { ...errors };
@@ -253,14 +254,21 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     if (supplierdata.supplierDisplayName === "") newErrors.supplierDisplayName = true;
     if (supplierdata.companyName === "") newErrors.companyName = true;
   
-    // Validate account numbers
     const unmatchedAccounts = supplierdata.bankDetails.some((bankDetail, index) => {
-      const reEnteredAccount = reEnterAccountNumbers[index];
-      return bankDetail.accountNum !== reEnteredAccount;
+      const accountNum = bankDetail.accountNum?.trim(); 
+      const reEnteredAccount = reEnterAccountNumbers[index]?.trim(); 
+    
+      if (!accountNum && !reEnteredAccount) {
+        return false; 
+      }
+    
+      return accountNum !== reEnteredAccount;
     });
-  
+    
     if (unmatchedAccounts) {
-      toast.error("Account numbers do not match their re-entered values. Please correct them.");
+      toast.error(
+        "Account numbers do not match their re-entered values. Please correct them."
+      );
       return;
     }
   
@@ -604,22 +612,35 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
   const BillingAddressRef = useRef<HTMLDivElement | null>(null);
   
   const addressscroll = () => {
+    if(addressEdit){
+      if (addressEdit === "billingAddressEdit" && BillingAddressRef.current) {
+      BillingAddressRef.current.scrollIntoView({ behavior: "smooth" });
+      console.log(addressEdit,"add")
+
+    }
     if (addressEdit === "shippingAddressEdit" && ShippingAddressRef.current) {
       ShippingAddressRef.current.scrollIntoView({ behavior: "smooth" });
+      console.log(addressEdit,"add")
+    } 
     }
-    if (addressEdit === "billingAddressEdit" && BillingAddressRef.current) {
-      BillingAddressRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+   
+  
   };
 
-  // console.log(addressEdit,"addressEdit")
+  console.log(addressEdit,"addressEdit")
   
   useEffect(() => {
     setActiveTab(addressEdit ? "address" : "otherDetails");
+
+  }, [addressEdit]);
+
+  useEffect(()=>{
     if (addressEdit) {
       addressscroll();
     }
-  }, [addressEdit]);
+  },[addressEdit])
+
+
   return (
     <div>
 
