@@ -207,8 +207,8 @@ function OrderView({ data, page, organization }: Props) {
       {page === "PurchaseOrder" && <SendPurchaseOrder data={data} />}
       {renderItemTable()}
       <hr className="mt-6 border-t border-inputBorder" />
-      <div className="flex justify-between gap-6 mt-4">
-        <div className="p-6 rounded-lg border border-billingBorder w-[50%]">
+      <div className="flex justify-between gap-6 mt-4 ">
+        <div className="p-6 rounded-lg border border-billingBorder w-[50%] h-fit">
           <p className="text-base font-bold text-textColor">Billing Address</p>
           <div className="text-base text-dropdownText mt-2 space-y-2">
             {supplier?.supplierDisplayName && (
@@ -234,7 +234,7 @@ function OrderView({ data, page, organization }: Props) {
           </div>
         </div>
         <div className="p-6 rounded-lg border border-billingBorder w-[50%]">
-          {page !== "PurchaseOrder" ? (
+          {page !== "PurchaseOrder" && page!=="DebitNote" ? (
             <>
               <p className="text-base font-bold text-textColor">
                 Order Summary
