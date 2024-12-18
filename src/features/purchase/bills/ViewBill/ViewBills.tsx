@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import PdfView from "./PdfView";
 import OderView from "./NormalView";
-import CheveronLeftIcon from "../../../../../assets/icons/CheveronLeftIcon";
-import Button from "../../../../../Components/Button";
+import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
+import Button from "../../../../Components/Button";
 // import MailIcon from "../../../../../assets/icons/MailIcon";
-import Pen from "../../../../../assets/icons/Pen";
+import Pen from "../../../../assets/icons/Pen";
 
 type Props = {};
 

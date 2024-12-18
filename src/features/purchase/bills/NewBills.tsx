@@ -408,40 +408,46 @@ const NewBills = ({}: Props) => {
 
   const handleSave = async () => {
     const newErrors = { ...errors };
+    const errorFields = [];
   
     if (bill.billNumber.trim() === "") {
       newErrors.billNumber = true;
+      errorFields.push("Bill Number");
     } else {
       newErrors.billNumber = false;
     }
   
     if (bill.supplierId.trim() === "") {
       newErrors.supplierId = true;
+      errorFields.push("Supplier ID");
     } else {
       newErrors.supplierId = false;
     }
   
     if (bill.destinationOfSupply.trim() === "") {
       newErrors.destinationOfSupply = true;
+      errorFields.push("Destination of Supply");
     } else {
       newErrors.destinationOfSupply = false;
     }
   
     if (bill.sourceOfSupply.trim() === "") {
       newErrors.sourceOfSupply = true;
+      errorFields.push("Source of Supply");
     } else {
       newErrors.sourceOfSupply = false;
     }
   
     if (bill.billDate.trim() === "") {
       newErrors.billDate = true;
+      errorFields.push("Bill Date");
     } else {
       newErrors.billDate = false;
     }
   
     if (Object.values(newErrors).some((error) => error)) {
       setErrors(newErrors);
-      toast.error("Fill the required fields");
+      toast.error(`Please fill the required fields: ${errorFields.join(", ")}`);
       return;
     }
   
@@ -460,6 +466,7 @@ const NewBills = ({}: Props) => {
       console.error("Save error", error);
     }
   };
+  
   
   
 
@@ -647,16 +654,14 @@ const NewBills = ({}: Props) => {
                           }}
                         >
                           <div>
-                            <p className="font-bold text-sm">
+                            <p className="font-bold text-sm capitalize">
                               {supplier.supplierDisplayName}
                             </p>
-                            <p className="text-xs text-gray-500">
+                           { supplier.mobile &&  <p className="text-xs text-gray-500">
                               Phone: {supplier.mobile}
-                            </p>
+                            </p>}
                           </div>
-                          <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                            &times;
-                          </div>
+                         
                         </div>
                       </div>
                     ))
