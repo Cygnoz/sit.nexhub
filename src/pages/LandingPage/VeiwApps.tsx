@@ -48,7 +48,7 @@ const iconDataMap: any = {
     { icon: creditNote, label: "Credit Note", route: "/sales/credit-note", index: 3, subIndex: 5 },
     { icon: salesReturn, label: "Sales Return", route: "/item-tracking", index: 5, subIndex: 2 },
     { icon: purchasOrder, label: "Purchase Order", route: "/purchase/purchase-order", index: 8, subIndex: 0 },
-    { icon: posIcon, label: "POS", route: "/pos", index: 0, subIndex: 0 },
+    { icon: posIcon, label: "POS", route: "/pos", state: { from: "/landing" }, index: 0, subIndex: 0,},
     { icon: bills, label: "Bills", route: "/purchase/bills", index: 8, subIndex: 1 },
     { icon: PaymentMade, label: "Payment Made", route: "/purchase/payment-made", index: 8, subIndex: 2 },
     { icon: debitNote, label: "Debit Note", route: "/purchase/debitnote", index: 8, subIndex: 3 },
@@ -71,7 +71,7 @@ const iconDataMap: any = {
     { icon: quotes, label: "Quotes", route: "/sales/quote", index: 3, subIndex: 1 },
     { icon: invoice, label: "Invoice", route: "/sales/invoice", index: 3, subIndex: 2 },
     { icon: reciept, label: "Receipt", route: "/sales/receipt", index: 3, subIndex: 3 },
-    { icon: posIcon, label: "POS", route: "/pos", index: 0, subIndex: 0 },
+    { icon: posIcon, label: "POS", route: "/pos", state: { from: "/sales" }, index: 3, subIndex:2,},
     { icon: creditNote, label: "Credit Note", route: "/sales/credit-note", index: 3, subIndex: 5 },
   ],
   Purchase: [
