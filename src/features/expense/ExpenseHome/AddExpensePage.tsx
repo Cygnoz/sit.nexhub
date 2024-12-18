@@ -450,7 +450,6 @@ function AddExpensePage({}: Props) {
         let cgstAmount = 0;
         let igstAmount = 0;
 
-        // Calculate SGST, CGST, or IGST
         if (sourceOfSupply === destinationOfSupply) {
           sgstAmount = (amount * sgst) / 100;
           cgstAmount = (amount * cgst) / 100;
