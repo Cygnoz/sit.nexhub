@@ -60,5 +60,5 @@ export interface invoice {
     vat: string | number;
     totalDiscount: string;
     totalTax: string;
-    totalAmount: string;
+    totalAmount: any;
 }
