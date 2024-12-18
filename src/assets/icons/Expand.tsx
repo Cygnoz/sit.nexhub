@@ -1,8 +1,7 @@
-import React from "react";
 
 type Props = {};
 
-const Expand = (props: Props) => {
+const Expand = ({}: Props) => {
   return (
     <div>
       <svg
