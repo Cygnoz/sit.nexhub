@@ -14,7 +14,7 @@ function CheveronUp({color}: Props) {
           d="M18 15L12 9L6 15"
           stroke={color}
           strokeWidth="4"
-          stroke-linecap="round"
+          strokeLinecap="round"
           strokeLinejoin="round"
         />
       </svg>

@@ -29,11 +29,11 @@ export interface Bill {
         itemCgstAmount: number | string ;
         taxPreference:string;
     }[];
-    otherExpense: number | string ;
+    otherExpenseAmount: number | string ;
     otherExpenseAccountId:string;
     otherExpenseReason: string;
     vehicleNo: string;
-    freight: number | string ;
+    freightAmount: number | string ;
     freightAccountId:string;
     addNotes: string;
     termsAndConditions: string;
@@ -48,7 +48,7 @@ export interface Bill {
     transactionDiscountAmount: number | string ;
     totalTaxAmount: number | string ;
     itemTotalDiscount: number | string ;
-    roundOff: number | string ;
+    roundOffAmount: number | string ;
     paidStatus: string;
     shipmentPreference: string;
     grandTotal: number | string ;

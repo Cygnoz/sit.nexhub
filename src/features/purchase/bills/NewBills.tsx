@@ -87,11 +87,11 @@ const NewBills = ({}: Props) => {
       },
     ],
     otherExpenseAccountId:"",
-    otherExpense: "",
+    otherExpenseAmount: "",
     otherExpenseReason: "",
     vehicleNo: "",
     freightAccountId:"",
-    freight: "",
+    freightAmount: "",
     addNotes: "",
     termsAndConditions: "",
     attachFiles: "",
@@ -105,7 +105,7 @@ const NewBills = ({}: Props) => {
     transactionDiscountAmount: "",
     totalTaxAmount: "",
     itemTotalDiscount: "",
-    roundOff: "",
+    roundOffAmount: "",
     paidStatus: "",
     shipmentPreference: "",
     grandTotal: "",
@@ -366,9 +366,9 @@ const NewBills = ({}: Props) => {
 
   const calculateTotalAmount = () => {
     const {
-      roundOff,
-      otherExpense,
-      freight,
+      roundOffAmount,
+      otherExpenseAmount,
+      freightAmount,
       itemTotalDiscount,
       totalTaxAmount,
       subTotal,
@@ -376,10 +376,10 @@ const NewBills = ({}: Props) => {
 
     const totalAmount =
       Number(subTotal) +
-      Number(otherExpense) +
+      Number(otherExpenseAmount) +
       Number(totalTaxAmount) +
-      Number(freight) -
-      (Number(itemTotalDiscount) + Number(roundOff));
+      Number(freightAmount) -
+      (Number(itemTotalDiscount) + Number(roundOffAmount));
     return totalAmount.toFixed(2);
   };
 
@@ -469,7 +469,7 @@ const NewBills = ({}: Props) => {
     const {
       transactionDiscountType,
       transactionDiscount = "",
-      transactionDiscountAmount = "",
+      transactionDiscountAmount = 0,
     } = bill;
     const transactionDiscountValueAMT =
     transactionDiscountType === "percentage"
@@ -487,7 +487,7 @@ const NewBills = ({}: Props) => {
     ) {
       setBill((prevState: any) => ({
         ...prevState,
-        transactionDiscountAmount: roundedDiscountValue,
+        transactionDiscountAmount: roundedDiscountValue<0?roundedDiscountValue:"",
         grandTotal: updatedGrandTotal,
       }));
     }
@@ -495,11 +495,11 @@ const NewBills = ({}: Props) => {
     bill.transactionDiscount,
     bill.transactionDiscountType,
     bill.subTotal,
-    bill.otherExpense,
+    bill.otherExpenseAmount,
     bill.totalTaxAmount,
-    bill.freight,
+    bill.freightAmount,
     bill.itemTotalDiscount,
-    bill.roundOff,
+    bill.roundOffAmount,
   ]);
 
   useEffect(() => {
@@ -1093,7 +1093,7 @@ const NewBills = ({}: Props) => {
                   {" "}
                   <p className="text-end">
                     {oneOrganization?.baseCurrency}{" "}
-                    {bill.otherExpense ? bill.otherExpense : "0.00"}
+                    {bill.otherExpenseAmount ? bill.otherExpenseAmount : "0.00"}
                   </p>
                 </div>
               </div>
@@ -1106,7 +1106,7 @@ const NewBills = ({}: Props) => {
                   {" "}
                   <p className="text-end">
                     {oneOrganization?.baseCurrency}{" "}
-                    {bill.freight ? bill.freight : "0.00"}
+                    {bill.freightAmount ? bill.freightAmount : "0.00"}
                   </p>
                 </div>
               </div>
@@ -1120,7 +1120,7 @@ const NewBills = ({}: Props) => {
                   {" "}
                   <p className="text-end">
                     {oneOrganization.baseCurrency}{" "}
-                    {bill.roundOff ? bill.roundOff : "0.00"}
+                    {bill.roundOffAmount ? bill.roundOffAmount : "0.00"}
                   </p>
                 </div>
               </div>
@@ -1255,7 +1255,7 @@ const NewBills = ({}: Props) => {
                   />
                 </div>
               </div>
- 
+
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}
