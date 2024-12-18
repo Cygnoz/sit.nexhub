@@ -14,7 +14,7 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
   const handleChange = (event: any) => {
     const { name, value } = event.target;
 
-    const numericFields = ['otherExpense', 'roundOff', 'freight',];
+    const numericFields = ['otherExpenseAmount', 'roundOff', 'freight',];
     const stringFields = ['vehicleNo', 'otherExpenseReason'];
 
     const numericValue = numericFields.includes(name) ? Number(value) : value;
@@ -74,8 +74,8 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
                 <input
                   type="number"
                   step="0.01"
-                  value={purchaseOrderState.otherExpense || ''}
-                  name="otherExpense"
+                  value={purchaseOrderState.otherExpenseAmount || ''}
+                  name="otherExpenseAmount"
                   onChange={handleChange}
                   placeholder="Enter expense amount"
                   className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-1 text-[#495160]"
@@ -128,8 +128,8 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
                 <input
                   type="number"
                   step="0.01"
-                  value={purchaseOrderState.freight || ""}
-                  name="freight"
+                  value={purchaseOrderState.freightAmount || ""}
+                  name="freightAmount"
                   onChange={handleChange}
                   placeholder="Enter freight amount"
                   className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-1"
@@ -142,8 +142,8 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
                 <input
                   type="number"
                   step="0.01"
-                  value={purchaseOrderState.roundOff || ""}
-                  name="roundOff"
+                  value={purchaseOrderState.roundOffAmount || ""}
+                  name="roundOffAmount"
                   onChange={handleChange}
                   placeholder="Enter round-off amount"
                   className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-1"
