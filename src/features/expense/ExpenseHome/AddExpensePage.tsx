@@ -288,42 +288,14 @@ function AddExpensePage({}: Props) {
     >
   ) => {
     const { name, value } = e.target;
-
-    // Ensure ratePerKm and distance are valid numbers
-    const ratePerKm = name === "ratePerKm" ? value : expenseData.ratePerKm;
-    const distance = name === "distance" ? value : expenseData.distance;
-
-    // Validate that both ratePerKm and distance are valid numbers
-    const validRatePerKm = parseFloat(ratePerKm);
-    const validDistance = parseFloat(distance);
-    const amount =
-      !isNaN(validRatePerKm) && !isNaN(validDistance)
-        ? validRatePerKm * validDistance
-        : 0;
-
-    setExpenseData((prevData) => {
-      const updatedExpense = [...prevData.expense];
-      updatedExpense[0] = {
-        ...updatedExpense[0],
-        amount: amount,
-      };
-
-      if (
-        selectedSection === "mileage" &&
-        (name === "expenseAccount" || name === "note" || name === "amount")
-      ) {
-        return {
-          ...prevData,
-          expense: updatedExpense,
-        };
-      } else {
-        return {
-          ...prevData,
-          [name]: value,
-        };
-      }
-    });
+  
+    setExpenseData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
+  
+  
 
   const fetchCountries = async () => {
     try {
@@ -431,6 +403,29 @@ function AddExpensePage({}: Props) {
   };
 
   useEffect(() => {
+    if (expenseData.ratePerKm && expenseData.distance) {
+      const validRatePerKm = parseFloat(expenseData.ratePerKm as string) || 0;
+      const validDistance = parseFloat(expenseData.distance as string) || 0;
+      
+      const totalExpense = validRatePerKm * validDistance;
+  
+      setExpenseData((prevData) => ({
+        ...prevData,
+        expense: [
+          {
+            ...prevData.expense[0],
+            amount: totalExpense,
+          },
+          ...prevData.expense.slice(1),
+        ],
+      }));
+    }
+  }, [expenseData.ratePerKm, expenseData.distance]);
+  
+  
+
+
+  useEffect(() => {
     setExpenseData((prevData) => ({
       ...prevData,
       expenseType: selectedSection === "expense" ? "Goods" : "",
@@ -439,7 +434,7 @@ function AddExpensePage({}: Props) {
         selectedSection === "expense" ? organization.state : "",
       expense: prevData.expense.map((expenseItem) => ({
         ...expenseItem,
-        taxGroup: selectedSection === "mileage" ? "None" : "",
+        taxGroup: selectedSection === "mileage" ? "Non-Taxable" : "",
       })),
     }));
   }, [selectedSection, organization.state]);
@@ -531,7 +526,7 @@ function AddExpensePage({}: Props) {
         amountIs: "Tax Exclusive",
       }));
     }
-  }, [expenseData]);
+  }, [expenseData.expense]);
   
 
   useEffect(() => {
@@ -1025,7 +1020,7 @@ function AddExpensePage({}: Props) {
                   {openDropdownIndex === "supplier" && (
                     <div
                       ref={dropdownRef}
-                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[80%] space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
+                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[70%] space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <SearchBar
@@ -1665,8 +1660,8 @@ function AddExpensePage({}: Props) {
                 {openDropdownIndex === "supplier" && (
                   <div
                     ref={dropdownRef}
-                    className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-full space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
-                    onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the dropdown
+                    className="absolute z-10 bg-white shadow rounded-md w-[70%] mt-1 p-2  space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
+                    onClick={(e) => e.stopPropagation()} 
                   >
                     <SearchBar
                       searchValue={searchValue}
@@ -1713,7 +1708,7 @@ function AddExpensePage({}: Props) {
                       </div>
                     )}
                     <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4">
-                      <AddSupplierModal page="expense" />
+                      <AddSupplierModal page="purchase" />
                     </div>
                   </div>
                 )}
