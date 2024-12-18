@@ -495,6 +495,8 @@ function AddExpensePage({}: Props) {
         (sum, item) => sum + item.igstAmount,
         0
       );
+      
+
 
       setExpenseData((prevData) => ({
         ...prevData,
@@ -521,6 +523,16 @@ function AddExpensePage({}: Props) {
   ]);
 
   console.log(expenseData, "expenseData");
+
+  useEffect(() => {
+    if (expenseData?.expense[0]?.taxGroup) {
+      setExpenseData((prevData) => ({
+        ...prevData,
+        amountIs: "Tax Exclusive",
+      }));
+    }
+  }, [expenseData]);
+  
 
   useEffect(() => {
     fetchAllAccounts();
@@ -1270,18 +1282,16 @@ function AddExpensePage({}: Props) {
                    }}
                    className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                  >
-                   {/* Default Option */}
                    <option value="">Select Tax Rate</option>
            
-                   {/* Non-Taxable Option */}
                    <option value="Non-Taxable">Non-Taxable</option>
-           
-                   {/* Dynamic GST Tax Rates */}
-                   {taxRate?.gstTaxRate?.map((account: any, index: number) => (
-                     <option key={index} value={JSON.stringify(account)}>
-                       {account?.taxName}
-                     </option>
-                   ))}
+                   <optgroup label="Tax">
+    {taxRate?.gstTaxRate?.map((account: any, index: number) => (
+      <option key={index} value={JSON.stringify(account)}>
+        {account?.taxName}
+      </option>
+    ))}
+  </optgroup>
                  </select>
            
                  {/* Dropdown Icon */}
@@ -1339,8 +1349,8 @@ function AddExpensePage({}: Props) {
                   </div>
                 </>
               )}
-              {expenseData.expense[0].taxGroup && (
-                <div className=" ">
+              {expenseData.expense[0].taxGroup && expenseData.expense[0].taxGroup!=="Non-Taxable" && (
+                <div className=" -mt-5 ">
                   <label
                     className="block text-sm text-labelColor"
                     htmlFor="amountIs"

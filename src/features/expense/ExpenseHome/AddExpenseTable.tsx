@@ -71,7 +71,7 @@ const AddExpenseTable: React.FC<Props> = ({
     );
 
     setRows(updatedRows);
-    setExpenseData((prev:any) => ({
+    setExpenseData((prev: any) => ({
       ...prev,
       expense: updatedRows,
     }));
@@ -111,7 +111,7 @@ const AddExpenseTable: React.FC<Props> = ({
   const handleRemoveRow = (index: number) => {
     setRows((prevRows) => {
       let updatedRows = [...prevRows];
-  
+
       if (updatedRows.length === 1) {
         updatedRows[0] = {
           expenseAccountId: "",
@@ -131,22 +131,30 @@ const AddExpenseTable: React.FC<Props> = ({
       } else {
         updatedRows.splice(index, 1);
       }
-  
+
       setExpenseData((prev: any) => ({
         ...prev,
         expense: updatedRows,
       }));
-  
+
       return updatedRows;
     });
   };
-    
-  useEffect(()=>{
-   if(expenseData.expense){
-    setRows(expenseData.expense)
-   }
-  },[])
 
+  useEffect(() => {
+    if (expenseData.expense) {
+      setRows(expenseData.expense);
+    }
+  }, []);
+
+  const calculateTotalTaxes = () => {
+    const sgstPctg = rows.reduce((acc, row) => acc + row.sgst, 0);
+    const cgstPctg = rows.reduce((acc, row) => acc + row.cgst, 0);
+    const igstPctg = rows.reduce((acc, row) => acc + row.igst, 0);
+    return {  sgstPctg, cgstPctg, igstPctg };
+  };
+  
+  const {  sgstPctg, cgstPctg, igstPctg } = calculateTotalTaxes();
 
   return (
     <div className="p-4">
@@ -212,12 +220,13 @@ const AddExpenseTable: React.FC<Props> = ({
                 </td>
                 <td className="p-2">
                   <div className="relative w-full">
-                    <select 
-                     disabled={
-                      expenseData.gstTreatment ===
-                        "Registered Business - Composition" ||
-                      expenseData.gstTreatment === "Unregistered Business" ||
-                      expenseData.gstTreatment === "Overseas"}
+                    <select
+                      disabled={
+                        expenseData.gstTreatment ===
+                          "Registered Business - Composition" ||
+                        expenseData.gstTreatment === "Unregistered Business" ||
+                        expenseData.gstTreatment === "Overseas"
+                      }
                       value={row.taxGroup}
                       onChange={(e) =>
                         handleTaxGroupChange(index, e.target.value)
@@ -225,11 +234,14 @@ const AddExpenseTable: React.FC<Props> = ({
                       className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                     >
                       <option value="">Select Tax</option>
-                      {taxRate?.gstTaxRate?.map((tax: any, idx: number) => (
-                        <option key={idx} value={tax.taxName}>
-                          {tax.taxName}
-                        </option>
-                      ))}
+                      <option value="Non-Taxable">Non-Taxable</option>
+                   <optgroup label="Tax">
+    {taxRate?.gstTaxRate?.map((account: any, index: number) => (
+      <option key={index} value={JSON.stringify(account)}>
+        {account?.taxName}
+      </option>
+    ))}
+  </optgroup>
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <CehvronDown color="gray" />
@@ -251,7 +263,9 @@ const AddExpenseTable: React.FC<Props> = ({
                 </td>
                 <td className="p-2 text-center">
                   <button
-                    onClick={() => {handleRemoveRow(index)}}
+                    onClick={() => {
+                      handleRemoveRow(index);
+                    }}
                     className="text-gray-500 hover:text-red-700"
                   >
                     &times;
@@ -272,7 +286,7 @@ const AddExpenseTable: React.FC<Props> = ({
             <span className="text-sm font-semibold text-darkRed">Add Row</span>
           </div>
         </div>
-        <div className="text-sm text-gray-70 min-w-[20%] text-textColor">
+        <div className="text-sm text-gray-70 min-w-[20%] text-textColor space-y-2">
           {/* Sub Total */}
           <div className="flex">
             <div className="w-[75%]">
@@ -283,56 +297,53 @@ const AddExpenseTable: React.FC<Props> = ({
             </div>
           </div>
 
-          { 
-  expenseData.sourceOfSupply !== expenseData.destinationOfSupply ? (
-    <div>
-      {/* IGST */}
-      <div className="flex">
-        <div className="w-[75%]">
-          <p>IGST</p>
-        </div>
-        <div className="w-full text-end">
-          <p>{expenseData.igst}</p>
-        </div>
-      </div>
-    </div>
-  ) : (
-    <>
-      {/* SGST */}
-      <div className="flex">
-        <div className="w-[75%]">
-          <p>SGST</p>
-        </div>
-        <div className="w-full text-end">
-          <p>{expenseData.sgst}</p>
-        </div>
-      </div>
-
-      {/* CGST */}
-      <div className="flex">
-        <div className="w-[75%]">
-          <p>CGST</p>
-        </div>
-        <div className="w-full text-end">
-          <p>{expenseData.cgst}</p>
-        </div>
-      </div>
-    </>
-  )
-}
-
-
-            <div className="flex mt-2 font-bold">
-              <div className="w-[75%]">
-                <p>Expense Total</p>
+          {expenseData.sourceOfSupply !== expenseData.destinationOfSupply ? (
+            <div>
+              {/* IGST */}
+              <div className="flex">
+                <div className="w-[75%]">
+                  <p>IGST[{igstPctg}%]</p>
+                </div>
+                <div className="w-full text-end">
+                  <p>{expenseData.igst}</p>
+                </div>
               </div>
-              <div className="w-full text-end">
-                <p>{expenseData.grandTotal}</p>
+            </div>
+          ) : (
+            <>
+              {/* SGST */}
+              <div className="flex">
+                <div className="w-[75%]">
+                  <p>SGST[{sgstPctg}%]</p>
+                </div>
+                <div className="w-full text-end">
+                  <p>{expenseData.sgst}</p>
+                </div>
               </div>
+
+              {/* CGST */}
+              <div className="flex">
+                <div className="w-[75%]">
+                  <p>CGST[{cgstPctg}%]</p>
+                </div>
+                <div className="w-full text-end">
+                  <p>{expenseData.cgst}</p>
+                </div>
+              </div>
+            </>
+          )}
+
+          <div className="flex mt-2 font-bold">
+            <div className="w-[75%]">
+              <p>Expense Total</p>
+            </div>
+            <div className="w-full text-end">
+              <p>{expenseData.grandTotal}</p>
             </div>
           </div>
         </div>
       </div>
+    </div>
   );
 };
 

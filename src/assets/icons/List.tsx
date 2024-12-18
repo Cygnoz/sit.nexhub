@@ -14,7 +14,7 @@ const List = () => {
           d="M3.66667 1.25H11.25M3.66667 5.5H11.25M3.66667 9.75H11.25M0.75 1.25H0.755833M0.75 5.5H0.755833M0.75 9.75H0.755833"
           stroke="#3A0000"
           strokeWidth="1.5"
-          stroke-linecap="round"
+          strokeLinecap="round"
           strokeLinejoin="round"
         />
       </svg>
