@@ -66,19 +66,18 @@ function Table({}: Props) {
     getAllJournals();
   }, []);
 
-  console.log(journalData);
   
 
   const filteredJournals = journalData.filter((journal) => {
     const searchValueLower = searchValue.toLowerCase().trim();
+  
     return (
-      journal.date.toLowerCase().startsWith(searchValueLower) ||
-      journal.journalId.toLowerCase().startsWith(searchValueLower) ||
-      journal.note.toLowerCase().startsWith(searchValueLower) ||
-      journal.reference.toLowerCase().startsWith(searchValueLower) ||
-      journal.totalDebitAmount.toLowerCase().startsWith(searchValueLower)
+      (journal.journalId?.toString().toLowerCase().startsWith(searchValueLower) || false) 
     );
   });
+  
+  
+
 
   return (
     <div className="overflow-x-auto my-1">

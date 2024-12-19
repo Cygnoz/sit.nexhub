@@ -1223,7 +1223,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
                           </label>
                           <input
                             type="text"
-                            inputMode="numeric"
+                            inputMode="decimal"
                             pattern="[0-9]*"
                             className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-p p-2 text-[#818894]"
                             placeholder="%"
@@ -1231,7 +1231,11 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
                             value={customerdata.interestPercentage}
                             onChange={handleChange}
                             onKeyPress={(e) => {
-                              if (!/[0-9]/.test(e.key)) {
+                              if (
+                                !/[0-9.]/.test(e.key) ||
+                                (e.key === "." &&
+                                  e.currentTarget.value.includes("."))
+                              ) {
                                 e.preventDefault();
                               }
                             }}

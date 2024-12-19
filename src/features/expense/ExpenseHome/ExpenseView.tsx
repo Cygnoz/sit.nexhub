@@ -83,10 +83,12 @@ const ExpenseView = ({}: Props) => {
           </p>
         </div>
         <div className="flex ml-auto gap-4">
-          <Button variant="secondary" size="sm">
-            <Pen color="currentColor" />
-            Edit
-          </Button>
+         <div className="hidden">
+            <Button variant="secondary" size="sm">
+              <Pen color="currentColor" />
+              Edit
+            </Button>
+         </div>
           <Button variant="secondary" size="sm">
             <PrinterIcon color="currentColor" height={20} width={20} />
             Print

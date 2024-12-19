@@ -1,5 +1,5 @@
 export const unitTableHead = [
-  "Sl No",
+  "Sl.No",
   "Unit Name",
   "Symbol",
   "Unit Quantity Code",

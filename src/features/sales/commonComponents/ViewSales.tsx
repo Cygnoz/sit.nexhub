@@ -3,7 +3,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import Button from "../../../Components/Button";
 import Pen from "../../../assets/icons/Pen";
-import MailIcon from "../../../assets/icons/MailIcon";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import SalesPdfView from "../commonComponents/SalesPdfView";
@@ -145,10 +144,7 @@ function ViewSales() {
               <Pen color="#565148" />
               <p className="text-sm font-medium">Edit</p>
             </Button>
-            <Button variant="secondary" className="pl-5 pr-5" size="sm">
-              <MailIcon color="#565148" />
-              <p className="text-sm font-medium">Email</p>
-            </Button>
+           
             <select
               name=""
               id=""
