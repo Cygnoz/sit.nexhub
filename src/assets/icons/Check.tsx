@@ -13,7 +13,7 @@ const Check = () => {
           d="M13.3307 4L5.9974 11.3333L2.66406 8"
           stroke="white"
           stroke-width="2"
-          stroke-linecap="round"
+          strokeLinecap="round"
           stroke-linejoin="round"
         />
       </svg>
