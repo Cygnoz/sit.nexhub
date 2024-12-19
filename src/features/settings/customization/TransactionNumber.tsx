@@ -628,7 +628,7 @@ function TransactionNumber() {
             />
           </div>
           <div className="flex gap-2">
-            <CustomiseColmn columns={columns} setColumns={setColumns} />
+            <CustomiseColmn columns={columns} setColumns={setColumns} tableId={"transactionNumber"} />
           </div>
         </div>
 

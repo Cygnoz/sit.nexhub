@@ -88,6 +88,9 @@ const NewCreditNote = () => {
   const [creditNoteState, setCreditNoteState] = useState<any>(
     initialCreditNoteState
   );
+  console.log(isPlaceOfSupplyVisible,"isPlaceOfSupplyVisible");
+
+  
 
 
   const [errors, setErrors] = useState({
@@ -105,6 +108,8 @@ const NewCreditNote = () => {
 
 
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
+  console.log(selectedCustomer.taxType,"selectedCustomer");
+  
   const { request: AllCustomer } = useApi("get", 5002);
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
@@ -297,28 +302,23 @@ const NewCreditNote = () => {
     }
   };
 
-
-
-
-
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
-
+    };
+    
     const checkTaxType = (customer: Customer) => {
       if (customer.taxType === "GST") {
         setIsPlaceOfSupplyVisible(true);
-      } else {
+      } else{
         setIsPlaceOfSupplyVisible(false);
       }
     };
-
+    
     useEffect(() => {
       if (selectedCustomer) {
         checkTaxType(selectedCustomer);
       }
     }, [selectedCustomer]);
-
-  };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -358,11 +358,6 @@ const NewCreditNote = () => {
           (invoice.salesInvoice?.toLowerCase().includes(searchValue.toLowerCase()))
       )
       : [];
-
-  console.log(allInvoice, "test");
-
-  console.log(creditNoteState, "hyy");
-
   
 
 const handleGoBack = () => {

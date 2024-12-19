@@ -242,7 +242,7 @@ const SalesTable = ({ page }: Props) => {
                   )
               )}
               <th className="py-3 px-4 font-medium border-b border-tableBorder">
-                <CustomiseColmn columns={columns} setColumns={setColumns} />
+                <CustomiseColmn columns={columns} setColumns={setColumns} tableId={`${page}`} />
               </th>
             </tr>
           </thead>

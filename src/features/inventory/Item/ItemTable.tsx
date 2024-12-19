@@ -272,7 +272,7 @@ const ItemTable = () => {
               )}
               <th className="py-2.5 px-4 font-medium border-b border-tableBorder"></th>
               <th className="py-2 px-4 font-medium border-b border-tableBorder">
-                <CustomiseColmn columns={columns} setColumns={setColumns} />
+                <CustomiseColmn  columns={columns} setColumns={setColumns} tableId={"item"} />
               </th>
               {/* "See Details" Header */}
 
@@ -333,10 +333,10 @@ const ItemTable = () => {
                   <div className=" w-full rounded-[4px] pb-2 border-[#F1F1F1] border-2 ">
                     <div className='h-16 bg-[#FFF0DA] items-center rounded-t-[2px] flex justify-between px-2'>
                       <div className='flex flex-col w-full items-start '>
-                        <p className='text-lg font-bold '>{selectedItem.itemName}</p>
+                        <p className='text-lg font-bold w-full '>{selectedItem.itemName}</p>
                         <p className='text'>{selectedItem.sku ? selectedItem.sku : ""}</p>
                       </div>
-                      <div className='flex gap-1 w-full justify-end'>
+                      <div className='flex gap-1 justify-end'>
                         <Button
                           variant="tertiary"
                           className="text-xs font-medium h-[20px] pl-2 pr-2"
@@ -382,18 +382,18 @@ const ItemTable = () => {
                     </div>
                     <div className='text-start'>
                       <p className="text-[48px] font-bold text-[#C04545]">
-                        {selectedItem?.openingStock}<span className="text-[16px] text-[#8F99A9]"> units</span>
+                        {selectedItem?.openingStock || 0}<span className="text-[16px] text-[#8F99A9]"> units</span>
                       </p>
                     </div>
                     <div className='bg-[#882626] w-full px-2 flex text-[#D4D4D4] text-[15px] font-medium py-1 justify-between rounded-md'>
                       <p>Restock Point</p>
-                      <p>{selectedItem?.reorderPoint} Units</p>
+                      <p>{selectedItem?.reorderPoint || 0} Units</p>
                     </div>
                   </div>
                   <div className="w-full  rounded-lg border flex flex-col p-4  justify-between  bg-gradient-to-r from-[#6B1515] to-[#240C0C] ">
                     <div className="flex justify-between items-center">
                       <p className="text-[16px] font-semibold text-[#D4D4D4]">
-                        Main <span className="text-[#DF3232]">Vendor</span>
+                     <span className="text-sm">   Main </span><span className="text-[#DF3232]">{selectedItem?.preferredVendor ? selectedItem?.preferredVendor : ""}</span>
                       </p>
                       <div className="w-[34px] h-[34px] rounded-[3px] bg-[#741E1E] flex justify-center items-center">
                         <UserCheck color='#FF7070' />
@@ -444,247 +444,203 @@ const ItemTable = () => {
                     {activeTab === "overview" && (
                       <div className="space-y-5 text-[#303F58]">
                         {/* General Information */}
-                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
-                          <div className="grid grid-cols-2 gap-y-4">
-                            <div className="text-dropdownText font-normal text-sm space-y-4">
-                              <p>Item Type</p>
-                              <p>SKU</p>
-                              <p>{selectedItem?.unit ? "Unit" : ""}</p>
-                              <p>{selectedItem?.createdSource ? "Created Source" : ""}</p>
-                            </div>
-                            <div className="text-dropdownText font-semibold text-sm space-y-4">
-                              <p>
-                                {selectedItem?.itemType
-                                  ? selectedItem.itemType.charAt(0).toUpperCase() +
-                                  selectedItem.itemType.slice(1)
-                                  : "N/A"}
-                              </p>
-                              <p>{selectedItem?.sku || "N/A"}</p>
-                              <p>{selectedItem?.unit || ""}</p>
-                              <p>{selectedItem?.createdSource || ""}</p>
+                        {(selectedItem?.itemType || selectedItem?.sku || selectedItem?.unit || selectedItem?.createdSource) && (
+                          <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                            <div className="grid grid-cols-2 gap-y-4">
+                              <div className="text-dropdownText font-normal text-sm space-y-4">
+                                <p>Item Type</p>
+                                <p>{ selectedItem?.sku ? "SKU" : ""}</p>
+                                <p>{selectedItem?.unit ? "Unit" : ""}</p>
+                                <p>{selectedItem?.createdSource ? "Created Source" : ""}</p>
+                              </div>
+                              <div className="text-dropdownText font-semibold text-sm space-y-4">
+                                <p>
+                                  {selectedItem?.itemType
+                                    ? selectedItem.itemType.charAt(0).toUpperCase() +
+                                    selectedItem.itemType.slice(1)
+                                    : "N/A"}
+                                </p>
+                                <p>{selectedItem?.sku ? selectedItem?.sku : ""}</p>
+                                <p>{selectedItem?.unit || ""}</p>
+                                <p>{selectedItem?.createdSource || ""}</p>
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        )}
+
 
                         {/* Purchase Information */}
-                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
-                          <p className="font-bold text-base text-textColor mb-4">Purchase Information</p>
-                          <div className="grid grid-cols-2 gap-y-4">
-                            <p className="text-dropdownText text-sm">Cost Price</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {orgData?.baseCurrency?.length === 1
-                                ? `${orgData.baseCurrency} ${selectedItem?.costPrice || "N/A"}`
-                                : `${selectedItem?.costPrice || "N/A"} ${orgData?.baseCurrency}`}
-                            </p>
-                            {/* <p className="text-dropdownText text-sm">Purchase Account</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.purchaseAccount || "N/A"}
-                            </p> */}
+                        {(selectedItem?.costPrice || orgData?.baseCurrency) && (
+                          <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                            <p className="font-bold text-base text-textColor mb-4">Purchase Information</p>
+                            <div className="grid grid-cols-2 gap-y-4">
+                              <p className="text-dropdownText text-sm">Cost Price</p>
+                              <p className="text-dropdownText font-semibold text-sm">
+                                {orgData?.baseCurrency?.length === 1
+                                  ? `${orgData.baseCurrency} ${selectedItem?.costPrice || "N/A"}`
+                                  : `${selectedItem?.costPrice || "N/A"} ${orgData?.baseCurrency}`}
+                              </p>
+                            </div>
                           </div>
-                        </div>
+                        )}
 
                         {/* Sales Information */}
-                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
-                          <p className="font-bold text-base mb-4">Sales Information</p>
-                          <div className="grid grid-cols-2 gap-y-4">
-                            <p className="text-dropdownText text-sm">Selling Price</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {orgData?.baseCurrency?.length === 1
-                                ? `${orgData.baseCurrency} ${selectedItem?.sellingPrice || "N/A"}`
-                                : `${selectedItem?.sellingPrice || "N/A"} ${orgData?.baseCurrency}`}
-                            </p>
-                            {/* <p className="text-dropdownText text-sm">Selling Account</p>
-                            <p className="text-dropdownText font-semibold text-sm">
-                              {selectedItem?.sellingAccount || "N/A"}
-                            </p> */}
+                        {(selectedItem?.sellingPrice || orgData?.baseCurrency) && (
+                          <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                            <p className="font-bold text-base mb-4">Sales Information</p>
+                            <div className="grid grid-cols-2 gap-y-4">
+                              <p className="text-dropdownText text-sm">Selling Price</p>
+                              <p className="text-dropdownText font-semibold text-sm">
+                                {orgData?.baseCurrency?.length === 1
+                                  ? `${orgData.baseCurrency} ${selectedItem?.sellingPrice || "N/A"}`
+                                  : `${selectedItem?.sellingPrice || "N/A"} ${orgData?.baseCurrency}`}
+                              </p>
+                            </div>
                           </div>
-                        </div>
+                        )}
+
 
                         {/* storage information */}
-                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
-                          <p className="font-bold text-base text-textColor mb-4">Storage Information</p>
-                          <div className="grid grid-cols-4 gap-y-4">
-                            {selectedItem?.length && (
-                              <>
-                                <p className="text-dropdownText text-sm">Length</p>
-                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.length}</p>
-                              </>
-                            )}
-                            {selectedItem?.warranty && (
-                              <>
-                                <p className="text-dropdownText text-sm">Warranty</p>
-                                <p className="text-dropdownText font-semibold text-sm">{selectedItem?.warranty || "N/A"}</p>
-                              </>
-                            )
-                            }
-                            {selectedItem?.width && (
-                              <>
-                                <p className="text-dropdownText text-sm">Width</p>
-                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.width}</p>
-                              </>
-                            )}
-                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
-                            {selectedItem?.weight && (
-                              <>
-                                <p className="text-dropdownText text-sm">Weight</p>
-                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.weight} Kg</p>
-                              </>
-                            )}
-                            <div className="col-span-2"></div> {/* Empty cells for alignment */}
+                        {(selectedItem?.length || selectedItem?.warranty || selectedItem?.width || selectedItem?.weight) && (
+                          <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                            <p className="font-bold text-base text-textColor mb-4">Storage Information</p>
+                            <div className="grid grid-cols-4 gap-y-4">
+                              {selectedItem?.length && (
+                                <>
+                                  <p className="text-dropdownText text-sm">Length</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem.length}</p>
+                                </>
+                              )}
+                              {selectedItem?.warranty && (
+                                <>
+                                  <p className="text-dropdownText text-sm">Warranty</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem?.warranty || "N/A"}</p>
+                                </>
+                              )}
+                              {selectedItem?.width && (
+                                <>
+                                  <p className="text-dropdownText text-sm">Width</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem.width}</p>
+                                </>
+                              )}
+                              <div className="col-span-2"></div> {/* Empty cells for alignment */}
+                              {selectedItem?.weight && (
+                                <>
+                                  <p className="text-dropdownText text-sm">Weight</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem.weight} Kg</p>
+                                </>
+                              )}
+                              <div className="col-span-2"></div> {/* Empty cells for alignment */}
+                            </div>
                           </div>
-                        </div>
-
+                        )}
 
 
                         {/* Classification Details */}
-
-                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
-                          <p className="font-bold text-base text-textColor mb-4">Classification Details</p>
-                          <div className="grid grid-cols gap-y-2">
-                            {selectedItem?.manufacturer && (
-                              <>
-                                <p className="text-dropdownText text-sm">Manufacturer</p>
-                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.manufacturer}</p>
-                              </>
-                            )}
-                            {selectedItem?.rack && (
-                              <>
-                                <p className="text-dropdownText text-sm">Rack</p>
-                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.rack}</p>
-                              </>
-                            )}
-                            {selectedItem?.brand && (
-                              <>
-                                <p className="text-dropdownText text-sm">Brand</p>
-                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.brand}</p>
-                              </>
-                            )}
-                            <div className="col-span-2"></div>
-                            {selectedItem?.categories && (
-                              <>
-                                <p className="text-dropdownText text-sm">Categories</p>
-                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.categories}</p>
-                              </>
-                            )}
-                            <div className="col-span-2"></div>
+                        {(selectedItem?.manufacturer || selectedItem?.rack || selectedItem?.brand || selectedItem?.categories) && (
+                          <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                            <p className="font-bold text-base text-textColor mb-4">Classification Details</p>
+                            <div className="grid grid-cols gap-y-2">
+                              {selectedItem?.manufacturer && (
+                                <>
+                                  <p className="text-dropdownText text-sm">Manufacturer</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem.manufacturer}</p>
+                                </>
+                              )}
+                              {selectedItem?.rack && (
+                                <>
+                                  <p className="text-dropdownText text-sm">Rack</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem.rack}</p>
+                                </>
+                              )}
+                              {selectedItem?.brand && (
+                                <>
+                                  <p className="text-dropdownText text-sm">Brand</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem.brand}</p>
+                                </>
+                              )}
+                              <div className="col-span-2"></div>
+                              {selectedItem?.categories && (
+                                <>
+                                  <p className="text-dropdownText text-sm">Categories</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem.categories}</p>
+                                </>
+                              )}
+                              <div className="col-span-2"></div>
+                            </div>
                           </div>
-                        </div>
-
-
-
-
+                        )}
 
                         {/* Item Code & Standards */}
-                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
-                          <p className="font-bold text-base mb-4">Item Code & Standards</p>
-                          <div className="grid grid-cols gap-y-4">
-                            {selectedItem?.upc && (
-                              <>
-                                <p className="text-dropdownText text-sm">UPC</p>
-                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.upc}</p>
-                              </>
-                            )}
-                            {selectedItem?.isbn && (
-                              <>
-                                <p className="text-dropdownText text-sm">ISBN</p>
-                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.isbn}</p>
-                              </>
-                            )}
-                            {selectedItem?.mpn && (
-                              <>
-                                <p className="text-dropdownText text-sm">MPN</p>
-                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.mpn}</p>
-                              </>
-                            )}
-                            <div className="col-span-2"></div>
-                            {selectedItem?.ean && (
-                              <>
-                                <p className="text-dropdownText text-sm">EAN</p>
-                                <p className="text-dropdownText font-semibold text-sm">{selectedItem.ean}</p>
-                              </>
-                            )}
-                            <div className="col-span-2"></div>
+                        {(selectedItem?.upc || selectedItem?.isbn || selectedItem?.mpn || selectedItem?.ean) && (
+                          <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                            <p className="font-bold text-base mb-4">Item Code & Standards</p>
+                            <div className="grid grid-cols gap-y-4">
+                              {selectedItem?.upc && (
+                                <>
+                                  <p className="text-dropdownText text-sm">UPC</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem.upc}</p>
+                                </>
+                              )}
+                              {selectedItem?.isbn && (
+                                <>
+                                  <p className="text-dropdownText text-sm">ISBN</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem.isbn}</p>
+                                </>
+                              )}
+                              {selectedItem?.mpn && (
+                                <>
+                                  <p className="text-dropdownText text-sm">MPN</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem.mpn}</p>
+                                </>
+                              )}
+                              <div className="col-span-2"></div>
+                              {selectedItem?.ean && (
+                                <>
+                                  <p className="text-dropdownText text-sm">EAN</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem.ean}</p>
+                                </>
+                              )}
+                              <div className="col-span-2"></div>
+                            </div>
                           </div>
-                        </div>
+                        )}
 
-
-                        {/* Purchase Information */}
-                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
-                          <p className="font-bold text-base mb-4">Purchase Information</p>
-                          <div className="grid grid-col gap-y-2">
-                            {selectedItem?.cost && (
-                              <>
-                                <p className="text-dropdownText text-sm">Cost</p>
-                                <p className="text-dropdownText font-semibold text-sm">
-                                  {orgData?.baseCurrency?.length === 1
-                                    ? `${orgData.baseCurrency} ${selectedItem.cost}`
-                                    : `${selectedItem.costPrice} ${orgData?.baseCurrency}`}
-                                </p>
-                              </>
-                            )}
-                            {selectedItem?.mrp && (
-                              <>
-                                <p className="text-dropdownText text-sm">MRP</p>
-                                <p className="text-dropdownText font-semibold text-sm">
-                                  {orgData?.baseCurrency?.length === 1
-                                    ? `${orgData.baseCurrency} ${selectedItem.mrp}`
-                                    : `${selectedItem.saleMrp} ${orgData?.baseCurrency}`}
-                                </p>
-                              </>
-                            )}
-                            {selectedItem?.preferredVendor && (
-                              <>
-                                <p className="text-dropdownText text-sm">Preferred Vendor</p>
-                                <p className="text-dropdownText font-semibold text-sm">
-                                  {selectedItem.preferredVendor}
-                                </p>
-                              </>
-                            )}
-                            <div className="col-span-2"></div>
-                            {selectedItem?.sellingPrice && (
-                              <>
-                                <p className="text-dropdownText text-sm">Selling Price</p>
-                                <p className="text-dropdownText font-semibold text-sm">
-                                  {orgData?.baseCurrency?.length === 1
-                                    ? `${orgData.baseCurrency} ${selectedItem.sellingPrice}`
-                                    : `${selectedItem.sellingPrice} ${orgData?.baseCurrency}`}
-                                </p>
-                              </>
-                            )}
-                          </div>
-                        </div>
 
 
                         {/* Track Inventory */}
-                        <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
-                          <p className="font-bold text-base mb-4">Track Inventory</p>
-                          <div className="grid grid-cols-2 gap-y-4">
-                            {selectedItem?.openingStock && (
-                              <>
-                                <p className="text-dropdownText text-sm">Opening Stock</p>
-                                <p className="text-dropdownText font-semibold text-sm">
-                                  {selectedItem.openingStock}
-                                </p>
-                              </>
-                            )}
-                            {selectedItem?.openingStockRatePerUnit && (
-                              <>
-                                <p className="text-dropdownText text-sm">Opening Stock Per Unit</p>
-                                <p className="text-dropdownText font-semibold text-sm">
-                                  {selectedItem.openingStockRatePerUnit}
-                                </p>
-                              </>
-                            )}
-                            {selectedItem?.reorderPoint && (
-                              <>
-                                <p className="text-dropdownText text-sm">Reorder Point</p>
-                                <p className="text-dropdownText font-semibold text-sm">
-                                  {selectedItem.reorderPoint}
-                                </p>
-                              </>
-                            )}
+                        {(selectedItem?.openingStock || selectedItem?.openingStockRatePerUnit || selectedItem?.reorderPoint) && (
+                          <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
+                            <p className="font-bold text-base mb-4">Track Inventory</p>
+                            <div className="grid grid-cols-2 gap-y-4">
+                              {selectedItem?.openingStock && (
+                                <>
+                                  <p className="text-dropdownText text-sm">Opening Stock</p>
+                                  <p className="text-dropdownText font-semibold text-sm">
+                                    {selectedItem.openingStock}
+                                  </p>
+                                </>
+                              )}
+                              {selectedItem?.openingStockRatePerUnit && (
+                                <>
+                                  <p className="text-dropdownText text-sm">Opening Stock Per Unit</p>
+                                  <p className="text-dropdownText font-semibold text-sm">
+                                    {selectedItem.openingStockRatePerUnit}
+                                  </p>
+                                </>
+                              )}
+                              {selectedItem?.reorderPoint && (
+                                <>
+                                  <p className="text-dropdownText text-sm">Reorder Point</p>
+                                  <p className="text-dropdownText font-semibold text-sm">
+                                    {selectedItem.reorderPoint}
+                                  </p>
+                                </>
+                              )}
+                            </div>
                           </div>
-                        </div>
+                        )}
+
 
                       </div>
                     )}
