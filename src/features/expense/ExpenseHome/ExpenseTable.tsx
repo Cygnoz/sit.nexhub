@@ -143,7 +143,7 @@ const ExpenseTable = () => {
                 Action
               </th>
               <th className="py-3 px-2 font-medium border-b border-tableBorder">
-                <CustomiseColumn columns={columns} setColumns={setColumns} />
+                <CustomiseColumn columns={columns} setColumns={setColumns} tableId={"expense"} />
               </th>
             </tr>
           </thead>

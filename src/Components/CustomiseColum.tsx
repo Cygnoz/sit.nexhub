@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ListFilter from "../assets/icons/ListFilter";
 import Modal from "./model/Modal";
 import SearchBar from "./SearchBar";
@@ -10,35 +10,45 @@ type Column = {
   label: string;
   visible: boolean;
 };
- 
+
 type Props = {
+  tableId: string; // Unique ID for each table
   columns: Column[];
   setColumns: (columns: Column[]) => void;
 };
- 
-const CustomiseColmn = ({ columns, setColumns }: Props) => {
+
+const CustomiseColumn = ({ tableId, columns, setColumns }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [isModalOpen, setModalOpen] = useState(false);
   const [localColumns, setLocalColumns] = useState<Column[]>(columns);
- 
+
+  // Load saved columns from localStorage on component mount
+  useEffect(() => {
+    const savedColumns = localStorage.getItem(`columns_${tableId}`);
+    if (savedColumns) {
+      setLocalColumns(JSON.parse(savedColumns));
+      setColumns(JSON.parse(savedColumns));
+    }
+  }, [tableId, setColumns]);
+
   const openModal = () => {
     setLocalColumns(columns);
     setModalOpen(true);
   };
- 
+
   const closeModal = () => {
     setModalOpen(false);
   };
- 
+
   const onDragStart =
     (index: number) => (event: React.DragEvent<HTMLDivElement>) => {
       event.dataTransfer.setData("dragIndex", index.toString());
     };
- 
+
   const onDragOver = () => (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
- 
+
   const onDrop =
     (index: number) => (event: React.DragEvent<HTMLDivElement>) => {
       const dragIndex = parseInt(event.dataTransfer.getData("dragIndex"), 10);
@@ -51,7 +61,7 @@ const CustomiseColmn = ({ columns, setColumns }: Props) => {
       ];
       setLocalColumns(newColumns);
     };
- 
+
   const handleVisibilityChange = (id: string) => {
     setLocalColumns(
       localColumns.map((col) =>
@@ -59,23 +69,27 @@ const CustomiseColmn = ({ columns, setColumns }: Props) => {
       )
     );
   };
- 
+
   const saveChanges = () => {
     setColumns(localColumns);
+
+    // Save the updated columns to localStorage
+    localStorage.setItem(`columns_${tableId}`, JSON.stringify(localColumns));
+
     closeModal();
   };
- 
+
   // Filter the columns based on search value
   const filteredColumns = localColumns.filter((col) =>
     col.label.toLowerCase().includes(searchValue.toLowerCase())
   );
- 
+
   return (
     <>
       <div className="cursor-pointer" onClick={openModal}>
         <ListFilter color="#4B5C79" classname="w-[18px] h-[18px]" />
       </div>
- 
+
       <Modal
         open={isModalOpen}
         style={{ width: "30%" }}
@@ -94,20 +108,20 @@ const CustomiseColmn = ({ columns, setColumns }: Props) => {
               &times;
             </div>
           </div>
- 
+
           {/* SearchBar for filtering */}
           <SearchBar
             onSearchChange={setSearchValue}
             searchValue={searchValue}
             placeholder="Search"
           />
- 
+
           {/* Display filtered columns */}
           <div>
             {filteredColumns.map((col, index) => (
               <div
                 key={col.id}
-                className="flex items-center py-2 px-2 gap-2 mb-2 mt-3 bg-cuscolumnbg cursor-move "
+                className="flex items-center py-2 px-2 gap-2 mb-2 mt-3 bg-cuscolumnbg cursor-move"
                 draggable
                 onDragStart={onDragStart(index)}
                 onDragOver={onDragOver()}
@@ -126,18 +140,12 @@ const CustomiseColmn = ({ columns, setColumns }: Props) => {
               </div>
             ))}
           </div>
- 
-          {/* <div className="flex justify-center">
-            <Button className="w-full h-[35px] px-[30%] mt-2 font-medium rounded-md text-sm  border-outlineButton text-outlineButton" variant="secondary">
-              <PlusCircle color="#565148" /> Add Custom Field
-            </Button>
-          </div> */}
- 
+
           <div className="flex justify-end mt-4 gap-4">
-            <Button onClick={closeModal}
-              variant="secondary" className="pl-9 pr-9" size="sm">
-              <p className="text-sm font-medium">Cancel</p></Button>
- 
+            <Button onClick={closeModal} variant="secondary" className="pl-9 pr-9" size="sm">
+              <p className="text-sm font-medium">Cancel</p>
+            </Button>
+
             <Button onClick={saveChanges} variant="primary" className="pl-8 pr-8" size="sm">
               <p className="text-sm font-medium">Save</p>
             </Button>
@@ -147,5 +155,5 @@ const CustomiseColmn = ({ columns, setColumns }: Props) => {
     </>
   );
 };
- 
-export default CustomiseColmn;
+
+export default CustomiseColumn;

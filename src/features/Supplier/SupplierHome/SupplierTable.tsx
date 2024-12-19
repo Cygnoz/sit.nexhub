@@ -151,7 +151,7 @@ const SupplierTable = ({
                   )
               )}
               <th className="py-2 px-4 font-medium border-b border-tableBorder relative">
-                <CustomiseColmn columns={columns} setColumns={setColumns} />
+                <CustomiseColmn columns={columns} setColumns={setColumns} tableId={"supplier"} />
               </th>
             </tr>
           </thead>

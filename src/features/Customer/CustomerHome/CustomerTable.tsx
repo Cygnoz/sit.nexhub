@@ -153,7 +153,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                     </th>
                   )
               )}
-              <th><CustomiseColmn columns={columns} setColumns={setColumns} /></th>
+              <th><CustomiseColmn columns={columns} setColumns={setColumns} tableId={"customer"} /></th>
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
