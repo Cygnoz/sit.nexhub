@@ -24,9 +24,11 @@ interface TableProps {
   loading: boolean;
   searchableFields: string[];
   setColumns?: any;
+  page?:any
 }
 
 const PurchaseTable: React.FC<TableProps> = ({
+  page,
   columns,
   data,
   onRowClick,
@@ -50,7 +52,7 @@ const PurchaseTable: React.FC<TableProps> = ({
     })
   : [];
   
-
+console.log(page)
 
   const totalPages = Math.ceil(filteredData?.length / rowsPerPage);
   const paginatedData = filteredData?.slice(
@@ -99,7 +101,7 @@ const PurchaseTable: React.FC<TableProps> = ({
                 Action
               </th>
               <th className="py-3 px-2 font-medium border-b border-tableBorder">
-                <CustomiseColmn columns={columns} setColumns={setColumns} />
+                <CustomiseColmn columns={columns} setColumns={setColumns}  />
               </th>
             </tr>
           </thead>

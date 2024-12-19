@@ -283,9 +283,7 @@ function Invoices({}: Props) {
                           <p className="font-medium text-slate-700 flex space-x-1 items-center">
                             Invoice URL
                           </p>
-                          <p className="text-xs text-slate-500">
-                            Lorem ipsum dolor sit amet consectetur. Commodo enim
-                          </p>
+                         
                         </div>
                       </div>
                       <div
@@ -303,9 +301,7 @@ function Invoices({}: Props) {
                           <p className="font-medium text-slate-700 flex space-x-1 items-center">
                             Custom
                           </p>
-                          <p className="text-xs text-slate-500">
-                            Lorem ipsum dolor sit amet consectetur. Commodo enim
-                          </p>
+                         
                         </div>
                       </div>
                     </div>

@@ -73,6 +73,7 @@ const PurchaseOrderTable = () => {
 
   return (
     <PurchaseTable
+    page={"PurchaseOrder"}
       columns={columns}
       data={allPoData}
       onRowClick={handleRowClick}

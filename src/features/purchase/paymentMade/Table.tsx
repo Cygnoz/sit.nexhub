@@ -57,6 +57,7 @@ const PaymentMadeTable = () => {
 
   return (
     <PurchaseTable
+    page={"Bills"}
       columns={columns}
       data={allBill}
       onRowClick={handleRowClick}
