@@ -72,6 +72,7 @@ const DebitTable = () => {
   return (
     <div>
       <PurchaseTable
+          page={"Bills"}
         columns={columns}
         data={allDNdata}
         onRowClick={handleRowClick}

@@ -8,7 +8,7 @@ export const endponits = {
 
   //Sales
   ADD_SALES_SETTINGS: `add-sales-settings`,
-  ADD_SALES_INVOICE_SETTINGS: "add-salesInvoice-settings",
+  ADD_SALES_INVOICE_SETTINGS: "sales-invoice-settings",
   ADD_SALES_DELIVARY_CHALLANS: "add-deliveryChellans",
   GET_PREFIX: "get-prefix",
   ADD_PREFIX: "add-prefix",
@@ -142,6 +142,7 @@ export const endponits = {
   ADD_BILL: `/add-Bills`,
   GET_ALL_BILLS: `/get-all-Bills`,
   GET_A_BILL:`get-a-Bill`,
+  GET_BILL_JOURNAL:`/bill-journal`,
 
   // Purchase order
   ADD_PURCHASE_ORDER: `add-purchaseOrder`,

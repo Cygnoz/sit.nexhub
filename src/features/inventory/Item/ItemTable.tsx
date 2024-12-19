@@ -53,7 +53,7 @@ const ItemTable = () => {
     { id: "sku", label: "SKU", visible: true },
     { id: "sellingPrice", label: "Sales Rate", visible: true },
     { id: "costPrice", label: "Purchase Rate", visible: true },
-    { id: "currentStock", label: "Stock", visible: true },
+    { id: "currentStock", label: "Current Stock", visible: true },
     { id: "itemsDetails", label: "Actions", visible: true },
     { id: "reorderPoint", label: "ReorderPoint", visible: false },
 
