@@ -9,10 +9,11 @@ import PhoneIcon from "../../../../assets/icons/PhoneIcon";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import EditSupplier from "../EditSupplier";
-import avatar from '../../../../assets/Images/Rectangle 5558.png'
-import line25 from '../../../../assets/Images/Line 25.png'
+import avatar from "../../../../assets/Images/Rectangle 5558.png";
+import line25 from "../../../../assets/Images/Line 25.png";
 import LocateFixed from "../../../../assets/icons/LocateFixed";
 import OtherDetails from "./OtherDetails";
+import { useOrganization } from "../../../../context/OrganizationContext";
 
 // import ExpensesGraph from "./ExpensesGraph";
 
@@ -41,17 +42,17 @@ const Overview: React.FC<OverviewProps> = ({
   const [addressEdit, setAddressEdit] = useState<string>();
   const [supplierHis, setSupplierHis] = useState<any>();
   const [isModalOpen, setModalOpen] = useState(false);
- 
- 
-  const openModal = (address?:string) => {
+  const { organization } = useOrganization();
+
+  const openModal = (address?: string) => {
     setModalOpen((prev) => !prev);
     if (address === "billing") {
       setAddressEdit("billingAddressEdit");
     } else if (address === "shipping") {
       setAddressEdit("shippingAddressEdit");
-    } 
+    }
   };
-  console.log(addressEdit,"addressEdit")
+  console.log(addressEdit, "addressEdit");
 
   const closeModal = () => {
     setModalOpen((prev) => !prev);
@@ -60,7 +61,6 @@ const Overview: React.FC<OverviewProps> = ({
   useEffect(() => {
     supplierHistory();
   }, []);
-
 
   const supplierHistory = async () => {
     try {
@@ -94,6 +94,8 @@ const Overview: React.FC<OverviewProps> = ({
     }
   };
 
+  
+
   const handleStatusSubmit = async (e: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
 
@@ -113,7 +115,7 @@ const Overview: React.FC<OverviewProps> = ({
       } else {
         toast.error(error.response.data.message);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   useEffect(() => {
     setStatusData({ ...statusData, status: supplier?.status });
@@ -142,13 +144,12 @@ const Overview: React.FC<OverviewProps> = ({
     return { date: datePart, time: formattedTime };
   };
 
-  const defaultImage = avatar
+  const defaultImage = avatar;
 
   return (
     <>
       <div className="grid grid-cols-12 gap-5">
         <div className="col-span-8 space-y-3  h-auto">
-
           <div className="bg-[#F3F3F3] rounded-lg w-full p-6 flex items-center justify-between">
             {/* Column 1: Avatar */}
             <div className="justify-center h-20 w-30 rounded-lg bg-gray-200 flex items-center overflow-hidden">
@@ -159,9 +160,6 @@ const Overview: React.FC<OverviewProps> = ({
               />
               <img className="ml-5 h-30" src={line25} alt="" />
             </div>
-
-
-
 
             {/* Column 2: Info Section */}
             <div className="flex flex-col gap-3 flex-1 ml-6">
@@ -224,23 +222,23 @@ const Overview: React.FC<OverviewProps> = ({
               <p className="text-xl font-semibold text-[#2C353B] mx-8">
                 Opening Balance:{" "}
                 <span>
-                  ₹{supplier?.creditOpeningBalance
-                    || "10,000"}
-               
+                  {organization?.baseCurrency}{" "}
+                  {supplier?.creditOpeningBalance ??
+                    supplier?.debitOpeningBalance ??
+                    "0"}
                 </span>
               </p>
 
               {/* Row 4: Status Display */}
               <div
-                className={`px-3 py-1 text-xs rounded-full text-white ${statusData.status === "Active" ? "bg-green-500" : "bg-red-400"
-                  }`}
+                className={`px-3 py-1 text-xs rounded-full text-white ${
+                  statusData.status === "Active" ? "bg-green-500" : "bg-red-400"
+                }`}
               >
                 {statusData.status || "Inactive"}
               </div>
             </div>
           </div>
-
-
 
           {/* billing */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -248,26 +246,39 @@ const Overview: React.FC<OverviewProps> = ({
             <div className="w-full h-auto p-4 rounded-lg bg-[#FDF8F0] shadow-md">
               <div className="flex justify-between items-center">
                 <h3 className="font-bold text-[14px]">Billing Address</h3>
-                <div className="cursor-pointer" onClick={() => openModal("billing")}>
+                <div
+                  className="cursor-pointer"
+                  onClick={() => openModal("billing")}
+                >
                   <Pen color="#303F58" />
                 </div>
               </div>
               <div className="mt-3 space-y-2 text-[12px]">
                 {supplier?.billingCity ||
-                  supplier?.billingAddressStreet1 ||
-                  supplier?.billingAddressStreet2 ||
-                  supplier?.billingPinCode ||
-                  supplier?.billingPhone ||
-                  supplier?.billingState ||
-                  supplier?.billingCountry ? (
+                supplier?.billingAddressStreet1 ||
+                supplier?.billingAddressStreet2 ||
+                supplier?.billingPinCode ||
+                supplier?.billingPhone ||
+                supplier?.billingState ||
+                supplier?.billingCountry ? (
                   <>
                     {supplier?.billingCity && <p>{supplier.billingCity}</p>}
-                    {supplier?.billingAddressStreet1 && <p>{supplier.billingAddressStreet1}</p>}
-                    {supplier?.billingAddressStreet2 && <p>{supplier.billingAddressStreet2}</p>}
-                    {supplier?.billingPinCode && <p>Pin: {supplier.billingPinCode}</p>}
-                    {supplier?.billingPhone && <p>Phone: {supplier.billingPhone}</p>}
+                    {supplier?.billingAddressStreet1 && (
+                      <p>{supplier.billingAddressStreet1}</p>
+                    )}
+                    {supplier?.billingAddressStreet2 && (
+                      <p>{supplier.billingAddressStreet2}</p>
+                    )}
+                    {supplier?.billingPinCode && (
+                      <p>Pin: {supplier.billingPinCode}</p>
+                    )}
+                    {supplier?.billingPhone && (
+                      <p>Phone: {supplier.billingPhone}</p>
+                    )}
                     {supplier?.billingState && supplier?.billingCountry && (
-                      <p>{supplier.billingState} {supplier.billingCountry}</p>
+                      <p>
+                        {supplier.billingState} {supplier.billingCountry}
+                      </p>
                     )}
                   </>
                 ) : (
@@ -280,26 +291,39 @@ const Overview: React.FC<OverviewProps> = ({
             <div className="w-full h-auto p-4 rounded-lg bg-[#FCFFED] shadow-md">
               <div className="flex justify-between items-center">
                 <h3 className="font-bold text-[14px]">Shipping Address</h3>
-                <div className="cursor-pointer" onClick={() => openModal("shipping")}>
+                <div
+                  className="cursor-pointer"
+                  onClick={() => openModal("shipping")}
+                >
                   <Pen color="#303F58" />
                 </div>
               </div>
               <div className="mt-3 space-y-2 text-[12px]">
                 {supplier?.shippingCity ||
-                  supplier?.shippingAddressStreet1 ||
-                  supplier?.shippingAddressStreet2 ||
-                  supplier?.shippingPinCode ||
-                  supplier?.shippingPhone ||
-                  supplier?.shippingState ||
-                  supplier?.shippingCountry ? (
+                supplier?.shippingAddressStreet1 ||
+                supplier?.shippingAddressStreet2 ||
+                supplier?.shippingPinCode ||
+                supplier?.shippingPhone ||
+                supplier?.shippingState ||
+                supplier?.shippingCountry ? (
                   <>
                     {supplier?.shippingCity && <p>{supplier.shippingCity}</p>}
-                    {supplier?.shippingAddressStreet1 && <p>{supplier.shippingAddressStreet1}</p>}
-                    {supplier?.shippingAddressStreet2 && <p>{supplier.shippingAddressStreet2}</p>}
-                    {supplier?.shippingPinCode && <p>Pin: {supplier.shippingPinCode}</p>}
-                    {supplier?.shippingPhone && <p>Phone: {supplier.shippingPhone}</p>}
+                    {supplier?.shippingAddressStreet1 && (
+                      <p>{supplier.shippingAddressStreet1}</p>
+                    )}
+                    {supplier?.shippingAddressStreet2 && (
+                      <p>{supplier.shippingAddressStreet2}</p>
+                    )}
+                    {supplier?.shippingPinCode && (
+                      <p>Pin: {supplier.shippingPinCode}</p>
+                    )}
+                    {supplier?.shippingPhone && (
+                      <p>Phone: {supplier.shippingPhone}</p>
+                    )}
                     {supplier?.shippingState && supplier?.shippingCountry && (
-                      <p>{supplier.shippingState} {supplier.shippingCountry}</p>
+                      <p>
+                        {supplier.shippingState} {supplier.shippingCountry}
+                      </p>
                     )}
                   </>
                 ) : (
@@ -319,14 +343,17 @@ const Overview: React.FC<OverviewProps> = ({
               {/* Customer Type */}
               <div className="col-span-2 flex items-center justify-start space-x-4">
                 <p>Customer Type:</p>
-                <p className="font-bold">{supplier?.customerType || "Business"}</p>
+                <p className="font-bold">
+                  {supplier?.customerType || "Business"}
+                </p>
               </div>
-
 
               {/* Payment Terms */}
               <div className="col-span-2 flex items-center justify-start space-x-4">
                 <p>Payment Terms:</p>
-                <p className="font-bold">{supplier?.paymentTerms || "Due on Receipt"}</p>
+                <p className="font-bold">
+                  {supplier?.paymentTerms || "Due on Receipt"}
+                </p>
               </div>
 
               {/* View Customer Button */}
@@ -337,7 +364,6 @@ const Overview: React.FC<OverviewProps> = ({
                 >
                   <OtherDetails />
                 </div>
-
               </div>
             </div>
 
@@ -356,8 +382,6 @@ const Overview: React.FC<OverviewProps> = ({
               </div>
             </div>
           </div>
-
-
 
           {/* <div className="flex  items-center justify-end space-x-1">
             <p className="text-end text-[#820000] text-[14px] font-bold cursor-pointer">

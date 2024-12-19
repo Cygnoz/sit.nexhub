@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import ArrowRightLeft from "../../../../assets/icons/ArrowRightLeft";
+// import ArrowRightLeft from "../../../../assets/icons/ArrowRightLeft";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
-import Info from "../../../../assets/icons/Info";
+// import Info from "../../../../assets/icons/Info";
 import { SupplierDetailsContext, SupplierResponseContext } from "../../../../context/ContextShare";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
@@ -26,7 +26,7 @@ function SeeSupplierDetails({ }: Props) {
   const { request: getOneSupplier } = useApi("get", 5009);
   const { id } = useParams<{ id: string }>();
   const [supplier, setSupplier] = useState<SupplierData | null>(null);
-  const [tabSwitch, setTabSwitch] = useState<string>("overview");
+  const [tabSwitch] = useState<string>("overview");
   const { supplierResponse } = useContext(SupplierResponseContext)!;
   const [statusData, setStatusData] = useState<Status>({ status: "" });
 
@@ -66,9 +66,10 @@ function SeeSupplierDetails({ }: Props) {
     }
   }, [supplier]);
 
-  const handleTabSwitch = (tabName: string) => {
-    setTabSwitch(tabName);
-  };
+  // const handleTabSwitch = (tabName: string) => {
+  //   setTabSwitch(tabName);
+  // };
+
 
   return (
     <div className="px-6">
@@ -105,7 +106,7 @@ function SeeSupplierDetails({ }: Props) {
       </div>
 
 
-      <div className=" bg-white h-auto rounded-md text-textColor  px-2 mt-5 p-2">
+      {/* <div className=" bg-white h-auto rounded-md text-textColor  px-2 mt-5 p-2">
         <div className="flex items-center w-full gap-2">
           <div
             onClick={() => handleTabSwitch("overview")}
@@ -121,10 +122,9 @@ function SeeSupplierDetails({ }: Props) {
             <ArrowRightLeft size={20} color="#303F58" /> Transaction
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="flex flex-col bg-white h-auto rounded-md text-textColor p-5 space-y-4 mt-5">
-        {/* Tabs */}
         {tabSwitch === "overview" && (
           <Overview supplier={supplier} statusData={statusData} setStatusData={setStatusData} />
         )}

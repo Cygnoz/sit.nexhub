@@ -109,7 +109,7 @@ const PurchaseTable: React.FC<TableProps> = ({
                 <TableSkelton key={idx} columns={skeletonColumns} />
               ))
             ) : paginatedData && paginatedData.length > 0 ? (
-              paginatedData.map((item, rowIndex) => (
+              paginatedData.reverse().map((item, rowIndex) => (
                 <tr
                   key={item.id}
                   className="relative cursor-pointer"
