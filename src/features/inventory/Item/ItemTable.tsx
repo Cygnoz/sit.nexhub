@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 import BookIcon from "../../../assets/icons/BookIcon";
 import BookXIcon from "../../../assets/icons/BookXIcon";
 import NewspaperIcon from "../../../assets/icons/NewspaperIcon";
-import noImage from '../../../assets/Images/noImage.png'
+import noImage from '../../../assets/Images/no-image-icon-23485.png'
 import ListTreeIcon from "../../../assets/icons/ListTreeIcon";
 import UserCheck from "../../../assets/icons/UserCheck";
 import ArrowRightLeft from "../../../assets/icons/ArrowRightLeft";
@@ -352,13 +352,8 @@ const ItemTable = () => {
                           selectedItem?.itemImage ||
                           noImage
                         }
-                        width={200}
                         alt="Item image"
-                        className="rounded-lg text-xs"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            'https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png';
-                        }}
+                        className="rounded-lg object-contain text-xs w-52 h-32"
                       />
                     </div>
                     <div className=" flex gap-2 justify-end pe-3">

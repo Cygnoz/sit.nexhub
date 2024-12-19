@@ -905,13 +905,8 @@ const handleGoBack = () => {
               <Button variant="secondary" size="sm" onClick={handleGoBack}>
                 Cancel
               </Button>
-<<<<<<< HEAD
               {/* <Button variant="secondary" size="sm">
                 <PrinterIcon height={18} width={18} color="currentColor" />
-=======
-              <Button variant="secondary" size="sm">
-                <PrinterIcon height={18} width={18} color="currentColor"/>
->>>>>>> 078e9dd2bf005f508612ad79d52240739cf6a33e
                 Print
               </Button> */}
               <Button variant="primary" size="sm" onClick={handleSave}>

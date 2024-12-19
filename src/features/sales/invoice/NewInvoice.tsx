@@ -203,59 +203,69 @@ const NewInvoice = ({ }: Props) => {
     navigate("/sales/invoice")
     setInvoiceState(initialSalesQuoteState)
   }
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    const totalTax = parseFloat(invoiceState?.totalTax);
-    const totalAmount = parseFloat(invoiceState.subtotalTotal + totalTax) || 0;
-    let discountValue = parseFloat(invoiceState.discountTransactionAmount) || 0;
+const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const { name, value } = e.target;
+  const totalTax = parseFloat(invoiceState?.totalTax) || 0;
+  const totalAmount = parseFloat(invoiceState.subtotalTotal + totalTax) || 0;
+  const subtotal = parseFloat(invoiceState.subtotalTotal) || 0; 
+  const totalAmountForPaid = (subtotal + totalTax) || 0;  
+  let discountValue = parseFloat(invoiceState.discountTransactionAmount) || 0;
 
-    setInvoiceState((prevState) => {
-      let newState = { ...prevState, [name]: value };
-      if (name === "paymentTerms") {
-        newState.dueDate = calculateDueDate(prevState.salesInvoiceDate, value);
-      }
-      else if (name === "dueDate") {
-        newState.paymentTerms = "Custom";
-      }
-      else if (name === "transactionDiscountType") {
-        newState.discountTransactionType = value;
+  setInvoiceState((prevState) => {
+    let newState = { ...prevState, [name]: value };
 
-        if (value === "Percentage") {
-          const percentageDiscount = (discountValue / totalAmount) * 100;
-          if (percentageDiscount > 100) {
-            toast.error("Discount cannot exceed 100%");
-            discountValue = 0; // Reset if exceeds 100%
-          }
-          newState.discountTransactionAmount = percentageDiscount ? percentageDiscount.toFixed(2) : '0';
-        } else {
-          const currencyDiscount = (discountValue / 100) * totalAmount;
-          newState.discountTransactionAmount = currencyDiscount ? currencyDiscount.toFixed(2) : '0';
+    if (name === "paymentTerms") {
+      newState.dueDate = calculateDueDate(prevState.salesInvoiceDate, value);
+    } else if (name === "dueDate") {
+      newState.paymentTerms = "Custom";
+    } else if (name === "transactionDiscountType") {
+      newState.discountTransactionType = value;
+
+      if (value === "Percentage") {
+        const percentageDiscount = (discountValue / totalAmount) * 100;
+        if (percentageDiscount > 100) {
+          toast.error("Discount cannot exceed 100%");
+          discountValue = 0; // Reset if exceeds 100%
         }
+        newState.discountTransactionAmount = percentageDiscount ? percentageDiscount.toFixed(2) : "0";
+      } else {
+        const currencyDiscount = (discountValue / 100) * totalAmount;
+        newState.discountTransactionAmount = currencyDiscount ? currencyDiscount.toFixed(2) : "0";
       }
-      else if (name === "discountTransactionAmount") {
-        discountValue = parseFloat(value) || 0;
+    } else if (name === "discountTransactionAmount") {
+      discountValue = parseFloat(value) || 0;
 
-        if (prevState.discountTransactionType === "Percentage") {
-          if (discountValue > 100) {
-            discountValue = 0;
-            toast.error("Discount cannot exceed 100%");
-          }
-          const discountAmount = (discountValue / 100) * totalAmount;
-          newState.discountTransactionAmount = discountValue ? discountValue.toString() : '0';
-          newState.transactionDiscount = discountAmount ? discountAmount.toFixed(2) : '0';
-        } else {
-          if (discountValue > totalAmount) {
-            discountValue = totalAmount;
-            toast.error("Discount cannot exceed the subtotal amount");
-          }
-          newState.discountTransactionAmount = discountValue ? discountValue.toString() : '0';
-          newState.transactionDiscount = discountValue ? discountValue.toFixed(2) : '0';
+      if (prevState.discountTransactionType === "Percentage") {
+        if (discountValue > 100) {
+          discountValue = 0;
+          toast.error("Discount cannot exceed 100%");
         }
+        const discountAmount = (discountValue / 100) * totalAmount;
+        newState.discountTransactionAmount = discountValue ? discountValue.toString() : "0";
+        newState.transactionDiscount = discountAmount ? discountAmount.toFixed(2) : "0";
+      } else {
+        if (discountValue > totalAmount) {
+          discountValue = totalAmount;
+          toast.error("Discount cannot exceed the subtotal amount");
+        }
+        newState.discountTransactionAmount = discountValue ? discountValue.toString() : "0";
+        newState.transactionDiscount = discountValue ? discountValue.toFixed(2) : "0";
       }
+    } else if (name === "paidAmount") {
+      let paidAmount = parseFloat(value) || 0;
+      if (paidAmount > totalAmountForPaid) {
+        paidAmount = totalAmountForPaid;
+        toast.error("Paid Amount cannot exceed Total Amount");
+      } else if (paidAmount < 0) {
+        paidAmount = 0;
+        toast.error("Paid Amount cannot be less than 0");
+      }
+      newState.paidAmount = paidAmount.toString();
+    }
+    return newState;
+  });
+};
 
-      return newState;
-    });
-  };
 
 
   useEffect(() => {

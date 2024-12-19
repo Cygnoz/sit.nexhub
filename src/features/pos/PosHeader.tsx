@@ -4,7 +4,7 @@ import timeIcon from "../../assets/Images/Frame 630162.png";
 import Button from "../../Components/Button";
 import PlusCircle from "../../assets/icons/PlusCircle";
 import SelectCustomerModal from "./SelectCustomerModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 type Props = {
@@ -28,10 +28,16 @@ function PosHeader({onSelectCustomer }: Props) {
   const handleSelectedCustomer = (customer: any) => {
     onSelectCustomer(customer); 
   };
-  const Navigate=useNavigate()
-  const handleGoBack =()=>{
-    Navigate("/landing")
-  }
+  const Navigate = useNavigate();
+  const location = useLocation();
+  
+  const handleGoBack = () => {
+    if (location.state?.from === "/landing") {
+      Navigate("/landing"); 
+    } else {
+      Navigate("/sales/invoice"); 
+    }
+  };
   return (
     <div className="px-5 py-3 flex items-center justify-between mt-2">
       <div className="flex items-center">
