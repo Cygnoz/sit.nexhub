@@ -1382,7 +1382,10 @@ const NewCustomerModal = ({ page }: Props) => {
                         </label>
                         <div className="flex items-center space-x-4 text-textColor text-sm">
                           <div className="flex gap-2 justify-center items-center">
-                            <div className="grid place-items-center mt-1">
+                            <div className="grid place-items-center mt-1"  onClick={() => {
+                                  SetTaxPreference("Taxable");
+                                  setTaxSelected("Taxable");
+                                }}>
                               <input
                                 id="Taxable"
                                 type="radio"
@@ -1391,10 +1394,7 @@ const NewCustomerModal = ({ page }: Props) => {
                                     : "border-1 border-neutral-400"
                                   }`}
                                 checked={taxselected === "Taxable"}
-                                onClick={() => {
-                                  SetTaxPreference("Taxable");
-                                  setTaxSelected("Taxable");
-                                }}
+                               
                               />
                               <div
                                 className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${taxselected === "Taxable"
@@ -1411,7 +1411,10 @@ const NewCustomerModal = ({ page }: Props) => {
                             </label>
                           </div>
                           <div className="flex gap-2 justify-center items-center">
-                            <div className="grid place-items-center mt-0.5">
+                            <div className="grid place-items-center mt-0.5"  onClick={() => {
+                                  SetTaxPreference("Tax Exempt");
+                                  setTaxSelected("Tax Exempt");
+                                }}>
                               <input
                                 id="Tax Exempt"
                                 type="radio"
@@ -1420,10 +1423,7 @@ const NewCustomerModal = ({ page }: Props) => {
                                     : "border-1 border-neutral-400"
                                   }`}
                                 checked={taxselected === "Tax Exempt"}
-                                onClick={() => {
-                                  SetTaxPreference("Tax Exempt");
-                                  setTaxSelected("Tax Exempt");
-                                }}
+                               
                               />
                               <div
                                 className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${taxselected === "Tax Exempt"

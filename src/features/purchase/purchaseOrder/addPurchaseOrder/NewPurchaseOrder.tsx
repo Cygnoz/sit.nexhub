@@ -21,6 +21,66 @@ import { SupplierResponseContext } from "../../../../context/ContextShare";
 type Props = {};
 
 const NewPurchaseOrder = ({}: Props) => {
+  const initialPurchaseOrderState: PurchaseOrder = {
+    supplierId: "",
+    supplierDisplayName: "",
+    supplierBillingCountry: "",
+    supplierBillingState: "",
+    taxMode: "",
+    sourceOfSupply: "",
+    destinationOfSupply: "",
+    deliveryAddress: "Organization",
+    customerId: "",
+    reference: "",
+    shipmentPreference: "",
+    purchaseOrderDate: new Date().toISOString().slice(0, 10),
+    expectedShipmentDate: new Date().toISOString().slice(0, 10),
+    paymentTerms: "",
+    paymentMode: "",
+    items: [
+      {
+        itemId: "",
+        itemName: "",
+        itemQuantity: 0,
+        itemCostPrice: 0,
+        itemTax: "",
+        itemDiscount: 0,
+        itemDiscountType: "percentage",
+        itemAmount: 0,
+        itemSgst: 0,
+        itemCgst: 0,
+        itemIgst: 0,
+        itemVat: 0,
+        itemSgstAmount: 0,
+        itemCgstAmount: 0,
+        itemIgstAmount: 0,
+        itemVatAmount: 0,
+        taxPreference: "",
+      },
+    ],
+    otherExpense: 0,
+    otherExpenseReason: "",
+    freight: 0,
+    vehicleNo: "",
+    addNotes: "",
+    termsAndConditions: "",
+    attachFiles: "",
+    subTotal: 0,
+    totalItem: 0,
+    sgst: 0,
+    cgst: 0,
+    igst: 0,
+    vat: 0,
+    itemTotalDiscount: 0,
+    totalTaxAmount: 0,
+    roundOff: 0,
+    transactionDiscountType: "percentage",
+    transactionDiscount: 0,
+    transactionDiscountAmount: 0,
+    total: 0,
+    grandTotal: 0,
+  };
+  
   const [searchValue, setSearchValue] = useState<string>("");
   const [selected, setSelected] = useState<string | null>("organization");
   const [supplierData, setSupplierData] = useState<[]>([]);
@@ -45,65 +105,10 @@ const NewPurchaseOrder = ({}: Props) => {
     null
   );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const [purchaseOrderState, setPurchaseOrderState] = useState<PurchaseOrder>({
-    supplierId: "",
-    supplierDisplayName: "",
-    supplierBillingCountry: "", 
-    supplierBillingState: "",
-    taxMode: "",
-    sourceOfSupply: "",
-    destinationOfSupply: "",
-    deliveryAddress: "Organization",
-    customerId: "",
-    reference: "",
-    shipmentPreference: "",
-    purchaseOrderDate: new Date().toISOString().slice(0, 10),
-    expectedShipmentDate: "",
-    paymentTerms: "",
-    paymentMode: "",
-    items: [
-      {
-        itemId: "",
-        itemName: "",
-        itemQuantity: 0,
-        itemCostPrice: 0,
-        itemTax: "",
-        itemDiscount: 0,
-        itemDiscountType: "percentage",
-        itemAmount: 0,
-        itemSgst: 0,
-        itemCgst: 0,
-        itemIgst: 0,
-        itemVat: 0,
-        itemSgstAmount: 0,
-        itemCgstAmount: 0,
-        itemIgstAmount: 0,
-        itemVatAmount: 0,
-        taxPreference:""
-      },
-    ],
-    otherExpense: 0,
-    otherExpenseReason: "",
-    freight: 0,
-    vehicleNo: "",
-    addNotes: "",
-    termsAndConditions: "",
-    attachFiles: "",
-    subTotal: 0,
-    totalItem: 0,
-    sgst: 0,
-    cgst: 0,
-    igst: 0,
-    vat: 0,
-    itemTotalDiscount: 0,
-    totalTaxAmount: 0,
-    roundOff: 0,
-    transactionDiscountType: "percentage",
-    transactionDiscount: 0,
-    transactionDiscountAmount: 0,
-    total:0,
-    grandTotal: 0,
-  });
+  const [purchaseOrderState, setPurchaseOrderState] = useState<PurchaseOrder>(
+    initialPurchaseOrderState
+  );
+  
 
 
   const toggleDropdown = (key: string | null) => {
@@ -112,6 +117,11 @@ const NewPurchaseOrder = ({}: Props) => {
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
 
   };
+
+  const handleColse=(()=>{
+    navigate("/purchase/purchase-order")
+    setPurchaseOrderState(initialPurchaseOrderState)
+  })
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -346,42 +356,6 @@ const NewPurchaseOrder = ({}: Props) => {
   };
 
 
-  const getLastDayOfMonth = (date:any, monthsToAdd = 0) => {
-    const year = date.getFullYear();
-    const month = date.getMonth() + monthsToAdd + 1; 
-    return new Date(year, month, 1); 
-  };
-  useEffect(() => {
-    if (purchaseOrderState.purchaseOrderDate) {
-      const billDate = new Date(purchaseOrderState.purchaseOrderDate);
-      let dueDate = new Date(billDate);
-  
-      switch (purchaseOrderState.paymentTerms) {
-        case "Net 15":
-        case "Net 30":
-        case "Net 45":
-        case "Net 60":
-          const daysToAdd = parseInt(purchaseOrderState.paymentTerms.split(" ")[1], 10);
-          dueDate.setDate(billDate.getDate() + daysToAdd);
-          break;
-        case "End of Next Month":
-          dueDate = getLastDayOfMonth(billDate, 1);
-          break;
-        case "End of This Month":
-          dueDate = getLastDayOfMonth(billDate);
-          break;
-        case "Pay Now":
-        case "due on receipt":
-          dueDate = billDate;
-          break;
-      }
-  
-      setPurchaseOrderState((prevState) => ({
-        ...prevState,
-        expectedShipmentDate: dueDate.toISOString().split("T")[0],
-      }));
-    }
-  }, [purchaseOrderState.paymentTerms, purchaseOrderState.purchaseOrderDate]);
 
   useEffect(() => {
     if (purchaseOrderState?.destinationOfSupply == "") {
@@ -899,8 +873,6 @@ const NewPurchaseOrder = ({}: Props) => {
                     value={purchaseOrderState.expectedShipmentDate  }
                     name="expectedShipmentDate"
                     onChange={handleChange}
-                    disabled={purchaseOrderState.paymentTerms !== "due on receipt" && purchaseOrderState.paymentTerms !== "Custom"}
-
                     className="border-inputBorder w-full text-sm border rounded p-2 h-9  text-zinc-400"
                   />
                 </div>
@@ -980,7 +952,7 @@ const NewPurchaseOrder = ({}: Props) => {
                   />
                 </label>
               </div>
-              <div className="mt-4">
+              <div className="mt-4 hidden">
                 <label className="block mb-1">
                   Documents
                   <div className="border-dashed border border-neutral-300 p-2 rounded  gap-2 text-center h-[68px] mt-2">
@@ -1224,7 +1196,7 @@ const NewPurchaseOrder = ({}: Props) => {
       </form>
       <div className="flex gap-4 my-5 justify-end">
         {" "}
-        <Button variant="secondary" size="sm">
+        <Button variant="secondary" size="sm" onClick={handleColse}>
           Cancel
         </Button>
         <Button variant="secondary" size="sm">

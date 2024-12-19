@@ -73,6 +73,7 @@ const Table = () => {
 
   return (
     <PurchaseTable
+    page={"Bills"}
       columns={columns}
       data={allBills}
       onRowClick={handleRowClick}
