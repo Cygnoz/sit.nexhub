@@ -86,58 +86,7 @@ type SupplierData = {
 };
 
 const AddSupplierModal = ({ page }: Props) => {
-  const [isModalOpen, setModalOpen] = useState<boolean>(false);
-  const [countryData, setcountryData] = useState<any | []>([]);
-  const [stateList, setStateList] = useState<any | []>([]);
-  const [currencyData, setcurrencyData] = useState<any | []>([]);
-  const [gstOrVat, setgstOrVat] = useState<any | []>([]);
-  const [oneOrganization, setOneOrganization] = useState<any | []>([]);
-  const [shippingstateList, setshippingStateList] = useState<any | []>([]);
-  const [paymentTerms, setPaymentTerms] = useState<any | []>([]);
-  const [activeTab, setActiveTab] = useState<string>("otherDetails");
-  const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
-  const [errors, setErrors] = useState({
-    supplierDisplayName: false,
-    companyName: false,
-    firstName: false,
-    lastName: false,
-    gstinUin: false,
-    sourceOfSupply: false,
-  });
-  const [openingType, setOpeningType] = useState<string>("credit");
-  const { request: getCountryData } = useApi("get", 5004);
-  const { request: getCurrencyData } = useApi("get", 5004);
-  const { request: CreateSupplier } = useApi("post", 5009);
-  const { request: getPaymentTerms } = useApi("get", 5004);
-  const { request: getOrganization } = useApi("get", 5004);
-  const { request: getTax } = useApi("get", 5009);
-  const { setsupplierResponse } = useContext(SupplierResponseContext)!;
-  const [rows, setRows] = useState([
-    {
-      salutation: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      workPhone: "",
-      mobile: "",
-    },
-  ]);
-
-  const addRow = () => {
-    setRows([
-      ...rows,
-      {
-        salutation: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        workPhone: "",
-        mobile: "",
-      },
-    ]);
-  };
-
-  const [supplierdata, setSupplierData] = useState<SupplierData>({
+  const initializeSupplierData = (): SupplierData => ({
     supplierProfile: "",
     salutation: "",
     firstName: "",
@@ -206,6 +155,60 @@ const AddSupplierModal = ({ page }: Props) => {
     ],
     remarks: "",
   });
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [countryData, setcountryData] = useState<any | []>([]);
+  const [stateList, setStateList] = useState<any | []>([]);
+  const [currencyData, setcurrencyData] = useState<any | []>([]);
+  const [gstOrVat, setgstOrVat] = useState<any | []>([]);
+  const [oneOrganization, setOneOrganization] = useState<any | []>([]);
+  const [shippingstateList, setshippingStateList] = useState<any | []>([]);
+  const [paymentTerms, setPaymentTerms] = useState<any | []>([]);
+  const [activeTab, setActiveTab] = useState<string>("otherDetails");
+  const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
+  const [supplierdata, setSupplierData] = useState<SupplierData>(initializeSupplierData());
+  const [errors, setErrors] = useState({
+    supplierDisplayName: false,
+    companyName: false,
+    firstName: false,
+    lastName: false,
+    gstinUin: false,
+    sourceOfSupply: false,
+  });
+  const [openingType, setOpeningType] = useState<string>("credit");
+  const { request: getCountryData } = useApi("get", 5004);
+  const { request: getCurrencyData } = useApi("get", 5004);
+  const { request: CreateSupplier } = useApi("post", 5009);
+  const { request: getPaymentTerms } = useApi("get", 5004);
+  const { request: getOrganization } = useApi("get", 5004);
+  const { request: getTax } = useApi("get", 5009);
+  const { setsupplierResponse } = useContext(SupplierResponseContext)!;
+  const [rows, setRows] = useState([
+    {
+      salutation: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      workPhone: "",
+      mobile: "",
+    },
+  ]);
+
+  const addRow = () => {
+    setRows([
+      ...rows,
+      {
+        salutation: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        workPhone: "",
+        mobile: "",
+      },
+    ]);
+  };
+
+
   const [showAccountNumbers, setShowAccountNumbers] = useState(
     supplierdata.bankDetails.map(() => false)
   );
@@ -519,9 +522,11 @@ const AddSupplierModal = ({ page }: Props) => {
   };
 
   const handleSubmit = async () => {
+    if (loading) return; 
+    setLoading(true);
+  
     const newErrors = { ...errors };
-
-    // Check for other validation errors
+  
     if (supplierdata.supplierDisplayName === "")
       newErrors.supplierDisplayName = true;
     if (supplierdata.companyName === "") newErrors.companyName = true;
@@ -543,22 +548,23 @@ const AddSupplierModal = ({ page }: Props) => {
     const isAccountNumberValid = isAccountNumberSame.every(
       (isValid) => isValid
     );
-
+  
     if (!isAccountNumberValid) {
       toast.error("Please ensure account numbers match before saving.");
+      setLoading(false); // Reset loading state
       return;
     }
-
+  
     if (Object.values(newErrors).some((error) => error)) {
       setErrors(newErrors);
       console.log(newErrors);
+      setLoading(false); // Reset loading state
       return;
     }
-
+  
     try {
       const url = `${endponits.ADD_SUPPLIER}`;
       const { response, error } = await CreateSupplier(url, supplierdata);
-      console.log("res", response);
       console.log("err", error);
       if (response && !error) {
         toast.success(response.data.message);
@@ -567,77 +573,8 @@ const AddSupplierModal = ({ page }: Props) => {
         getAdditionalData();
         getAdditionalInfo();
         getOneOrganization();
-
-        // Reset supplier data
-        setSupplierData({
-          taxType: "",
-          supplierProfile: "",
-          salutation: "",
-          firstName: "",
-          lastName: "",
-          companyName: "",
-          supplierDisplayName: "",
-          supplierEmail: "",
-          workPhone: "",
-          mobile: "",
-          creditDays: "",
-          creditLimit: "",
-          interestPercentage: "",
-          pan: "",
-          currency: "",
-          paymentTerms: "",
-          debitOpeningBalance: "",
-          creditOpeningBalance: "",
-          tds: "",
-          documents: "",
-          websiteURL: "",
-          department: "",
-          designation: "",
-          gstTreatment: "",
-          gstinUin: "",
-          sourceOfSupply: "",
-          vatNumber: "",
-          msmeType: "",
-          msmeNumber: "",
-          msmeRegistered: false,
-          billingAttention: "",
-          billingCountry: "",
-          billingAddressStreet1: "",
-          billingAddressStreet2: "",
-          billingCity: "",
-          billingState: "",
-          billingPinCode: "",
-          billingPhone: "",
-          billingFaxNum: "",
-          shippingAttention: "",
-          shippingCountry: "",
-          shippingAddressStreet1: "",
-          shippingAddressStreet2: "",
-          shippingCity: "",
-          shippingState: "",
-          shippingPinCode: "",
-          shippingPhone: "",
-          shippingFaxNum: "",
-          contactPerson: [
-            {
-              salutation: "",
-              firstName: "",
-              lastName: "",
-              emailAddress: "",
-              workPhone: "",
-              mobile: "",
-            },
-          ],
-          bankDetails: [
-            {
-              accountHolderName: "",
-              bankName: "",
-              accountNum: "",
-              ifscCode: "",
-            },
-          ],
-          remarks: "",
-        });
+  
+        setSupplierData(initializeSupplierData);
       } else {
         toast.error(error.response?.data?.message || error.message);
         console.error("Error creating supplier:", error);
@@ -645,8 +582,11 @@ const AddSupplierModal = ({ page }: Props) => {
     } catch (error) {
       console.error("Unexpected error:", error);
       toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false)
     }
   };
+  
 
   // compy billing address
   const handleCopyAddress = (e: any) => {
@@ -710,7 +650,6 @@ const AddSupplierModal = ({ page }: Props) => {
     }
   };
 
-  console.log(supplierdata, "ht");
 
   useEffect(() => {
     handleplaceofSupply();
