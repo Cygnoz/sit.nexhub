@@ -101,7 +101,7 @@ console.log(page)
                 Action
               </th>
               <th className="py-3 px-2 font-medium border-b border-tableBorder">
-                <CustomiseColmn columns={columns} setColumns={setColumns}  />
+                <CustomiseColmn columns={columns} setColumns={setColumns} tableId={`${page}`}  />
               </th>
             </tr>
           </thead>
