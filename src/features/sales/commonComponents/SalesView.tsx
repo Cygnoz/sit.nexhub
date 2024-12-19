@@ -306,7 +306,7 @@ function SalesView({ data, page }: SalesOrderViewProps) {
           <div className="mt-4 text-base mb-[70px] text-dropdownText">
             {customerData ? (
               <>
-                <p>{customerData.billingAttention}</p>
+                <p>{customerData.customerDisplayName}</p>
                 <p>{customerData.companyName}</p>
                 <p>{customerData.billingAddressLine1}</p>
                 <p>{customerData.billingAddressLine2}</p>

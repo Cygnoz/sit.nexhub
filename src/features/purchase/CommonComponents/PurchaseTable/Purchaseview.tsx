@@ -3,12 +3,13 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
 import Button from "../../../../Components/Button";
 import Pen from "../../../../assets/icons/Pen";
-import MailIcon from "../../../../assets/icons/MailIcon";
+// import MailIcon from "../../../../assets/icons/MailIcon";
 import OrderView from "./OderView";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
 import PDFView from "./PDFView";
 import { useOrganization } from "../../../../context/OrganizationContext";
+import PrinterIcon from "../../../../assets/icons/PrinterIcon";
 
 
 
@@ -117,21 +118,27 @@ function Purchaseview({ page }: Props) {
                   <p className="text-sm font-medium">Edit</p>
                 </Button>
              </div>
-             {page!=="PurchaseOrder" &&
               <>
                <Button variant="secondary" className="pl-5 pr-5" size="sm">
-                  <MailIcon color="#565148" />
-                  <p className="text-sm font-medium">Email</p>
+                  <Pen color="#565148" />
+                  <p className="text-sm font-medium">Edit</p>
                 </Button>
-                <select
+                {/* <select
                   name=""
                   id=""
                   className="border-outlineButton border rounded-md px-[0.625rem] py-2 text-sm font-medium text-outlineButton"
                 >
                   <option value="">More Action</option>
-                </select>
+                </select> */}
             </>
-            }
+            
+            
+          
+               <Button variant="secondary" size="sm" className="px-2">
+                    <PrinterIcon color="#565148" height={16} width={16} />
+                    Print
+                  </Button>
+          
               <label className="flex items-center cursor-pointer">
                 <div className="relative">
                   <input

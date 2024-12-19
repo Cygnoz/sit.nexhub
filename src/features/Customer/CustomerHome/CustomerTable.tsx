@@ -141,7 +141,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
+              <th className="py-3 px-4 border-b border-tableBorder">Sl.No</th>
               {columns.map(
                 (col) =>
                   col.visible && (

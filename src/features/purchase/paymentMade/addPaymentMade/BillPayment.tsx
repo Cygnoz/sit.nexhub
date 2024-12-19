@@ -250,7 +250,7 @@ const NewPaymentMade = ({}: Props) => {
       <div className="grid grid-cols-12 gap-4 py-5 rounded-lg">
         {/* scroll y */}
         <div
-          className="col-span-8 h-[60vh] overflow-y-scroll"
+          className="col-span-8 h-[vh] overflow-y-scroll"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           <style>
@@ -346,7 +346,7 @@ const NewPaymentMade = ({}: Props) => {
                   )}
                 </div>
               </div>
-              <div className="cols-12">
+              <div className="cols-12 hidden">
               <SupplierView selectedSupplier={selectedSupplier}/>
                
               </div>
@@ -512,7 +512,7 @@ const NewPaymentMade = ({}: Props) => {
               </label>
             </div>
 
-            <div className="text-sm mt-3  text-textColor">
+            <div className="text-sm mt-3  text-textColor hidden">
               <label className="block mb-3">
                 Attachments
                 <div className="border-inputBorder border-gray-800 w-full border-dashed border p-2 rounded flex flex-col gap-2 justify-center items-center bg-white mb-4 mt-2">

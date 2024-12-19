@@ -43,14 +43,14 @@ const AccountDropdown = ({
   return (
     <td className="px-6 py-4 whitespace-nowrap relative dropdown-container">
 
-      <div className="flex items-center border rounded-md border-inputBorder ">
+      <div className="flex items-center border rounded-md border-inputBorder "           onClick={() => onDropdownToggle(index, !isDropdownOpen)}
+      >
 
         <input
           type="text"
           placeholder="Select Account"
           value={account}
           readOnly
-          onClick={() => onDropdownToggle(index, !isDropdownOpen)}
           className="rounded-md cursor-pointer text-sm p-2 w-full   focus:outline-none"
         />
         <div className='-ms-8'>

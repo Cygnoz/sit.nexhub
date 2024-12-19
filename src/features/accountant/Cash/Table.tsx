@@ -89,7 +89,7 @@ const CashAccountsTable = () => {
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText sticky top-0 z-10">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
+              <th className="py-3 px-4 border-b border-tableBorder">Sl.No</th>
               {tableHeaders.map((heading, index) => (
                 <th className="py-2 px-4 font-medium border-b border-tableBorder" key={index}>
                   {heading}

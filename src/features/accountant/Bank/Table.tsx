@@ -26,7 +26,7 @@ const Table = () => {
   const {loading,setLoading}=useContext(TableResponseContext)!;
 
   const tableHeaders = [
-    "Sl No",
+    "Sl.No",
     "Account Name",
     "Account Code",
     "Account Type",

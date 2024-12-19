@@ -5,7 +5,7 @@ import CehvronDown from "../../../assets/icons/CehvronDown";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import NewCustomerModal from "../../Customer/CustomerHome/NewCustomerModal";
 // import ManageSalesPerson from "../SalesPerson/ManageSalesPerson";
-import SettingsIcons from "../../../assets/icons/SettingsIcon";
+// import SettingsIcons from "../../../assets/icons/SettingsIcon";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
 import { SalesQuote } from "../../../Types/SalesQuote";
@@ -537,17 +537,17 @@ console.log(customerData);
                   <label className="block text-sm mb-1 text-labelColor">
                     Quote#
                   </label>
-                  <div className=" flex items-center border rounded-lg border-inputBorder">
+                  <div className=" flex items-center  rounded-lg border-inputBorder">
 
                     <input
                       readOnly
                       value={prefix}
                       type="text"
-                      className="w-full text-sm p-1.5 pl-2 h-9 border-none outline-none rounded-l-lg"
-                    />
-                    <div className="p-1.5">
+                      className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
+                      />
+                    {/* <div className="p-1.5">
                       <SettingsIcons color="#495160" />
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
@@ -702,7 +702,7 @@ console.log(customerData);
                 />
               </label>
             </div>
-            <div className="mt-4">
+            <div className="mt-4 hidden">
               <label className="block mb-1">
                 Documents
                 <div className="border-dashed border border-neutral-300 p-2 rounded  gap-2 text-center h-[68px] mt-2">

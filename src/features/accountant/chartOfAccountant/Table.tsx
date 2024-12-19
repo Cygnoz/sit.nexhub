@@ -49,7 +49,7 @@ const Table = ({ accountData, searchValue, setSearchValue,loading }: TableProps)
     setCurrentPage(1)
   },[searchValue])
   const tableHeaders = [
-    "Sl No",
+    "Sl.No",
     "Account Name",
     "Account Code",
     "Account Type",
