@@ -17,8 +17,7 @@ const InvoiceHome = ({}: Props) => {
         <div>
         <h3 className="font-bold text-2xl text-textColor">Invoice</h3>
         <p className="text-sm text-gray mt-1">
-        Invoice Lorem ipsum dolor sit amet consectetur. Commodo enim odio
-            fringilla egestas consectetur amet.
+        Generate and manage invoices efficiently to ensure timely billing and maintain accurate financial records.
           </p>
         </div>
         <div className="ml-auto flex items-center justify-center gap-4">

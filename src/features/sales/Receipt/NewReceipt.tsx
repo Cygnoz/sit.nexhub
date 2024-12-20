@@ -477,7 +477,7 @@ const NewReceipt = ({ }: Props) => {
                 </label>
               </div>
 
-              <div className="text-sm mt-3  text-textColor">
+              <div className="text-sm mt-3  text-textColor hidden">
                 <label className="block mb-3">
                   Attachments
                   <div className="border-inputBorder border-gray-800 w-full border-dashed border p-2 rounded 

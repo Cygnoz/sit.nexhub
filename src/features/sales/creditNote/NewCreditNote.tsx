@@ -762,7 +762,7 @@ const handleGoBack = () => {
               />
             </label>
           </div>
-          <div className="text-sm mt-3">
+          <div className="text-sm mt-3 hidden">
             <label className="block  text-sm mb-1 text-labelColor">
               Attach files to the Debit Notes
               <div className="border-inputBorder border-gray-800 w-full border-dashed border p-2 rounded flex flex-col gap-2 justify-center items-center mt-2  bg-white mb-4 ">
@@ -784,7 +784,7 @@ const handleGoBack = () => {
             </label>
           </div>
 
-          <div className="bg-secondary_main p-5 min-h-max rounded-xl relative ">
+          <div className="bg-secondary_main p-5 min-h-max rounded-xl relative mt-2">
             <div className=" pb-4  text-dropdownText border-b-2 border-slate-200 space-y-2">
               <div className="flex ">
                 <div className="w-[75%]">

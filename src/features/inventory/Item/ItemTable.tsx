@@ -257,7 +257,7 @@ const ItemTable = () => {
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }} className="sticky top-0 z-10">
               {/* Serial Number Header */}
-              <th className="py-2.5 px-4 font-medium border-b border-tableBorder">S.No</th>
+              <th className="py-2.5 px-4 font-medium border-b border-tableBorder">Sl.No</th>
 
               {columns.map(
                 (col) =>

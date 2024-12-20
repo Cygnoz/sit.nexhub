@@ -105,17 +105,13 @@ function PdfView({ data, organization }: Props) {
               {data?.reference ? data.reference : "-"}
             </p>
             <p className="font-normal text-xs text-pdftext">Paid To</p>
-            <p className="text-xs  text-pdftext text-end">Mr. Aman Rasheedh</p>
-            <p className="font-normal text-xs text-pdftext">Place of Supply</p>
-            <p className="text-xs  text-pdftext text-end">Kerala</p>
+            <p className="text-xs  text-pdftext text-end">{data.supplierDisplayName}</p>
+           
             <p className="font-normal text-xs text-pdftext">Payment Mode</p>
             <p className="text-xs  text-pdftext text-end">
               {data?.paymentMode ? data.paymentMode : "-"}
             </p>
-            <p className="font-normal text-xs text-pdftext">Paid Through</p>
-            <p className="text-xs  text-pdftext text-end">
-              {data?.paidThrough ? data.paidThrough : "-"}
-            </p>
+            
           </div>
           <div className="flex items-center justify-center ">
             <div className="bg-gradient-to-r from-[#E3E6D5] to-[#F7E7CE] w-full flex justify-center items-center flex-col py-5 rounded-sm">

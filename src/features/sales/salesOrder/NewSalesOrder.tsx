@@ -756,7 +756,7 @@ const NewSalesOrder = ({ }: Props) => {
                 />
               </label>
             </div>
-            <div className="mt-4">
+            <div className="mt-4 hidden">
               <label className="block mb-1">
                 Attach files to Sales Order
                 <div className="border-dashed border border-neutral-300 p-2 rounded  gap-2 text-center h-[68px] mt-3">
@@ -904,7 +904,7 @@ const NewSalesOrder = ({ }: Props) => {
               <div className="flex ">
                 <div className="w-[75%]">
                   {" "}
-                  <p>Fright</p>
+                  <p>Freight</p>
                 </div>
                 <div className="w-full text-end">
                   {" "}
