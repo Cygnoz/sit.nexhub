@@ -650,6 +650,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                     Sales Order Number
                     <input
                       name="salesOrderNumber"
+                      readOnly
                       id="salesOrderNumber"
                       value={invoiceState.salesOrderNumber}
                       onChange={handleChange}

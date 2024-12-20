@@ -504,7 +504,7 @@ const ItemTable = () => {
                         {(selectedItem?.length || selectedItem?.warranty || selectedItem?.width || selectedItem?.weight) && (
                           <div className="rounded-lg shadow p-6 text-left bg-[#F5F8FC]">
                             <p className="font-bold text-base text-textColor mb-4">Storage Information</p>
-                            <div className="grid grid-cols-4 gap-y-4">
+                            <div className="grid  gap-y-4">
                               {selectedItem?.length && (
                                 <>
                                   <p className="text-dropdownText text-sm">Length</p>
@@ -521,6 +521,12 @@ const ItemTable = () => {
                                 <>
                                   <p className="text-dropdownText text-sm">Width</p>
                                   <p className="text-dropdownText font-semibold text-sm">{selectedItem.width}</p>
+                                </>
+                              )}
+                              {selectedItem?.height && (
+                                <>
+                                  <p className="text-dropdownText text-sm">Height</p>
+                                  <p className="text-dropdownText font-semibold text-sm">{selectedItem.height}</p>
                                 </>
                               )}
                               <div className="col-span-2"></div> {/* Empty cells for alignment */}

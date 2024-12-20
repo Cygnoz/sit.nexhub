@@ -1376,7 +1376,7 @@ const NewCustomerModal = ({ page }: Props) => {
 
                   {activeTab === "taxes" && (
                     <>
-                      <div className="mb-1.5">
+                      <div className="mb-1.5" style={{display:"none"}}>
                         <label className="block text-sm mb-0.5 text-labelColor">
                           Tax Preference
                         </label>
