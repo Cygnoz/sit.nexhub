@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import Button from "../../../Components/Button";
 import CirclePlus from "../../../assets/icons/circleplus";
 import CashImage from "../../../assets/Images/CashImage.png";
@@ -12,9 +12,10 @@ import CehvronDown from "../../../assets/icons/CehvronDown";
 
 interface NewAccountModalProps {
   fetchAllAccounts: () => void;
+  accountData: any[];
 }
 
-const initialFormValues:any={
+const initialFormValues: any = {
   accountName: "",
   accountCode: "",
   accountSubhead: "",
@@ -26,18 +27,24 @@ const initialFormValues:any={
   bankCurrency: "",
   debitOpeningBalance: "",
   creditOpeningBalance: "",
+  parentAccountId: "",
 }
 
-function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
+function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps) {
+  console.log(accountData,"accountData");
+  
   const [isModalOpen, setModalOpen] = useState(false);
   const { request: NewAccount } = useApi("post", 5001);
   const [openingType, setOpeningType] = useState("Debit");
   const [formValues, setFormValues] = useState(initialFormValues);
-  
+  console.log(formValues, "formValues");
+
+  const [isSubAccount, setIsSubAccount] = useState(false);
+
   const accountCategories = {
-    Assets: {
+    Asset: {
       Asset: [
-        "Asset",
+        "Other Asset",
         "Current Asset",
         "Fixed Asset",
         "Stock",
@@ -50,9 +57,9 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
     Income: {
       Income: ["Income", "Other Income"],
     },
-    Liabilities: {
+    Liability: {
       Liabilities: [
-        "Current Liability",
+        "Other Current Liability",
         "Credit Card",
         "Long Term Liability",
         "Other Liability",
@@ -63,7 +70,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
       Expenses: ["Expense", "Cost of Goods Sold", "Other Expense"],
     },
   };
-  
+
 
   const headGroup = (accountSubhead: any) => {
     for (const [group, heads] of Object.entries(accountCategories)) {
@@ -83,6 +90,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
   const closeModal = () => {
     setModalOpen(false);
     setFormValues(initialFormValues)
+    setIsSubAccount(false)
   };
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -119,19 +127,25 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+
+    if (type === "checkbox" && name === "returnableItem") {
+      const target = e.target as HTMLInputElement;
+      setIsSubAccount(target.checked);
+      return;
+    }
 
     if (name === "accountSubhead") {
       const result = headGroup(value);
       if (result) {
-        setFormValues((prevFormValues:any) => ({
+        setFormValues((prevFormValues: any) => ({
           ...prevFormValues,
           accountSubhead: value,
           accountHead: result.accountHead,
           accountGroup: result.accountGroup,
         }));
       } else {
-        setFormValues((prevFormValues:any) => ({
+        setFormValues((prevFormValues: any) => ({
           ...prevFormValues,
           accountSubhead: value,
           accountHead: "",
@@ -140,7 +154,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
       }
     } else if (name === "openingType") {
       setOpeningType(value);
-      setFormValues((prevFormValues:any) => ({
+      setFormValues((prevFormValues: any) => ({
         ...prevFormValues,
         debitOpeningBalance: value === "Debit" ? prevFormValues.debitOpeningBalance : "",
         creditOpeningBalance: value === "Credit" ? prevFormValues.creditOpeningBalance : "",
@@ -148,7 +162,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
     } else if (name === "openingBalance") {
       if (parseFloat(value) < 0) return;
 
-      setFormValues((prevFormValues:any) => ({
+      setFormValues((prevFormValues: any) => ({
         ...prevFormValues,
         debitOpeningBalance:
           openingType === "Debit" ? value : prevFormValues.debitOpeningBalance,
@@ -156,7 +170,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
           openingType === "Credit" ? value : prevFormValues.creditOpeningBalance,
       }));
     } else {
-      setFormValues((prevFormValues:any) => ({
+      setFormValues((prevFormValues: any) => ({
         ...prevFormValues,
         [name]: value,
       }));
@@ -226,7 +240,7 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
                 </select>
               </div>
 
-              <div className="mb-4">
+              <div className="mb-2">
                 <label className="block text-sm mb-1 text-labelColor">
                   Account Name
                 </label>
@@ -239,6 +253,77 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
                   className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
                 />
               </div>
+
+
+              <div className="mb-2 flex items-center gap-1 text-textColor">
+                <input
+                  type="checkbox"
+                  className="accent-[#97998E] bg-white cursor-pointer h-5 w-4 mx-1 my-1"
+                  id="checkbox3"
+                  name="returnableItem"
+                  onChange={handleChange}
+                />
+                <label
+                  htmlFor="checkbox3"
+                  className="text-dropdownText text-sm font-medium cursor-pointer"
+                >
+                  Make this a sub-account
+                </label>
+              </div>
+
+              {isSubAccount && (
+  <div className="mb-4">
+    <label
+      htmlFor="parentAccountId"
+      className="text-slate-600 text-sm flex items-center gap-2 mb-1"
+    >
+      Parent Account
+    </label>
+    <div className="relative w-full">
+      <select
+        className="block appearance-none w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-9 pl-3 pr-8 rounded-md leading-tight focus:outline-none"
+        name="parentAccountId"
+        onChange={(e) => {
+          const selectedAccountName = e.target.value;
+
+          // Find the selected account by name
+          const selectedAccount = accountData?.find(
+            (account) => account.accountName === selectedAccountName
+          );
+
+          // If account is found, set its ID in the state
+          const selectedId = selectedAccount ? selectedAccount._id : "";
+
+          // Update the parentAccountId in formValues
+          setFormValues((prevFormValues: any) => ({
+            ...prevFormValues,
+            parentAccountId: selectedId,  // Storing the selected account's _id
+          }));
+        }}
+        value={formValues.parentAccountId ? accountData?.find(account => account._id === formValues.parentAccountId)?.accountName : ""}
+      >
+        <option value="">Select Parent Account</option>
+        {accountData
+          ?.filter(
+            (account) => account.accountSubhead === formValues.accountSubhead
+          )
+          ?.map((account) => (
+            <option key={account._id} value={account.accountName}>
+              {account.accountName}
+            </option>
+          ))}
+      </select>
+
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+        <CehvronDown color="gray" />
+      </div>
+    </div>
+  </div>
+)}
+
+
+
+
 
               <div className="mb-4">
                 <label className="block mb-1 text-labelColor text-sm">Opening Balance</label>
@@ -280,15 +365,15 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
                 <label className="block text-sm mb-1 text-labelColor">
                   Description
                 </label>
-                <textarea
+                <input
                   name="description"
                   value={formValues.description}
                   onChange={handleChange}
                   placeholder="Enter Description"
-                  className="border-inputBorder w-full text-sm border rounded p-2 pt-5 pl-2"
+                  className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
                 />
               </div>
-              <div className="mb-4">
+              <div >
                 <label className="block text-sm mb-1 text-labelColor">
                   Account Code
                 </label>
@@ -307,11 +392,11 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
                   onClick={closeModal}
                   type="button"
                   variant="secondary"
-                  className="rounded"
+                  className="rounded text-sm h-10"
                 >
                   Cancel
                 </Button>
-                <Button type="submit" variant="primary" className="rounded">
+                <Button type="submit" variant="primary" className="rounded text-sm h-10">
                   Add Account
                 </Button>
               </div>

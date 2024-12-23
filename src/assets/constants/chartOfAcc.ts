@@ -1,8 +1,8 @@
 const chartOfAcc = [
   {
-    head: "Assets",
+    head: "Asset",
     subhead: [
-      "Asset",
+      "Other Asset",
       "Current Asset",
       "Fixed Asset",
       "Stock",
@@ -18,9 +18,9 @@ const chartOfAcc = [
     subhead: ["Income", "Other Income"],
   },
   {
-    head: "Liabilities",
+    head: "Liability",
     subhead: [
-      "Current Liability",
+      "Other Current Liability",
       "Credit Card",
       "Long Term Liability",
       "Other Liability",
