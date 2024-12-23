@@ -68,10 +68,17 @@ function AccountantView() {
       (sum, item) => sum + (Number(item.debitAmount) || 0),
       0
     );
-    return  totalDebit - totalCredit;
+    return totalDebit - totalCredit;
   };
   
+  const formattedTotal = () => {
+    const total = calculateTotal();
+    const absoluteValue = Math.abs(total).toFixed(2); // Remove negative sign
+    return total < 0 ? `${absoluteValue} (Cr)` : `${absoluteValue} (Dr)`;
+  };
   
+
+
 
   return (
     <div className="px-6">
@@ -149,7 +156,9 @@ function AccountantView() {
 
           <div className="mt-4 text-end">
             <p className="text-textColor font-bold me-36">
-              Total : <span> {calculateTotal().toFixed(2)} ({oneOrganization.baseCurrency})</span>
+              <div>
+                Total: <span>{formattedTotal()}</span>
+              </div>
             </p>
           </div>
         </div>

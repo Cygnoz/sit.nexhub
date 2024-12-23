@@ -10,7 +10,7 @@ import { endponits } from "../../../Services/apiEndpoints";
 
 type Props = {};
 
-function ManualView({}: Props) {
+function ManualView({ }: Props) {
   const { request: getOneJournal } = useApi("get", 5001);
   const { id } = useParams<{ id: string }>();
   const [oneJournal, setOneJournal] = useState<any>(null);
@@ -27,14 +27,13 @@ function ManualView({}: Props) {
       console.error("Error fetching journal:", error);
     }
   };
-  
+
   useEffect(() => {
     if (id) {
       getOneJournalData();
     }
   }, [id]);
-  console.log(oneJournal);
-  
+
   return (
     <>
       <div className="px-6">
@@ -126,41 +125,32 @@ function ManualView({}: Props) {
                 <thead>
                   <tr>
                     <th className="text-left p-2">Account</th>
-                    <th className="text-left p-2 font-normal flex items-center justify-center">
-                      Contact
-                    </th>
-                    <th className="p-2 font-normal">Debits</th>
-                    <th className="p-2 font-normal">Credits</th>
+                    <th className="text-right p-2 font-normal">Debits</th>
+                    <th className="text-right p-2 font-normal">Credits</th>
                   </tr>
                 </thead>
                 <tbody>
                   {oneJournal?.transaction?.map((txn: any) => (
-                    <tr
-                      className="border-b border-slate-400 mb-5"
-                      key={txn.accountId}
-                    >
-                      <td className="px-2 py-5">{txn.accountName}</td>
-                      <td className="px-2 py-5 flex items-center justify-center">
-                        {txn.contact}
-                      </td>
-                      <td className="text-center px-2 py-5">
+                    <tr className="border-b border-slate-400 mb-5" key={txn.accountId}>
+                      <td className="px-2 py-5 text-left">{txn.accountName}</td>
+                      <td className="text-right px-2 py-5">
                         {txn.debitAmount.toFixed(2)}
                       </td>
-                      <td className="text-center px-2 py-5">
+                      <td className="text-right px-2 py-5">
                         {txn.creditAmount.toFixed(2)}
                       </td>
                     </tr>
                   ))}
 
                   <tr>
-                    <td className="px-2 py-5"></td>
-                    <td className="px-2 py-5 text-center">SubTotal</td>
-                    <td className="px-2 py-5 text-center">
+                    <td className="px-2 py-5 text-left"></td>
+                    <td className="px-2 py-5 text-right">SubTotal</td>
+                    <td className="px-2 py-5 text-right">
                       {oneJournal
                         ? oneJournal?.totalDebitAmount.toFixed(2)
                         : "0.00"}
                     </td>
-                    <td className="text-center px-2 py-5">
+                    <td className="text-right px-2 py-5">
                       {oneJournal
                         ? oneJournal?.totalCreditAmount.toFixed(2)
                         : "0.00"}
@@ -168,6 +158,7 @@ function ManualView({}: Props) {
                   </tr>
                 </tbody>
               </table>
+
 
               <div className="bg-[#F3E6E6] ms-auto flex gap-5 rounded-lg p-3 text-end w-[55%] text-xs">
                 <b>Total</b>
