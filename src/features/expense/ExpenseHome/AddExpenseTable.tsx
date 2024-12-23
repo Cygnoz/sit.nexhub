@@ -76,18 +76,23 @@ const AddExpenseTable: React.FC<Props> = ({
       expense: updatedRows,
     }));
   };
-
   const handleTaxGroupChange = (index: number, taxName: string) => {
-    const selectedTax = taxRate?.gstTaxRate?.find(
-      (tax) => tax.taxName === taxName
+    const selectedTax = taxName ? JSON.parse(taxName) : null;
+
+    const matchedTax = taxRate?.gstTaxRate?.find(
+      (tax) => tax.taxName === selectedTax?.taxName
     );
+
+    // Update the row with the appropriate tax details
     handleRowChange(index, {
-      taxGroup: taxName,
-      sgst: selectedTax?.sgst || 0,
-      cgst: selectedTax?.cgst || 0,
-      igst: selectedTax?.igst || 0,
+      taxGroup: selectedTax?.taxName || "",
+      sgst: matchedTax?.sgst || 0,
+      cgst: matchedTax?.cgst || 0,
+      igst: matchedTax?.igst || 0,
     });
   };
+
+  // console.log(rows.)
 
   const handleAddRow = () => {
     setRows([
@@ -151,10 +156,10 @@ const AddExpenseTable: React.FC<Props> = ({
     const sgstPctg = rows.reduce((acc, row) => acc + row.sgst, 0);
     const cgstPctg = rows.reduce((acc, row) => acc + row.cgst, 0);
     const igstPctg = rows.reduce((acc, row) => acc + row.igst, 0);
-    return {  sgstPctg, cgstPctg, igstPctg };
+    return { sgstPctg, cgstPctg, igstPctg };
   };
-  
-  const {  sgstPctg, cgstPctg, igstPctg } = calculateTotalTaxes();
+
+  const { sgstPctg, cgstPctg, igstPctg } = calculateTotalTaxes();
 
   return (
     <div className="p-4">
@@ -227,7 +232,7 @@ const AddExpenseTable: React.FC<Props> = ({
                         expenseData.gstTreatment === "Unregistered Business" ||
                         expenseData.gstTreatment === "Overseas"
                       }
-                      value={row.taxGroup}
+                      value={row.taxGroup.taxName}
                       onChange={(e) =>
                         handleTaxGroupChange(index, e.target.value)
                       }
@@ -235,13 +240,15 @@ const AddExpenseTable: React.FC<Props> = ({
                     >
                       <option value="">Select Tax</option>
                       <option value="Non-Taxable">Non-Taxable</option>
-                   <optgroup label="Tax">
-    {taxRate?.gstTaxRate?.map((account: any, index: number) => (
-      <option key={index} value={JSON.stringify(account)}>
-        {account?.taxName}
-      </option>
-    ))}
-  </optgroup>
+                      <optgroup label="Tax">
+                        {taxRate?.gstTaxRate?.map(
+                          (account: any, index: number) => (
+                            <option key={index} value={JSON.stringify(account)}>
+                              {account?.taxName}
+                            </option>
+                          )
+                        )}
+                      </optgroup>
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <CehvronDown color="gray" />
