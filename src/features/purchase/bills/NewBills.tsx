@@ -308,7 +308,6 @@ const NewBills = ({}: Props) => {
   };
   
 
-  console.log(bill,"bill")
 
   const getLastDayOfMonth = (date:any, monthsToAdd = 0) => {
     const year = date.getFullYear();
@@ -357,12 +356,7 @@ const NewBills = ({}: Props) => {
     }
   }, [bill.dueDate, bill.paymentTerms, bill.billDate]);
   
-  
-  
 
-  
-
-  
 
   const calculateTotalAmount = () => {
     const {
@@ -384,27 +378,28 @@ const NewBills = ({}: Props) => {
   };
 
   useEffect(() => {
-    const { grandTotal, paidAmount } = bill;
+    const { grandTotal, paidAmount, } = bill;
   
     const numericGrandTotal = Number(grandTotal) || 0;
     const numericPaidAmount = Number(paidAmount) || 0;
   
     let balanceAmount;
-    if(bill.paymentTerms=="Pay Now"){
-       balanceAmount = numericGrandTotal - numericPaidAmount;
-
-    }
-    else{
-      balanceAmount=numericGrandTotal
-    }
+  
+    console.log(paidAmount, "paidAmount");
+    console.log(grandTotal, "grandTotal");
+  
+      balanceAmount = Math.round((numericGrandTotal - numericPaidAmount) * 100) / 100;
+      console.log(balanceAmount, "balanceAmount");
+  
   
     setBill((prevState: any) => ({
       ...prevState,
       balanceAmount: balanceAmount,
     }));
-  }, [bill.grandTotal, bill.paidAmount]);
+  }, [bill.grandTotal, bill.paidAmount, bill.paymentTerms]);
+  
+  
 
-  console.log(errors,"errors")
 
   const handleSave = async () => {
     const newErrors = { ...errors };
