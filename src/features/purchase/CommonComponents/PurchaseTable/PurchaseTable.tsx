@@ -66,7 +66,7 @@ console.log(page)
 
   const visibleColumns = columns.filter((col) => col.visible);
   const skeletonColumns = [...visibleColumns, {}, {}, {}];
-
+console.log(data,"data")
   return (
     <div>
       <div className="flex items-center gap-4 justify-between">

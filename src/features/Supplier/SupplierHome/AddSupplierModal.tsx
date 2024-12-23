@@ -1519,6 +1519,7 @@ const AddSupplierModal = ({ page }: Props) => {
                               Country/Region
                             </label>
                             <select
+                            disabled
                               className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                               name="billingCountry"
                               value={supplierdata.billingCountry}
