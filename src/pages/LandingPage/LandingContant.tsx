@@ -45,7 +45,7 @@ const LandingContant = ({ mode,setMode }: Props) => {
       <div className="col-span-9 ">
         <div className="grid grid-cols-12 gap-3">
           <div className="col-span-5">
-            <div onClick={() => handleNavigation('/sales', 3)} className={`w-[100%]  h-[260px] rounded-2xl ${mode ? 'bg-[#DED0B9]' : 'bg-[#565148]'} cursor-pointer  relative overflow-hidden p-6 flex flex-col`}>
+            <div onClick={() => handleNavigation('/sales/salesorder', 3)} className={`w-[100%]  h-[260px] rounded-2xl ${mode ? 'bg-[#DED0B9]' : 'bg-[#565148]'} cursor-pointer  relative overflow-hidden p-6 flex flex-col`}>
               <img className="absolute right-0 bottom-0" src={salesVector} alt="" />
               {/* Header Buttons */}
               <div className="flex  justify-between items-center">
@@ -115,7 +115,7 @@ const LandingContant = ({ mode,setMode }: Props) => {
                 <button className={` ${mode ? 'bg-[#71736B]' : 'bg-[#495053]'} text-white text-sm px-[10px] py-[8px] h-[35px] rounded-lg`}>
                   Customer
                 </button>
-                <button onClick={() => handleNavigation('/customer', 2)} className={` ${mode ? 'bg-[#585953]' : 'bg-[#595F62]'} text-white h-[42px] w-[42px] flex items-center justify-center rounded-full`}>
+                <button onClick={() => handleNavigation('/customer/home', 2)} className={` ${mode ? 'bg-[#585953]' : 'bg-[#595F62]'} text-white h-[42px] w-[42px] flex items-center justify-center rounded-full`}>
                   <ArrowrightUp size={30} stroke={1} />
                 </button>
               </div>
@@ -131,7 +131,7 @@ const LandingContant = ({ mode,setMode }: Props) => {
                 <button className={`${mode ? 'bg-white' : 'bg-[#71736B]'} ${mode ? 'text-[#303F58]' : 'text-white'} text-sm px-[10px] py-[8px] font-medium h-[35px] rounded-lg`}>
                   Purchase
                 </button>
-                <button onClick={() => handleNavigation('/purchase', 8)} className="bg-[#FEFBF8] text-white h-[42px] w-[42px] flex items-center justify-center rounded-full">
+                <button onClick={() => handleNavigation('/purchase/purchase-order', 8)} className="bg-[#FEFBF8] text-white h-[42px] w-[42px] flex items-center justify-center rounded-full">
                   <ArrowrightUp color="black" size={30} stroke={1} />
                 </button>
               </div>
@@ -147,7 +147,7 @@ const LandingContant = ({ mode,setMode }: Props) => {
                 <button className={`${mode ? 'bg-white' : 'bg-[#14181B]'} font-medium ${mode ? 'text-[#303F58]' : 'text-white'} text-sm px-[10px] py-[8px] h-[35px] rounded-lg`}>
                   Expense
                 </button>
-                <button onClick={() => handleNavigation('/expense', 6)} className={`${mode ? 'bg-[#FEFBF8]' : 'bg-[#283035]'} text-white h-[42px] w-[42px] flex items-center justify-center rounded-full`}>
+                <button onClick={() => handleNavigation('/expense/home', 6)} className={`${mode ? 'bg-[#FEFBF8]' : 'bg-[#283035]'} text-white h-[42px] w-[42px] flex items-center justify-center rounded-full`}>
                   <ArrowrightUp color={mode ? 'black' : 'currentColor'} size={30} stroke={1} />
                 </button>
               </div>
@@ -163,7 +163,7 @@ const LandingContant = ({ mode,setMode }: Props) => {
                 <button className={`${mode ? 'bg-[#DED0B9]' : 'bg-[#97998E]'} font-medium ${mode ? 'text-[#303F58]' : 'text-white'} text-sm px-[10px] py-[8px] h-[35px] rounded-lg`}>
                   Supplier
                 </button>
-                <button onClick={() => handleNavigation('/supplier', 5)} className={`${mode ? 'bg-[#DED0B9]' : 'bg-[#97998E]'}  text-white h-[42px] w-[42px] flex items-center justify-center rounded-full`}>
+                <button onClick={() => handleNavigation('/supplier/home', 5)} className={`${mode ? 'bg-[#DED0B9]' : 'bg-[#97998E]'}  text-white h-[42px] w-[42px] flex items-center justify-center rounded-full`}>
                   <ArrowrightUp color={mode ? '#303F58' : 'currentColor'} size={30} stroke={1} />
                 </button>
               </div>
@@ -182,7 +182,7 @@ const LandingContant = ({ mode,setMode }: Props) => {
             <button className={`${mode ? 'bg-[#948B7C]' : 'bg-[#C4B8A3]'} text-white text-sm px-[10px] py-[8px] h-[35px] rounded-lg`}>
               Accountant
             </button>
-            <button onClick={() => handleNavigation('/accountant', 4)} className={`${mode ? 'bg-[#B9AD9B]' : 'bg-[#565148]'} text-white h-[42px] w-[42px] flex items-center justify-center rounded-full`}>
+            <button onClick={() => handleNavigation('/accountant/chart-OF-accountant', 4)} className={`${mode ? 'bg-[#B9AD9B]' : 'bg-[#565148]'} text-white h-[42px] w-[42px] flex items-center justify-center rounded-full`}>
               <ArrowrightUp size={30} stroke={1} />
             </button>
           </div>

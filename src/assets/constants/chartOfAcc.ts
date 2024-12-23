@@ -1,15 +1,12 @@
 const chartOfAcc = [
   {
-    head: "Asset",
+    head: "Assets",
     subhead: [
       "Asset",
-      "Current asset",
-      "Cash",
-      "Bank",
-      "Fixed asset",
+      "Current Asset",
+      "Fixed Asset",
       "Stock",
       "Payment Clearing",
-      "Sundry Debtors",
     ],
   },
   {
@@ -28,7 +25,6 @@ const chartOfAcc = [
       "Long Term Liability",
       "Other Liability",
       "Overseas Tax Payable",
-      "Sundry Creditors",
     ],
   },
   {

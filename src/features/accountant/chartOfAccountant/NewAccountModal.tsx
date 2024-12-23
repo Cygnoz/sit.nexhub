@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import Button from "../../../Components/Button";
 import CirclePlus from "../../../assets/icons/circleplus";
 import CashImage from "../../../assets/Images/CashImage.png";
@@ -35,29 +35,31 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
   const [formValues, setFormValues] = useState(initialFormValues);
   
   const accountCategories = {
-    Asset: {
+    Assets: {
       Asset: [
         "Asset",
-        "Current asset",
-        "Cash",
-        "Bank",
-        "Fixed asset",
+        "Current Asset",
+        "Fixed Asset",
         "Stock",
         "Payment Clearing",
-        "Sundry Debtors",
       ],
+    },
+    Equity: {
       Equity: ["Equity"],
+    },
+    Income: {
       Income: ["Income", "Other Income"],
     },
-    Liability: {
+    Liabilities: {
       Liabilities: [
         "Current Liability",
         "Credit Card",
         "Long Term Liability",
         "Other Liability",
         "Overseas Tax Payable",
-        "Sundry Creditors",
       ],
+    },
+    Expenses: {
       Expenses: ["Expense", "Cost of Goods Sold", "Other Expense"],
     },
   };
@@ -160,23 +162,6 @@ function NewAccountModal({ fetchAllAccounts }: NewAccountModalProps) {
       }));
     }
   };
-  const [currencyData, setcurrencyData] = useState<any | []>([]);
-  const { request: getCurrencyData } = useApi("get", 5004);
-  const getcurrencyData = async () => {
-    try {
-      const url = `${endponits.GET_CURRENCY_LIST}`;
-      const { response, error } = await getCurrencyData(url);
-      if (!error && response) {
-        setcurrencyData(response.data);
-        setFormValues({ ...formValues, bankCurrency: response.data.find((item: any) => item.baseCurrency).currencyCode })
-      }
-    } catch (error) {
-      console.log("Error in fetching currency data", error);
-    }
-  };
-useEffect(()=>{
-  getcurrencyData()
-},[])
 
   return (
     <div>
@@ -290,65 +275,6 @@ useEffect(()=>{
                 </div>
               </div>
 
-             { formValues?.accountSubhead === "Bank" &&
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Account Number
-                  </label>
-                  <input
-                    type="text"
-                    name="bankAccNum"
-                    value={formValues.bankAccNum}
-                    onChange={handleChange}
-                    placeholder="Value"
-                    className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm mb-1 text-labelColor">
-                    IFSC
-                  </label>
-                  <input
-                    type="text"
-                    name="bankIfsc"
-                    value={formValues.bankIfsc}
-                    onChange={handleChange}
-                    placeholder="Value"
-                    className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Currency
-                  </label>
-                  <div className="relative">
-                    <div className="relative w-full">
-                      <select
-                        name="bankCurrency"
-                        value={formValues.bankCurrency}
-                        onChange={handleChange}
-                        className="block appearance-none w-full text-zinc-400 bg-white border border-slate-200 text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                      >
-                        {currencyData?.map((data: any) => (
-                          <option
-                            key={data._id}
-                            value={data.currencyCode}
-                            selected={data.currencyName} // Set as selected if baseCurrency is true
-                            className="text-slate-300"
-                          >
-                            {`${data.currencyName} (${data.currencySymbol})`}
-                          </option>
-                        ))}
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <CehvronDown color="gray" />
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>}
 
               <div className="mb-4">
                 <label className="block text-sm mb-1 text-labelColor">

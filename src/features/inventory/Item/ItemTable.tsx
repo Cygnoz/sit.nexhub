@@ -193,8 +193,10 @@ const ItemTable = () => {
   ];
   const filteredItems = itemsData.filter((item) => {
     const searchValueLower = searchValue.toLowerCase();
-    const matchesSearch = item.itemName?.toLowerCase().includes(searchValueLower);
-
+    const matchesItemName = item.itemName?.toLowerCase().includes(searchValueLower);
+    const matchesSku = item.sku?.toLowerCase().includes(searchValueLower);
+    const matchesSearch = matchesItemName || matchesSku;
+  
     if (selected === "All") {
       return matchesSearch;
     } else if (selected === "Low Stock") {
@@ -203,6 +205,7 @@ const ItemTable = () => {
       return matchesSearch && item.categories === selected;
     }
   });
+  
 
 
 
