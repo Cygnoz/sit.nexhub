@@ -84,7 +84,7 @@ const initialItemDataState = {
   costPrice: "",
   purchaseAccount: "",
   purchaseDescription: "",
-  preferredVendor: "",
+  preferredVendorId: "",
   taxRate: "",
   trackInventory: false,
   inventoryAccount: "",
@@ -373,7 +373,7 @@ const AddItem = ({ }: Props) => {
         costPrice: selectedItem.costPrice || "",
         purchaseAccount: selectedItem.purchaseAccount || "",
         purchaseDescription: selectedItem.purchaseDescription || "",
-        preferredVendor: selectedItem.preferredVendor || "",
+        preferredVendorId: selectedItem.preferredVendorId || "",
         taxRate: selectedItem.taxRate || "",
         trackInventory: selectedItem.trackInventory || false,
         inventoryAccount: selectedItem.inventoryAccount || "",
@@ -1434,20 +1434,20 @@ const AddItem = ({ }: Props) => {
                     type="text"
                     value={
                       suppliers.find(
-                        (supplier: any) => supplier._id === initialItemData.preferredVendor
+                        (supplier: any) => supplier._id === initialItemData.preferredVendorId
                       )?.supplierDisplayName || ""
                     }
                     readOnly
                     className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                     placeholder="Select or add Preferred Vendor"
-                    onClick={() => toggleDropdown("preferredVendor")}
+                    onClick={() => toggleDropdown("preferredVendorId")}
                   />
-                  {initialItemData.preferredVendor ? (
+                  {initialItemData.preferredVendorId ? (
                     <div
                       className="cursor-pointer absolute inset-y-0 right-0.5 -mt-1 flex items-center px-2 text-gray-700"
                     >
                       <span
-                        onClick={() => handleClearFields("preferredVendor")}
+                        onClick={() => handleClearFields("preferredVendorId")}
                         className="text-textColor text-2xl font-light"
                       >
                         &times;
@@ -1455,14 +1455,14 @@ const AddItem = ({ }: Props) => {
                     </div>
                   ) : (
                     <div
-                      onClick={() => toggleDropdown("preferredVendor")}
+                      onClick={() => toggleDropdown("preferredVendorId")}
                       className="cursor-pointer absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
                     >
                       <CehvronDown color="gray" />
                     </div>
                   )}
                 </div>
-                {openDropdownIndex === "preferredVendor" && (
+                {openDropdownIndex === "preferredVendorId" && (
                   <div
                     ref={dropdownRef}
                     className="absolute z-10 bg-white shadow rounded-md mt-1 max-h-[200px] overflow-y-scroll p-2 w-full space-y-1"
@@ -1484,7 +1484,7 @@ const AddItem = ({ }: Props) => {
                         <div
                           key={index}
                           onClick={() =>
-                            handleDropdownSelect("preferredVendor", supplier._id)
+                            handleDropdownSelect("preferredVendorId", supplier._id)
                           }
                           className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
                         >
