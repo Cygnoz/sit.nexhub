@@ -6,8 +6,8 @@ import CustomiseColumn from "../../../Components/CustomiseColum";
 import PrintButton from "../../../Components/PrintButton";
 import Pagination from "../../../Components/Pagination/Pagination";
 import Eye from "../../../assets/icons/Eye";
-import Pen from "../../../assets/icons/Pen";
-import Trash2 from "../../../assets/icons/Trash2";
+// import Pen from "../../../assets/icons/Pen";
+// import Trash2 from "../../../assets/icons/Trash2";
 import { TableResponseContext } from "../../../context/ContextShare";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
@@ -170,11 +170,11 @@ const ExpenseTable = () => {
                       )
                   )}
                   <td className="py-3 px-4 border-b border-tableBorder flex items-center justify-center gap-2">
-                    <Pen color="#0B9C56" size={18} />
+                    {/* <Pen color="#0B9C56" size={18} /> */}
                     <button onClick={() => handleRowClick(item._id)}>
                       <Eye color={"#569FBC"} />
                     </button>
-                    <Trash2 color="#EA1E4F" size={18} />
+                    {/* <Trash2 color="#EA1E4F" size={18} /> */}
                   </td>
 
                   <td className="py-3 px-4 border-b border-tableBorder"></td>

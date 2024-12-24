@@ -7,6 +7,7 @@ import SendPurchaseOrder from "../../purchaseOrder/viewPurchaseOrder/SendPurchas
 import CheveronDownIcon from "../../../../assets/icons/CheveronDownIcon";
 import CheveronUp from "../../../../assets/icons/CheveronUp";
 import CehvronDown from "../../../../assets/icons/CehvronDown";
+import Jornal from "../../bills/ViewBill/Jornal";
 
 type Props = {
   data?: any;
@@ -205,7 +206,12 @@ function OrderView({ data, page, organization }: Props) {
         )}
       </div>
       {page === "PurchaseOrder" && <SendPurchaseOrder data={data} />}
+      
       {renderItemTable()}
+      {
+  page==="Bills" && 
+  <Jornal/>
+}
       <hr className="mt-6 border-t border-inputBorder" />
       <div className="flex justify-between gap-6 mt-4 ">
         <div className="p-6 rounded-lg border border-billingBorder w-[50%] h-fit">
@@ -233,6 +239,11 @@ function OrderView({ data, page, organization }: Props) {
             {supplier?.billingPhone && <p>{supplier.billingPhone}</p>}
           </div>
         </div>
+
+
+
+
+
         <div className="p-6 rounded-lg border border-billingBorder w-[50%]">
           {page !== "PurchaseOrder" && page!=="DebitNote" ? (
             <>

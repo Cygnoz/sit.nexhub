@@ -142,6 +142,7 @@ export const endponits = {
   ADD_BILL: `/add-Bills`,
   GET_ALL_BILLS: `/get-all-Bills`,
   GET_A_BILL:`get-a-Bill`,
+  GET_BILL_JOURNAL:`/bill-journal`,
 
   // Purchase order
   ADD_PURCHASE_ORDER: `add-purchaseOrder`,
