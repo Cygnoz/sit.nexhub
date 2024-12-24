@@ -8,7 +8,7 @@ export const endponits = {
 
   //Sales
   ADD_SALES_SETTINGS: `add-sales-settings`,
-  ADD_SALES_INVOICE_SETTINGS: "add-salesInvoice-settings",
+  ADD_SALES_INVOICE_SETTINGS: "sales-invoice-settings",
   ADD_SALES_DELIVARY_CHALLANS: "add-deliveryChellans",
   GET_PREFIX: "get-prefix",
   ADD_PREFIX: "add-prefix",
@@ -187,5 +187,6 @@ export const endponits = {
 
   // ocr
 
-  UPLOAD_INVOICE:`api/upload`
+  UPLOAD_INVOICE:`api/upload`,
+  GET_ALL_OCR_INVOICE:`api/get_all_invoices`
 };

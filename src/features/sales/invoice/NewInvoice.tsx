@@ -76,7 +76,7 @@ const initialSalesQuoteState: invoice = {
   salesInvoiceDate: getCurrentDate(),
   dueDate: getCurrentDate(),
 
-  paymentMode: "",
+  paymentMode: "Cash",
   paymentTerms: "Due on Receipt",
   deliveryMethod: "",
   expectedShipmentDate: "",
@@ -207,8 +207,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   const { name, value } = e.target;
   const totalTax = parseFloat(invoiceState?.totalTax) || 0;
   const totalAmount = parseFloat(invoiceState.subtotalTotal + totalTax) || 0;
-  const subtotal = parseFloat(invoiceState.subtotalTotal) || 0; 
-  const totalAmountForPaid = (subtotal + totalTax) || 0;  
+  const totalAmountForPaid = parseFloat(invoiceState?.totalAmount) || 0;  
   let discountValue = parseFloat(invoiceState.discountTransactionAmount) || 0;
 
   setInvoiceState((prevState) => {
@@ -650,6 +649,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                     Sales Order Number
                     <input
                       name="salesOrderNumber"
+                      readOnly
                       id="salesOrderNumber"
                       value={invoiceState.salesOrderNumber}
                       onChange={handleChange}
@@ -826,6 +826,40 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                   </div>
                 </div>
               </div>
+
+              <div className="grid grid-cols-12 gap-4">
+              <div className="col-span-5">
+      <label className="block text-sm mb-1 text-labelColor">
+        Payment Mode
+      </label>
+      <div className="relative w-full">
+        <select
+          onChange={handleChange}
+          value={invoiceState.paymentMode} 
+          name="paymentMode"
+          className="block appearance-none w-full h-9 text-zinc-400 bg-white border
+                     border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        >
+          <option value="Cash" className="text-gray">
+            Cash
+          </option>
+          <option value="Card Transfer" className="text-gray">
+            Card Transfer
+          </option>
+          <option value="UPI" className="text-gray">
+            UPI
+          </option>
+          <option value="Credit" className="text-gray">
+            Credit
+          </option>
+        </select>
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+          <CehvronDown color="gray" />
+        </div>
+      </div>
+    </div>
+              </div>
+           
               <div className="mt-9">
                 <p className="font-bold">Add Item</p>
                 <NewSalesQuoteTable
@@ -1111,7 +1145,9 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 
               </div>
             </div>
-            <div>
+          { invoiceState?.paymentMode !== "Credit" &&
+          <>
+          <div>
               <label className="block text-sm mb-1 text-labelColor">
                 Deposit Account
               </label>
@@ -1149,6 +1185,8 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                 />
               </label>
             </div>
+            </>
+            }
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}

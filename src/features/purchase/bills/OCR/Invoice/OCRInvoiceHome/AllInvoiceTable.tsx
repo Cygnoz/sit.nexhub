@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 // import DotIcon from "../../../../../assets/icons/DotIcon";
 // import DateFormat from "../../../../../Components/DateFormat/DateFormta";
 import PurchaseTable from "../../../../CommonComponents/PurchaseTable/PurchaseTable";
@@ -7,54 +7,37 @@ import { useNavigate } from "react-router-dom";
 // import useApi from "../../../../../Hooks/useApi";
 import { TableResponseContext } from "../../../../../../context/ContextShare";
 import DotIcon from "../../../../../../assets/icons/DotIcon";
+import { endponits } from "../../../../../../Services/apiEndpoints";
+import useApi from "../../../../../../Hooks/useApi";
 
 
 const AllInvoiceTable = () => {
   const [columns, setColumns] = useState([
-    { id: "supplier", label: "Supplier", visible: true },
-    { id: "invoiceNumber", label: "Invoice Number", visible: true },
+    { id: "supplier_name", label: "Supplier", visible: true },
+    { id: "invoice_no", label: "Invoice Number", visible: true },
     { id: "uploadedDate", label: "Uploaded Date", visible: true },
-    { id: "reviewStatus", label: "Review Status", visible: true },
+    { id: "status", label: "Review Status", visible: true },
     { id: "reviewDate", label: "Review Date", visible: true },
   ]);
 
-  const [allInoive ] = useState<any[]>([
-    {
-      supplier: "Supplier A",
-      invoiceNumber: "INV-001",
-      uploadedDate: "2024-12-01",
-      reviewStatus: "Need Review",
-      reviewDate: "2024-12-02",
-    },
-    {
-      supplier: "Supplier B",
-      invoiceNumber: "INV-002",
-      uploadedDate: "2024-11-30",
-      reviewStatus: "Reviwed",
-      reviewDate: "2024-12-01",
-    },
-    {
-      supplier: "Supplier C",
-      invoiceNumber: "INV-003",
-      uploadedDate: "2024-11-29",
-      reviewStatus: "Reviwed",
-      reviewDate: "2024-11-30",
-    },
-    {
-      supplier: "Supplier D",
-      invoiceNumber: "INV-004",
-      uploadedDate: "2024-11-28",
-      reviewStatus: "Reviwed",
-      reviewDate: "2024-11-29",
-    },
-    {
-      supplier: "Supplier E",
-      invoiceNumber: "INV-005",
-      uploadedDate: "2024-11-27",
-      reviewStatus: "Reviwed",
-      reviewDate: "2024-11-28",
-    },
-  ]);
+  const { request: getInvoice } = useApi("get", 5000);
+  const [invoice,setInvoice]=useState<[]|any>([])
+
+
+    const getallInvoice = async () => {
+      try {
+        const url = `${endponits.GET_ALL_OCR_INVOICE}`;
+        const { response, error } = await getInvoice(url);
+        if (!error && response) {
+          setInvoice(response.data);
+          console.log(response, "currencyData");
+        }
+      } catch (error) {
+        console.error("Error in fetching currency data", error);
+      }
+    };
+  
+    console.log(invoice)
 
   const { loading, setLoading } = useContext(TableResponseContext)!;
   const navigate = useNavigate();
@@ -64,6 +47,10 @@ const AllInvoiceTable = () => {
   const handleRowClick = () => {
     navigate(`/purchase/bills/invoice/view`);
   };
+
+  useEffect(()=>{
+getallInvoice()
+  },[])
 
   const renderColumnContent = (colId: string, item: any) => {
     const columnValue = item[colId as keyof typeof item];
@@ -88,7 +75,7 @@ const AllInvoiceTable = () => {
   return (
     <PurchaseTable
       columns={columns}
-      data={allInoive}
+      data={invoice}
       onRowClick={handleRowClick}
       renderColumnContent={renderColumnContent}
       searchPlaceholder="Search Invoice"

@@ -308,18 +308,22 @@ function OrderView({ data, page, organization }: Props) {
                 Order Summary
               </p>
               <div className="mt-4 text-sm space-y-2 text-textColor">
+              { page==="PurchaseOrder" && 
+                <>
+                  <div className="flex justify-between">
+                    <p>Other Expense</p>
+                    <p>
+                      {organization?.baseCurrency} {data?.otherExpense || 0}
+                    </p>
+                  </div>
                 <div className="flex justify-between">
-                  <p>Other Expense</p>
-                  <p>
-                    {organization?.baseCurrency} {data?.otherExpense || 0}
-                  </p>
-                </div>
-                <div className="flex justify-between">
-                  <p>Freight</p>
-                  <p>
-                    {organization?.baseCurrency} {data?.freight || 0}
-                  </p>
-                </div>
+                    <p>Freight</p>
+                    <p>
+                      {organization?.baseCurrency} {data?.freight || 0}
+                    </p>
+                  </div>
+                </>
+                }
                 <div className="flex justify-between">
                   <p>Sub Total</p>
                   <p>
@@ -330,7 +334,7 @@ function OrderView({ data, page, organization }: Props) {
                   <p>Total Item</p>
                   <p>{data?.totalItem || 0}</p>
                 </div>
-                <div className="flex justify-between">
+                { page==="PurchaseOrder" && <div className="flex justify-between">
                   <p>Discount</p>
 
                   <div className="flex items-center gap-2">
@@ -364,7 +368,7 @@ function OrderView({ data, page, organization }: Props) {
                       {data?.transactionDiscountAmount || 0.00}
                     </p>
                   </div>
-                </div>
+                </div>}
                 {data?.cgst > 0 && data?.sgst > 0 ? (
                   <>
                     <div className="flex justify-between ">
@@ -394,24 +398,28 @@ function OrderView({ data, page, organization }: Props) {
                       {organization?.baseCurrency} {data?.totalTaxAmount | 0.00}
                     </p>
                   </div>
-                <div className="flex justify-between ">
-                  <p>Total</p>
-                  <p>
-                    {organization?.baseCurrency} {data?.grandTotal -data?.roundOff |0.00}
-                  </p>
-                </div>
-                <div className="flex justify-between mt-4">
-                  <p>Total</p>
-                  <p>
-                    {organization?.baseCurrency} {data?.roundOff |0.00}
-                  </p>
-                </div>
-                <div className="flex justify-between mt-4">
-                  <p>Round Off</p>
-                  <p>
-                    {organization?.baseCurrency} {data?.roundOff |0.00}
-                  </p>
-                </div>
+                  {  page==="PurchaseOrder" &&  
+                  <>
+                     <div className="flex justify-between ">
+                    <p>Total</p>
+                    <p>
+                      {organization?.baseCurrency} {data?.grandTotal -data?.roundOff |0.00}
+                    </p>
+                  </div>
+                  <div className="flex justify-between mt-4">
+                    <p>Round Off</p>
+                    <p>
+                      {organization?.baseCurrency} {data?.roundOff |0.00}
+                    </p>
+                  </div>
+               <div className="flex justify-between mt-4">
+                    <p>Round Off</p>
+                    <p>
+                      {organization?.baseCurrency} {data?.roundOff |0.00}
+                    </p>
+                  </div>
+                  </>
+                }
 
                 <hr className="mt-4 border-t border-[#CCCCCC]" />
                 <div className="flex justify-between mt-4 font-bold">
@@ -423,18 +431,6 @@ function OrderView({ data, page, organization }: Props) {
 
 
 
-                <div className="flex justify-end gap-2 mt-6">
-                  <Button variant="secondary" size="sm" className="px-4">
-                    Cancel
-                  </Button>
-                  <Button variant="secondary" size="sm" className="px-2">
-                    <PrinterIcon color="#565148" height={16} width={16} />
-                    Print
-                  </Button>
-                  <Button variant="primary" size="sm" className="px-3">
-                    Save & Send
-                  </Button>
-                </div>
               </div>
             </>
           )}

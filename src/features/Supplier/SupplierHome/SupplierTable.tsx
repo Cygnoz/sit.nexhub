@@ -138,7 +138,7 @@ const SupplierTable = ({
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">SI No</th>
+              <th className="py-3 px-4 border-b border-tableBorder">Sl.No</th>
               {columns.map(
                 (col) =>
                   col.visible && (
@@ -151,7 +151,7 @@ const SupplierTable = ({
                   )
               )}
               <th className="py-2 px-4 font-medium border-b border-tableBorder relative">
-                <CustomiseColmn columns={columns} setColumns={setColumns} />
+                <CustomiseColmn columns={columns} setColumns={setColumns} tableId={"supplier"} />
               </th>
             </tr>
           </thead>

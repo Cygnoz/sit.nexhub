@@ -15,11 +15,14 @@ function AddPaymentMade({ }: Props) {
             <div className="flex gap-5">
                <Link to={"/purchase/payment-made"}>
                <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
-                    <CheveronLeftIcon />
+                    <CheveronLeftIcon /> 
                 </div>
                </Link>
+               <div className="flex justify-center items-center">
+          <h4 className="font-bold text-xl text-textColor ">Bill Payment</h4>
+        </div>
 
-                <div className="rounded-[40px] w-[100%] bg-[#EAEBEB] px-4 py-">
+                <div className="rounded-[40px] w-[100%] bg-[#EAEBEB] px-4 py- hidden">
                     <div className="flex gap-2 py-2">
                         <button
                             className={`px-4 py-2 rounded-[30px]  text-sm 

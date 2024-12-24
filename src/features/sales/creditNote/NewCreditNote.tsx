@@ -88,6 +88,9 @@ const NewCreditNote = () => {
   const [creditNoteState, setCreditNoteState] = useState<any>(
     initialCreditNoteState
   );
+  console.log(isPlaceOfSupplyVisible,"isPlaceOfSupplyVisible");
+
+  
 
 
   const [errors, setErrors] = useState({
@@ -105,6 +108,8 @@ const NewCreditNote = () => {
 
 
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
+  console.log(selectedCustomer.taxType,"selectedCustomer");
+  
   const { request: AllCustomer } = useApi("get", 5002);
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
@@ -297,28 +302,23 @@ const NewCreditNote = () => {
     }
   };
 
-
-
-
-
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
-
+    };
+    
     const checkTaxType = (customer: Customer) => {
       if (customer.taxType === "GST") {
         setIsPlaceOfSupplyVisible(true);
-      } else {
+      } else{
         setIsPlaceOfSupplyVisible(false);
       }
     };
-
+    
     useEffect(() => {
       if (selectedCustomer) {
         checkTaxType(selectedCustomer);
       }
     }, [selectedCustomer]);
-
-  };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -358,11 +358,6 @@ const NewCreditNote = () => {
           (invoice.salesInvoice?.toLowerCase().includes(searchValue.toLowerCase()))
       )
       : [];
-
-  console.log(allInvoice, "test");
-
-  console.log(creditNoteState, "hyy");
-
   
 
 const handleGoBack = () => {
@@ -767,7 +762,7 @@ const handleGoBack = () => {
               />
             </label>
           </div>
-          <div className="text-sm mt-3">
+          <div className="text-sm mt-3 hidden">
             <label className="block  text-sm mb-1 text-labelColor">
               Attach files to the Debit Notes
               <div className="border-inputBorder border-gray-800 w-full border-dashed border p-2 rounded flex flex-col gap-2 justify-center items-center mt-2  bg-white mb-4 ">
@@ -789,7 +784,7 @@ const handleGoBack = () => {
             </label>
           </div>
 
-          <div className="bg-secondary_main p-5 min-h-max rounded-xl relative ">
+          <div className="bg-secondary_main p-5 min-h-max rounded-xl relative mt-2">
             <div className=" pb-4  text-dropdownText border-b-2 border-slate-200 space-y-2">
               <div className="flex ">
                 <div className="w-[75%]">

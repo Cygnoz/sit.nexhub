@@ -7,13 +7,14 @@ import bgImage from "../../../../../../assets/Images/6.png";
 import { endponits } from "../../../../../../Services/apiEndpoints";
 import useApi from "../../../../../../Hooks/useApi";
 import toast from "react-hot-toast";
-import "../../../../../../App.css"
+import "../../../../../../App.css";
 
 const OCRNewInvoice = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false); 
-  const { request: upload } = useApi("mPost", 5000);
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const { request: upload } = useApi("post", 5000);
 
   const openModal = () => setModalOpen(true);
 
@@ -24,38 +25,56 @@ const OCRNewInvoice = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      setSelectedFile(event.target.files[0]);
+      const file = event.target.files[0];
+      setFileName(file.name); // Store file name
+      const reader = new FileReader();
+  
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setSelectedFile(base64String);
+      };
+  
+      reader.readAsDataURL(file); // Convert file to Base64
     }
   };
-
+  
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setSelectedFile(e.dataTransfer.files[0]);
+      const file = e.dataTransfer.files[0];
+      setFileName(file.name); // Store file name
+      const reader = new FileReader();
+  
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setSelectedFile(base64String);
+      };
+  
+      reader.readAsDataURL(file); // Convert file to Base64
     }
   };
 
- const  handleCancel=()=>{
+  const handleCancel = () => {
     setModalOpen(false);
-    setSelectedFile(null)
-
-  }
+    setSelectedFile(null);
+  };
 
   const handleUploadInvoice = async () => {
     if (!selectedFile) {
       console.error("No file selected.");
       return;
     }
+
     try {
-      setIsLoading(true); 
+      setIsLoading(true);
       const url = `${endponits.UPLOAD_INVOICE}`;
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      const { response, error } = await upload(url, formData);
+      const payload = { file: selectedFile }; // Send Base64 string
+
+      const { response, error } = await upload(url, payload);
       if (response && !error) {
         toast.success(response.data.message);
         setModalOpen(false);
-        setSelectedFile(null)
+        setSelectedFile(null);
       }
     } catch (error) {
       console.error("Error occurred during upload:", error);
@@ -104,7 +123,6 @@ const OCRNewInvoice = () => {
             </div>
           </div>
 
-          {/* Loader div */}
           {isLoading && (
             <div className="absolute inset-0 flex justify-center items-center bg-opacity-50 bg-gray-700 bg-slate-50">
               <div className="loader"></div>
@@ -119,13 +137,13 @@ const OCRNewInvoice = () => {
             >
               <div className="flex flex-col justify-center items-center text-[#0B0B0B] space-y-2 h-full w-full text-sm">
                 <UploadFile />
-                {selectedFile ? (
-                  <p className="text-center font-medium">{selectedFile.name}</p>
-                ) : (
-                  <p className="text-center">
-                    Drag your file(s) to start uploading
-                  </p>
-                )}
+                {fileName ? (
+  <p className="text-center font-medium">{fileName}</p>
+) : (
+  <p className="text-center">
+    Drag your file(s) to start uploading
+  </p>
+)}
                 <div className="flex items-center justify-center gap-x-2 text-sm text-[#6D6D6D]">
                   <div className="border h-0 w-[80px] border-[#E7E7E7]"></div>
                   <span>OR</span>

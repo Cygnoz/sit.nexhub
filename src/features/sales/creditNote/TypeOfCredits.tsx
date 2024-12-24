@@ -38,7 +38,7 @@ function TypeOfCredits({}: Props) {
       },
       {
         icon: <NewspaperIcon color="#585953" />,
-        title: "Invoicr unassociated",
+        title: "Invoice unassociated",
       },
     ];
   

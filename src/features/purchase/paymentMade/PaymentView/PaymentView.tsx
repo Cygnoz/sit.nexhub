@@ -8,6 +8,7 @@ import useApi from '../../../../Hooks/useApi';
 import { endponits } from '../../../../Services/apiEndpoints';
 import { useOrganization } from '../../../../context/OrganizationContext';
 import SideBar from './SideBar';
+import PrinterIcon from '../../../../assets/icons/PrinterIcon';
 
 type Props = {};
 
@@ -63,7 +64,12 @@ function PaymentView({}: Props) {
             <PencilEdit color="black" />
             Edit
           </Button>
-          <Button className="h-[38px] w-[100px] flex justify-center items-center" variant="secondary">
+
+          <Button variant="secondary" size="sm" className="px-2">
+                    <PrinterIcon color="#565148" height={16} width={16} />
+                    Print
+                  </Button>
+          {/* <Button className="h-[38px] w-[100px] flex justify-center items-center" variant="secondary">
             <PencilEdit color="black" />
             Email
           </Button>
@@ -73,7 +79,7 @@ function PaymentView({}: Props) {
           >
             <option>More Actions</option>
             <option>Delete</option>
-          </select>
+          </select> */}
         </div>
       </div>
       <hr className="mb-5 border-loremcolor" />

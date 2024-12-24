@@ -207,18 +207,18 @@ const NewOrderTable = ({
     const cgstPercentage = item.itemCgst || 0;
     const sgstPercentage = item.itemSgst || 0;
     const igstPercentage = item.itemIgst || 0;
-
+  
     let cgstAmount = 0;
     let sgstAmount = 0;
     let igstAmount = 0;
-
+  
     if (!isInterState) {
-      cgstAmount = (discountedPrice * cgstPercentage) / 100;
-      sgstAmount = (discountedPrice * sgstPercentage) / 100;
+      cgstAmount = Math.round((discountedPrice * cgstPercentage) / 100 * 100) / 100;
+      sgstAmount = Math.round((discountedPrice * sgstPercentage) / 100 * 100) / 100;
     } else {
-      igstAmount = (discountedPrice * igstPercentage) / 100;
+      igstAmount = Math.round((discountedPrice * igstPercentage) / 100 * 100) / 100;
     }
-
+  
     return {
       itemAmount: discountedPrice,
       cgstAmount,
@@ -226,6 +226,7 @@ const NewOrderTable = ({
       igstAmount,
     };
   };
+  
 
   const handleRowChange = (index: number, field: keyof Row, value: string) => {
     const newRows = [...rows];

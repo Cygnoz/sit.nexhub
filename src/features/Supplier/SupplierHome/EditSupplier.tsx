@@ -1,4 +1,10 @@
-import React, { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
 import PhoneInput from "react-phone-input-2";
 import Button from "../../../Components/Button";
@@ -24,9 +30,16 @@ type Props = {
   addressEdit?: string;
 };
 
-const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addressEdit }) => {
-  const [activeTab, setActiveTab] = useState<string>(addressEdit ? 'address' : 'otherDetails');
-  const { request: editSupplier } = useApi('put', 5009)
+const EditSupplier: React.FC<Props> = ({
+  supplier,
+  isModalOpen,
+  closeModal,
+  addressEdit,
+}) => {
+  const [activeTab, setActiveTab] = useState<string>(
+    addressEdit ? "address" : "otherDetails"
+  );
+  const { request: editSupplier } = useApi("put", 5009);
   const [countryData, setcountryData] = useState<any | []>([]);
   const [stateList, setStateList] = useState<any | []>([]);
   const [currencyData, setcurrencyData] = useState<any | []>([]);
@@ -34,7 +47,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [shippingstateList, setshippingStateList] = useState<any | []>([]);
   const [paymentTerms, setPaymentTerms] = useState<any | []>([]);
-  const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([])
+  const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [errors, setErrors] = useState({
     firstName: false,
     lastName: false,
@@ -44,7 +57,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
   const { request: getCountryData } = useApi("get", 5004);
   const { request: getCurrencyData } = useApi("get", 5004);
   const { request: getPaymentTerms } = useApi("get", 5004);
-  const { request: getOrganization } = useApi("get", 5004)
+  const { request: getOrganization } = useApi("get", 5004);
   const { request: getTax } = useApi("get", 5009);
   const { setsupplierResponse } = useContext(SupplierResponseContext)!;
   const [rows, setRows] = useState([
@@ -57,7 +70,6 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
       mobile: "",
     },
   ]);
-
 
   const addRow = () => {
     setRows([
@@ -72,7 +84,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
       },
     ]);
   };
-  const [openingType, setOpeningType] = useState<string>('credit')
+  const [openingType, setOpeningType] = useState<string>("credit");
   const [supplierdata, setSupplierData] = useState<SupplierData>({
     _id: "",
     supplierProfile: "",
@@ -103,7 +115,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     vatNumber: "",
     msmeType: "",
     msmeNumber: "",
-    msmeRegistered: false, 
+    msmeRegistered: false,
     billingAttention: "",
     billingCountry: "",
     billingAddressStreet1: "",
@@ -141,7 +153,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
       },
     ],
     remarks: "",
-    status: ""
+    status: "",
   });
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -170,22 +182,22 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
   useEffect(() => {
     if (supplier) {
       // Update supplier data
-      setSupplierData(prev => ({ ...prev, ...supplier }));
-  
+      setSupplierData((prev) => ({ ...prev, ...supplier }));
+
       // Populate "Re-enter Account Numbers" with account numbers from bankDetails
       setReEnterAccountNumbers(
-        supplier.bankDetails.map(detail => detail.accountNum || "")
+        supplier.bankDetails.map((detail) => detail.accountNum || "")
       );
-  
+
       // Set initial state for account number visibility
       setShowAccountNumbers(supplier.bankDetails.map(() => false));
       setShowReEnterAccountNumbers(supplier.bankDetails.map(() => false));
-  
+
       // Set initial state for account number match
       setIsaccountNumbersame(supplier.bankDetails.map(() => true));
     }
   }, [supplier]);
-  
+
   // States
   const [showAccountNumbers, setShowAccountNumbers] = useState(
     supplierdata.bankDetails.map(() => false)
@@ -193,22 +205,25 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
   const [showReEnterAccountNumbers, setShowReEnterAccountNumbers] = useState(
     supplierdata.bankDetails.map(() => false)
   );
-    // check account number
+  // check account number
   const [reEnterAccountNumbers, setReEnterAccountNumbers] = useState(
     supplierdata.bankDetails.map(() => "")
   );
-  
+
   const [isAccountNumberSame, setIsaccountNumbersame] = useState(
     supplierdata.bankDetails.map(() => true)
   );
-  
 
-  const handleReEnterAccountNumberChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleReEnterAccountNumberChange = (
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const newReEnterAccountNumbers = [...reEnterAccountNumbers];
     newReEnterAccountNumbers[index] = e.target.value;
     setReEnterAccountNumbers(newReEnterAccountNumbers);
 
-    const isMatch = supplierdata.bankDetails[index].accountNum === e.target.value;
+    const isMatch =
+      supplierdata.bankDetails[index].accountNum === e.target.value;
     const newIsAccountNumberSame = [...isAccountNumberSame];
     newIsAccountNumberSame[index] = isMatch;
     setIsaccountNumbersame(newIsAccountNumberSame);
@@ -220,67 +235,74 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const { name, value } = e.target;
-  
-    type BankDetailKeys = "accountHolderName" | "bankName" | "accountNum" | "ifscCode";
-  
+
+    type BankDetailKeys =
+      | "accountHolderName"
+      | "bankName"
+      | "accountNum"
+      | "ifscCode";
+
     const updatedBankDetails = [...supplierdata.bankDetails];
     updatedBankDetails[index][name as BankDetailKeys] = value;
-  
+
     // If account number is changed, reset re-entered value
     if (name === "accountNum") {
       const newReEnterAccountNumbers = [...reEnterAccountNumbers];
       newReEnterAccountNumbers[index] = ""; // Clear the re-entered account number
       setReEnterAccountNumbers(newReEnterAccountNumbers);
-  
+
       const newIsAccountNumberSame = [...isAccountNumberSame];
       newIsAccountNumberSame[index] = false; // Mark as not matching
       setIsaccountNumbersame(newIsAccountNumberSame);
     }
-  
+
     setSupplierData((prevState) => ({
       ...prevState,
       bankDetails: updatedBankDetails,
     }));
   };
-  
-  console.log(supplierdata,"supplierData")
+
+  console.log(supplierdata, "supplierData");
 
   const handleEditSupplier = async () => {
     const newErrors = { ...errors };
-  
+
     // Validate basic supplier fields
     if (supplierdata.firstName === "") newErrors.firstName = true;
     if (supplierdata.lastName === "") newErrors.lastName = true;
-    if (supplierdata.supplierDisplayName === "") newErrors.supplierDisplayName = true;
+    if (supplierdata.supplierDisplayName === "")
+      newErrors.supplierDisplayName = true;
     if (supplierdata.companyName === "") newErrors.companyName = true;
-  
-    const unmatchedAccounts = supplierdata.bankDetails.some((bankDetail, index) => {
-      const accountNum = bankDetail.accountNum?.trim(); 
-      const reEnteredAccount = reEnterAccountNumbers[index]?.trim(); 
-    
-      if (!accountNum && !reEnteredAccount) {
-        return false; 
+
+    const unmatchedAccounts = supplierdata.bankDetails.some(
+      (bankDetail, index) => {
+        const accountNum = bankDetail.accountNum?.trim();
+        const reEnteredAccount = reEnterAccountNumbers[index]?.trim();
+
+        if (!accountNum && !reEnteredAccount) {
+          return false;
+        }
+
+        return accountNum !== reEnteredAccount;
       }
-    
-      return accountNum !== reEnteredAccount;
-    });
-    
+    );
+
     if (unmatchedAccounts) {
       toast.error(
         "Account numbers do not match their re-entered values. Please correct them."
       );
       return;
     }
-  
+
     if (Object.values(newErrors).some((error) => error)) {
       setErrors(newErrors);
       return;
     }
-  
+
     try {
       const url = `${endponits.EDIT_SUPPLIER}/${supplier?._id}`;
       const { response, error } = await editSupplier(url, supplierdata);
-  
+
       if (!error && response) {
         setsupplierResponse(response.data);
         toast.success(response.data.message);
@@ -292,7 +314,6 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
       console.error("Error fetching suppliers:", error);
     }
   };
-  
 
   //  bank details change
   useEffect(() => {
@@ -377,7 +398,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     }));
   };
 
-  // handle sidebar 
+  // handle sidebar
   const getTabClassName = (tabName: string) => {
     return activeTab === tabName
       ? " cursor-pointer font-bold text-darkRed"
@@ -443,26 +464,26 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     }
 
     // Update supplierDisplayName based on companyName
-    if (name === 'companyName') {
-      setSupplierData(prevData => ({
+    if (name === "companyName") {
+      setSupplierData((prevData) => ({
         ...prevData,
-        supplierDisplayName: value
+        supplierDisplayName: value,
       }));
     }
 
     // Handle checkbox updates
     if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
-      setSupplierData(prevData => ({
+      setSupplierData((prevData) => ({
         ...prevData,
-        [name]: checked
+        [name]: checked,
       }));
     } else {
       // Default case for other inputs
-      if (name !== 'openingBalance') {
-        setSupplierData(prevData => ({
+      if (name !== "openingBalance") {
+        setSupplierData((prevData) => ({
           ...prevData,
-          [name]: value
+          [name]: value,
         }));
       }
     }
@@ -488,7 +509,6 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
         setPaymentTerms(paymentTermResponse.data);
         // console.log(paymentTermResponse.data, "paymet terms");
       }
-
 
       const CountryUrl = `${endponits.GET_COUNTRY_DATA}`;
       const { response: countryResponse, error: countryError } =
@@ -519,11 +539,8 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
       } else {
         console.log(taxError, "tax");
       }
-
-    } catch (error) {
-
-    }
-  }
+    } catch (error) {}
+  };
   const getOneOrganization = async () => {
     try {
       const url = `${endponits.GET_ONE_ORGANIZATION}`;
@@ -532,13 +549,11 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
       if (!error && response?.data) {
         setOneOrganization(response.data);
         // console.log(response.data,"org");
-
       }
     } catch (error) {
       console.error("Error fetching organization:", error);
     }
   };
-
 
   // compy billing address
   const handleCopyAddress = (e: any) => {
@@ -560,8 +575,10 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
   // handle place od supply
   const handleplaceofSupply = () => {
     if (oneOrganization.organizationCountry) {
-      const country = countryData.find((c: any) =>
-        c.name.toLowerCase() === oneOrganization.organizationCountry.toLowerCase()
+      const country = countryData.find(
+        (c: any) =>
+          c.name.toLowerCase() ===
+          oneOrganization.organizationCountry.toLowerCase()
       );
 
       if (country) {
@@ -577,12 +594,11 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
     }
   };
 
-
   // console.log(placeOfSupplyList,"place");
 
-  // handle country and state 
+  // handle country and state
   useEffect(() => {
-    handleplaceofSupply()
+    handleplaceofSupply();
     if (supplierdata.billingCountry) {
       const country = countryData.find(
         (c: any) => c.name === supplierdata.billingCountry
@@ -604,46 +620,40 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
 
   useEffect(() => {
     getAdditionalData();
-    getAdditionalInfo()
-    getOneOrganization()
+    getAdditionalInfo();
+    getOneOrganization();
   }, []);
 
   const ShippingAddressRef = useRef<HTMLDivElement | null>(null);
   const BillingAddressRef = useRef<HTMLDivElement | null>(null);
-  
-  const addressscroll = () => {
-    if(addressEdit){
-      if (addressEdit === "billingAddressEdit" && BillingAddressRef.current) {
-      BillingAddressRef.current.scrollIntoView({ behavior: "smooth" });
-      console.log(addressEdit,"add")
 
+  const addressscroll = () => {
+    if (addressEdit) {
+      if (addressEdit === "billingAddressEdit" && BillingAddressRef.current) {
+        BillingAddressRef.current.scrollIntoView({ behavior: "smooth" });
+        console.log(addressEdit, "add");
+      }
+      if (addressEdit === "shippingAddressEdit" && ShippingAddressRef.current) {
+        ShippingAddressRef.current.scrollIntoView({ behavior: "smooth" });
+        console.log(addressEdit, "add");
+      }
     }
-    if (addressEdit === "shippingAddressEdit" && ShippingAddressRef.current) {
-      ShippingAddressRef.current.scrollIntoView({ behavior: "smooth" });
-      console.log(addressEdit,"add")
-    } 
-    }
-   
-  
   };
 
-  console.log(addressEdit,"addressEdit")
-  
+  console.log(addressEdit, "addressEdit");
+
   useEffect(() => {
     setActiveTab(addressEdit ? "address" : "otherDetails");
-
   }, [addressEdit]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (addressEdit) {
       addressscroll();
     }
-  },[addressEdit])
-
+  }, [addressEdit]);
 
   return (
     <div>
-
       {/* <Button onClick={openModal} variant="secondary" className="pl-6 pr-6"  size="sm"><Pen size={18} color="#565148" /> <p className="text-sm font-medium">Edit</p></Button> */}
       <Modal
         open={isModalOpen}
@@ -879,9 +889,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                       inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                       inputStyle={{ height: "35px", width: "100%" }}
                       containerStyle={{ width: "100%" }}
-                      country={
-                        "in"
-                      }
+                      country={"in"}
                       value={supplierdata.workPhone}
                       onChange={(value) =>
                         setSupplierData({ ...supplierdata, workPhone: value })
@@ -901,9 +909,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                       inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                       inputStyle={{ height: "35px", width: "100%" }}
                       containerStyle={{ width: "100%" }}
-                      country={
-                        "in"
-                      }
+                      country={"in"}
                       value={supplierdata.mobile}
                       onChange={(value) =>
                         setSupplierData({ ...supplierdata, mobile: value })
@@ -1103,12 +1109,16 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                                 {" "}
                                 Select a Tax
                               </option>
-                              {gstOrVat.tds && gstOrVat.tds.map((item: any, index: number) => (
-                                <option key={index} value={`${item.name}-${item.value}%`} className="text-gray">
-                                  {item.name} - ({item.value}%)
-                                </option>
-                              ))}
-
+                              {gstOrVat.tds &&
+                                gstOrVat.tds.map((item: any, index: number) => (
+                                  <option
+                                    key={index}
+                                    value={`${item.name}-${item.value}%`}
+                                    className="text-gray"
+                                  >
+                                    {item.name} - ({item.value}%)
+                                  </option>
+                                ))}
                             </select>
                             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                               <CehvronDown color="gray" />
@@ -1170,7 +1180,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                           className="hidden"
                           // value={supplierdata.documents}
                           name="documents"
-                        // onChange={(e)=>handleFileChange(e)}
+                          // onChange={(e)=>handleFileChange(e)}
                         />
                       </div>
                       <div className="">
@@ -1292,10 +1302,13 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                               </div>
                             )}
 
-                            {supplierdata.gstTreatment !== "Unregistered Business" && (
+                            {supplierdata.gstTreatment !==
+                              "Unregistered Business" && (
                               <div>
                                 <div>
-                                  <label className="block mb-1">GSTIN/UIN</label>
+                                  <label className="block mb-1">
+                                    GSTIN/UIN
+                                  </label>
                                   <input
                                     type="text"
                                     name="gstinUin"
@@ -1305,23 +1318,28 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                                     onChange={handleChange}
                                     onBlur={() => {
                                       if (
-                                        supplierdata.gstTreatment !== "Overseas" &&
-                                        supplierdata.gstTreatment !== "Unregistered Business" &&
+                                        supplierdata.gstTreatment !==
+                                          "Overseas" &&
+                                        supplierdata.gstTreatment !==
+                                          "Unregistered Business" &&
                                         supplierdata.gstTreatment !== "" &&
-
                                         supplierdata.gstinUin === ""
                                       ) {
-                                        setErrors((prevErrors) => ({ ...prevErrors, gstinUin: true }));
+                                        setErrors((prevErrors) => ({
+                                          ...prevErrors,
+                                          gstinUin: true,
+                                        }));
                                       } else {
-                                        setErrors((prevErrors) => ({ ...prevErrors, gstinUin: false }));
+                                        setErrors((prevErrors) => ({
+                                          ...prevErrors,
+                                          gstinUin: false,
+                                        }));
                                       }
                                     }}
                                   />
                                 </div>
-
                               </div>
                             )}
-
                           </div>
                         )}
 
@@ -1367,11 +1385,13 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                             checked={supplierdata.msmeRegistered}
                             onChange={handleChange}
                           />
-                          <label htmlFor="msmeCheckbox" className="text-base cursor-pointer">
+                          <label
+                            htmlFor="msmeCheckbox"
+                            className="text-base cursor-pointer"
+                          >
                             The Vendor is MSME Registered
                           </label>
                         </div>
-
 
                         {supplierdata.msmeRegistered == true && (
                           <div className="grid grid-cols-2 mt-1 gap-4">
@@ -1425,9 +1445,12 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                     </>
                   )}
                   {activeTab === "address" && (
-                    <div >
+                    <div>
                       {/* Billing Address */}
-                      <div ref={BillingAddressRef} className="space-y-3 p-5 text-sm">
+                      <div
+                        ref={BillingAddressRef}
+                        className="space-y-3 p-5 text-sm"
+                      >
                         <p>
                           <b>Billing Address</b>
                         </p>
@@ -1451,6 +1474,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                               Country/Region
                             </label>
                             <select
+                              disabled
                               className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                               name="billingCountry"
                               value={supplierdata.billingCountry}
@@ -1512,7 +1536,6 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                               value={supplierdata.billingCity}
                               onChange={handleChange}
                             />
-
                           </div>
 
                           <div className="relative ">
@@ -1581,14 +1604,11 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                                 inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                                 inputStyle={{ height: "38px", width: "100%" }}
                                 containerStyle={{ width: "100%" }}
-                                country={
-                                  "in"
-                                }
+                                country={"in"}
                                 value={supplierdata.billingPhone}
                                 onChange={(value) =>
                                   handleBillingPhoneChange(value)
                                 }
-
                               />
                             </div>
                           </div>
@@ -1612,7 +1632,10 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                       </div>
 
                       {/* Shipping Address */}
-                      <div ref={ShippingAddressRef} className="space-y-3 p-5 text-sm">
+                      <div
+                        ref={ShippingAddressRef}
+                        className="space-y-3 p-5 text-sm"
+                      >
                         <div className="flex">
                           <p>
                             <b>Shipping Address</b>
@@ -1776,9 +1799,7 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                                 inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                                 inputStyle={{ height: "38px", width: "100%" }}
                                 containerStyle={{ width: "100%" }}
-                                country={
-                                  "in"
-                                }
+                                country={"in"}
                                 value={supplierdata.shippingPhone}
                                 onChange={handleShippingPhoneChange}
                               />
@@ -1844,14 +1865,31 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                                       className="block relative w-full h-9 focus:border-none text-zinc-400 bg-white text-sm text-center border-none rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                       value={row.salutation}
                                       onChange={(e) =>
-                                        handleRowChange(index, "salutation", e.target.value)
+                                        handleRowChange(
+                                          index,
+                                          "salutation",
+                                          e.target.value
+                                        )
                                       }
                                     >
-                                      <option value="" className="text-gray">Select</option>
-                                      <option value="Mr" className="text-gray">Mr</option>
-                                      <option value="Mrs" className="text-gray">Mrs</option>
-                                      <option value="Miss" className="text-gray">Miss</option>
-                                      <option value="Dr" className="text-gray">Dr</option>
+                                      <option value="" className="text-gray">
+                                        Select
+                                      </option>
+                                      <option value="Mr" className="text-gray">
+                                        Mr
+                                      </option>
+                                      <option value="Mrs" className="text-gray">
+                                        Mrs
+                                      </option>
+                                      <option
+                                        value="Miss"
+                                        className="text-gray"
+                                      >
+                                        Miss
+                                      </option>
+                                      <option value="Dr" className="text-gray">
+                                        Dr
+                                      </option>
                                     </select>
                                   </div>
                                 </td>
@@ -2000,17 +2038,25 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                                 </label>
                                 <div className="relative">
                                   <input
-                                    type={showAccountNumbers[index] ? "text" : "password"}
+                                    type={
+                                      showAccountNumbers[index]
+                                        ? "text"
+                                        : "password"
+                                    }
                                     name="accountNum"
                                     className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                                     placeholder="Enter Account Number"
                                     value={bankDetail.accountNum}
-                                    onChange={(e) => handleBankDetailsChange(index, e)}
+                                    onChange={(e) =>
+                                      handleBankDetailsChange(index, e)
+                                    }
                                   />
                                   <button
                                     type="button"
                                     className="absolute right-2 top-2 text-sm text-gray-600"
-                                    onClick={() => toggleShowAccountNumber(index)}
+                                    onClick={() =>
+                                      toggleShowAccountNumber(index)
+                                    }
                                   >
                                     {showAccountNumbers[index] ? (
                                       <Eye color={"currentColor"} />
@@ -2040,17 +2086,25 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
 
                                 <div className="relative">
                                   <input
-                                    type={showReEnterAccountNumbers[index] ? "text" : "password"}
+                                    type={
+                                      showReEnterAccountNumbers[index]
+                                        ? "text"
+                                        : "password"
+                                    }
                                     name="reAccountNum"
                                     className="text-sm w-[100%] rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                                     placeholder="Re-Enter Account Number"
                                     value={reEnterAccountNumbers[index]}
-                                    onChange={(e) => handleReEnterAccountNumberChange(index, e)}
+                                    onChange={(e) =>
+                                      handleReEnterAccountNumberChange(index, e)
+                                    }
                                   />
                                   <button
                                     type="button"
                                     className="absolute right-2 top-2 text-sm text-gray-600"
-                                    onClick={() => toggleShowReEnterAccountNumber(index)}
+                                    onClick={() =>
+                                      toggleShowReEnterAccountNumber(index)
+                                    }
                                   >
                                     {showReEnterAccountNumbers[index] ? (
                                       <Eye color={"currentColor"} />
@@ -2059,9 +2113,13 @@ const EditSupplier: React.FC<Props> = ({ supplier, isModalOpen, closeModal, addr
                                     )}
                                   </button>
                                 </div>
-                                {supplierdata.bankDetails[index].accountNum && reEnterAccountNumbers[index] && !isAccountNumberSame[index] && (
-                                  <p className="text-sm text-red-600">Account number does not match</p>
-                                )}
+                                {supplierdata.bankDetails[index].accountNum &&
+                                  reEnterAccountNumbers[index] &&
+                                  !isAccountNumberSame[index] && (
+                                    <p className="text-sm text-red-600">
+                                      Account number does not match
+                                    </p>
+                                  )}
                               </div>
                             </div>
                           </>

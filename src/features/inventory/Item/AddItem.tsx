@@ -105,7 +105,6 @@ const AddItem = ({ }: Props) => {
   const [searchValueBrand, setSearchValueBrand] = useState<string>("");
   const [searchValueCategory, setSearchValueCategory] = useState<string>("");
   const [searchValueVendor, setSearchValueVendor] = useState<string>("");
-
   const [searchValueRack, setSearchValueRack] = useState<string>("");
   const [searchValueTaxRate, setSearchValueTaxRate] = useState<string>("");
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
@@ -453,7 +452,7 @@ const AddItem = ({ }: Props) => {
           </div>
 
           <div className="col-span-10 -mt-4">
-            <div className="flex justify-center items-center">
+            <div className="flex justify-start items-center">
               <div>
                 <label
                   className="block text-sm text-labelColor"
@@ -591,7 +590,7 @@ const AddItem = ({ }: Props) => {
                     />
                   </div>
                 </div>
-                <div className="relative col-span-3 mt-3">
+                <div className="relative col-span-1 w-[300%] mt-3">
                   <label
                     htmlFor="unit-input"
                     className="text-slate-600 flex items-center gap-2"
@@ -599,7 +598,7 @@ const AddItem = ({ }: Props) => {
                     Unit
                     {/* <CircleHelp /> */}
                   </label>
-                  <div className="relative w-full ">
+                  <div className="relative w-full">
                     <input
                       id="unit-input"
                       type="text"

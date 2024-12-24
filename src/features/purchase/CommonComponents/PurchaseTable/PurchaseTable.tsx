@@ -24,9 +24,11 @@ interface TableProps {
   loading: boolean;
   searchableFields: string[];
   setColumns?: any;
+  page?:any
 }
 
 const PurchaseTable: React.FC<TableProps> = ({
+  page,
   columns,
   data,
   onRowClick,
@@ -50,7 +52,7 @@ const PurchaseTable: React.FC<TableProps> = ({
     })
   : [];
   
-
+console.log(page)
 
   const totalPages = Math.ceil(filteredData?.length / rowsPerPage);
   const paginatedData = filteredData?.slice(
@@ -64,7 +66,7 @@ const PurchaseTable: React.FC<TableProps> = ({
 
   const visibleColumns = columns.filter((col) => col.visible);
   const skeletonColumns = [...visibleColumns, {}, {}, {}];
-
+console.log(data,"data")
   return (
     <div>
       <div className="flex items-center gap-4 justify-between">
@@ -83,7 +85,7 @@ const PurchaseTable: React.FC<TableProps> = ({
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">SL No.</th>
+              <th className="py-3 px-4 border-b border-tableBorder">Sl.No.</th>
               {columns?.map(
                 (col) =>
                   col.visible && (
@@ -99,7 +101,7 @@ const PurchaseTable: React.FC<TableProps> = ({
                 Action
               </th>
               <th className="py-3 px-2 font-medium border-b border-tableBorder">
-                <CustomiseColmn columns={columns} setColumns={setColumns} />
+                <CustomiseColmn columns={columns} setColumns={setColumns} tableId={`${page}`}  />
               </th>
             </tr>
           </thead>
@@ -109,7 +111,7 @@ const PurchaseTable: React.FC<TableProps> = ({
                 <TableSkelton key={idx} columns={skeletonColumns} />
               ))
             ) : paginatedData && paginatedData.length > 0 ? (
-              paginatedData.map((item, rowIndex) => (
+              paginatedData.reverse().map((item, rowIndex) => (
                 <tr
                   key={item.id}
                   className="relative cursor-pointer"

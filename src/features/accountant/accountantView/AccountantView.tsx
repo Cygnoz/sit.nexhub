@@ -14,6 +14,9 @@ type TrialBalance = {
   creditAmount: number;
   debitAmount: number;
   remark: string;
+  cumulativeSum: any;
+  createdDate:string;
+  createdTime:string
 };
 
 function AccountantView() {
@@ -68,10 +71,17 @@ function AccountantView() {
       (sum, item) => sum + (Number(item.debitAmount) || 0),
       0
     );
-    return  totalDebit - totalCredit;
+    return totalDebit - totalCredit;
   };
-  
-  
+
+  const formattedTotal = () => {
+    const total = calculateTotal();
+    const absoluteValue = Math.abs(total).toFixed(2); // Remove negative sign
+    return total < 0 ? `${absoluteValue} (Cr)` : `${absoluteValue} (Dr)`;
+  };
+
+
+
 
   return (
     <div className="px-6">
@@ -105,7 +115,6 @@ function AccountantView() {
             <thead className="text-[12px] text-center text-dropdownText">
               <tr className="bg-[#F9F7F0]">
                 <th className="py-3 px-4 font-medium border-b border-tableBorder text-sm">Date</th>
-                <th className="py-3 px-4 font-medium border-b border-tableBorder text-sm">Transaction Details</th>
                 <th className="py-3 px-4 font-medium border-b border-tableBorder text-sm">Type</th>
                 <th className="py-3 px-4 font-medium border-b border-tableBorder text-sm">
                   Debit {oneOrganization.baseCurrency && `(${oneOrganization.baseCurrency})`}
@@ -113,6 +122,7 @@ function AccountantView() {
                 <th className="py-3 px-4 font-medium border-b border-tableBorder text-sm">
                   Credit {oneOrganization.baseCurrency && `(${oneOrganization.baseCurrency})`}
                 </th>
+                <th className="py-3 px-4 font-medium border-b border-tableBorder text-sm">Amount</th>
               </tr>
             </thead>
             <tbody className="text-dropdownText text-center text-[13px]">
@@ -121,11 +131,11 @@ function AccountantView() {
                 trialBalance.map((item) => (
                   <tr key={item._id}>
                     <td className="py-3 px-4 border-b border-tableBorder">
-                      {item?.date ? item.date.split(' ')[0] : '-'}
+                      {item?.createdDate ? (
+                        `${item.createdDate} ${item.createdTime ? item.createdTime : '-'}`
+                      ) : '-'}
                     </td>
-                    <td className="py-3 px-4 border-b border-tableBorder">
-                      {item?.accountName || '-'}
-                    </td>
+
                     <td className="py-3 px-4 border-b border-tableBorder">
                       {item?.action || '-'}
                     </td>
@@ -134,6 +144,9 @@ function AccountantView() {
                     </td>
                     <td className="py-3 px-4 border-b border-tableBorder">
                       {item?.creditAmount ? item.creditAmount : '0.00'}
+                    </td>
+                    <td className="py-3 px-4 border-b border-tableBorder">
+                      {item?.cumulativeSum ? item.cumulativeSum : '0.00'}
                     </td>
                   </tr>
                 ))
@@ -149,7 +162,9 @@ function AccountantView() {
 
           <div className="mt-4 text-end">
             <p className="text-textColor font-bold me-36">
-              Total : <span> {calculateTotal().toFixed(2)} ({oneOrganization.baseCurrency})</span>
+              <div>
+                Total: <span>{formattedTotal()}</span>
+              </div>
             </p>
           </div>
         </div>
