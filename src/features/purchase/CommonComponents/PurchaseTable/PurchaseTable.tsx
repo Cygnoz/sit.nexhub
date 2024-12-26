@@ -6,8 +6,7 @@ import CustomiseColmn from "../../../../Components/CustomiseColum";
 import PrintButton from "../../../../Components/PrintButton";
 import Pagination from "../../../../Components/Pagination/Pagination";
 import Eye from "../../../../assets/icons/Eye";
-// import Pen from "../../../../assets/icons/Pen";
-// import Trash2 from "../../../../assets/icons/Trash2";
+import Trash2 from "../../../../assets/icons/Trash2"; // Include Trash Icon
 
 interface Column {
   id: string;
@@ -19,12 +18,13 @@ interface TableProps {
   columns: Column[];
   data: any[];
   onRowClick?: (id: string) => void;
+  onDelete?: (id: string) => void; // Add this prop for delete functionality
   renderColumnContent?: (colId: string, item: any) => JSX.Element;
   searchPlaceholder: string;
   loading: boolean;
   searchableFields: string[];
   setColumns?: any;
-  page?:any
+  page?: any;
 }
 
 const PurchaseTable: React.FC<TableProps> = ({
@@ -32,6 +32,7 @@ const PurchaseTable: React.FC<TableProps> = ({
   columns,
   data,
   onRowClick,
+  onDelete, // Add the delete function
   renderColumnContent,
   searchPlaceholder,
   loading,
@@ -43,16 +44,14 @@ const PurchaseTable: React.FC<TableProps> = ({
   const rowsPerPage = 10;
 
   const filteredData = Array.isArray(data)
-  ? data.filter((item) => {
-      return searchableFields
-        .map((field) => item[field]?.toString().trim().toLowerCase())
-        .some((fieldValue) =>
-          fieldValue?.includes(searchValue.toLowerCase().trim())
-        );
-    })
-  : [];
-  
-console.log(page)
+    ? data.filter((item) => {
+        return searchableFields
+          .map((field) => item[field]?.toString().trim().toLowerCase())
+          .some((fieldValue) =>
+            fieldValue?.includes(searchValue.toLowerCase().trim())
+          );
+      })
+    : [];
 
   const totalPages = Math.ceil(filteredData?.length / rowsPerPage);
   const paginatedData = filteredData?.slice(
@@ -66,7 +65,7 @@ console.log(page)
 
   const visibleColumns = columns.filter((col) => col.visible);
   const skeletonColumns = [...visibleColumns, {}, {}, {}];
-console.log(data,"data")
+
   return (
     <div>
       <div className="flex items-center gap-4 justify-between">
@@ -101,7 +100,11 @@ console.log(data,"data")
                 Action
               </th>
               <th className="py-3 px-2 font-medium border-b border-tableBorder">
-                <CustomiseColmn columns={columns} setColumns={setColumns} tableId={`${page}`}  />
+                <CustomiseColmn
+                  columns={columns}
+                  setColumns={setColumns}
+                  tableId={`${page}`}
+                />
               </th>
             </tr>
           </thead>
@@ -112,10 +115,7 @@ console.log(data,"data")
               ))
             ) : paginatedData && paginatedData.length > 0 ? (
               paginatedData.reverse().map((item, rowIndex) => (
-                <tr
-                  key={item.id}
-                  className="relative cursor-pointer"
-                >
+                <tr key={item.id} className="relative cursor-pointer">
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {(currentPage - 1) * rowsPerPage + rowIndex + 1}
                   </td>
@@ -136,10 +136,18 @@ console.log(data,"data")
                       )
                   )}
                   <td className="py-3 px-4 border-b border-tableBorder flex items-center justify-center gap-2">
-                    {/* <Pen color="#0B9C56" size={18} /> */}
-                   <button                   onClick={() => onRowClick && onRowClick(item._id)}
-                   > <Eye color={"#569FBC"} />{" "}</button>
-                    {/* <Trash2 color="#EA1E4F" size={18} />{" "} */}
+                    <button onClick={() => onRowClick && onRowClick(item._id)}>
+                      <Eye color={"#569FBC"} />
+                    </button>
+                  {page==="OCR" &&  <button
+                      onClick={() =>
+                        onDelete &&
+                       
+                        onDelete(item._id)
+                      }
+                    >
+                      <Trash2 color="#EA1E4F" size={18} />
+                    </button>}
                   </td>
 
                   <td className="py-3 px-4 border-b border-tableBorder"></td>

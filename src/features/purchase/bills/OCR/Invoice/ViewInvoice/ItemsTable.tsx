@@ -5,32 +5,35 @@ import Check from "../../../../../../assets/icons/Check";
 import AddNewItem from "./AddNewItem";
 import CehvronDown from "../../../../../../assets/icons/CehvronDown";
 
-
 type Item = {
-  id: number;
-  product: string;
-  hsnSac: string;
-  qty: number;
-  rate: number;
-  gross: number;
-  discount: number;
-  netAmount: number;
-  taxPercent: number;
-  taxAmount: number;
-  total: number;
-  batchNo: string;
+  id: string;
+  product_name: string;
+  hsn_sac: string;
+  quantity: string;
+  rate: string;
+  gross: string;
+  discount: string;
+  net_amount: string;
+  tax: string;
+  tax_amount: string;
+  total_amount: string;
+  batch_no: string | null;
+  expiry_date?: string | null;
 };
 
 type Props = {
+  allItems?:any
   items?: Item[];
+  invoice?: any;
+  setInvoice?: (invoice: any) => void;
 };
 
-function ItemsTable({ items = [] }: Props) {
+function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
   const tableHead = [
-    "Sl.no",
-    "Product",
-    "Hsn/Sac",
-    "Qty",
+    "Sl.No",
+    "Product Name",
+    "HSN/SAC",
+    "Quantity",
     "Rate",
     "Gross",
     "Discount",
@@ -38,17 +41,120 @@ function ItemsTable({ items = [] }: Props) {
     "Tax %",
     "Tax Amount",
     "Total",
-    "Batch No",
+    "Batch Number",
+    "Expiry Date",
   ];
 
   const [openDropdownIndex, setOpenDropdownIndex] = useState<number | null>(null);
   const [expandDropDown, setExpandDropDown] = useState<string | null>(null);
   const tableRef = useRef<HTMLTableElement | null>(null);
+  const [invoiceSelectedItem, setSelectedInvoiceItem] = useState<any>(null);
+  const [matchingItem, setMatchingItem] = useState<any>(null);
+  const [finalItem, setFinalItem] = useState<any>(null);
 
-  // Close the dropdown if the click is outside the table
+
+
+  const handleExpand = (key: string) => {
+    setExpandDropDown((prevKey) => (prevKey === key ? null : key));
+  };
+
+  const toggleDropdown = (index: number) => {
+    const selectedItem = items[index]?.product_name?.toLowerCase().trim();
+    
+    const isProductAlreadyExists = allItems?.some(
+      (item: any) => 
+        item.itemName?.toLowerCase().trim() === selectedItem
+    );
+  
+    if (isProductAlreadyExists) {
+      // console.log("Product already exists in allItems. Dropdown will not open.");
+      return;
+    }
+  
+    setOpenDropdownIndex((prevIndex) => (prevIndex === index ? null : index));
+  };
+  
+
+  const handleItemsMatch = () => {
+    if (!invoiceSelectedItem) {
+      console.error("No invoice item available.");
+      return;
+    }
+    if (!allItems || allItems.length === 0) {
+      console.error("No item data available.");
+      return;
+    }   
+
+    const invoiceItem = invoiceSelectedItem.product_name?.toLowerCase().trim();
+    if (!invoiceItem) {
+      return;
+    }
+
+    const normalizedInvoiceItem = invoiceItem.replace(/\s+/g, "").toLowerCase();
+
+    const matchingItem = allItems.filter((items: any) => {
+      const normalizedItemName = items.itemName
+        .replace(/\s+/g, "")
+        .toLowerCase();
+
+      const isSubstringMatch = normalizedItemName.includes(normalizedInvoiceItem);
+
+      const itemSubstring = normalizedItemName.substring(0, 5);
+      const invoiceitemSubstring = normalizedInvoiceItem.substring(0, 5);
+
+      return isSubstringMatch || itemSubstring === invoiceitemSubstring;
+    });
+
+    if (matchingItem.length === 0) {
+      console.log(`No matching Item found for '${invoiceItem}'.`);
+    } else {
+      setMatchingItem(matchingItem);
+      // console.log(matchingItem, "match");
+    }
+  };
+
+
+
+  const handleConfirmSelection = (selectedIndex: number) => {
+    if (!finalItem) {
+      console.error("No item selected.");
+      return;
+    }
+  
+    const updatedInvoiceItems = invoice.invoice.items.map((item: any, index: number) => {
+      if (index === selectedIndex) {
+        return {
+          ...item,
+          product_name: finalItem.itemName,
+        };
+      }
+      return item;
+    });
+  
+    setInvoice?.((prevInvoice: any) => ({
+      ...prevInvoice,
+      invoice: {
+        ...prevInvoice.invoice,
+        items: updatedInvoiceItems,
+      },
+    }));
+    
+    setOpenDropdownIndex(null);
+    setExpandDropDown(null);
+  };
+  
+
+  useEffect(() => {
+    handleItemsMatch();
+  }, [allItems, items, openDropdownIndex ]);
+
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (tableRef.current && !tableRef.current.contains(event.target as Node)) {
+      if (
+        tableRef.current &&
+        !tableRef.current.contains(event.target as Node)
+      ) {
         setOpenDropdownIndex(null);
       }
     };
@@ -59,15 +165,9 @@ function ItemsTable({ items = [] }: Props) {
     };
   }, []);
 
-  const handleExpand = (key: string) => {
-    setExpandDropDown((prevKey) => (prevKey === key ? null : key));
-  };
 
-  const toggleDropdown = (index: number) => {
-    setOpenDropdownIndex((prevIndex) => (prevIndex === index ? null : index));
-  };
 
-  return (
+  return ( 
     <div className="overflow-x-auto hide-scrollbar h-[300px]">
       <table
         ref={tableRef}
@@ -91,7 +191,13 @@ function ItemsTable({ items = [] }: Props) {
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
                 {index + 1}
               </td>
-              <td onClick={() => toggleDropdown(index)} className="relative">
+              <td
+                onClick={() => {
+                  toggleDropdown(index);  
+                  setSelectedInvoiceItem(item);
+                }}
+                className="relative"
+              >
                 <div
                   className={`border px-4 py-3 whitespace-nowrap cursor-pointer ${
                     openDropdownIndex === index
@@ -99,11 +205,14 @@ function ItemsTable({ items = [] }: Props) {
                       : "border-[#F4F4F4]"
                   }`}
                 >
-                  {item.product}
+                  {item.product_name}
                   {openDropdownIndex === index && (
-                    <div className="absolute z-10 w-[200%] -ms-5  bg-white rounded-md mt-3.5 p-2 space-y-1 max-h-72 overflow-y-auto hide-scrollbar" style={{boxShadow:"1px 1px 5px 0.5px"}}>
+                    <div
+                      className="absolute z-10 w-[100%] -ms-5 bg-white rounded-md mt-3.5 p-2 space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
+                      style={{ boxShadow: "1px 1px 5px 0.5px" }}
+                    >
                       <div className="flex gap-3 mb-4 items-center">
-                        <DotIcon color={"#DD2020"} size={15} />
+                        <DotIcon color="#DD2020" size={15} />
                         <p className="text-textColor font-bold text-sm">
                           Line Item
                         </p>
@@ -112,31 +221,43 @@ function ItemsTable({ items = [] }: Props) {
                         className="h-9 rounded-md border border-neutral-200 my-5 flex"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleExpand("dropdown1");
                         }}
                       >
-                        <div className="flex items-center px-3 text-loremcolor text-sm">
-                          I Phone 15
+                        <div className="flex w-full" onClick={() => handleExpand("dropdown1")}>
+                          <div className="flex items-center px-3 text-loremcolor text-sm">
+                            {finalItem?.itemName ? finalItem.itemName : " Select Product"}
+                          </div>
+                          <div className="items-center justify-end ml-auto flex pe-2 ">
+                            <CehvronDown color="gray" />
+                          </div>
                         </div>
-                        <div className="items-center justify-end ml-auto flex pe-2">
-
-<CehvronDown color={"gray"}/>               </div>
                       </div>
                       {expandDropDown === "dropdown1" && (
                         <div className="space-y-1">
-                          <div className="flex items-center px-3 text-loremcolor text-sm h-9 bg-[#f2f2f2]">
-                            I Phone 15
-                          </div>
-                          <div className="flex items-center px-3 text-loremcolor text-sm h-9 bg-[#f2f2f2]">
-                            I Phone 15 Plus
-                          </div>
+                          {matchingItem?.length > 0 ?
+                            matchingItem.map((item: any) => (
+                              <div
+                                className="flex items-center px-3 text-loremcolor text-sm h-9 bg-[#f2f2f2]"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setFinalItem(item);
+                                  handleExpand("dropdown1")
+                                }}
+                                key={item._id}
+                              >
+                                {item.itemName}
+                              </div>
+                            )):(<div  className="flex items-center px-3 text-loremcolor  h-9 bg-[#f2f2f2]"><p className="text-darkRed">No Matching Items in the Inventory..!</p></div>)}
                         </div>
                       )}
                       <div className="flex justify-end py-3 gap-2">
                         <Button variant="secondary" size="sm">
                           Cancel
                         </Button>
-                        <button className="bg-[#32A370] px-2 rounded-md text-white font-semibold flex items-center justify-center gap-1">
+                        <button
+                          className="bg-[#32A370] px-2 rounded-md text-white font-semibold flex items-center justify-center gap-1"
+                          onClick={() => {handleConfirmSelection(openDropdownIndex!), toggleDropdown(index) }}
+                        >
                           <Check />
                           Confirm
                         </button>
@@ -155,34 +276,37 @@ function ItemsTable({ items = [] }: Props) {
                 </div>
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.hsnSac}
+                {item.hsn_sac|| "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.qty}
+                {item.quantity}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.rate.toFixed(2)}
+                {item.rate ? (item.rate) : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.gross.toFixed(2)}
+                {item.gross ? (item.gross) : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.discount.toFixed(2)}
+                {item.discount ? (item.discount): "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.netAmount.toFixed(2)}
+                {item.net_amount ? (item.net_amount) : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.taxPercent}%
+                {item.tax ? (item.tax) : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.taxAmount.toFixed(2)}
+                {item.tax_amount ? (item.tax_amount): "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.total.toFixed(2)}
+                {item.total_amount ? (item.total_amount): "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.batchNo}
+                {item.batch_no|| "-"}
+              </td>
+              <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
+                {item.expiry_date || "-"}
               </td>
             </tr>
           ))}
