@@ -187,6 +187,34 @@ const AddItem = ({ }: Props) => {
     }
   };
 
+
+  const fetchData = async (
+    url: string,
+    setData: React.Dispatch<React.SetStateAction<any>>,
+    fetchFunction: (url: string) => Promise<any>
+  ) => {
+    try {
+      const { response, error } = await fetchFunction(url);
+      if (!error && response) {
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const [allAccounts, setAllAccounts] = useState<any>([]);
+  const { request: getAccounts } = useApi("get", 5001);
+
+
+  useEffect(() => {
+    const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
+
+    fetchData(allAccountsUrl, setAllAccounts, getAccounts);
+  }, []);
+
+
+
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -391,6 +419,9 @@ const AddItem = ({ }: Props) => {
     }
   }, [selectedItem]);
   const hsnSac = location.state?.hsnSac;
+
+  console.log(allAccounts,"99");
+  
 
   return (
     <>
@@ -1489,13 +1520,47 @@ const AddItem = ({ }: Props) => {
                           </div>
                         </div>
                       ))}
-                   <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
-                          <AddSupplierModal page="purchase" />
-                        </div>
+                    <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
+                      <AddSupplierModal page="purchase" />
+                    </div>
                   </div>
                 )}
               </div>
 
+              <div className="relative w-[205%]">
+                <label
+                  htmlFor="purchaseaccountDropdown"
+                  className="text-slate-600 text-sm flex items-center gap-2"
+                >
+                  Purchase Account
+                </label>
+                <div className="relative w-full">
+                  <select
+                    className="block appearance-none w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    name="purchaseAccount"
+                    onChange={handleInputChange}
+                    value={initialItemData.purchaseAccount}
+                  >
+                    <option value="" selected hidden disabled>
+                      Select Account
+                    </option>
+                    {allAccounts
+                      ?.filter(
+                        (item: { accountSubhead: string }) =>
+                          item.accountSubhead === "Expense" ||
+                          item.accountSubhead === "Cost of Goods Sold"
+                      )
+                      ?.map((item: { _id: string; accountName: string }) => (
+                        <option key={item._id} value={item._id}>
+                          {item.accountName}
+                        </option>
+                      ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
+                  </div>
+                </div>
+              </div>
 
             </div>
           </div>
@@ -1555,7 +1620,40 @@ const AddItem = ({ }: Props) => {
                 </div>
               </div>
             </div>
+
+            <div className="relative mt-4">
+              <label
+                htmlFor="saleAccountDropdown"
+                className="text-slate-600 text-sm flex items-center gap-2"
+              >
+                Sale Account
+              </label>
+              <div className="relative w-full">
+                <select
+                  className="block appearance-none w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                  name="salesAccount"
+                  onChange={handleInputChange}
+                  value={initialItemData.salesAccount} 
+                >
+                  <option  value="" selected hidden disabled>
+                    Select Account
+                  </option>
+                  {allAccounts
+                    ?.filter((item: { accountSubhead: string }) => item.accountSubhead === "Income")
+                    ?.map((item: { _id: string; accountName: string }) => (
+                      <option key={item._id} value={item._id}>
+                        {item.accountName}
+                      </option>
+                    ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
+                </div>
+              </div>
+            </div>
+
           </div>
+
         </div>
 
         <div className="w-full mt-2">
@@ -1568,7 +1666,7 @@ const AddItem = ({ }: Props) => {
             </label>
           </div>
           <div className="flex gap-3 mt-1">
-            <div className="w-[30%] ">
+            <div className="w-[50%] ">
               <label
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="openingStock"
@@ -1604,7 +1702,7 @@ const AddItem = ({ }: Props) => {
               />
             </div> */}
 
-            <div className="w-[30%]">
+            <div className="w-[50%]">
               <label
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="reorderPoint"

@@ -364,6 +364,9 @@ const handleGoBack = () => {
   navigate(-1); // Go back to the previous page
 };
 
+console.log(accounts,"77");
+
+
 
   return (
     <div className="mx-5 my-4">
