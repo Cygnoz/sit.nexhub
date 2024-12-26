@@ -404,85 +404,102 @@ const CreateOrganizationForm = () => {
         </p>
 
         <div className="bg-white border-slate-200  border-2 rounded-md mt-4 p-5">
-          <div className="grid grid-cols-2 gap-4 ">
-            <div className="relative ">
-              <label htmlFor="location" className="text-slate-600">
-                Organization Location
-              </label>
-              <div className="relative w-full mt-3">
-                <select
-                  value={inputData.organizationCountry}
-                  onChange={handleInputChange}
-                  name="organizationCountry"
-                  id="Location"
-                  className="block appearance-none w-full   text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                >
-                  <option value="">Select a country</option>
-                  {countryData && countryData.length > 0 ? (
-                    countryData.map((item: any, index: number) => (
-                      <option key={index} value={item.name}>
-                        {item.name}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled></option>
-                  )}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
-              </div>
-            </div>
+        <div className="grid grid-cols-3 gap-4">
+  {/* Organization Name Field */}
+  <div className="relative">
+    <label htmlFor="organizationName" className="text-slate-600">
+      Organization Name
+    </label>
+    <input
+      type="text"
+      id="organizationName"
+      name="organizationName"
+      value={inputData.organizationName}
+      onChange={handleInputChange}
+      className="block w-full mt-3 text-[#495160] bg-white border border-inputBorder text-sm h-[39px] px-3 rounded-md focus:outline-none focus:bg-white focus:border-darkRed"
+      placeholder="Enter organization name"
+    />
+  </div>
 
-            <div className=" ">
-            <label
-  htmlFor="organizationIndustry"
-  className="text-slate-600 flex items-center gap-1"
->
-  <p> Industry </p>
-  <div
-    className="relative mt-1"
-    onMouseEnter={() => handleTooltipToggle("industry", true)}
-    onMouseLeave={() => handleTooltipToggle("industry", false)}
-  >
-    <Info size={18} color={"currentColor"} stroke={3} />
-    {tooltipState.industry && (
-      <div className="absolute left-full -top-10 ml-2 w-[250px] p-2  rounded-md text-sm text-slate-700 z-10">
-        {renderCustomTooltip(
-          "Select your industry type to help us fine-tune your experience. If you can't find your industry type from the list of options, you can input your own."
+  {/* Organization Location Field */}
+  <div className="relative">
+    <label htmlFor="location" className="text-slate-600">
+      Organization Location
+    </label>
+    <div className="relative w-full mt-3">
+      <select
+        value={inputData.organizationCountry}
+        onChange={handleInputChange}
+        name="organizationCountry"
+        id="Location"
+        className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+      >
+        <option value="">Select a country</option>
+        {countryData && countryData.length > 0 ? (
+          countryData.map((item: any, index: number) => (
+            <option key={index} value={item.name}>
+              {item.name}
+            </option>
+          ))
+        ) : (
+          <option disabled></option>
+        )}
+      </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+        <CehvronDown color="gray" />
+      </div>
+    </div>
+  </div>
+
+  {/* Industry Field */}
+  <div>
+    <label
+      htmlFor="organizationIndustry"
+      className="text-slate-600 flex items-center gap-1"
+    >
+      <p>Industry</p>
+      <div
+        className="relative mt-1"
+        onMouseEnter={() => handleTooltipToggle("industry", true)}
+        onMouseLeave={() => handleTooltipToggle("industry", false)}
+      >
+        <Info size={18} color={"currentColor"} stroke={3} />
+        {tooltipState.industry && (
+          <div className="absolute left-full -top-10 ml-2 w-[250px] p-2 rounded-md text-sm text-slate-700 z-10">
+            {renderCustomTooltip(
+              "Select your industry type to help us fine-tune your experience. If you can't find your industry type from the list of options, you can input your own."
+            )}
+          </div>
         )}
       </div>
-    )}
+    </label>
+    <div className="w-full mt-2.5 relative">
+      <select
+        value={inputData.organizationIndustry}
+        onChange={handleInputChange}
+        name="organizationIndustry"
+        id="organizationIndustry"
+        className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+      >
+        <option value="">Select Industry</option>
+        {additionalData.industry &&
+        additionalData.industry.length > 0 ? (
+          additionalData.industry.map((item: any, index: any) => (
+            <option key={index} value={item}>
+              {item}
+            </option>
+          ))
+        ) : (
+          <></>
+        )}
+      </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+        <CehvronDown color="gray" />
+      </div>
+    </div>
   </div>
-</label>
+</div>
 
-              <div className=" w-full mt-2.5 relative">
-                <select
-                  value={inputData.organizationIndustry}
-                  onChange={handleInputChange}
-                  name="organizationIndustry"
-                  id="organizationIndustry"
-                  className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                >
-                  <option value="">Select Industry</option>
-
-                  {additionalData.industry &&
-                  additionalData.industry.length > 0 ? (
-                    additionalData.industry.map((item: any, index: any) => (
-                      <option key={index} value={item}>
-                        {item}
-                      </option>
-                    ))
-                  ) : (
-                    <></>
-                  )}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
-              </div>
-            </div>
-          </div>
           <div className="pt-3">
   <label
     className="text-slate-600 flex items-center gap-1"

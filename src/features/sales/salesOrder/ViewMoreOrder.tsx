@@ -141,7 +141,6 @@ const ViewMoreOrder = ({ salesOrderState, setSalesOrderState, page, allAccounts 
                 Round Off Amount
                 <input
                   type="number"
-                  step="0.01"
                   value={salesOrderState.roundOffAmount || ""}
                   name="roundOffAmount"
                   onChange={handleChange}
