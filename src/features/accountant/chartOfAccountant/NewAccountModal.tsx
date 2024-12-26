@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../../Components/Button";
 import CirclePlus from "../../../assets/icons/circleplus";
 import CashImage from "../../../assets/Images/CashImage.png";
@@ -31,14 +31,10 @@ const initialFormValues: any = {
 }
 
 function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps) {
-  console.log(accountData,"accountData");
-  
   const [isModalOpen, setModalOpen] = useState(false);
   const { request: NewAccount } = useApi("post", 5001);
   const [openingType, setOpeningType] = useState("Debit");
   const [formValues, setFormValues] = useState(initialFormValues);
-  console.log(formValues, "formValues");
-
   const [isSubAccount, setIsSubAccount] = useState(false);
 
   const accountCategories = {
@@ -176,6 +172,12 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
       }));
     }
   };
+  useEffect(() => {
+    setFormValues((prevFormValues: any) => ({
+      ...prevFormValues,
+      parentAccountId: "", 
+    }));
+  }, [formValues.accountSubhead, isSubAccount]); 
 
   return (
     <div>
@@ -242,84 +244,90 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
 
               <div className="mb-2">
                 <label className="block text-sm mb-1 text-labelColor">
-                  Account Name
+                  {formValues?.accountSubhead === "Credit Card" ? "Credit Card Name" : "Account Name"}
                 </label>
                 <input
                   type="text"
                   name="accountName"
                   value={formValues.accountName}
                   onChange={handleChange}
-                  placeholder="Enter Account Name"
+                  placeholder={formValues?.accountSubhead === "Credit Card" ? "Enter Credit Card Name" : "Enter Account Name"}
                   className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
                 />
               </div>
 
+              {formValues.accountSubhead &&
+                !["Other Asset", "Bank", "Payment Clearing", "Credit Card", "Other Liability",
+                  "Overseas Tax Payable", "Other Income", "Other Expense"].includes(formValues.accountSubhead) && (
+                  <>
+                    <div className="mb-2 flex items-center gap-1 text-textColor">
+                      <input
+                        type="checkbox"
+                        className="accent-[#97998E] bg-white cursor-pointer h-5 w-4 mx-1 my-1"
+                        id="checkbox3"
+                        name="returnableItem"
+                        onChange={handleChange}
+                      />
+                      <label
+                        htmlFor="checkbox3"
+                        className="text-dropdownText text-sm font-medium cursor-pointer"
+                      >
+                        Make this a sub-account
+                      </label>
+                    </div>
 
-              <div className="mb-2 flex items-center gap-1 text-textColor">
-                <input
-                  type="checkbox"
-                  className="accent-[#97998E] bg-white cursor-pointer h-5 w-4 mx-1 my-1"
-                  id="checkbox3"
-                  name="returnableItem"
-                  onChange={handleChange}
-                />
-                <label
-                  htmlFor="checkbox3"
-                  className="text-dropdownText text-sm font-medium cursor-pointer"
-                >
-                  Make this a sub-account
-                </label>
-              </div>
+                    {isSubAccount && (
+                      <div className="mb-4">
+                        <label
+                          htmlFor="parentAccountId"
+                          className="text-slate-600 text-sm flex items-center gap-2 mb-1"
+                        >
+                          Parent Account
+                        </label>
+                        <div className="relative w-full">
+                          <select
+                            className="block appearance-none w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-9 pl-3 pr-8 rounded-md leading-tight focus:outline-none"
+                            name="parentAccountId"
+                            onChange={(e) => {
+                              const selectedAccountName = e.target.value;
+                              const selectedAccount = accountData?.find(
+                                (account) => account.accountName === selectedAccountName
+                              );
+                              const selectedId = selectedAccount ? selectedAccount._id : "";
+                              setFormValues((prevFormValues: any) => ({
+                                ...prevFormValues,
+                                parentAccountId: selectedId, // Storing the selected account's _id
+                              }));
+                            }}
+                            value={
+                              formValues.parentAccountId
+                                ? accountData?.find(
+                                  (account) => account._id === formValues.parentAccountId
+                                )?.accountName
+                                : ""
+                            }
+                          >
+                            <option value="">Select Parent Account</option>
+                            {accountData
+                              ?.filter(
+                                (account) =>
+                                  account.accountSubhead === formValues.accountSubhead
+                              )
+                              ?.map((account) => (
+                                <option key={account._id} value={account.accountName}>
+                                  {account.accountName}
+                                </option>
+                              ))}
+                          </select>
 
-              {isSubAccount && (
-  <div className="mb-4">
-    <label
-      htmlFor="parentAccountId"
-      className="text-slate-600 text-sm flex items-center gap-2 mb-1"
-    >
-      Parent Account
-    </label>
-    <div className="relative w-full">
-      <select
-        className="block appearance-none w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-9 pl-3 pr-8 rounded-md leading-tight focus:outline-none"
-        name="parentAccountId"
-        onChange={(e) => {
-          const selectedAccountName = e.target.value;
-
-          // Find the selected account by name
-          const selectedAccount = accountData?.find(
-            (account) => account.accountName === selectedAccountName
-          );
-
-          // If account is found, set its ID in the state
-          const selectedId = selectedAccount ? selectedAccount._id : "";
-
-          // Update the parentAccountId in formValues
-          setFormValues((prevFormValues: any) => ({
-            ...prevFormValues,
-            parentAccountId: selectedId,  // Storing the selected account's _id
-          }));
-        }}
-        value={formValues.parentAccountId ? accountData?.find(account => account._id === formValues.parentAccountId)?.accountName : ""}
-      >
-        <option value="">Select Parent Account</option>
-        {accountData
-          ?.filter(
-            (account) => account.accountSubhead === formValues.accountSubhead
-          )
-          ?.map((account) => (
-            <option key={account._id} value={account.accountName}>
-              {account.accountName}
-            </option>
-          ))}
-      </select>
-
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-        <CehvronDown color="gray" />
-      </div>
-    </div>
-  </div>
-)}
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <CehvronDown color="gray" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
 
 
 
