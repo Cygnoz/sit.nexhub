@@ -12,7 +12,7 @@ function GstSettings({ }: GstSettingsProps) {
   const initialGstSettings = {
     taxType: "GST",
     gstIn: "",
-    gstBusinesLegalName: "",
+    gstBusinessLegalName: "",
     gstBusinessTradeName: "",
     gstRegisteredDate: "",
     compositionSchema: "",
@@ -35,7 +35,7 @@ function GstSettings({ }: GstSettingsProps) {
         setGstSettings((prevData) => ({
           ...prevData,
           gstIn: response.data.gstIn || "",
-          gstBusinesLegalName: response.data.gstBusinesLegalName || "",
+          gstBusinessLegalName: response.data.gstBusinessLegalName || "",
           gstBusinessTradeName: response.data.gstBusinessTradeName || "",
           gstRegisteredDate: response.data.gstRegisteredDate || "",
           compositionSchema: response.data.compositionSchema || "",
@@ -72,7 +72,7 @@ function GstSettings({ }: GstSettingsProps) {
         setGstSettings((prev) => ({
           ...prev,
           gstIn: response.data.gstIn || prev.gstIn,
-          gstBusinesLegalName: response.data.gstBusinesLegalName || prev.gstBusinesLegalName,
+          gstBusinessLegalName: response.data.gstBusinessLegalName || prev.gstBusinessLegalName,
           gstBusinessTradeName: response.data.gstBusinessTradeName || prev.gstBusinessTradeName,
           gstRegisteredDate: response.data.gstRegisteredDate || prev.gstRegisteredDate,
           compositionSchema: response.data.compositionSchema || prev.compositionSchema,
@@ -185,11 +185,11 @@ function GstSettings({ }: GstSettingsProps) {
               </div>
               <div className="text-[#495160] text-sm w-[50%]">
                 <div>
-                  <label htmlFor="gstBusinesLegalName">Business Legal Name</label>
+                  <label htmlFor="gstBusinessLegalName">Business Legal Name</label>
                   <input
                     type="text"
-                    name="gstBusinesLegalName"
-                    value={gstSettings.gstBusinesLegalName}
+                    name="gstBusinessLegalName"
+                    value={gstSettings.gstBusinessLegalName}
                     onChange={handleChange}
                     className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2"
                     placeholder="Enter Business Legal Name"

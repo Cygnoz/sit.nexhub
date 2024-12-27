@@ -238,7 +238,6 @@ const ItemTable = ({ hsnsac }: Props) => {
 
 
 
-
   return (
     <div>
       <div>
@@ -422,36 +421,58 @@ const ItemTable = ({ hsnsac }: Props) => {
                       <p>{selectedItem?.reorderPoint || 0} Units</p>
                     </div>
                   </div>
-                  <div className="w-full  rounded-lg border flex flex-col p-4  justify-between  bg-gradient-to-r from-[#6B1515] to-[#240C0C] ">
-                    <div className="flex justify-between items-center">
-                      <p className="text-[16px] font-semibold text-[#D4D4D4]">
-                        Main <span className="text-[#DF3232]">Supplier</span>
-                      </p>
-                      <div className="w-[34px] h-[34px] rounded-[3px] bg-[#741E1E] flex justify-center items-center">
-                        <UserCheck color='#FF7070' />
+                  {(oneItem?.supplierDetails?.supplierDisplayName ||
+                    oneItem?.supplierDetails?.mobile ||
+                    oneItem?.supplierDetails?.billingAddressStreet1 ||
+                    oneItem?.supplierDetails?.billingAddressStreet2 ||
+                    oneItem?.supplierDetails?.billingCity ||
+                    oneItem?.supplierDetails?.billingState ||
+                    oneItem?.supplierDetails?.billingCountry ||
+                    oneItem?.supplierDetails?.billingPinCode) && (
+                      <div className="w-full  rounded-lg border flex flex-col p-4  justify-between  bg-gradient-to-r from-[#6B1515] to-[#240C0C]">
+                        <div className="flex justify-between items-center">
+                          <p className="text-[16px] font-semibold text-[#D4D4D4]">
+                            Main <span className="text-[#DF3232]">Supplier</span>
+                          </p>
+                          <div className="w-[34px] h-[34px] rounded-[3px] bg-[#741E1E] flex justify-center items-center">
+                            <UserCheck color='#FF7070' />
+                          </div>
+                        </div>
+                        <div className="mt-4 space-y-2 text-start">
+                          {oneItem?.supplierDetails?.supplierDisplayName && (
+                            <p className="text-[#FFFFFF]">
+                              <span>Name :</span> {oneItem.supplierDetails.supplierDisplayName}
+                            </p>
+                          )}
+                          {oneItem?.supplierDetails?.mobile && (
+                            <p className="text-[#FFFFFF]">
+                              <span>Phone :</span> {oneItem.supplierDetails.mobile}
+                            </p>
+                          )}
+                          {(oneItem?.supplierDetails?.billingAddressStreet1 ||
+                            oneItem?.supplierDetails?.billingAddressStreet2 ||
+                            oneItem?.supplierDetails?.billingCity ||
+                            oneItem?.supplierDetails?.billingState ||
+                            oneItem?.supplierDetails?.billingCountry ||
+                            oneItem?.supplierDetails?.billingPinCode) && (
+                              <p className="text-[#FFFFFF]">
+                                <span>Address :</span>{" "}
+                                {`${oneItem?.supplierDetails?.billingAddressStreet1 ? oneItem.supplierDetails.billingAddressStreet1 + ", " : ""} 
+                                ${oneItem?.supplierDetails?.billingAddressStreet2 ? oneItem.supplierDetails.billingAddressStreet2 + ", " : ""} 
+                                ${oneItem?.supplierDetails?.billingCity ? oneItem.supplierDetails.billingCity + ", " : ""} 
+                                ${oneItem?.supplierDetails?.billingState ? oneItem.supplierDetails.billingState + ", " : ""} 
+                                ${oneItem?.supplierDetails?.billingCountry ? oneItem.supplierDetails.billingCountry + " - " : ""} 
+                                ${oneItem?.supplierDetails?.billingPinCode || ""}`}
+
+                              </p>
+                            )}
+                        </div>
                       </div>
-                    </div>
-                    <div className="mt-4 space-y-2 text-start">
-                      <p className="text-[#FFFFFF]">
-                        <span >Name :</span> {oneItem?.supplierDetails?.supplierDisplayName ? oneItem?.supplierDetails?.supplierDisplayName : ""}
-                      </p>
-                      <p className="text-[#FFFFFF]">
-                        <span >Phone :</span> {oneItem?.supplierDetails?.mobile ? oneItem?.supplierDetails?.mobile : ""}
-                      </p>
-                      <p className="text-[#FFFFFF]">
-                        <span>Address :</span>{" "}
-                        {`${oneItem?.supplierDetails?.billingAddressStreet1}, 
-                           ${oneItem?.supplierDetails?.billingAddressStreet2}, 
-                           ${oneItem?.supplierDetails?.billingCity}, 
-                           ${oneItem?.supplierDetails?.billingState}, 
-                           ${oneItem?.supplierDetails?.billingCountry} - 
-                           ${oneItem?.supplierDetails?.billingPinCode}`}
-                      </p>
-                    </div>
-                  </div>
+                    )}
+
 
                 </div>
-                <div className="col-span-9 border-2 rounded-lg border-[#E9E9E9] h-[650px] flex flex-col  ">
+                <div className="col-span-9 border-2 rounded-lg border-[#E9E9E9] h-[600px] flex flex-col  ">
                   {/* Navigation Bar */}
                   <div className="p-3 sticky top-0 z-10 flex items-center text-sm gap-6 bg-white">
                     {/* Overview Tab */}
