@@ -6,6 +6,8 @@ import useApi from "../../../../../../Hooks/useApi";
 import { TableResponseContext } from "../../../../../../context/ContextShare";
 import PurchaseTable from "../../../../CommonComponents/PurchaseTable/PurchaseTable";
 import toast from "react-hot-toast";
+import { OCRInvoiceContext } from "../../../../../../context/ContextShare";
+
 
 const AllInvoiceTable = () => {
   const [columns, setColumns] = useState([
@@ -20,6 +22,7 @@ const AllInvoiceTable = () => {
   const {request:Ocrdelete}=useApi("delete",5000)
   const [invoice, setInvoice] = useState([]);
 
+  const {ocrInvoice}=useContext(OCRInvoiceContext)
   const { loading, setLoading } = useContext(TableResponseContext)!;
   const navigate = useNavigate();
 
@@ -80,7 +83,7 @@ const AllInvoiceTable = () => {
   useEffect(() => {
     setLoading("");
     getallInvoice();
-  }, []);
+  }, [ocrInvoice]);
 
   return (
     <PurchaseTable

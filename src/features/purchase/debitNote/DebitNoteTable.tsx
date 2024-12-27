@@ -50,6 +50,7 @@ const DebitNoteTable = ({
   const [items, setItems] = useState<any>([]);
   const { request: getAllItemsRequest } = useApi("get", 5003);
 
+  console.log(items,"bills")
   
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<Row[]>([
@@ -251,7 +252,6 @@ const DebitNoteTable = ({
       }),
     }));
   };
-
 
 
 
@@ -470,7 +470,6 @@ const DebitNoteTable = ({
     }
   }, [selectedBill]);   
 
-  console.log(items,"items")
 
   const filterItems = () => {
     return selectedBill?.items?.filter((item: any) =>
@@ -483,7 +482,6 @@ const DebitNoteTable = ({
   useEffect(() => {
     getAllItems();
   }, []);
-console.log(selectedBill,"slectedBill")
   return (
     <div>
       <div className="rounded-lg border-2 border-tableBorder mt-5">

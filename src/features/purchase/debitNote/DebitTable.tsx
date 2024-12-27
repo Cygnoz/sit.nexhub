@@ -36,7 +36,7 @@ const DebitTable = () => {
       const { response, error } = await getDN(url);
 
       if (!error && response ) {
-        setAllDNdata(response.data.allDebitNote);
+        setAllDNdata(response.data);
         setLoading({ ...loading, skeleton: false, noDataFound: false });
       } else {
         setLoading({ ...loading, skeleton: false, noDataFound: true });
