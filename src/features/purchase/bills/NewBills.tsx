@@ -57,6 +57,7 @@ const NewBills = ({}: Props) => {
     supplierId: "",
     supplierDisplayName:"",
     billNumber: "",
+    supplierInvoiceNum:"",
     sourceOfSupply: "",
     destinationOfSupply: "",
     taxMode: "",
@@ -674,19 +675,34 @@ const NewBills = ({}: Props) => {
               )}
             </div>
 
-            <div className="relative w-full">
-            <label className="block text-sm mb-1 text-labelColor">
-            Bill <span className="text-[#bd2e2e] -ms-0.5">*</span>
-                <input
-                  id="billNumber"
-                  onChange={handleChange}
-                  name="billNumber"
-                  value={bill.billNumber}
-                  placeholder="Enter Bill Number"
-                  className=" block  appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 "
-                />
-              </label>
-            </div>
+         <div className="grid grid-cols-2 gap-2">
+         <div className="relative w-full">
+              <label className="block text-sm mb-1 text-labelColor">
+              Supplier Invoice Number <span className="text-[#bd2e2e] -ms-0.5">*</span>
+                  <input
+                    id="supplierInvoiceNum"
+                    onChange={handleChange}
+                    name="supplierInvoiceNum"
+                    value={bill.supplierInvoiceNum}
+                    placeholder="Enter Invoice Number"
+                    className=" block  appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 "
+                  />
+                </label>
+              </div>
+              <div className="relative w-full">
+              <label className="block text-sm mb-1 text-labelColor">
+              Bill Number <span className="text-[#bd2e2e] -ms-0.5">*</span>
+                  <input
+                    id="billNumber"
+                    onChange={handleChange}
+                    name="billNumber"
+                    value={bill.billNumber}
+                    placeholder="Enter Bill Number"
+                    className=" block  appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 "
+                  />
+                </label>
+              </div>
+         </div>
 
             {bill.supplierId && (
               <>

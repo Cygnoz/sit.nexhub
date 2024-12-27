@@ -279,11 +279,24 @@ const NewCustomerModal = ({ page }: Props) => {
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, type, value } = e.target;
-
-    if (name === "companyName") {
+  
+    if (customerdata.customerType === "Business" && name === "companyName") {
       setCustomerData({ ...customerdata, customerDisplayName: value });
     }
-
+  
+    if (
+      customerdata.customerType === "Individual" &&
+      (name === "firstName" || name === "lastName")
+    ) {
+      setCustomerData((prevData) => ({
+        ...prevData,
+        [name]: value,
+        customerDisplayName: `${name === "firstName" ? value : prevData.firstName} ${
+          name === "lastName" ? value : prevData.lastName
+        }`.trim(),
+      }));
+    }
+  
     if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
       setCustomerData((prevData) => ({
@@ -298,10 +311,10 @@ const NewCustomerModal = ({ page }: Props) => {
         }));
       }
     }
-
+  
     if (name === "openingType") {
       setOpeningtype(value);
-
+  
       if (value === "Debit") {
         setCustomerData((prevData) => ({
           ...prevData,
@@ -316,7 +329,7 @@ const NewCustomerModal = ({ page }: Props) => {
         }));
       }
     }
-
+  
     if (name === "openingBalance") {
       if (openingType === "Credit") {
         setCustomerData((prevData) => ({
@@ -331,6 +344,7 @@ const NewCustomerModal = ({ page }: Props) => {
       }
     }
   };
+  
 
   // get-------------------------------------------------------
   const getAdditionalData = async () => {
@@ -496,7 +510,9 @@ const NewCustomerModal = ({ page }: Props) => {
       console.error("Unexpected error:");
     }
   };
-  console.log(customerdata);
+
+
+
   useEffect(() => {
     if (taxPreference === "Tax Exempt") {
       setCustomerData((prevData: any) => ({
@@ -803,7 +819,7 @@ const NewCustomerModal = ({ page }: Props) => {
               </div>
 
               <div className="grid grid-cols-3 gap-x-4 gap-y-2 mt-2 ">
-                <div>
+              { customerdata.customerType==="Business" &&   <div>
                   <label htmlFor="companyName">Company Name </label>
                   <input
                     type="text"
@@ -834,8 +850,8 @@ const NewCustomerModal = ({ page }: Props) => {
                         Please enter a valid Company Name (letters only).
                       </div>
                     )}
-                </div>
-                <div>
+                </div>}
+              <div>
                   <label htmlFor="companyName">Customer Display Name </label>
                   <input
                     required
@@ -906,6 +922,21 @@ const NewCustomerModal = ({ page }: Props) => {
                     </div>
                   )}
                 </div>
+
+{
+  customerdata.customerType=="Individual" &&   <div>
+  <label htmlFor="">Work Phone</label>
+  <PhoneInput
+    inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+    inputStyle={{ height: "38px", width: "100%" }}
+    containerStyle={{ width: "100%" }}
+    country={"in"}
+    value={customerdata.workPhone}
+    onChange={(e) => handlePhoneChange("workPhone", e)}
+  />
+</div>
+}
+
                 {/* <div className="hidden">
                   <label htmlFor="cardNumber">Membership Card Number</label>
                   <input
@@ -920,7 +951,7 @@ const NewCustomerModal = ({ page }: Props) => {
               </div>
 
               <div className="grid grid-cols-3 mt-2 gap-x-4">
-                <div>
+              { customerdata.customerType=="Business" &&   <div>
                   <label htmlFor="">Work Phone</label>
                   <PhoneInput
                     inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
@@ -930,7 +961,7 @@ const NewCustomerModal = ({ page }: Props) => {
                     value={customerdata.workPhone}
                     onChange={(e) => handlePhoneChange("workPhone", e)}
                   />
-                </div>
+                </div>}
                 <div>
                   <label htmlFor="">Mobile</label>
                   <PhoneInput
