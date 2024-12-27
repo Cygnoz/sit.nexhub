@@ -10,7 +10,7 @@ function VatSettings({}: Props) {
   const initialVatSettings = {
     taxType: "VAT",  
     vatNumber: "",
-    vatBusinesLegalName: "",
+    vatBusinessLegalName: "",
     vatBusinessTradeName: "",
     vatRegisteredDate: "",
     tinNumber: "",
@@ -30,7 +30,7 @@ function VatSettings({}: Props) {
         setVatSettings((prevData) => ({
           ...prevData,
           vatNumber: response.data.vatNumber || "",
-          vatBusinesLegalName: response.data.vatBusinesLegalName || "",
+          vatBusinessLegalName: response.data.vatBusinessLegalName || "",
           vatBusinessTradeName: response.data.vatBusinessTradeName || "",
           vatRegisteredDate: response.data.vatRegisteredDate || "",
           tinNumber: response.data.tinNumber || "",
@@ -154,11 +154,11 @@ function VatSettings({}: Props) {
  
               <div className="text-[#495160] text-sm w-[50%]">
                 <div>
-                  <label htmlFor="vatBusinesLegalName">Business Legal Name</label>
+                  <label htmlFor="vatBusinessLegalName">Business Legal Name</label>
                   <input
                     type="text"
-                    name="vatBusinesLegalName"
-                    value={vatSettings.vatBusinesLegalName}
+                    name="vatBusinessLegalName"
+                    value={vatSettings.vatBusinessLegalName}
                     onChange={handleChange}
                     className="pl-2 text-sm w-[100%] mt-1 rounded-md text-start bg-white border border-slate-300 h-9 p-2"
                     placeholder="Enter Business Legal Name"
