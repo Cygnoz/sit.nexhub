@@ -28,17 +28,24 @@ interface Column {
   label: string;
   visible: boolean;
 }
+type Props = {
+  hsnsac:any
+};
 
-const ItemTable = () => {
+const ItemTable = ({hsnsac}: Props) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isDeleteImageModalOpen, setDeleteImageModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [oneItem, setOneItem] = useState<any>(null)
+
+  console.log(oneItem);
   console.log(selectedItem, "selectedItem");
 
   const { request: UpdateItem } = useApi("put", 5003);
   const { organization: orgData } = useOrganization();
 
   const openModal = (item: any) => {
+    getOneItem(item);
     setSelectedItem(item);
     setModalOpen(true);
   };
@@ -101,22 +108,45 @@ const ItemTable = () => {
     }
   };
 
-  useEffect(() => {
-    loadCategories();
-  }, []);
+  const { request: fetchOneItem } = useApi("get", 5003);
+  const getOneItem = async (item: any) => {
+    try {
+      const url = `${endponits.GET_ONE_ITEM}/${item._id}`;
+      const { response, error } = await fetchOneItem(url);
+      if (!error && response) {
+        setOneItem(response.data)
+      } else {
+        console.error("Failed to fetch one item data.");
+      }
+    } catch (error) {
+      toast.error("Error in fetching one item data.");
+      console.error("Error in fetching one item data", error);
+    }
+  };
 
   useEffect(() => {
+    loadCategories();
     fetchAllItems();
   }, []);
 
   const navigate = useNavigate();
 
   const handleEdit = () => {
-    navigate("/inventory/Item/new", { state: { item: selectedItem } });
+    navigate("/inventory/Item/new", {
+      state: {
+        item: selectedItem,
+        hsnSac: hsnsac || false,
+      },
+    });
   };
 
   const handleEditOnTable = (item: any) => {
-    navigate("/inventory/Item/new", { state: { item } });
+    navigate("/inventory/Item/new", {
+      state: {
+        item,
+        hsnSac: hsnsac || false,
+      },
+    });
   };
 
 
@@ -196,7 +226,7 @@ const ItemTable = () => {
     const matchesItemName = item.itemName?.toLowerCase().includes(searchValueLower);
     const matchesSku = item.sku?.toLowerCase().includes(searchValueLower);
     const matchesSearch = matchesItemName || matchesSku;
-  
+
     if (selected === "All") {
       return matchesSearch;
     } else if (selected === "Low Stock") {
@@ -205,7 +235,7 @@ const ItemTable = () => {
       return matchesSearch && item.categories === selected;
     }
   });
-  
+
 
 
 
@@ -275,7 +305,7 @@ const ItemTable = () => {
               )}
               <th className="py-2.5 px-4 font-medium border-b border-tableBorder"></th>
               <th className="py-2 px-4 font-medium border-b border-tableBorder">
-                <CustomiseColmn  columns={columns} setColumns={setColumns} tableId={"item"} />
+                <CustomiseColmn columns={columns} setColumns={setColumns} tableId={"item"} />
               </th>
               {/* "See Details" Header */}
 
@@ -396,7 +426,7 @@ const ItemTable = () => {
                   <div className="w-full  rounded-lg border flex flex-col p-4  justify-between  bg-gradient-to-r from-[#6B1515] to-[#240C0C] ">
                     <div className="flex justify-between items-center">
                       <p className="text-[16px] font-semibold text-[#D4D4D4]">
-                     <span className="text-sm">   Main </span><span className="text-[#DF3232]">{selectedItem?.preferredVendor ? selectedItem?.preferredVendor : ""}</span>
+                        <span className="text-sm">   Main </span><span className="text-[#DF3232]">{selectedItem?.preferredVendor ? selectedItem?.preferredVendor : ""}</span>
                       </p>
                       <div className="w-[34px] h-[34px] rounded-[3px] bg-[#741E1E] flex justify-center items-center">
                         <UserCheck color='#FF7070' />
@@ -452,7 +482,7 @@ const ItemTable = () => {
                             <div className="grid grid-cols-2 gap-y-4">
                               <div className="text-dropdownText font-normal text-sm space-y-4">
                                 <p>Item Type</p>
-                                <p>{ selectedItem?.sku ? "SKU" : ""}</p>
+                                <p>{selectedItem?.sku ? "SKU" : ""}</p>
                                 <p>{selectedItem?.unit ? "Unit" : ""}</p>
                                 <p>{selectedItem?.createdSource ? "Created Source" : ""}</p>
                               </div>

@@ -32,6 +32,7 @@ function ItemHome({}: Props) {
   useEffect(() => {
     fetchAllItems()
   }, [])
+  const hsnsac=itemsData.itemSettings?.hsnSac
   return (
     <div className="mx-5 my-4 text-[#303F58]">
       <div className="flex justify-between items-center">
@@ -43,7 +44,7 @@ function ItemHome({}: Props) {
         </div>
         <Link to="/inventory/Item/new"
           state={{
-            hsnSac: itemsData.itemSettings?.hsnSac || false,
+            hsnSac: hsnsac || false,
           }}>
           <Button variant="primary" size="xl">
             <PlusCircle color="white" />
@@ -54,7 +55,7 @@ function ItemHome({}: Props) {
       <div className="flex flex-col mt-4 gap-2 bg-white rounded-lg p-6">
  
         <div>
-          <ItemTable />
+          <ItemTable hsnsac={hsnsac} />
         </div>
       </div>
     </div>
