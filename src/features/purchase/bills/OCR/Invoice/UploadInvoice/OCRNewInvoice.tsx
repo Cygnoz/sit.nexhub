@@ -76,6 +76,10 @@ const OCRNewInvoice = () => {
         setModalOpen(false);
         setSelectedFile(null);
       }
+      else{
+        toast.error(error.response.data.error);
+        console.log(error.response.data.error)
+      }
     } catch (error) {
       console.error("Error occurred during upload:", error);
     } finally {
