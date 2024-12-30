@@ -79,7 +79,7 @@ const initialItemDataState = {
   baseCurrency: "",
   sellingPrice: "",
   saleMrp: "",
-  salesAccountId: " ",
+  salesAccountId: "",
   salesDescription: "",
   costPrice: "",
   purchaseAccountId: "",
