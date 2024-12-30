@@ -2,6 +2,7 @@ export interface Bill {
     supplierId: string;
     supplierDisplayName:string;
     billNumber: string;
+    supplierInvoiceNum:string;
     sourceOfSupply: string;
     destinationOfSupply: string;
     taxMode: string;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import Button from "../../../../../../Components/Button";
 import PlusCircle from "../../../../../../assets/icons/PlusCircle";
 import Modal from "../../../../../../Components/model/Modal";
@@ -7,6 +7,8 @@ import { endponits } from "../../../../../../Services/apiEndpoints";
 import useApi from "../../../../../../Hooks/useApi";
 import NewUnit from "../../../../../inventory/Unit/NewUnit";
 import toast from "react-hot-toast";
+import { useOrganization } from "../../../../../../context/OrganizationContext";
+import { octAddItemContext } from "../../../../../../context/ContextShare";
 
 const initialItemDataState = {
   _id: "",
@@ -17,28 +19,33 @@ const initialItemDataState = {
   taxExemptReason: "",
   sellingPrice: "",
   taxRate: "",
-  purchaseDescription:""
+  purchaseDescription: "",
 };
 
 const AddNewItem = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isService, setIsService] = useState<boolean>(false);
   const [itemsData, setItemsData] = useState<[] | any>(initialItemDataState);
-  const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(null);
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
+    null
+  );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [unitList, setUnitList] = useState<[] | any>([]);
   const [taxRate, setTaxRate] = useState<[] | any>([]);
   const { request: getUnit } = useApi("get", 5003);
   const { request: getTaxRate } = useApi("get", 5004);
   const { request: addItem } = useApi("post", 5003);
-
+  const { organization } = useOrganization();
+  const { setOcrAddItem } = useContext(octAddItemContext)!;
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
       setOpenDropdownIndex(null);
     }
   };
@@ -60,13 +67,24 @@ const AddNewItem = () => {
     }
   };
 
-  const handleDropdownSelect = (key: string, value: string) => {
-  setItemsData((prev:any) => ({
-      ...prev,
-      [key]: value,
+  const handleDropdownSelect = (key: string, value: any) => {
+    let updatedValue = value;
+
+    if (key === "unit" && value.unitName) {
+        updatedValue = value.unitName;
+    }
+
+    setItemsData((prev: any) => ({
+        ...prev,
+        [key]: updatedValue,
     }));
+
+    console.log(updatedValue, "updatedValue");
+    console.log(key, "key");
     setOpenDropdownIndex(null);
-  };
+};
+
+
 
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
@@ -82,32 +100,35 @@ const AddNewItem = () => {
     setItemsData((prev: any) => ({
       ...prev,
       [name]:
-        type === "checkbox" ? (event.target as HTMLInputElement).checked : value,
+        type === "checkbox"
+          ? (event.target as HTMLInputElement).checked
+          : value,
     }));
   };
 
-  const handleSave= async()=>{
+  const handleSave = async () => {
     try {
-      const url = `${endponits.ADD_ITEM}`
-      const {response,error}= await addItem(url,itemsData)
-      if(!error && response){
-        toast.success(response.data.message)
-        closeModal()
-      }
-      else{
-        toast.error(error.response.data.message)
-
+      const url = `${endponits.ADD_ITEM}`;
+      const { response, error } = await addItem(url, itemsData);
+      if (!error && response) {
+        toast.success(response.data.message);
+        closeModal();
+        setOcrAddItem((prevCashResponse: any) => ({
+          ...prevCashResponse,
+          ...itemsData,
+        }));
+      } else {
+        toast.error(error.response.data.message);
       }
     } catch (error) {
-      toast.success(`Something went wong ${error}`)
-
+      toast.success(`Something went wong ${error}`);
     }
-  }
+  };
 
-  const handleClose=()=>{
-    setItemsData(initialItemDataState)
-    closeModal()
-  }
+  const handleClose = () => {
+    setItemsData(initialItemDataState);
+    closeModal();
+  };
 
   useEffect(() => {
     const unitURl = `${endponits.GET_ALL_UNIT}`;
@@ -116,6 +137,21 @@ const AddNewItem = () => {
     fetchData(taxUrl, setTaxRate, getTaxRate);
     fetchData(unitURl, setUnitList, getUnit);
   }, []);
+
+  useEffect(() => {
+    if (itemsData.taxPreference === "Taxable") {
+      setItemsData((prevData:any) => ({
+        ...prevData,
+        taxExemptReason: "",
+      }));
+    } else {
+      setItemsData((prevData:any) => ({
+        ...prevData,
+        taxRate: "",
+      }));
+    }
+  }, [itemsData.taxPreference]);
+  
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -129,9 +165,7 @@ const AddNewItem = () => {
     };
   }, [openDropdownIndex]);
 
-console.log(itemsData,"itemsdata")
-
-
+  console.log(itemsData, "itemsdata");
 
   return (
     <div>
@@ -163,45 +197,102 @@ console.log(itemsData,"itemsdata")
           </div>
 
           <form className="text-start space-y-3 overflow-y-scroll hide-scrollbar">
-            <div>
-              <label className="block text-sm text-labelColor" htmlFor="itemType">
-                Item Type
-              </label>
-              <div className="flex items-center space-x-4 text-textColor text-sm">
-                <div className="flex gap-2 justify-center items-center">
-                  <input
-                    id="goods"
-                    type="radio"
-                    name="itemType"
-                    value="goods"
-                    checked={!isService}
-                    onChange={() => setIsService(false)}
-                    className="w-5 h-5 rounded-full border border-1 border-[#97998E]"
-                  />
-                  <label htmlFor="goods" className="text-start font-medium mt-1">
-                    Goods
-                  </label>
-                </div>
+          <div className="flex justify-start items-center">
+              <div>
+                <label
+                  className="block text-sm text-labelColor"
+                  htmlFor="itemType"
+                >
+                  Item Type
+                </label>
+                <div className="flex items-center space-x-4 text-textColor text-sm">
+                  <div className="flex gap-2 justify-center items-center">
+                    <div
+                      className="grid place-items-center mt-1"
+                      onClick={() => {
+                        setItemsData((prev:any) => ({
+                          ...prev,
+                          itemType: "goods",
+                        }));
+                      }}
+                    >
+                      <input
+                        id="goods"
+                        type="radio"
+                        name="itemType"
+                        value="goods"
+                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${itemsData.itemType === "goods"
+                          ? "border-8 border-[#97998E]"
+                          : "border-1 border-[#97998E]"
+                          }`}
+                        checked={itemsData.itemType === "goods"} // "Goods" will be checked by default
+                        onChange={handleInputChange}
+                      />
+                      <div
+                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${itemsData.itemType === "goods"
+                          ? "bg-neutral-50"
+                          : "bg-transparent"
+                          }`}
+                      />
+                    </div>
+                    <label
+                      htmlFor="goods"
+                      className="text-start font-medium mt-1"
+                    >
+                      Goods
+                    </label>
+                  </div>
 
-                <div className="flex gap-2 justify-center items-center">
-                  <input
-                    id="service"
-                    type="radio"
-                    name="itemType"
-                    value="service"
-                    checked={isService}
-                    onChange={() => setIsService(true)}
-                    className="w-5 h-5 rounded-full border border-1 border-[#97998E]"
-                  />
-                  <label htmlFor="service" className="text-start font-medium mt-1">
-                    Service
-                  </label>
+                  <div className="flex gap-2 justify-center items-center">
+                    <div
+                      className="grid place-items-center mt-1"
+                      onClick={() => {
+                        itemsData((prev:any) => ({
+                          ...prev,
+                          itemType: "service",
+                        }));
+                      }}
+                    >
+                      <input
+                        id="service"
+                        type="radio"
+                        name="itemType"
+                        value="service"
+                        className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${itemsData.itemType === "service"
+                          ? "border-8 border-[#97998E]"
+                          : "border-1 border-[#97998E]"
+                          }`}
+                        checked={itemsData.itemType === "service"}
+                        onChange={handleInputChange}
+                      />
+                      <div
+                        className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${itemsData.itemType === "service"
+                          ? "bg-neutral-50"
+                          : "bg-transparent"
+                          }`}
+                      />
+                    </div>
+                    <label
+                      htmlFor="service"
+                      className="text-start font-medium mt-1"
+                    >
+                      Service
+                    </label>
+                  </div>
                 </div>
+              </div>
+
+              <div className="grid grid-cols-12 gap-4 ms-5">
+               
+             
               </div>
             </div>
 
             <div>
-              <label className="block text-slate-600 text-sm mb-0.5" htmlFor="itemName">
+              <label
+                className="block text-slate-600 text-sm mb-0.5"
+                htmlFor="itemName"
+              >
                 Name
               </label>
               <input
@@ -214,7 +305,10 @@ console.log(itemsData,"itemsdata")
             </div>
 
             <div className="relative col-span-3 mt-3">
-              <label htmlFor="unit-input" className="text-slate-600 flex items-center gap-2">
+              <label
+                htmlFor="unit-input"
+                className="text-slate-600 flex items-center gap-2"
+              >
                 Unit
               </label>
               <div className="relative w-full ">
@@ -236,7 +330,6 @@ console.log(itemsData,"itemsdata")
                   ref={dropdownRef}
                   className="absolute w-[100%] z-10 bg-white rounded-md mt-1 p-2 space-y-1 border border-inputBorder"
                 >
-
                   {unitList &&
                     unitList.map((unit: any, index: number) => (
                       <div
@@ -272,91 +365,101 @@ console.log(itemsData,"itemsdata")
                 <option value="Non-taxable">Non-Taxable</option>
               </select>
               <div className="cursor-pointer pointer-events-none absolute inset-y-0 mt-5 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
-            </div>
-
-          { itemsData.taxPreference==="Taxable" && 
-           <div className="relative mt-4">
-              <label
-                htmlFor="taxRate"
-                className="text-slate-600 text-sm flex items-center gap-2"
-              >
-                Tax Rate
-              </label>
-              <div className="relative w-full ">
-                <input
-                  id="taxRate-input"
-                  type="text"
-                  value={itemsData.taxRate}
-                  readOnly
-                  className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  placeholder="Select Tax Rate"
-                  onClick={() => toggleDropdown("taxRate")}
-                />
-                <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
+                <CehvronDown color="gray" />
               </div>
-              {openDropdownIndex === "taxRate" && (
-                <div
-                  ref={dropdownRef}
-                  className="absolute w-[100%] z-10 bg-white rounded-md mt-1 p-2 space-y-1 border border-inputBorder"
-                >
-                  {taxRate.gstTaxRate &&
-                    taxRate.gstTaxRate.map((rate: any, index: number) => (
-                      <div
-                        key={index}
-                        onClick={() => handleDropdownSelect("taxRate", rate.taxName)}
-                        className="flex p-2 w-[100%] mb-4 hover:bg-gray-100 cursor-pointer border-b border-slate-300 text-sm text-textColor hover:bg-lightPink"
-                      >
-                        {rate.taxName}
-                      </div>
-                    ))}
-                </div>
-              )}
-            </div>}
-
-          {  itemsData.taxPreference==="Non-Taxable" && <div>
-              <label className="block text-slate-600 text-sm mb-0.5" htmlFor="itemName">
-                Exemption Reason
-              </label>
-              <input
-                className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                placeholder="Exemption Reason"
-                name="taxExemptReason"
-                value={itemsData.taxExemptReason}
-                onChange={handleInputChange}
-              />
-            </div>}
-
-            <div>
-              <label className="block text-slate-600 text-sm mb-0.5" htmlFor="itemName">
-           Selling Price
-              </label>
-              <input
-  className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-  placeholder="Enter selling price"
-  name="sellingPrice"
-  value={itemsData.sellingPrice}
-  type="number"
-  min="0" 
-  step="0.01" 
-  onChange={(e) => {
-    const value = e.target.value;
-    if (/^\d*\.?\d*$/.test(value)) {
-      setItemsData((prevData:any) => ({
-        ...prevData,
-        [e.target.name]: value,
-      }));
-    }
-  }}
-/>
-
             </div>
+
+            {itemsData.taxPreference === "Taxable" && (
+          <div className="relative mt-4">
+          <label
+            htmlFor="taxRate"
+            className="text-slate-600 text-sm flex items-center gap-2"
+          >
+            Tax Rate
+          </label>
+          <div className="relative w-full">
+            <input
+              id="taxRate-input"
+              type="text"
+              value={itemsData.taxRate || ""}
+              readOnly
+              name="taxRate"
+              className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+              placeholder="Select Tax Rate"
+              onClick={() => toggleDropdown("taxRate")}
+            />
+            <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <CehvronDown color="gray" />
+            </div>
+          </div>
+          {openDropdownIndex === "taxRate" && (
+            <div
+              ref={dropdownRef}
+              className="absolute w-[100%] z-10 bg-white rounded-md mt-1 p-2 space-y-1 border border-inputBorder"
+            >
+              {taxRate.gstTaxRate &&
+                taxRate.gstTaxRate.map((rate: any, index: number) => (
+                  <div
+                    key={index}
+                    onClick={() => handleDropdownSelect("taxRate", rate.taxName)}
+                    className="flex p-2 w-[100%]  hover:bg-gray-100 cursor-pointer border rounded-lg bg-lightPink border-slate-300 text-sm text-textColor"
+                    >
+                    {rate.taxName}
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+        
+            )}
+
+            {itemsData.taxPreference === "Non-taxable" && (
+              <div>
+                <label
+                  className="block text-slate-600 text-sm mb-0.5"
+                  htmlFor="itemName"
+                >
+                  Exemption Reason
+                </label>
+                <input
+                  className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                  placeholder="Exemption Reason"
+                  name="taxExemptReason"
+                  value={itemsData.taxExemptReason}
+                  onChange={handleInputChange}
+                />
+              </div>
+            )}
+
+            <div className="relative  mt-0.5">
+              <label
+                className="text-slate-600 flex text-sm gap-2"
+                htmlFor="sellingPrice"
+              >
+                Selling Price
+              </label>
+              <div className="flex">
+                <div className="w-16 text-sm mt-0.5 rounded-l-md text-start bg-white text-zinc-400 border border-inputBorder h-10 items-center justify-center flex">
+                  {organization?.baseCurrency}
+                </div>
+                <input
+                  type="number"
+                  min={0}
+                  className="pl-3 text-sm w-[100%] mt-0.5   rounded-r-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                  placeholder="Enter Price"
+                  name="sellingPrice"
+                  value={itemsData.sellingPrice}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
             <div>
-              <label className="block text-slate-600 text-sm mb-0.5" htmlFor="itemName">
-             Description
+              <label
+                className="block text-slate-600 text-sm mb-0.5"
+                htmlFor="itemName"
+              >
+                Description
               </label>
               <input
                 className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
@@ -368,18 +471,23 @@ console.log(itemsData,"itemsdata")
             </div>
           </form>
           <div className="justify-end me-5 flex gap-4 p-2">
-                    <Button variant="secondary" size="sm" className="text-sm pl-8 pr-8" onClick={handleClose}>
-                      Cancel
-                    </Button>
-                  <Button
-                    onClick={handleSave}
-                    variant="primary"
-                    size="sm"
-                    className="text-sm pl-8 pr-8"
-                  >
-                    Save
-                  </Button>
-                </div>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="text-sm pl-8 pr-8"
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSave}
+              variant="primary"
+              size="sm"
+              className="text-sm pl-8 pr-8"
+            >
+              Save
+            </Button>
+          </div>
         </div>
       </Modal>
     </div>

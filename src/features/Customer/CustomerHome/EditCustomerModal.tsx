@@ -294,8 +294,21 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
   ) => {
     const { name, type, value } = e.target;
 
-    if (name === "companyName") {
+    if (customerdata.customerType === "Business" && name === "companyName") {
       setCustomerData({ ...customerdata, customerDisplayName: value });
+    }
+  
+    if (
+      customerdata.customerType === "Individual" &&
+      (name === "firstName" || name === "lastName")
+    ) {
+      setCustomerData((prevData) => ({
+        ...prevData,
+        [name]: value,
+        customerDisplayName: `${name === "firstName" ? value : prevData.firstName} ${
+          name === "lastName" ? value : prevData.lastName
+        }`.trim(),
+      }));
     }
 
     if (type === "checkbox") {
@@ -793,7 +806,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
               </div>
 
               <div className="grid grid-cols-3 gap-x-4  ">
-                <div>
+              { customerdata.customerType==="Business" &&  <div>
                   <label htmlFor="companyName">Company Name </label>
                   <input
                     type="text"
@@ -824,7 +837,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
                         Please enter a valid Company Name (letters only).
                       </div>
                     )}
-                </div>
+                </div>}
                 <div>
                   <label htmlFor="companyName">Customer Display Name </label>
                   <input
@@ -907,10 +920,8 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
                     onChange={handleChange}
                   />
                 </div> */}
-              </div>
 
-              <div className="grid grid-cols-3  gap-x-4">
-                <div>
+{ customerdata.customerType==="Individual" && <div>
                   <label htmlFor="">Work Phone</label>
                   <PhoneInput
                     inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
@@ -920,7 +931,21 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
                     value={customerdata.workPhone}
                     onChange={(e) => handlePhoneChange("workPhone", e)}
                   />
-                </div>
+                </div>}
+              </div>
+
+              <div className="grid grid-cols-3  gap-x-4">
+               { customerdata.customerType==="Business" && <div>
+                  <label htmlFor="">Work Phone</label>
+                  <PhoneInput
+                    inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    inputStyle={{ height: "38px", width: "100%" }}
+                    containerStyle={{ width: "100%" }}
+                    country={"in"}
+                    value={customerdata.workPhone}
+                    onChange={(e) => handlePhoneChange("workPhone", e)}
+                  />
+                </div>}
                 <div>
                   <label htmlFor="">Mobile</label>
                   <PhoneInput

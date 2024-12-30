@@ -67,8 +67,7 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
     );
   
     if (isProductAlreadyExists) {
-      // console.log("Product already exists in allItems. Dropdown will not open.");
-      return;
+    
     }
   
     setOpenDropdownIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -99,8 +98,8 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
 
       const isSubstringMatch = normalizedItemName.includes(normalizedInvoiceItem);
 
-      const itemSubstring = normalizedItemName.substring(0, 5);
-      const invoiceitemSubstring = normalizedInvoiceItem.substring(0, 5);
+      const itemSubstring = normalizedItemName.substring(0, 2);
+      const invoiceitemSubstring = normalizedInvoiceItem.substring(0, 2);
 
       return isSubstringMatch || itemSubstring === invoiceitemSubstring;
     });
@@ -109,7 +108,6 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
       console.log(`No matching Item found for '${invoiceItem}'.`);
     } else {
       setMatchingItem(matchingItem);
-      // console.log(matchingItem, "match");
     }
   };
 
@@ -196,20 +194,20 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
                   toggleDropdown(index);  
                   setSelectedInvoiceItem(item);
                 }}
-                className="relative"
+                className={`border px-4 py-3 whitespace-nowrap cursor-pointer relative ${
+                  openDropdownIndex === index
+                    ? "border-[#F4F4F4] bg-lightPink"
+                    : "border-[#F4F4F4]"
+                }`}
               >
                 <div
-                  className={`border px-4 py-3 whitespace-nowrap cursor-pointer ${
-                    openDropdownIndex === index
-                      ? "border-x-darkRed border-y-darkRed bg-lightPink"
-                      : "border-[#F4F4F4]"
-                  }`}
+                 
                 >
                   {item.product_name}
                   {openDropdownIndex === index && (
                     <div
-                      className="absolute z-10 w-[100%] -ms-5 bg-white rounded-md mt-3.5 p-2 space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
-                      style={{ boxShadow: "1px 1px 5px 0.5px" }}
+                      className="absolute z-10  -ms-5 bg-white rounded-md mt-3.5 p-2 space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
+                      style={{ boxShadow: "1px 1px 5px 0.5px", width:"350px" }}
                     >
                       <div className="flex gap-3 mb-4 items-center">
                         <DotIcon color="#DD2020" size={15} />

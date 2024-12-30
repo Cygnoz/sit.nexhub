@@ -361,7 +361,7 @@ export const settingsList = [
     subhead: [
       { headName: "Profile", subRoute: "/settings/organization/profile" },
       { headName: "Currencies", subRoute: "/settings/organization/currencies" },
-      {headName:"Accounts",subRoute:"/settings/organization/accounts"},
+      // {headName:"Accounts",subRoute:"/settings/organization/accounts"},
       {
         headName: "Additional Details",
         subRoute: "/settings/organization/invoice",

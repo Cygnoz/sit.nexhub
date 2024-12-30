@@ -1,9 +1,9 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../../../../assets/icons/CheveronLeftIcon";
 import OCRNewInvoice from "../UploadInvoice/OCRNewInvoice";
 // import pdf from "../../../../../../assets/Images/image.png";
 import DotIcon from "../../../../../../assets/icons/DotIcon";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import AddSupplierModal from "../../../../../Supplier/SupplierHome/AddSupplierModal";
 import CehvronDown from "../../../../../../assets/icons/CehvronDown";
 import Check from "../../../../../../assets/icons/Check";
@@ -13,6 +13,12 @@ import Expand from "../../../../../../assets/icons/Expand";
 import useApi from "../../../../../../Hooks/useApi";
 import { endponits } from "../../../../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
+import {
+  octAddItemContext,
+  SupplierResponseContext,
+} from "../../../../../../context/ContextShare";
+import ZoomOut from "../../../../../../assets/icons/ZoomOut";
+import ZoomIn from "../../../../../../assets/icons/ZoomIn";
 
 interface BankDetails {
   account_no: string;
@@ -40,6 +46,13 @@ interface Footer {
   igst: string;
 }
 
+const usePrevious = (value: any) => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+};
 const OCRInvoiceView = () => {
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
@@ -56,6 +69,10 @@ const OCRInvoiceView = () => {
   const [sameSupplier, setSameSupplier] = useState<boolean>(true);
   const [allItems, setAllItems] = useState<[] | any>([]);
   const [currentItemsMatch, setCurrentItemsMatch] = useState<any>([]);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const { supplierResponse } = useContext(SupplierResponseContext)!;
+  const navigate = useNavigate();
+  const { ocrAddItem } = useContext(octAddItemContext)!;
 
   const [bankDetails, setBankDetails] = useState<BankDetails>({
     account_no: "",
@@ -86,7 +103,7 @@ const OCRInvoiceView = () => {
   const { request: getInvoice } = useApi("get", 5000);
   const { request: getSupplier } = useApi("get", 5009);
   const { request: getItems } = useApi("get", 5003);
-  const {request:updateOcr}=useApi("put",5000)
+  const { request: updateOcr } = useApi("put", 5000);
 
   const itemsPerPage = 10;
   const totalPages = Math.ceil(lineItems.length / itemsPerPage);
@@ -95,6 +112,17 @@ const OCRInvoiceView = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentItems = lineItems.slice(startIndex, endIndex);
   const { id } = useParams();
+  const prevAllItems = usePrevious(allItems);
+  const prevCurrentItems = usePrevious(currentItems);
+
+
+  const handleZoomIn = () => {
+    setZoomLevel((prevZoom) => Math.min(prevZoom + 0.1, 2)); // Max zoom level: 2
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel((prevZoom) => Math.max(prevZoom - 0.1, 0.5)); // Min zoom level: 0.5
+  };
 
   const getPageNumbers = () => {
     const pageNumbers = [];
@@ -183,6 +211,8 @@ const OCRInvoiceView = () => {
     }
   };
   const handleSupplierMatch = () => {
+    console.log("working");
+
     if (!invoice || invoice.length === 0) {
       console.error("No invoice data available.");
       return;
@@ -191,73 +221,73 @@ const OCRInvoiceView = () => {
       console.error("No suppliers data available.");
       return;
     }
-  
-    const inVoiceSupplier = invoice?.invoice?.header?.supplier_name
-      ?.toLowerCase()
-      .trim();
-    if (!inVoiceSupplier) {
+
+    const invoiceSupplierName = invoice?.invoice?.header?.supplier_name;
+    if (!invoiceSupplierName) {
       console.error("No supplier name found in the invoice.");
       return;
     }
-  
-    const normalizedInvoiceSupplier = inVoiceSupplier.replace(/\s+/g, "").toLowerCase();
-  
-    const exactMatches = supplier.filter((supplier: any) => {
-      const normalizedSupplierName = supplier.supplierDisplayName
-        .replace(/\s+/g, "")
-        .toLowerCase();
-      return normalizedSupplierName === normalizedInvoiceSupplier;
-    });
-  
+
+    // Find exact matches
+    const exactMatches = supplier.filter(
+      (supplier: any) => supplier.supplierDisplayName === invoiceSupplierName
+    );
+
+    // Normalize invoice supplier name for similar matches
+    const normalizedInvoiceSupplier = invoiceSupplierName
+      .replace(/\s+/g, "")
+      .toLowerCase();
+
+    // Find similar matches
     const similarMatches = supplier.filter((supplier: any) => {
       const normalizedSupplierName = supplier.supplierDisplayName
         .replace(/\s+/g, "")
         .toLowerCase();
-  
-      const isSubstringMatch = normalizedSupplierName.includes(normalizedInvoiceSupplier);
-  
+
+      const isSubstringMatch = normalizedSupplierName.includes(
+        normalizedInvoiceSupplier
+      );
+
       const supplierSubstring = normalizedSupplierName.substring(0, 5);
-      const invoiceSupplierSubstring = normalizedInvoiceSupplier.substring(0, 5);
-  
+      const invoiceSupplierSubstring = normalizedInvoiceSupplier.substring(
+        0,
+        5
+      );
+
       return isSubstringMatch || supplierSubstring === invoiceSupplierSubstring;
     });
-  
-    console.log(exactMatches, "exact matches");
-    console.log(similarMatches, "similar matches");
-  
-    if (exactMatches.length > 0 && similarMatches.length === 1) {
-      const similarSupplierName = similarMatches[0]?.supplierDisplayName
-        .replace(/\s+/g, "")
-        .toLowerCase();
-  
-      if (normalizedInvoiceSupplier === similarSupplierName) {
-        setSameSupplier(true);
-        setSimilarSuppliers([]);
-        setInvoice((prevData: any) => ({
-          ...prevData,
-          invoice: {
-            ...prevData.invoice,
-            header: {
-              ...prevData.invoice.header,
-              supplier_id: exactMatches[0]?._id,
-            },
-          },
-        }));
-        return;
-      }
-    }
-  
-    if (similarMatches.length > 0) {
-      setSameSupplier(false);
-      setSimilarSuppliers(similarMatches);
+
+    // Combine exact and similar matches, ensuring no duplicates
+    const combinedMatches = Array.from(
+      new Map(
+        [...exactMatches, ...similarMatches].map((item) => [item._id, item])
+      ).values()
+    );
+
+    if (combinedMatches.length > 0) {
+      setSameSupplier(exactMatches.length > 0); // Check if there's at least one exact match
+      setSimilarSuppliers(combinedMatches);
     } else {
       setSameSupplier(false);
       setSimilarSuppliers([]);
     }
-  };
-  
-  console.log(similarSuppliers,"similarMatches")
 
+    // Update supplier_id in the invoice header for exact match
+    if (exactMatches.length > 0) {
+      setInvoice((prevData: any) => ({
+        ...prevData,
+        invoice: {
+          ...prevData.invoice,
+          header: {
+            ...prevData.invoice.header,
+            supplier_id: exactMatches[0]?._id,
+          },
+        },
+      }));
+    }
+  };
+
+  console.log(sameSupplier);
 
   const handleItemMatch = () => {
     const matches = currentItems.map((item: any) => {
@@ -301,21 +331,19 @@ const OCRInvoiceView = () => {
     }
   };
 
-
-  const handleUpdate=async()=>{
+  const handleUpdate = async () => {
     try {
-      const url=`${endponits.UPDATE_OCR_DATA}/${id}`
-     const  {response,error}=await updateOcr(url,invoice)
-      if(!error&&response){
-     toast.success(response.data[0].message)
+      const url = `${endponits.UPDATE_OCR_DATA}/${id}`;
+      const { response, error } = await updateOcr(url, invoice);
+      if (!error && response) {
+        toast.success(response.data[0].message);
+        navigate("/purchase/bills/invoice");
+      } else {
+        console.log(error.response.data[0].error);
+        toast.error(error.response.data[0].error);
       }
-      else{
-        toast.error(error.data[0].message)
-      }
-    } catch (error) {
-      
-    }
-  }
+    } catch (error) {}
+  };
 
   useEffect(() => {
     const { items } = invoice?.invoice || {};
@@ -334,23 +362,46 @@ const OCRInvoiceView = () => {
     }));
   }, [bankDetails, header, footer]);
 
+  const handleConfirm = () => {
+    if (!selectedSupplier) {
+      console.error("No supplier selected.");
+      return;
+    }
+    setSimilarSuppliers([]);
+    toggleDropdown("supplierName");
+
+    setHeader((prevData) => ({
+      ...prevData,
+      supplier_name: selectedSupplier.supplierDisplayName,
+      supplier_id: selectedSupplier._id,
+    }));
+    handleSupplierMatch();
+    console.log("Supplier confirmed:", selectedSupplier.supplierDisplayName);
+  };
+
   useEffect(() => {
     handleSupplierMatch();
-    handleItemMatch();
-  }, [header, supplier]);
+  }, [supplier, invoice?.invoice?.header?.supplier_name]);
 
   useEffect(() => {
-    handleItemMatch();
-  }, [allItems]);
+    if (
+      JSON.stringify(prevAllItems) !== JSON.stringify(allItems) ||
+      JSON.stringify(prevCurrentItems) !== JSON.stringify(currentItems)
+    ) {
+      handleItemMatch();
+    }
+  }, [allItems, currentItems]);
+
+  console.log(currentItems, "current");
 
   useEffect(() => {
-    const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     const allItemUrl = `${endponits.GET_ALL_ITEM}`;
+    const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
+    fetchData(supplierUrl, setsupplier, getSupplier);
 
     fetchData(allItemUrl, setAllItems, getItems);
-    fetchData(supplierUrl, setsupplier, getSupplier);
     getAInvoice();
-  }, []);
+  }, [supplierResponse, ocrAddItem]);
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -363,7 +414,6 @@ const OCRInvoiceView = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openDropdownIndex]);
-
 
   console.log(invoice, "invoice");
 
@@ -392,13 +442,21 @@ const OCRInvoiceView = () => {
           {/* Header Section */}
           <div className="h-10 bg-[#E5E5E5] rounded-t-lg text-xs font-bold text-[#4B5C79] flex items-center px-4">
             <p>INV-001.png</p>
-
-            <button
-              className="flex justify-end ml-auto"
-              onClick={handleImageExpand}
-            >
-              <Expand />
-            </button>
+           <div className="ml-auto flex items-center justify-center gap-4">
+              <button onClick={handleZoomIn}>
+                <ZoomIn />
+              </button>
+  
+              <button onClick={handleZoomOut} >
+                <ZoomOut />
+              </button>
+              <button
+                className="flex justify-end ms-5"
+                onClick={handleImageExpand}
+              >
+                <Expand />
+              </button>
+           </div>
           </div>
 
           <div className="flex items-center justify-center h-[760px] py-2 bg-[#F3F3F3] relative">
@@ -408,7 +466,8 @@ const OCRInvoiceView = () => {
               <img
                 src={invoice?.image?.file}
                 alt="Invoice"
-                className="max-w-2xl h-[650px]"
+                className="max-w-2xl h-[700px]"
+                style={{ transform: `scale(${zoomLevel})` }}
               />
             )}
 
@@ -464,11 +523,7 @@ const OCRInvoiceView = () => {
                   className={`flex gap-5 p-2 items-center font-semibold ${
                     !sameSupplier ? "hover:bg-[#f5dddd]" : ""
                   }`}
-                  onClick={
-                    !sameSupplier
-                      ? () => toggleDropdown("supplierName")
-                      : undefined
-                  }
+                  onClick={() => toggleDropdown("supplierName")}
                 >
                   <DotIcon
                     color={sameSupplier ? "#32A370" : "#DD2020"}
@@ -547,14 +602,7 @@ const OCRInvoiceView = () => {
                       </Button>
                       <button
                         className="bg-[#32A370] px-2 rounded-md text-white font-semibold flex items-center justify-center gap-1"
-                        onClick={() => {
-                          toggleDropdown("supplierName");
-                          setHeader((prevData) => ({
-                            ...prevData,
-                            supplier_name: selectedSupplier.supplierDisplayName,
-                            supplier_id: selectedSupplier._id,
-                          }));
-                        }}
+                        onClick={handleConfirm}
                       >
                         <Check />
                         Confirm
@@ -647,12 +695,12 @@ const OCRInvoiceView = () => {
                         (match: any) => match.item_id === item.item_id
                       );
                       const isMatched = matchedItem?.isMatch ?? false;
-                      console.log(
-                        "isMatched for item_id",
-                        item.item_id,
-                        ":",
-                        isMatched
-                      );
+                      // console.log(
+                      //   "isMatched for item_id",
+                      //   item.item_id,
+                      //   ":",
+                      //   isMatched
+                      // );
 
                       return (
                         <div
@@ -682,15 +730,9 @@ const OCRInvoiceView = () => {
                       const matchedItem = currentItemsMatch.find(
                         (match: any) => match.item_id === item.item_id
                       );
-                      console.log("Matched Item:", matchedItem);
+                      // console.log("Matched Item:", matchedItem);
 
                       const isMatched = matchedItem?.isMatch ?? false;
-                      console.log(
-                        "isMatched for item_id",
-                        item.item_id,
-                        ":",
-                        isMatched
-                      );
 
                       return (
                         <div
@@ -842,14 +884,21 @@ const OCRInvoiceView = () => {
                   />
                 </div>
                 <div
-                  className="flex gap-5 p-2 items-center font-semibold hover:bg-[#f0e0c9]"
-                  onClick={() => toggleDropdown("supplierName")}
+                  className="flex gap-5 p-2 items-center font-semibold "
+                  // onClick={() => toggleDropdown("supplierName")}
                 >
-                  <DotIcon color={"#CE841C"} size={10} />
+                  <DotIcon color={"#32A370"} size={10} />
                   <p className="text-textColor w-[20%]">Bank Name</p>
-                  <p className="text-[#CE841C] font-semibold">
-                    <span>{bankDetails?.bank_name}</span>
-                  </p>
+                  <input
+                    name="bank_name"
+                    type="text"
+                    className="invoice-input"
+                    value={bankDetails?.bank_name}
+                    placeholder="Bank  Name"
+                    onChange={(e) =>
+                      handleChange("bankDetails", e.target.name, e.target.value)
+                    }
+                  />
                 </div>
                 <div className="flex gap-5 p-2 items-center font-semibold">
                   <DotIcon color={"#32A370"} size={10} />
@@ -899,7 +948,12 @@ const OCRInvoiceView = () => {
               <Button className="px-4 py-2 " variant="secondary" size="sm">
                 Cancel
               </Button>
-              <Button className="px-4 py-2" variant="primary" size="sm" onClick={handleUpdate}>
+              <Button
+                className="px-4 py-2"
+                variant="primary"
+                size="sm"
+                onClick={handleUpdate}
+              >
                 Confirm Document
               </Button>
             </div>

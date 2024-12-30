@@ -79,10 +79,10 @@ const initialItemDataState = {
   baseCurrency: "",
   sellingPrice: "",
   saleMrp: "",
-  salesAccount: " ",
+  salesAccountId: " ",
   salesDescription: "",
   costPrice: "",
-  purchaseAccount: "",
+  purchaseAccountId: "",
   purchaseDescription: "",
   preferredVendorId: "",
   taxRate: "",
@@ -295,10 +295,11 @@ const AddItem = ({ }: Props) => {
   };
   const [errors, setErrors] = useState({
     itemName: false,
-    sellingPrice: false,
     taxPreference: false,
     taxRate: false,
     taxExemptReason: false,
+    purchaseAccountId: false,
+    salesAccountId: false,
 
   });
 
@@ -312,10 +313,11 @@ const AddItem = ({ }: Props) => {
     // Validation checks
     const newErrors = {
       itemName: !initialItemData.itemName,
-      sellingPrice: !initialItemData.sellingPrice,
       taxPreference: !initialItemData.taxPreference,
       taxRate: initialItemData.taxPreference === "Taxable" && !initialItemData.taxRate,
-      taxExemptReason: initialItemData.taxPreference === "Non-taxable" && !initialItemData.taxExemptReason
+      taxExemptReason: initialItemData.taxPreference === "Non-taxable" && !initialItemData.taxExemptReason,
+      purchaseAccountId: Boolean(initialItemData.costPrice) && initialItemData.purchaseAccountId === "",
+      salesAccountId: Boolean(initialItemData.sellingPrice) && initialItemData.salesAccountId === "",
     };
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) {
@@ -391,10 +393,10 @@ const AddItem = ({ }: Props) => {
         baseCurrency: selectedItem.baseCurrency || "",
         sellingPrice: selectedItem.sellingPrice || "",
         saleMrp: selectedItem.saleMrp || "",
-        salesAccount: selectedItem.salesAccount || "",
+        salesAccountId: selectedItem.salesAccountId || "",
         salesDescription: selectedItem.salesDescription || "",
         costPrice: selectedItem.costPrice || "",
-        purchaseAccount: selectedItem.purchaseAccount || "",
+        purchaseAccountId: selectedItem.purchaseAccountId || "",
         purchaseDescription: selectedItem.purchaseDescription || "",
         preferredVendorId: selectedItem.preferredVendorId || "",
         taxRate: selectedItem.taxRate || "",
@@ -414,6 +416,9 @@ const AddItem = ({ }: Props) => {
     }
   }, [selectedItem]);
   const hsnSac = location.state?.hsnSac;
+
+  console.log(errors,"99");
+  
 
   return (
     <>
@@ -1533,19 +1538,20 @@ const AddItem = ({ }: Props) => {
                 </label>
                 <div className="relative w-full">
                   <select
-                    className="block appearance-none w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    name="purchaseAccount"
+                    className={`block appearance-none w-full mt-0.5 text-zinc-400 bg-white border ${errors.purchaseAccountId ? "border-red-800" : "border-inputBorder"
+                      } text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white ${errors.purchaseAccountId ? "focus:border-red-800" : "focus:border-darkRed"
+                      }`}
+                    name="purchaseAccountId"
                     onChange={handleInputChange}
-                    value={initialItemData.purchaseAccount}
+                    value={initialItemData.purchaseAccountId || ""}
                   >
-                    <option value="" selected hidden disabled>
+                    <option value="" hidden >
                       Select Account
                     </option>
                     {allAccounts
                       ?.filter(
                         (item: { accountSubhead: string }) =>
-                          item.accountSubhead === "Expense" ||
-                          item.accountSubhead === "Cost of Goods Sold"
+                          item.accountSubhead === "Expense" || item.accountSubhead === "Cost of Goods Sold"
                       )
                       ?.map((item: { _id: string; accountName: string }) => (
                         <option key={item._id} value={item._id}>
@@ -1557,21 +1563,27 @@ const AddItem = ({ }: Props) => {
                     <CehvronDown color="gray" />
                   </div>
                 </div>
+                {errors.purchaseAccountId && (
+                  <div className="text-red-800 text-xs ms-1">
+                    Purchase account is required when cost price is entered
+                  </div>
+                )}
               </div>
+
 
             </div>
           </div>
+
+
 
           <div className="w-1/2">
             <p className="text-textColor text-base font-semibold mt-2">
               Sales Information
             </p>
             <div className="flex gap-4 my-1">
+              {/* Selling Price Section */}
               <div className="relative w-1/2 mt-0.5">
-                <label
-                  className="text-slate-600 flex text-sm gap-2"
-                  htmlFor="sellingPrice"
-                >
+                <label className="text-slate-600 flex text-sm gap-2" htmlFor="sellingPrice">
                   Selling Price
                 </label>
                 <div className="flex">
@@ -1581,24 +1593,18 @@ const AddItem = ({ }: Props) => {
                   <input
                     type="number"
                     min={0}
-                    className="pl-3 text-sm w-[100%] mt-0.5  rounded-r-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    className="pl-3 text-sm w-[100%] mt-0.5 rounded-r-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                     placeholder="Enter Price"
                     name="sellingPrice"
                     value={initialItemData.sellingPrice}
                     onChange={handleInputChange}
                   />
                 </div>
-                {errors.sellingPrice && (
-                  <div className="text-red-800 text-xs  ms-1">
-                    Selling price is required
-                  </div>
-                )}
               </div>
+
+              {/* MRP Section */}
               <div className="w-1/2">
-                <label
-                  className="text-slate-600 flex text-sm items-center gap-2"
-                  htmlFor="saleMrp"
-                >
+                <label className="text-slate-600 flex text-sm items-center gap-2" htmlFor="saleMrp">
                   MRP
                 </label>
                 <div className="flex">
@@ -1617,21 +1623,26 @@ const AddItem = ({ }: Props) => {
                 </div>
               </div>
             </div>
+
+            {/* Sales Account Dropdown */}
             <div className="relative mt-4">
               <label
-                htmlFor="saleAccountDropdown"
+                htmlFor="salesAccountDropdown"
                 className="text-slate-600 text-sm flex items-center gap-2"
               >
-                Sale Account
+                Sales Account
               </label>
+
               <div className="relative w-full">
                 <select
-                  className="block appearance-none w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  name="salesAccount"
+                  className={`block appearance-none w-full mt-0.5 text-zinc-400 bg-white border ${errors.salesAccountId ? "border-red-800" : "border-inputBorder"
+                    } text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white ${errors.salesAccountId ? "focus:border-red-800" : "focus:border-darkRed"
+                    }`}
+                  name="salesAccountId"
                   onChange={handleInputChange}
-                  value={initialItemData.salesAccount} 
+                  value={initialItemData.salesAccountId || ""}
                 >
-                  <option  value="" selected hidden disabled>
+                  <option value="" hidden>
                     Select Account
                   </option>
                   {allAccounts
@@ -1642,12 +1653,20 @@ const AddItem = ({ }: Props) => {
                       </option>
                     ))}
                 </select>
+
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <CehvronDown color="gray" />
                 </div>
               </div>
+
+              {errors.salesAccountId && (
+                <div className="text-red-800 text-xs mt-1 ms-1">
+                  Sales account is required when selling price is entered
+                </div>
+              )}
             </div>
           </div>
+
         </div>
 
         <div className="w-full mt-2">

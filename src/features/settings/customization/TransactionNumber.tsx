@@ -39,21 +39,20 @@ function TransactionNumber() {
   const { request: AddPrefix } = useApi("post", 5004);
   const { request: EditPrefix } = useApi("put", 5004);
   const { request: StatusPrefix } = useApi("put", 5004);
-  const { request: DeletePrefix}=useApi('delete',5004)
+  const { request: DeletePrefix } = useApi('delete', 5004)
   const modules = [
     "journal",
     "creditNote",
-    "customerPayment",
+    "receipt",
     "purchaseOrder",
     "salesOrder",
-    "vendorPayment",
-    "retainerInvoice",
-    "vendorCredits",
-    "billOfSupply",
+    "payment",
+    "bill",
     "debitNote",
     "invoice",
     "quote",
     "deliveryChallan",
+    "expense",
   ];
 
   const initialColumns: Column[] = [
@@ -80,7 +79,6 @@ function TransactionNumber() {
   const [modalData, setModalData] = useState<SeriesModalData[]>([]); // modalData could be populated based on the
   const [newSeriesData, setNewSeriesData] = useState({
     seriesName: "", // This could be a dynamic value based on user input
-    organizationId: "INDORG0001",
   });
   // requirement
   const [columns, setColumns] = useState<Column[]>(initialColumns);
@@ -172,8 +170,7 @@ function TransactionNumber() {
   const getPrefixDatas = async () => {
     try {
       const url = `${endponits.GET_PREFIX}`;
-      const body = { organizationId: "INDORG0001" };
-      const { response, error } = await GetPrefix(url, body);
+      const { response, error } = await GetPrefix(url);
 
       if (!error && response) {
         const data = response.data.prefix.series;
@@ -251,17 +248,17 @@ function TransactionNumber() {
     }
   };
 
-  const handleDeletePrefix=async(sId: any)=>{
-    console.log("SId",sId);
-    
-    const  seriesId= sId
-    
+  const handleDeletePrefix = async (sId: any) => {
+    console.log("SId", sId);
+
+    const seriesId = sId
+
     try {
       const url = `${endponits.DELETE_PREFIX}/${seriesId}`;
       const apiResponse = await DeletePrefix(url);
       const { response, error } = apiResponse;
-      console.log("res",response);
-      console.log("err",error);
+      console.log("res", response);
+      console.log("err", error);
       if (!error && response) {
         toast.success(response.data.message);
         getPrefixDatas();
@@ -429,7 +426,7 @@ function TransactionNumber() {
                   {modalData.map((item, index) => (
                     <tr key={index}>
                       <td className="py-2.5 px-4 border-y border-tableBorder">
-                        {item.module}
+                        {item.module.charAt(0).toUpperCase() + item.module.slice(1)}
                       </td>
                       <td className="py-2.5 px-4 border-y border-tableBorder">
                         <input
@@ -555,7 +552,7 @@ function TransactionNumber() {
                   {modalData.map((item, index) => (
                     <tr key={index}>
                       <td className="py-2.5 px-4 border-y border-tableBorder">
-                        {item.module}
+                        {item.module.charAt(0).toUpperCase() + item.module.slice(1)}
                       </td>
                       <td className="py-2.5 px-4 border-y border-tableBorder">
                         <input
@@ -695,16 +692,16 @@ function TransactionNumber() {
                                     },
                                     ...(!item.status
                                       ? [
-                                          {
-                                            label: "Mark as Default",
-                                            icon: <StarYellow />,
-                                            onClick: () => {
-                                              handleStatusPrefix(
-                                                item._id
-                                              ); // Directly use item properties
-                                            },
+                                        {
+                                          label: "Mark as Default",
+                                          icon: <StarYellow />,
+                                          onClick: () => {
+                                            handleStatusPrefix(
+                                              item._id
+                                            ); // Directly use item properties
                                           },
-                                          {
+                                        },
+                                        {
                                           label: "Delete",
                                           icon: <TrashCan color="red" />,
                                           onClick: () => {
@@ -712,7 +709,7 @@ function TransactionNumber() {
                                             // handleDelete(item._id); // Directly use item properties
                                           },
                                         },
-                                        ]
+                                      ]
                                       : [
                                         // {
                                         //   label: "Delete",
@@ -723,7 +720,7 @@ function TransactionNumber() {
                                         //   },
                                         // },
                                       ]),
-                                    
+
                                   ]}
                                   backgroundColor="bg-white"
                                   trigger={<Ellipsis height={16} />}
