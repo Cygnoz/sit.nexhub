@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../../Components/Button";
 import CirclePlus from "../../../assets/icons/circleplus";
 import CashImage from "../../../assets/Images/CashImage.png";
@@ -31,14 +31,10 @@ const initialFormValues: any = {
 }
 
 function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps) {
-  console.log(accountData, "accountData");
-
   const [isModalOpen, setModalOpen] = useState(false);
   const { request: NewAccount } = useApi("post", 5001);
   const [openingType, setOpeningType] = useState("Debit");
   const [formValues, setFormValues] = useState(initialFormValues);
-  console.log(formValues, "formValues");
-
   const [isSubAccount, setIsSubAccount] = useState(false);
 
   const accountCategories = {
@@ -176,6 +172,12 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
       }));
     }
   };
+  useEffect(() => {
+    setFormValues((prevFormValues: any) => ({
+      ...prevFormValues,
+      parentAccountId: "", 
+    }));
+  }, [formValues.accountSubhead, isSubAccount]); 
 
   return (
     <div>
@@ -242,20 +244,20 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
 
               <div className="mb-2">
                 <label className="block text-sm mb-1 text-labelColor">
-                  Account Name
+                  {formValues?.accountSubhead === "Credit Card" ? "Credit Card Name" : "Account Name"}
                 </label>
                 <input
                   type="text"
                   name="accountName"
                   value={formValues.accountName}
                   onChange={handleChange}
-                  placeholder="Enter Account Name"
+                  placeholder={formValues?.accountSubhead === "Credit Card" ? "Enter Credit Card Name" : "Enter Account Name"}
                   className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
                 />
               </div>
 
               {formValues.accountSubhead &&
-                !["Other Asset", "Bank", "Payment Clearing", "Credit Card", "Other Liability", 
+                !["Other Asset", "Bank", "Payment Clearing", "Credit Card", "Other Liability",
                   "Overseas Tax Payable", "Other Income", "Other Expense"].includes(formValues.accountSubhead) && (
                   <>
                     <div className="mb-2 flex items-center gap-1 text-textColor">

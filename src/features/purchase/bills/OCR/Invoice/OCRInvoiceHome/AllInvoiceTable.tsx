@@ -1,87 +1,99 @@
 import { useContext, useEffect, useState } from "react";
-// import DotIcon from "../../../../../assets/icons/DotIcon";
-// import DateFormat from "../../../../../Components/DateFormat/DateFormta";
-import PurchaseTable from "../../../../CommonComponents/PurchaseTable/PurchaseTable";
-// import { endponits } from "../../../../../Services/apiEndpoints";
 import { useNavigate } from "react-router-dom";
-// import useApi from "../../../../../Hooks/useApi";
-import { TableResponseContext } from "../../../../../../context/ContextShare";
 import DotIcon from "../../../../../../assets/icons/DotIcon";
 import { endponits } from "../../../../../../Services/apiEndpoints";
 import useApi from "../../../../../../Hooks/useApi";
-
+import { TableResponseContext } from "../../../../../../context/ContextShare";
+import PurchaseTable from "../../../../CommonComponents/PurchaseTable/PurchaseTable";
+import toast from "react-hot-toast";
 
 const AllInvoiceTable = () => {
   const [columns, setColumns] = useState([
     { id: "supplier_name", label: "Supplier", visible: true },
     { id: "invoice_no", label: "Invoice Number", visible: true },
-    { id: "uploadedDate", label: "Uploaded Date", visible: true },
+    { id: "bill_date", label: "Uploaded Date", visible: true },
     { id: "status", label: "Review Status", visible: true },
-    { id: "reviewDate", label: "Review Date", visible: true },
+    { id: "review_date", label: "Review Date", visible: true },
   ]);
 
   const { request: getInvoice } = useApi("get", 5000);
-  const [invoice,setInvoice]=useState<[]|any>([])
-
-
-    const getallInvoice = async () => {
-      try {
-        const url = `${endponits.GET_ALL_OCR_INVOICE}`;
-        const { response, error } = await getInvoice(url);
-        if (!error && response) {
-          setInvoice(response.data);
-          console.log(response, "currencyData");
-        }
-      } catch (error) {
-        console.error("Error in fetching currency data", error);
-      }
-    };
-  
-    console.log(invoice)
+  const {request:Ocrdelete}=useApi("delete",5000)
+  const [invoice, setInvoice] = useState([]);
 
   const { loading, setLoading } = useContext(TableResponseContext)!;
   const navigate = useNavigate();
 
-  setLoading("")
+  const getallInvoice = async () => {
+    try {
+      const url = `${endponits.GET_ALL_OCR_INVOICE}`;
+      const { response, error } = await getInvoice(url);
 
-  const handleRowClick = () => {
-    navigate(`/purchase/bills/invoice/view`);
+      if (!error && response) {
+        setInvoice(response.data);
+      }
+    } catch (error) {
+      console.error("Error in fetching invoice data", error);
+    }
   };
 
-  useEffect(()=>{
-getallInvoice()
-  },[])
+  const handleRowClick = (id: string) => {
+    navigate(`/purchase/bills/invoice/view/${id}`);
+  };
+
 
   const renderColumnContent = (colId: string, item: any) => {
     const columnValue = item[colId as keyof typeof item];
-    if (colId === "reviewStatus") {
-      return (
-        <div className="flex justify-center items-center">
-          <div
-            className={`${
-              item.reviewStatus === "Need Review" ? "bg-[#F7E7CE]" :"bg-[#DADCCD]"
-            } text-[13px] rounded-lg text-center items-center text-textColor h-[18px] px-2 max-w-fit gap-2 py-2 flex justify-center`}
-          >
-                        <DotIcon color="#495160" />
 
-            {item.reviewStatus}
-          </div>
-       </div>
+    if (colId === "status") {
+      return (
+        <div
+          className={`${
+            columnValue === "Need review" ? "bg-[#F7E7CE]" : "bg-[#DADCCD]"
+          } text-[13px] rounded-lg text-center items-center text-textColor h-[18px] px-2 max-w-fit gap-2 py-2 flex justify-center`}
+        >
+          <DotIcon color="#495160" />
+          {columnValue}
+        </div>
       );
     }
-    return columnValue ? columnValue : <span className="text-gray-500 italic">-</span>;
+
+    return columnValue || <span className="text-gray-500 italic">-</span>;
   };
+  const handleDelete = async (id: string) => {
+    try {
+      const url = `${endponits.DELETE_OCR_INVOICE}/${id}`;
+      const { response, error } = await Ocrdelete(url);
+  
+      if (!error && response) {
+        toast.success(response.data[0].message);
+        getallInvoice(); 
+      }
+    } catch (error) {
+      console.error("Error in deleting invoice", error);
+      toast.error("Failed to delete invoice.");
+    }
+  };
+  
+
+  
+
+  useEffect(() => {
+    setLoading("");
+    getallInvoice();
+  }, []);
 
   return (
     <PurchaseTable
+      page="OCR"
       columns={columns}
       data={invoice}
       onRowClick={handleRowClick}
       renderColumnContent={renderColumnContent}
       searchPlaceholder="Search Invoice"
       loading={loading.skeleton}
-      searchableFields={["supplier", "reviewStatus"]}
+      searchableFields={["supplier_name", "status"]}
       setColumns={setColumns}
+      onDelete={handleDelete}
     />
   );
 };

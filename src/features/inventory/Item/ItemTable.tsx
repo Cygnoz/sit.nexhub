@@ -29,16 +29,15 @@ interface Column {
   visible: boolean;
 }
 type Props = {
-  hsnsac:any
+  hsnsac: any
 };
 
-const ItemTable = ({hsnsac}: Props) => {
+const ItemTable = ({ hsnsac }: Props) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isDeleteImageModalOpen, setDeleteImageModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
   const [oneItem, setOneItem] = useState<any>(null)
 
-  console.log(oneItem);
   console.log(selectedItem, "selectedItem");
 
   const { request: UpdateItem } = useApi("put", 5003);
@@ -426,7 +425,7 @@ const ItemTable = ({hsnsac}: Props) => {
                   <div className="w-full  rounded-lg border flex flex-col p-4  justify-between  bg-gradient-to-r from-[#6B1515] to-[#240C0C] ">
                     <div className="flex justify-between items-center">
                       <p className="text-[16px] font-semibold text-[#D4D4D4]">
-                        <span className="text-sm">   Main </span><span className="text-[#DF3232]">{selectedItem?.preferredVendor ? selectedItem?.preferredVendor : ""}</span>
+                        Main <span className="text-[#DF3232]">Supplier</span>
                       </p>
                       <div className="w-[34px] h-[34px] rounded-[3px] bg-[#741E1E] flex justify-center items-center">
                         <UserCheck color='#FF7070' />
@@ -434,13 +433,19 @@ const ItemTable = ({hsnsac}: Props) => {
                     </div>
                     <div className="mt-4 space-y-2 text-start">
                       <p className="text-[#FFFFFF]">
-                        <span >Name :</span> Ted Cravitz
+                        <span >Name :</span> {oneItem?.supplierDetails?.supplierDisplayName ? oneItem?.supplierDetails?.supplierDisplayName : ""}
                       </p>
                       <p className="text-[#FFFFFF]">
-                        <span >Phone :</span> 023-3652-547
+                        <span >Phone :</span> {oneItem?.supplierDetails?.mobile ? oneItem?.supplierDetails?.mobile : ""}
                       </p>
                       <p className="text-[#FFFFFF]">
-                        <span >Address :</span> 2871 Meadowbrook Lane, Minneapolis, MN 55422
+                        <span>Address :</span>{" "}
+                        {`${oneItem?.supplierDetails?.billingAddressStreet1}, 
+                           ${oneItem?.supplierDetails?.billingAddressStreet2}, 
+                           ${oneItem?.supplierDetails?.billingCity}, 
+                           ${oneItem?.supplierDetails?.billingState}, 
+                           ${oneItem?.supplierDetails?.billingCountry} - 
+                           ${oneItem?.supplierDetails?.billingPinCode}`}
                       </p>
                     </div>
                   </div>

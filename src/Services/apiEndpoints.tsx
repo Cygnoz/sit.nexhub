@@ -189,5 +189,8 @@ export const endponits = {
   // ocr
 
   UPLOAD_INVOICE:`api/upload`,
-  GET_ALL_OCR_INVOICE:`api/get_all_invoices`
+  GET_ALL_OCR_INVOICE:`api/get_all_invoices`,
+  GET_A_OCR_INVOICE:`api/view_invoice`,
+  UPDATE_OCR_DATA:`api/update_status`,
+  DELETE_OCR_INVOICE:`api/delete_invoice`,
 };
