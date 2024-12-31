@@ -329,9 +329,7 @@ const NewPaymentMade = ({}: Props) => {
                                   Phone: {supplier.mobile}
                                 </p>
                               </div>
-                              <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                                &times;
-                              </div>
+                             
                             </div>
                           </div>
                         ))

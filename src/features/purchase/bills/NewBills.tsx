@@ -14,7 +14,6 @@ import useApi from "../../../Hooks/useApi";
 import toast from "react-hot-toast";
 import ViewDetails from "../purchaseOrder/addPurchaseOrder/ViewDetails";
 
-
 type Props = {};
 
 const NewBills = ({}: Props) => {
@@ -32,14 +31,15 @@ const NewBills = ({}: Props) => {
   const [countryData, setcountryData] = useState<any | any>([]);
   const [isInterState, setIsInterState] = useState<boolean>(false);
   const [allAccounts, setAllAccounts] = useState<any>([]);
-  const [errors,setErrors]=useState({
-    billNumber:false,
-    dueDate:false,
-    billDate:false,
-    supplierId:false,
-    sourceOfSupply:false,
-    destinationOfSupply:false,
-  })
+  const [lastBillPrefix, setLastBillPrefix] = useState<any>(null);
+  const [errors, setErrors] = useState({
+    // billNumber: false,
+    dueDate: false,
+    billDate: false,
+    supplierId: false,
+    sourceOfSupply: false,
+    destinationOfSupply: false,
+  });
 
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: getOneOrganization } = useApi("get", 5004);
@@ -47,6 +47,7 @@ const NewBills = ({}: Props) => {
   const { request: newBillApi } = useApi("post", 5005);
   const { request: getOneBill } = useApi("get", 5005);
   const { request: getAccounts } = useApi("get", 5001);
+  const { request: getPrefix } = useApi("get", 5005);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,9 +56,9 @@ const NewBills = ({}: Props) => {
 
   const [bill, setBill] = useState<Bill>({
     supplierId: "",
-    supplierDisplayName:"",
+    supplierDisplayName: "",
     billNumber: "",
-    supplierInvoiceNum:"",
+    supplierInvoiceNum: "",
     sourceOfSupply: "",
     destinationOfSupply: "",
     taxMode: "",
@@ -66,9 +67,9 @@ const NewBills = ({}: Props) => {
     expectedShipmentDate: "",
     paymentTerms: "Pay Now",
     paymentMode: "",
-    PaidThrough:"",
-    billDate: new Date().toISOString().slice(0, 10), 
-       dueDate: "",
+    PaidThrough: "",
+    billDate: new Date().toISOString().slice(0, 10),
+    dueDate: "",
     items: [
       {
         itemId: "",
@@ -77,21 +78,21 @@ const NewBills = ({}: Props) => {
         itemCostPrice: "",
         itemDiscount: "",
         itemDiscountType: "percentage",
-        itemTax:"",
+        itemTax: "",
         itemSgst: "",
         itemCgst: "",
         itemIgst: "",
         itemVat: "",
         itemSgstAmount: "",
         itemCgstAmount: "",
-        taxPreference:""
+        taxPreference: "",
       },
     ],
-    otherExpenseAccountId:"",
+    otherExpenseAccountId: "",
     otherExpenseAmount: "",
     otherExpenseReason: "",
     vehicleNo: "",
-    freightAccountId:"",
+    freightAccountId: "",
     freightAmount: "",
     addNotes: "",
     termsAndConditions: "",
@@ -110,17 +111,16 @@ const NewBills = ({}: Props) => {
     paidStatus: "",
     shipmentPreference: "",
     grandTotal: "",
-    balanceAmount:"",
-    paidAmount:"",
-    paidAccountId:"",
-    purchaseOrderId:""
+    balanceAmount: "",
+    paidAmount: "",
+    paidAccountId: "",
+    purchaseOrderId: "",
   });
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
-
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -230,37 +230,37 @@ const NewBills = ({}: Props) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-  
+
     if (name === "dueDate") {
       const selectedDueDate = new Date(value);
       const billDate = new Date(bill.billDate);
-  
+
       if (selectedDueDate < billDate) {
         toast.error("Due Date cannot be before the Bill Date.");
         return;
       }
     }
-  
+
     if (name === "paidAmount") {
       let paidAmount = parseFloat(value) || "";
       const grandTotal = Number(bill.grandTotal) || "";
-  
+
       if (paidAmount > grandTotal) {
         toast.error("Paid Amount cannot exceed Grand Total.");
-        paidAmount = grandTotal; 
+        paidAmount = grandTotal;
       }
-  
+
       setBill((prevState: any) => ({
         ...prevState,
         paidAmount,
       }));
-      return; 
+      return;
     }
-  
+
     if (name === "transactionDiscount") {
       let discountValue = parseFloat(value) || 0;
       const totalAmount = Number(bill.subTotal) || 0;
-  
+
       if (bill.transactionDiscountType === "percentage") {
         if (discountValue > 100) {
           discountValue = 100;
@@ -272,20 +272,20 @@ const NewBills = ({}: Props) => {
           toast.error("Discount cannot exceed the subtotal amount");
         }
       }
-  
+
       setBill((prevState: any) => ({
         ...prevState,
         [name]: discountValue,
       }));
       return;
     }
-  
+
     if (name === "purchaseOrderDate" || name === "expectedShipmentDate") {
       setBill((prevState: any) => ({
         ...prevState,
         [name]: value,
       }));
-  
+
       if (
         name === "expectedShipmentDate" &&
         bill.purchaseOrderDate &&
@@ -299,28 +299,26 @@ const NewBills = ({}: Props) => {
           expectedShipmentDate: "",
         }));
       }
-      return; 
+      return;
     }
-  
+
     setBill((prevState: any) => ({
       ...prevState,
       [name]: value,
     }));
   };
-  
 
-
-  const getLastDayOfMonth = (date:any, monthsToAdd = 0) => {
+  const getLastDayOfMonth = (date: any, monthsToAdd = 0) => {
     const year = date.getFullYear();
-    const month = date.getMonth() + monthsToAdd + 1; 
-    return new Date(year, month, 1); 
+    const month = date.getMonth() + monthsToAdd + 1;
+    return new Date(year, month, 1);
   };
-  
+
   useEffect(() => {
     if (bill.billDate) {
       const billDate = new Date(bill.billDate);
       let dueDate = new Date(billDate);
-  
+
       switch (bill.paymentTerms) {
         case "Net 15":
         case "Net 30":
@@ -340,24 +338,25 @@ const NewBills = ({}: Props) => {
           dueDate = billDate;
           break;
       }
-  
+
       setBill((prevState) => ({
         ...prevState,
         dueDate: dueDate.toISOString().split("T")[0],
       }));
     }
   }, [bill.paymentTerms, bill.billDate]);
-  
+
   useEffect(() => {
-    if (bill.paymentTerms === "due on receipt" && bill.dueDate !== bill.billDate) {
+    if (
+      bill.paymentTerms === "due on receipt" &&
+      bill.dueDate !== bill.billDate
+    ) {
       setBill((prevState) => ({
         ...prevState,
         paymentTerms: "Custom",
       }));
     }
   }, [bill.dueDate, bill.paymentTerms, bill.billDate]);
-  
-
 
   const calculateTotalAmount = () => {
     const {
@@ -379,74 +378,72 @@ const NewBills = ({}: Props) => {
   };
 
   useEffect(() => {
-    const { grandTotal, paidAmount, } = bill;
-  
+    const { grandTotal, paidAmount } = bill;
+
     const numericGrandTotal = Number(grandTotal) || 0;
     const numericPaidAmount = Number(paidAmount) || 0;
-  
+
     let balanceAmount;
-  
+
     console.log(paidAmount, "paidAmount");
     console.log(grandTotal, "grandTotal");
-  
-      balanceAmount = Math.round((numericGrandTotal - numericPaidAmount) * 100) / 100;
-      console.log(balanceAmount, "balanceAmount");
-  
-  
+
+    balanceAmount =
+      Math.round((numericGrandTotal - numericPaidAmount) * 100) / 100;
+    console.log(balanceAmount, "balanceAmount");
+
     setBill((prevState: any) => ({
       ...prevState,
       balanceAmount: balanceAmount,
     }));
   }, [bill.grandTotal, bill.paidAmount, bill.paymentTerms]);
-  
-  
-
+console.log(bill)
 
   const handleSave = async () => {
     const newErrors = { ...errors };
     const errorFields = [];
-  
-    if (bill.billNumber.trim() === "") {
-      newErrors.billNumber = true;
-      errorFields.push("Bill Number");
-    } else {
-      newErrors.billNumber = false;
-    }
-  
+
+    // if (bill.billNumber.trim() === "") {
+    //   newErrors.billNumber = true;
+    //   errorFields.push("Bill Number");
+    // } else {
+    //   newErrors.billNumber = false;
+    // }
+
     if (bill.supplierId.trim() === "") {
       newErrors.supplierId = true;
       errorFields.push("Supplier ID");
     } else {
       newErrors.supplierId = false;
     }
-  
+
     if (bill.destinationOfSupply.trim() === "") {
       newErrors.destinationOfSupply = true;
       errorFields.push("Destination of Supply");
     } else {
       newErrors.destinationOfSupply = false;
     }
-  
+
     if (bill.sourceOfSupply.trim() === "") {
       newErrors.sourceOfSupply = true;
       errorFields.push("Source of Supply");
     } else {
       newErrors.sourceOfSupply = false;
     }
-  
+
     if (bill.billDate.trim() === "") {
       newErrors.billDate = true;
       errorFields.push("Bill Date");
     } else {
       newErrors.billDate = false;
     }
-  
+
     if (Object.values(newErrors).some((error) => error)) {
       setErrors(newErrors);
       toast.error(`Please fill the required fields: ${errorFields.join(", ")}`);
       return;
     }
-  
+
     try {
       const url = `${endponits.ADD_BILL}`;
       const { response, error } = await newBillApi(url, bill);
@@ -462,9 +459,6 @@ const NewBills = ({}: Props) => {
       console.error("Save error", error);
     }
   };
-  
-  
-  
 
   useEffect(() => {
     const newGrandTotal = calculateTotalAmount();
@@ -475,10 +469,10 @@ const NewBills = ({}: Props) => {
       transactionDiscountAmount = 0,
     } = bill;
     const transactionDiscountValueAMT =
-    transactionDiscountType === "percentage"
-      ? (Number(transactionDiscount) / 100) * Number(newGrandTotal)
-      : Number(transactionDiscount);
-  
+      transactionDiscountType === "percentage"
+        ? (Number(transactionDiscount) / 100) * Number(newGrandTotal)
+        : Number(transactionDiscount);
+
     const roundedDiscountValue =
       Math.round(transactionDiscountValueAMT * 100) / 100;
 
@@ -490,7 +484,8 @@ const NewBills = ({}: Props) => {
     ) {
       setBill((prevState: any) => ({
         ...prevState,
-        transactionDiscountAmount: roundedDiscountValue<0?roundedDiscountValue:"",
+        transactionDiscountAmount:
+          roundedDiscountValue < 0 ? roundedDiscountValue : "",
         grandTotal: updatedGrandTotal,
       }));
     }
@@ -517,49 +512,60 @@ const NewBills = ({}: Props) => {
     }
   }, [bill?.sourceOfSupply, bill?.destinationOfSupply]);
 
-
   const getBills = async () => {
     try {
       const url = `${endponits.GET_ONE_PURCHASE_ORDER}/${billid}`;
       const { response, error } = await getOneBill(url);
-  
+
       if (!error && response) {
         console.log(response.data, "response");
 
         setBill((prevData) => ({
-          ...prevData, 
+          ...prevData,
           ...response.data,
-          orderNumber:response.data.purchaseOrder,
-          purchaseOrderId:response.data._id
+          orderNumber: response.data.purchaseOrder,
+          purchaseOrderId: response.data._id,
         }));
-  
-        const matchingSupplier = supplierData.find((sup:any) => sup._id === response.data.supplierId);
+
+        const matchingSupplier = supplierData.find(
+          (sup: any) => sup._id === response.data.supplierId
+        );
         if (matchingSupplier) {
-          setSelecetdSupplier(matchingSupplier); 
+          setSelecetdSupplier(matchingSupplier);
         }
       }
     } catch (error) {
       console.log("Error in fetching bill", error);
     }
   };
-  
+
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
-
+    const getPrefixUrl = `${endponits.GET_LAST_BILL_PREFIX}`;
 
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
     fetchData(allAccountsUrl, setAllAccounts, getAccounts);
+    fetchData(getPrefixUrl, setLastBillPrefix, getPrefix);
   }, []);
 
   useEffect(() => {
-    getBills()
+    getBills();
     handleDestination();
     handleplaceofSupply();
     fetchCountries();
   }, [oneOrganization, selecteSupplier]);
+
+  useEffect(() => {
+    if (lastBillPrefix) {
+      setBill((preData) => ({
+        ...preData,
+        billNumber: lastBillPrefix,
+      }));
+    }
+  }, []);
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -581,7 +587,7 @@ const NewBills = ({}: Props) => {
         paidAccountId: "",
       }));
     }
-  }, [bill.paymentTerms]); 
+  }, [bill.paymentTerms]);
 
   return (
     <div className="mx-5 my-4 text-sm">
@@ -632,11 +638,15 @@ const NewBills = ({}: Props) => {
                     filteredSupplier.map((supplier: any) => (
                       <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer">
                         <div className="col-span-2 flex items-center justify-center">
-                        <img
-                                className="rounded-full "
-                                  src={supplier.supplierProfile?supplier.supplierProfile:"https://i.postimg.cc/sDnbrRWP/avatar-3814049-1280.webp"}
-                                  alt=""
-                                />
+                          <img
+                            className="rounded-full "
+                            src={
+                              supplier.supplierProfile
+                                ? supplier.supplierProfile
+                                : "https://i.postimg.cc/sDnbrRWP/avatar-3814049-1280.webp"
+                            }
+                            alt=""
+                          />
                         </div>
                         <div
                           className="col-span-10 flex cursor-pointer "
@@ -653,11 +663,12 @@ const NewBills = ({}: Props) => {
                             <p className="font-bold text-sm capitalize">
                               {supplier.supplierDisplayName}
                             </p>
-                           { supplier.mobile &&  <p className="text-xs text-gray-500">
-                              Phone: {supplier.mobile}
-                            </p>}
+                            {supplier.mobile && (
+                              <p className="text-xs text-gray-500">
+                                Phone: {supplier.mobile}
+                              </p>
+                            )}
                           </div>
-                         
                         </div>
                       </div>
                     ))
@@ -668,17 +679,18 @@ const NewBills = ({}: Props) => {
                       </p>
                     </div>
                   )}
-                  <div  className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
+                  <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4">
                     <AddSupplierModal page="purchase" />
                   </div>
                 </div>
               )}
             </div>
 
-         <div className="grid grid-cols-2 gap-2">
-         <div className="relative w-full">
-              <label className="block text-sm mb-1 text-labelColor">
-              Supplier Invoice Number <span className="text-[#bd2e2e] -ms-0.5">*</span>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="relative w-full">
+                <label className="block text-sm mb-1 text-labelColor">
+                  Supplier Invoice Number{" "}
+                  <span className="text-[#bd2e2e] -ms-0.5">*</span>
                   <input
                     id="supplierInvoiceNum"
                     onChange={handleChange}
@@ -690,9 +702,10 @@ const NewBills = ({}: Props) => {
                 </label>
               </div>
               <div className="relative w-full">
-              <label className="block text-sm mb-1 text-labelColor">
-              Bill Number <span className="text-[#bd2e2e] -ms-0.5">*</span>
+                <label className="block text-sm mb-1 text-labelColor">
+                  Bill Number <span className="text-[#bd2e2e] -ms-0.5">*</span>
                   <input
+                    disabled
                     id="billNumber"
                     onChange={handleChange}
                     name="billNumber"
@@ -702,13 +715,14 @@ const NewBills = ({}: Props) => {
                   />
                 </label>
               </div>
-         </div>
+            </div>
 
             {bill.supplierId && (
               <>
                 <div>
                   <label className="block text-sm mb-1 text-labelColor">
-                    Destination Of Supply<span className="text-[#bd2e2e] ">*</span>
+                    Destination Of Supply
+                    <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <select
@@ -766,8 +780,8 @@ const NewBills = ({}: Props) => {
             )}
 
             <div className=" w-full">
-            <label className="block text-sm  text-labelColor">
-            Order Number
+              <label className="block text-sm  text-labelColor">
+                Order Number
                 <input
                   name="orderNumber"
                   id="orderNumber"
@@ -838,30 +852,32 @@ const NewBills = ({}: Props) => {
             </div>
 
             <div className=" w-full">
-            <label className="block text-sm text-labelColor">
-  Bill Date <span className="text-[#bd2e2e] -ms-0.5">*</span>
-  <input
-    name="billDate"
-    id="billDate"
-    type="date"
-    value={bill.billDate } 
-    onChange={handleChange}
-    className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-1"
-  />
-</label>
-
+              <label className="block text-sm text-labelColor">
+                Bill Date <span className="text-[#bd2e2e] -ms-0.5">*</span>
+                <input
+                  name="billDate"
+                  id="billDate"
+                  type="date"
+                  value={bill.billDate}
+                  onChange={handleChange}
+                  className="border-inputBorder w-full text-sm border rounded text-dropdownText p-2 h-9 mt-1"
+                />
+              </label>
             </div>
             <div>
               <div>
-              <label className="block text-sm text-labelColor">
-              Due Date <span className="text-[#bd2e2e] -ms-0.5">*</span>
+                <label className="block text-sm text-labelColor">
+                  Due Date <span className="text-[#bd2e2e] -ms-0.5">*</span>
                   <input
                     name="dueDate"
                     id="dueDate"
-                    value={bill.dueDate }
+                    value={bill.dueDate}
                     onChange={handleChange}
                     type="date"
-                    disabled={bill.paymentTerms !== "due on receipt" && bill.paymentTerms !== "Custom"}
+                    disabled={
+                      bill.paymentTerms !== "due on receipt" &&
+                      bill.paymentTerms !== "Custom"
+                    }
                     className="border-inputBorder w-full text-sm border rounded text-dropdownText  p-2 h-9 mt-1 "
                   />
                 </label>
@@ -870,7 +886,7 @@ const NewBills = ({}: Props) => {
 
             <div>
               <label className="block text-sm text-labelColor">
-                Payment Terms 
+                Payment Terms
               </label>
               <div className="relative w-full mt-1">
                 <select
@@ -899,8 +915,8 @@ const NewBills = ({}: Props) => {
             </div>
 
             <div className=" w-full">
-            <label className="block text-sm  text-labelColor">
-            Payment Mode{" "}
+              <label className="block text-sm  text-labelColor">
+                Payment Mode{" "}
               </label>
               <div className="relative w-full">
                 <select
@@ -936,22 +952,20 @@ const NewBills = ({}: Props) => {
             />
           </div>
 
-         
           <ViewDetails
-          page="bill"
-                purchaseOrderState={bill}
-                setPurchaseOrderState={setBill}
-                allAccounts={allAccounts}
-              />
-
+            page="bill"
+            purchaseOrderState={bill}
+            setPurchaseOrderState={setBill}
+            allAccounts={allAccounts}
+          />
 
           <br />
         </div>
         <div className="col-span-4">
           <div className="bg-secondary_main p-5 min-h-max rounded-xl relative  mt-0">
             <div className="mt-5">
-            <label className="block text-sm mb-1 text-labelColor">
-            Add Note
+              <label className="block text-sm mb-1 text-labelColor">
+                Add Note
                 <input
                   name="addNotes"
                   id="addNotes"
@@ -963,8 +977,8 @@ const NewBills = ({}: Props) => {
               </label>
             </div>
             <div className="mt-4">
-            <label className="block text-sm mb-1 text-labelColor">
-            Terms & Conditions
+              <label className="block text-sm mb-1 text-labelColor">
+                Terms & Conditions
                 <input
                   name="termsAndConditions"
                   id="termsAndConditions"
@@ -976,8 +990,8 @@ const NewBills = ({}: Props) => {
               </label>
             </div>
             <div className="text-sm mt-3">
-            <label className="block text-sm mb-1 text-labelColor">
-            Attach files to the Debit Notes
+              <label className="block text-sm mb-1 text-labelColor">
+                Attach files to the Debit Notes
                 <div className="border-inputBorder text-textColor border-gray-800 w-full border-dashed border p-2 rounded flex flex-col gap-2 justify-center items-center bg-white mb-4 mt-2">
                   <span className="text-center inline-flex items-center gap-2">
                     <Upload />
@@ -1202,7 +1216,7 @@ const NewBills = ({}: Props) => {
               </div>
             </div>
 
-      <div className="flex gap-4 items-center justify-center mb-2">
+            <div className="flex gap-4 items-center justify-center mb-2">
               <label className=" text-sm mb-1 text-labelColor min-w-fit left-0">
                 Paid Through Account
               </label>
@@ -1213,9 +1227,15 @@ const NewBills = ({}: Props) => {
                   name="paidAccountId"
                   className="block appearance-none w-full  text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                 >
-                  <option value="" selected hidden disabled>Select Account</option>
+                  <option value="" selected hidden disabled>
+                    Select Account
+                  </option>
                   {allAccounts
-                    ?.filter((item: { accountSubhead: string }) => item.accountSubhead === "Bank" || item.accountSubhead === "Cash")
+                    ?.filter(
+                      (item: { accountSubhead: string }) =>
+                        item.accountSubhead === "Bank" ||
+                        item.accountSubhead === "Cash"
+                    )
                     ?.map((item: { _id: string; accountName: string }) => (
                       <option key={item._id} value={item._id}>
                         {item.accountName}
@@ -1228,50 +1248,49 @@ const NewBills = ({}: Props) => {
               </div>
             </div>
             <div className="flex gap-4 items-center justify-center">
-  <label
-    className="block text-sm mb-1 text-labelColor max-w-fit"
-    htmlFor="paidAmount"
-  >
-    Paid Amount
-  </label>
+              <label
+                className="block text-sm mb-1 text-labelColor max-w-fit"
+                htmlFor="paidAmount"
+              >
+                Paid Amount
+              </label>
 
-  <div className="ml-auto">
-    <input
-      className="border-inputBorder w-full text-sm border rounded-lg p-1.5 pl-2 h-9"
-      type="text" 
-      placeholder="Enter paid amount"
-      name="paidAmount"
-      value={bill.paidAmount === 0 ? "" : bill.paidAmount}
-      onChange={(e) => {
-        const { value } = e.target;
-        if (/^\d*\.?\d*$/.test(value)) { 
-          handleChange(e); 
-        }
-      }}
-    />
-  </div>
-</div>
-
-              <div className=" flex gap-4 items-center justify-center">
-                <label
-                  htmlFor="balanceAmount"
-                  className="block text-sm mb-1 text-labelColor max-w-fit"
-                >
-                  Balance Amount
-                </label>
-                <div className="ml-auto">
-                  <input
-                    disabled
-                    name="balanceAmount"
-                    id="balanceAmount"
-                    value={bill.balanceAmount}
-                    onChange={handleChange}
-                    placeholder="Balance Amount"
-                    className="border-inputBorder bg-white  text-sm border rounded-lg text-dropdownText  p-2 h-9 mt-2 "
-                  />
-                </div>
+              <div className="ml-auto">
+                <input
+                  className="border-inputBorder w-full text-sm border rounded-lg p-1.5 pl-2 h-9"
+                  type="text"
+                  placeholder="Enter paid amount"
+                  name="paidAmount"
+                  value={bill.paidAmount === 0 ? "" : bill.paidAmount}
+                  onChange={(e) => {
+                    const { value } = e.target;
+                    if (/^\d*\.?\d*$/.test(value)) {
+                      handleChange(e);
+                    }
+                  }}
+                />
               </div>
+            </div>
 
+            <div className=" flex gap-4 items-center justify-center">
+              <label
+                htmlFor="balanceAmount"
+                className="block text-sm mb-1 text-labelColor max-w-fit"
+              >
+                Balance Amount
+              </label>
+              <div className="ml-auto">
+                <input
+                  disabled
+                  name="balanceAmount"
+                  id="balanceAmount"
+                  value={bill.balanceAmount}
+                  onChange={handleChange}
+                  placeholder="Balance Amount"
+                  className="border-inputBorder bg-white  text-sm border rounded-lg text-dropdownText  p-2 h-9 mt-2 "
+                />
+              </div>
+            </div>
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}
