@@ -25,8 +25,8 @@ type Row = {
   itemCgstAmount: number | string; 
   itemIgstAmount: number | string; 
   itemVatAmount: number | string; 
-  itemPurchaseQuantity:number | string; 
   taxPreference:string
+  stock:number| string;
 };
 
 type Props = {
@@ -69,8 +69,8 @@ const DebitNoteTable = ({
       itemCgstAmount: "",
       itemIgstAmount: "",
       itemVatAmount: "",
-      itemPurchaseQuantity:"",
-      taxPreference:""
+      taxPreference:"",
+      stock:"",
     },
   ]);
 
@@ -107,8 +107,8 @@ const DebitNoteTable = ({
       itemIgstAmount: "",
       itemVat:"",
       itemVatAmount:"",
-      itemPurchaseQuantity:"",
       taxPreference:"",
+      stock:"",
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
@@ -130,8 +130,15 @@ const DebitNoteTable = ({
     newRows[index].itemIgst = item.itemIgst;
     newRows[index].itemAmount = item.itemAmount;
     newRows[index].itemCostPrice = item.itemCostPrice;
-    newRows[index].itemPurchaseQuantity=item.itemQuantity;
+    // newRows[index].itemPurchaseQuantity=item.itemQuantity;
     newRows[index].taxPreference=item.taxPreference;
+
+    if(item.returnQuantity){
+      newRows[index].stock = item.itemQuantity-item.returnQuantity;
+    }
+    else{
+      newRows[index].stock = item.itemQuantity;
+    }
 
 
     const costPrice = Number(newRows[index].itemCostPrice);
@@ -209,7 +216,7 @@ const DebitNoteTable = ({
 
     const quantity = Number(newRows[index].itemQuantity);
     const costPrice = Number(newRows[index].itemCostPrice);
-    const purchaseQuantity = Number(newRows[index].itemPurchaseQuantity);
+    const purchaseQuantity = Number(newRows[index].stock);
 
     if (quantity > purchaseQuantity) {
       newRows[index].itemQuantity = purchaseQuantity.toString()
@@ -301,7 +308,8 @@ const DebitNoteTable = ({
         itemIgstAmount: "",
         itemVatAmount: "",
         itemPurchaseQuantity:"",
-        taxPreference:""
+        taxPreference:"",
+        stock:"",
       };
   
       // Reset rows to default row
@@ -458,6 +466,7 @@ const DebitNoteTable = ({
         itemVatAmount: "",
         itemPurchaseQuantity:"",
         taxPreference:"",
+        stock:""
       };
   
       setRows([defaultRow]);
@@ -584,7 +593,7 @@ const DebitNoteTable = ({
                       handleRowChange(index, "itemQuantity", e.target.value)
                     }
                   /> <br />
-                  Stock : {row.itemPurchaseQuantity?row.itemPurchaseQuantity:"0"}
+                  Stock : {row.stock?row.stock:"0"}
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input

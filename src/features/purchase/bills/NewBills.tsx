@@ -558,14 +558,16 @@ console.log(bill)
     fetchCountries();
   }, [oneOrganization, selecteSupplier]);
 
-  useEffect(() => {
-    if (lastBillPrefix) {
-      setBill((preData) => ({
-        ...preData,
-        billNumber: lastBillPrefix,
-      }));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (lastBillPrefix) {
+  //     setBill((preData) => ({
+  //       ...preData,
+  //       billNumber: lastBillPrefix,
+  //     }));
+  //   }
+  // }, []);
+
+  console.log(lastBillPrefix)
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
