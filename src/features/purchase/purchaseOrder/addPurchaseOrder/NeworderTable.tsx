@@ -173,31 +173,38 @@ const NewOrderTable = ({
   const calculateDiscountPrice = (
     totalCostPrice: number,
     discountValue: number | string,
-    discountType: string
+    discountType: string,
+    itemAmount?: number | string
   ): number => {
     let discount =
       typeof discountValue === "string" ? Number(discountValue) : discountValue;
-    console.log(discount, "total");
+  
     if (discount < 0) {
       toast.error("Discount cannot be negative");
       return totalCostPrice;
     }
-
+  
+    // Ensure itemAmount is a valid number
+    const validItemAmount = itemAmount !== undefined ? Number(itemAmount) : totalCostPrice;
+  
     if (discountType === "percentage") {
       if (discount > 100) {
         discount = 100;
         toast.error("Discount cannot exceed 100%");
       }
-      return totalCostPrice - (totalCostPrice * discount) / 100;
+      return validItemAmount - (validItemAmount * discount) / 100;
     } else {
-      if (discount > totalCostPrice) {
-        discount = totalCostPrice;
-        toast.error("Discount cannot exceed the selling price");
+      if (discount > validItemAmount) {
+        discount = validItemAmount;
+        toast.error("Discount cannot exceed the total item amount");
       }
-      // Calculate flat discount
-      return totalCostPrice - discount;
+      return validItemAmount - discount;
     }
   };
+  
+  
+  
+  
 
   const calculateTax = (
     discountedPrice: number,
@@ -231,65 +238,71 @@ const NewOrderTable = ({
   const handleRowChange = (index: number, field: keyof Row, value: string) => {
     const newRows = [...rows];
     newRows[index] = { ...newRows[index], [field]: value };
-
-    const quantity = Number(newRows[index].itemQuantity);
-    const costPrice = Number(newRows[index].itemCostPrice);
-
+  
+    const quantity = Number(newRows[index].itemQuantity) || 0;
+    const costPrice = Number(newRows[index].itemCostPrice) || 0;
     const totalCostPrice = quantity * costPrice;
-
-    const itemDiscount = Number(newRows[index].itemDiscount);
+  
+    let itemDiscount = Number(newRows[index].itemDiscount) || 0;
     const itemDiscountType = newRows[index].itemDiscountType;
-    if (newRows[index].itemDiscountType === "percentage") {
-      const itemDiscount = Number(newRows[index].itemDiscount);
-
+  
+    if (itemDiscountType === "percentage") {
       if (itemDiscount > 100) {
-        newRows[index].itemDiscount = 100;
+        itemDiscount = 100;
+        newRows[index].itemDiscount = "100";
+        toast.error("Discount cannot exceed 100%");
       }
     } else {
-      const itemDiscount = Number(newRows[index].itemDiscount);
-
-      if (itemDiscount > costPrice) {
-        newRows[index].itemDiscount = costPrice;
+      if (itemDiscount > totalCostPrice) {
+        itemDiscount = totalCostPrice;
+        newRows[index].itemDiscount = totalCostPrice.toString();
+        toast.error("Discount cannot exceed the total cost price");
       }
     }
-
-    const discountedPrice = calculateDiscountPrice(
+  
+    // Calculate discounted item amount
+    const discountedAmount = calculateDiscountPrice(
       totalCostPrice,
       itemDiscount,
       itemDiscountType
     );
-
-    // Pass the individual item to calculateTax
+  
+    // Calculate tax based on discounted amount
     const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
-      discountedPrice,
+      discountedAmount,
       newRows[index],
       isInterState as boolean
     );
-
-    newRows[index].itemAmount = itemAmount;
+  
+    newRows[index].itemAmount = itemAmount; // Update the discounted item amount
     newRows[index].itemCgstAmount = cgstAmount;
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
+  
     if (isInterState) {
       newRows[index].itemTax = igstAmount;
-      newRows[index].itemCgstAmount = 0;
-      newRows[index].itemSgstAmount = 0;
+      newRows[index].itemCgstAmount = "";
+      newRows[index].itemSgstAmount = "";
     } else {
       newRows[index].itemTax = cgstAmount + sgstAmount;
-      newRows[index].itemIgstAmount = 0;
+      newRows[index].itemIgstAmount = "";
     }
-
+  
+    // Update the rows and state
     setRows(newRows);
-
+  
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      items: newRows?.map((row) => {
+      items: newRows.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
       }),
     }));
   };
+  
+  
+  
 
   const getAllItems = async () => {
     try {
@@ -372,7 +385,6 @@ const NewOrderTable = ({
     }, 0);
   };
 
-  // Function to calculate total item quantity
   const calculateTotalQuantity = () => {
     return rows.reduce((total, row) => {
       const quantity = parseFloat((row.itemQuantity).toString() || "0");
@@ -400,7 +412,6 @@ const NewOrderTable = ({
     return roundedTotalDiscount;
   };
 
-  // Function to calculate the total subtotal
   const calculateTotalSubtotal = () => {
     return rows.reduce((total, row) => {
       const itemQuantity = Number(row.itemQuantity) || 0;
@@ -579,7 +590,7 @@ const NewOrderTable = ({
                     openDropdownType === "searchProduct" && (
                       <div
                         ref={dropdownRef}
-                        className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[30%] space-y-1"
+                        className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[30%] space-y-1 h-72 overflow-scroll hide-scrollbar"
                       >
                         <SearchBar
                           searchValue={searchValue}

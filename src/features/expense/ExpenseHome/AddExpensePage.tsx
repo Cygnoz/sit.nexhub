@@ -28,6 +28,7 @@ function AddExpensePage({}: Props) {
   };
 
   const [expenseData, setExpenseData] = useState<ExpenseData>({
+    expenseNumber:"",
     expenseDate: "",
     paidThrough: "",
     paidThroughId: "",
@@ -78,6 +79,8 @@ function AddExpensePage({}: Props) {
   const { request: getTax } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: getOrg } = useApi("get", 5004);
+  const { request: getPrefix } = useApi("get", 5008);
+
   const [countryData, setcountryData] = useState<any | any>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [supplierData, setSupplierData] = useState<[]>([]);
@@ -91,6 +94,7 @@ function AddExpensePage({}: Props) {
   const [categories, setCategories] = useState<any | []>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [Itemize, setItemize] = useState<boolean>(true);
+  const [prefix,setPrefix]=useState<any>(null)
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
   );
@@ -534,11 +538,23 @@ function AddExpensePage({}: Props) {
     const categoryUrl = `${endponits.GET_ALL_EXPENSE_CATEGORY}`;
     const taxRateUrl = `${endponits.GET_ALL_TAX}`;
     const organizationURL = `${endponits.GET_ONE_ORGANIZATION}`;
+    const getPrefixUrl=`${endponits.GET_LAST_EXPENSE_PREFIX}`
 
     fetchData(organizationURL, setOrganization, getOrg);
     fetchData(categoryUrl, setCategories, getAllExpenseCategory);
     fetchData(taxRateUrl, setTaxRate, getTax);
+    fetchData(getPrefixUrl, setPrefix, getPrefix);
+
   }, []);
+
+  useEffect(()=>{
+    if(prefix){
+      setExpenseData((prevData) => ({
+        ...prevData,
+        expenseNumber: prefix
+        }));
+    }
+  },[])
 
   useEffect(() => {
     handlePlaceOfSupply();
@@ -622,6 +638,7 @@ function AddExpensePage({}: Props) {
         {selectedSection === "expense" && (
           <>
             <div className="grid grid-cols-3 gap-4 mt-5 mx-4">
+           
               <div className="col-span-1 space-y-2">
                 <label className="text-sm mb-1 text-labelColor">
                   Date<span className="text-[#bd2e2e] ">*</span>
@@ -637,6 +654,22 @@ function AddExpensePage({}: Props) {
                   />
                 </div>
               </div>
+              <div className="col-span-1 space-y-2">
+                    <label className="text-sm mb-1 text-labelColor">
+                      Expense Number<span className="text-[#bd2e2e] ">*</span>
+                    </label>
+                    <div className="relative w-full">
+                      <input
+                      disabled
+                        type="number"
+                        name="expenseNumber"
+                        value={expenseData.expenseNumber || ""}
+                        onChange={handleAddExpense}
+                        className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        placeholder="Expense Number"
+                      />
+                    </div>
+                  </div>
 
               {Itemize && (
                 <>
