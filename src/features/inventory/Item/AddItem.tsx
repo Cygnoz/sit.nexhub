@@ -54,7 +54,7 @@ const initialItemDataState = {
   itemName: "",
   itemImage: "",
   sku: "",
-  unit: "",
+  unitName: "",
   returnableItem: false,
   hsnCode: "",
   sac: "",
@@ -79,7 +79,7 @@ const initialItemDataState = {
   baseCurrency: "",
   sellingPrice: "",
   saleMrp: "",
-  salesAccountId: " ",
+  salesAccountId: "",
   salesDescription: "",
   costPrice: "",
   purchaseAccountId: "",
@@ -368,7 +368,7 @@ const AddItem = ({ }: Props) => {
         itemName: selectedItem.itemName || "",
         itemImage: selectedItem.itemImage || "",
         sku: selectedItem.sku || "",
-        unit: selectedItem.unit || "",
+        unitName: selectedItem.unitName || "",
         returnableItem: selectedItem.returnableItem || false,
         hsnCode: selectedItem.hsnCode || "",
         sac: selectedItem.sac || "",
@@ -630,7 +630,7 @@ const AddItem = ({ }: Props) => {
                     <input
                       id="unit-input"
                       type="text"
-                      value={initialItemData.unit}
+                      value={initialItemData.unitName}
                       readOnly
                       className="cursor-pointer appearance-none mt-0.5 w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                       placeholder="Select Unit"
