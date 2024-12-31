@@ -497,9 +497,7 @@ const NewPurchaseOrder = ({}: Props) => {
                                 Phone: {supplier.mobile}
                                   </p>}
                                 </div>
-                                <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                                  &times;
-                                </div>
+                             
                               </div>
                             </div>
                           ))
@@ -510,7 +508,7 @@ const NewPurchaseOrder = ({}: Props) => {
                             </p>
                           </div>
                         )}
-                        <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
+                        <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4 cursor-pointer">
                           <AddSupplierModal page="purchase" />
                         </div>
                       </div>

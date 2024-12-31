@@ -437,7 +437,7 @@ const NewDebitNote = ({}: Props) => {
                       </p>
                     </div>
                   )}
-                  <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
+                  <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4">
                     <AddSupplierModal page="purchase" />
                   </div>
                 </div>

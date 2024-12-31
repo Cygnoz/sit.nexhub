@@ -15,6 +15,7 @@ interface ExpenseDetail {
   }
   
   export interface ExpenseData {
+    expenseNumber:string;
     expenseDate: string;
     paidThrough: string;
     paidThroughId: string;
