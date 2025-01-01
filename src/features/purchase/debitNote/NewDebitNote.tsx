@@ -46,6 +46,7 @@ const initialSupplierBillState: DebitNoteBody = {
       itemIgst: "",
       itemSgstAmount: "",
       itemCgstAmount: "",
+      stock:""
     },
   ],
 
@@ -228,15 +229,14 @@ const NewDebitNote = ({}: Props) => {
     "supplierDisplayName",
     searchValue
   );
-  console.log(errors,"error")
 
   const handleSave = async () => {
     const newErrors = { ...errors };
   
-    newErrors.billNumber = 
-    typeof debitNoteState.billNumber === "string" 
-      ? debitNoteState.billNumber.trim() === "" 
-      : false;
+    // newErrors.billNumber = 
+    // typeof debitNoteState.billNumber === "string" 
+    //   ? debitNoteState.billNumber.trim() === "" 
+    //   : false;
   
   
     if (debitNoteState.supplierId.trim() === "") {
@@ -292,6 +292,8 @@ const NewDebitNote = ({}: Props) => {
       console.log(error);
     }
   };
+
+  console.log(debitNoteState,"selectedBill")
 
   useEffect(() => {
     if (debitNoteState?.destinationOfSupply == "") {
