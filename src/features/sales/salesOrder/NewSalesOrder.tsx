@@ -463,7 +463,7 @@ const NewSalesOrder = ({ }: Props) => {
                   {openDropdownIndex === "customer" && (
                     <div
                       ref={dropdownRef}
-                      className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2   space-y-1 max-w-72 overflow-y-auto  hide-scrollbar"
+                      className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2   space-y-1 max-w-80 max-h-80 overflow-y-scroll"
                       style={{ width: "80%" }}
                     >
                       <SearchBar
@@ -474,7 +474,7 @@ const NewSalesOrder = ({ }: Props) => {
                       {filteredCustomer ? (
                         filteredCustomer.map((customer: any) => (
                           <div
-                            className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe
+                            className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer
                                 border border-slate-400 rounded-lg bg-lightPink"
                             onClick={() => {
                               setSalesOrderState((prevState) => ({
@@ -500,16 +500,13 @@ const NewSalesOrder = ({ }: Props) => {
                                   Phone: {customer.mobile}
                                 </p>
                               </div>
-                              <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                                &times;
-                              </div>
                             </div>
                           </div>
                         ))
                       ) : (
                         <></>
                       )}
-                      <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
+                      <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4">
                         <NewCustomerModal page="purchase" />
                       </div>
                     </div>
