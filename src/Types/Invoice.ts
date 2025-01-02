@@ -12,6 +12,8 @@ export interface invoice {
     expectedShipmentDate:string;
     salesOrderNumber:string;
     salesOrderId:string;
+
+    taxPreference:string;
     
     items: Array<{
       itemId: string;
@@ -31,7 +33,7 @@ export interface invoice {
       sgstAmount: string | number;
       igstAmount: string | number;
       vatAmount: string | number;
-      itemTotaltax: string;
+      itemTotalTax: string;
     }>;
     totalItemDiscount:string;
     note: string;

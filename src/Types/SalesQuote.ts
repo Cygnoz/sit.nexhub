@@ -21,7 +21,7 @@ export interface SalesQuote {
     sgstAmount: string;
     igstAmount: string;
     vatAmount: string;
-    itemTotaltax: string;
+    itemTotalTax: string;
     discountType: string;
     discountAmount: string;
     amount: string;
