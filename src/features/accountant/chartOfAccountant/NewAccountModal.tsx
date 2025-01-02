@@ -9,11 +9,11 @@ import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import toast from 'react-hot-toast';
 import CehvronDown from "../../../assets/icons/CehvronDown";
-import PencilEdit from "../../../assets/icons/PencilEdit";
+// import PencilEdit from "../../../assets/icons/PencilEdit";
 
 interface NewAccountModalProps {
   fetchAllAccounts: () => void;
-  accountData: any[];
+  accountData: any;
   page?: string
 }
 
@@ -37,15 +37,11 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
   const { request: NewAccount } = useApi("post", 5001);
   const [openingType, setOpeningType] = useState("Debit");
   const [formValues, setFormValues] = useState(initialFormValues);
-
-  useEffect(() => {
-    if (page === "Edit" && accountData) {
-      setFormValues(accountData);
-    }
-  }, [page, accountData]);
-
-
   const [isSubAccount, setIsSubAccount] = useState(false);
+  const [showValidationError, setShowValidationError] = useState(false);
+  const [AllAccountz, setAllAccountz] = useState<any>([]);
+
+  const { request: fetchAllAccountz } = useApi("get", 5001);
 
   const accountCategories = {
     Asset: {
@@ -77,6 +73,37 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
     },
   };
 
+  useEffect(() => {
+    getAccountsData();
+  }, []);
+
+  useEffect(() => {
+    if (page === "Edit" && accountData) {
+      setFormValues(accountData);
+      if (accountData.parentAccountId) {
+        setIsSubAccount(true);
+      }else{
+        setIsSubAccount(false)
+      }
+      setOpeningType(accountData.debitOpeningBalance ? "Debit" : "Credit");
+    }
+  }, [page, accountData, isModalOpen]);
+
+  const getAccountsData = async () => {
+    try {
+      const url = `${endponits.Get_ALL_Acounts}`;
+      const { response, error } = await fetchAllAccountz(url);
+      if (!error && response) {
+        setAllAccountz(response.data);
+      } else {
+        console.error("Failed to fetch account data.");
+      }
+    } catch (error) {
+      toast.error("Error in fetching data.");
+      console.error("Error in fetching data", error);
+    }
+  };
+
   const headGroup = (accountSubhead: string) => {
     for (const [group, heads] of Object.entries(accountCategories)) {
       for (const [head, subheads] of Object.entries(heads)) {
@@ -94,7 +121,6 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
     return null;
   };
 
-
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -105,6 +131,12 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
     if (type === "checkbox" && name === "returnableItem") {
       const target = e.target as HTMLInputElement;
       setIsSubAccount(target.checked);
+      if (!target.checked) {
+        setFormValues((prev: any) => ({
+          ...prev,
+          parentAccountId: ""
+        }));
+      }
       return;
     }
 
@@ -116,6 +148,7 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
           accountSubhead: value,
           accountHead: result.accountHead,
           accountGroup: result.accountGroup,
+          parentAccountId: "",
         }));
       } else {
         setFormValues((prevFormValues: any) => ({
@@ -123,6 +156,7 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
           accountSubhead: value,
           accountHead: "",
           accountGroup: "",
+          parentAccountId: "", 
         }));
       }
     } else if (name === "openingType") {
@@ -151,69 +185,61 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
   };
 
   const openModal = () => {
+    if (page === "Edit" && accountData) {
+      setFormValues(accountData);
+      setIsSubAccount(!!accountData.parentAccountId);
+      setOpeningType(accountData.debitOpeningBalance ? "Debit" : "Credit");
+    }
     setModalOpen(true);
   };
 
   const closeModal = () => {
     setModalOpen(false);
-    setFormValues(initialFormValues)
-    setIsSubAccount(false)
+    setFormValues(initialFormValues);
+    setIsSubAccount(false);
+    setOpeningType("Debit");
+    setShowValidationError(false);
   };
-
-  const [showValidationError, setShowValidationError] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!formValues.accountSubhead) {
       toast.error("Please select an account type.");
       return;
     }
-  
+
     if (isSubAccount && !formValues.parentAccountId) {
-      setShowValidationError(true); // Show error for parentAccountId
+      setShowValidationError(true);
       toast.error("Please select a parent account.");
       return;
     }
-  
+
     const toastId = toast.loading("Adding new account...");
-  
+
     try {
       const url = `${endponits.Add_NEW_ACCOUNT}`;
       const body = formValues;
       const { response, error } = await NewAccount(url, body);
-  
+
       if (!error && response) {
         toast.dismiss(toastId);
-        toast.success("Account added successfully!");
         closeModal();
         fetchAllAccounts();
       } else {
-        throw new Error(
-          error?.response?.data?.message || "Something went wrong"
-        );
+        throw new Error(error?.response?.data?.message || "Something went wrong");
       }
     } catch (error: any) {
       toast.dismiss(toastId);
-      toast.error(
-        error.response?.data?.message || error.message || "Failed to add account"
-      );
+      toast.error(error.response?.data?.message || error.message || "Failed to add account");
     }
   };
-  
-
-  useEffect(() => {
-    setFormValues((prevFormValues: any) => ({
-      ...prevFormValues,
-      parentAccountId: "",
-    }));
-  }, [formValues.accountSubhead, isSubAccount]);
 
   return (
     <div>
       {page === "Edit" ?
         <div onClick={openModal} className="cursor-pointer">
-          <PencilEdit color={'#0B9C56'} />
+          {/* <PencilEdit color={'#0B9C56'} /> */}
         </div>
         :
         <Button onClick={openModal} variant="primary">
@@ -301,6 +327,7 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
                         className="accent-[#97998E] bg-white cursor-pointer h-5 w-4 mx-1 my-1"
                         id="checkbox3"
                         name="returnableItem"
+                        checked={isSubAccount}
                         onChange={handleChange}
                       />
                       <label
@@ -326,31 +353,29 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
                             name="parentAccountId"
                             onChange={(e) => {
                               const selectedAccountName = e.target.value;
-                              const selectedAccount = accountData?.find(
-                                (account) => account.accountName === selectedAccountName
+                              const selectedAccount = AllAccountz?.find(
+                                (account: any) => account.accountName === selectedAccountName
                               );
                               const selectedId = selectedAccount ? selectedAccount._id : "";
-                              setFormValues((prevFormValues:any) => ({
+                              setFormValues((prevFormValues: any) => ({
                                 ...prevFormValues,
-                                parentAccountId: selectedId, // Storing the selected account's _id
+                                parentAccountId: selectedId,
                               }));
-                              setShowValidationError(false); // Clear validation error on valid input
+                              setShowValidationError(false);
                             }}
                             value={
-                              formValues.parentAccountId
-                                ? accountData?.find(
-                                  (account) => account._id === formValues.parentAccountId
-                                )?.accountName
-                                : ""
+                              AllAccountz?.find(
+                                (account: any) => account._id === formValues.parentAccountId
+                              )?.accountName || ""
                             }
                           >
                             <option value="">Select Parent Account</option>
-                            {accountData
+                            {AllAccountz
                               ?.filter(
-                                (account) =>
+                                (account: any) =>
                                   account.accountSubhead === formValues.accountSubhead
                               )
-                              ?.map((account) => (
+                              ?.map((account: any) => (
                                 <option key={account._id} value={account.accountName}>
                                   {account.accountName}
                                 </option>
