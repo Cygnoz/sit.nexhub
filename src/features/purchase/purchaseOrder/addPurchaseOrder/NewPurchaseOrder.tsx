@@ -15,6 +15,7 @@ import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
 import toast  from "react-hot-toast";
 import { SupplierResponseContext } from "../../../../context/ContextShare";
+import avatar from "../../../../assets/Images/avatar-3814049_1280.webp"
 
 
 
@@ -475,7 +476,7 @@ const NewPurchaseOrder = ({}: Props) => {
                               <div className="col-span-2 flex items-center justify-center">
                                 <img
                                 className="rounded-full "
-                                  src={supplier.supplierProfile?supplier.supplierProfile:"https://i.postimg.cc/sDnbrRWP/avatar-3814049-1280.webp"}
+                                  src={supplier.supplierProfile?supplier.supplierProfile:avatar}
                                   alt=""
                                 />
                               </div>

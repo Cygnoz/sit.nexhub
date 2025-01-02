@@ -23,7 +23,7 @@ const initialSupplierBillState: DebitNoteBody = {
   taxMode: "",
 
   billId: "",
-  billNumber: "",
+  supplierInvoiceNum: "",
   billDate: "",
   billType: "",
   debitNote: "",
@@ -85,7 +85,7 @@ const NewDebitNote = ({}: Props) => {
     initialSupplierBillState
   );
   const [errors,setErrors]=useState({
-    billNumber:false,
+    supplierInvoiceNum:false,
     debitDate:false,
     supplierId:false,
     sourceOfSupply:false,
@@ -233,9 +233,9 @@ const NewDebitNote = ({}: Props) => {
   const handleSave = async () => {
     const newErrors = { ...errors };
   
-    // newErrors.billNumber = 
-    // typeof debitNoteState.billNumber === "string" 
-    //   ? debitNoteState.billNumber.trim() === "" 
+    // newErrors.supplierInvoiceNum = 
+    // typeof debitNoteState.supplierInvoiceNum === "string" 
+    //   ? debitNoteState.supplierInvoiceNum.trim() === "" 
     //   : false;
   
   
@@ -293,7 +293,6 @@ const NewDebitNote = ({}: Props) => {
     }
   };
 
-  console.log(debitNoteState,"selectedBill")
 
   useEffect(() => {
     if (debitNoteState?.destinationOfSupply == "") {
@@ -412,7 +411,7 @@ const NewDebitNote = ({}: Props) => {
                               supplierId: supplier._id,
                               supplierDisplayName: supplier.supplierDisplayName,
                               orderNumber: "",
-                              billNumber: "",
+                              supplierInvoiceNum: "",
                               billId: "",
                               billDate: "",
                             }));
@@ -535,8 +534,8 @@ const NewDebitNote = ({}: Props) => {
               >
                 <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                   <p>
-                    {selectedBill && selectedBill.billNumber
-                      ? selectedBill.billNumber
+                    {selectedBill && selectedBill.supplierInvoiceNum
+                      ? selectedBill.supplierInvoiceNum
                       : "Select Bill"}
                   </p>
                 </div>
@@ -574,7 +573,7 @@ const NewDebitNote = ({}: Props) => {
                                 setDebitNoteState((prevState) => ({
                                   ...prevState,
                                   billId: bill._id,
-                                  billNumber: bill.billNumber,
+                                  supplierInvoiceNum: bill.supplierInvoiceNum,
                                   billDate: bill.billDate,
                                   orderNumber: bill.orderNumber,
                                 }));
@@ -584,7 +583,7 @@ const NewDebitNote = ({}: Props) => {
                             >
                               <div>
                                 <p className="font-bold text-sm">
-                                  {bill.billNumber}
+                                  {bill.supplierInvoiceNum}
                                 </p>
                                 <p className="text-xs text-gray-500">
                                   Supplier: {bill.supplierDisplayName}

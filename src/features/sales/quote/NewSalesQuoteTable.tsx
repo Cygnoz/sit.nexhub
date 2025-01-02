@@ -53,6 +53,7 @@ const NewSalesQuoteTable = ({
   const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<any>([]);
+  const [qouteisTaxable,setQouteIsTaxable]=useState<boolean>(false)
   // const { request: getAllItemsRequest } = useApi("get", 5003);
   const { request: getallItemSales } = useApi("get", 5003);
 
@@ -139,61 +140,7 @@ const NewSalesQuoteTable = ({
 
 
 
-  const handleItemSelect = (item: any, index: number) => {
-    setOpenDropdownId(null);
-    setOpenDropdownType(null);
-    const newRows = [...rows];
 
-    newRows[index].itemName = item.itemName;
-    newRows[index].itemImage = item.itemImage;
-    newRows[index].sellingPrice = item.sellingPrice || "0";
-    newRows[index].quantity = "1";
-    newRows[index].itemId = item._id;
-    newRows[index].cgst = item.cgst;
-    newRows[index].sgst = item.sgst;
-    newRows[index].igst = item.igst;
-    newRows[index].taxPreference = item.taxPreference;
-    newRows[index].taxGroup = item.taxRate;
-    newRows[index].itemStock = item.currentStock;
-
-
-    const sellingPrice = parseFloat(newRows[index].sellingPrice);
-    const discountedPrice = calculateDiscountPrice(
-      sellingPrice,
-      newRows[index].discountAmount,
-      newRows[index].discountType
-    );
-
-    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
-      discountedPrice,
-      newRows[index],
-      isIntraState as boolean
-    );
-
-    newRows[index].amount = itemAmount;
-
-    newRows[index].cgstAmount = isPlaceOfSupplyVisible ? cgstAmount : "0";
-    newRows[index].sgstAmount = isPlaceOfSupplyVisible ? sgstAmount : "0";
-    newRows[index].igstAmount = isPlaceOfSupplyVisible ? igstAmount : igstAmount;
-
-    newRows[index].itemAmount =
-      !isPlaceOfSupplyVisible
-        ? parseFloat(itemAmount).toFixed(2)
-        : !isIntraState
-          ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
-          : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
-
-    setRows(newRows);
-
-    setSalesQuoteState?.((prevData: any) => ({
-      ...prevData,
-      items: newRows.map((row) => {
-        const updatedItem = { ...row };
-        delete updatedItem.itemImage;
-        return updatedItem;
-      }),
-    }));
-  };
 
 
   const calculateDiscountPrice = (
@@ -222,17 +169,80 @@ const NewSalesQuoteTable = ({
     }
   };
 
+  const handleItemSelect = (item: any, index: number) => {
+    setOpenDropdownId(null);
+    setOpenDropdownType(null);
+    const newRows = [...rows];
+  
+    newRows[index].itemName = item.itemName;
+    newRows[index].itemImage = item.itemImage;
+    newRows[index].sellingPrice = item.sellingPrice || "0";
+    newRows[index].quantity = "1";
+    newRows[index].itemId = item._id;
+    newRows[index].cgst = item.cgst;
+    newRows[index].sgst = item.sgst;
+    newRows[index].igst = item.igst;
+    newRows[index].taxPreference = item.taxPreference;
+    newRows[index].taxGroup = item.taxRate;
+    newRows[index].itemStock = item.currentStock;
+  
+    const sellingPrice = parseFloat(newRows[index].sellingPrice);
+    const discountedPrice = calculateDiscountPrice(
+      sellingPrice,
+      newRows[index].discountAmount,
+      newRows[index].discountType
+    );
+  
+    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+      discountedPrice,
+      newRows[index],
+      isIntraState as boolean
+    );
+  
+    newRows[index].amount = itemAmount;
+  
+    newRows[index].cgstAmount = isPlaceOfSupplyVisible ? cgstAmount : "0.00";
+    newRows[index].sgstAmount = isPlaceOfSupplyVisible ? sgstAmount : "0.00";
+    newRows[index].igstAmount = isPlaceOfSupplyVisible ? igstAmount : "0.00";
+  
+    newRows[index].itemAmount =
+      !isPlaceOfSupplyVisible
+        ? parseFloat(itemAmount).toFixed(2)
+        : !isIntraState
+          ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+          : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
+  
+    setRows(newRows);
+  
+    setSalesQuoteState?.((prevData: any) => ({
+      ...prevData,
+      items: newRows.map((row) => {
+        const updatedItem = { ...row };
+        delete updatedItem.itemImage;
+        return updatedItem;
+      }),
+    }));
+  };
+  
   const calculateTax = (
     discountedPrice: number,
     item: any,
     isIntraState: boolean
   ) => {
-
-
+   
+    if (!qouteisTaxable) {
+      return {
+        itemAmount: discountedPrice.toFixed(2),
+        cgstAmount: "0.00",
+        sgstAmount: "0.00",
+        igstAmount: "0.00",
+      };
+    }
+  
     const cgstPercentage = parseFloat(item?.cgst || "0");
     const sgstPercentage = parseFloat(item?.sgst || "0");
     const igstPercentage = parseFloat(item?.igst || "0");
-
+  
     if (!isIntraState) {
       const cgstAmount = ((discountedPrice * cgstPercentage) / 100).toFixed(2);
       const sgstAmount = ((discountedPrice * sgstPercentage) / 100).toFixed(2);
@@ -252,6 +262,8 @@ const NewSalesQuoteTable = ({
       };
     }
   };
+  
+  
 
   const handleRowChange = (index: number, field: keyof Row, value: string) => {
     const newRows = [...rows];
@@ -529,6 +541,44 @@ const NewSalesQuoteTable = ({
       );
     });
   };
+
+useEffect(() => {
+  if (salesQuoteState?.taxPreference) {
+    setQouteIsTaxable(salesQuoteState.taxPreference === "Taxable");
+
+    setRows((currentRows) =>
+      currentRows.map((row) => {
+        const sellingPrice = parseFloat(row.sellingPrice);
+        const discountedPrice = calculateDiscountPrice(
+          sellingPrice,
+          row.discountAmount,
+          row.discountType
+        );
+
+        const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+          discountedPrice,
+          row,
+          isIntraState as boolean
+        );
+
+        return {
+          ...row,
+          amount: itemAmount,
+          cgstAmount: isPlaceOfSupplyVisible ? cgstAmount : "0.00",
+          sgstAmount: isPlaceOfSupplyVisible ? sgstAmount : "0.00",
+          igstAmount: isPlaceOfSupplyVisible ? igstAmount : "0.00",
+          itemAmount:
+            !isPlaceOfSupplyVisible
+              ? parseFloat(itemAmount).toFixed(2)
+              : !isIntraState
+                ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+                : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2),
+        };
+      })
+    );
+  }
+}, [salesQuoteState?.taxPreference]);
+
     
   useEffect(() => {
     if (salesQuoteState?.salesOrderNumber) {
