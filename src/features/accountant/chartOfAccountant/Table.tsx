@@ -4,6 +4,11 @@ import SearchBar from "../../../Components/SearchBar";
 import Pagination from "../../../Components/Pagination/Pagination";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
+import Eye from "../../../assets/icons/Eye";
+import NewAccountModal from "./NewAccountModal";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
+import toast from "react-hot-toast";
 
 interface Account {
   _id: string;
@@ -47,6 +52,28 @@ const Table = ({ accountData, searchValue, setSearchValue, loading }: TableProps
     currentPage * rowsPerPage
   );
 
+  const [oneAccountData,setOneAccountData]=useState <any> ({})
+console.log(oneAccountData,"oneAccountData");
+
+  const { request: fetchOneItem } = useApi("get", 5001);
+  const getOneItem = async (item: Account) => {
+    try {
+      const url = `${endponits.GET_ONE_ACCOUNT}/${item._id}`;
+      const { response, error } = await fetchOneItem(url);
+      if (!error && response) {
+        setOneAccountData(response.data._doc);
+        console.log(response.data,"diwudew");
+        
+      } else {
+        console.error("Failed to fetch one item data.");
+      }
+    } catch (error) {
+      toast.error("Error in fetching one item data.");
+      console.error("Error in fetching one item data", error);
+    }
+  };
+  
+
   useEffect(() => {
     setCurrentPage(1);
   }, [searchValue]);
@@ -57,6 +84,7 @@ const Table = ({ accountData, searchValue, setSearchValue, loading }: TableProps
     "Account Code",
     "Account Type",
     "Parent Account Type",
+    "Actions",
     "",
   ];
 
@@ -73,7 +101,7 @@ const Table = ({ accountData, searchValue, setSearchValue, loading }: TableProps
             <tr style={{ backgroundColor: "#F9F7F0" }}>
               {tableHeaders.map((heading, index) => (
                 <th
-                  className="py-2 px-4 font-medium border-b border-tableBorder"
+                  className="py-3 px-4 font-medium border-b border-tableBorder"
                   key={index}
                 >
                   {heading}
@@ -90,8 +118,7 @@ const Table = ({ accountData, searchValue, setSearchValue, loading }: TableProps
               paginatedData.map((item, index) => (
                 <tr
                   key={item._id}
-                  className="relative cursor-pointer"
-                  onClick={() => navigate(`/accountant/view/${item._id}`)}
+                  className="relative"
                 >
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {(currentPage - 1) * rowsPerPage + index + 1}
@@ -107,6 +134,20 @@ const Table = ({ accountData, searchValue, setSearchValue, loading }: TableProps
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {item.accountHead}
+                  </td>
+                  <td className="py-3 gap-3 px-4 border-b border-tableBorder flex justify-center items-center">
+
+                    <div onClick={() => {
+                      getOneItem(item); 
+                    }}>
+                      <NewAccountModal page="Edit" fetchAllAccounts={function (): void {
+                        throw new Error("Function not implemented.");
+                      }} accountData={oneAccountData} />
+                    </div>
+
+                    <div onClick={() => navigate(`/accountant/view/${item._id}`)} className="cursor-pointer">
+                      <Eye color="#569FBC" />
+                    </div>
                   </td>
                   <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
                     <div className="flex justify-end"></div>

@@ -9,10 +9,12 @@ import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import toast from 'react-hot-toast';
 import CehvronDown from "../../../assets/icons/CehvronDown";
+import PencilEdit from "../../../assets/icons/PencilEdit";
 
 interface NewAccountModalProps {
   fetchAllAccounts: () => void;
   accountData: any[];
+  page?: string
 }
 
 const initialFormValues: any = {
@@ -30,12 +32,18 @@ const initialFormValues: any = {
   parentAccountId: "",
 }
 
-function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps) {
+function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModalProps) {
   const [isModalOpen, setModalOpen] = useState(false);
   const { request: NewAccount } = useApi("post", 5001);
   const [openingType, setOpeningType] = useState("Debit");
   const [formValues, setFormValues] = useState(initialFormValues);
-  console.log(formValues);
+
+  useEffect(() => {
+    if (page === "Edit" && accountData) {
+      setFormValues(accountData);
+    }
+  }, [page, accountData]);
+
 
   const [isSubAccount, setIsSubAccount] = useState(false);
 
@@ -77,15 +85,15 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
             group === "Asset" || group === "Income" || group === "Equity"
               ? "Asset"
               : group === "Liability" || group === "Expenses"
-              ? "Liability"
-              : group;
+                ? "Liability"
+                : group;
           return { accountHead: head, accountGroup };
         }
       }
     }
     return null;
   };
-  
+
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -152,35 +160,47 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
     setIsSubAccount(false)
   };
 
+  const [showValidationError, setShowValidationError] = useState(false);
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+  
     if (!formValues.accountSubhead) {
       toast.error("Please select an account type.");
       return;
     }
-
-    const toastId = toast.loading('Adding new account...');
-
+  
+    if (isSubAccount && !formValues.parentAccountId) {
+      setShowValidationError(true); // Show error for parentAccountId
+      toast.error("Please select a parent account.");
+      return;
+    }
+  
+    const toastId = toast.loading("Adding new account...");
+  
     try {
       const url = `${endponits.Add_NEW_ACCOUNT}`;
       const body = formValues;
       const { response, error } = await NewAccount(url, body);
-
+  
       if (!error && response) {
         toast.dismiss(toastId);
+        toast.success("Account added successfully!");
         closeModal();
         fetchAllAccounts();
       } else {
-        throw new Error(error?.response?.data?.message || 'Something went wrong');
+        throw new Error(
+          error?.response?.data?.message || "Something went wrong"
+        );
       }
     } catch (error: any) {
       toast.dismiss(toastId);
       toast.error(
-        error.response?.data?.message || error.message || 'Failed to add account'
+        error.response?.data?.message || error.message || "Failed to add account"
       );
     }
   };
-
+  
 
   useEffect(() => {
     setFormValues((prevFormValues: any) => ({
@@ -191,11 +211,16 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
 
   return (
     <div>
-      <Button onClick={openModal} variant="primary">
-        <CirclePlus color="white" size="16" />
-        <p className="text-sm">New Account</p>
-      </Button>
-      <Modal open={isModalOpen} onClose={closeModal} className="w-[68%]">
+      {page === "Edit" ?
+        <div onClick={openModal} className="cursor-pointer">
+          <PencilEdit color={'#0B9C56'} />
+        </div>
+        :
+        <Button onClick={openModal} variant="primary">
+          <CirclePlus color="white" size="16" />
+          <p className="text-sm">New Account</p>
+        </Button>}
+      <Modal open={isModalOpen} onClose={closeModal} className="w-[68%] text-start">
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
             <div
@@ -203,7 +228,7 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
               style={{ backgroundImage: `url(${bgImage})` }}
             ></div>
             <div className="relative z-10">
-              <h3 className="text-xl font-bold text-textColor">Create Account</h3>
+              <h3 className="text-xl font-bold text-textColor">{page === "Edit" ? "Edit" : "Create"} Account</h3>
               <p className="text-dropdownText font-semibold text-sm mt-2">
                 Start your journey with us create your account in moments!
               </p>
@@ -296,7 +321,8 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
                         </label>
                         <div className="relative w-full">
                           <select
-                            className="block appearance-none w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-9 pl-3 pr-8 rounded-md leading-tight focus:outline-none"
+                            className={`block appearance-none w-full mt-0.5 text-zinc-400 bg-white border text-sm h-9 pl-3 pr-8 rounded-md leading-tight focus:outline-none ${showValidationError ? "border-red-500" : "border-inputBorder"
+                              }`}
                             name="parentAccountId"
                             onChange={(e) => {
                               const selectedAccountName = e.target.value;
@@ -304,10 +330,11 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
                                 (account) => account.accountName === selectedAccountName
                               );
                               const selectedId = selectedAccount ? selectedAccount._id : "";
-                              setFormValues((prevFormValues: any) => ({
+                              setFormValues((prevFormValues:any) => ({
                                 ...prevFormValues,
                                 parentAccountId: selectedId, // Storing the selected account's _id
                               }));
+                              setShowValidationError(false); // Clear validation error on valid input
                             }}
                             value={
                               formValues.parentAccountId
@@ -329,11 +356,15 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
                                 </option>
                               ))}
                           </select>
-
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <CehvronDown color="gray" />
                           </div>
                         </div>
+                        {showValidationError && (
+                          <div className="text-red-500 text-xs mt-1">
+                            Please select a parent account.
+                          </div>
+                        )}
                       </div>
                     )}
                   </>
@@ -415,7 +446,7 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
                   Cancel
                 </Button>
                 <Button type="submit" variant="primary" className="rounded text-sm h-10">
-                  Add Account
+                  {page === "Edit" ? "Edit" : "Add"} Account
                 </Button>
               </div>
             </div>
