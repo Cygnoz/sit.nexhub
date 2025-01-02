@@ -49,9 +49,6 @@ const EditSupplier: React.FC<Props> = ({
   const [paymentTerms, setPaymentTerms] = useState<any | []>([]);
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [errors, setErrors] = useState({
-    firstName: false,
-    lastName: false,
-    companyName: false,
     supplierDisplayName: false,
   });
   const { request: getCountryData } = useApi("get", 5004);
@@ -268,11 +265,8 @@ const EditSupplier: React.FC<Props> = ({
     const newErrors = { ...errors };
 
     // Validate basic supplier fields
-    if (supplierdata.firstName === "") newErrors.firstName = true;
-    if (supplierdata.lastName === "") newErrors.lastName = true;
     if (supplierdata.supplierDisplayName === "")
       newErrors.supplierDisplayName = true;
-    if (supplierdata.companyName === "") newErrors.companyName = true;
 
     const unmatchedAccounts = supplierdata.bankDetails.some(
       (bankDetail, index) => {
@@ -762,20 +756,7 @@ const EditSupplier: React.FC<Props> = ({
                           placeholder="Enter First Name"
                           value={supplierdata.firstName}
                           onChange={handleChange}
-                          onFocus={() =>
-                            setErrors({ ...errors, firstName: false })
-                          }
-                          onBlur={() => {
-                            if (supplierdata.firstName === "") {
-                              setErrors({ ...errors, firstName: true });
-                            }
-                          }}
                         />
-                        {errors.firstName && (
-                          <div className="text-red-800 text-xs ms-2 mt-1">
-                            Enter first Name
-                          </div>
-                        )}
                       </div>
 
                       <div>
@@ -790,20 +771,7 @@ const EditSupplier: React.FC<Props> = ({
                           placeholder="Enter Last Name"
                           value={supplierdata.lastName}
                           onChange={handleChange}
-                          onFocus={() =>
-                            setErrors({ ...errors, lastName: false })
-                          }
-                          onBlur={() => {
-                            if (supplierdata.lastName === "") {
-                              setErrors({ ...errors, lastName: true });
-                            }
-                          }}
                         />
-                        {errors.lastName && (
-                          <div className="text-red-800 text-xs ms-2 mt-1">
-                            Enter Last Name
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -819,20 +787,7 @@ const EditSupplier: React.FC<Props> = ({
                         placeholder="Enter Company Name"
                         value={supplierdata.companyName}
                         onChange={handleChange}
-                        onFocus={() =>
-                          setErrors({ ...errors, companyName: false })
-                        }
-                        onBlur={() => {
-                          if (supplierdata.companyName === "") {
-                            setErrors({ ...errors, companyName: true });
-                          }
-                        }}
                       />
-                      {errors.companyName && (
-                        <div className="text-red-800 text-xs ms-2 mt-1">
-                          Enter Company Name
-                        </div>
-                      )}
                     </div>
                     <div>
                       <label htmlFor="companyName">
