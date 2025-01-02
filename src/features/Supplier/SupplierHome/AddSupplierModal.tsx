@@ -417,15 +417,24 @@ const AddSupplierModal = ({ page }: Props) => {
     }
 
     // Update supplierDisplayName based on companyName
-    if (name === "companyName" || name ==="firstName") {
+    if (name === "companyName") {
       setSupplierData((prevData) => ({
         ...prevData,
-        supplierDisplayName: value,
+        supplierDisplayName: value, // Always update with companyName
       }));
       if (supplierdata.supplierDisplayName) {
         setErrors({ ...errors, supplierDisplayName: false });
       }
+    } else if (name === "firstName") {
+      setSupplierData((prevData) => ({
+        ...prevData,
+        supplierDisplayName: prevData.companyName ? prevData.supplierDisplayName : value, // Update only if companyName is absent
+      }));
+      if (supplierdata.supplierDisplayName || !supplierdata.companyName) {
+        setErrors({ ...errors, supplierDisplayName: false });
+      }
     }
+    
 
     // Handle checkbox updates
     if (type === "checkbox") {
