@@ -451,7 +451,9 @@ console.log(customerData);
                   {openDropdownIndex === "customer" && (
                     <div
                       ref={dropdownRef}
-                      className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2 h-80   space-y-1 max-w-72 overflow-y-auto  hide-scrollbar"
+
+                      className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2   space-y-1 max-w-80 max-h-80 overflow-y-scroll"
+
                       style={{ width: "80%" }}
                     >
                       <SearchBar
@@ -462,7 +464,7 @@ console.log(customerData);
                       {filteredCustomer ? (
                         filteredCustomer.map((customer: any) => (
                           <div
-                            className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe
+                            className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer
                                 border border-slate-400 rounded-lg bg-lightPink"
                             onClick={() => {
                               setSalesQuoteState((prevState) => ({
@@ -488,7 +490,7 @@ console.log(customerData);
                                   Phone: {customer.mobile}
                                 </p>
                               </div>
-                            
+
                             </div>
                           </div>
                         ))

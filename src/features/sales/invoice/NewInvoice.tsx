@@ -551,7 +551,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                   {openDropdownIndex === "customer" && (
                     <div
                       ref={dropdownRef}
-                      className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2   space-y-1 max-w-72 max-h-80 overflow-y-auto  hide-scrollbar"
+                      className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2   space-y-1 max-w-80 max-h-80 overflow-y-auto "
                       style={{ width: "80%" }}
                     >
                       <SearchBar
@@ -596,7 +596,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                       ) : (
                         <></>
                       )}
-                      <div className="hover:bg-gray-100  cursor-pointe border border-slate-400 rounded-lg py-4">
+                      <div className="hover:bg-gray-100  cursor-pointer border border-slate-400 rounded-lg py-4">
                         <NewCustomerModal page="purchase" />
                       </div>
                     </div>
