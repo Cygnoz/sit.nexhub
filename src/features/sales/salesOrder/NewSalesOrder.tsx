@@ -38,6 +38,8 @@ const initialSalesQuoteState: SalesOrder = {
   deliveryMethod: "",
   expectedShipmentDate: "",
 
+  taxPreference:"Taxable",
+
   items: [
     {
       itemId: "",
@@ -53,7 +55,7 @@ const initialSalesQuoteState: SalesOrder = {
       sgstAmount: "",
       igstAmount: "",
       vatAmount: "",
-      itemTotaltax: "",
+      itemTotalTax: "",
       discountType: "",
       discountAmount: "",
       amount: "",

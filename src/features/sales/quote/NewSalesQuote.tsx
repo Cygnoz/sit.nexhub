@@ -45,7 +45,7 @@ const initialSalesQuoteState: SalesQuote = {
       sgstAmount: "",
       igstAmount: "",
       vatAmount: "",
-      itemTotaltax: "",
+      itemTotalTax: "",
       discountType: "",
       discountAmount: "",
       amount: "",
