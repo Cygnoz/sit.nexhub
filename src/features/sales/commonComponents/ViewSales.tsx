@@ -96,7 +96,8 @@ function ViewSales() {
           <div
             onClick={handleGoBack}
             style={{ borderRadius: "50%" }}
-            className="w-[40px] h-[40px] flex items-center justify-center bg-backButton cursor-pointer"
+            className="w-[40px] h-[40px] flex items-center justify-center bg-backButton cursor-pointer" 
+            
           >
             <CheveronLeftIcon />
           </div>
