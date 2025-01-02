@@ -231,7 +231,7 @@ const SalesTable = ({ page }: Props) => {
       <div className="mt-3 max-h-[25rem] overflow-y-auto" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
-            <tr style={{ backgroundColor: "#F9F7F0" }}>
+            <tr style={{ backgroundColor: "#F9F7F0" }} className="sticky top-0 z-10">
               <th className="py-2.5 px-4 font-medium border-b border-tableBorder">Sl.No</th>
 
               {columns.map(
