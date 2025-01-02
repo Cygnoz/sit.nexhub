@@ -634,11 +634,11 @@ console.log(bill)
                   <SearchBar
                     searchValue={searchValue}
                     onSearchChange={setSearchValue}
-                    placeholder="Select Supplier"
+                    placeholder="Serach Supplier"
                   />
                   {filteredSupplier.length > 0 ? (
                     filteredSupplier.map((supplier: any) => (
-                      <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer">
+                      <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer hover:bg-lightRose">
                         <div className="col-span-2 flex items-center justify-center">
                           <img
                             className="rounded-full "
@@ -661,8 +661,14 @@ console.log(bill)
                             setSelecetdSupplier(supplier);
                           }}
                         >
-                          <div>
-                            <p className="font-bold text-sm capitalize">
+                         <div
+                            className={` items-center space-y-1 ${
+                              supplier.mobile
+                                ? "justify-start"
+                                : "flex justify-center"
+                            }`}
+                          >
+                            <p className="font-bold text-sm">
                               {supplier.supplierDisplayName}
                             </p>
                             {supplier.mobile && (

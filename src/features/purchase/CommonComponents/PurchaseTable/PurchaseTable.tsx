@@ -44,14 +44,17 @@ const PurchaseTable: React.FC<TableProps> = ({
   const rowsPerPage = 10;
 
   const filteredData = Array.isArray(data)
-    ? data.filter((item) => {
+  ? data
+      .slice()
+      .reverse() 
+      .filter((item) => {
         return searchableFields
           .map((field) => item[field]?.toString().trim().toLowerCase())
           .some((fieldValue) =>
             fieldValue?.includes(searchValue.toLowerCase().trim())
           );
       })
-    : [];
+  : [];
 
   const totalPages = Math.ceil(filteredData?.length / rowsPerPage);
   const paginatedData = filteredData?.slice(
@@ -114,7 +117,7 @@ const PurchaseTable: React.FC<TableProps> = ({
                 <TableSkelton key={idx} columns={skeletonColumns} />
               ))
             ) : paginatedData && paginatedData.length > 0 ? (
-              paginatedData.reverse().map((item, rowIndex) => (
+              paginatedData.map((item, rowIndex) => (
                 <tr key={item.id} className="relative cursor-pointer">
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {(currentPage - 1) * rowsPerPage + rowIndex + 1}

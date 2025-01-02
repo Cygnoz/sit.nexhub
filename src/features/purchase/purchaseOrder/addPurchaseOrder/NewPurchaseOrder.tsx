@@ -93,6 +93,7 @@ const NewPurchaseOrder = ({}: Props) => {
   const [destinationList, setDestinationList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
   const [isInterState, setIsInterState] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: AllCustomer } = useApi("get", 5002);
@@ -337,23 +338,25 @@ const NewPurchaseOrder = ({}: Props) => {
   
 
   const handleSave = async () => {
+    if (loading) return;
+  
+    setLoading(true);
+  
     try {
       const url = `${endponits.ADD_PURCHASE_ORDER}`;
-      const { response, error } = await newPurchaseOrderApi(
-        url,
-        purchaseOrderState
-      );
+      const { response, error } = await newPurchaseOrderApi(url, purchaseOrderState);
       if (!error && response) {
-        // console.log(response);
-
         toast.success(response.data.message);
         setTimeout(() => {
-          navigate("/purchase/purchase-order")
+          navigate("/purchase/purchase-order");
         }, 1000);
       } else {
         toast.error(error?.response.data.message);
       }
     } catch (error) {}
+    finally {
+      setLoading(false);
+    }
   };
 
 
@@ -468,11 +471,11 @@ const NewPurchaseOrder = ({}: Props) => {
                         <SearchBar
                           searchValue={searchValue}
                           onSearchChange={setSearchValue}
-                          placeholder="Select Supplier"
+                          placeholder="Search Supplier"
                         />
                         {filteredSupplier.length > 0 ? (
                           filteredSupplier.map((supplier: any) => (
-                            <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer">
+                            <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer hover:bg-lightRose">
                               <div className="col-span-2 flex items-center justify-center">
                                 <img
                                 className="rounded-full "
@@ -489,15 +492,21 @@ const NewPurchaseOrder = ({}: Props) => {
                                     setSelecetdSupplier(supplier);
                                   }}>
                                 <div
-                                 
-                                >
-                                  <p className="font-bold text-sm">
-                                    {supplier.supplierDisplayName}
-                                  </p>
-                                  { supplier.mobile &&   <p className="text-xs text-gray-500">
+                            className={` items-center space-y-1 ${
+                              supplier.mobile
+                                ? "justify-start"
+                                : "flex justify-center"
+                            }`}
+                          >
+                            <p className="font-bold text-sm">
+                              {supplier.supplierDisplayName}
+                            </p>
+                            {supplier.mobile && (
+                              <p className="text-xs text-gray-500">
                                 Phone: {supplier.mobile}
-                                  </p>}
-                                </div>
+                              </p>
+                            )}
+                          </div>
                              
                               </div>
                             </div>
@@ -509,7 +518,7 @@ const NewPurchaseOrder = ({}: Props) => {
                             </p>
                           </div>
                         )}
-                        <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4 cursor-pointer">
+                        <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4 cursor-pointer hover:bg-lightRose">
                           <AddSupplierModal page="purchase" />
                         </div>
                       </div>
@@ -1202,7 +1211,7 @@ const NewPurchaseOrder = ({}: Props) => {
           <PrinterIcon height={18} width={18} color="currentColor" />
           Print
         </Button>
-        <Button variant="primary" size="sm" type="submit" onClick={handleSave}>
+        <Button variant="primary" size="sm" type="submit"   onClick={loading ? () => {} : handleSave}  >
           Save & Send
         </Button>{" "}
       </div>

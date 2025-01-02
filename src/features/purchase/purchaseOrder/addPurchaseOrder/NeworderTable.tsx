@@ -121,7 +121,7 @@ const NewOrderTable = ({
     const newRows = [...rows];
     newRows[index].itemName = item.itemName;
     newRows[index].itemImage = item.itemImage;
-    newRows[index].itemCostPrice = item.costPrice;
+    newRows[index].itemCostPrice = item.costPrice?item.costPrice:0;
     newRows[index].itemQuantity = 1;
     newRows[index].itemId = item._id;
     newRows[index].itemCgst = item.cgst;
@@ -595,34 +595,32 @@ const NewOrderTable = ({
                         <SearchBar
                           searchValue={searchValue}
                           onSearchChange={setSearchValue}
-                          placeholder="Select Item"
+                          placeholder="Search Item"
                         />
                         {items.length > 0 ? (
                           filteredItems()?.map((item: any, idx: number) => (
                             <div
                               key={idx}
-                              className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                              className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink hover:bg-lightRose"
                               onClick={() => handleItemSelect(item, index)}
                             >
                               <div className="col-span-2 flex justify-center">
                                 <img
                                   className="rounded-full h-10"
                                   src={item.itemImage}
-                                  alt=""
+                                  alt="Img"
                                 />
                               </div>
                               <div className="col-span-10 flex">
-                                <div className="text-start">
+                                <div className="text-start flex-row space-y-1">
                                   <p className="font-bold text-sm text-black">
                                     {item.itemName}
                                   </p>
                                   <p className="text-xs text-gray-500">
-                                    Rate: {item.sellingPrice}
+                                    Rate: {item.costPrice}
                                   </p>
                                 </div>
-                                <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                                  &times;
-                                </div>
+                               
                               </div>
                             </div>
                           ))
@@ -664,7 +662,7 @@ const NewOrderTable = ({
                     onChange={(e) =>
                       handleRowChange(index, "itemCostPrice", e.target.value)
                     }
-                    disabled
+                    
                   />
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
@@ -679,10 +677,10 @@ const NewOrderTable = ({
                           ? (row.itemCgstAmount || 0) +
                               (row.itemSgstAmount || 0) ===
                             0
-                            ? "nil"
+                            ? "-"
                             : row.itemCgstAmount + row.itemSgstAmount
                           : (row.itemIgstAmount || 0) === 0
-                          ? "nil"
+                          ? "-"
                           : row.itemIgstAmount
                       }
                     />

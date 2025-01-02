@@ -540,8 +540,8 @@ const DebitNoteTable = ({
       onSearchChange={setSearchValue}
       placeholder="Select Item"
     />
-  {selectedBill?.items?.length > 0 ? ( // Check if selectedBill has items
-  filterItems()?.length > 0 ? ( // Check if filtered items exist
+  {selectedBill?.items?.length > 0 ? ( 
+  filterItems()?.length > 0 ? ( 
     filterItems()?.map((item: any, idx: number) => (
       <div
         key={idx}
@@ -558,7 +558,7 @@ const DebitNoteTable = ({
         <div className="col-span-10 flex">
           <div className="text-start">
             <p className="font-bold text-sm text-black">{item.itemName}</p>
-            <p className="text-xs text-gray-500">Rate: {item.sellingPrice}</p>
+            <p className="text-xs text-gray-500">Rate: {item.costPrice?item.costPrice:"-"}</p>
           </div>
         </div>
       </div>

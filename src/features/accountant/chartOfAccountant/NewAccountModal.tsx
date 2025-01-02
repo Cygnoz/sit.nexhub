@@ -57,7 +57,7 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
     },
     Liability: {
       Liabilities: [
-        "Other Current Liability",
+        "Current Liability",
         "Credit Card",
         "Long Term Liability",
         "Other Liability",
