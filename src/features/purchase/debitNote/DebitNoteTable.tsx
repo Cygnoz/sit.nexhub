@@ -50,7 +50,6 @@ const DebitNoteTable = ({
   const [items, setItems] = useState<any>([]);
   const { request: getAllItemsRequest } = useApi("get", 5003);
 
-  console.log(items,"bills")
   
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<Row[]>([
@@ -114,10 +113,10 @@ const DebitNoteTable = ({
     setRows(updatedRows);
   };
 
+
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
-    console.log(item,"item")
 
 
     const newRows = [...rows];
@@ -156,7 +155,6 @@ const DebitNoteTable = ({
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
     
-    console.log(igstAmount, sgstAmount,cgstAmount,"igstsvdjgjgh")
 
     if (isInterState) {
       newRows[index].itemTax = igstAmount;
@@ -188,7 +186,6 @@ const DebitNoteTable = ({
     const sgstPercentage = item.itemSgst || 0;
     const igstPercentage = item.itemIgst || 0;
 
-    console.log(cgstPercentage,sgstPercentage,igstPercentage,"qwertyui")
 
 
     let cgstAmount = 0;
@@ -323,7 +320,6 @@ const DebitNoteTable = ({
     }
   };
   
-  console.log(rows,"rows")
   
   const calculateTotalSGST = () => {
     return rows.reduce((total, row) => {
@@ -336,7 +332,6 @@ const DebitNoteTable = ({
   // Function to calculate total CGST
   const calculateTotalCGST = () => {
     return rows.reduce((total, row) => {
-      console.log(row.itemCgstAmount,"total cgst");
 
       const cgst = !isInterState ? (Number(row.itemCgstAmount) || 0 ): 0;
       return total + cgst;

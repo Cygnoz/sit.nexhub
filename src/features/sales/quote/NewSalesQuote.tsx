@@ -29,7 +29,7 @@ const initialSalesQuoteState: SalesQuote = {
   salesQuoteDate: "",
   expiryDate: "",
   subject: "",
-
+  taxPreference:"",
   items: [
     {
       itemId: "",
@@ -406,6 +406,7 @@ console.log(customerData);
     } catch (error) { }
   };
 
+  console.log(salesQuoteState)
 
   return (
     <div className="px-8">
@@ -450,7 +451,9 @@ console.log(customerData);
                   {openDropdownIndex === "customer" && (
                     <div
                       ref={dropdownRef}
+
                       className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2   space-y-1 max-w-80 max-h-80 overflow-y-scroll"
+
                       style={{ width: "80%" }}
                     >
                       <SearchBar
@@ -487,6 +490,7 @@ console.log(customerData);
                                   Phone: {customer.mobile}
                                 </p>
                               </div>
+
                             </div>
                           </div>
                         ))
@@ -595,6 +599,8 @@ console.log(customerData);
                   </div>
                 </div>
 
+              
+
                 <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Subject
@@ -608,6 +614,33 @@ console.log(customerData);
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />
                 </div>
+
+                <div className="relative col-span-7">
+                <label
+                  htmlFor="taxPreference"
+                  className="text-slate-600 text-sm flex items-center gap-2"
+                >
+                  Tax Preference
+                </label>
+                <div className="relative w-full ">
+                  <select
+                    className="block appearance-none w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    name="taxPreference"
+                    value={salesQuoteState.taxPreference}
+                    onChange={handleChange}
+                  >
+                    <option value="" disabled hidden>
+                      Select Tax Preference
+                    </option>
+                    <option value="Taxable">Taxable</option>
+                    <option value="Non-taxable">Non-taxable</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
+                  </div>
+                </div>
+               
+              </div>
                 {/* <div className="col-span-7 relative">
                   <label className="block text-sm mb-1 text-labelColor">
                     Sales Person
