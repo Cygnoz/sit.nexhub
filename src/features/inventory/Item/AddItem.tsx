@@ -79,10 +79,10 @@ const initialItemDataState = {
   baseCurrency: "",
   sellingPrice: "",
   saleMrp: "",
-  salesAccountId: "",
+  salesAccountId: "Sales",
   salesDescription: "",
   costPrice: "",
-  purchaseAccountId: "",
+  purchaseAccountId: "Cost of Goods Sold",
   purchaseDescription: "",
   preferredVendorId: "",
   taxRate: "",
@@ -417,8 +417,8 @@ const AddItem = ({ }: Props) => {
   }, [selectedItem]);
   const hsnSac = location.state?.hsnSac;
 
-  console.log(errors,"99");
-  
+  console.log(errors, "99");
+
 
   return (
     <>
@@ -1529,6 +1529,7 @@ const AddItem = ({ }: Props) => {
                   </div>
                 )}
               </div>
+
               <div className="relative w-[205%]">
                 <label
                   htmlFor="purchaseaccountDropdown"
@@ -1545,15 +1546,19 @@ const AddItem = ({ }: Props) => {
                     onChange={handleInputChange}
                     value={initialItemData.purchaseAccountId || ""}
                   >
-                    <option value="" hidden >
-                      Select Account
+                    <option defaultChecked value="Cost of Goods Sold" hidden>
+                      Cost of Goods Sold
                     </option>
                     {allAccounts
                       ?.filter(
                         (item: { accountSubhead: string }) =>
-                          item.accountSubhead === "Expense" || item.accountSubhead === "Cost of Goods Sold"
+                          item.accountSubhead === "Expense" ||
+                          item.accountSubhead === "Cost of Goods Sold"
                       )
-                      ?.map((item: { _id: string; accountName: string }) => (
+                      .sort((a: { accountName: string }, b: { accountName: string }) =>
+                        a.accountName.localeCompare(b.accountName)
+                      ) // Sort alphabetically by accountName
+                      .map((item: { _id: string; accountName: string }) => (
                         <option key={item._id} value={item._id}>
                           {item.accountName}
                         </option>
@@ -1569,6 +1574,7 @@ const AddItem = ({ }: Props) => {
                   </div>
                 )}
               </div>
+
 
 
             </div>
@@ -1642,12 +1648,17 @@ const AddItem = ({ }: Props) => {
                   onChange={handleInputChange}
                   value={initialItemData.salesAccountId || ""}
                 >
-                  <option value="" hidden>
-                    Select Account
+                  <option defaultChecked value="Sales" hidden>
+                    Sales
                   </option>
                   {allAccounts
-                    ?.filter((item: { accountSubhead: string }) => item.accountSubhead === "Income")
-                    ?.map((item: { _id: string; accountName: string }) => (
+                    ?.filter(
+                      (item: { accountSubhead: string }) => item.accountSubhead === "Income"
+                    )
+                    .sort((a: { accountName: string }, b: { accountName: string }) =>
+                      a.accountName.localeCompare(b.accountName)
+                    ) // Sort alphabetically by accountName
+                    .map((item: { _id: string; accountName: string }) => (
                       <option key={item._id} value={item._id}>
                         {item.accountName}
                       </option>
@@ -1665,6 +1676,7 @@ const AddItem = ({ }: Props) => {
                 </div>
               )}
             </div>
+
           </div>
 
         </div>
