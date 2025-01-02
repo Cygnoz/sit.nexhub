@@ -9,6 +9,7 @@ import Print from "../salesOrder/Print";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 import { TableResponseContext } from "../../../context/ContextShare";
+import Eye from "../../../assets/icons/Eye";
 
 
 interface Column {
@@ -45,14 +46,14 @@ const SalesTable = ({ page }: Props) => {
     try {
       const url =
         page === "invoice"
-          ? `${endponits.GET_ALL_SALES_INVOICE}`
-          : page === "salesOrder"
-            ? `${endponits.GET_ALL_SALES_ORDER}`
-            : page === "quote"
-              ? `${endponits.GET_ALL_QUOTES}`
-              : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}`
-                : page === "credit-Note" ? `${endponits.GET_ALL_CREDIT_NOTE}`
-                  : "";
+        ? `${endponits.GET_ALL_SALES_INVOICE}`
+        : page === "salesOrder"
+        ? `${endponits.GET_ALL_SALES_ORDER}`
+        : page === "quote"
+        ? `${endponits.GET_ALL_QUOTES}`
+        : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}`
+        : page === "credit-Note" ? `${endponits.GET_ALL_CREDIT_NOTE}`
+        : "";
 
       setLoading({ ...loading, skelton: true });
       const { response, error } = await getAllQuotes(url);
@@ -77,8 +78,8 @@ const SalesTable = ({ page }: Props) => {
     fetchAllQuotes();
   }, []);
 
-  console.log(data,"oo");
-  
+  console.log(data, "oo");
+
   const initialColumns: Column[] =
     page === "invoice" ? [
       { id: "createdDate", label: "Date", visible: true },
@@ -126,13 +127,13 @@ const SalesTable = ({ page }: Props) => {
               { id: "amountReceived", label: "Amount Received", visible: true },
               // { id: "", label: "Unsend Amount", visible: true },
             ] :
-             page == "credit-Note" ? [
-              { id: "creditNote", label: "Credit Note", visible: true },
-              { id: "customerDisplayName", label: "Customer Name", visible: true },
-              { id: "customerCreditDate", label: "Date", visible: true },
-              { id: "orderNumber", label: "orderNumber", visible: true },
-              { id: "totalAmount", label: "Balance", visible: true },
-            ] : [];
+              page == "credit-Note" ? [
+                { id: "creditNote", label: "Credit Note", visible: true },
+                { id: "customerDisplayName", label: "Customer Name", visible: true },
+                { id: "customerCreditDate", label: "Date", visible: true },
+                { id: "orderNumber", label: "orderNumber", visible: true },
+                { id: "totalAmount", label: "Balance", visible: true },
+              ] : [];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
@@ -168,7 +169,7 @@ const SalesTable = ({ page }: Props) => {
   };
   // Initialize `data` as an empty array if it's undefined
   const filteredData = Array.isArray(data)
-  ? data.filter((quote) => {
+    ? data.filter((quote) => {
       const searchValueLower = searchValue?.toLowerCase();
       if (page === "credit-Note") {
         return (
@@ -186,16 +187,16 @@ const SalesTable = ({ page }: Props) => {
         );
       }
     })
-  : [];
+    : [];
 
- 
+
   const handleRowClick = (id: string) => {
     const state = { page };
     if (page === "reciept") {
       navigate(`/sales/receipt/view/${id}`, { state });
 
-    } 
-   
+    }
+
     else {
       navigate(`/sales/viewsalesorder/${id}`, { state });
     }
@@ -212,14 +213,14 @@ const SalesTable = ({ page }: Props) => {
               page === "invoice"
                 ? "Search Invoice"
                 : page === "salesOrder"
-                  ? "Search Sales Order"
-                  : page === "salesReturn"
-                    ? "Search Sales Return"
-                    : page === "reciept"
-                      ? "Search Receipts"
-                      : page === "credit-Note"
-                        ? "Search Credit Note"
-                        : "Search Quote"
+                ? "Search Sales Order"
+                : page === "salesReturn"
+                ? "Search Sales Return"
+                : page === "reciept"
+                ? "Search Receipts"
+                : page === "credit-Note"
+                ? "Search Credit Note"
+                : "Search Quote"
             }
           />
 
@@ -241,6 +242,7 @@ const SalesTable = ({ page }: Props) => {
                     </th>
                   )
               )}
+              <th className="py-3 px-4 font-medium border-b border-tableBorder">Actions </th>
               <th className="py-3 px-4 font-medium border-b border-tableBorder">
                 <CustomiseColmn columns={columns} setColumns={setColumns} tableId={`${page}`} />
               </th>
@@ -255,7 +257,7 @@ const SalesTable = ({ page }: Props) => {
             ) : filteredData && filteredData.length > 0 ? (
               // Render data rows if not loading and data is available
               filteredData.slice().reverse().map((item, index) => (
-                <tr key={item._id} className="relative cursor-pointer hover:bg-[#EAECF0]" onClick={() => handleRowClick(item._id)}>
+                <tr key={item._id} className="relative cursor-pointer">
                   <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
                   {columns.map(
                     (col) =>
@@ -265,7 +267,9 @@ const SalesTable = ({ page }: Props) => {
                         </td>
                       )
                   )}
-                  <td className="py-2.5 px-4 border-y border-tableBorder"></td>
+                  <td className="py-3 px-4 border-b border-tableBorder flex justify-center items-center" onClick={() => handleRowClick(item._id)}>
+                    <Eye color="#569FBC" /></td>
+                  <td className="py-3 px-4 border-b border-tableBorder"></td>
                 </tr>
               ))
             ) : (

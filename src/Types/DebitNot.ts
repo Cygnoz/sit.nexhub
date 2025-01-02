@@ -30,6 +30,7 @@ export interface DebitNoteBody {
       itemIgst: number | string;
       itemSgstAmount: number | string;
       itemCgstAmount: number | string;
+      stock:number | string
     }[];
   
     addNotes: string;

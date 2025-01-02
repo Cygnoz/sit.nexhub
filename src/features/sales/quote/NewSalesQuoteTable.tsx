@@ -609,7 +609,7 @@ const NewSalesQuoteTable = ({
                     openDropdownType === "searchProduct" && (
                       <div
                         ref={dropdownRef}
-                        className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[40%] space-y-1"
+                        className="absolute z-10 bg-white shadow rounded-md -ms-2 p-2 w-[40%] space-y-1 max-h-[250px] overflow-y-scroll"
                       >
                         <SearchBar
                           searchValue={searchValue}
@@ -638,9 +638,6 @@ const NewSalesQuoteTable = ({
                                   <p className="text-xs text-gray-500">
                                     Rate: RS.{item.sellingPrice}
                                   </p>
-                                </div>
-                                <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                                  &times;
                                 </div>
                               </div>
                             </div>
@@ -684,14 +681,13 @@ const NewSalesQuoteTable = ({
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input
-                    type="text"
+                    type="number"
                     placeholder="0"
                     className="w-[50px]  focus:outline-none text-center"
                     value={row.sellingPrice}
                     onChange={(e) =>
                       handleRowChange(index, "sellingPrice", e.target.value)
                     }
-                    disabled
                   />
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
@@ -764,7 +760,7 @@ const NewSalesQuoteTable = ({
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <div
-                    className="text-center flex justify-center gap-2"
+                    className="text-center flex justify-center gap-2 cursor-pointer"
                     onClick={() => removeRow(index)}
                   >
                     <TrashCan color="darkRed" />

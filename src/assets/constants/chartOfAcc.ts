@@ -20,7 +20,7 @@ const chartOfAcc = [
   {
     head: "Liability",
     subhead: [
-      "Other Current Liability",
+      "Current Liability",
       "Credit Card",
       "Long Term Liability",
       "Other Liability",

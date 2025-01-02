@@ -9,9 +9,6 @@ import PlusCircle from "../../../assets/icons/PlusCircle";
 import { newCreditTableHead } from "../../../assets/constants";
 import { CreditNoteBody } from "../../../Types/Creditnote";
 
-
-
-
 type Row = {
   itemImage?: string;
   itemId: string;
@@ -28,7 +25,7 @@ type Row = {
   cgstAmount: number | string; 
   igstAmount: number | string; 
   vatAmount: number | string; 
-  itemSalesQuantity:number | string; 
+  stock:number | string; 
   taxPreference:string
 };
 
@@ -54,7 +51,9 @@ const CreditNoteTable = ({
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<any>([]);
   const { request: getAllItemsRequest } = useApi("get", 5003);
-
+  
+  console.log(selectedInvoice,"selectedInvoice");
+  
   
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<Row[]>([
@@ -73,7 +72,7 @@ const CreditNoteTable = ({
       cgstAmount: "",
       igstAmount: "",
       vatAmount: "",
-      itemSalesQuantity:"",
+      stock:"",
       taxPreference:""
     },
   ]);
@@ -112,7 +111,7 @@ const CreditNoteTable = ({
       igstAmount: "",
       vat:"",
       vatAmount:"",
-      itemSalesQuantity:"",
+      stock:"",
       taxPreference:"",
     };
     const updatedRows = [...rows, newRow];
@@ -123,8 +122,6 @@ const CreditNoteTable = ({
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
-    console.log(item,"item")
-
 
     const newRows = [...rows];
     newRows[index].itemName = item.itemName;
@@ -136,7 +133,7 @@ const CreditNoteTable = ({
     newRows[index].igst = item.igst;
     newRows[index].itemAmount = item.itemAmount;
     newRows[index].sellingPrice = item.sellingPrice;
-    newRows[index].itemSalesQuantity=item.quantity;
+    newRows[index].stock = item.returnQuantity? item.quantity - item.returnQuantity : item.quantity;
     newRows[index].taxPreference=item.taxPreference;
 
 
@@ -215,7 +212,7 @@ const CreditNoteTable = ({
 
     const quantity = Number(newRows[index].quantity);
     const sellPrice = Number(newRows[index].sellingPrice);
-    const salesQuantity = Number(newRows[index].itemSalesQuantity);
+    const salesQuantity = Number(newRows[index].stock);
 
     if (quantity > salesQuantity) {
       newRows[index].quantity = salesQuantity.toString()
@@ -305,7 +302,7 @@ const CreditNoteTable = ({
         cgstAmount: "",
         igstAmount: "",
         vatAmount: "",
-        itemSalesQuantity:"",
+        stock:"",
         taxPreference:""
       };
   
@@ -460,7 +457,7 @@ const CreditNoteTable = ({
         cgstAmount: "",
         igstAmount: "",
         vatAmount: "",
-        itemSalesQuantity:"",
+        stock:"",
         taxPreference:"",
       };
   
@@ -474,15 +471,15 @@ const CreditNoteTable = ({
     }
   }, [selectedInvoice]);   
 
-  console.log(items,"items")
-
   const filterItems = () => {
     return selectedInvoice?.items?.filter((item: any) =>
-      item.itemName.toLowerCase().includes(searchValue.toLowerCase()) && 
-      items.some((i: any) => i._id === item.itemId) && 
-      !rows.some((row) => row.itemId === item.itemId) // Ensure the item is not already selected
+      item.itemName.toLowerCase().includes(searchValue.toLowerCase()) &&
+      items.some((i: any) => i._id === item.itemId) &&
+      !rows.some((row) => row.itemId === item.itemId) &&
+      item.quantity !== item.returnQuantity
     );
   };
+  
   
 
   useEffect(() => {
@@ -596,7 +593,7 @@ console.log(selectedInvoice,"selected invoice")
                     handleRowChange(index, "quantity", e.target.value)
                   }
                 /> <br />
-                Stock : {row.itemSalesQuantity ? row.itemSalesQuantity : "0"}
+                Stock : {row.stock ? row.stock : "0"}
               </td>
               <td className="py-2.5 px-4 border-y border-tableBorder">
                 <input

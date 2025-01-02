@@ -35,6 +35,8 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
   const { request: NewAccount } = useApi("post", 5001);
   const [openingType, setOpeningType] = useState("Debit");
   const [formValues, setFormValues] = useState(initialFormValues);
+  console.log(formValues);
+
   const [isSubAccount, setIsSubAccount] = useState(false);
 
   const accountCategories = {
@@ -55,7 +57,7 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
     },
     Liability: {
       Liabilities: [
-        "Other Current Liability",
+        "Current Liability",
         "Credit Card",
         "Long Term Liability",
         "Other Liability",
@@ -67,56 +69,23 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
     },
   };
 
-
-  const headGroup = (accountSubhead: any) => {
+  const headGroup = (accountSubhead: string) => {
     for (const [group, heads] of Object.entries(accountCategories)) {
       for (const [head, subheads] of Object.entries(heads)) {
         if (subheads.includes(accountSubhead)) {
-          return { accountHead: head, accountGroup: group };
+          const accountGroup =
+            group === "Asset" || group === "Income" || group === "Equity"
+              ? "Asset"
+              : group === "Liability" || group === "Expenses"
+              ? "Liability"
+              : group;
+          return { accountHead: head, accountGroup };
         }
       }
     }
     return null;
   };
-
-  const openModal = () => {
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-    setFormValues(initialFormValues)
-    setIsSubAccount(false)
-  };
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formValues.accountSubhead) {
-      toast.error("Please select an account type.");
-      return;
-    }
-
-    const toastId = toast.loading('Adding new account...');
-
-    try {
-      const url = `${endponits.Add_NEW_ACCOUNT}`;
-      const body = formValues;
-      const { response, error } = await NewAccount(url, body);
-
-      if (!error && response) {
-        toast.dismiss(toastId);
-        closeModal();
-        fetchAllAccounts();
-      } else {
-        throw new Error(error?.response?.data?.message || 'Something went wrong');
-      }
-    } catch (error: any) {
-      toast.dismiss(toastId);
-      toast.error(
-        error.response?.data?.message || error.message || 'Failed to add account'
-      );
-    }
-  };
+  
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -172,12 +141,53 @@ function NewAccountModal({ fetchAllAccounts, accountData }: NewAccountModalProps
       }));
     }
   };
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setFormValues(initialFormValues)
+    setIsSubAccount(false)
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formValues.accountSubhead) {
+      toast.error("Please select an account type.");
+      return;
+    }
+
+    const toastId = toast.loading('Adding new account...');
+
+    try {
+      const url = `${endponits.Add_NEW_ACCOUNT}`;
+      const body = formValues;
+      const { response, error } = await NewAccount(url, body);
+
+      if (!error && response) {
+        toast.dismiss(toastId);
+        closeModal();
+        fetchAllAccounts();
+      } else {
+        throw new Error(error?.response?.data?.message || 'Something went wrong');
+      }
+    } catch (error: any) {
+      toast.dismiss(toastId);
+      toast.error(
+        error.response?.data?.message || error.message || 'Failed to add account'
+      );
+    }
+  };
+
+
   useEffect(() => {
     setFormValues((prevFormValues: any) => ({
       ...prevFormValues,
-      parentAccountId: "", 
+      parentAccountId: "",
     }));
-  }, [formValues.accountSubhead, isSubAccount]); 
+  }, [formValues.accountSubhead, isSubAccount]);
 
   return (
     <div>

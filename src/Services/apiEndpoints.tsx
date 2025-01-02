@@ -144,6 +144,7 @@ export const endponits = {
   GET_ALL_BILLS: `/get-all-Bills`,
   GET_A_BILL:`get-a-Bill`,
   GET_BILL_JOURNAL:`/bill-journal`,
+  GET_LAST_BILL_PREFIX:`get-last-bills-prefix`,
 
   // Purchase order
   ADD_PURCHASE_ORDER: `add-purchaseOrder`,
@@ -177,6 +178,7 @@ export const endponits = {
     ADD_EXPENSES:`add-expense`,
     GET_ALL_EXPENSE:`get-all-expense`,
     GET_A_EXPENSE:`get-one-expense`,
+    GET_LAST_EXPENSE_PREFIX: `get-last-expense-prefix`,
 
   //Expense > category
   ADD_EXPENSE_CATEGORY:`add-category`,

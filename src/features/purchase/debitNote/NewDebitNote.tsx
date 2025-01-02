@@ -46,6 +46,7 @@ const initialSupplierBillState: DebitNoteBody = {
       itemIgst: "",
       itemSgstAmount: "",
       itemCgstAmount: "",
+      stock:""
     },
   ],
 
@@ -228,15 +229,14 @@ const NewDebitNote = ({}: Props) => {
     "supplierDisplayName",
     searchValue
   );
-  console.log(errors,"error")
 
   const handleSave = async () => {
     const newErrors = { ...errors };
   
-    newErrors.billNumber = 
-    typeof debitNoteState.billNumber === "string" 
-      ? debitNoteState.billNumber.trim() === "" 
-      : false;
+    // newErrors.billNumber = 
+    // typeof debitNoteState.billNumber === "string" 
+    //   ? debitNoteState.billNumber.trim() === "" 
+    //   : false;
   
   
     if (debitNoteState.supplierId.trim() === "") {
@@ -292,6 +292,8 @@ const NewDebitNote = ({}: Props) => {
       console.log(error);
     }
   };
+
+  console.log(debitNoteState,"selectedBill")
 
   useEffect(() => {
     if (debitNoteState?.destinationOfSupply == "") {
@@ -437,7 +439,7 @@ const NewDebitNote = ({}: Props) => {
                       </p>
                     </div>
                   )}
-                  <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4">
+                  <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4">
                     <AddSupplierModal page="purchase" />
                   </div>
                 </div>
