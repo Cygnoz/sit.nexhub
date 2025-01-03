@@ -804,7 +804,7 @@ const AddItem = ({ }: Props) => {
                       </div>
 
                       {itemsData.taxRate
-                        .filter((tax: TaxRate) =>
+                        ?.filter((tax: TaxRate) =>
                           tax.taxName
                             .toLowerCase()
                             .includes(searchValueTaxRate.toLowerCase())

@@ -7,6 +7,7 @@ import PrintButton from "../../../../Components/PrintButton";
 import Pagination from "../../../../Components/Pagination/Pagination";
 import Eye from "../../../../assets/icons/Eye";
 import Trash2 from "../../../../assets/icons/Trash2"; // Include Trash Icon
+import Pen from "../../../../assets/icons/Pen";
 
 interface Column {
   id: string;
@@ -25,6 +26,7 @@ interface TableProps {
   searchableFields: string[];
   setColumns?: any;
   page?: any;
+  onEditClick?: (id: string) => void;
 }
 
 const PurchaseTable: React.FC<TableProps> = ({
@@ -38,6 +40,7 @@ const PurchaseTable: React.FC<TableProps> = ({
   loading,
   searchableFields,
   setColumns,
+  onEditClick
 }) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -139,6 +142,9 @@ const PurchaseTable: React.FC<TableProps> = ({
                       )
                   )}
                   <td className="py-3 px-4 border-b border-tableBorder flex items-center justify-center gap-2">
+                  <button onClick={() => onEditClick && onEditClick(item._id)}>
+                    <Pen color={"green"}/>
+                    </button>
                     <button onClick={() => onRowClick && onRowClick(item._id)}>
                       <Eye color={"#569FBC"} />
                     </button>
