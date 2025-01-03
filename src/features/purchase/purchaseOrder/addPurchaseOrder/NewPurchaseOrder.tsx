@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
 import CehvronDown from "../../../../assets/icons/CehvronDown";
 import NeworderTable from "./NeworderTable";
@@ -13,15 +13,13 @@ import NewCustomerModal from "../../../Customer/CustomerHome/NewCustomerModal";
 import { PurchaseOrder } from "./PurchaseOrderBody";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
-import toast  from "react-hot-toast";
+import toast from "react-hot-toast";
 import { SupplierResponseContext } from "../../../../context/ContextShare";
-import avatar from "../../../../assets/Images/avatar-3814049_1280.webp"
+import avatar from "../../../../assets/Images/avatar-3814049_1280.webp";
 
+type Props = { page?: string };
 
-
-type Props = {};
-
-const NewPurchaseOrder = ({}: Props) => {
+const NewPurchaseOrder = ({ page }: Props) => {
   const initialPurchaseOrderState: PurchaseOrder = {
     supplierId: "",
     supplierDisplayName: "",
@@ -81,7 +79,7 @@ const NewPurchaseOrder = ({}: Props) => {
     total: 0,
     grandTotal: 0,
   };
-  
+
   const [searchValue, setSearchValue] = useState<string>("");
   const [selected, setSelected] = useState<string | null>("organization");
   const [supplierData, setSupplierData] = useState<[]>([]);
@@ -93,15 +91,20 @@ const NewPurchaseOrder = ({}: Props) => {
   const [destinationList, setDestinationList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
   const [isInterState, setIsInterState] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: AllCustomer } = useApi("get", 5002);
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: newPurchaseOrderApi } = useApi("post", 5005);
+  const { request: getOnePurchaseOrder } = useApi("get", 5005);
+
+  const { id } = useParams();
+
   // const { request: getPrfix } = useApi("get", 5005);
   const { supplierResponse } = useContext(SupplierResponseContext)!;
-  const navigate =useNavigate()
+  const navigate = useNavigate();
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
   );
@@ -109,20 +112,17 @@ const NewPurchaseOrder = ({}: Props) => {
   const [purchaseOrderState, setPurchaseOrderState] = useState<PurchaseOrder>(
     initialPurchaseOrderState
   );
-  
-
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
-
   };
 
-  const handleColse=(()=>{
-    navigate("/purchase/purchase-order")
-    setPurchaseOrderState(initialPurchaseOrderState)
-  })
+  const handleColse = () => {
+    navigate("/purchase/purchase-order");
+    setPurchaseOrderState(initialPurchaseOrderState);
+  };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -141,9 +141,11 @@ const NewPurchaseOrder = ({}: Props) => {
     if (name === "expectedShipmentDate") {
       const selectedDate = new Date(value);
       const purchaseOrderDate = new Date(purchaseOrderState.purchaseOrderDate);
-  
+
       if (selectedDate < purchaseOrderDate) {
-        toast.error("Expected Shipment Date cannot be before the Purchase Order Date.");
+        toast.error(
+          "Expected Shipment Date cannot be before the Purchase Order Date."
+        );
         return;
       }
     }
@@ -185,12 +187,27 @@ const NewPurchaseOrder = ({}: Props) => {
     try {
       const { response, error } = await fetchFunction(url);
       if (!error && response) {
-        setData(response.data);
+        if (url.includes(endponits.GET_ONE_PURCHASE_ORDER)) {
+          setData(response.data);
+  
+          if (response.data.supplierId && supplierData) {
+            const supplier = supplierData.find(
+              (supplier:any) => supplier._id === response.data.supplierId
+            );
+            if (supplier) {
+              setSelecetdSupplier(supplier);
+            }
+          }
+        } else {
+          setData(response.data);
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+  
+  
 
   const fetchCountries = async () => {
     try {
@@ -281,47 +298,49 @@ const NewPurchaseOrder = ({}: Props) => {
   const calculateTotalAmount = () => {
     const {
       roundOff,
-      otherExpense ,
+      otherExpense,
       freight,
       itemTotalDiscount,
       totalTaxAmount,
-      subTotal ,
+      subTotal,
     } = purchaseOrderState;
 
     const totalAmount =
-    (  Number(subTotal) +
+      Number(subTotal) +
       Number(otherExpense) +
       Number(totalTaxAmount) +
-      Number(freight)) -
-      (Number(itemTotalDiscount) +
-      Number(roundOff))
-          return totalAmount.toFixed(2);
+      Number(freight) -
+      (Number(itemTotalDiscount) + Number(roundOff));
+    return totalAmount.toFixed(2);
   };
-
-  
 
   useEffect(() => {
     const newGrandTotal = calculateTotalAmount();
-  
+
     const {
       transactionDiscountType,
       transactionDiscount = 0,
       transactionDiscountAmount = 0,
     } = purchaseOrderState;
-  
+
     const transactionDiscountValueAMT =
       transactionDiscountType === "percentage"
         ? (transactionDiscount / 100) * Number(newGrandTotal)
-        : Number(transactionDiscount); 
-  
-    const roundedDiscountValue = Math.round(transactionDiscountValueAMT * 100) / 100;
-  
-    const updatedGrandTotal = Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
-      if (transactionDiscountAmount !== roundedDiscountValue || purchaseOrderState.grandTotal !== updatedGrandTotal) {
-      setPurchaseOrderState((prevState:any) => ({
+        : Number(transactionDiscount);
+
+    const roundedDiscountValue =
+      Math.round(transactionDiscountValueAMT * 100) / 100;
+
+    const updatedGrandTotal =
+      Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
+    if (
+      transactionDiscountAmount !== roundedDiscountValue ||
+      purchaseOrderState.grandTotal !== updatedGrandTotal
+    ) {
+      setPurchaseOrderState((prevState: any) => ({
         ...prevState,
         transactionDiscountAmount: roundedDiscountValue,
-        grandTotal: updatedGrandTotal.toFixed(2), 
+        grandTotal: updatedGrandTotal.toFixed(2),
       }));
     }
   }, [
@@ -334,9 +353,12 @@ const NewPurchaseOrder = ({}: Props) => {
     purchaseOrderState.itemTotalDiscount,
     purchaseOrderState.roundOff,
   ]);
-  
 
   const handleSave = async () => {
+    if (loading) return;
+
+    setLoading(true);
+
     try {
       const url = `${endponits.ADD_PURCHASE_ORDER}`;
       const { response, error } = await newPurchaseOrderApi(
@@ -344,19 +366,18 @@ const NewPurchaseOrder = ({}: Props) => {
         purchaseOrderState
       );
       if (!error && response) {
-        // console.log(response);
-
         toast.success(response.data.message);
         setTimeout(() => {
-          navigate("/purchase/purchase-order")
+          navigate("/purchase/purchase-order");
         }, 1000);
       } else {
         toast.error(error?.response.data.message);
       }
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   };
-
-
 
   useEffect(() => {
     if (purchaseOrderState?.destinationOfSupply == "") {
@@ -376,24 +397,25 @@ const NewPurchaseOrder = ({}: Props) => {
     purchaseOrderState?.destinationOfSupply,
   ]);
 
-
-
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
+    const onePO = `${endponits.GET_ONE_PURCHASE_ORDER}/${id}`;
 
+    if (page === "edit") {
+      fetchData(onePO, setPurchaseOrderState, getOnePurchaseOrder);
+    }
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
     fetchData(customerUrl, setCustomerData, AllCustomer);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
   }, []);
-  useEffect(() => {supplierResponse
+  useEffect(() => {
+    supplierResponse;
     handleDestination();
     handleplaceofSupply();
     fetchCountries();
   }, [oneOrganization, selecteSupplier]);
-
-
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -415,6 +437,8 @@ const NewPurchaseOrder = ({}: Props) => {
         (parseFloat(prevState.transactionDiscountAmount) || 0),
     }));
   }, [purchaseOrderState.transactionDiscountAmount]);
+
+  console.log(purchaseOrderState)
 
   return (
     <div className="px-8">
@@ -468,37 +492,49 @@ const NewPurchaseOrder = ({}: Props) => {
                         <SearchBar
                           searchValue={searchValue}
                           onSearchChange={setSearchValue}
-                          placeholder="Select Supplier"
+                          placeholder="Search Supplier"
                         />
                         {filteredSupplier.length > 0 ? (
                           filteredSupplier.map((supplier: any) => (
-                            <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer">
+                            <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer hover:bg-lightRose">
                               <div className="col-span-2 flex items-center justify-center">
                                 <img
-                                className="rounded-full "
-                                  src={supplier.supplierProfile?supplier.supplierProfile:avatar}
+                                  className="rounded-full "
+                                  src={
+                                    supplier.supplierProfile
+                                      ? supplier.supplierProfile
+                                      : avatar
+                                  }
                                   alt=""
                                 />
                               </div>
-                              <div className="col-span-10 flex cursor-pointer "  onClick={() => {
-                                    setPurchaseOrderState((prevState) => ({
-                                      ...prevState,
-                                      supplierId: supplier._id,
-                                    }));
-                                    setOpenDropdownIndex(null);
-                                    setSelecetdSupplier(supplier);
-                                  }}>
+                              <div
+                                className="col-span-10 flex cursor-pointer "
+                                onClick={() => {
+                                  setPurchaseOrderState((prevState) => ({
+                                    ...prevState,
+                                    supplierId: supplier._id,
+                                  }));
+                                  setOpenDropdownIndex(null);
+                                  setSelecetdSupplier(supplier);
+                                }}
+                              >
                                 <div
-                                 
+                                  className={` items-center space-y-1 ${
+                                    supplier.mobile
+                                      ? "justify-start"
+                                      : "flex justify-center"
+                                  }`}
                                 >
                                   <p className="font-bold text-sm">
                                     {supplier.supplierDisplayName}
                                   </p>
-                                  { supplier.mobile &&   <p className="text-xs text-gray-500">
-                                Phone: {supplier.mobile}
-                                  </p>}
+                                  {supplier.mobile && (
+                                    <p className="text-xs text-gray-500">
+                                      Phone: {supplier.mobile}
+                                    </p>
+                                  )}
                                 </div>
-                             
                               </div>
                             </div>
                           ))
@@ -509,7 +545,7 @@ const NewPurchaseOrder = ({}: Props) => {
                             </p>
                           </div>
                         )}
-                        <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4 cursor-pointer">
+                        <div className="hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg py-4 cursor-pointer hover:bg-lightRose">
                           <AddSupplierModal page="purchase" />
                         </div>
                       </div>
@@ -517,66 +553,72 @@ const NewPurchaseOrder = ({}: Props) => {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 mt-2 gap-4">
-                 {purchaseOrderState.supplierId &&
-                <>
-                    <div>
-                      <label className="block text-sm mb-1 text-labelColor">
-                        Destination Of Supply
-                      </label>
-                      <div className="relative w-full">
-                        <select
-                          onChange={handleChange}
-                          name="destinationOfSupply"
-                          value={purchaseOrderState.destinationOfSupply}
-                          className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        >
-                          <option value="">Select Destination Of Supply</option>
-                          {placeOfSupplyList &&
-                            placeOfSupplyList.map((item: any, index: number) => (
-                              <option
-                                key={index}
-                                value={item}
-                                className="text-gray"
-                              >
-                                {item}
-                              </option>
-                            ))}
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                          <CehvronDown color="gray" />
+                  {purchaseOrderState.supplierId && (
+                    <>
+                      <div>
+                        <label className="block text-sm mb-1 text-labelColor">
+                          Destination Of Supply
+                        </label>
+                        <div className="relative w-full">
+                          <select
+                            onChange={handleChange}
+                            name="destinationOfSupply"
+                            value={purchaseOrderState.destinationOfSupply}
+                            className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                          >
+                            <option value="">
+                              Select Destination Of Supply
+                            </option>
+                            {placeOfSupplyList &&
+                              placeOfSupplyList.map(
+                                (item: any, index: number) => (
+                                  <option
+                                    key={index}
+                                    value={item}
+                                    className="text-gray"
+                                  >
+                                    {item}
+                                  </option>
+                                )
+                              )}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <CehvronDown color="gray" />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm mb-1 text-labelColor">
-                        Source of Supply
-                      </label>
-                      <div className="relative w-full">
-                        <select
-                          onChange={handleChange}
-                          name="sourceOfSupply"
-                          value={purchaseOrderState.sourceOfSupply}
-                          className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                        >
-                          <option value="">Select Source Of Supply</option>
-                          {destinationList &&
-                            destinationList.map((item: any, index: number) => (
-                              <option
-                                key={index}
-                                value={item}
-                                className="text-gray"
-                              >
-                                {item}
-                              </option>
-                            ))}
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                          <CehvronDown color="gray" />
+                      <div>
+                        <label className="block text-sm mb-1 text-labelColor">
+                          Source of Supply
+                        </label>
+                        <div className="relative w-full">
+                          <select
+                            onChange={handleChange}
+                            name="sourceOfSupply"
+                            value={purchaseOrderState.sourceOfSupply}
+                            className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                          >
+                            <option value="">Select Source Of Supply</option>
+                            {destinationList &&
+                              destinationList.map(
+                                (item: any, index: number) => (
+                                  <option
+                                    key={index}
+                                    value={item}
+                                    className="text-gray"
+                                  >
+                                    {item}
+                                  </option>
+                                )
+                              )}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <CehvronDown color="gray" />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                </>
-                  }
+                    </>
+                  )}
                 </div>
                 <div className="grid grid-cols-12 gap-4 my-3">
                   <div className="col-span-5 ">
@@ -857,7 +899,7 @@ const NewPurchaseOrder = ({}: Props) => {
 
                   <input
                     type="date"
-                    value={purchaseOrderState.purchaseOrderDate }
+                    value={purchaseOrderState.purchaseOrderDate}
                     name="purchaseOrderDate"
                     onChange={handleChange}
                     className="border-inputBorder w-full text-sm border rounded p-2 h-9  text-zinc-400"
@@ -869,7 +911,7 @@ const NewPurchaseOrder = ({}: Props) => {
                   </label>
                   <input
                     type="date"
-                    value={purchaseOrderState.expectedShipmentDate  }
+                    value={purchaseOrderState.expectedShipmentDate}
                     name="expectedShipmentDate"
                     onChange={handleChange}
                     className="border-inputBorder w-full text-sm border rounded p-2 h-9  text-zinc-400"
@@ -890,21 +932,24 @@ const NewPurchaseOrder = ({}: Props) => {
                         Select Payment Terms
                       </option>
                       <option value="Net 15">Net 15</option>
-                  <option value="Net 30">Net 30</option>
-                  <option value="Net 45">Net 45</option>
-                  <option value="Net 60">Net 60</option>
-                  <option value="Pay Now">Pay Now</option>
-                  <option value="due on receipt">Due on Receipt</option>
-                  <option value="End of This Month">End of This Month</option>
-                  <option value="End of Next Month">End of Next Month</option>
-                  <option value="Custom">Custom</option>
+                      <option value="Net 30">Net 30</option>
+                      <option value="Net 45">Net 45</option>
+                      <option value="Net 60">Net 60</option>
+                      <option value="Pay Now">Pay Now</option>
+                      <option value="due on receipt">Due on Receipt</option>
+                      <option value="End of This Month">
+                        End of This Month
+                      </option>
+                      <option value="End of Next Month">
+                        End of Next Month
+                      </option>
+                      <option value="Custom">Custom</option>
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <CehvronDown color="gray" />
                     </div>
                   </div>
                 </div>
-               
               </div>
 
               <p className="font-bold mt-3">Add Item</p>
@@ -916,7 +961,7 @@ const NewPurchaseOrder = ({}: Props) => {
               />
               <br />
               <ViewDetails
-              page="purchaseOrder"
+                page="purchaseOrder"
                 purchaseOrderState={purchaseOrderState}
                 setPurchaseOrderState={setPurchaseOrderState}
               />
@@ -1169,7 +1214,7 @@ const NewPurchaseOrder = ({}: Props) => {
                       <p className="text-end">
                         {oneOrganization.baseCurrency}{" "}
                         {purchaseOrderState.transactionDiscountAmount
-                          ? purchaseOrderState.transactionDiscountAmount
+                          ?Number( purchaseOrderState.transactionDiscountAmount)
                           : "0.00"}
                       </p>
                     </p>
@@ -1185,7 +1230,10 @@ const NewPurchaseOrder = ({}: Props) => {
                   {" "}
                   <p className="text-end">
                     {" "}
-                    {oneOrganization.baseCurrency} {purchaseOrderState.grandTotal? purchaseOrderState.grandTotal:"0.00"}
+                    {oneOrganization.baseCurrency}{" "}
+                    {purchaseOrderState.grandTotal
+                      ?Number(purchaseOrderState.grandTotal)
+                      : "0.00"}
                   </p>
                 </div>
               </div>
@@ -1202,7 +1250,12 @@ const NewPurchaseOrder = ({}: Props) => {
           <PrinterIcon height={18} width={18} color="currentColor" />
           Print
         </Button>
-        <Button variant="primary" size="sm" type="submit" onClick={handleSave}>
+        <Button
+          variant="primary"
+          size="sm"
+          type="submit"
+          onClick={loading ? () => {} : handleSave}
+        >
           Save & Send
         </Button>{" "}
       </div>

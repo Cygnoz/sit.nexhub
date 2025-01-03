@@ -44,7 +44,7 @@ const Table = ({ accountData, searchValue, setSearchValue, loading }: TableProps
         account.description?.toLowerCase()?.startsWith(searchValueLower)
       );
     })
-    .reverse(); // Reverse the filtered data here
+    .reverse();
 
   const totalPages = Math.ceil(filteredAccounts.length / rowsPerPage);
   const paginatedData = filteredAccounts.slice(

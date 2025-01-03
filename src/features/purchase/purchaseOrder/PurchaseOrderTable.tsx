@@ -53,6 +53,10 @@ const PurchaseOrderTable = () => {
     navigate(`/purchase/purchase-order/view/${id}`);
   };
 
+  const handleEditClick = (id: string) => {
+    navigate(`/purchase/purchase-order/edit/${id}`);
+  };
+
   const renderColumnContent = (colId: string, item: any) => {
     if (colId === "Status") {
       return (
@@ -82,6 +86,7 @@ const PurchaseOrderTable = () => {
       loading={loading.skeleton}
       searchableFields={["purchaseOrder", "supplierDisplayName"]}
       setColumns={setColumns}
+      onEditClick={handleEditClick}
     />
   );
 };

@@ -12,6 +12,7 @@ import { endponits } from "../../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import SupplierView from "../../CommonComponents/SupplierView";
+import avatar from "../../../../assets/Images/avatar-3814049_1280.webp"
 
 interface UnpaidBill {
   billDate: string;
@@ -297,11 +298,11 @@ const NewPaymentMade = ({}: Props) => {
                       />
                       {filteredSupplier.length > 0 ? (
                         filteredSupplier.map((supplier: any) => (
-                          <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer">
+                          <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer hover:bg-lightRose">
                             <div className="col-span-2 flex items-center justify-center">
                             <img
                                 className="rounded-full "
-                                  src={supplier.supplierProfile?supplier.supplierProfile:"https://i.postimg.cc/sDnbrRWP/avatar-3814049-1280.webp"}
+                                  src={supplier.supplierProfile?supplier.supplierProfile:avatar}
                                   alt=""
                                 />
                             </div>
@@ -321,14 +322,22 @@ const NewPaymentMade = ({}: Props) => {
                                 setSelecetdSupplier(supplier);
                               }}
                             >
-                              <div>
-                                <p className="font-bold text-sm">
-                                  {supplier.supplierDisplayName}
-                                </p>
-                                <p className="text-xs text-gray-500">
-                                  Phone: {supplier.mobile}
-                                </p>
-                              </div>
+                              <div
+                            className={` items-center space-y-1 ${
+                              supplier.mobile
+                                ? "justify-start"
+                                : "flex justify-center"
+                            }`}
+                          >
+                            <p className="font-bold text-sm">
+                              {supplier.supplierDisplayName}
+                            </p>
+                            {supplier.mobile && (
+                              <p className="text-xs text-gray-500">
+                                Phone: {supplier.mobile}
+                              </p>
+                            )}
+                          </div>
                              
                             </div>
                           </div>
