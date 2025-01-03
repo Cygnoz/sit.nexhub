@@ -45,7 +45,7 @@ const initialSalesQuoteState: SalesQuote = {
       sgstAmount: "",
       igstAmount: "",
       vatAmount: "",
-      itemTotaltax: "",
+      itemTotalTax: "",
       discountType: "",
       discountAmount: "",
       amount: "",
@@ -451,7 +451,9 @@ console.log(customerData);
                   {openDropdownIndex === "customer" && (
                     <div
                       ref={dropdownRef}
+
                       className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2   space-y-1 max-w-80 max-h-80 overflow-y-scroll"
+
                       style={{ width: "80%" }}
                     >
                       <SearchBar

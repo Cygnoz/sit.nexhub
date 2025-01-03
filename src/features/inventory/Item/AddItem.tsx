@@ -79,10 +79,10 @@ const initialItemDataState = {
   baseCurrency: "",
   sellingPrice: "",
   saleMrp: "",
-  salesAccountId: "Sales",
+  salesAccountId: "",
   salesDescription: "",
   costPrice: "",
-  purchaseAccountId: "Cost of Goods Sold",
+  purchaseAccountId: "",
   purchaseDescription: "",
   preferredVendorId: "",
   taxRate: "",
@@ -243,6 +243,8 @@ const AddItem = ({ }: Props) => {
       reader.readAsDataURL(file);
     }
   };
+
+  
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
@@ -1546,19 +1548,15 @@ const AddItem = ({ }: Props) => {
                     onChange={handleInputChange}
                     value={initialItemData.purchaseAccountId || ""}
                   >
-                    <option defaultChecked value="Cost of Goods Sold" hidden>
-                      Cost of Goods Sold
+                    <option value="" hidden>
+                      Select account
                     </option>
                     {allAccounts
                       ?.filter(
                         (item: { accountSubhead: string }) =>
-                          item.accountSubhead === "Expense" ||
-                          item.accountSubhead === "Cost of Goods Sold"
+                          item.accountSubhead === "Expense" || item.accountSubhead === "Cost of Goods Sold"
                       )
-                      .sort((a: { accountName: string }, b: { accountName: string }) =>
-                        a.accountName.localeCompare(b.accountName)
-                      ) // Sort alphabetically by accountName
-                      .map((item: { _id: string; accountName: string }) => (
+                      ?.map((item: { _id: string; accountName: string }) => (
                         <option key={item._id} value={item._id}>
                           {item.accountName}
                         </option>
@@ -1577,15 +1575,15 @@ const AddItem = ({ }: Props) => {
 
 
 
+
             </div>
           </div>
 
 
 
           <div className="w-1/2">
-            <p className="text-textColor text-base font-semibold mt-2">
-              Sales Information
-            </p>
+            <p className="text-textColor text-base font-semibold mt-2">Sales Information</p>
+
             <div className="flex gap-4 my-1">
               {/* Selling Price Section */}
               <div className="relative w-1/2 mt-0.5">
@@ -1630,7 +1628,6 @@ const AddItem = ({ }: Props) => {
               </div>
             </div>
 
-
             {/* Sales Account Dropdown */}
             <div className="relative mt-4">
               <label
@@ -1649,8 +1646,8 @@ const AddItem = ({ }: Props) => {
                   onChange={handleInputChange}
                   value={initialItemData.salesAccountId || ""}
                 >
-                  <option defaultChecked value="Sales" hidden>
-                    Sales
+                  <option value="" hidden>
+                    Select account
                   </option>
                   {allAccounts
                     ?.filter(
@@ -1677,8 +1674,8 @@ const AddItem = ({ }: Props) => {
                 </div>
               )}
             </div>
-
           </div>
+
 
         </div>
 

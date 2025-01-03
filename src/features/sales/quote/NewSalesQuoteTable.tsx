@@ -25,7 +25,7 @@ type Row = {
   sgstAmount: string;
   igstAmount: string;
   vatAmount: string | number;
-  itemTotaltax: string;
+  itemTotalTax: string;
   discountType: string;
   discountAmount: string;
   amount: string;
@@ -74,7 +74,7 @@ const NewSalesQuoteTable = ({
       sgstAmount: "",
       igstAmount: "",
       vatAmount: 0,
-      itemTotaltax: "",
+      itemTotalTax: "",
       discountType: "Percentage",
       discountAmount: "",
       amount: "",
@@ -127,7 +127,7 @@ const NewSalesQuoteTable = ({
       sgstAmount: "",
       igstAmount: "",
       vatAmount: "",
-      itemTotaltax: "",
+      itemTotalTax: "",
       discountType: "Percentage",
       discountAmount: "",
       amount: "",
@@ -415,7 +415,7 @@ const NewSalesQuoteTable = ({
           sgstAmount: "",
           igstAmount: "",
           vatAmount: "",
-          itemTotaltax: "",
+          itemTotalTax: "",
           discountType: "Percentage",
           discountAmount: "",
           amount: "0",
@@ -501,13 +501,13 @@ const NewSalesQuoteTable = ({
       const itemSGST = parseFloat(item.sgstAmount) || 0;
       const itemIGST = parseFloat(item.igstAmount) || 0;
 
-      const itemTotaltax = isIntraState ? itemIGST : itemCGST + itemSGST;
-      // const totalAmount = (parseFloat(item.amount) || 0) + (itemTotaltax) || 0;
+      const itemTotalTax = isIntraState ? itemIGST : itemCGST + itemSGST;
+      // const totalAmount = (parseFloat(item.amount) || 0) + (itemTotalTax) || 0;
       // console.log(totalAmount);
 
       return {
         ...item,
-        itemTotaltax: itemTotaltax.toFixed(2),
+        itemTotalTax: itemTotalTax.toFixed(2),
         // itemAmount: totalAmount.toFixed(2),
       };
     });
@@ -522,7 +522,7 @@ const NewSalesQuoteTable = ({
       totalTax: (isIntraState
         ? totalIGST
         : totalSGST + totalCGST).toFixed(2),
-      itemTotaltax: (isIntraState
+      itemTotalTax: (isIntraState
         ? totalIGST
         : totalSGST + totalCGST).toFixed(2),
       items: updatedItems,
