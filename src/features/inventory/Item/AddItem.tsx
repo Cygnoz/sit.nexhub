@@ -244,7 +244,7 @@ const AddItem = ({ }: Props) => {
     }
   };
 
-  
+
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
@@ -1428,6 +1428,7 @@ const AddItem = ({ }: Props) => {
               Purchase Information
             </p>
             <div className="grid grid-cols-2 gap-4">
+              {/* Cost Price Section */}
               <div className="relative mt-1.5">
                 <label
                   className="text-slate-600 flex text-sm items-center gap-2"
@@ -1436,7 +1437,7 @@ const AddItem = ({ }: Props) => {
                   Cost Price
                 </label>
                 <div className="flex">
-                  <div className="w-16 text-sm  mt-0.5 rounded-l-md text-start bg-white text-zinc-400 border border-inputBorder h-10 items-center justify-center flex">
+                  <div className="w-16 text-sm mt-0.5 rounded-l-md text-start bg-white text-zinc-400 border border-inputBorder h-10 items-center justify-center flex">
                     {itemsData?.organization?.baseCurrency?.toUpperCase() || "INR"}
                   </div>
                   <input
@@ -1446,7 +1447,18 @@ const AddItem = ({ }: Props) => {
                     placeholder="Enter Price"
                     name="costPrice"
                     value={initialItemData.costPrice}
-                    onChange={handleInputChange}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      if (e.target.value) {
+                        // Automatically set "Cost of Goods Sold" as the default selection
+                        setInitialItemData((prevState) => ({
+                          ...prevState,
+                          purchaseAccountId: allAccounts.find(
+                            (item: any) => item.accountSubhead === "Cost of Goods Sold"
+                          )?._id || "",
+                        }));
+                      }
+                    }}
                     onWheel={(e) => e.currentTarget.blur()}
                   />
                 </div>
@@ -1554,7 +1566,8 @@ const AddItem = ({ }: Props) => {
                     {allAccounts
                       ?.filter(
                         (item: { accountSubhead: string }) =>
-                          item.accountSubhead === "Expense" || item.accountSubhead === "Cost of Goods Sold"
+                          item.accountSubhead === "Expense" ||
+                          item.accountSubhead === "Cost of Goods Sold"
                       )
                       ?.map((item: { _id: string; accountName: string }) => (
                         <option key={item._id} value={item._id}>
@@ -1572,7 +1585,6 @@ const AddItem = ({ }: Props) => {
                   </div>
                 )}
               </div>
-
 
 
 
@@ -1601,7 +1613,18 @@ const AddItem = ({ }: Props) => {
                     placeholder="Enter Price"
                     name="sellingPrice"
                     value={initialItemData.sellingPrice}
-                    onChange={handleInputChange}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      if (e.target.value) {
+                        // Automatically set "Sales" as the default selection
+                        setInitialItemData((prevState) => ({
+                          ...prevState,
+                          salesAccountId: allAccounts.find(
+                            (item: any) => item.accountName === "Sales"
+                          )?._id || "",
+                        }));
+                      }
+                    }}
                   />
                 </div>
               </div>
