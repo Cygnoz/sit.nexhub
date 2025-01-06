@@ -5,7 +5,6 @@ import { TableResponseContext } from "../../../context/ContextShare";
 import { endponits } from "../../../Services/apiEndpoints";
 import DotIcon from "../../../assets/icons/DotIcon";
 import PurchaseTable from "../CommonComponents/PurchaseTable/PurchaseTable";
-import DateFormat from "../../../Components/DateFormat/DateFormta";
 
 const Table = () => {
   const [columns,setColumns] = useState([
@@ -65,9 +64,7 @@ const Table = () => {
        </div>
       );
     }
-    if (colId === "billDate" || colId === "dueDate") {
-      return <DateFormat date={item[colId]} />;
-    }
+   
     return item[colId as keyof typeof item];
   };
 
