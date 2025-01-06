@@ -791,6 +791,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                       <option value="Due on Receipt" selected>Due on Receipt</option>
                       <option value="Due end of the month">Due end of the month</option>
                       <option value="Due end of next month">Due end of next month</option>
+                      <option value="Pay Now">Pay Now</option>
                       <option value="Net 15">Net 15</option>
                       <option value="Net 30">Net 30</option>
                       <option value="Net 45">Net 45</option>

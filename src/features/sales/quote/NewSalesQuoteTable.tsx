@@ -31,6 +31,7 @@ type Row = {
   amount: string;
   itemAmount: string;
   itemStock: string;
+  salesAccountId?:string;
 };
 
 type Props = {
@@ -80,6 +81,7 @@ const NewSalesQuoteTable = ({
       amount: "",
       itemAmount: "",
       itemStock: "",
+      salesAccountId:""
     },
   ]);
 
@@ -185,6 +187,7 @@ const NewSalesQuoteTable = ({
     newRows[index].taxPreference = item.taxPreference;
     newRows[index].taxGroup = item.taxRate;
     newRows[index].itemStock = item.currentStock;
+    newRows[index].salesAccountId = item.salesAccountId;
   
     const sellingPrice = parseFloat(newRows[index].sellingPrice);
     const discountedPrice = calculateDiscountPrice(

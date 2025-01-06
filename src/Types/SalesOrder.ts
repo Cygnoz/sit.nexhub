@@ -33,6 +33,7 @@ export interface SalesOrder {
     igstAmount: string;
     vatAmount: string;
     itemTotalTax: string;
+    salesAccountId:string;
   }>;
   totalItemDiscount:string;
   note: string;

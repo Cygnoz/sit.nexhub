@@ -39,6 +39,7 @@ const SalesRoutes: RouteObject[] = [
   { path: "/sales/salesreturn", element: <SalesReturn/> },
   { path: "/sales/newsalesreturn", element: <NewSalesReturn/> },
 
+  { path: "/sales/salesorder/edit/:id", element: <NewSalesOrder page="edit" /> },
 
 ];
 
