@@ -13,6 +13,7 @@ import useApi from "../../../Hooks/useApi";
 import { SupplierResponseContext } from "../../../context/ContextShare";
 import DebitNoteTable from "./DebitNoteTable";
 import toast from "react-hot-toast";
+import avatar from "../../../assets/Images/avatar-3814049_1280.webp";
 
 const initialSupplierBillState: DebitNoteBody = {
   organizationId: "",
@@ -46,7 +47,7 @@ const initialSupplierBillState: DebitNoteBody = {
       itemIgst: "",
       itemSgstAmount: "",
       itemCgstAmount: "",
-      stock:""
+      stock: "",
     },
   ],
 
@@ -84,16 +85,16 @@ const NewDebitNote = ({}: Props) => {
   const [debitNoteState, setDebitNoteState] = useState<DebitNoteBody>(
     initialSupplierBillState
   );
-  const [errors,setErrors]=useState({
-    supplierInvoiceNum:false,
-    debitDate:false,
-    supplierId:false,
-    sourceOfSupply:false,
-    destinationOfSupply:false,
-    paymentMode:false,
-    depositTo:false,
-    itemTable:false,
-  })
+  const [errors, setErrors] = useState({
+    supplierInvoiceNum: false,
+    debitDate: false,
+    supplierId: false,
+    sourceOfSupply: false,
+    destinationOfSupply: false,
+    paymentMode: false,
+    depositTo: false,
+    itemTable: false,
+  });
 
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: getCountries } = useApi("get", 5004);
@@ -222,7 +223,6 @@ const NewDebitNote = ({}: Props) => {
       console.log("No country selected");
     }
   };
-  
 
   const filteredSupplier = filterByDisplayName(
     supplierData,
@@ -232,25 +232,24 @@ const NewDebitNote = ({}: Props) => {
 
   const handleSave = async () => {
     const newErrors = { ...errors };
-  
-    // newErrors.supplierInvoiceNum = 
-    // typeof debitNoteState.supplierInvoiceNum === "string" 
-    //   ? debitNoteState.supplierInvoiceNum.trim() === "" 
+
+    // newErrors.supplierInvoiceNum =
+    // typeof debitNoteState.supplierInvoiceNum === "string"
+    //   ? debitNoteState.supplierInvoiceNum.trim() === ""
     //   : false;
-  
-  
+
     if (debitNoteState.supplierId.trim() === "") {
       newErrors.supplierId = true;
     } else {
       newErrors.supplierId = false;
     }
-  
+
     if (debitNoteState.destinationOfSupply.trim() === "") {
       newErrors.destinationOfSupply = true;
     } else {
       newErrors.destinationOfSupply = false;
     }
-  
+
     if (debitNoteState.sourceOfSupply.trim() === "") {
       newErrors.sourceOfSupply = true;
     } else {
@@ -271,7 +270,7 @@ const NewDebitNote = ({}: Props) => {
     } else {
       newErrors.depositTo = false;
     }
-  
+
     if (Object.values(newErrors).some((error) => error)) {
       setErrors(newErrors);
       toast.error("Fill the required fields");
@@ -292,7 +291,6 @@ const NewDebitNote = ({}: Props) => {
       console.log(error);
     }
   };
-
 
   useEffect(() => {
     if (debitNoteState?.destinationOfSupply == "") {
@@ -395,13 +393,17 @@ const NewDebitNote = ({}: Props) => {
                   />
                   {filteredSupplier?.length > 0 ? (
                     filteredSupplier?.map((supplier: any) => (
-                      <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer">
+                      <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer hover:bg-lightRose">
                         <div className="col-span-2 flex items-center justify-center">
-                        <img
-                                className="rounded-full "
-                                  src={supplier.supplierProfile?supplier.supplierProfile:"https://i.postimg.cc/sDnbrRWP/avatar-3814049-1280.webp"}
-                                  alt=""
-                                />
+                          <img
+                            className="rounded-full "
+                            src={
+                              supplier.supplierProfile
+                                ? supplier.supplierProfile
+                                : avatar
+                            }
+                            alt=""
+                          />
                         </div>
                         <div
                           className="col-span-10 flex cursor-pointer "
@@ -420,13 +422,21 @@ const NewDebitNote = ({}: Props) => {
                             setSelectedBill([]);
                           }}
                         >
-                          <div>
+                          <div
+                            className={` items-center space-y-1 ${
+                              supplier.mobile
+                                ? "justify-start"
+                                : "flex justify-center"
+                            }`}
+                          >
                             <p className="font-bold text-sm">
                               {supplier.supplierDisplayName}
                             </p>
-                            <p className="text-xs text-gray-500">
-                              Phone: {supplier.mobile}
-                            </p>
+                            {supplier.mobile && (
+                              <p className="text-xs text-gray-500">
+                                Phone: {supplier.mobile}
+                              </p>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -438,7 +448,7 @@ const NewDebitNote = ({}: Props) => {
                       </p>
                     </div>
                   )}
-                  <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4">
+                  <div className="hover:bg-lightRose cursor-pointer border border-slate-400 rounded-lg py-4">
                     <AddSupplierModal page="purchase" />
                   </div>
                 </div>
@@ -490,7 +500,8 @@ const NewDebitNote = ({}: Props) => {
                 </div>
                 <div>
                   <label className="block text-sm mb-1 text-labelColor">
-                    Destination of Supply<span className="text-[#bd2e2e] ">*</span>
+                    Destination of Supply
+                    <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <select
@@ -559,39 +570,41 @@ const NewDebitNote = ({}: Props) => {
                       allBills?.allBills?.filter(
                         (bill: any) => bill.supplierId === selecteSupplier?._id
                       ).length > 0 ? (
-                        allBills?.allBills?.filter(
-                          (bill: any) =>
-                            bill.supplierId === selecteSupplier?._id
-                        )?.map((bill: any) => (
-                          <div
-                            key={bill._id}
-                            className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                          >
+                        allBills?.allBills
+                          ?.filter(
+                            (bill: any) =>
+                              bill.supplierId === selecteSupplier?._id
+                          )
+                          ?.map((bill: any) => (
                             <div
-                              className="flex cursor-pointer"
-                              onClick={() => {
-                                setDebitNoteState((prevState) => ({
-                                  ...prevState,
-                                  billId: bill._id,
-                                  supplierInvoiceNum: bill.supplierInvoiceNum,
-                                  billDate: bill.billDate,
-                                  orderNumber: bill.orderNumber,
-                                }));
-                                setOpenDropdownIndex(null);
-                                setSelectedBill(bill);
-                              }}
+                              key={bill._id}
+                              className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
                             >
-                              <div>
-                                <p className="font-bold text-sm">
-                                  {bill.supplierInvoiceNum}
-                                </p>
-                                <p className="text-xs text-gray-500">
-                                  Supplier: {bill.supplierDisplayName}
-                                </p>
+                              <div
+                                className="flex cursor-pointer"
+                                onClick={() => {
+                                  setDebitNoteState((prevState) => ({
+                                    ...prevState,
+                                    billId: bill._id,
+                                    supplierInvoiceNum: bill.supplierInvoiceNum,
+                                    billDate: bill.billDate,
+                                    orderNumber: bill.orderNumber,
+                                  }));
+                                  setOpenDropdownIndex(null);
+                                  setSelectedBill(bill);
+                                }}
+                              >
+                                <div>
+                                  <p className="font-bold text-sm">
+                                    {bill.supplierInvoiceNum}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    Supplier: {bill.supplierDisplayName}
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))
+                          ))
                       ) : (
                         <div className="text-center border-slate-400 border rounded-lg">
                           <p className="text-[red] text-sm py-4">
@@ -657,7 +670,7 @@ const NewDebitNote = ({}: Props) => {
               <label className="block text-sm mb-1 text-labelColor">
                 Order Number
                 <input
-                disabled
+                  disabled
                   name="orderNumber"
                   value={debitNoteState.orderNumber}
                   onChange={handleInputChange}
@@ -717,12 +730,16 @@ const NewDebitNote = ({}: Props) => {
                 >
                   <option value="">Select Account</option>
                   {accounts
-                      ?.filter((item: any) => item.accountSubhead === "Bank" || item.accountSubhead=="Cash")
-                      ?.map((item: any) => (
-                        <option key={item._id} value={item._id}>
-                          {item.accountName}
-                        </option>
-                      ))}
+                    ?.filter(
+                      (item: any) =>
+                        item.accountSubhead === "Bank" ||
+                        item.accountSubhead == "Cash"
+                    )
+                    ?.map((item: any) => (
+                      <option key={item._id} value={item._id}>
+                        {item.accountName}
+                      </option>
+                    ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <CehvronDown color="gray" />
@@ -916,7 +933,11 @@ const NewDebitNote = ({}: Props) => {
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}
-              <Button variant="secondary" size="sm" onClick={()=>navigate("/purchase/debitNote")}>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => navigate("/purchase/debitNote")}
+              >
                 Cancel
               </Button>
               <Button variant="secondary" size="sm">

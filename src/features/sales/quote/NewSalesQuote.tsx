@@ -490,7 +490,6 @@ console.log(customerData);
                                   Phone: {customer.mobile}
                                 </p>
                               </div>
-
                             </div>
                           </div>
                         ))
