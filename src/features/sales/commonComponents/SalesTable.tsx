@@ -64,7 +64,7 @@ const SalesTable = ({ page }: Props) => {
       }
       console.log(response.data);
       if (page === "invoice") {
-        setData(response.data.updatedInvoices);
+        setData(response.data);
       } else {
         setData(response.data);
       }
