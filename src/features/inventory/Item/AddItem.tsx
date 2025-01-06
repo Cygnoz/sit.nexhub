@@ -576,7 +576,7 @@ const AddItem = ({ }: Props) => {
                       className="text-slate-600 text-sm"
                       htmlFor="itemName"
                     >
-                      Name
+                      Name <span className="text-[#bd2e2e] ">*</span>
                       <input
                         className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start  bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                         placeholder="Enter Name"
@@ -775,7 +775,7 @@ const AddItem = ({ }: Props) => {
                     htmlFor="taxRate-input"
                     className="text-slate-600 text-sm flex items-center gap-2"
                   >
-                    Tax Rate
+                    Tax Rate <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full ">
                     <input
