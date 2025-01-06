@@ -648,15 +648,19 @@ const NewOrderTable = ({
                     )}
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input
-                    type="text"
-                    placeholder="0"
-                    className="w-[50px]  focus:outline-none text-center"
-                    value={row.itemQuantity || ""}
-                    onChange={(e) =>
-                      handleRowChange(index, "itemQuantity", e.target.value)
-                    }
-                  />
+                <input
+  type="text"
+  placeholder="0"
+  className="w-[50px] focus:outline-none text-center"
+  value={row.itemQuantity || ""}
+  onChange={(e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) {
+      handleRowChange(index, "itemQuantity", value);
+    }
+  }}
+/>
+
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input
@@ -664,9 +668,12 @@ const NewOrderTable = ({
                     placeholder="0"
                     className="w-[50px]  focus:outline-none text-center"
                     value={row.itemCostPrice}
-                    onChange={(e) =>
-                      handleRowChange(index, "itemCostPrice", e.target.value)
-                    }
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (/^\d*$/.test(value)) {
+                        handleRowChange(index, "itemCostPrice", value);
+                      }
+                    }}
                     
                   />
                 </td>
