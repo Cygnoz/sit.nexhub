@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Button from "../../../Components/Button";
 import SearchBar from "../../../Components/SearchBar";
 import CehvronDown from "../../../assets/icons/CehvronDown";
@@ -37,7 +37,7 @@ const initialSalesQuoteState: SalesOrder = {
   deliveryMethod: "",
   expectedShipmentDate: "",
 
-  taxPreference:"Taxable",
+  taxPreference: "Taxable",
 
   items: [
     {
@@ -59,7 +59,7 @@ const initialSalesQuoteState: SalesOrder = {
       discountAmount: "",
       amount: "",
       itemAmount: "",
-      salesAccountId:""
+      salesAccountId: ""
     },
   ],
 
@@ -89,7 +89,7 @@ const initialSalesQuoteState: SalesOrder = {
   totalAmount: ""
 };
 
-const NewSalesOrder = ({ }: Props) => {
+const NewSalesOrder = ({ page }: Props) => {
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(null);
@@ -329,21 +329,31 @@ const NewSalesOrder = ({ }: Props) => {
   const fetchData = async (
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
-    fetchFunction: (url: string) => Promise<any>
+    fetchFunction: (url: string) => Promise<any>,
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
+
       if (!error && response) {
+
         setData(response.data);
+
+      } else {
+        console.error("Error in response or no data received:", error);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } catch (err) {
+      console.error("Error fetching data:", err);
     }
   };
 
+
+  console.log(selectedCustomer, "customer")
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
     const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
+    const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
+
+    fetchData(customerUrl, setCustomerData, AllCustomer);
     fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
     handleplaceofSupply();
@@ -376,7 +386,6 @@ const NewSalesOrder = ({ }: Props) => {
     fetchData(customerUrl, setCustomerData, AllCustomer);
   };
 
-
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -400,6 +409,37 @@ const NewSalesOrder = ({ }: Props) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openDropdownIndex]);
+
+  const { id } = useParams();
+  const { request: getOneSalesOrder } = useApi("get", 5007);
+
+  useEffect(() => {
+
+    const fetchInitialData = async () => {
+      const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
+      const onePO = `${endponits.GET_ONE_SALES_ORDER}/${id}`;
+
+      await fetchData(customerUrl, setCustomerData, AllCustomer);
+
+      if (page === "edit") {
+        await fetchData(onePO, setSalesOrderState, getOneSalesOrder);
+      }
+    };
+
+    fetchInitialData();
+  }, [page, id]);
+
+
+  useEffect(() => {
+    if (salesOrderState.customerId && customerData) {
+      const customer = customerData.find(
+        (customer: any) => customer._id === salesOrderState.customerId
+      );
+      if(customer){
+        setSelecetdCustomer(customer)
+      }
+    }
+  },[salesOrderState])
 
   const { request: newSalesOrdereApi } = useApi("post", 5007);
   const handleSave = async () => {
@@ -428,7 +468,7 @@ const NewSalesOrder = ({ }: Props) => {
         </Link>
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
-            Create Sales Order
+            {page === "edit" ? "Edit" : "Create"} Sales Order
           </h4>
         </div>
       </div>
@@ -656,7 +696,7 @@ const NewSalesOrder = ({ }: Props) => {
                     </div>
                   )}
                 </div> */}
-                     <div className="col-span-5">
+                <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Delivery Method
                   </label>
@@ -705,7 +745,7 @@ const NewSalesOrder = ({ }: Props) => {
                     </div>
                   </div>
                 </div>
-           
+
               </div>
 
               <div className="mt-9">
