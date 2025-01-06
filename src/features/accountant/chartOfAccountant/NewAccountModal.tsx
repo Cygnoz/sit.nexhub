@@ -9,7 +9,7 @@ import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import toast from 'react-hot-toast';
 import CehvronDown from "../../../assets/icons/CehvronDown";
-// import PencilEdit from "../../../assets/icons/PencilEdit";
+import PencilEdit from "../../../assets/icons/PencilEdit";
 
 interface NewAccountModalProps {
   fetchAllAccounts: () => void;
@@ -239,7 +239,7 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
     <div>
       {page === "Edit" ?
         <div onClick={openModal} className="cursor-pointer">
-          {/* <PencilEdit color={'#0B9C56'} /> */}
+          <PencilEdit color={'#0B9C56'} />
         </div>
         :
         <Button onClick={openModal} variant="primary">
