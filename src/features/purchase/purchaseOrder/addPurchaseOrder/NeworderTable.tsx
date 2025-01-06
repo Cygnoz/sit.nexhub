@@ -117,7 +117,6 @@ const NewOrderTable = ({
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
-    console.log(item, "item szdxfcgvhb");
     const newRows = [...rows];
     newRows[index].itemName = item.itemName;
     newRows[index].itemImage = item.itemImage;
@@ -132,6 +131,8 @@ const NewOrderTable = ({
     const costPrice = Number(newRows[index].itemCostPrice);
     const itemDiscount = Number(newRows[index].itemDiscount);
     const itemDiscountType = newRows[index].itemDiscountType;
+
+    console.log(newRows[index].itemDiscountType, "type");
 
     const discountedPrice = calculateDiscountPrice(
       costPrice,
@@ -483,7 +484,7 @@ const NewOrderTable = ({
   useEffect(() => {
     const updatedRows = rows?.map((row) => ({
       ...row,
-      itemDiscountType: "",
+      itemDiscountType: "percentage",
       itemDiscount: 0,
     }));
 
