@@ -57,9 +57,9 @@ const NewPurchaseOrder = ({ page }: Props) => {
         taxPreference: "",
       },
     ],
-    otherExpense: 0,
+    otherExpenseAmount: 0,
     otherExpenseReason: "",
-    freight: 0,
+    freightAmount: 0,
     vehicleNo: "",
     addNotes: "",
     termsAndConditions: "",
@@ -72,7 +72,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
     vat: 0,
     itemTotalDiscount: 0,
     totalTaxAmount: 0,
-    roundOff: 0,
+    roundOffAmount: 0,
     transactionDiscountType: "percentage",
     transactionDiscount: 0,
     transactionDiscountAmount: 0,
@@ -182,32 +182,45 @@ const NewPurchaseOrder = ({ page }: Props) => {
   const fetchData = async (
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
-    fetchFunction: (url: string) => Promise<any>
+    fetchFunction: (url: string) => Promise<any>,
+    supplierData?: any[],
+    setSelectedSupplier?: React.Dispatch<React.SetStateAction<any>>,
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
+  
       if (!error && response) {
         if (url.includes(endponits.GET_ONE_PURCHASE_ORDER)) {
-          setData(response.data);
+          // Safely merge previous data
+          setData((prevData:any) => ({
+            ...prevData,
+            ...response.data,
+          }));
   
+          // Handle supplier selection if data exists
           if (response.data.supplierId && supplierData) {
             const supplier = supplierData.find(
-              (supplier:any) => supplier._id === response.data.supplierId
+              (supplier: any) => supplier._id === response.data.supplierId
             );
-            if (supplier) {
-              setSelecetdSupplier(supplier);
+  
+            if (supplier && setSelectedSupplier) {
+              setSelectedSupplier(supplier);
             }
           }
         } else {
+          // Directly set the new data
           setData(response.data);
         }
+      } else {
+        console.error("Error in response or no data received:", error);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } catch (err) {
+      console.error("Error fetching data:", err);
     }
   };
   
   
+  console.log(selecteSupplier)
 
   const fetchCountries = async () => {
     try {
@@ -297,9 +310,9 @@ const NewPurchaseOrder = ({ page }: Props) => {
 
   const calculateTotalAmount = () => {
     const {
-      roundOff,
-      otherExpense,
-      freight,
+      roundOffAmount,
+      otherExpenseAmount,
+      freightAmount,
       itemTotalDiscount,
       totalTaxAmount,
       subTotal,
@@ -307,10 +320,10 @@ const NewPurchaseOrder = ({ page }: Props) => {
 
     const totalAmount =
       Number(subTotal) +
-      Number(otherExpense) +
+      Number(otherExpenseAmount) +
       Number(totalTaxAmount) +
-      Number(freight) -
-      (Number(itemTotalDiscount) + Number(roundOff));
+      Number(freightAmount) -
+      (Number(itemTotalDiscount) + Number(roundOffAmount));
     return totalAmount.toFixed(2);
   };
 
@@ -347,11 +360,11 @@ const NewPurchaseOrder = ({ page }: Props) => {
     purchaseOrderState.transactionDiscount,
     purchaseOrderState.transactionDiscountType,
     purchaseOrderState.subTotal,
-    purchaseOrderState.otherExpense,
+    purchaseOrderState.otherExpenseAmount,
     purchaseOrderState.totalTaxAmount,
-    purchaseOrderState.freight,
+    purchaseOrderState.freightAmount,
     purchaseOrderState.itemTotalDiscount,
-    purchaseOrderState.roundOff,
+    purchaseOrderState.roundOffAmount,
   ]);
 
   const handleSave = async () => {
@@ -401,15 +414,42 @@ const NewPurchaseOrder = ({ page }: Props) => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
-    const onePO = `${endponits.GET_ONE_PURCHASE_ORDER}/${id}`;
 
-    if (page === "edit") {
-      fetchData(onePO, setPurchaseOrderState, getOnePurchaseOrder);
-    }
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
     fetchData(customerUrl, setCustomerData, AllCustomer);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
   }, []);
+
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
+      const onePO = `${endponits.GET_ONE_PURCHASE_ORDER}/${id}`;
+  
+      await fetchData(supplierUrl, setSupplierData, AllSuppliers);
+  
+      if (page === "edit") {
+        await fetchData(onePO, setPurchaseOrderState, getOnePurchaseOrder);
+      }
+    };
+  
+    fetchInitialData();
+  }, [page, id]);
+  useEffect(() => {
+    if (purchaseOrderState && supplierData) {
+      const { supplierId } = purchaseOrderState;
+      if (supplierId) {
+        const supplier = supplierData.find(
+          (supplier: any) => supplier._id === supplierId
+        );
+        if (supplier) {
+          setSelecetdSupplier(supplier);
+        }
+      }
+    }
+  }, [purchaseOrderState, supplierData]);
+    
+
   useEffect(() => {
     supplierResponse;
     handleDestination();
@@ -450,7 +490,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
         </Link>
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
-            New Purchase Order
+          { page=="edit"?"Edit": "New"} Purchase Order
           </h4>
         </div>
       </div>
@@ -1138,8 +1178,8 @@ const NewPurchaseOrder = ({ page }: Props) => {
                     {" "}
                     <p className="text-end">
                       {oneOrganization?.baseCurrency}{" "}
-                      {purchaseOrderState.otherExpense
-                        ? purchaseOrderState.otherExpense
+                      {purchaseOrderState.otherExpenseAmount
+                        ? purchaseOrderState.otherExpenseAmount
                         : "0.00"}
                     </p>
                   </div>
@@ -1153,8 +1193,8 @@ const NewPurchaseOrder = ({ page }: Props) => {
                     {" "}
                     <p className="text-end">
                       {oneOrganization?.baseCurrency}{" "}
-                      {purchaseOrderState.freight
-                        ? purchaseOrderState.freight
+                      {purchaseOrderState.freightAmount
+                        ? purchaseOrderState.freightAmount
                         : "0.00"}
                     </p>
                   </div>
@@ -1169,8 +1209,8 @@ const NewPurchaseOrder = ({ page }: Props) => {
                     {" "}
                     <p className="text-end">
                       {oneOrganization.baseCurrency}{" "}
-                      {purchaseOrderState.roundOff
-                        ? purchaseOrderState.roundOff
+                      {purchaseOrderState.roundOffAmount
+                        ? purchaseOrderState.roundOffAmount
                         : "0.00"}
                     </p>
                   </div>
