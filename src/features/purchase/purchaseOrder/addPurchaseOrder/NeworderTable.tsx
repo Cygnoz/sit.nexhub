@@ -117,7 +117,6 @@ const NewOrderTable = ({
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
-    console.log(item, "item szdxfcgvhb");
     const newRows = [...rows];
     newRows[index].itemName = item.itemName;
     newRows[index].itemImage = item.itemImage;
@@ -133,6 +132,8 @@ const NewOrderTable = ({
     const itemDiscount = Number(newRows[index].itemDiscount);
     const itemDiscountType = newRows[index].itemDiscountType;
 
+    console.log(newRows[index].itemDiscountType, "type");
+
     const discountedPrice = calculateDiscountPrice(
       costPrice,
       itemDiscount,
@@ -145,8 +146,11 @@ const NewOrderTable = ({
       isInterState as boolean
     );
 
-    newRows[index].itemAmount = itemAmount;
-    newRows[index].itemCgstAmount = cgstAmount;
+    newRows[index].itemAmount =
+     !isInterState
+        ? ((itemAmount) + (cgstAmount) + (sgstAmount)).toFixed(2)
+        : ((itemAmount) + (igstAmount)).toFixed(2);    newRows[index].itemCgstAmount = cgstAmount;
+
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
     if (isInterState) {
@@ -157,6 +161,8 @@ const NewOrderTable = ({
       newRows[index].itemTax = cgstAmount + sgstAmount;
       newRows[index].itemIgstAmount = "";
     }
+
+
 
     setRows(newRows);
 
@@ -184,7 +190,6 @@ const NewOrderTable = ({
       return totalCostPrice;
     }
   
-    // Ensure itemAmount is a valid number
     const validItemAmount = itemAmount !== undefined ? Number(itemAmount) : totalCostPrice;
   
     if (discountType === "percentage") {
@@ -260,22 +265,23 @@ const NewOrderTable = ({
       }
     }
   
-    // Calculate discounted item amount
     const discountedAmount = calculateDiscountPrice(
       totalCostPrice,
       itemDiscount,
       itemDiscountType
     );
   
-    // Calculate tax based on discounted amount
     const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
       discountedAmount,
       newRows[index],
       isInterState as boolean
     );
   
-    newRows[index].itemAmount = itemAmount; // Update the discounted item amount
-    newRows[index].itemCgstAmount = cgstAmount;
+    newRows[index].itemAmount =
+    !isInterState
+       ? ((itemAmount) + (cgstAmount) + (sgstAmount)).toFixed(2)
+       : ((itemAmount) + (igstAmount)).toFixed(2);    newRows[index].itemCgstAmount = cgstAmount; 
+          newRows[index].itemCgstAmount = cgstAmount;
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
   
@@ -326,7 +332,6 @@ const NewOrderTable = ({
     if (rows.length > 1) {
       const newRows = rows.filter((_, i) => i !== index);
 
-      // Update both rows and purchaseOrderState
       setRows(newRows);
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
@@ -483,7 +488,7 @@ const NewOrderTable = ({
   useEffect(() => {
     const updatedRows = rows?.map((row) => ({
       ...row,
-      itemDiscountType: "",
+      itemDiscountType: "percentage",
       itemDiscount: 0,
     }));
 
@@ -725,12 +730,12 @@ const NewOrderTable = ({
                   </div>
                 </td>
 
-                <td className="py-2.5 px-4 border-y border-tableBorder">
+                <td className="py-2.5 px- border-y border-tableBorder">
                   <input
                     disabled
                     type="text"
                     placeholder="0"
-                    className="w-[50px]  focus:outline-none text-center"
+                    className="focus:outline-none text-center"
                     value={row.itemAmount}
                     onChange={(e) =>
                       handleRowChange(index, "itemAmount", e.target.value)

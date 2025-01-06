@@ -152,6 +152,7 @@ export const endponits = {
   GET_LAST_PURCHASE_ORDER_PREFIX: `get-last-purchase-order-prefix`,
   GET_ALL_PURCHASE_ORDER: `get-all-purchaseOrders`,
   GET_ONE_PURCHASE_ORDER: `get-purchaseOrder`,
+  EDIT_PURCHASE_ORDER:``,
 
   // Payment Made
   ADD_PAYMET_MADE:`add-payment`,
