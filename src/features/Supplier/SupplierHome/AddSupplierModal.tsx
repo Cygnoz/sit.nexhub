@@ -416,6 +416,24 @@ const AddSupplierModal = ({ page }: Props) => {
       }
     }
 
+    // if (name === "companyName") {
+    //   setSupplierData((prevData) => ({
+    //     ...prevData,
+    //     supplierDisplayName: value, // Always update with companyName
+    //   }));
+    //   if (supplierdata.supplierDisplayName) {
+    //     setErrors({ ...errors, supplierDisplayName: false });
+    //   }
+    // } else if (name === "firstName") {
+    //   setSupplierData((prevData) => ({
+    //     ...prevData,
+    //     supplierDisplayName: prevData.companyName ? prevData.supplierDisplayName : value, // Update only if companyName is absent
+    //   }));
+    //   if (supplierdata.supplierDisplayName || !supplierdata.companyName) {
+    //     setErrors({ ...errors, supplierDisplayName: false });
+    //   }
+    // }
+
     // Update supplierDisplayName based on companyName
     if (name === "companyName") {
       setSupplierData((prevData) => ({
@@ -425,15 +443,22 @@ const AddSupplierModal = ({ page }: Props) => {
       if (supplierdata.supplierDisplayName) {
         setErrors({ ...errors, supplierDisplayName: false });
       }
-    } else if (name === "firstName") {
-      setSupplierData((prevData) => ({
-        ...prevData,
-        supplierDisplayName: prevData.companyName ? prevData.supplierDisplayName : value, // Update only if companyName is absent
-      }));
+    } else if (name === "firstName" || name === "lastName") {
+      setSupplierData((prevData) => {
+        const firstName = name === "firstName" ? value : prevData.firstName;
+        const lastName = name === "lastName" ? value : prevData.lastName;
+        const fullName = `${firstName || ""} ${lastName || ""}`.trim()
+        return {
+          ...prevData,
+          [name]: value, // Update the specific field (firstName or lastName)
+          supplierDisplayName: prevData.companyName ? prevData.supplierDisplayName : fullName, // Update only if companyName is absent
+        };
+      });
       if (supplierdata.supplierDisplayName || !supplierdata.companyName) {
         setErrors({ ...errors, supplierDisplayName: false });
       }
     }
+    
     
 
     // Handle checkbox updates

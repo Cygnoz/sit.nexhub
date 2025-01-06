@@ -29,7 +29,7 @@ const initialSalesQuoteState: SalesQuote = {
   salesQuoteDate: "",
   expiryDate: "",
   subject: "",
-  taxPreference:"",
+  taxPreference:"Taxable",
   items: [
     {
       itemId: "",
@@ -629,9 +629,6 @@ console.log(customerData);
                     value={salesQuoteState.taxPreference}
                     onChange={handleChange}
                   >
-                    <option value="" disabled hidden>
-                      Select Tax Preference
-                    </option>
                     <option value="Taxable">Taxable</option>
                     <option value="Non-taxable">Non-taxable</option>
                   </select>

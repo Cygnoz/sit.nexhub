@@ -61,7 +61,7 @@ console.log(oneAccountData,"oneAccountData");
       const url = `${endponits.GET_ONE_ACCOUNT}/${item._id}`;
       const { response, error } = await fetchOneItem(url);
       if (!error && response) {
-        setOneAccountData(response.data._doc);
+        setOneAccountData(response.data);
         console.log(response.data,"diwudew");
         
       } else {

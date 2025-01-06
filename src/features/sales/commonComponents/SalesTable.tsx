@@ -138,7 +138,7 @@ const SalesTable = ({ page }: Props) => {
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
   const extractDate = (dateTimeString: string) => {
-    return dateTimeString.split("T")[0];
+    return dateTimeString?.split("T")[0];
   };
 
   const renderColumnContent = (colId: string, item: any) => {
@@ -257,7 +257,7 @@ const SalesTable = ({ page }: Props) => {
             ) : filteredData && filteredData.length > 0 ? (
               // Render data rows if not loading and data is available
               filteredData.slice().reverse().map((item, index) => (
-                <tr key={item._id} className="relative cursor-pointer">
+                <tr key={item._id} className="relative">
                   <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
                   {columns.map(
                     (col) =>
@@ -268,7 +268,7 @@ const SalesTable = ({ page }: Props) => {
                       )
                   )}
                   <td className="py-3 px-4 border-b border-tableBorder flex justify-center items-center" onClick={() => handleRowClick(item._id)}>
-                    <Eye color="#569FBC" /></td>
+                    <Eye color="#569FBC" className="cursor-pointer" /></td>
                   <td className="py-3 px-4 border-b border-tableBorder"></td>
                 </tr>
               ))
