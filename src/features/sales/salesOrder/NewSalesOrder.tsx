@@ -17,8 +17,7 @@ import ViewMoreOrder from "./ViewMoreOrder";
 import CustomerModal from "./CustomerModal";
 
 
-
-type Props = {};
+type Props = { page?: string };
 
 interface Customer {
   taxType: string;
@@ -59,7 +58,8 @@ const initialSalesQuoteState: SalesOrder = {
       discountType: "",
       discountAmount: "",
       amount: "",
-      itemAmount: ""
+      itemAmount: "",
+      salesAccountId:""
     },
   ],
 
