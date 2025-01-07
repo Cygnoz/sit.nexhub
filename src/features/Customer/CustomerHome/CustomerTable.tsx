@@ -43,7 +43,7 @@ const initialColumns: Column[] = [
   { id: "companyName", label: "Company Name", visible: true },
   { id: "mobile", label: "Contact", visible: true },
   { id: "customerEmail", label: "Email", visible: true },
-  { id: "supplierDetails", label: "Customer details", visible: true },
+  { id: "supplierDetails", label: "Action", visible: true },
   { id: "status", label: "Status", visible: true },
   { id: "skypeNameNumber", label: "Receivables(BCY)", visible: false },
 

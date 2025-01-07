@@ -123,6 +123,8 @@ function AccountantView() {
                   Credit {oneOrganization.baseCurrency && `(${oneOrganization.baseCurrency})`}
                 </th>
                 <th className="py-3 px-4 font-medium border-b border-tableBorder text-sm">Amount</th>
+                <th className="py-3 px-4 font-medium border-b border-tableBorder text-sm">Note</th>
+
               </tr>
             </thead>
             <tbody className="text-dropdownText text-center text-[13px]">
@@ -148,6 +150,9 @@ function AccountantView() {
                     </td>
                     <td className="py-3 px-4 border-b border-tableBorder">
                       {item?.cumulativeSum ? item.cumulativeSum : '0.00'}
+                    </td>
+                    <td className="py-3 px-4 border-b border-tableBorder">
+                      {item?.remark ? item.remark : '-'}
                     </td>
                   </tr>
                 ))
