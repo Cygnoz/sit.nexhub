@@ -128,7 +128,7 @@ function AddItemsPos({ selectedItems, onRemoveItem ,selectedCustomer}: Props) {
                   {item.itemName}
                   <br />
                   <span className="text-textColor font-bold text-xs block mt-1.5">
-                    ₹ {item.sellingPrice.toFixed(2)}
+                    ₹ {item?.sellingPrice?.toFixed(2)}
                   </span>
                 </p>
               </div>
