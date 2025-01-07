@@ -88,7 +88,7 @@ const SalesTable = ({ page }: Props) => {
       { id: "salesInvoice", label: "Invoice#", visible: true },
       { id: "reference", label: "Reference", visible: true },
       { id: "paidStatus", label: "Status", visible: true },
-      { id: "customerName", label: "Customer Name", visible: true },
+      { id: "customerDisplayName", label: "Customer Name", visible: true },
       { id: "totalAmount", label: "Amount", visible: true },
       { id: "", label: "Balance Due", visible: false },
     ]
