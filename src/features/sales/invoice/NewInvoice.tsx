@@ -35,7 +35,7 @@ const calculateDueDate = (invoiceDate: string, term: string) => {
 
   switch (term) {
     case "Due on Receipt":
-      return invoiceDate; 
+      return invoiceDate;
     case "Due end of the month":
       const endOfMonthDate = getEndOfMonthDate(date);
       const endOfMonth = new Date(endOfMonthDate);
@@ -82,7 +82,7 @@ const initialSalesQuoteState: invoice = {
   expectedShipmentDate: "",
   salesOrderNumber: "",
 
-  taxPreference:"Taxable",
+  taxPreference: "Taxable",
 
   items: [
     {
@@ -137,7 +137,7 @@ const initialSalesQuoteState: invoice = {
   vat: "",
   totalTax: "",
   totalAmount: "",
-  salesOrderId:""
+  salesOrderId: ""
 };
 const NewInvoice = ({ }: Props) => {
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
@@ -180,7 +180,7 @@ const NewInvoice = ({ }: Props) => {
           ...prevData,
           ...response.data,
           salesOrderNumber: response.data.salesOrder,
-          salesOrderId:response.data._id
+          salesOrderId: response.data._id
         }));
 
         const matchingSupplier = customerData.find((sup: any) => sup._id === response.data.customerId);
@@ -205,67 +205,67 @@ const NewInvoice = ({ }: Props) => {
     navigate("/sales/invoice")
     setInvoiceState(initialSalesQuoteState)
   }
-const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-  const { name, value } = e.target;
-  const totalTax = parseFloat(invoiceState?.totalTax) || 0;
-  const totalAmount = parseFloat(invoiceState.subtotalTotal + totalTax) || 0;
-  const totalAmountForPaid = parseFloat(invoiceState?.totalAmount) || 0;  
-  let discountValue = parseFloat(invoiceState.discountTransactionAmount) || 0;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    const totalTax = parseFloat(invoiceState?.totalTax) || 0;
+    const totalAmount = parseFloat(invoiceState.subtotalTotal + totalTax) || 0;
+    const totalAmountForPaid = parseFloat(invoiceState?.totalAmount) || 0;
+    let discountValue = parseFloat(invoiceState.discountTransactionAmount) || 0;
 
-  setInvoiceState((prevState) => {
-    let newState = { ...prevState, [name]: value };
+    setInvoiceState((prevState) => {
+      let newState = { ...prevState, [name]: value };
 
-    if (name === "paymentTerms") {
-      newState.dueDate = calculateDueDate(prevState.salesInvoiceDate, value);
-    } else if (name === "dueDate") {
-      newState.paymentTerms = "Custom";
-    } else if (name === "transactionDiscountType") {
-      newState.discountTransactionType = value;
+      if (name === "paymentTerms") {
+        newState.dueDate = calculateDueDate(prevState.salesInvoiceDate, value);
+      } else if (name === "dueDate") {
+        newState.paymentTerms = "Custom";
+      } else if (name === "transactionDiscountType") {
+        newState.discountTransactionType = value;
 
-      if (value === "Percentage") {
-        const percentageDiscount = (discountValue / totalAmount) * 100;
-        if (percentageDiscount > 100) {
-          toast.error("Discount cannot exceed 100%");
-          discountValue = 0; // Reset if exceeds 100%
+        if (value === "Percentage") {
+          const percentageDiscount = (discountValue / totalAmount) * 100;
+          if (percentageDiscount > 100) {
+            toast.error("Discount cannot exceed 100%");
+            discountValue = 0; // Reset if exceeds 100%
+          }
+          newState.discountTransactionAmount = percentageDiscount ? percentageDiscount.toFixed(2) : "0";
+        } else {
+          const currencyDiscount = (discountValue / 100) * totalAmount;
+          newState.discountTransactionAmount = currencyDiscount ? currencyDiscount.toFixed(2) : "0";
         }
-        newState.discountTransactionAmount = percentageDiscount ? percentageDiscount.toFixed(2) : "0";
-      } else {
-        const currencyDiscount = (discountValue / 100) * totalAmount;
-        newState.discountTransactionAmount = currencyDiscount ? currencyDiscount.toFixed(2) : "0";
-      }
-    } else if (name === "discountTransactionAmount") {
-      discountValue = parseFloat(value) || 0;
+      } else if (name === "discountTransactionAmount") {
+        discountValue = parseFloat(value) || 0;
 
-      if (prevState.discountTransactionType === "Percentage") {
-        if (discountValue > 100) {
-          discountValue = 0;
-          toast.error("Discount cannot exceed 100%");
+        if (prevState.discountTransactionType === "Percentage") {
+          if (discountValue > 100) {
+            discountValue = 0;
+            toast.error("Discount cannot exceed 100%");
+          }
+          const discountAmount = (discountValue / 100) * totalAmount;
+          newState.discountTransactionAmount = discountValue ? discountValue.toString() : "0";
+          newState.transactionDiscount = discountAmount ? discountAmount.toFixed(2) : "0";
+        } else {
+          if (discountValue > totalAmount) {
+            discountValue = totalAmount;
+            toast.error("Discount cannot exceed the subtotal amount");
+          }
+          newState.discountTransactionAmount = discountValue ? discountValue.toString() : "0";
+          newState.transactionDiscount = discountValue ? discountValue.toFixed(2) : "0";
         }
-        const discountAmount = (discountValue / 100) * totalAmount;
-        newState.discountTransactionAmount = discountValue ? discountValue.toString() : "0";
-        newState.transactionDiscount = discountAmount ? discountAmount.toFixed(2) : "0";
-      } else {
-        if (discountValue > totalAmount) {
-          discountValue = totalAmount;
-          toast.error("Discount cannot exceed the subtotal amount");
+      } else if (name === "paidAmount") {
+        let paidAmount = parseFloat(value) || 0;
+        if (paidAmount > totalAmountForPaid) {
+          paidAmount = totalAmountForPaid;
+          toast.error("Paid Amount cannot exceed Total Amount");
+        } else if (paidAmount < 0) {
+          paidAmount = 0;
+          toast.error("Paid Amount cannot be less than 0");
         }
-        newState.discountTransactionAmount = discountValue ? discountValue.toString() : "0";
-        newState.transactionDiscount = discountValue ? discountValue.toFixed(2) : "0";
+        newState.paidAmount = paidAmount.toString();
       }
-    } else if (name === "paidAmount") {
-      let paidAmount = parseFloat(value) || 0;
-      if (paidAmount > totalAmountForPaid) {
-        paidAmount = totalAmountForPaid;
-        toast.error("Paid Amount cannot exceed Total Amount");
-      } else if (paidAmount < 0) {
-        paidAmount = 0;
-        toast.error("Paid Amount cannot be less than 0");
-      }
-      newState.paidAmount = paidAmount.toString();
-    }
-    return newState;
-  });
-};
+      return newState;
+    });
+  };
 
 
 
@@ -532,7 +532,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-5">
                   <label className="text-sm mb-1 text-labelColor">
-                    Select Customer
+                    Select Customer <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div
                     className="relative w-full"
@@ -608,7 +608,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                 {isPlaceOfSupplyVisible && (
                   <div className="col-span-7">
                     <label className="block text-sm mb-1 text-labelColor">
-                      Place Of Supply
+                      Place Of Supply <span className="text-[#bd2e2e] ">*</span>
                     </label>
                     <div className="relative w-full">
                       <select
@@ -831,38 +831,38 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
               </div>
 
               <div className="grid grid-cols-12 gap-4">
-              <div className="col-span-5">
-      <label className="block text-sm mb-1 text-labelColor">
-        Payment Mode
-      </label>
-      <div className="relative w-full">
-        <select
-          onChange={handleChange}
-          value={invoiceState.paymentMode} 
-          name="paymentMode"
-          className="block appearance-none w-full h-9 text-zinc-400 bg-white border
+                <div className="col-span-5">
+                  <label className="block text-sm mb-1 text-labelColor">
+                    Payment Mode
+                  </label>
+                  <div className="relative w-full">
+                    <select
+                      onChange={handleChange}
+                      value={invoiceState.paymentMode}
+                      name="paymentMode"
+                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border
                      border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-        >
-          <option value="Cash" className="text-gray">
-            Cash
-          </option>
-          <option value="Card Transfer" className="text-gray">
-            Card Transfer
-          </option>
-          <option value="UPI" className="text-gray">
-            UPI
-          </option>
-          <option value="Credit" className="text-gray">
-            Credit
-          </option>
-        </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-          <CehvronDown color="gray" />
-        </div>
-      </div>
-    </div>
+                    >
+                      <option value="Cash" className="text-gray">
+                        Cash
+                      </option>
+                      <option value="Card Transfer" className="text-gray">
+                        Card Transfer
+                      </option>
+                      <option value="UPI" className="text-gray">
+                        UPI
+                      </option>
+                      <option value="Credit" className="text-gray">
+                        Credit
+                      </option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
+                </div>
               </div>
-           
+
               <div className="mt-9">
                 <p className="font-bold">Add Item</p>
                 <NewSalesQuoteTable
@@ -1148,47 +1148,47 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 
               </div>
             </div>
-          { invoiceState?.paymentMode !== "Credit" &&
-          <>
-          <div>
-              <label className="block text-sm mb-1 text-labelColor">
-                Deposit Account
-              </label>
-              <div className="relative w-full">
-                <select
-                  onChange={handleChange}
-                  value={invoiceState.depositAccountId}
-                  name="depositAccountId"
-                  className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                >
-                  <option value="" selected hidden disabled>Select Account</option>
-                  {allAccounts
-                    .filter((item: { accountSubhead: string }) => item.accountSubhead === "Bank" || item.accountSubhead === "Cash")
-                    .map((item: { _id: string; accountName: string }) => (
-                      <option key={item._id} value={item._id}>
-                        {item.accountName}
-                      </option>
-                    ))}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
+            {invoiceState?.paymentMode !== "Credit" &&
+              <>
+                <div>
+                  <label className="block text-sm mb-1 text-labelColor">
+                    Deposit Account
+                  </label>
+                  <div className="relative w-full">
+                    <select
+                      onChange={handleChange}
+                      value={invoiceState.depositAccountId}
+                      name="depositAccountId"
+                      className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    >
+                      <option value="" selected hidden disabled>Select Account</option>
+                      {allAccounts
+                        .filter((item: { accountSubhead: string }) => item.accountSubhead === "Bank" || item.accountSubhead === "Cash")
+                        .map((item: { _id: string; accountName: string }) => (
+                          <option key={item._id} value={item._id}>
+                            {item.accountName}
+                          </option>
+                        ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="text-sm">
-              <label htmlFor="vehiclestring" className="">
-                Paid Amount
-                <input
-                  value={invoiceState.paidAmount}
-                  name="paidAmount"
-                  type="number"
-                  onChange={handleChange}
-                  placeholder="Enter Paid Amount"
-                  className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-2"
-                />
-              </label>
-            </div>
-            </>
+                <div className="text-sm">
+                  <label htmlFor="vehiclestring" className="">
+                    Paid Amount
+                    <input
+                      value={invoiceState.paidAmount}
+                      name="paidAmount"
+                      type="number"
+                      onChange={handleChange}
+                      placeholder="Enter Paid Amount"
+                      className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-2"
+                    />
+                  </label>
+                </div>
+              </>
             }
 
             <div className="flex gap-4 m-5 justify-end">

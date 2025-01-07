@@ -853,7 +853,7 @@ const NewCustomerModal = ({ page }: Props) => {
                     )}
                 </div>}
               <div>
-                  <label htmlFor="companyName">Customer Display Name </label>
+                  <label htmlFor="companyName">Customer Display Name <span className="text-[#bd2e2e] ">*</span> </label>
                   <input
                     required
                     type="text"

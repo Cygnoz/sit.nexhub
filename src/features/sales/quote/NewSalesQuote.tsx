@@ -430,7 +430,7 @@ console.log(customerData);
               <div className="grid grid-cols-12 gap-4">
                 <div className={`col-span-${isPlaceOfSupplyVisible ? "5" : "7"}`}>
                   <label className="text-sm mb-1 text-labelColor">
-                    Customer Name
+                    Customer Name <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div
                     className="relative w-full"
@@ -505,7 +505,7 @@ console.log(customerData);
                 {isPlaceOfSupplyVisible && (
                   <div className="col-span-7">
                     <label className="block text-sm mb-1 text-labelColor">
-                      Place Of Supply
+                      Place Of Supply <span className="text-[#bd2e2e] ">*</span>
                     </label>
                     <div className="relative w-full">
                       <select

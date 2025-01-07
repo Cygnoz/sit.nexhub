@@ -132,7 +132,8 @@ function AccountantView() {
                   <tr key={item._id}>
                     <td className="py-3 px-4 border-b border-tableBorder">
                       {item?.createdDate ? (
-                        `${item.createdDate} ${item.createdTime ? item.createdTime : '-'}`
+                        `${item.createdDate}
+                        `
                       ) : '-'}
                     </td>
 

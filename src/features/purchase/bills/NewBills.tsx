@@ -462,30 +462,31 @@ console.log(bill)
 
   useEffect(() => {
     const newGrandTotal = calculateTotalAmount();
-
+  
     const {
       transactionDiscountType,
       transactionDiscount = "",
       transactionDiscountAmount = 0,
     } = bill;
+  
     const transactionDiscountValueAMT =
       transactionDiscountType === "percentage"
         ? (Number(transactionDiscount) / 100) * Number(newGrandTotal)
         : Number(transactionDiscount);
-
+  
     const roundedDiscountValue =
       Math.round(transactionDiscountValueAMT * 100) / 100;
-
+  
     const updatedGrandTotal =
       Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
+  
     if (
       transactionDiscountAmount !== roundedDiscountValue ||
       bill.grandTotal !== updatedGrandTotal
     ) {
       setBill((prevState: any) => ({
         ...prevState,
-        transactionDiscountAmount:
-          roundedDiscountValue < 0 ? roundedDiscountValue : "",
+        transactionDiscountAmount: roundedDiscountValue,
         grandTotal: updatedGrandTotal,
       }));
     }
@@ -499,6 +500,7 @@ console.log(bill)
     bill.itemTotalDiscount,
     bill.roundOffAmount,
   ]);
+  
 
   useEffect(() => {
     if (bill?.destinationOfSupply == "") {
