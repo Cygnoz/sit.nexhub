@@ -88,7 +88,7 @@ const SalesTable = ({ page }: Props) => {
       { id: "salesInvoice", label: "Invoice#", visible: true },
       { id: "reference", label: "Reference", visible: true },
       { id: "paidStatus", label: "Status", visible: true },
-      { id: "customerName", label: "Customer Name", visible: true },
+      { id: "customerDisplayName", label: "Customer Name", visible: true },
       { id: "totalAmount", label: "Amount", visible: true },
       { id: "", label: "Balance Due", visible: false },
     ]
@@ -203,6 +203,10 @@ const SalesTable = ({ page }: Props) => {
     }
   };
 
+  const handleEditClick = (id: string) => {
+    navigate(`/sales/salesorder/edit/${id}`);
+  }
+
   return (
     <div className="w-full">
       <div className="flex mb-4 items-center gap-5">
@@ -269,8 +273,8 @@ const SalesTable = ({ page }: Props) => {
                       )
                   )}
                   <td className="py-3 px-4 border-b gap-3 border-tableBorder flex justify-center items-center">
-                    <div>
-                      <PencilEdit color={'#0B9C56'} />
+                    <div onClick={() => handleEditClick(item._id)}>
+                      <PencilEdit color={'#0B9C56'}  className="cursor-pointer"/>
                     </div>
                     <div onClick={() => handleRowClick(item._id)}>
                       <Eye color="#569FBC" className="cursor-pointer" />
@@ -281,7 +285,7 @@ const SalesTable = ({ page }: Props) => {
               ))
             ) : (
               // Render "no data found" row if data is empty
-              <NoDataFoundTable columns={page == 'salesOrder' || page == 'quote' ? [...columns, "ff", "tt"] : columns} />
+              <NoDataFoundTable columns={page == 'salesOrder' || page == 'reciept' || page == 'quote'  || page == 'credit-Note' ? [...columns, "ff", "tt"] : columns } />
             )}
           </tbody>
         </table>

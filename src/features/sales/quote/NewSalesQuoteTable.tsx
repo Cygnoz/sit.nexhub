@@ -594,7 +594,7 @@ useEffect(() => {
       });
       setRows(updatedItems);
     }
-  }, [ items]);
+  }, [items]);
   
   useEffect(() => {
     setRows((prevData: any) => {
@@ -607,6 +607,12 @@ useEffect(() => {
       }
       return [];
     });
+  }, []);
+  
+  useEffect(() => {
+    if (salesQuoteState) {
+      setRows(salesQuoteState?.items);
+    }
   }, []);
 
   useEffect(() => {

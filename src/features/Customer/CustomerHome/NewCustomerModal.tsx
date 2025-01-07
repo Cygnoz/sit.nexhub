@@ -376,7 +376,8 @@ const NewCustomerModal = ({ page }: Props) => {
       const taxUrl = `${endponits.GET_TAX}`;
       console.log("additional data working");
       const { response: taxResponse, error: taxError } = await getTax(taxUrl);
-
+        console.log(response?.data,"as");
+        
       if (!taxError && taxResponse) {
         if (!taxError && taxResponse) {
           if (taxResponse) {
@@ -852,7 +853,7 @@ const NewCustomerModal = ({ page }: Props) => {
                     )}
                 </div>}
               <div>
-                  <label htmlFor="companyName">Customer Display Name </label>
+                  <label htmlFor="companyName">Customer Display Name <span className="text-[#bd2e2e] ">*</span> </label>
                   <input
                     required
                     type="text"

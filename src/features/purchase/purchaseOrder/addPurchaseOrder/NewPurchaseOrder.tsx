@@ -183,34 +183,13 @@ const NewPurchaseOrder = ({ page }: Props) => {
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
     fetchFunction: (url: string) => Promise<any>,
-    supplierData?: any[],
-    setSelectedSupplier?: React.Dispatch<React.SetStateAction<any>>,
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
-  
       if (!error && response) {
-        if (url.includes(endponits.GET_ONE_PURCHASE_ORDER)) {
-          // Safely merge previous data
-          setData((prevData:any) => ({
-            ...prevData,
-            ...response.data,
-          }));
-  
-          // Handle supplier selection if data exists
-          if (response.data.supplierId && supplierData) {
-            const supplier = supplierData.find(
-              (supplier: any) => supplier._id === response.data.supplierId
-            );
-  
-            if (supplier && setSelectedSupplier) {
-              setSelectedSupplier(supplier);
-            }
-          }
-        } else {
-          // Directly set the new data
+
           setData(response.data);
-        }
+      
       } else {
         console.error("Error in response or no data received:", error);
       }
@@ -218,9 +197,6 @@ const NewPurchaseOrder = ({ page }: Props) => {
       console.error("Error fetching data:", err);
     }
   };
-  
-  
-  console.log(selecteSupplier)
 
   const fetchCountries = async () => {
     try {
@@ -373,7 +349,12 @@ const NewPurchaseOrder = ({ page }: Props) => {
     setLoading(true);
 
     try {
-      const url = `${endponits.ADD_PURCHASE_ORDER}`;
+      let url;
+      if (page === "edit") {
+        url = `${endponits.EDIT_PURCHASE_ORDER}`;
+      } else {
+        url = `${endponits.ADD_PURCHASE_ORDER}`;
+      }
       const { response, error } = await newPurchaseOrderApi(
         url,
         purchaseOrderState
@@ -420,21 +401,22 @@ const NewPurchaseOrder = ({ page }: Props) => {
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
   }, []);
 
-
   useEffect(() => {
     const fetchInitialData = async () => {
       const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
       const onePO = `${endponits.GET_ONE_PURCHASE_ORDER}/${id}`;
-  
+
       await fetchData(supplierUrl, setSupplierData, AllSuppliers);
-  
+
       if (page === "edit") {
         await fetchData(onePO, setPurchaseOrderState, getOnePurchaseOrder);
       }
     };
-  
+
     fetchInitialData();
   }, [page, id]);
+
+  
   useEffect(() => {
     if (purchaseOrderState && supplierData) {
       const { supplierId } = purchaseOrderState;
@@ -448,7 +430,6 @@ const NewPurchaseOrder = ({ page }: Props) => {
       }
     }
   }, [purchaseOrderState, supplierData]);
-    
 
   useEffect(() => {
     supplierResponse;
@@ -478,7 +459,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
     }));
   }, [purchaseOrderState.transactionDiscountAmount]);
 
-  console.log(purchaseOrderState)
+  console.log(purchaseOrderState);
 
   return (
     <div className="px-8">
@@ -490,7 +471,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
         </Link>
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
-          { page=="edit"?"Edit": "New"} Purchase Order
+            {page == "edit" ? "Edit" : "New"} Purchase Order
           </h4>
         </div>
       </div>
@@ -1254,7 +1235,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
                       <p className="text-end">
                         {oneOrganization.baseCurrency}{" "}
                         {purchaseOrderState.transactionDiscountAmount
-                          ?Number( purchaseOrderState.transactionDiscountAmount)
+                          ? Number(purchaseOrderState.transactionDiscountAmount)
                           : "0.00"}
                       </p>
                     </p>
@@ -1272,7 +1253,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
                     {" "}
                     {oneOrganization.baseCurrency}{" "}
                     {purchaseOrderState.grandTotal
-                      ?Number(purchaseOrderState.grandTotal)
+                      ? Number(purchaseOrderState.grandTotal)
                       : "0.00"}
                   </p>
                 </div>

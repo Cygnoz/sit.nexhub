@@ -462,30 +462,31 @@ console.log(bill)
 
   useEffect(() => {
     const newGrandTotal = calculateTotalAmount();
-
+  
     const {
       transactionDiscountType,
       transactionDiscount = "",
       transactionDiscountAmount = 0,
     } = bill;
+  
     const transactionDiscountValueAMT =
       transactionDiscountType === "percentage"
         ? (Number(transactionDiscount) / 100) * Number(newGrandTotal)
         : Number(transactionDiscount);
-
+  
     const roundedDiscountValue =
       Math.round(transactionDiscountValueAMT * 100) / 100;
-
+  
     const updatedGrandTotal =
       Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
+  
     if (
       transactionDiscountAmount !== roundedDiscountValue ||
       bill.grandTotal !== updatedGrandTotal
     ) {
       setBill((prevState: any) => ({
         ...prevState,
-        transactionDiscountAmount:
-          roundedDiscountValue < 0 ? roundedDiscountValue : "",
+        transactionDiscountAmount: roundedDiscountValue,
         grandTotal: updatedGrandTotal,
       }));
     }
@@ -499,6 +500,7 @@ console.log(bill)
     bill.itemTotalDiscount,
     bill.roundOffAmount,
   ]);
+  
 
   useEffect(() => {
     if (bill?.destinationOfSupply == "") {
@@ -565,7 +567,7 @@ console.log(bill)
         billNumber: lastBillPrefix,
       }));
     }
-  }, []);
+  }, [lastBillPrefix]);
 
 
   useEffect(() => {
@@ -581,7 +583,7 @@ console.log(bill)
   }, [openDropdownIndex]);
 
   useEffect(() => {
-    if (bill.paymentTerms !== "Pay Now") {
+    if (bill.paymentTerms !== "Cash") {
       setBill((prevData) => ({
         ...prevData,
         paidAmount: "",
@@ -1223,82 +1225,85 @@ console.log(bill)
               </div>
             </div>
 
-            <div className="flex gap-4 items-center justify-center mb-2">
-              <label className=" text-sm mb-1 text-labelColor min-w-fit left-0">
-                Paid Through Account
-              </label>
-              <div className="relative w-full  ml-auto  ps-5">
-                <select
-                  onChange={handleChange}
-                  value={bill.paidAccountId}
-                  name="paidAccountId"
-                  className="block appearance-none w-full  text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                >
-                  <option value="" selected hidden disabled>
-                    Select Account
-                  </option>
-                  {allAccounts
-                    ?.filter(
-                      (item: { accountSubhead: string }) =>
-                        item.accountSubhead === "Bank" ||
-                        item.accountSubhead === "Cash"
-                    )
-                    ?.map((item: { _id: string; accountName: string }) => (
-                      <option key={item._id} value={item._id}>
-                        {item.accountName}
-                      </option>
-                    ))}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
+          {  bill.paymentMode==="Cash" &&
+        <>
+             <div className="flex gap-4 items-center justify-center mb-2">
+                <label className=" text-sm mb-1 text-labelColor min-w-fit left-0">
+                  Paid Through Account
+                </label>
+                <div className="relative w-full  ml-auto  ps-5">
+                  <select
+                    onChange={handleChange}
+                    value={bill.paidAccountId}
+                    name="paidAccountId"
+                    className="block appearance-none w-full  text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                  >
+                    <option value="" selected hidden disabled>
+                      Select Account
+                    </option>
+                    {allAccounts
+                      ?.filter(
+                        (item: { accountSubhead: string }) =>
+                          item.accountSubhead === "Bank" ||
+                          item.accountSubhead === "Cash"
+                      )
+                      ?.map((item: { _id: string; accountName: string }) => (
+                        <option key={item._id} value={item._id}>
+                          {item.accountName}
+                        </option>
+                      ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex gap-4 items-center justify-center">
-              <label
-                className="block text-sm mb-1 text-labelColor max-w-fit"
-                htmlFor="paidAmount"
-              >
-                Paid Amount
-              </label>
-
-              <div className="ml-auto">
-                <input
-                  className="border-inputBorder w-full text-sm border rounded-lg p-1.5 pl-2 h-9"
-                  type="text"
-                  placeholder="Enter paid amount"
-                  name="paidAmount"
-                  value={bill.paidAmount === 0 ? "" : bill.paidAmount}
-                  onChange={(e) => {
-                    const { value } = e.target;
-                    if (/^\d*\.?\d*$/.test(value)) {
-                      handleChange(e);
-                    }
-                  }}
-                />
+              <div className="flex gap-4 items-center justify-center">
+                <label
+                  className="block text-sm mb-1 text-labelColor max-w-fit"
+                  htmlFor="paidAmount"
+                >
+                  Paid Amount
+                </label>
+  
+                <div className="ml-auto">
+                  <input
+                    className="border-inputBorder w-full text-sm border rounded-lg p-1.5 pl-2 h-9"
+                    type="text"
+                    placeholder="Enter paid amount"
+                    name="paidAmount"
+                    value={bill.paidAmount === 0 ? "" : bill.paidAmount}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      if (/^\d*\.?\d*$/.test(value)) {
+                        handleChange(e);
+                      }
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-
-            <div className=" flex gap-4 items-center justify-center">
-              <label
-                htmlFor="balanceAmount"
-                className="block text-sm mb-1 text-labelColor max-w-fit"
-              >
-                Balance Amount
-              </label>
-              <div className="ml-auto">
-                <input
-                  disabled
-                  name="balanceAmount"
-                  id="balanceAmount"
-                  value={bill.balanceAmount}
-                  onChange={handleChange}
-                  placeholder="Balance Amount"
-                  className="border-inputBorder bg-white  text-sm border rounded-lg text-dropdownText  p-2 h-9 mt-2 "
-                />
+  
+              <div className=" flex gap-4 items-center justify-center">
+                <label
+                  htmlFor="balanceAmount"
+                  className="block text-sm mb-1 text-labelColor max-w-fit"
+                >
+                  Balance Amount
+                </label>
+                <div className="ml-auto">
+                  <input
+                    disabled
+                    name="balanceAmount"
+                    id="balanceAmount"
+                    value={bill.balanceAmount}
+                    onChange={handleChange}
+                    placeholder="Balance Amount"
+                    className="border-inputBorder bg-white  text-sm border rounded-lg text-dropdownText  p-2 h-9 mt-2 "
+                  />
+                </div>
               </div>
-            </div>
-
+        </>
+}
             <div className="flex gap-4 m-5 justify-end">
               {" "}
               <Button variant="secondary" size="sm">

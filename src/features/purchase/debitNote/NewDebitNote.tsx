@@ -334,6 +334,8 @@ const NewDebitNote = ({}: Props) => {
     fetchCountries();
   }, [oneOrganization, selecteSupplier]);
 
+  console.log(errors)
+
   useEffect(() => {
     if (openDropdownIndex !== null) {
       document.addEventListener("mousedown", handleClickOutside);
