@@ -7,7 +7,7 @@ type Props = {
 function NoDataFoundTable({ columns }: Props) {
   return (
     <tr>
-      <td colSpan={columns.length} className="text-center py-4 border-y border-tableBorder">
+      <td colSpan={columns.length +2} className="text-center py-4 border-y border-tableBorder">
         <div className="flex justify-center flex-col items-center">
           <img width={70} src={No_Data_found} alt="No Data Found" />
           <p className="font-bold text-red-700">No Records Found!</p>

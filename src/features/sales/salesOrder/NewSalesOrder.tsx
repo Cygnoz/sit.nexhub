@@ -593,7 +593,8 @@ const NewSalesOrder = ({ page }: Props) => {
                   </label>
                   <input
                     readOnly
-                    value={prefix}
+                    value={prefix}  
+                    // value={page === "edit" ? salesOrderState?.Prefix || prefix : prefix}
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />

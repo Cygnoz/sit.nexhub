@@ -285,7 +285,7 @@ const SalesTable = ({ page }: Props) => {
               ))
             ) : (
               // Render "no data found" row if data is empty
-              <NoDataFoundTable columns={page == 'salesOrder' || page == 'quote' ? [...columns, "ff", "tt"] : columns} />
+              <NoDataFoundTable columns={page == 'salesOrder' || page == 'reciept' || page == 'quote'  || page == 'credit-Note' ? [...columns, "ff", "tt"] : columns } />
             )}
           </tbody>
         </table>

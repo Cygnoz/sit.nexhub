@@ -376,7 +376,8 @@ const NewCustomerModal = ({ page }: Props) => {
       const taxUrl = `${endponits.GET_TAX}`;
       console.log("additional data working");
       const { response: taxResponse, error: taxError } = await getTax(taxUrl);
-
+        console.log(response?.data,"as");
+        
       if (!taxError && taxResponse) {
         if (!taxError && taxResponse) {
           if (taxResponse) {
