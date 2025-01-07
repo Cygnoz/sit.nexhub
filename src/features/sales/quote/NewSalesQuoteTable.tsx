@@ -609,11 +609,11 @@ useEffect(() => {
     });
   }, []);
   
-  // useEffect(() => {
-  //   if (salesQuoteState) {
-  //     setRows(salesQuoteState?.items);
-  //   }
-  // }, [salesQuoteState.items]);
+  useEffect(() => {
+    if (salesQuoteState) {
+      setRows(salesQuoteState?.items);
+    }
+  }, []);
 
   useEffect(() => {
     getAllItems()
