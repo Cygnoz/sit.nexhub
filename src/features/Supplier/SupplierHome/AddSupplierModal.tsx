@@ -891,7 +891,7 @@ const AddSupplierModal = ({ page }: Props) => {
                     </div>
                     <div>
                       <label htmlFor="companyName">
-                        Supplier Display Name{" "}
+                        Supplier Display Name{" "} <span className="text-[#bd2e2e] ">*</span>
                       </label>
                       <input
                         required

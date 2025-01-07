@@ -389,7 +389,7 @@ console.log(accounts,"77");
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-6">
                   <label className="text-sm mb-1 text-labelColor">
-                    Customer Name<span className="text-[#bd2e2e]">*</span>
+                    Customer Name <span className="text-[#bd2e2e]">*</span>
                   </label>
                   <div
                     className="relative w-full"
@@ -473,8 +473,8 @@ console.log(accounts,"77");
 
                 {isPlaceOfSupplyVisible && (
                   <div className="col-span-6">
-                    <label className="block text-sm mb-1 text-labelColor">
-                      Place Of Supply<span className="text-[#bd2e2e] ">*</span>
+                    <label className="block  text-sm mb-1 text-labelColor">
+                      Place Of Supply <span className="text-[#bd2e2e] ">*</span>
                     </label>
                     <div className="relative w-full">
                       <select
@@ -543,7 +543,7 @@ console.log(accounts,"77");
                     className="block text-sm mb-1 text-labelColor"
                     onClick={() => toggleDropdown("invoice")}
                   >
-                    Invoice#<span className="text-[#bd2e2e]">*</span>
+                    Invoice# <span className="text-[#bd2e2e]">*</span>
                   </label>
                   <div
                     className="relative w-full"
@@ -613,7 +613,7 @@ console.log(accounts,"77");
 
                 <div className="col-span-6">
                   <label className="block text-sm mb-1 text-labelColor">
-                    Invoice Type<span className="text-[#bd2e2e] ">*</span>
+                    Invoice Type <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <select
@@ -648,7 +648,7 @@ console.log(accounts,"77");
 
                 <div className="col-span-6 relative">
                   <label className="block text-sm mb-1 text-labelColor">
-                    Customer Credit Date<span className="text-[#bd2e2e] ">*</span>
+                    Customer Credit Date <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <input
@@ -663,7 +663,7 @@ console.log(accounts,"77");
 
                 <div className="col-span-6">
                   <label className="block text-sm mb-1 text-labelColor">
-                    Payment Mode<span className="text-[#bd2e2e] ">*</span>
+                    Payment Mode <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <select
@@ -684,7 +684,7 @@ console.log(accounts,"77");
 
                 <div className="col-span-6">
                   <label className="block text-sm mb-1 text-labelColor">
-                    Deposit To<span className="text-[#bd2e2e] ">*</span>
+                    Deposit To <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <select
