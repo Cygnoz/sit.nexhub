@@ -419,7 +419,14 @@ const AddItem = ({ }: Props) => {
   }, [selectedItem]);
   const hsnSac = location.state?.hsnSac;
 
-  console.log(errors, "99");
+useEffect(()=>{
+  if(initialItemData.taxPreference==="Non-taxable"){
+    setInitialItemData((prevData) => ({
+      ...prevData,
+      taxRate: ""
+    }));
+  }
+},[initialItemData.taxPreference])
 
 
   return (
