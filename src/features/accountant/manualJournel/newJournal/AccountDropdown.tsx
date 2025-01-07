@@ -66,7 +66,7 @@ const AccountDropdown = ({
           />
           <ul className="overflow-y-auto text-start h-48">
             {accountOptions
-              .filter((option:any) =>
+              ?.filter((option:any) =>
                 option.accountName.toLowerCase().includes(search.toLowerCase())
               )
               .map((option:any) => (

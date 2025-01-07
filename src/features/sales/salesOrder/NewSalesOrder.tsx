@@ -484,7 +484,7 @@ const NewSalesOrder = ({ page }: Props) => {
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-5">
                   <label className="text-sm mb-1 text-labelColor">
-                    Select Customer
+                    Select Customer <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div
                     className="relative w-full"
@@ -561,7 +561,7 @@ const NewSalesOrder = ({ page }: Props) => {
                 {isPlaceOfSupplyVisible && (
                   <div className="col-span-7">
                     <label className="block text-sm mb-1 text-labelColor">
-                      Place Of Supply
+                      Place Of Supply <span className="text-[#bd2e2e] ">*</span>
                     </label>
                     <div className="relative w-full">
                       <select
@@ -593,7 +593,8 @@ const NewSalesOrder = ({ page }: Props) => {
                   </label>
                   <input
                     readOnly
-                    value={prefix}
+                    value={prefix}  
+                    // value={page === "edit" ? salesOrderState?.Prefix || prefix : prefix}
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />

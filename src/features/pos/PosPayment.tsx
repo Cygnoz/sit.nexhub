@@ -37,7 +37,8 @@ const initialSalesQuoteState: any = {
       vatAmount: "",
       itemTotaltax: "",
       amount: "",
-      itemAmount: ""
+      itemAmount: "",
+      salesAccountId:""
     },
   ],
   totalDiscount: "",
@@ -64,7 +65,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
   const [isModalOpen, setModalOpen] = useState(false);
   const [paidAmount, setPaidAmount] = useState<any>("");
   const [invoiceState, setInvoiceState] = useState<any>(initialSalesQuoteState);
-  console.log(invoiceState);
+  console.log(invoiceState,"as");
 
   const { organization: orgData } = useOrganization();
 
@@ -140,6 +141,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
           cgstAmount,
           sgstAmount,
           igstAmount,
+          salesAccountId: item.salesAccountId,
           vatAmount: "0.00",
           itemTotaltax,
           amount: sellingPrice * quantity,

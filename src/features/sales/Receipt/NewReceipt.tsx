@@ -262,7 +262,7 @@ const NewReceipt = ({ }: Props) => {
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-5">
                   <label className="text-sm mb-1 text-labelColor">
-                    Customer Name
+                    Customer Name <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div
                     className="relative w-full"

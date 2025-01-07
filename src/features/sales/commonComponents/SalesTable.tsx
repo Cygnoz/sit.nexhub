@@ -88,7 +88,7 @@ const SalesTable = ({ page }: Props) => {
       { id: "salesInvoice", label: "Invoice#", visible: true },
       { id: "reference", label: "Reference", visible: true },
       { id: "paidStatus", label: "Status", visible: true },
-      { id: "customerName", label: "Customer Name", visible: true },
+      { id: "customerDisplayName", label: "Customer Name", visible: true },
       { id: "totalAmount", label: "Amount", visible: true },
       { id: "", label: "Balance Due", visible: false },
     ]
@@ -285,7 +285,7 @@ const SalesTable = ({ page }: Props) => {
               ))
             ) : (
               // Render "no data found" row if data is empty
-              <NoDataFoundTable columns={page == 'salesOrder' || page == 'quote' ? [...columns, "ff", "tt"] : columns} />
+              <NoDataFoundTable columns={page == 'salesOrder' || page == 'reciept' || page == 'quote'  || page == 'credit-Note' ? [...columns, "ff", "tt"] : columns } />
             )}
           </tbody>
         </table>

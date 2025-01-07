@@ -594,7 +594,7 @@ useEffect(() => {
       });
       setRows(updatedItems);
     }
-  }, [ items]);
+  }, [items]);
   
   useEffect(() => {
     setRows((prevData: any) => {
