@@ -33,7 +33,6 @@ type Row = {
   itemStock: string;
   salesAccountId?:string;
 };
-
 type Props = {
   salesQuoteState?: any;
   isIntraState?: Boolean;
@@ -55,6 +54,7 @@ const NewSalesQuoteTable = ({
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<any>([]);
   const [qouteisTaxable,setQouteIsTaxable]=useState<boolean>(false)
+  const [previousItems, setPreviousItems] = useState<any[]>([]);
   // const { request: getAllItemsRequest } = useApi("get", 5003);
   const { request: getallItemSales } = useApi("get", 5003);
 
@@ -608,12 +608,16 @@ useEffect(() => {
       return [];
     });
   }, []);
-  
+
+
   useEffect(() => {
-    if (salesQuoteState) {
-      setRows(salesQuoteState?.items);
+    if (salesQuoteState?.items) {
+      if (JSON.stringify(salesQuoteState.items) !== JSON.stringify(previousItems)) {
+        setRows(salesQuoteState.items);
+        setPreviousItems(salesQuoteState.items); 
+      }
     }
-  }, []);
+  }, [salesQuoteState?.items, previousItems]);
 
   useEffect(() => {
     getAllItems()

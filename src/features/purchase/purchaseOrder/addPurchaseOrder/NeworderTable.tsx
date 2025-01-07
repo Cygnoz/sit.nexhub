@@ -117,64 +117,61 @@ const NewOrderTable = ({
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
+  
     const newRows = [...rows];
     newRows[index].itemName = item.itemName;
     newRows[index].itemImage = item.itemImage;
-    newRows[index].itemCostPrice = item.costPrice?item.costPrice:0;
+    newRows[index].itemCostPrice = item.costPrice ? item.costPrice : 0;
     newRows[index].itemQuantity = 1;
     newRows[index].itemId = item._id;
     newRows[index].itemCgst = item.cgst;
     newRows[index].itemSgst = item.sgst;
     newRows[index].itemIgst = item.igst;
     newRows[index].taxPreference = item.taxPreference;
-
+  
     const costPrice = Number(newRows[index].itemCostPrice);
     const itemDiscount = Number(newRows[index].itemDiscount);
     const itemDiscountType = newRows[index].itemDiscountType;
-
-    console.log(newRows[index].itemDiscountType, "type");
-
+  
     const discountedPrice = calculateDiscountPrice(
       costPrice,
       itemDiscount,
       itemDiscountType
     );
-
-    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+  
+    const taxResults = calculateTax(
       discountedPrice,
       newRows[index],
-      isInterState as boolean
+      isInterState as boolean,
+      newRows[index].taxPreference
     );
-
-    newRows[index].itemAmount =
-     !isInterState
-        ? ((itemAmount) + (cgstAmount) + (sgstAmount)).toFixed(2)
-        : ((itemAmount) + (igstAmount)).toFixed(2);    newRows[index].itemCgstAmount = cgstAmount;
-
-    newRows[index].itemSgstAmount = sgstAmount;
-    newRows[index].itemIgstAmount = igstAmount;
-    if (isInterState) {
-      newRows[index].itemTax = igstAmount;
-      newRows[index].itemCgstAmount = "";
-      newRows[index].itemSgstAmount = "";
-    } else {
-      newRows[index].itemTax = cgstAmount + sgstAmount;
-      newRows[index].itemIgstAmount = "";
-    }
-
-
-
+  
+    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = taxResults;
+  
+    newRows[index].itemAmount = isInterState
+      ? (itemAmount + igstAmount).toFixed(2)
+      : (itemAmount + cgstAmount + sgstAmount).toFixed(2);
+  
+    newRows[index].itemCgstAmount = !isInterState ? cgstAmount : "";
+    newRows[index].itemSgstAmount = !isInterState ? sgstAmount : "";
+    newRows[index].itemIgstAmount = isInterState ? igstAmount : "";
+  
+    newRows[index].itemTax = isInterState
+      ? igstAmount
+      : (cgstAmount + sgstAmount);
+  
     setRows(newRows);
-
+  
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
-      items: newRows?.map((row) => {
+      items: newRows.map((row) => {
         const updatedItem = { ...row };
         delete updatedItem.itemImage;
         return updatedItem;
       }),
     }));
   };
+  
 
   const calculateDiscountPrice = (
     totalCostPrice: number,
@@ -213,31 +210,42 @@ const NewOrderTable = ({
 
   const calculateTax = (
     discountedPrice: number,
-    item: any,
-    isInterState: boolean
+    rowData: Row,
+    isInterState: boolean,
+    taxPreference: string
   ) => {
-    const cgstPercentage = item.itemCgst || 0;
-    const sgstPercentage = item.itemSgst || 0;
-    const igstPercentage = item.itemIgst || 0;
-  
-    let cgstAmount = 0;
-    let sgstAmount = 0;
-    let igstAmount = 0;
-  
-    if (!isInterState) {
-      cgstAmount = Math.round((discountedPrice * cgstPercentage) / 100 * 100) / 100;
-      sgstAmount = Math.round((discountedPrice * sgstPercentage) / 100 * 100) / 100;
-    } else {
-      igstAmount = Math.round((discountedPrice * igstPercentage) / 100 * 100) / 100;
+    if (taxPreference === "Non-taxable") {
+      return {
+        itemAmount: discountedPrice,
+        cgstAmount: 0,
+        sgstAmount: 0,
+        igstAmount: 0,
+      };
     }
   
+    const { itemCgst = 0, itemSgst = 0, itemIgst = 0 } = rowData;
+  
+    if (isInterState) {
+      const igstAmount = (discountedPrice * Number(itemIgst)) / 100;
+      return {
+        itemAmount: discountedPrice,
+        cgstAmount: 0,
+        sgstAmount: 0,
+        igstAmount: Number(igstAmount),
+      };
+    }
+  
+    const cgstAmount = (discountedPrice * Number(itemCgst)) / 100;
+    const sgstAmount = (discountedPrice * Number(itemSgst)) / 100;
     return {
       itemAmount: discountedPrice,
-      cgstAmount,
-      sgstAmount,
-      igstAmount,
+      sgstAmount: Number(sgstAmount),
+      cgstAmount: Number(cgstAmount),
+      igstAmount: 0,
     };
   };
+  
+  
   
 
   const handleRowChange = (index: number, field: keyof Row, value: string) => {
@@ -247,6 +255,7 @@ const NewOrderTable = ({
     const quantity = Number(newRows[index].itemQuantity) || 0;
     const costPrice = Number(newRows[index].itemCostPrice) || 0;
     const totalCostPrice = quantity * costPrice;
+    const taxPreference = newRows[index].taxPreference;
   
     let itemDiscount = Number(newRows[index].itemDiscount) || 0;
     const itemDiscountType = newRows[index].itemDiscountType;
@@ -271,30 +280,27 @@ const NewOrderTable = ({
       itemDiscountType
     );
   
-    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+    const taxResults = calculateTax(
       discountedAmount,
       newRows[index],
-      isInterState as boolean
+      isInterState as boolean,
+      taxPreference
     );
   
-    newRows[index].itemAmount =
-    !isInterState
-       ? ((itemAmount) + (cgstAmount) + (sgstAmount)).toFixed(2)
-       : ((itemAmount) + (igstAmount)).toFixed(2);    newRows[index].itemCgstAmount = cgstAmount; 
-          newRows[index].itemCgstAmount = cgstAmount;
-    newRows[index].itemSgstAmount = sgstAmount;
-    newRows[index].itemIgstAmount = igstAmount;
+    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = taxResults;
   
-    if (isInterState) {
-      newRows[index].itemTax = igstAmount;
-      newRows[index].itemCgstAmount = "";
-      newRows[index].itemSgstAmount = "";
-    } else {
-      newRows[index].itemTax = cgstAmount + sgstAmount;
-      newRows[index].itemIgstAmount = "";
-    }
+    newRows[index].itemAmount = isInterState
+      ? (itemAmount + igstAmount).toFixed(2)
+      : (itemAmount + cgstAmount + sgstAmount).toFixed(2);
   
-    // Update the rows and state
+    newRows[index].itemCgstAmount = !isInterState ? cgstAmount : "";
+    newRows[index].itemSgstAmount = !isInterState ? sgstAmount : "";
+    newRows[index].itemIgstAmount = isInterState ? igstAmount : "";
+  
+    newRows[index].itemTax = isInterState
+      ? igstAmount
+      : (cgstAmount + sgstAmount);
+  
     setRows(newRows);
   
     setPurchaseOrderState?.((prevData: any) => ({
@@ -306,6 +312,7 @@ const NewOrderTable = ({
       }),
     }));
   };
+  
   
   
   
@@ -449,28 +456,33 @@ const NewOrderTable = ({
 
   useEffect(() => {
     const updatedRows = rows?.map((row) => {
+      // Get the discounted price for the item
       const discountedPrice = calculateDiscountPrice(
         (Number(row.itemCostPrice) || 0) * (Number(row.itemQuantity) || 0),
         Number(row.itemDiscount) || 0,
         row.itemDiscountType
       );
-
+  
+      // Calculate tax details, including tax preference
       const taxDetails = calculateTax(
         discountedPrice,
         row,
-        isInterState as boolean
+        isInterState as boolean,
+        row.taxPreference // Ensure taxPreference is passed correctly
       );
-
+  
       return {
         ...row,
         itemAmount: taxDetails.itemAmount,
         itemCgstAmount: taxDetails.cgstAmount > 0 ? taxDetails.cgstAmount : 0,
         itemSgstAmount: taxDetails.sgstAmount > 0 ? taxDetails.sgstAmount : 0,
         itemIgstAmount: taxDetails.igstAmount > 0 ? taxDetails.igstAmount : 0,
+        taxPreference: row.taxPreference, // Ensure taxPreference is included in the row
       };
     });
-
+  
     setRows(updatedRows);
+  
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
       items: updatedRows?.map((row) => {
@@ -484,6 +496,7 @@ const NewOrderTable = ({
     purchaseOrderState?.sourceOfSupply,
     isInterState,
   ]);
+  
 
   useEffect(() => {
     const updatedRows = rows?.map((row) => ({

@@ -118,7 +118,7 @@ const NewReceipt = ({ }: Props) => {
         setAllInvoiceData([]);
         return;
       }
-      setAllInvoiceData(response.data.updatedInvoices || []);
+      setAllInvoiceData(response.data || []);
     } catch (error) {
       console.error("Error fetching invoices:", error);
       setAllInvoiceData([]);
