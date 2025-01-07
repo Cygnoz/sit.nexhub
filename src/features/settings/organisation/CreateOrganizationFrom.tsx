@@ -408,7 +408,7 @@ const CreateOrganizationForm = () => {
   {/* Organization Name Field */}
   <div className="relative">
     <label htmlFor="organizationName" className="text-slate-600">
-      Organization Name
+      Organization Name <span className="text-[#bd2e2e] ">*</span>
     </label>
     <input
       type="text"
@@ -424,7 +424,7 @@ const CreateOrganizationForm = () => {
   {/* Organization Location Field */}
   <div className="relative">
     <label htmlFor="location" className="text-slate-600">
-      Organization Location
+      Organization Location <span className="text-[#bd2e2e] ">*</span>
     </label>
     <div className="relative w-full mt-3">
       <select
@@ -432,7 +432,7 @@ const CreateOrganizationForm = () => {
         onChange={handleInputChange}
         name="organizationCountry"
         id="Location"
-        className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+        className="  block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
       >
         <option value="">Select a country</option>
         {countryData && countryData.length > 0 ? (
@@ -479,7 +479,7 @@ const CreateOrganizationForm = () => {
         onChange={handleInputChange}
         name="organizationIndustry"
         id="organizationIndustry"
-        className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+        className=" block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
       >
         <option value="">Select Industry</option>
         {additionalData.industry &&
@@ -576,7 +576,7 @@ const CreateOrganizationForm = () => {
             <div className="relative ">
               <div className="-mt-4">
                 <label className="text-slate-600 " htmlFor="state">
-                  State / Region / County
+                  State / Region / County <span className="text-[#bd2e2e] ">*</span>
                 </label>
               </div>
               <div className="relative w-full mt-2">
@@ -609,7 +609,7 @@ const CreateOrganizationForm = () => {
             <div>
               <div className="-mt-4">
                 <label className="text-slate-600" htmlFor="organizationPhNum">
-                  Phone
+                  Phone <span className="text-[#bd2e2e] ">*</span>
                 </label>
               </div>
 
@@ -707,7 +707,7 @@ const CreateOrganizationForm = () => {
                 htmlFor="currency"
                 className="text-slate-600 flex items-center gap-1"
               >
-                Base Currency{" "}
+                Base Currency{" "} <span className="text-[#bd2e2e] ">*</span>
                 <div
                   className="mt-1"
                   onMouseEnter={() => handleTooltipToggle("baseCurrency", true)}
@@ -790,7 +790,7 @@ const CreateOrganizationForm = () => {
           <div className="grid grid-cols-12 gap-4 ">
             <div className="relative col-span-8">
               <label htmlFor="timeZone" className="text-slate-600">
-                Time Zone
+                Time Zone <span className="text-[#bd2e2e] ">*</span>
               </label>
               <div className="relative w-full my-3">
                 <select
@@ -822,7 +822,7 @@ const CreateOrganizationForm = () => {
           <div className="grid grid-cols-12 gap-4 mt-1">
             <div className="relative col-span-8 ">
               <label htmlFor="dateformat" className="text-slate-600">
-                Date Format
+                Date Format <span className="text-[#bd2e2e] ">*</span>
               </label>
               <div className="relative w-full mt-3">
                 <select
