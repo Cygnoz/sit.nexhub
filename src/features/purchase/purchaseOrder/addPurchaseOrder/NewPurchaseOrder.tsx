@@ -183,34 +183,13 @@ const NewPurchaseOrder = ({ page }: Props) => {
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
     fetchFunction: (url: string) => Promise<any>,
-    supplierData?: any[],
-    setSelectedSupplier?: React.Dispatch<React.SetStateAction<any>>
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
-
       if (!error && response) {
-        if (url.includes(endponits.GET_ONE_PURCHASE_ORDER)) {
-          // Safely merge previous data
-          setData((prevData: any) => ({
-            ...prevData,
-            ...response.data,
-          }));
 
-          // Handle supplier selection if data exists
-          if (response.data.supplierId && supplierData) {
-            const supplier = supplierData.find(
-              (supplier: any) => supplier._id === response.data.supplierId
-            );
-
-            if (supplier && setSelectedSupplier) {
-              setSelectedSupplier(supplier);
-            }
-          }
-        } else {
-          // Directly set the new data
           setData(response.data);
-        }
+      
       } else {
         console.error("Error in response or no data received:", error);
       }
@@ -436,6 +415,8 @@ const NewPurchaseOrder = ({ page }: Props) => {
 
     fetchInitialData();
   }, [page, id]);
+
+  
   useEffect(() => {
     if (purchaseOrderState && supplierData) {
       const { supplierId } = purchaseOrderState;

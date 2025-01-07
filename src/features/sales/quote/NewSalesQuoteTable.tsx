@@ -608,6 +608,7 @@ useEffect(() => {
       return [];
     });
   }, []);
+  
 
   useEffect(() => {
     getAllItems()

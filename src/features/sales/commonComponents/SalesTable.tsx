@@ -64,7 +64,7 @@ const SalesTable = ({ page }: Props) => {
       }
       console.log(response.data);
       if (page === "invoice") {
-        setData(response.data.updatedInvoices);
+        setData(response.data);
       } else {
         setData(response.data);
       }
@@ -203,6 +203,10 @@ const SalesTable = ({ page }: Props) => {
     }
   };
 
+  const handleEditClick = (id: string) => {
+    navigate(`/sales/salesorder/edit/${id}`);
+  }
+
   return (
     <div className="w-full">
       <div className="flex mb-4 items-center gap-5">
@@ -269,8 +273,8 @@ const SalesTable = ({ page }: Props) => {
                       )
                   )}
                   <td className="py-3 px-4 border-b gap-3 border-tableBorder flex justify-center items-center">
-                    <div>
-                      <PencilEdit color={'#0B9C56'} />
+                    <div onClick={() => handleEditClick(item._id)}>
+                      <PencilEdit color={'#0B9C56'}  className="cursor-pointer"/>
                     </div>
                     <div onClick={() => handleRowClick(item._id)}>
                       <Eye color="#569FBC" className="cursor-pointer" />
