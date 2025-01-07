@@ -69,7 +69,8 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
     if (isProductAlreadyExists) {
     
     }
-  
+  setMatchingItem([])
+  setFinalItem(null)
     setOpenDropdownIndex((prevIndex) => (prevIndex === index ? null : index));
   };
   

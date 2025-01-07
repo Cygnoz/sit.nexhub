@@ -75,11 +75,11 @@ const SendPurchaseOrder=({data}:Props)=>{
 
          </p>
 
-              <div className="flex justify-center items-center gap-4 my-4">
-                  <Button variant="primary" size="sm" className="px-3" onClick={handleRowClick}>
+              <div className="flex justify-center items-center gap-4 mt-7">
+                  <Button variant="primary" size="sm" className="pl-10 pr-10" onClick={handleRowClick}>
                     Yes
                 </Button>
-                <Button onClick={closeModal} variant="secondary" className="px-3"  size="sm">
+                <Button onClick={closeModal} variant="secondary" className="pl-10 pr-10"  size="sm">
                   No
                 </Button>
               

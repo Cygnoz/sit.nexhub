@@ -244,6 +244,8 @@ const AddItem = ({ }: Props) => {
     }
   };
 
+
+
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     fetchAllItems();
@@ -417,8 +419,8 @@ const AddItem = ({ }: Props) => {
   }, [selectedItem]);
   const hsnSac = location.state?.hsnSac;
 
-  console.log(errors,"99");
-  
+  console.log(errors, "99");
+
 
   return (
     <>
@@ -804,7 +806,7 @@ const AddItem = ({ }: Props) => {
                       </div>
 
                       {itemsData.taxRate
-                        .filter((tax: TaxRate) =>
+                        ?.filter((tax: TaxRate) =>
                           tax.taxName
                             .toLowerCase()
                             .includes(searchValueTaxRate.toLowerCase())
@@ -1426,6 +1428,7 @@ const AddItem = ({ }: Props) => {
               Purchase Information
             </p>
             <div className="grid grid-cols-2 gap-4">
+              {/* Cost Price Section */}
               <div className="relative mt-1.5">
                 <label
                   className="text-slate-600 flex text-sm items-center gap-2"
@@ -1434,7 +1437,7 @@ const AddItem = ({ }: Props) => {
                   Cost Price
                 </label>
                 <div className="flex">
-                  <div className="w-16 text-sm  mt-0.5 rounded-l-md text-start bg-white text-zinc-400 border border-inputBorder h-10 items-center justify-center flex">
+                  <div className="w-16 text-sm mt-0.5 rounded-l-md text-start bg-white text-zinc-400 border border-inputBorder h-10 items-center justify-center flex">
                     {itemsData?.organization?.baseCurrency?.toUpperCase() || "INR"}
                   </div>
                   <input
@@ -1444,7 +1447,18 @@ const AddItem = ({ }: Props) => {
                     placeholder="Enter Price"
                     name="costPrice"
                     value={initialItemData.costPrice}
-                    onChange={handleInputChange}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      if (e.target.value) {
+                        // Automatically set "Cost of Goods Sold" as the default selection
+                        setInitialItemData((prevState) => ({
+                          ...prevState,
+                          purchaseAccountId: allAccounts.find(
+                            (item: any) => item.accountSubhead === "Cost of Goods Sold"
+                          )?._id || "",
+                        }));
+                      }
+                    }}
                     onWheel={(e) => e.currentTarget.blur()}
                   />
                 </div>
@@ -1529,6 +1543,7 @@ const AddItem = ({ }: Props) => {
                   </div>
                 )}
               </div>
+
               <div className="relative w-[205%]">
                 <label
                   htmlFor="purchaseaccountDropdown"
@@ -1545,13 +1560,14 @@ const AddItem = ({ }: Props) => {
                     onChange={handleInputChange}
                     value={initialItemData.purchaseAccountId || ""}
                   >
-                    <option value="" hidden >
-                      Select Account
+                    <option value="" hidden>
+                      Select account
                     </option>
                     {allAccounts
                       ?.filter(
                         (item: { accountSubhead: string }) =>
-                          item.accountSubhead === "Expense" || item.accountSubhead === "Cost of Goods Sold"
+                          item.accountSubhead === "Expense" ||
+                          item.accountSubhead === "Cost of Goods Sold"
                       )
                       ?.map((item: { _id: string; accountName: string }) => (
                         <option key={item._id} value={item._id}>
@@ -1571,15 +1587,15 @@ const AddItem = ({ }: Props) => {
               </div>
 
 
+
             </div>
           </div>
 
 
 
           <div className="w-1/2">
-            <p className="text-textColor text-base font-semibold mt-2">
-              Sales Information
-            </p>
+            <p className="text-textColor text-base font-semibold mt-2">Sales Information</p>
+
             <div className="flex gap-4 my-1">
               {/* Selling Price Section */}
               <div className="relative w-1/2 mt-0.5">
@@ -1597,7 +1613,18 @@ const AddItem = ({ }: Props) => {
                     placeholder="Enter Price"
                     name="sellingPrice"
                     value={initialItemData.sellingPrice}
-                    onChange={handleInputChange}
+                    onChange={(e) => {
+                      handleInputChange(e);
+                      if (e.target.value) {
+                        // Automatically set "Sales" as the default selection
+                        setInitialItemData((prevState) => ({
+                          ...prevState,
+                          salesAccountId: allAccounts.find(
+                            (item: any) => item.accountName === "Sales"
+                          )?._id || "",
+                        }));
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -1643,11 +1670,16 @@ const AddItem = ({ }: Props) => {
                   value={initialItemData.salesAccountId || ""}
                 >
                   <option value="" hidden>
-                    Select Account
+                    Select account
                   </option>
                   {allAccounts
-                    ?.filter((item: { accountSubhead: string }) => item.accountSubhead === "Income")
-                    ?.map((item: { _id: string; accountName: string }) => (
+                    ?.filter(
+                      (item: { accountSubhead: string }) => item.accountSubhead === "Income"
+                    )
+                    .sort((a: { accountName: string }, b: { accountName: string }) =>
+                      a.accountName.localeCompare(b.accountName)
+                    ) // Sort alphabetically by accountName
+                    .map((item: { _id: string; accountName: string }) => (
                       <option key={item._id} value={item._id}>
                         {item.accountName}
                       </option>
@@ -1666,6 +1698,7 @@ const AddItem = ({ }: Props) => {
               )}
             </div>
           </div>
+
 
         </div>
 

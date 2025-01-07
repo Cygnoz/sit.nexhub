@@ -25,8 +25,8 @@ type Row = {
   itemCgstAmount: number | string; 
   itemIgstAmount: number | string; 
   itemVatAmount: number | string; 
-  itemPurchaseQuantity:number | string; 
   taxPreference:string
+  stock:number| string;
 };
 
 type Props = {
@@ -50,7 +50,6 @@ const DebitNoteTable = ({
   const [items, setItems] = useState<any>([]);
   const { request: getAllItemsRequest } = useApi("get", 5003);
 
-  console.log(items,"bills")
   
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<Row[]>([
@@ -69,8 +68,8 @@ const DebitNoteTable = ({
       itemCgstAmount: "",
       itemIgstAmount: "",
       itemVatAmount: "",
-      itemPurchaseQuantity:"",
-      taxPreference:""
+      taxPreference:"",
+      stock:"",
     },
   ]);
 
@@ -107,17 +106,17 @@ const DebitNoteTable = ({
       itemIgstAmount: "",
       itemVat:"",
       itemVatAmount:"",
-      itemPurchaseQuantity:"",
       taxPreference:"",
+      stock:"",
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
   };
 
+
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
-    console.log(item,"item")
 
 
     const newRows = [...rows];
@@ -130,8 +129,15 @@ const DebitNoteTable = ({
     newRows[index].itemIgst = item.itemIgst;
     newRows[index].itemAmount = item.itemAmount;
     newRows[index].itemCostPrice = item.itemCostPrice;
-    newRows[index].itemPurchaseQuantity=item.itemQuantity;
+    // newRows[index].itemPurchaseQuantity=item.itemQuantity;
     newRows[index].taxPreference=item.taxPreference;
+
+    if(item.returnQuantity){
+      newRows[index].stock = item.itemQuantity-item.returnQuantity;
+    }
+    else{
+      newRows[index].stock = item.itemQuantity;
+    }
 
 
     const costPrice = Number(newRows[index].itemCostPrice);
@@ -149,7 +155,6 @@ const DebitNoteTable = ({
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
     
-    console.log(igstAmount, sgstAmount,cgstAmount,"igstsvdjgjgh")
 
     if (isInterState) {
       newRows[index].itemTax = igstAmount;
@@ -181,7 +186,6 @@ const DebitNoteTable = ({
     const sgstPercentage = item.itemSgst || 0;
     const igstPercentage = item.itemIgst || 0;
 
-    console.log(cgstPercentage,sgstPercentage,igstPercentage,"qwertyui")
 
 
     let cgstAmount = 0;
@@ -209,7 +213,7 @@ const DebitNoteTable = ({
 
     const quantity = Number(newRows[index].itemQuantity);
     const costPrice = Number(newRows[index].itemCostPrice);
-    const purchaseQuantity = Number(newRows[index].itemPurchaseQuantity);
+    const purchaseQuantity = Number(newRows[index].stock);
 
     if (quantity > purchaseQuantity) {
       newRows[index].itemQuantity = purchaseQuantity.toString()
@@ -301,7 +305,8 @@ const DebitNoteTable = ({
         itemIgstAmount: "",
         itemVatAmount: "",
         itemPurchaseQuantity:"",
-        taxPreference:""
+        taxPreference:"",
+        stock:"",
       };
   
       // Reset rows to default row
@@ -315,7 +320,6 @@ const DebitNoteTable = ({
     }
   };
   
-  console.log(rows,"rows")
   
   const calculateTotalSGST = () => {
     return rows.reduce((total, row) => {
@@ -328,7 +332,6 @@ const DebitNoteTable = ({
   // Function to calculate total CGST
   const calculateTotalCGST = () => {
     return rows.reduce((total, row) => {
-      console.log(row.itemCgstAmount,"total cgst");
 
       const cgst = !isInterState ? (Number(row.itemCgstAmount) || 0 ): 0;
       return total + cgst;
@@ -458,6 +461,7 @@ const DebitNoteTable = ({
         itemVatAmount: "",
         itemPurchaseQuantity:"",
         taxPreference:"",
+        stock:""
       };
   
       setRows([defaultRow]);
@@ -536,8 +540,8 @@ const DebitNoteTable = ({
       onSearchChange={setSearchValue}
       placeholder="Select Item"
     />
-  {selectedBill?.items?.length > 0 ? ( // Check if selectedBill has items
-  filterItems()?.length > 0 ? ( // Check if filtered items exist
+  {selectedBill?.items?.length > 0 ? ( 
+  filterItems()?.length > 0 ? ( 
     filterItems()?.map((item: any, idx: number) => (
       <div
         key={idx}
@@ -554,7 +558,7 @@ const DebitNoteTable = ({
         <div className="col-span-10 flex">
           <div className="text-start">
             <p className="font-bold text-sm text-black">{item.itemName}</p>
-            <p className="text-xs text-gray-500">Rate: {item.sellingPrice}</p>
+            <p className="text-xs text-gray-500">Rate: {item.costPrice?item.costPrice:"-"}</p>
           </div>
         </div>
       </div>
@@ -584,7 +588,7 @@ const DebitNoteTable = ({
                       handleRowChange(index, "itemQuantity", e.target.value)
                     }
                   /> <br />
-                  Stock : {row.itemPurchaseQuantity?row.itemPurchaseQuantity:"0"}
+                  Stock : {row.stock?row.stock:"0"}
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input

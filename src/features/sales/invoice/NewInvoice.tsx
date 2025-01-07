@@ -82,6 +82,8 @@ const initialSalesQuoteState: invoice = {
   expectedShipmentDate: "",
   salesOrderNumber: "",
 
+  taxPreference:"Taxable",
+
   items: [
     {
       itemId: "",
@@ -97,7 +99,7 @@ const initialSalesQuoteState: invoice = {
       sgstAmount: "",
       igstAmount: "",
       vatAmount: "",
-      itemTotaltax: "",
+      itemTotalTax: "",
       discountType: "Percentage",
       discountAmount: "",
       amount: "",
@@ -551,7 +553,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                   {openDropdownIndex === "customer" && (
                     <div
                       ref={dropdownRef}
-                      className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2   space-y-1 max-w-72 max-h-80 overflow-y-auto  hide-scrollbar"
+                      className="absolute z-10 bg-white  shadow  rounded-md mt-1 p-2   space-y-1 max-w-80 max-h-80 overflow-y-auto "
                       style={{ width: "80%" }}
                     >
                       <SearchBar
@@ -596,7 +598,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                       ) : (
                         <></>
                       )}
-                      <div className="hover:bg-gray-100  cursor-pointe border border-slate-400 rounded-lg py-4">
+                      <div className="hover:bg-gray-100  cursor-pointer border border-slate-400 rounded-lg py-4">
                         <NewCustomerModal page="purchase" />
                       </div>
                     </div>
@@ -789,6 +791,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
                       <option value="Due on Receipt" selected>Due on Receipt</option>
                       <option value="Due end of the month">Due end of the month</option>
                       <option value="Due end of next month">Due end of next month</option>
+                      <option value="Pay Now">Pay Now</option>
                       <option value="Net 15">Net 15</option>
                       <option value="Net 30">Net 30</option>
                       <option value="Net 45">Net 45</option>

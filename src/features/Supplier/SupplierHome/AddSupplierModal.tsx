@@ -169,9 +169,6 @@ const AddSupplierModal = ({ page }: Props) => {
   const [supplierdata, setSupplierData] = useState<SupplierData>(initializeSupplierData());
   const [errors, setErrors] = useState({
     supplierDisplayName: false,
-    companyName: false,
-    firstName: false,
-    lastName: false,
     gstinUin: false,
     sourceOfSupply: false,
   });
@@ -319,6 +316,12 @@ const AddSupplierModal = ({ page }: Props) => {
 
   const closeModal = () => {
     setModalOpen(false);
+    setSupplierData(initializeSupplierData)
+    setErrors({
+      supplierDisplayName: false,
+      gstinUin: false,
+      sourceOfSupply: false,
+    })
   };
 
   // add contact person
@@ -413,16 +416,50 @@ const AddSupplierModal = ({ page }: Props) => {
       }
     }
 
+    // if (name === "companyName") {
+    //   setSupplierData((prevData) => ({
+    //     ...prevData,
+    //     supplierDisplayName: value, // Always update with companyName
+    //   }));
+    //   if (supplierdata.supplierDisplayName) {
+    //     setErrors({ ...errors, supplierDisplayName: false });
+    //   }
+    // } else if (name === "firstName") {
+    //   setSupplierData((prevData) => ({
+    //     ...prevData,
+    //     supplierDisplayName: prevData.companyName ? prevData.supplierDisplayName : value, // Update only if companyName is absent
+    //   }));
+    //   if (supplierdata.supplierDisplayName || !supplierdata.companyName) {
+    //     setErrors({ ...errors, supplierDisplayName: false });
+    //   }
+    // }
+
     // Update supplierDisplayName based on companyName
     if (name === "companyName") {
       setSupplierData((prevData) => ({
         ...prevData,
-        supplierDisplayName: value,
+        supplierDisplayName: value, // Always update with companyName
       }));
       if (supplierdata.supplierDisplayName) {
         setErrors({ ...errors, supplierDisplayName: false });
       }
+    } else if (name === "firstName" || name === "lastName") {
+      setSupplierData((prevData) => {
+        const firstName = name === "firstName" ? value : prevData.firstName;
+        const lastName = name === "lastName" ? value : prevData.lastName;
+        const fullName = `${firstName || ""} ${lastName || ""}`.trim()
+        return {
+          ...prevData,
+          [name]: value, // Update the specific field (firstName or lastName)
+          supplierDisplayName: prevData.companyName ? prevData.supplierDisplayName : fullName, // Update only if companyName is absent
+        };
+      });
+      if (supplierdata.supplierDisplayName || !supplierdata.companyName) {
+        setErrors({ ...errors, supplierDisplayName: false });
+      }
     }
+    
+    
 
     // Handle checkbox updates
     if (type === "checkbox") {
@@ -522,16 +559,13 @@ const AddSupplierModal = ({ page }: Props) => {
   };
 
   const handleSubmit = async () => {
-    if (loading) return; 
+    if (loading) return;
     setLoading(true);
-  
+
     const newErrors = { ...errors };
-  
+
     if (supplierdata.supplierDisplayName === "")
       newErrors.supplierDisplayName = true;
-    if (supplierdata.companyName === "") newErrors.companyName = true;
-    if (supplierdata.firstName === "") newErrors.firstName = true;
-    if (supplierdata.lastName === "") newErrors.lastName = true;
     if (
       supplierdata.gstTreatment !== "" &&
       supplierdata.gstTreatment !== "Overseas" &&
@@ -548,20 +582,20 @@ const AddSupplierModal = ({ page }: Props) => {
     const isAccountNumberValid = isAccountNumberSame.every(
       (isValid) => isValid
     );
-  
+
     if (!isAccountNumberValid) {
       toast.error("Please ensure account numbers match before saving.");
       setLoading(false); // Reset loading state
       return;
     }
-  
+
     if (Object.values(newErrors).some((error) => error)) {
       setErrors(newErrors);
       console.log(newErrors);
       setLoading(false); // Reset loading state
       return;
     }
-  
+
     try {
       const url = `${endponits.ADD_SUPPLIER}`;
       const { response, error } = await CreateSupplier(url, supplierdata);
@@ -573,7 +607,7 @@ const AddSupplierModal = ({ page }: Props) => {
         getAdditionalData();
         getAdditionalInfo();
         getOneOrganization();
-  
+
         setSupplierData(initializeSupplierData);
       } else {
         toast.error(error.response?.data?.message || error.message);
@@ -586,7 +620,7 @@ const AddSupplierModal = ({ page }: Props) => {
       setLoading(false)
     }
   };
-  
+
 
   // compy billing address
   const handleCopyAddress = (e: any) => {
@@ -822,20 +856,7 @@ const AddSupplierModal = ({ page }: Props) => {
                           placeholder="Enter First Name"
                           value={supplierdata.firstName}
                           onChange={handleChange}
-                          onFocus={() =>
-                            setErrors({ ...errors, firstName: false })
-                          }
-                          onBlur={() => {
-                            if (supplierdata.firstName === "") {
-                              setErrors({ ...errors, firstName: true });
-                            }
-                          }}
                         />
-                        {errors.firstName && (
-                          <div className="text-red-800 text-xs ms-2 mt-1">
-                            Enter first Name
-                          </div>
-                        )}
                       </div>
 
                       <div>
@@ -850,20 +871,7 @@ const AddSupplierModal = ({ page }: Props) => {
                           placeholder="Enter Last Name"
                           value={supplierdata.lastName}
                           onChange={handleChange}
-                          onFocus={() =>
-                            setErrors({ ...errors, lastName: false })
-                          }
-                          onBlur={() => {
-                            if (supplierdata.lastName === "") {
-                              setErrors({ ...errors, lastName: true });
-                            }
-                          }}
                         />
-                        {errors.lastName && (
-                          <div className="text-red-800 text-xs ms-2 mt-1">
-                            Enter Last Name
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -879,20 +887,7 @@ const AddSupplierModal = ({ page }: Props) => {
                         placeholder="Enter Company Name"
                         value={supplierdata.companyName}
                         onChange={handleChange}
-                        onFocus={() =>
-                          setErrors({ ...errors, companyName: false })
-                        }
-                        onBlur={() => {
-                          if (supplierdata.companyName === "") {
-                            setErrors({ ...errors, companyName: true });
-                          }
-                        }}
                       />
-                      {errors.companyName && (
-                        <div className="text-red-800 text-xs ms-2 mt-1">
-                          Enter Company Name
-                        </div>
-                      )}
                     </div>
                     <div>
                       <label htmlFor="companyName">
@@ -916,7 +911,7 @@ const AddSupplierModal = ({ page }: Props) => {
                         }}
                       />
                       {errors.supplierDisplayName && (
-                        <div className="text-red-800 text-xs ms-2 mt-1">
+                        <div className="text-red-800 absolute text-xs ms-2 mt-1.5">
                           Enter Supplier Display Name
                         </div>
                       )}
@@ -1222,7 +1217,7 @@ const AddSupplierModal = ({ page }: Props) => {
                           className="hidden"
                           // value={supplierdata.documents}
                           name="documents"
-                          // onChange={(e)=>handleFileChange(e)}
+                        // onChange={(e)=>handleFileChange(e)}
                         />
                       </div>
                       <div className="">
@@ -1346,47 +1341,47 @@ const AddSupplierModal = ({ page }: Props) => {
 
                             {supplierdata.gstTreatment !==
                               "Unregistered Business" && (
-                              <div>
                                 <div>
-                                  <label className="block mb-1">
-                                    GSTIN/UIN
-                                  </label>
-                                  <input
-                                    type="text"
-                                    name="gstinUin"
-                                    className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                                    placeholder="Enter GSTIN/UIN"
-                                    value={supplierdata.gstinUin}
-                                    onChange={handleChange}
-                                    onBlur={() => {
-                                      if (
-                                        supplierdata.gstTreatment !==
+                                  <div>
+                                    <label className="block mb-1">
+                                      GSTIN/UIN
+                                    </label>
+                                    <input
+                                      type="text"
+                                      name="gstinUin"
+                                      className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                                      placeholder="Enter GSTIN/UIN"
+                                      value={supplierdata.gstinUin}
+                                      onChange={handleChange}
+                                      onBlur={() => {
+                                        if (
+                                          supplierdata.gstTreatment !==
                                           "Overseas" &&
-                                        supplierdata.gstTreatment !==
+                                          supplierdata.gstTreatment !==
                                           "Unregistered Business" &&
-                                        supplierdata.gstTreatment !== "" &&
-                                        supplierdata.gstinUin === ""
-                                      ) {
-                                        setErrors((prevErrors) => ({
-                                          ...prevErrors,
-                                          gstinUin: true,
-                                        }));
-                                      } else {
-                                        setErrors((prevErrors) => ({
-                                          ...prevErrors,
-                                          gstinUin: false,
-                                        }));
-                                      }
-                                    }}
-                                  />
+                                          supplierdata.gstTreatment !== "" &&
+                                          supplierdata.gstinUin === ""
+                                        ) {
+                                          setErrors((prevErrors) => ({
+                                            ...prevErrors,
+                                            gstinUin: true,
+                                          }));
+                                        } else {
+                                          setErrors((prevErrors) => ({
+                                            ...prevErrors,
+                                            gstinUin: false,
+                                          }));
+                                        }
+                                      }}
+                                    />
+                                  </div>
+                                  {errors.gstinUin && (
+                                    <p className="text-red-800 text-xs ms-2 mt-1">
+                                      Please enter a valid GSTIN/UIN.
+                                    </p>
+                                  )}
                                 </div>
-                                {errors.gstinUin && (
-                                  <p className="text-red-800 text-xs ms-2 mt-1">
-                                    Please enter a valid GSTIN/UIN.
-                                  </p>
-                                )}
-                              </div>
-                            )}
+                              )}
                           </div>
                         )}
 
@@ -1519,7 +1514,7 @@ const AddSupplierModal = ({ page }: Props) => {
                               Country/Region
                             </label>
                             <select
-                            disabled
+                              disabled
                               className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                               name="billingCountry"
                               value={supplierdata.billingCountry}
@@ -2095,13 +2090,13 @@ const AddSupplierModal = ({ page }: Props) => {
                                       toggleShowAccountNumber(index)
                                     }
                                   >
-                                  <div className="hidden">
+                                    <div className="hidden">
                                       {showAccountNumbers[index] ? (
                                         <Eye color={"currentColor"} />
                                       ) : (
                                         <EyeOff />
                                       )}
-                                  </div>
+                                    </div>
                                   </button>
                                 </div>
                               </div>
@@ -2141,13 +2136,13 @@ const AddSupplierModal = ({ page }: Props) => {
                                       toggleShowReEnterAccountNumber(index)
                                     }
                                   >
-                                   <div className="hidden">
+                                    <div className="hidden">
                                       {showReEnterAccountNumbers[index] ? (
                                         <Eye color={"currentColor"} />
                                       ) : (
                                         <EyeOff />
                                       )}
-                                   </div>
+                                    </div>
                                   </button>
                                 </div>
                                 {supplierdata.bankDetails[index].accountNum &&

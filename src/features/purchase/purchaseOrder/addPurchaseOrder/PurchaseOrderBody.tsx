@@ -37,9 +37,9 @@ export interface PurchaseOrder {
     taxPreference:string;
   }>;
 
-  otherExpense: number;
+  otherExpenseAmount: number;
   otherExpenseReason: string;
-  freight: number;
+  freightAmount: number;
   vehicleNo: string;
   addNotes: string;
   termsAndConditions: string;
@@ -53,7 +53,7 @@ export interface PurchaseOrder {
   vat: number;
   itemTotalDiscount: number;
   totalTaxAmount: number;
-  roundOff: number;
+  roundOffAmount: number;
   transactionDiscountType:string;
   transactionDiscount:number;
   transactionDiscountAmount:number;

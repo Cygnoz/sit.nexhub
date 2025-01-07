@@ -28,6 +28,7 @@ function AddExpensePage({}: Props) {
   };
 
   const [expenseData, setExpenseData] = useState<ExpenseData>({
+    expenseNumber: "",
     expenseDate: "",
     paidThrough: "",
     paidThroughId: "",
@@ -78,6 +79,8 @@ function AddExpensePage({}: Props) {
   const { request: getTax } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
   const { request: getOrg } = useApi("get", 5004);
+  const { request: getPrefix } = useApi("get", 5008);
+
   const [countryData, setcountryData] = useState<any | any>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const [supplierData, setSupplierData] = useState<[]>([]);
@@ -91,6 +94,7 @@ function AddExpensePage({}: Props) {
   const [categories, setCategories] = useState<any | []>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [Itemize, setItemize] = useState<boolean>(true);
+  const [prefix, setPrefix] = useState<any>(null);
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
   );
@@ -99,8 +103,6 @@ function AddExpensePage({}: Props) {
     paidThrough: [],
     liabilities: [],
   });
-
- 
 
   const handleAddExpense = async () => {
     try {
@@ -288,14 +290,12 @@ function AddExpensePage({}: Props) {
     >
   ) => {
     const { name, value } = e.target;
-  
+
     setExpenseData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
-  
-  
 
   const fetchCountries = async () => {
     try {
@@ -406,9 +406,9 @@ function AddExpensePage({}: Props) {
     if (expenseData.ratePerKm && expenseData.distance) {
       const validRatePerKm = parseFloat(expenseData.ratePerKm as string) || 0;
       const validDistance = parseFloat(expenseData.distance as string) || 0;
-      
+
       const totalExpense = validRatePerKm * validDistance;
-  
+
       setExpenseData((prevData) => ({
         ...prevData,
         expense: [
@@ -421,9 +421,6 @@ function AddExpensePage({}: Props) {
       }));
     }
   }, [expenseData.ratePerKm, expenseData.distance]);
-  
-  
-
 
   useEffect(() => {
     setExpenseData((prevData) => ({
@@ -489,8 +486,6 @@ function AddExpensePage({}: Props) {
         (sum, item) => sum + item.igstAmount,
         0
       );
-      
-
 
       setExpenseData((prevData) => ({
         ...prevData,
@@ -526,7 +521,6 @@ function AddExpensePage({}: Props) {
       }));
     }
   }, [expenseData.expense]);
-  
 
   useEffect(() => {
     fetchAllAccounts();
@@ -534,11 +528,24 @@ function AddExpensePage({}: Props) {
     const categoryUrl = `${endponits.GET_ALL_EXPENSE_CATEGORY}`;
     const taxRateUrl = `${endponits.GET_ALL_TAX}`;
     const organizationURL = `${endponits.GET_ONE_ORGANIZATION}`;
+    const getPrefixUrl = `${endponits.GET_LAST_EXPENSE_PREFIX}`;
 
     fetchData(organizationURL, setOrganization, getOrg);
     fetchData(categoryUrl, setCategories, getAllExpenseCategory);
     fetchData(taxRateUrl, setTaxRate, getTax);
+    fetchData(getPrefixUrl, setPrefix, getPrefix);
   }, []);
+
+  useEffect(() => {
+    if (prefix) {
+      setExpenseData((prevData) => ({
+        ...prevData,
+        expenseNumber: prefix,
+      }));
+    }
+  }, [prefix]);
+
+  console.log(prefix);
 
   useEffect(() => {
     handlePlaceOfSupply();
@@ -634,6 +641,22 @@ function AddExpensePage({}: Props) {
                     onChange={handleChange}
                     className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-3 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     placeholder="Select Date"
+                  />
+                </div>
+              </div>
+              <div className="col-span-1 space-y-2">
+                <label className="text-sm mb-1 text-labelColor">
+                  Expense Number<span className="text-[#bd2e2e] ">*</span>
+                </label>
+                <div className="relative w-full">
+                  <input
+                    disabled
+                    type="text"
+                    name="expenseNumber"
+                    value={expenseData.expenseNumber}
+                    onChange={handleAddExpense}
+                    className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    placeholder="Expense Number"
                   />
                 </div>
               </div>
@@ -1230,70 +1253,78 @@ function AddExpensePage({}: Props) {
               </div>
 
               {Itemize && (
-               <div className="col-span-1 space-y-2">
-               <label className="text-sm mb-1 text-labelColor">Tax</label>
-               <div className="relative w-full">
-                 <select
-                   disabled={
-                     expenseData.gstTreatment === "Registered Business - Composition" ||
-                     expenseData.gstTreatment === "Unregistered Business" ||
-                     expenseData.gstTreatment === "Overseas"
-                   }
-                   name="taxGroup"
-                   value={
-                     selectedTax.taxName === "Non-Taxable"
-                       ? "Non-Taxable"
-                       : JSON.stringify(selectedTax) || ""
-                   }
-                   onChange={(e) => {
-                     let selectedValue;
-           
-                     // Handle "Non-Taxable" case safely
-                     if (e.target.value === "Non-Taxable") {
-                       selectedValue = { taxName: "Non-Taxable", cgst: 0, sgst: 0, igst: 0 };
-                     } else {
-                       selectedValue = JSON.parse(e.target.value);
-                     }
-           
-                     // Update state with the selected tax value
-                     setExpenseData((prevData) => {
-                       const updatedExpenses = [...prevData.expense];
-                       updatedExpenses[0] = {
-                         ...updatedExpenses[0],
-                         taxGroup: selectedValue.taxName,
-                         cgst: selectedValue.cgst,
-                         sgst: selectedValue.sgst,
-                         igst: selectedValue.igst,
-                       };
-           
-                       return {
-                         ...prevData,
-                         expense: updatedExpenses,
-                       };
-                     });
-           
-                     setSelectedTax(selectedValue);
-                   }}
-                   className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
-                 >
-                   <option value="">Select Tax Rate</option>
-           
-                   <option value="Non-Taxable">Non-Taxable</option>
-                   <optgroup label="Tax">
-    {taxRate?.gstTaxRate?.map((account: any, index: number) => (
-      <option key={index} value={JSON.stringify(account)}>
-        {account?.taxName}
-      </option>
-    ))}
-  </optgroup>
-                 </select>
-           
-                 {/* Dropdown Icon */}
-                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                   <CehvronDown color="gray" />
-                 </div>
-               </div>
-             </div>
+                <div className="col-span-1 space-y-2">
+                  <label className="text-sm mb-1 text-labelColor">Tax</label>
+                  <div className="relative w-full">
+                    <select
+                      disabled={
+                        expenseData.gstTreatment ===
+                          "Registered Business - Composition" ||
+                        expenseData.gstTreatment === "Unregistered Business" ||
+                        expenseData.gstTreatment === "Overseas"
+                      }
+                      name="taxGroup"
+                      value={
+                        selectedTax.taxName === "Non-Taxable"
+                          ? "Non-Taxable"
+                          : JSON.stringify(selectedTax) || ""
+                      }
+                      onChange={(e) => {
+                        let selectedValue;
+
+                        // Handle "Non-Taxable" case safely
+                        if (e.target.value === "Non-Taxable") {
+                          selectedValue = {
+                            taxName: "Non-Taxable",
+                            cgst: 0,
+                            sgst: 0,
+                            igst: 0,
+                          };
+                        } else {
+                          selectedValue = JSON.parse(e.target.value);
+                        }
+
+                        // Update state with the selected tax value
+                        setExpenseData((prevData) => {
+                          const updatedExpenses = [...prevData.expense];
+                          updatedExpenses[0] = {
+                            ...updatedExpenses[0],
+                            taxGroup: selectedValue.taxName,
+                            cgst: selectedValue.cgst,
+                            sgst: selectedValue.sgst,
+                            igst: selectedValue.igst,
+                          };
+
+                          return {
+                            ...prevData,
+                            expense: updatedExpenses,
+                          };
+                        });
+
+                        setSelectedTax(selectedValue);
+                      }}
+                      className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                    >
+                      <option value="">Select Tax Rate</option>
+
+                      <option value="Non-Taxable">Non-Taxable</option>
+                      <optgroup label="Tax">
+                        {taxRate?.gstTaxRate?.map(
+                          (account: any, index: number) => (
+                            <option key={index} value={JSON.stringify(account)}>
+                              {account?.taxName}
+                            </option>
+                          )
+                        )}
+                      </optgroup>
+                    </select>
+
+                    {/* Dropdown Icon */}
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
+                  </div>
+                </div>
               )}
 
               <div className="col-span-1 space-y-2">
@@ -1343,95 +1374,96 @@ function AddExpensePage({}: Props) {
                   </div>
                 </>
               )}
-              {expenseData.expense[0].taxGroup && expenseData.expense[0].taxGroup!=="Non-Taxable" && (
-                <div className=" -mt-5 ">
-                  <label
-                    className="block text-sm text-labelColor"
-                    htmlFor="amountIs"
-                  >
-                    Amount Is
-                  </label>
-                  <div className="flex items-center space-x-4 text-textColor text-sm">
-                    <div className="flex gap-2 justify-center items-center">
-                      <div
-                        className="grid place-items-center mt-2"
-                        onClick={() => {
-                          setExpenseData((prev) => ({
-                            ...prev,
-                            amountIs: "Tax Inclusive",
-                          }));
-                        }}
-                      >
-                        <input
-                          id="Tax Inclusive"
-                          type="radio"
-                          name="amountIs" // Corrected name
-                          value="Tax Inclusive"
-                          className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                            expenseData.amountIs === "Tax Inclusive"
-                              ? "border-8 border-[#97998E]"
-                              : "border-1 border-[#97998E]"
-                          }`}
-                          checked={expenseData.amountIs === "Tax Inclusive"}
-                          readOnly
-                        />
+              {expenseData.expense[0].taxGroup &&
+                expenseData.expense[0].taxGroup !== "Non-Taxable" && (
+                  <div className=" -mt-5 ">
+                    <label
+                      className="block text-sm text-labelColor"
+                      htmlFor="amountIs"
+                    >
+                      Amount Is
+                    </label>
+                    <div className="flex items-center space-x-4 text-textColor text-sm">
+                      <div className="flex gap-2 justify-center items-center">
                         <div
-                          className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                            expenseData.amountIs === "Tax Inclusive"
-                              ? "bg-neutral-50"
-                              : "bg-transparent"
-                          }`}
-                        />
+                          className="grid place-items-center mt-2"
+                          onClick={() => {
+                            setExpenseData((prev) => ({
+                              ...prev,
+                              amountIs: "Tax Inclusive",
+                            }));
+                          }}
+                        >
+                          <input
+                            id="Tax Inclusive"
+                            type="radio"
+                            name="amountIs" // Corrected name
+                            value="Tax Inclusive"
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                              expenseData.amountIs === "Tax Inclusive"
+                                ? "border-8 border-[#97998E]"
+                                : "border-1 border-[#97998E]"
+                            }`}
+                            checked={expenseData.amountIs === "Tax Inclusive"}
+                            readOnly
+                          />
+                          <div
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                              expenseData.amountIs === "Tax Inclusive"
+                                ? "bg-neutral-50"
+                                : "bg-transparent"
+                            }`}
+                          />
+                        </div>
+                        <label
+                          htmlFor="Tax Inclusive"
+                          className="text-start font-medium mt-1"
+                        >
+                          Tax Inclusive
+                        </label>
                       </div>
-                      <label
-                        htmlFor="Tax Inclusive"
-                        className="text-start font-medium mt-1"
-                      >
-                        Tax Inclusive
-                      </label>
-                    </div>
 
-                    <div className="flex gap-2 justify-center items-center">
-                      <div
-                        className="grid place-items-center mt-1"
-                        onClick={() => {
-                          setExpenseData((prev) => ({
-                            ...prev,
-                            amountIs: "Tax Exclusive",
-                          }));
-                        }}
-                      >
-                        <input
-                          id="Tax Exclusive"
-                          type="radio"
-                          name="amountIs"
-                          value="Tax Exclusive"
-                          className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                            expenseData.amountIs === "Tax Exclusive"
-                              ? "border-8 border-[#97998E]"
-                              : "border-1 border-[#97998E]"
-                          }`}
-                          checked={expenseData.amountIs === "Tax Exclusive"} // Correct checked logic
-                          readOnly // Prevent unnecessary onChange handling
-                        />
+                      <div className="flex gap-2 justify-center items-center">
                         <div
-                          className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                            expenseData.amountIs === "Tax Exclusive"
-                              ? "bg-neutral-50"
-                              : "bg-transparent"
-                          }`}
-                        />
+                          className="grid place-items-center mt-1"
+                          onClick={() => {
+                            setExpenseData((prev) => ({
+                              ...prev,
+                              amountIs: "Tax Exclusive",
+                            }));
+                          }}
+                        >
+                          <input
+                            id="Tax Exclusive"
+                            type="radio"
+                            name="amountIs"
+                            value="Tax Exclusive"
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                              expenseData.amountIs === "Tax Exclusive"
+                                ? "border-8 border-[#97998E]"
+                                : "border-1 border-[#97998E]"
+                            }`}
+                            checked={expenseData.amountIs === "Tax Exclusive"} // Correct checked logic
+                            readOnly // Prevent unnecessary onChange handling
+                          />
+                          <div
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                              expenseData.amountIs === "Tax Exclusive"
+                                ? "bg-neutral-50"
+                                : "bg-transparent"
+                            }`}
+                          />
+                        </div>
+                        <label
+                          htmlFor="Tax Exclusive"
+                          className="text-start font-medium mt-1"
+                        >
+                          Tax Exclusive
+                        </label>
                       </div>
-                      <label
-                        htmlFor="Tax Exclusive"
-                        className="text-start font-medium mt-1"
-                      >
-                        Tax Exclusive
-                      </label>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
             {!Itemize && (
               <button
@@ -1660,7 +1692,7 @@ function AddExpensePage({}: Props) {
                   <div
                     ref={dropdownRef}
                     className="absolute z-10 bg-white shadow rounded-md w-[70%] mt-1 p-2  space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
-                    onClick={(e) => e.stopPropagation()} 
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <SearchBar
                       searchValue={searchValue}

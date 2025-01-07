@@ -7,6 +7,7 @@ import PrintButton from "../../../../Components/PrintButton";
 import Pagination from "../../../../Components/Pagination/Pagination";
 import Eye from "../../../../assets/icons/Eye";
 import Trash2 from "../../../../assets/icons/Trash2"; // Include Trash Icon
+import Pen from "../../../../assets/icons/Pen";
 
 interface Column {
   id: string;
@@ -25,6 +26,7 @@ interface TableProps {
   searchableFields: string[];
   setColumns?: any;
   page?: any;
+  onEditClick?: (id: string) => void;
 }
 
 const PurchaseTable: React.FC<TableProps> = ({
@@ -38,20 +40,24 @@ const PurchaseTable: React.FC<TableProps> = ({
   loading,
   searchableFields,
   setColumns,
+  onEditClick
 }) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const rowsPerPage = 10;
 
   const filteredData = Array.isArray(data)
-    ? data.filter((item) => {
+  ? data
+      .slice()
+      .reverse() 
+      .filter((item) => {
         return searchableFields
           .map((field) => item[field]?.toString().trim().toLowerCase())
           .some((fieldValue) =>
             fieldValue?.includes(searchValue.toLowerCase().trim())
           );
       })
-    : [];
+  : [];
 
   const totalPages = Math.ceil(filteredData?.length / rowsPerPage);
   const paginatedData = filteredData?.slice(
@@ -114,7 +120,7 @@ const PurchaseTable: React.FC<TableProps> = ({
                 <TableSkelton key={idx} columns={skeletonColumns} />
               ))
             ) : paginatedData && paginatedData.length > 0 ? (
-              paginatedData.reverse().map((item, rowIndex) => (
+              paginatedData.map((item, rowIndex) => (
                 <tr key={item.id} className="relative cursor-pointer">
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {(currentPage - 1) * rowsPerPage + rowIndex + 1}
@@ -136,6 +142,9 @@ const PurchaseTable: React.FC<TableProps> = ({
                       )
                   )}
                   <td className="py-3 px-4 border-b border-tableBorder flex items-center justify-center gap-2">
+                { page==="PurchaseOrder" && <button onClick={() => onEditClick && onEditClick(item._id)}>
+                    <Pen color={"green"}/>
+                    </button>}
                     <button onClick={() => onRowClick && onRowClick(item._id)}>
                       <Eye color={"#569FBC"} />
                     </button>

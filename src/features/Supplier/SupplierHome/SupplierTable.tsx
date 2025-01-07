@@ -42,6 +42,8 @@ const SupplierTable = ({
   setSearchValue,
   loading, // Destructure loading prop
 }: SupplierTableProps) => {
+  console.log(supplierData,"supplierData");
+  
   const initialColumns: Column[] = [
     { id: "supplierDisplayName", label: "Name", visible: true },
     { id: "companyName", label: "Company Name", visible: true },

@@ -10,6 +10,7 @@ import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 import { TableResponseContext } from "../../../context/ContextShare";
 import Eye from "../../../assets/icons/Eye";
+import PencilEdit from "../../../assets/icons/PencilEdit";
 
 
 interface Column {
@@ -46,14 +47,14 @@ const SalesTable = ({ page }: Props) => {
     try {
       const url =
         page === "invoice"
-        ? `${endponits.GET_ALL_SALES_INVOICE}`
-        : page === "salesOrder"
-        ? `${endponits.GET_ALL_SALES_ORDER}`
-        : page === "quote"
-        ? `${endponits.GET_ALL_QUOTES}`
-        : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}`
-        : page === "credit-Note" ? `${endponits.GET_ALL_CREDIT_NOTE}`
-        : "";
+          ? `${endponits.GET_ALL_SALES_INVOICE}`
+          : page === "salesOrder"
+            ? `${endponits.GET_ALL_SALES_ORDER}`
+            : page === "quote"
+              ? `${endponits.GET_ALL_QUOTES}`
+              : page === "reciept" ? `${endponits.GET_ALL_SALES_RECIEPT}`
+                : page === "credit-Note" ? `${endponits.GET_ALL_CREDIT_NOTE}`
+                  : "";
 
       setLoading({ ...loading, skelton: true });
       const { response, error } = await getAllQuotes(url);
@@ -63,7 +64,7 @@ const SalesTable = ({ page }: Props) => {
       }
       console.log(response.data);
       if (page === "invoice") {
-        setData(response.data.updatedInvoices);
+        setData(response.data);
       } else {
         setData(response.data);
       }
@@ -138,7 +139,7 @@ const SalesTable = ({ page }: Props) => {
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
   const extractDate = (dateTimeString: string) => {
-    return dateTimeString.split("T")[0];
+    return dateTimeString?.split("T")[0];
   };
 
   const renderColumnContent = (colId: string, item: any) => {
@@ -213,14 +214,14 @@ const SalesTable = ({ page }: Props) => {
               page === "invoice"
                 ? "Search Invoice"
                 : page === "salesOrder"
-                ? "Search Sales Order"
-                : page === "salesReturn"
-                ? "Search Sales Return"
-                : page === "reciept"
-                ? "Search Receipts"
-                : page === "credit-Note"
-                ? "Search Credit Note"
-                : "Search Quote"
+                  ? "Search Sales Order"
+                  : page === "salesReturn"
+                    ? "Search Sales Return"
+                    : page === "reciept"
+                      ? "Search Receipts"
+                      : page === "credit-Note"
+                        ? "Search Credit Note"
+                        : "Search Quote"
             }
           />
 
@@ -231,7 +232,7 @@ const SalesTable = ({ page }: Props) => {
       <div className="mt-3 max-h-[25rem] overflow-y-auto" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
-            <tr style={{ backgroundColor: "#F9F7F0" }}>
+            <tr style={{ backgroundColor: "#F9F7F0" }} className="sticky top-0 z-10">
               <th className="py-2.5 px-4 font-medium border-b border-tableBorder">Sl.No</th>
 
               {columns.map(
@@ -257,7 +258,7 @@ const SalesTable = ({ page }: Props) => {
             ) : filteredData && filteredData.length > 0 ? (
               // Render data rows if not loading and data is available
               filteredData.slice().reverse().map((item, index) => (
-                <tr key={item._id} className="relative cursor-pointer">
+                <tr key={item._id} className="relative">
                   <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
                   {columns.map(
                     (col) =>
@@ -267,8 +268,14 @@ const SalesTable = ({ page }: Props) => {
                         </td>
                       )
                   )}
-                  <td className="py-3 px-4 border-b border-tableBorder flex justify-center items-center" onClick={() => handleRowClick(item._id)}>
-                    <Eye color="#569FBC" /></td>
+                  <td className="py-3 px-4 border-b gap-3 border-tableBorder flex justify-center items-center">
+                    <div>
+                      <PencilEdit color={'#0B9C56'} />
+                    </div>
+                    <div onClick={() => handleRowClick(item._id)}>
+                      <Eye color="#569FBC" className="cursor-pointer" />
+                    </div>
+                  </td>
                   <td className="py-3 px-4 border-b border-tableBorder"></td>
                 </tr>
               ))

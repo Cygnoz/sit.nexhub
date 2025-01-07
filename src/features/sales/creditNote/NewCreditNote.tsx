@@ -412,7 +412,7 @@ console.log(accounts,"77");
                   {openDropdownIndex === "customer" && (
                     <div
                       ref={dropdownRef}
-                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 space-y-1 max-w-72 overflow-y-auto hide-scrollbar"
+                      className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 space-y-1 max-w-80 max-h-80 overflow-y-auto"
                       style={{ width: "80%" }}
                     >
                       <SearchBar
@@ -456,9 +456,6 @@ console.log(accounts,"77");
                                   Phone: {customer.mobile}
                                 </p>
                               </div>
-                              <div className="ms-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                                &times;
-                              </div>
                             </div>
                           </div>
                         ))
@@ -468,7 +465,7 @@ console.log(accounts,"77");
                         </div>
                       )}
                       <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4">
-                        <NewCustomerModal page="customer" />
+                        <NewCustomerModal page="purchase" />
                       </div>
                     </div>
                   )}
@@ -552,7 +549,7 @@ console.log(accounts,"77");
                     className="relative w-full"
                     onClick={() => toggleDropdown("invoice")}
                   >
-                    <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                    <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer">
                       <p>
                         {selectedInvoice && selectedInvoice.salesInvoice
                           ? selectedInvoice.salesInvoice
@@ -577,7 +574,7 @@ console.log(accounts,"77");
                         filteredInvoices.map((invoice: any) => (
                           <div
                             key={invoice._id}
-                            className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                            className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink "
                             onClick={() => {
                               // Map salesInvoice to invoiceNumber
                               setCreditNoteState((prevState: any) => ({
@@ -623,7 +620,7 @@ console.log(accounts,"77");
                       name="invoiceType"
                       value={creditNoteState.invoiceType}
                       onChange={handleChange}
-                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                     >
                       <option value="" className="text-gray">
                         Select Invoice Type
@@ -673,7 +670,7 @@ console.log(accounts,"77");
                       onChange={handleChange}
                       name="paymentMode"
                       value={creditNoteState.paymentMode}
-                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                     >
                       <option value="">Select Payment Mode</option>
                       <option value="Cash">Cash</option>
@@ -694,7 +691,7 @@ console.log(accounts,"77");
                       name="depositTo"
                       onChange={handleChange}
                       value={creditNoteState.depositTo}
-                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                     >
                       <option value="">Select Account</option>
                       {accounts

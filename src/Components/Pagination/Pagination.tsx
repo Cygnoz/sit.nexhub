@@ -6,7 +6,7 @@ type PaginationProps = {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  maxVisiblePages?: number; // Optional prop for customizable max visible pages
+  maxVisiblePages?: number;
 };
 
 const Pagination: React.FC<PaginationProps> = ({
