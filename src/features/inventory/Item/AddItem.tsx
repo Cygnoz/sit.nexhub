@@ -357,7 +357,7 @@ const AddItem = ({ }: Props) => {
   const handleClearFields = (field: string) => {
     setInitialItemData((prev) => ({
       ...prev,
-      [field]: "", // Clear only the specified field
+      [field]: "",
     }));
   };
   const location = useLocation();
@@ -419,7 +419,14 @@ const AddItem = ({ }: Props) => {
   }, [selectedItem]);
   const hsnSac = location.state?.hsnSac;
 
-  console.log(errors, "99");
+useEffect(()=>{
+  if(initialItemData.taxPreference==="Non-taxable"){
+    setInitialItemData((prevData:any) => ({
+      ...prevData,
+      taxRate: ""
+    }));
+  }
+},[initialItemData.taxPreference])
 
 
   return (
