@@ -357,7 +357,7 @@ const AddItem = ({ }: Props) => {
   const handleClearFields = (field: string) => {
     setInitialItemData((prev) => ({
       ...prev,
-      [field]: "", // Clear only the specified field
+      [field]: "",
     }));
   };
   const location = useLocation();
