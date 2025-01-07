@@ -305,8 +305,8 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
       setCustomerData((prevData) => ({
         ...prevData,
         [name]: value,
-        customerDisplayName: `${name === "firstName" ? value : prevData.firstName} ${
-          name === "lastName" ? value : prevData.lastName
+        customerDisplayName: `${name === "firstName" ? value : prevData.firstName || ""} ${
+          name === "lastName" ? value : prevData.lastName || ""
         }`.trim(),
       }));
     }

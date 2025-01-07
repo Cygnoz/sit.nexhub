@@ -3,6 +3,7 @@ import BellIcon from "../../../assets/icons/Bellicon";
 import SettingsIcons from "../../../assets/icons/SettingsIcon";
 import Drawer from "../../../Components/drawer/drawer";
 import Button from "../../../Components/Button";
+import { Link } from "react-router-dom";
 
 const Notification = () => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -22,7 +23,9 @@ const Notification = () => {
           <h5 className="text-lg font-semibold text-gray-700">Notification</h5>
           <div className="flex gap-2 items-center justify-end">
             <div>
-              <SettingsIcons size="sm" />
+            <Link to={"/settings"}>
+            <SettingsIcons size="sm" />
+            </Link>
             </div>
             <button
               onClick={toggleDrawer}

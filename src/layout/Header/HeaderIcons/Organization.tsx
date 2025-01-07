@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import OrganizationIcon from "../../../assets/icons/OrganizationIcon";
 import SettingsIcons from "../../../assets/icons/SettingsIcon";
 import Button from "../../../Components/Button";
@@ -54,7 +54,9 @@ const Organization = ({ organizationData }: Props) => {
             My Organizations
           </h5>
           <div className="flex gap-2 items-center">
+            <Link to={"/settings"}>
             <SettingsIcons size="sm" />
+            </Link>
             <button
               onClick={toggleDrawer}
               className="font-normal text-textColor hover:text-gray-700 text-3xl -mt-1"

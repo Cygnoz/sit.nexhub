@@ -333,11 +333,19 @@ const NewSalesOrder = ({ page }: Props) => {
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
-
+  
       if (!error && response) {
-
-        setData(response.data);
-
+        if (url.includes(endponits.GET_ONE_SALES_ORDER)) {
+          setSalesOrderState(response.data); // Initial state update
+  
+          setSalesOrderState((prevData: any) => ({
+            ...prevData,
+            itemAmount: response.data.itemAmount,
+            // discountTransactionAmount:response.data.discountTransactionAmount
+          }));
+        } else {
+          setData(response.data);
+        }
       } else {
         console.error("Error in response or no data received:", error);
       }
@@ -345,6 +353,7 @@ const NewSalesOrder = ({ page }: Props) => {
       console.error("Error fetching data:", err);
     }
   };
+  
 
 
   console.log(selectedCustomer, "customer")
@@ -457,6 +466,16 @@ const NewSalesOrder = ({ page }: Props) => {
       }
     } catch (error) { }
   };
+
+  useEffect(() => {
+    if (salesOrderState.discountTransactionAmount) {
+      setSalesOrderState((prevState: any) => ({
+        ...prevState,
+        totalDiscount: parseFloat(prevState.discountTransactionAmount) || 0,
+        totalAmount: parseFloat((prevState.totalAmount) || 0) ,
+      }));
+    }
+  }, [salesOrderState.discountTransactionAmount, salesOrderState.totalAmount]);
 
   return (
     <div className="px-8">
