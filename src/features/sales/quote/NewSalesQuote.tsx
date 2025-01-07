@@ -369,7 +369,6 @@ console.log(customerData);
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
 
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
-    // console.log(oneOrganization.state);
 
   }, []);
 
