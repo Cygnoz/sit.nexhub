@@ -421,7 +421,7 @@ const AddItem = ({ }: Props) => {
 
 useEffect(()=>{
   if(initialItemData.taxPreference==="Non-taxable"){
-    setInitialItemData((prevData) => ({
+    setInitialItemData((prevData:any) => ({
       ...prevData,
       taxRate: ""
     }));
