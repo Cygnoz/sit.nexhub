@@ -204,8 +204,21 @@ const SalesTable = ({ page }: Props) => {
   };
 
   const handleEditClick = (id: string) => {
-    navigate(`/sales/salesorder/edit/${id}`);
-  }
+    if (page === "salesOrder") {
+      navigate(`/sales/salesorder/edit/${id}`);
+    } else if (page === "quote") {
+      navigate(`/sales/quote/edit/${id}`);
+    } else if (page === "invoice") {
+      navigate(`/sales/invoice/edit/${id}`);
+    }
+    else if (page === "reciept") {
+      navigate(`/sales/receipt/edit/${id}`);
+    }
+    else {
+      console.warn(`Unexpected page value: ${page}`);
+    }
+  };
+  
 
   return (
     <div className="w-full">
