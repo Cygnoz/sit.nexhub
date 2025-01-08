@@ -10,11 +10,11 @@ const PaymentMadeTable = () => {
 
   const [columns] = useState([
     { id: "paymentDate", label: "Date", visible: true },
-    { id: "payment", label: "Payment#", visible: true },
+    { id: "paymentId", label: "Payment#", visible: true },
     { id: "supplierDisplayName", label: "Vendor Name", visible: true },
     { id: "bill", label: "Bill#", visible: true },
     { id: "paymentMode", label: "Mode", visible: true },
-    { id: "amountPaid", label: "Amount", visible: true },
+    { id: "total", label: "Amount", visible: true },
   ]);
 
   const [allBill, setAllBill] = useState<any[]>([]);
@@ -48,6 +48,10 @@ const PaymentMadeTable = () => {
     navigate(`/purchase/payment-made/view/${id}`);
   };
 
+  const handleEditClick = (id: string) => {
+    navigate(`/purchase/payment-made/edit/${id}`);
+  };
+
   const renderColumnContent = (colId: string, item: any) => {
     if (colId === "bill" && item.unpaidBills) {
       return item.unpaidBills.map((bill: any) => bill.billNumber).join(", ");
@@ -65,6 +69,7 @@ const PaymentMadeTable = () => {
       searchPlaceholder="Search Payments"
       loading={loading.skeleton}
       searchableFields={["paymentDate", "supplierDisplayName"]}
+      onEditClick={handleEditClick}
     />
   );
 };

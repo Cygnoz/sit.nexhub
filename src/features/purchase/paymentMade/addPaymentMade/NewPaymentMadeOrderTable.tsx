@@ -16,7 +16,7 @@ interface BillData {
   billNumber: string;
   billAmount: number;
   amountDue: number;
-  payment: number;
+  payment: number | string;
   paidStatus: string;
 }
 
@@ -35,38 +35,34 @@ const NewPaymentMadeOrderTable = ({
       billNumber: "",
       billAmount: 0,
       amountDue: 0,
-      payment: 0,
+      payment: "",
       paidStatus: "",
     },
   ]);
-  console.log(supplierBills, "supplierBills");
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    if (supplierBills && Array.isArray(supplierBills)) {
+      const filteredBills = supplierBills?.filter(
+        (bill: any) =>
+          bill.paidStatus === "Pending" || bill.paidStatus === "Overdue"
+      );
 
-
-useEffect(() => {
-  if (supplierBills && Array.isArray(supplierBills)) {
-    const filteredBills = supplierBills?.filter(
-      (bill: any) => bill.paidStatus === "Pending" || bill.paidStatus === "Overdue"
-    );
-
-    setData(
-      filteredBills.map((bill: any) => ({
-        billId: bill._id || "",
-        billDate: bill.billDate || "",
-        dueDate: bill.dueDate || "",
-        billNumber: bill.billNumber || "",
-        billAmount: bill.grandTotal || 0,
-        amountDue: bill.balanceAmount || 0,
-        payment: bill.payment || 0,
-        paidStatus: bill.paidStatus || "",
-      }))
-    );
-  }
-}, [supplierBills]);
-
-  
+      setData(
+        filteredBills.map((bill: any) => ({
+          billId: bill._id || "",
+          billDate: bill.billDate || "",
+          dueDate: bill.dueDate || "",
+          billNumber: bill.billNumber || "",
+          billAmount: bill.grandTotal || 0,
+          amountDue: bill.balanceAmount || 0,
+          payment: bill.payment || 0,
+          paidStatus: bill.paidStatus || "",
+        }))
+      );
+    }
+  }, [supplierBills]);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -85,7 +81,7 @@ useEffect(() => {
     const newData = [...data];
     newData[index] = { ...newData[index], [field]: value };
     const billAmount = newData[index].billAmount;
-    const amountDue=newData[index].amountDue;
+    const amountDue = newData[index].amountDue;
     let paymentValue = typeof value === "number" ? value : parseFloat(value);
 
     if (isFullAmt) {
@@ -113,16 +109,15 @@ useEffect(() => {
       //   );
       //   newData[index].payment = Math.min(remainingAmount, paymentValue);
       // } else {
-        newData[index].payment = paymentValue;
+      newData[index].payment = paymentValue;
       // }
     }
-
 
     setData(newData);
 
     if (setPaymentState) {
       const totalPayment = newData.reduce(
-        (acc, row) => acc + (row.payment || 0),
+        (acc, row) => acc + (Number(row.payment) || 0),
         0
       );
       setPaymentState((prevData: any) => ({
@@ -143,8 +138,7 @@ useEffect(() => {
 
     const totalPayment = updatedData.reduce((acc, row) => acc + row.payment, 0);
 
-    console.log(updatedData,"update");
-    
+    console.log(updatedData, "update");
 
     setData(updatedData);
 
@@ -171,6 +165,12 @@ useEffect(() => {
     };
   }, [openDropdownId]);
 
+  useEffect(() => {
+    if (paymentState.payment) {
+      setData(paymentState.unpaidBills);
+    }
+  }, [paymentState.unpaidBills]);
+  console.log(data, "row");
   return (
     <div>
       <div className="rounded-lg border-2 border-tableBorder mt-3">

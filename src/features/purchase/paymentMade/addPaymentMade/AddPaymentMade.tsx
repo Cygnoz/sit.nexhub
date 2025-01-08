@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 import SupplierAdvance from "./SupplierAdvance";
 
 
-type Props = {}
+type Props = {page?:string}
 
-function AddPaymentMade({ }: Props) {
+function AddPaymentMade({page }: Props) {
     const [selectedTab, setSelectedTab] = useState<"billPayment" | "supplierAdvance">("billPayment");
 
     return (
@@ -48,7 +48,7 @@ function AddPaymentMade({ }: Props) {
 
             {/* Conditionally render components based on selectedTab */}
             <div>
-                {selectedTab === "billPayment" ? <BillPayment /> : <SupplierAdvance />}
+                {selectedTab === "billPayment" ? <BillPayment page={page} /> : <SupplierAdvance />}
             </div>
         </div>
     );
