@@ -38,7 +38,7 @@ const Dropdown = <T,>({
   };
 
   // Filter options based on search input
-  const filteredOptions = options.filter((option) =>
+  const filteredOptions = options?.filter((option) =>
     getFilterValue(option).toLowerCase().includes(search.toLowerCase())
   );
 
