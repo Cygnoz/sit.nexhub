@@ -101,7 +101,7 @@ const Header = ({}: Props) => {
           <RefferEarn />
         </div>
         <p onClick={handleGoToSettings} className="tooltip" data-tooltip="Settings">
-          <SettingsIcons size="md" />
+          <SettingsIcons color="#4B5C79" size="md" />
         </p>
         <div className="tooltip" data-tooltip="Organization">
           <Organization organizationData={organizationData} />
