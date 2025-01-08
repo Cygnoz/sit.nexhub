@@ -16,7 +16,6 @@ import NewSalesQuoteTable from "../quote/NewSalesQuoteTable";
 import ViewMoreOrder from "./ViewMoreOrder";
 import CustomerModal from "./CustomerModal";
 
-
 type Props = { page?: string };
 
 interface Customer {
@@ -59,7 +58,7 @@ const initialSalesQuoteState: SalesOrder = {
       discountAmount: "",
       amount: "",
       itemAmount: "",
-      salesAccountId: ""
+      salesAccountId: "",
     },
   ],
 
@@ -86,26 +85,28 @@ const initialSalesQuoteState: SalesOrder = {
   igst: "",
   vat: "",
   totalTax: "",
-  totalAmount: ""
+  totalAmount: "",
 };
 
 const NewSalesOrder = ({ page }: Props) => {
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(null);
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
+    null
+  );
   const [customerData, setCustomerData] = useState<[]>([]);
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
   const [paymentTerms, setPaymentTerms] = useState<[]>([]);
-  const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(true);
-  const [prefix, setPrifix] = useState("")
+  const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] =
+    useState<boolean>(true);
+  const [prefix, setPrifix] = useState("");
 
-
-  const [salesOrderState, setSalesOrderState] = useState<SalesOrder>(initialSalesQuoteState);
-  console.log(salesOrderState);
-
+  const [salesOrderState, setSalesOrderState] = useState<SalesOrder>(
+    initialSalesQuoteState
+  );
 
   const { request: AllCustomer } = useApi("get", 5002);
   const { request: getOneOrganization } = useApi("get", 5004);
@@ -113,20 +114,21 @@ const NewSalesOrder = ({ page }: Props) => {
   const { request: getPrfix } = useApi("get", 5007);
   const { request: allPyamentTerms } = useApi("get", 5004);
 
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleGoBack = () => {
-    navigate(-1)
-    setSalesOrderState(initialSalesQuoteState)
-  }
+    navigate(-1);
+    setSalesOrderState(initialSalesQuoteState);
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     const totalTax = parseFloat(salesOrderState?.totalTax);
-    let discountValue = parseFloat(salesOrderState.discountTransactionAmount) || 0; // Use `discountTransactionAmount`
-    const totalAmount = parseFloat(salesOrderState.subtotalTotal + totalTax) || 0;
+    let discountValue =
+      parseFloat(salesOrderState.discountTransactionAmount) || 0; // Use `discountTransactionAmount`
+    const totalAmount =
+      parseFloat(salesOrderState.subtotalTotal + totalTax) || 0;
 
     if (name === "transactionDiscountType") {
       setSalesOrderState((prevState: any) => ({
@@ -142,18 +144,23 @@ const NewSalesOrder = ({ page }: Props) => {
 
         setSalesOrderState((prevState: any) => ({
           ...prevState,
-          discountTransactionAmount: PercentageDiscount ? PercentageDiscount.toFixed(2) : '0', // Set `discountTransactionAmount`
+          discountTransactionAmount: PercentageDiscount
+            ? PercentageDiscount.toFixed(2)
+            : "0", // Set `discountTransactionAmount`
         }));
       } else {
         const currencyDiscount = (discountValue / 100) * totalAmount;
         setSalesOrderState((prevState: any) => ({
           ...prevState,
-          discountTransactionAmount: currencyDiscount ? currencyDiscount.toFixed(2) : '0', // Set `discountTransactionAmount`
+          discountTransactionAmount: currencyDiscount
+            ? currencyDiscount.toFixed(2)
+            : "0", // Set `discountTransactionAmount`
         }));
       }
     }
 
-    if (name === "discountTransactionAmount") { // Previously `transactionDiscount`
+    if (name === "discountTransactionAmount") {
+      // Previously `transactionDiscount`
       discountValue = parseFloat(value) || 0;
 
       if (salesOrderState.discountTransactionType === "Percentage") {
@@ -165,8 +172,10 @@ const NewSalesOrder = ({ page }: Props) => {
 
         setSalesOrderState((prevState: any) => ({
           ...prevState,
-          discountTransactionAmount: discountValue ? discountValue.toString() : '0', // Set `discountTransactionAmount`
-          transactionDiscount: discountAmount ? discountAmount.toFixed(2) : '0', // Set `transactionDiscount`
+          discountTransactionAmount: discountValue
+            ? discountValue.toString()
+            : "0", // Set `discountTransactionAmount`
+          transactionDiscount: discountAmount ? discountAmount.toFixed(2) : "0", // Set `transactionDiscount`
         }));
       } else {
         if (discountValue > totalAmount) {
@@ -176,13 +185,18 @@ const NewSalesOrder = ({ page }: Props) => {
 
         setSalesOrderState((prevState: any) => ({
           ...prevState,
-          discountTransactionAmount: discountValue ? discountValue.toString() : '0', // Set `discountTransactionAmount`
-          transactionDiscount: discountValue ? discountValue.toFixed(2) : '0', // Set `transactionDiscount`
+          discountTransactionAmount: discountValue
+            ? discountValue.toString()
+            : "0", // Set `discountTransactionAmount`
+          transactionDiscount: discountValue ? discountValue.toFixed(2) : "0", // Set `transactionDiscount`
         }));
       }
     }
 
-    if (name !== "discountTransactionAmount" && name !== "transactionDiscountType") {
+    if (
+      name !== "discountTransactionAmount" &&
+      name !== "transactionDiscountType"
+    ) {
       setSalesOrderState((prevState: any) => ({
         ...prevState,
         [name]: value,
@@ -211,7 +225,6 @@ const NewSalesOrder = ({ page }: Props) => {
     return totalAmount.toFixed(2);
   };
 
-
   useEffect(() => {
     const newGrandTotal = calculateTotal();
     const {
@@ -225,10 +238,15 @@ const NewSalesOrder = ({ page }: Props) => {
         ? (Number(discountTransactionAmount) / 100) * Number(newGrandTotal)
         : Number(discountTransactionAmount);
 
-    const roundedDiscountValue = Math.round(transactionDiscountValueAMT * 100) / 100;
-    const updatedGrandTotal = Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
+    const roundedDiscountValue =
+      Math.round(transactionDiscountValueAMT * 100) / 100;
+    const updatedGrandTotal =
+      Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
 
-    if (Number(transactionDiscount) !== roundedDiscountValue || Number(salesOrderState.totalAmount) !== updatedGrandTotal) {
+    if (
+      Number(transactionDiscount) !== roundedDiscountValue ||
+      Number(salesOrderState.totalAmount) !== updatedGrandTotal
+    ) {
       setSalesOrderState((prevState) => ({
         ...prevState,
         transactionDiscount: roundedDiscountValue.toFixed(2),
@@ -246,12 +264,13 @@ const NewSalesOrder = ({ page }: Props) => {
     salesOrderState.freightAmount,
   ]);
 
-
-
   useEffect(() => {
     setSalesOrderState((prevState: any) => ({
       ...prevState,
-      totalDiscount: ((parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.transactionDiscount) || 0)).toFixed(2),
+      totalDiscount: (
+        (parseFloat(prevState.totalItemDiscount) || 0) +
+        (parseFloat(prevState.transactionDiscount) || 0)
+      ).toFixed(2),
     }));
   }, [salesOrderState.transactionDiscount, salesOrderState.totalItemDiscount]);
 
@@ -279,7 +298,7 @@ const NewSalesOrder = ({ page }: Props) => {
       const { response, error } = await getPrfix(prefixUrl);
 
       if (!error && response) {
-        setPrifix(response.data)
+        setPrifix(response.data);
       } else {
         console.log(error);
       }
@@ -312,32 +331,34 @@ const NewSalesOrder = ({ page }: Props) => {
     }
   };
   useEffect(() => {
-
-    if (
-      salesOrderState?.placeOfSupply !==
-      oneOrganization.state
-    ) {
+    if (salesOrderState?.placeOfSupply !== oneOrganization.state) {
       setIsIntraState(true);
     } else {
       setIsIntraState(false);
-
     }
-  }, [
-    salesOrderState?.placeOfSupply,
-  ]);
+  }, [salesOrderState?.placeOfSupply]);
 
   const fetchData = async (
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
-    fetchFunction: (url: string) => Promise<any>,
+    fetchFunction: (url: string) => Promise<any>
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
 
       if (!error && response) {
-
-        setData(response.data);
-
+        if (url.includes(endponits.GET_ONE_SALES_ORDER)) {
+         const totalAmount = parseFloat(response.data.totalAmount) || 0;
+         const discountTransactionAmount = parseFloat(response.data.discountTransactionAmount) || 0;
+         setSalesOrderState((prevData) => ({
+           ...prevData,
+           ...response.data,
+           totalAmount: totalAmount.toFixed(2),
+           discountTransactionAmount: discountTransactionAmount.toFixed(2),
+         }));
+        } else {
+          setData(response.data);
+        }
       } else {
         console.error("Error in response or no data received:", error);
       }
@@ -346,8 +367,8 @@ const NewSalesOrder = ({ page }: Props) => {
     }
   };
 
+  console.log(salesOrderState,"salesOrderState")
 
-  console.log(selectedCustomer, "customer")
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
     const paymentTermsUrl = `${endponits.GET_PAYMENT_TERMS}`;
@@ -397,7 +418,6 @@ const NewSalesOrder = ({ page }: Props) => {
     }
   };
 
-
   useEffect(() => {
     if (openDropdownIndex !== null) {
       document.addEventListener("mousedown", handleClickOutside);
@@ -414,7 +434,6 @@ const NewSalesOrder = ({ page }: Props) => {
   const { request: getOneSalesOrder } = useApi("get", 5007);
 
   useEffect(() => {
-
     const fetchInitialData = async () => {
       const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
       const onePO = `${endponits.GET_ONE_SALES_ORDER}/${id}`;
@@ -429,34 +448,40 @@ const NewSalesOrder = ({ page }: Props) => {
     fetchInitialData();
   }, [page, id]);
 
-
   useEffect(() => {
     if (salesOrderState.customerId && customerData) {
       const customer = customerData.find(
         (customer: any) => customer._id === salesOrderState.customerId
       );
-      if(customer){
-        setSelecetdCustomer(customer)
+      if (customer) {
+        setSelecetdCustomer(customer);
       }
     }
-  },[salesOrderState])
+  }, [salesOrderState]);
 
   const { request: newSalesOrdereApi } = useApi("post", 5007);
   const handleSave = async () => {
     try {
       const url = `${endponits.ADD_SALES_ORDER}`;
-      const { response, error } = await newSalesOrdereApi(
-        url,
-        salesOrderState
-      );
+      const { response, error } = await newSalesOrdereApi(url, salesOrderState);
       if (!error && response) {
         toast.success(response.data.message);
-        handleGoBack()
+        handleGoBack();
       } else {
         toast.error(error?.response.data.message);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
+
+  // useEffect(() => {
+  //   if (salesOrderState.discountTransactionAmount) {
+  //     setSalesOrderState((prevState: any) => ({
+  //       ...prevState,
+  //       totalDiscount: (prevState.discountTransactionAmount).toString() || 0,
+  //       totalAmount: ((prevState.totalAmount).toString() || 0) ,
+  //     }));
+  //   }
+  // }, [salesOrderState.discountTransactionAmount, salesOrderState.totalAmount]);
 
   return (
     <div className="px-8">
@@ -490,12 +515,13 @@ const NewSalesOrder = ({ page }: Props) => {
                     className="relative w-full"
                     onClick={() => toggleDropdown("customer")}
                   >
-                    <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border
-                         border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer">
+                    <div
+                      className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border
+                         border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                    >
                       <p>
-                        {(
-                          selectedCustomer as { customerDisplayName?: string }
-                        )?.customerDisplayName ?? "Select Customer"}
+                        {(selectedCustomer as { customerDisplayName?: string })
+                          ?.customerDisplayName ?? "Select Customer"}
                       </p>
                     </div>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -521,7 +547,8 @@ const NewSalesOrder = ({ page }: Props) => {
                             onClick={() => {
                               setSalesOrderState((prevState) => ({
                                 ...prevState,
-                                customerId: customer._id, customerName: customer.customerDisplayName
+                                customerId: customer._id,
+                                customerName: customer.customerDisplayName,
                               }));
                               setOpenDropdownIndex(null);
                               setSelecetdCustomer(customer);
@@ -553,9 +580,7 @@ const NewSalesOrder = ({ page }: Props) => {
                       </div>
                     </div>
                   )}
-                  <CustomerModal
-                    selectedCustomer={selectedCustomer}
-                  />
+                  <CustomerModal selectedCustomer={selectedCustomer} />
                 </div>
 
                 {isPlaceOfSupplyVisible && (
@@ -572,10 +597,16 @@ const NewSalesOrder = ({ page }: Props) => {
         border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight
         focus:outline-none focus:bg-white focus:border-gray-500"
                       >
-                        <option value="" disabled selected hidden>Select place Of Supply</option>
+                        <option value="" disabled selected hidden>
+                          Select place Of Supply
+                        </option>
                         {placeOfSupplyList &&
                           placeOfSupplyList.map((item: any, index: number) => (
-                            <option key={index} value={item} className="text-gray">
+                            <option
+                              key={index}
+                              value={item}
+                              className="text-gray"
+                            >
                               {item}
                             </option>
                           ))}
@@ -587,20 +618,28 @@ const NewSalesOrder = ({ page }: Props) => {
                   </div>
                 )}
 
-                <div className={`col-span-${isPlaceOfSupplyVisible ? "5" : "7"} relative`}>
+                <div
+                  className={`col-span-${
+                    isPlaceOfSupplyVisible ? "5" : "7"
+                  } relative`}
+                >
                   <label className="block text-sm mb-1 text-labelColor">
                     Sales Order#
                   </label>
                   <input
                     readOnly
-                    value={prefix}  
+                    value={prefix}
                     // value={page === "edit" ? salesOrderState?.Prefix || prefix : prefix}
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />
                 </div>
 
-                <div className={`col-span-${isPlaceOfSupplyVisible ? "7" : "5"} relative`}>
+                <div
+                  className={`col-span-${
+                    isPlaceOfSupplyVisible ? "7" : "5"
+                  } relative`}
+                >
                   <label className="block text-sm mb-1 text-labelColor">
                     Reference#
                   </label>
@@ -613,7 +652,6 @@ const NewSalesOrder = ({ page }: Props) => {
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />
                 </div>
-
               </div>
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-5">
@@ -706,8 +744,15 @@ const NewSalesOrder = ({ page }: Props) => {
                       value={salesOrderState.deliveryMethod}
                       name="deliveryMethod"
                       onChange={handleChange}
-                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <option value="" disabled hidden selected className="text-gray">
+                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    >
+                      <option
+                        value=""
+                        disabled
+                        hidden
+                        selected
+                        className="text-gray"
+                      >
                         Select Shipment Preference
                       </option>
                       <option value="Road">Road</option>
@@ -730,8 +775,15 @@ const NewSalesOrder = ({ page }: Props) => {
                       value={salesOrderState.paymentTerms}
                       onChange={handleChange}
                       name="paymentTerms"
-                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <option value="" disabled selected hidden className="text-gray">
+                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    >
+                      <option
+                        value=""
+                        disabled
+                        selected
+                        hidden
+                        className="text-gray"
+                      >
                         Select Payment Terms
                       </option>
                       {paymentTerms.length > 0 &&
@@ -746,7 +798,6 @@ const NewSalesOrder = ({ page }: Props) => {
                     </div>
                   </div>
                 </div>
-
               </div>
 
               <div className="mt-9">
@@ -813,7 +864,6 @@ const NewSalesOrder = ({ page }: Props) => {
             </div>
 
             <div className=" pb-4  text-dropdownText border-b-2 border-slate-200 space-y-2">
-
               <div className="flex ">
                 <div className="w-[75%]">
                   {" "}
@@ -852,7 +902,9 @@ const NewSalesOrder = ({ page }: Props) => {
                 <div className="w-full text-end">
                   <p className="text-end">
                     {oneOrganization.baseCurrency}{" "}
-                    {salesOrderState.totalDiscount ? salesOrderState.totalDiscount : "0.00"}
+                    {salesOrderState.totalDiscount
+                      ? salesOrderState.totalDiscount
+                      : "0.00"}
                   </p>
                 </div>
               </div>
@@ -867,9 +919,7 @@ const NewSalesOrder = ({ page }: Props) => {
                     {" "}
                     <p className="text-end">
                       {oneOrganization.baseCurrency}{" "}
-                      {salesOrderState.igst
-                        ? salesOrderState.igst
-                        : "0.00"}
+                      {salesOrderState.igst ? salesOrderState.igst : "0.00"}
                     </p>
                   </div>
                 </div>
@@ -884,9 +934,7 @@ const NewSalesOrder = ({ page }: Props) => {
                       {" "}
                       <p className="text-end">
                         {oneOrganization.baseCurrency}{" "}
-                        {salesOrderState.sgst
-                          ? salesOrderState.sgst
-                          : "0.00"}
+                        {salesOrderState.sgst ? salesOrderState.sgst : "0.00"}
                       </p>
                     </div>
                   </div>
@@ -900,9 +948,7 @@ const NewSalesOrder = ({ page }: Props) => {
                       {" "}
                       <p className="text-end">
                         {oneOrganization.baseCurrency}{" "}
-                        {salesOrderState.cgst
-                          ? salesOrderState.cgst
-                          : "0.00"}
+                        {salesOrderState.cgst ? salesOrderState.cgst : "0.00"}
                       </p>
                     </div>
                   </div>
@@ -919,8 +965,7 @@ const NewSalesOrder = ({ page }: Props) => {
                   {" "}
                   <p className="text-end">
                     {" "}
-                    {oneOrganization.baseCurrency}{" "}
-                    {salesOrderState?.totalTax}
+                    {oneOrganization.baseCurrency} {salesOrderState?.totalTax}
                   </p>
                 </div>
               </div>
@@ -1025,14 +1070,10 @@ const NewSalesOrder = ({ page }: Props) => {
                 {" "}
                 <p className="text-end">
                   {salesOrderState?.totalAmount &&
-                    `${oneOrganization.baseCurrency} ${salesOrderState.totalAmount}`
-                  }
+                    `${oneOrganization.baseCurrency}${salesOrderState.totalAmount}`}
                 </p>
-
               </div>
             </div>
-
-
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}
@@ -1054,6 +1095,5 @@ const NewSalesOrder = ({ page }: Props) => {
     </div>
   );
 };
-
 
 export default NewSalesOrder;

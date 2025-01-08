@@ -57,5 +57,5 @@ export interface SalesOrder {
   vat: string;
   totalDiscount: string;
   totalTax: string;
-  totalAmount: string;
+  totalAmount: string ;
 }

@@ -369,7 +369,6 @@ console.log(customerData);
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
 
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
-    // console.log(oneOrganization.state);
 
   }, []);
 
@@ -406,8 +405,11 @@ console.log(customerData);
     } catch (error) { }
   };
 
-  console.log(salesQuoteState)
+ 
+  
+  
 
+  console.log(salesQuoteState)
   return (
     <div className="px-8">
       <div className="flex gap-5">
