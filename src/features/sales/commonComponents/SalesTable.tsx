@@ -120,7 +120,7 @@ const SalesTable = ({ page }: Props) => {
             { id: "returned", label: "Returned", visible: true },
           ] :
             page == "reciept" ? [
-              { id: "createdDate", label: "Date", visible: true },
+              { id: "paymentDate", label: "Date", visible: true },
               // { id: "payment", label: "Payment#", visible: true },
               { id: "customerName", label: "Customer Name", visible: true },
               // { id: "", label: "Invoice#", visible: true },

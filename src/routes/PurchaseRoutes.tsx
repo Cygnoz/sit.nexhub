@@ -35,6 +35,10 @@ const PurchaseRoutes: RouteObject[] = [
   { path: "/purchase/bills/invoice", element: <AllInvoiceHome /> },
   { path: "/purchase/bills/invoice/view/:id", element: <OCRInvoiceView /> },
   { path: "/purchase/purchase-order/edit/:id", element: <NewPurchaseOrder page="edit" /> },
+  { path: "/purchase/bills/edit/:id", element: <NewBills page="edit" /> },
+  { path: "/purchase/payment-made/edit/:id", element: <AddPaymentMade page="edit" /> },
+
+
 
 
 ];

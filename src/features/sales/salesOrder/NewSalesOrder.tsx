@@ -483,6 +483,8 @@ const NewSalesOrder = ({ page }: Props) => {
   //   }
   // }, [salesOrderState.discountTransactionAmount, salesOrderState.totalAmount]);
 
+  console.log(salesOrderState)
+
   return (
     <div className="px-8">
       <div className="flex gap-5">

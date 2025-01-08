@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import { useEffect, useRef, useState } from "react";
 import CehvronDown from "../../../assets/icons/CehvronDown";
@@ -14,9 +14,9 @@ import useApi from "../../../Hooks/useApi";
 import toast from "react-hot-toast";
 import ViewDetails from "../purchaseOrder/addPurchaseOrder/ViewDetails";
 
-type Props = {};
+type Props = {page?:string};
 
-const NewBills = ({}: Props) => {
+const NewBills = ({page}: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
@@ -48,7 +48,9 @@ const NewBills = ({}: Props) => {
   const { request: getOneBill } = useApi("get", 5005);
   const { request: getAccounts } = useApi("get", 5001);
   const { request: getPrefix } = useApi("get", 5005);
+  const { request: getEditBill } = useApi("get", 5005);
 
+    const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -131,7 +133,6 @@ const NewBills = ({}: Props) => {
       setOpenDropdownIndex(null);
     }
   };
-
   const fetchData = async (
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
@@ -139,13 +140,30 @@ const NewBills = ({}: Props) => {
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
+  
       if (!error && response) {
-        setData(response.data);
+        if (url.includes(endponits.GET_ONE_SALES_ORDER)) {
+          // Correct the typo and ensure proper parsing
+          const grandTotal = parseFloat(response.data.grandTotal) || 0;
+          const transactionDiscountAmount = parseFloat(response.data.transactionDiscountAmount) || 0; // Fixed the typo here
+  
+          setBill((prevData) => ({
+            ...prevData,
+            ...response.data,
+            grandTotal: grandTotal,
+            transactionDiscountAmount: transactionDiscountAmount,
+          }));
+        } else {
+          setData(response.data);
+        }
+      } else {
+        console.error("Error in response or no data received:", error);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } catch (err) {
+      console.error("Error fetching data:", err);
     }
   };
+  
 
   const handleplaceofSupply = () => {
     if (oneOrganization.organizationCountry) {
@@ -360,22 +378,24 @@ const NewBills = ({}: Props) => {
 
   const calculateTotalAmount = () => {
     const {
-      roundOffAmount,
-      otherExpenseAmount,
-      freightAmount,
-      itemTotalDiscount,
-      totalTaxAmount,
-      subTotal,
+      roundOffAmount = 0,
+      otherExpenseAmount = 0,
+      freightAmount = 0,
+      itemTotalDiscount = 0,
+      totalTaxAmount = 0,
+      subTotal = 0,
     } = bill;
-
+  
     const totalAmount =
       Number(subTotal) +
       Number(otherExpenseAmount) +
       Number(totalTaxAmount) +
       Number(freightAmount) -
       (Number(itemTotalDiscount) + Number(roundOffAmount));
+  
     return totalAmount.toFixed(2);
   };
+  
 
   useEffect(() => {
     const { grandTotal, paidAmount } = bill;
@@ -397,6 +417,8 @@ const NewBills = ({}: Props) => {
       balanceAmount: balanceAmount,
     }));
   }, [bill.grandTotal, bill.paidAmount, bill.paymentTerms]);
+
+  
 console.log(bill)
 
   const handleSave = async () => {
@@ -561,7 +583,7 @@ console.log(bill)
   }, [oneOrganization, selecteSupplier]);
 
   useEffect(() => {
-    if (lastBillPrefix) {
+    if (lastBillPrefix && page!=="edit") {
       setBill((preData) => ({
         ...preData,
         billNumber: lastBillPrefix,
@@ -569,6 +591,43 @@ console.log(bill)
     }
   }, [lastBillPrefix]);
 
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
+      const oneBillUrl = `${endponits.GET_A_BILL}/${id}`;
+
+      await fetchData(supplierUrl, setSupplierData, AllSuppliers);
+
+      if (page === "edit") {
+        await fetchData(oneBillUrl, setBill, getEditBill);
+      }
+    };
+
+    fetchInitialData();
+  }, [page, id]);
+
+  useEffect(() => {
+    setBill((prevState: any) => ({
+      ...prevState,
+      totalDiscount:
+        (parseFloat(prevState.totalItemDiscount) || 0) +
+        (parseFloat(prevState.transactionDiscountAmount) || 0),
+    }));
+  }, [bill.transactionDiscountAmount]);
+
+  useEffect(() => {
+    if (bill && supplierData) {
+      const { supplierId } = bill;
+      if (supplierId) {
+        const supplier = supplierData.find(
+          (supplier: any) => supplier._id === supplierId
+        );
+        if (supplier) {
+          setSelecetdSupplier(supplier);
+        }
+      }
+    }
+  }, [bill, supplierData]);
 
   useEffect(() => {
     if (openDropdownIndex !== null) {

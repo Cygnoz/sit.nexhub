@@ -10,7 +10,7 @@ import Upload from "../../../../assets/icons/Upload";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SupplierView from "../../CommonComponents/SupplierView";
 import avatar from "../../../../assets/Images/avatar-3814049_1280.webp"
 
@@ -27,9 +27,9 @@ interface UnpaidBill {
 interface SupplierPayment {
   supplierId: string;
   supplierDisplayName: string;
-  // paymentMade: number;
+  payment: string;
   paymentDate: string;
-  paymentId: string;
+  paymentMade: string;
   paymentMode: string;
   paidThrough: string;
   reference: string;
@@ -49,9 +49,9 @@ interface SupplierPayment {
 const initialSupplierPayment: SupplierPayment = {
   supplierId: "",
   supplierDisplayName: "",
-  // paymentMade: 0,
+  payment: "",
   paymentDate: "",
-  paymentId: "",
+  paymentMade: "",
   paymentMode: "",
   paidThrough: "",
   reference: "",
@@ -78,9 +78,9 @@ const initialSupplierPayment: SupplierPayment = {
   totalBillAmount: 0,
 };
 
-type Props = {};
+type Props = {page?:any};
 
-const NewPaymentMade = ({}: Props) => {
+const NewPaymentMade = ({page}: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [selectedSupplier, setSelecetdSupplier] = useState<any | []>([]);
   const [supplierData, setSupplierData] = useState<[]>([]);
@@ -97,6 +97,9 @@ const NewPaymentMade = ({}: Props) => {
   const { request: getAllBills } = useApi("get", 5005);
   const { request: getAccounts } = useApi("get", 5001);
   const { request: addPayment } = useApi("post", 5005);
+  const { request: getPrefix } = useApi("get", 5005);
+  const { request: getOnepayment } = useApi("get", 5005);
+  const { id } = useParams();
 
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -163,7 +166,6 @@ const NewPaymentMade = ({}: Props) => {
       if (!error && response) {
         if (url === getBillsUrl) {
           setData(response.data.allBills);
-          console.log(response.data)
         } else if (url === accountsUrl) {
           const filteredData = response.data.filter(
             (item: any) => item.accountGroup === "Asset"
@@ -177,6 +179,26 @@ const NewPaymentMade = ({}: Props) => {
       console.error("Error fetching data:", error);
     }
   };
+console.log(paymentState,"paymentState")
+  const getlastPrefix = async () => {
+    try {
+      const url = `${endponits.PAYMENT_LAST_PREFIX}`;
+      const { response, error } = await getPrefix(url);
+  
+      if (!error && response) {
+        setPaymentState((prevData) => {
+          return {
+            ...prevData,
+            paymentMade: response.data
+          };
+        });
+      }
+    } catch (error) {
+      // Handle the error appropriately here, e.g., log it or show a message to the user
+      console.error("Error fetching payment prefix:", error);
+    }
+  };
+  
 
   // const handleChangeAmt = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   if (event.target.checked) {
@@ -218,12 +240,34 @@ const NewPaymentMade = ({}: Props) => {
   
 
   useEffect(() => {
+    if(page!=="edit"){
+          getlastPrefix()
+
+    }else{
+      const paymentUrl =`${endponits.GET_PAYMENT}/${id}`
+      fetchData(paymentUrl, setPaymentState, getOnepayment);
+
+    }
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
 
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
     fetchData(accountsUrl, setAllAccounts, getAccounts);
     fetchData(getBillsUrl, setAllBillsData, getAllBills);
   }, []);
+
+  useEffect(() => {
+    if (paymentState && supplierData) {
+      const { supplierId } =paymentState;
+      if (supplierId) {
+        const supplier = supplierData.find(
+          (supplier: any) => supplier._id === supplierId
+        );
+        if (supplier) {
+          setSelecetdSupplier(supplier);
+        }
+      }
+    }
+  }, [paymentState, supplierData]);
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -407,10 +451,10 @@ const NewPaymentMade = ({}: Props) => {
                   </label>
 
                   <input
+                  disabled
                     onChange={handleChange}
-                    value={paymentState.paymentId}
-                    name="paymentId"
-                    placeholder="Enter Pyament Id"
+                    value={paymentState.payment}
+                    name="payment"
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />
@@ -600,10 +644,7 @@ const NewPaymentMade = ({}: Props) => {
             <Button variant="secondary" size="sm">
               Cancel
             </Button>
-            {/* <Button variant="secondary" size="sm">
-                <PrinterIcon height={18} width={18} color="currentColor" />
-                Print
-              </Button> */}
+           
             <Button variant="primary" size="sm" onClick={handleSave}>
               Save
             </Button>{" "}
