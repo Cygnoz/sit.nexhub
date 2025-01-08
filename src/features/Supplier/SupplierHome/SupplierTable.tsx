@@ -80,13 +80,13 @@ const SupplierTable = ({
   const filteredAccounts = supplierData.filter((account) => {
     const searchValueLower = searchValue.toLowerCase();
     return (
-      account?.companyName?.toLowerCase().startsWith(searchValueLower) ||
-      account?.mobile?.toLowerCase().startsWith(searchValueLower) ||
-      account?.supplierEmail?.toLowerCase().startsWith(searchValueLower) ||
-      (account?.skypeNameNumber &&
-        account?.skypeNameNumber?.toLowerCase().startsWith(searchValueLower))
+      account?.supplierDisplayName?.toLowerCase().includes(searchValueLower) ||
+      account?.companyName?.toLowerCase().includes(searchValueLower) ||
+      account?.mobile?.toLowerCase().includes(searchValueLower) ||
+      account?.supplierEmail?.toLowerCase().includes(searchValueLower)
     );
   });
+  
 
   const renderColumnContent = (colId: string, item: SupplierData) => {
     if (colId === "supplierDetails") {
