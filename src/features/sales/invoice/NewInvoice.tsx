@@ -411,7 +411,6 @@ const NewInvoice = ({ page}: Props) => {
     invoiceState?.placeOfSupply,
     oneOrganization.state
   ]);
-
   const fetchData = async (
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
@@ -419,13 +418,31 @@ const NewInvoice = ({ page}: Props) => {
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
+  
       if (!error && response) {
-        setData(response.data);
+        if (url.includes(endponits.GET_ONE_INVOICE)) {
+          const totalAmount = parseFloat(response.data.totalAmount) || 0;
+          const discountTransactionAmount = parseFloat(response.data.discountTransactionAmount) || 0;
+  
+          setInvoiceState((prevData) => ({
+            ...prevData,
+            ...response.data,
+            totalAmount: totalAmount.toFixed(2),
+            discountTransactionAmount: discountTransactionAmount.toFixed(2),
+          }));
+        } else {
+          setData(response.data);
+        }
+  
+        console.log(response.data, "Invoice fetched successfully");
+      } else {
+        console.error("Error in response or no data received:", error);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+  
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
