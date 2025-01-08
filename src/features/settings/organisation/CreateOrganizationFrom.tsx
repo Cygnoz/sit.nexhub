@@ -187,35 +187,35 @@ const CreateOrganizationForm = () => {
   };
 
 
-const handleInputChange = (
-  e: ChangeEvent<HTMLInputElement | HTMLSelectElement> | { target: { name: string; value: string } }
-) => {
-  const { name, value } = "target" in e ? e.target : e;
-  setInputData((prevData) => ({
-    ...prevData,
-    [name]: value,
-  }));
-};
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement> | { target: { name: string; value: string } }
+  ) => {
+    const { name, value } = "target" in e ? e.target : e;
+    setInputData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-const handleFileChange = (
-  e: ChangeEvent<HTMLInputElement>,
-  key: string // Specify the key to update, e.g., "organizationLogo"
-) => {
-  const file = e.target.files?.[0];
-  if (file) {
-    const reader = new FileReader();
+  const handleFileChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    key: string // Specify the key to update, e.g., "organizationLogo"
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
 
-    reader.onloadend = () => {
-      const base64String = reader.result as string;
-      setInputData((prevData) => ({
-        ...prevData,
-        [key]: base64String,
-      }));
-    };
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setInputData((prevData) => ({
+          ...prevData,
+          [key]: base64String,
+        }));
+      };
 
-    reader.readAsDataURL(file);
-  }
-};
+      reader.readAsDataURL(file);
+    }
+  };
 
 
   const selectTimeZone = (e: any) => {
@@ -477,28 +477,21 @@ const handleFileChange = (
                 </div>
               </label>
               <div className="w-full mt-2.5 relative">
-                <select
-                  value={inputData.organizationIndustry}
-                  onChange={handleInputChange}
-                  name="organizationIndustry"
-                  id="organizationIndustry"
-                  className=" block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                >
-                  <option value="">Select Industry</option>
-                  {additionalData.industry &&
-                    additionalData.industry.length > 0 ? (
-                    additionalData.industry.map((item: any, index: any) => (
-                      <option key={index} value={item}>
-                        {item}
-                      </option>
-                    ))
-                  ) : (
-                    <></>
-                  )}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
+                <Dropdown
+                  value={inputData.organizationIndustry || null}
+                  options={additionalData.industry || []}
+                  onSelect={(selectedIndustry) =>
+                    handleInputChange({
+                      target: {
+                        name: "organizationIndustry",
+                        value: selectedIndustry,
+                      },
+                    })
+                  }
+                  getDisplayValue={(industry) => industry || "Select Industry"}
+                  getFilterValue={(industry) => industry}
+                  placeholder="Select Industry"
+                />
               </div>
             </div>
           </div>
@@ -583,29 +576,23 @@ const handleFileChange = (
                 </label>
               </div>
               <div className="relative w-full mt-2">
-                <select
-                  value={inputData.state}
-                  onChange={handleInputChange}
-                  name="state"
-                  id="state"
-                  className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white  focus:border-darkRed"
-                  disabled={!inputData.organizationCountry}
-                >
-                  <option value="">State / Region / County</option>
-                  {stateList.length > 0 ? (
-                    stateList.map((item: any, index: number) => (
-                      <option key={index} value={item}>
-                        {item}
-                      </option>
-                    ))
-                  ) : (
-                    <></>
-                  )}
-                </select>
+                <Dropdown
+                  value={inputData.state || null} // Currently selected state
+                  options={stateList} // List of states
+                  onSelect={(selectedState) =>
+                    handleInputChange({
+                      target: {
+                        name: "state",
+                        value: selectedState, // Update with the selected state's value
+                      },
+                    })
+                  }
+                  getDisplayValue={(state) => state || "State / Region / County"} 
+                  getFilterValue={(state) => state}
+                  placeholder="State / Region / County"
+                  disabled={!inputData.organizationCountry} 
+                />
 
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
               </div>
             </div>
 
@@ -730,23 +717,20 @@ const handleFileChange = (
               </label>
 
               <div className="relative w-full mt-3">
-                <select
-                  value={inputData.baseCurrency}
-                  onChange={handleInputChange}
-                  name="baseCurrency"
-                  id="currency"
-                  className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                >
-                  <option value="">Select Currency</option>
-                  {currencyData.map((item: any, index: number) => (
-                    <option key={index} value={item.currencyCode}>
-                      {item.currencyName} ({item.currencySymbol})
-                    </option>
-                  ))}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
+                <Dropdown
+                  value={currencyData.find((item: any) => item.currencyCode === inputData.baseCurrency) || null}
+                  options={currencyData}
+                  onSelect={(selectedCurrency) =>
+                    handleInputChange({ target: { name: "baseCurrency", value: selectedCurrency.currencyCode } })
+                  }
+                  getDisplayValue={(currency) =>
+                    currency ? `${currency.currencyName} (${currency.currencySymbol})` : ""
+                  }
+                  getFilterValue={(currency) =>
+                    `${currency.currencyName} ${currency.currencySymbol} ${currency.currencyCode}`
+                  }
+                  placeholder="Select Currency"
+                />
               </div>
             </div>
 
@@ -768,10 +752,6 @@ const handleFileChange = (
                   getFilterValue={(year) => year} // Filter by the year string
                   placeholder="Select Financial Year"
                 />
-
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
               </div>
             </div>
           </div>

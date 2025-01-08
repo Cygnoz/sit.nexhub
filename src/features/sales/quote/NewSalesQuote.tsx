@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
@@ -15,7 +15,7 @@ import NewSalesQuoteTable from "./NewSalesQuoteTable"
 import Button from "../../../Components/Button";
 // import { PrinterIcon } from "@heroicons/react/20/solid";
 
-type Props = {};
+type Props = {page?:string};
 
 interface Customer {
   taxType: string;
@@ -72,7 +72,7 @@ const initialSalesQuoteState: SalesQuote = {
   totalAmount: ""
 };
 
-const NewSalesQuote = ({ }: Props) => {
+const NewSalesQuote = ({page}: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -388,6 +388,36 @@ console.log(customerData);
     }
   }, [selectedCustomer]);
 
+  const { id } = useParams();
+  const { request: getOneSalesQuote } = useApi("get", 5007);
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
+      const onePO = `${endponits.GET_ONE_QUOTES}/${id}`;
+
+      await fetchData(customerUrl, setCustomerData, AllCustomer);
+
+      if (page === "edit") {
+        await fetchData(onePO, setSalesQuoteState, getOneSalesQuote);
+      }
+    };
+
+    fetchInitialData();
+  }, [page, id]);
+
+  useEffect(() => {
+    if (salesQuoteState.customerId && customerData) {
+      const customer = customerData.find(
+        (customer: any) => customer._id === salesQuoteState.customerId
+      );
+      if (customer) {
+        setSelecetdCustomer(customer);
+      }
+    }
+  }, [salesQuoteState]);
+
+
   const { request: newSalesQuoteApi } = useApi("post", 5007);
   const handleSave = async () => {
     try {
@@ -405,9 +435,6 @@ console.log(customerData);
     } catch (error) { }
   };
 
- 
-  
-  
 
   console.log(salesQuoteState)
   return (
@@ -420,7 +447,7 @@ console.log(customerData);
         </Link>
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
-            Create Sales Quote
+            {page == "edit" ? "Edit": "Create"} Sales Quote
           </h4>
         </div>
       </div>

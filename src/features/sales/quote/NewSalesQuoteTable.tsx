@@ -135,14 +135,11 @@ const NewSalesQuoteTable = ({
       amount: "",
       itemAmount: "",
       itemStock: "",
+      salesAccountId:"",
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
   };
-
-
-
-
 
 
   const calculateDiscountPrice = (
@@ -424,6 +421,7 @@ const NewSalesQuoteTable = ({
           amount: "0",
           itemAmount: "0",
           itemStock: "",
+          salesAccountId:""
         },
       ];
       setRows(newRows);
@@ -587,9 +585,12 @@ useEffect(() => {
     if (salesQuoteState?.salesOrderNumber) {
       const updatedItems = salesQuoteState.items.map((item: any) => {
         const matchingItem = items.find((data: any) => data._id === item.itemId);
+        console.log(matchingItem,"matchingItem");
+        
         return {
           ...item,
           itemStock: matchingItem?.currentStock || "",
+          salesAccountId:matchingItem?.salesAccountId || ""
         };
       });
       setRows(updatedItems);

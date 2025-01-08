@@ -1070,7 +1070,7 @@ const NewSalesOrder = ({ page }: Props) => {
                 {" "}
                 <p className="text-end">
                   {salesOrderState?.totalAmount &&
-                    `${oneOrganization.baseCurrency}${salesOrderState.totalAmount}`}
+                    `${oneOrganization.baseCurrency} ${salesOrderState.totalAmount}`}
                 </p>
               </div>
             </div>
