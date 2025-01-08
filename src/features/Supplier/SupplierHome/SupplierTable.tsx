@@ -102,6 +102,7 @@ const SupplierTable = ({
       );
     }
 
+    
     if (colId === "status") {
       const statusStyles = item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400";
 

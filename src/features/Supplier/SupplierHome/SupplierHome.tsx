@@ -77,6 +77,7 @@ const SupplierHome = () => {
     return duplicates;
   };
 
+  
   const duplicateSuppliers = findDuplicateSuppliers(supplierData).length;
 
   const handleCardClick = (filter: string | null) => {
