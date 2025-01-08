@@ -473,10 +473,10 @@ const CreditNoteTable = ({
 
   const filterItems = () => {
     return selectedInvoice?.items?.filter((item: any) =>
-      item.itemName.toLowerCase().includes(searchValue.toLowerCase()) &&
-      items.some((i: any) => i._id === item.itemId) &&
-      !rows.some((row) => row.itemId === item.itemId) &&
-      item.quantity !== item.returnQuantity
+      item?.itemName?.toLowerCase().includes(searchValue.toLowerCase()) &&
+      items?.some((i: any) => i._id === item?.itemId) &&
+      !rows.some((row) => row.itemId === item?.itemId) &&
+      item?.quantity !== item.returnQuantity
     );
   };
   

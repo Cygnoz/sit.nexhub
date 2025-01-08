@@ -153,7 +153,7 @@ const NewCreditNote = () => {
         setAllInvoice([]);
         return;
       }
-      setAllInvoice(response.data.updatedInvoices || []);
+      setAllInvoice(response.data || []);
     } catch (error) {
       console.error("Error fetching invoices:", error);
       setAllInvoice([]);
