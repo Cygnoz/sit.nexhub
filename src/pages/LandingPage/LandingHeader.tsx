@@ -106,7 +106,7 @@ const handleNavigate =()=>{
             },
             {
               label: 'settings',
-              icon: <SettingsIcons  color={mode ? '#4B5C79' : '#DFE1E2'} />,
+              icon: <SettingsIcons  size="sm" color={mode ? '#4B5C79' : '#DFE1E2'} />,
               onClick: handleNavigate,
             },
           ]}
@@ -149,7 +149,7 @@ const handleNavigate =()=>{
         <Modal
           open
           onClose={closeModal}
-          className="rounded-lg p-8 w-[546px] h-[160px] z-[1200] text-[#303F58] space-y-8 absolute top-0"
+          className="rounded-lg p-8 w-[546px] h-[160px] text-[#303F58] space-y-8 relative"
         >
           <p className="text-sm">Are you sure you want to log out?</p>
           <div className="flex justify-end gap-2 mb-3">
