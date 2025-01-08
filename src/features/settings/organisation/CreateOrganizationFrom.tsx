@@ -11,6 +11,7 @@ import "react-phone-input-2/lib/style.css";
 import Info from "../../../assets/icons/Info";
 import Tooltip from "../../../Components/tooltip/Tooltip";
 import { useOrganization } from "../../../context/OrganizationContext";
+import Dropdown from "../../../Components/dropdown/Dropdown";
 
 interface InputData {
   organizationLogo: string;
@@ -45,7 +46,7 @@ const CreateOrganizationForm = () => {
   const { request: createOrganization } = useApi("post", 5004);
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCurrencyData } = useApi("get", 5004);
-  const { setOrganization} = useOrganization();
+  const { setOrganization } = useOrganization();
   const [tooltipState, setTooltipState] = useState<{ [key: string]: boolean }>({
     industry: false,
     address: false,
@@ -75,7 +76,7 @@ const CreateOrganizationForm = () => {
   });
 
 
-  
+
 
   const getDropdownList = async () => {
     try {
@@ -125,32 +126,32 @@ const CreateOrganizationForm = () => {
         setInputData(response.data);
         setInputData((prevData: any) => ({
           ...prevData,
-          organizationName: response.data.organizationName,   
+          organizationName: response.data.organizationName,
         }));
         setOrganization(response.data);
         if (response.data.organizationPhNum) {
           const organizationPhNum = response.data.organizationPhNum;
           let matchingCountry = null;
           let longestCodeLength = 0;
-  
+
           countryData.forEach((country: any) => {
             const countryCode = country.phoneNumberCode;
-            
+
             if (organizationPhNum.startsWith(countryCode)) {
               if (countryCode.length > longestCodeLength) {
                 matchingCountry = country;
                 longestCodeLength = countryCode.length;
-                console.log(matchingCountry,"Mcountry");
-                console.log(longestCodeLength,"longestCodeLength");
+                console.log(matchingCountry, "Mcountry");
+                console.log(longestCodeLength, "longestCodeLength");
               }
             }
           });
-  
+
           if (matchingCountry) {
             setSelectedCountry(matchingCountry);
             setInputData((prevData: any) => ({
               ...prevData,
-              organizationPhNum: organizationPhNum, 
+              organizationPhNum: organizationPhNum,
             }));
           }
         }
@@ -167,52 +168,55 @@ const CreateOrganizationForm = () => {
 
   const handleInputPhoneChange = (e: any) => {
     const rawInput = e.target.value.trim();
-    const phoneNumberLimit = selectedCountry?.phoneNumberLimit || 0; 
-  
-    let phoneNumber = rawInput.replace(selectedCountry?.phoneNumberCode, '').trim(); 
-  
+    const phoneNumberLimit = selectedCountry?.phoneNumberLimit || 0;
+
+    let phoneNumber = rawInput.replace(selectedCountry?.phoneNumberCode, '').trim();
+
     if (phoneNumber.length > phoneNumberLimit) {
-      phoneNumber = phoneNumber.slice(0, phoneNumberLimit); 
+      phoneNumber = phoneNumber.slice(0, phoneNumberLimit);
     }
-  
+
     const enteredPhone = `${selectedCountry?.phoneNumberCode || ''} ${phoneNumber}`;
-  
+
     // console.log(enteredPhone, "entered");
-  
+
     setInputData((prevData) => ({
       ...prevData,
       organizationPhNum: enteredPhone
     }));
   };
-  
- 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setInputData({ ...inputData, [name]: value });
-  };
 
-  const handleFileChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    key: "organizationLogo"
-  ) => {
-    const file = e.target.files?.[0];
-    if (file) {
 
-      const reader = new FileReader();
+const handleInputChange = (
+  e: ChangeEvent<HTMLInputElement | HTMLSelectElement> | { target: { name: string; value: string } }
+) => {
+  const { name, value } = "target" in e ? e.target : e;
+  setInputData((prevData) => ({
+    ...prevData,
+    [name]: value,
+  }));
+};
 
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setInputData((prevDetails: any) => ({
-          ...prevDetails,
-          [key]: base64String,
-        }));
-      };
+const handleFileChange = (
+  e: ChangeEvent<HTMLInputElement>,
+  key: string // Specify the key to update, e.g., "organizationLogo"
+) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    const reader = new FileReader();
 
-      reader.readAsDataURL(file);
-    }
-  };
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      setInputData((prevData) => ({
+        ...prevData,
+        [key]: base64String,
+      }));
+    };
+
+    reader.readAsDataURL(file);
+  }
+};
+
 
   const selectTimeZone = (e: any) => {
     const selectedZone = e.target.value;
@@ -258,11 +262,11 @@ const CreateOrganizationForm = () => {
       const url = `${endponits.CREATE_ORGANIZATION}`;
       const apiResponse = await createOrganization(url, inputData);
       const { response, error } = apiResponse;
-  
+
       if (!error && response) {
         toast.success(response.data.message);
-       getOrganization()
-        
+        getOrganization()
+
       } else {
         toast.error(error.response.data.message);
       }
@@ -270,7 +274,7 @@ const CreateOrganizationForm = () => {
       console.log(error, "Error in creating organization");
     }
   };
-  
+
 
   const handleDeleteImage = () => {
     setInputData((prevDetails: any) => ({
@@ -284,12 +288,12 @@ const CreateOrganizationForm = () => {
     getcurrencyData();
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     getOrganization()
-  },[countryData])
+  }, [countryData])
 
   useEffect(() => {
-    if (selectedCountry ===null && inputData.organizationCountry) {
+    if (selectedCountry === null && inputData.organizationCountry) {
       const matchingCountry = countryData.find((country: any) => country.name === inputData.organizationCountry);
 
       // If a matching country is found, set it as selectedCountry
@@ -297,14 +301,14 @@ const CreateOrganizationForm = () => {
 
         setSelectedCountry(matchingCountry);
       }
-      else{
+      else {
         const matchingCountry = countryData.find((country: any) => country.name === "India");
         setSelectedCountry(matchingCountry);
 
       }
     }
   }, [selectedCountry, inputData.organizationCountry, countryData]);
-  
+
 
   useEffect(() => {
     if (inputData.organizationCountry) {
@@ -348,9 +352,8 @@ const CreateOrganizationForm = () => {
           {" "}
           <label>
             <div
-              className={`bg-lightPink flex h-28 justify-center items-center rounded-lg ${
-                inputData.organizationLogo ? "h-[90px] rounded-b-none" : ""
-              }`}
+              className={`bg-lightPink flex h-28 justify-center items-center rounded-lg ${inputData.organizationLogo ? "h-[90px] rounded-b-none" : ""
+                }`}
             >
               {inputData.organizationLogo ? (
                 <div className="">
@@ -404,124 +407,124 @@ const CreateOrganizationForm = () => {
         </p>
 
         <div className="bg-white border-slate-200  border-2 rounded-md mt-4 p-5">
-        <div className="grid grid-cols-3 gap-4">
-  {/* Organization Name Field */}
-  <div className="relative">
-    <label htmlFor="organizationName" className="text-slate-600">
-      Organization Name <span className="text-[#bd2e2e] ">*</span>
-    </label>
-    <input
-      type="text"
-      id="organizationName"
-      name="organizationName"
-      value={inputData.organizationName}
-      onChange={handleInputChange}
-      className="block w-full mt-3 text-[#495160] bg-white border border-inputBorder text-sm h-[39px] px-3 rounded-md focus:outline-none focus:bg-white focus:border-darkRed"
-      placeholder="Enter organization name"
-    />
-  </div>
+          <div className="grid grid-cols-3 gap-4">
+            {/* Organization Name Field */}
+            <div className="relative">
+              <label htmlFor="organizationName" className="text-slate-600">
+                Organization Name <span className="text-[#bd2e2e] ">*</span>
+              </label>
+              <input
+                type="text"
+                id="organizationName"
+                name="organizationName"
+                value={inputData.organizationName}
+                onChange={handleInputChange}
+                className="block w-full mt-3 text-[#495160] bg-white border border-inputBorder text-sm h-[39px] px-3 rounded-md focus:outline-none focus:bg-white focus:border-darkRed"
+                placeholder="Enter organization name"
+              />
+            </div>
 
-  {/* Organization Location Field */}
-  <div className="relative">
-    <label htmlFor="location" className="text-slate-600">
-      Organization Location <span className="text-[#bd2e2e] ">*</span>
-    </label>
-    <div className="relative w-full mt-3">
-      <select
-        value={inputData.organizationCountry}
-        onChange={handleInputChange}
-        name="organizationCountry"
-        id="Location"
-        className="  block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-      >
-        <option value="">Select a country</option>
-        {countryData && countryData.length > 0 ? (
-          countryData.map((item: any, index: number) => (
-            <option key={index} value={item.name}>
-              {item.name}
-            </option>
-          ))
-        ) : (
-          <option disabled></option>
-        )}
-      </select>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-        <CehvronDown color="gray" />
-      </div>
-    </div>
-  </div>
+            {/* Organization Location Field */}
+            <div className="relative">
+              <label htmlFor="location" className="text-slate-600">
+                Organization Location <span className="text-[#bd2e2e] ">*</span>
+              </label>
+              <div className="relative w-full mt-3">
+                <select
+                  value={inputData.organizationCountry}
+                  onChange={handleInputChange}
+                  name="organizationCountry"
+                  id="Location"
+                  className="  block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                >
+                  <option value="">Select a country</option>
+                  {countryData && countryData.length > 0 ? (
+                    countryData.map((item: any, index: number) => (
+                      <option key={index} value={item.name}>
+                        {item.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled></option>
+                  )}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
+                </div>
+              </div>
+            </div>
 
-  {/* Industry Field */}
-  <div>
-    <label
-      htmlFor="organizationIndustry"
-      className="text-slate-600 flex items-center gap-1"
-    >
-      <p>Industry</p>
-      <div
-        className="relative mt-1"
-        onMouseEnter={() => handleTooltipToggle("industry", true)}
-        onMouseLeave={() => handleTooltipToggle("industry", false)}
-      >
-        <Info size={18} color={"currentColor"} stroke={3} />
-        {tooltipState.industry && (
-          <div className="absolute left-full -top-10 ml-2 w-[250px] p-2 rounded-md text-sm text-slate-700 z-10">
-            {renderCustomTooltip(
-              "Select your industry type to help us fine-tune your experience. If you can't find your industry type from the list of options, you can input your own."
-            )}
+            {/* Industry Field */}
+            <div>
+              <label
+                htmlFor="organizationIndustry"
+                className="text-slate-600 flex items-center gap-1"
+              >
+                <p>Industry</p>
+                <div
+                  className="relative mt-1"
+                  onMouseEnter={() => handleTooltipToggle("industry", true)}
+                  onMouseLeave={() => handleTooltipToggle("industry", false)}
+                >
+                  <Info size={18} color={"currentColor"} stroke={3} />
+                  {tooltipState.industry && (
+                    <div className="absolute left-full -top-10 ml-2 w-[250px] p-2 rounded-md text-sm text-slate-700 z-10">
+                      {renderCustomTooltip(
+                        "Select your industry type to help us fine-tune your experience. If you can't find your industry type from the list of options, you can input your own."
+                      )}
+                    </div>
+                  )}
+                </div>
+              </label>
+              <div className="w-full mt-2.5 relative">
+                <select
+                  value={inputData.organizationIndustry}
+                  onChange={handleInputChange}
+                  name="organizationIndustry"
+                  id="organizationIndustry"
+                  className=" block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                >
+                  <option value="">Select Industry</option>
+                  {additionalData.industry &&
+                    additionalData.industry.length > 0 ? (
+                    additionalData.industry.map((item: any, index: any) => (
+                      <option key={index} value={item}>
+                        {item}
+                      </option>
+                    ))
+                  ) : (
+                    <></>
+                  )}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
+                </div>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-    </label>
-    <div className="w-full mt-2.5 relative">
-      <select
-        value={inputData.organizationIndustry}
-        onChange={handleInputChange}
-        name="organizationIndustry"
-        id="organizationIndustry"
-        className=" block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-      >
-        <option value="">Select Industry</option>
-        {additionalData.industry &&
-        additionalData.industry.length > 0 ? (
-          additionalData.industry.map((item: any, index: any) => (
-            <option key={index} value={item}>
-              {item}
-            </option>
-          ))
-        ) : (
-          <></>
-        )}
-      </select>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-        <CehvronDown color="gray" />
-      </div>
-    </div>
-  </div>
-</div>
 
           <div className="pt-3">
-  <label
-    className="text-slate-600 flex items-center gap-1"
-    htmlFor="organizationAddress"
-  >
-    Organization Address{" "}
-    <div
-      className="relative mt-1"
-      onMouseEnter={() => handleTooltipToggle("address", true)}
-      onMouseLeave={() => handleTooltipToggle("address", false)}
-    >
-      <Info size={18} color={"currentColor"} stroke={3} />
-      {tooltipState.address && (
-        <div className="absolute left-full -top-7 ml-2 w-[200px] p-2  rounded-md text-sm text-slate-700">
-          {renderCustomTooltip(
-            "You can display your organization's address in your preferred style. Edit it in Settings > Preferences > General."
-          )}
-        </div>
-      )}
-    </div>
-  </label>
-</div>
+            <label
+              className="text-slate-600 flex items-center gap-1"
+              htmlFor="organizationAddress"
+            >
+              Organization Address{" "}
+              <div
+                className="relative mt-1"
+                onMouseEnter={() => handleTooltipToggle("address", true)}
+                onMouseLeave={() => handleTooltipToggle("address", false)}
+              >
+                <Info size={18} color={"currentColor"} stroke={3} />
+                {tooltipState.address && (
+                  <div className="absolute left-full -top-7 ml-2 w-[200px] p-2  rounded-md text-sm text-slate-700">
+                    {renderCustomTooltip(
+                      "You can display your organization's address in your preferred style. Edit it in Settings > Preferences > General."
+                    )}
+                  </div>
+                )}
+              </div>
+            </label>
+          </div>
 
           <div className="grid grid-cols-2 gap-4 -mt-2 space-y-4 ">
             <div>
@@ -627,7 +630,7 @@ const CreateOrganizationForm = () => {
                           alt={`${selectedCountry.name} flag`}
                           className="h-4 w-4 mr-2"
                         />
-                        <CehvronDown color={"currentcolor"} height={10} width={10}/>
+                        <CehvronDown color={"currentcolor"} height={10} width={10} />
                       </div>
                     ) : (
                       <div>
@@ -642,29 +645,29 @@ const CreateOrganizationForm = () => {
                     )}
                   </div>
 
-                 {/* Dropdown list for country selection */}
-{dropdownOpen && (
-  <div className="absolute top-full left-0 mt-1 bg-white shadow-md rounded-md z-10 max-h-60 overflow-y-auto">
-    {countryData.map((country: any, index: number) => (
-      <div
-        onClick={() => {
-          setSelectedCountry(country); 
-          setDropdownOpen(false); 
-          setInputData((prevData) => ({
-            ...prevData,
-            organizationPhNum: country.phoneNumberCode
-          }));
-        }}
-        key={index}
-        className="flex items-center px-2 py-1 hover:bg-red-50 cursor-pointer text-sm border-b border-neutral-300 text-textColor "
-      >
-        <img src={country.flag} className="h-4 w-4 mr-2" />{" "}
-        <span>{country.name}</span>{" "}
-        <span>{country.phoneNumberCode}</span>
-      </div>
-    ))}
-  </div>
-)}
+                  {/* Dropdown list for country selection */}
+                  {dropdownOpen && (
+                    <div className="absolute top-full left-0 mt-1 bg-white shadow-md rounded-md z-10 max-h-60 overflow-y-auto">
+                      {countryData.map((country: any, index: number) => (
+                        <div
+                          onClick={() => {
+                            setSelectedCountry(country);
+                            setDropdownOpen(false);
+                            setInputData((prevData) => ({
+                              ...prevData,
+                              organizationPhNum: country.phoneNumberCode
+                            }));
+                          }}
+                          key={index}
+                          className="flex items-center px-2 py-1 hover:bg-red-50 cursor-pointer text-sm border-b border-neutral-300 text-textColor "
+                        >
+                          <img src={country.flag} className="h-4 w-4 mr-2" />{" "}
+                          <span>{country.name}</span>{" "}
+                          <span>{country.phoneNumberCode}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
 
                   <input
@@ -753,28 +756,19 @@ const CreateOrganizationForm = () => {
               </label>
 
               <div className="relative w-full mt-3">
-                <select
-                  value={inputData.fiscalYear}
-                  onChange={handleInputChange}
-                  name="fiscalYear"
-                  id="fiscalYear"
-                  className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                >
-                  <option value="">Select Financial Year</option>
+                <Dropdown
+                  value={inputData.fiscalYear || null} // Current selected financial year
+                  options={additionalData.financialYear || []} // List of financial years
+                  onSelect={(selectedYear) =>
+                    handleInputChange({
+                      target: { name: "fiscalYear", value: selectedYear },
+                    })
+                  }
+                  getDisplayValue={(year) => year || ""} // Display the year directly
+                  getFilterValue={(year) => year} // Filter by the year string
+                  placeholder="Select Financial Year"
+                />
 
-                  {additionalData.financialYear &&
-                  additionalData.financialYear.length > 0 ? (
-                    additionalData.financialYear.map(
-                      (item: any, index: any) => (
-                        <option key={index} value={item}>
-                          {item}
-                        </option>
-                      )
-                    )
-                  ) : (
-                    <></>
-                  )}
-                </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <CehvronDown color="gray" />
                 </div>
@@ -802,7 +796,7 @@ const CreateOrganizationForm = () => {
                 >
                   <option value="">Select Time Zone</option>
                   {additionalData.timezones &&
-                  additionalData.timezones.length > 0 ? (
+                    additionalData.timezones.length > 0 ? (
                     additionalData.timezones.map((item: any, index: any) => (
                       <option key={index} value={item.zone}>
                         {item.zone} - {item.description}
@@ -834,7 +828,7 @@ const CreateOrganizationForm = () => {
                 >
                   <option value="">Select Date Format</option>
                   {additionalData?.dateFormats?.short &&
-                  additionalData?.dateFormats.short.length > 0 ? (
+                    additionalData?.dateFormats.short.length > 0 ? (
                     <>
                       <optgroup label="Short">
                         {additionalData.dateFormats.short.map(
@@ -851,7 +845,7 @@ const CreateOrganizationForm = () => {
                   )}
 
                   {additionalData?.dateFormats?.medium &&
-                  additionalData?.dateFormats.medium.length > 0 ? (
+                    additionalData?.dateFormats.medium.length > 0 ? (
                     <>
                       <optgroup label="Medium">
                         {additionalData.dateFormats.medium.map(
@@ -868,7 +862,7 @@ const CreateOrganizationForm = () => {
                   )}
 
                   {additionalData?.dateFormats?.long &&
-                  additionalData?.dateFormats.long.length > 0 ? (
+                    additionalData?.dateFormats.long.length > 0 ? (
                     <>
                       <optgroup label="Long">
                         {additionalData.dateFormats.long.map(
@@ -902,7 +896,7 @@ const CreateOrganizationForm = () => {
                   <option value="">Select Date Split</option>
 
                   {additionalData?.dateSplit &&
-                  additionalData?.dateSplit.length > 0 ? (
+                    additionalData?.dateSplit.length > 0 ? (
                     additionalData?.dateSplit.map((item: any, index: any) => (
                       <option key={index} value={item}>
                         {item}
