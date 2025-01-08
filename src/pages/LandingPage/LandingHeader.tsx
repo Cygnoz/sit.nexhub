@@ -15,6 +15,7 @@ import OrganizationIcon from "../../assets/icons/OrganizationIcon";
 import { useEffect, useState } from "react";
 import Modal from "../../Components/model/Modal";
 import Button from "../../Components/Button";
+import SettingsIcons from "../../assets/icons/SettingsIcon";
 
 type Props = {
   setMode?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -52,6 +53,10 @@ function LandingHeader({ mode, setMode }: Props) {
     navigate("/login");
     setLogoutModalOpen(false);
 };
+
+const handleNavigate =()=>{
+  navigate("/settings")
+}
 
 
   const closeModal = () => {
@@ -98,6 +103,11 @@ function LandingHeader({ mode, setMode }: Props) {
               label: 'Log Out',
               icon: <LogOut color={mode ? '#4B5C79' : '#DFE1E2'} />,
               onClick: confirmLogout,
+            },
+            {
+              label: 'settings',
+              icon: <SettingsIcons  color={mode ? '#4B5C79' : '#DFE1E2'} />,
+              onClick: handleNavigate,
             },
           ]}
           backgroundColor={mode ? "bg-white" : "bg-[#3C474D]"}

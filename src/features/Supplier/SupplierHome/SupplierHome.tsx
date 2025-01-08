@@ -29,37 +29,31 @@ const SupplierHome = () => {
   const {loading,setLoading}=useContext(TableResponseContext)!;
 
 
-
   const fetchAllSuppliers = async () => {
     try {
       const url = `${endponits.GET_ALL_SUPPLIER}`;
       setLoading({ ...loading, skelton: true });
   
       const { response, error } = await AllSuppliers(url);
+      console.log("API Response:", response); // Debugging line
   
       if (error || !response) {
-        // Handle no data scenario
         setLoading({ ...loading, skelton: false, noDataFound: true });
         return;
       }
   
-      // Set supplier data if response is valid
-      setSupplierData(response.data);
-  
-      // Turn off the skeleton loader after data is received
+      setSupplierData(response.data); // Check if response.data contains all suppliers
       setLoading({ ...loading, skelton: false });
-  
     } catch (error) {
       console.error("Error fetching suppliers:", error);
       setLoading({ ...loading, noDataFound: true, skelton: false });
     }
   };
   
-
   useEffect(() => {
-      fetchAllSuppliers();
-  }, [supplierResponse]);
-
+    fetchAllSuppliers();
+  }, [supplierResponse]); // Ensure supplierResponse updates properly
+  
   const activeSuppliers = supplierData.filter(supplier => supplier.status === "Active").length;
   const inactiveSuppliers = supplierData.filter(supplier => supplier.status === "Inactive").length;
 
@@ -83,6 +77,7 @@ const SupplierHome = () => {
     return duplicates;
   };
 
+  
   const duplicateSuppliers = findDuplicateSuppliers(supplierData).length;
 
   const handleCardClick = (filter: string | null) => {
