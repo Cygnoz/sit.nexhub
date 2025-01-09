@@ -1,6 +1,6 @@
 export interface SalesQuote {
   customerId: string;
-  customerName: string;
+  customerDisplayName: string;
   placeOfSupply: string;
   reference: string;
   salesQuoteDate: string;
