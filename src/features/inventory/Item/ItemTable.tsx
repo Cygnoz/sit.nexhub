@@ -89,7 +89,6 @@ const ItemTable = ({ hsnsac }: Props) => {
   };
 
   const [allCategoryData, setAllcategoryData] = useState<any[]>([]);
-
   const { request: fetchAllCategories } = useApi("put", 5003);
   const loadCategories = async () => {
     try {
@@ -144,14 +143,19 @@ const ItemTable = ({ hsnsac }: Props) => {
     });
   };
 
-  const handleEditOnTable = (item: any) => {
-    navigate("/inventory/Item/new", {
-      state: {
-        item,
-        hsnSac: hsnsac || false,
+ const handleEditOnTable = async (item: any) => {
+  await getOneItem(item);
+  navigate("/inventory/Item/new", {
+    state: {
+      item: {
+        ...item, // Include all properties of the original item
+        itemImage: selectedItem?.itemImage || "", // Add `itemImage` from `selectedItem`
       },
-    });
-  };
+      hsnSac: hsnsac || false,
+    },
+  });
+};
+
 
 
  const handleDeleteImage = async (itemId: string) => {
