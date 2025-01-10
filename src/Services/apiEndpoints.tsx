@@ -35,6 +35,7 @@ export const endponits = {
   GET_ALL_SALES_RECIEPT:"get-all-receipt",
   GET_ONE_SALES_RECIEPT:"get-receipt",
   GET_LAST_SALES_RECIEPT_PREFIX:"get-last-salesReceipt-prefix",
+  GET_SALES_RECIEPT_JOURNAL:"receipt-journal",
   //getall-item-sales
   GET_ALL_ITEMS_SALES: "get-all-item-xs",
   GET_ALL_ITEMS_TABLE:"get-all-item-m",

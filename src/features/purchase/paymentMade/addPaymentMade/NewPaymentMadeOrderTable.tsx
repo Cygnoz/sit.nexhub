@@ -35,7 +35,7 @@ const NewPaymentMadeOrderTable = ({
       billNumber: "",
       billAmount: 0,
       amountDue: 0,
-      payment: "",
+      payment: 0,
       paidStatus: "",
     },
   ]);
@@ -82,14 +82,14 @@ const NewPaymentMadeOrderTable = ({
     newData[index] = { ...newData[index], [field]: value };
     const billAmount = newData[index].billAmount;
     const amountDue = newData[index].amountDue;
-    let paymentValue = typeof value === "number" ? value : parseFloat(value);
+    let paymentValue = typeof value === "number" ? value : (value);
 
     if (isFullAmt) {
       newData[index].payment = billAmount;
     } else {
       newData[index].payment = 0;
 
-      if (paymentValue > amountDue) {
+      if (Number(paymentValue) > Number(amountDue)) {
         toast.error(
           `Payment cannot exceed the balance amount of ${amountDue}. Setting payment to bill amount.`
         );
@@ -138,7 +138,6 @@ const NewPaymentMadeOrderTable = ({
 
     const totalPayment = updatedData.reduce((acc, row) => acc + row.payment, 0);
 
-    console.log(updatedData, "update");
 
     setData(updatedData);
 
@@ -166,10 +165,11 @@ const NewPaymentMadeOrderTable = ({
   }, [openDropdownId]);
 
   useEffect(() => {
-    if (paymentState.payment) {
-      setData(paymentState.unpaidBills);
+    if (paymentState.unpaidBills && paymentState.unpaidBills.length > 0) {
+      setData([...paymentState.unpaidBills]); 
     }
   }, [paymentState.unpaidBills]);
+  
   console.log(data, "row");
   return (
     <div>
@@ -196,6 +196,7 @@ const NewPaymentMadeOrderTable = ({
                 )
                 .map((row, index) => (
                   <tr key={index} className="relative">
+                    <td className="py-2.5 px-4 border-y border-tableBorder">{index+1}</td>
                     <td className="py-2.5 px-4 border-y border-tableBorder">
                       <input
                         disabled
