@@ -22,9 +22,8 @@ const NewBills = ({page}: Props) => {
     null
   );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  // const [selected, setSelected] = useState<string | null>("organization");
   const [supplierData, setSupplierData] = useState<[]>([]);
-  const [selecteSupplier, setSelecetdSupplier] = useState<any | []>([]);
+  const [selecteSupplier, setSelecetdSupplier] = useState< [] | any>([]);
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [destinationList, setDestinationList] = useState<any | []>([]);
@@ -389,7 +388,7 @@ const NewBills = ({page}: Props) => {
     const totalAmount =
       Number(subTotal) +
       Number(otherExpenseAmount) +
-      Number(totalTaxAmount) +
+      Number(totalTaxAmount) +  
       Number(freightAmount) -
       (Number(itemTotalDiscount) + Number(roundOffAmount));
   

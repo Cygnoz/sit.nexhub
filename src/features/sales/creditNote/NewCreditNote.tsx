@@ -91,7 +91,7 @@ const NewCreditNote = () => {
   console.log(isPlaceOfSupplyVisible,"isPlaceOfSupplyVisible");
 
   
-
+console.log(selectedInvoice,"qwer")
 
   const [errors, setErrors] = useState({
     invoiceNumber: false,
@@ -475,7 +475,7 @@ console.log(accounts,"77");
                   <div className="col-span-6">
                     <label className="block  text-sm mb-1 text-labelColor">
                       Place Of Supply <span className="text-[#bd2e2e] ">*</span>
-                    </label>
+                  
                     <div className="relative w-full">
                       <select
                         name="placeOfSupply"
@@ -497,6 +497,7 @@ console.log(accounts,"77");
                         <CehvronDown color="gray" />
                       </div>
                     </div>
+                    </label>
                   </div>
                 )}
 

@@ -261,12 +261,10 @@ const CreditNoteTable = ({
     try {
       const url = `${endponits.GET_ALL_ITEMS_SALES}`;
       const apiResponse = await getAllItemsRequest(url);
-      // console.log(apiResponse, "api response");
       const { response, error } = apiResponse;
 
       if (!error && response) {
         setItems(response.data);
-        // console.log(response);
       } else {
         console.log(error);
       }
@@ -474,18 +472,18 @@ const CreditNoteTable = ({
   const filterItems = () => {
     return selectedInvoice?.items?.filter((item: any) =>
       item?.itemName?.toLowerCase().includes(searchValue.toLowerCase()) &&
-      items?.some((i: any) => i._id === item?.itemId) &&
-      !rows.some((row) => row.itemId === item?.itemId) &&
-      item?.quantity !== item.returnQuantity
+      items?.some((i: any) => i._id === item?.
+      itemId)
     );
   };
+  console.log(filterItems(),"filter")
   
   
 
   useEffect(() => {
     getAllItems();
   }, []);
-console.log(selectedInvoice,"selected invoice")
+console.log(items,"selected invoice")
 
 
 
@@ -545,8 +543,8 @@ console.log(selectedInvoice,"selected invoice")
                       onSearchChange={setSearchValue}
                       placeholder="Select Item"
                     />
-                    {selectedInvoice?.items?.length > 0 ? ( // Check if selectedBill has items
-                      filterItems()?.length > 0 ? ( // Check if filtered items exist
+                    {selectedInvoice?.items?.length >= 0 ? ( // Check if selectedBill has items
+                      filterItems()?.length >0 ? ( // Check if filtered items exist
                         filterItems()?.map((item: any, idx: number) => (
                           <div
                             key={idx}

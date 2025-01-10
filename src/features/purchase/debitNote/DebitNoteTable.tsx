@@ -31,10 +31,10 @@ type Row = {
 
 type Props = {
   purchaseOrderState?: any;
-  isInterState?: Boolean;
+  isInterState?: boolean;
   setPurchaseOrderState?: (value: any) => void;
   oneOrganization?: any;
-  isNonTaxable?: Boolean;
+  isNonTaxable?: boolean;
   selectedBill?:any
 };
 
@@ -129,7 +129,6 @@ const DebitNoteTable = ({
     newRows[index].itemIgst = item.itemIgst;
     newRows[index].itemAmount = item.itemAmount;
     newRows[index].itemCostPrice = item.itemCostPrice;
-    // newRows[index].itemPurchaseQuantity=item.itemQuantity;
     newRows[index].taxPreference=item.taxPreference;
 
     if(item.returnQuantity){
@@ -266,12 +265,10 @@ const DebitNoteTable = ({
     try {
       const url = `${endponits.GET_ALL_ITEM}`;
       const apiResponse = await getAllItemsRequest(url);
-      // console.log(apiResponse, "api response");
       const { response, error } = apiResponse;
 
       if (!error && response) {
         setItems(response.data);
-        // console.log(response);
       } else {
         console.log(error);
       }
@@ -369,7 +366,7 @@ const DebitNoteTable = ({
   
  
 
-
+   
   
 
   useEffect(() => {
@@ -516,9 +513,9 @@ const DebitNoteTable = ({
                                     <td className="py-2.5 px-4 border-y border-tableBorder">{index+1}</td>
 
                 <td className="border-y py-3 px-2 border-tableBorder">
-                  <div
+                  <button 
                     className="relative w-full"
-                    onClick={() => toggleDropdown(index, "searchProduct", row)}
+                    onClick={() => toggleDropdown(index, "searchProduct", row)} 
                   >
                     {row.itemName ? (
                       <div className="cursor-pointer gap-2 grid grid-cols-12 appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
@@ -539,7 +536,7 @@ const DebitNoteTable = ({
                         <CheveronDownIcon color="currentColor" />
                       </div>
                     )}
-                  </div>
+                  </button>
                   {openDropdownId === index && openDropdownType === "searchProduct" && (
   <div
     ref={dropdownRef}
@@ -553,7 +550,7 @@ const DebitNoteTable = ({
   {selectedBill?.items?.length > 0 ? ( 
   filterItems()?.length > 0 ? ( 
     filterItems()?.map((item: any, idx: number) => (
-      <div
+      <button 
         key={idx}
         className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
         onClick={() => handleItemSelect(item, index)}
@@ -571,7 +568,7 @@ const DebitNoteTable = ({
             <p className="text-xs text-gray-500">Rate: {item.costPrice?item.costPrice:"-"}</p>
           </div>
         </div>
-      </div>
+      </button>
     ))
   ) : (
     <div className="text-center border-slate-400 border rounded-lg">
