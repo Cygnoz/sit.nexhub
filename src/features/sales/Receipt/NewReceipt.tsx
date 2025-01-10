@@ -463,15 +463,13 @@ const NewReceipt = ({page }: Props) => {
                        border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                     >
                       <option>Select Payment Through</option>
-                      {allAcoounts ? (
-                        allAcoounts.map((item: any) => (
-                          <option value={item._id} className="text-gray">
+                      {allAcoounts
+                        .filter((item: { accountSubhead: string }) => item.accountSubhead === "Bank" || item.accountSubhead === "Cash")
+                        .map((item: { _id: string; accountName: string }) => (
+                          <option key={item._id} value={item._id}>
                             {item.accountName}
                           </option>
-                        ))
-                      ) : (
-                        <option>No Accounts Available</option>
-                      )}
+                        ))}
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <CehvronDown color="gray" />

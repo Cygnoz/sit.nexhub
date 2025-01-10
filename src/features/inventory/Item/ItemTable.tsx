@@ -113,7 +113,11 @@ const ItemTable = ({ hsnsac }: Props) => {
       const url = `${endponits.GET_ONE_ITEM}/${item._id}`;
       const { response, error } = await fetchOneItem(url);
       if (!error && response) {
-        setOneItem(response.data)
+        setSelectedItem((prevSelectedItem:any) => ({
+          ...prevSelectedItem,
+          itemImage: response.data.itemImage, 
+        }));
+        setOneItem(response.data);
       } else {
         console.error("Failed to fetch one item data.");
       }
@@ -122,6 +126,7 @@ const ItemTable = ({ hsnsac }: Props) => {
       console.error("Error in fetching one item data", error);
     }
   };
+  
 
   useEffect(() => {
     loadCategories();
@@ -149,27 +154,28 @@ const ItemTable = ({ hsnsac }: Props) => {
   };
 
 
-  const handleDeleteImage = async () => {
-    if (selectedItem) {
-      const updatedItem = { ...selectedItem, itemImage: "" };
+ const handleDeleteImage = async (itemId: string) => {
+  if (selectedItem) {
+    const updatedItem = { ...selectedItem, itemImage: "" };
 
-      try {
-        const url = `${endponits.UPDATE_ITEM}/${updatedItem._id}`;
-        const { response, error } = await UpdateItem(url, updatedItem);
+    try {
+      const url = `${endponits.UPDATE_ITEM}/${itemId}`; // Use the passed itemId here
+      const { response, error } = await UpdateItem(url, updatedItem);
 
-        if (!error && response) {
-          toast.success("Image removed and item updated successfully.");
-          setSelectedItem(updatedItem);
-          fetchAllItems();
-        } else {
-          toast.error("Error updating item: " + error.response.data.message);
-        }
-      } catch (error) {
-        console.error("Error updating item:", error);
-        toast.error("Failed to update item.");
+      if (!error && response) {
+        toast.success("Image removed and item updated successfully.");
+        setSelectedItem(updatedItem);
+        fetchAllItems();
+        getOneItem(updatedItem);
+      } else {
+        toast.error("Error updating item: " + error.response.data.message);
       }
+    } catch (error) {
+      console.error("Error updating item:", error);
+      toast.error("Failed to update item.");
     }
-  };
+  }
+};
 
   const confirmDeleteImage = () => {
     setDeleteImageModalOpen(true);
@@ -377,10 +383,10 @@ const ItemTable = ({ hsnsac }: Props) => {
                         </Button>
                       </div>
                     </div>
-                    <div className={`flex justify-center ${selectedItem?.itemImage && 'py-2'}`}>
+                    <div className={`flex justify-center ${oneItem?.itemImage && 'py-2'}`}>
                       <img
                         src={
-                          selectedItem?.itemImage ||
+                          oneItem?.itemImage ||
                           noImage
                         }
                         alt="Item image"
@@ -421,14 +427,14 @@ const ItemTable = ({ hsnsac }: Props) => {
                       <p>{selectedItem?.reorderPoint || 0} Units</p>
                     </div>
                   </div>
-                  {(oneItem?.supplierDetails?.supplierDisplayName ||
-                    oneItem?.supplierDetails?.mobile ||
-                    oneItem?.supplierDetails?.billingAddressStreet1 ||
-                    oneItem?.supplierDetails?.billingAddressStreet2 ||
-                    oneItem?.supplierDetails?.billingCity ||
-                    oneItem?.supplierDetails?.billingState ||
-                    oneItem?.supplierDetails?.billingCountry ||
-                    oneItem?.supplierDetails?.billingPinCode) && (
+                  {(oneItem?.preferredVendorName ||
+                    oneItem?.preferredVendorMobile ||
+                    oneItem?.preferredVendorBillingAddressStreet1 ||
+                    oneItem?.preferredVendorBillingAddressStreet2 ||
+                    oneItem?.preferredVendorBillingCity ||
+                    oneItem?.preferredVendorBillingState ||
+                    oneItem?.preferredVendorBillingCountry ||
+                    oneItem?.preferredVendorBillingPinCode) && (
                       <div className="w-full  rounded-lg border flex flex-col p-4  justify-between  bg-gradient-to-r from-[#6B1515] to-[#240C0C]">
                         <div className="flex justify-between items-center">
                           <p className="text-[16px] font-semibold text-[#D4D4D4]">
@@ -439,30 +445,30 @@ const ItemTable = ({ hsnsac }: Props) => {
                           </div>
                         </div>
                         <div className="mt-4 space-y-2 text-start">
-                          {oneItem?.supplierDetails?.supplierDisplayName && (
+                          {oneItem?.preferredVendorName && (
                             <p className="text-[#FFFFFF]">
-                              <span>Name :</span> {oneItem.supplierDetails.supplierDisplayName}
+                              <span>Name :</span> {oneItem.preferredVendorName}
                             </p>
                           )}
-                          {oneItem?.supplierDetails?.mobile && (
+                          {oneItem?.preferredVendorMobile && (
                             <p className="text-[#FFFFFF]">
-                              <span>Phone :</span> {oneItem.supplierDetails.mobile}
+                              <span>Phone :</span> {oneItem.preferredVendorMobile}
                             </p>
                           )}
-                          {(oneItem?.supplierDetails?.billingAddressStreet1 ||
-                            oneItem?.supplierDetails?.billingAddressStreet2 ||
-                            oneItem?.supplierDetails?.billingCity ||
-                            oneItem?.supplierDetails?.billingState ||
-                            oneItem?.supplierDetails?.billingCountry ||
-                            oneItem?.supplierDetails?.billingPinCode) && (
+                          {(oneItem?.preferredVendorBillingAddressStreet1 ||
+                            oneItem?.preferredVendorBillingAddressStreet2 ||
+                            oneItem?.preferredVendorBillingCity ||
+                            oneItem?.preferredVendorBillingState ||
+                            oneItem?.preferredVendorBillingCountry ||
+                            oneItem?.preferredVendorBillingPinCode) && (
                               <p className="text-[#FFFFFF]">
                                 <span>Address :</span>{" "}
-                                {`${oneItem?.supplierDetails?.billingAddressStreet1 ? oneItem.supplierDetails.billingAddressStreet1 + ", " : ""} 
-                                ${oneItem?.supplierDetails?.billingAddressStreet2 ? oneItem.supplierDetails.billingAddressStreet2 + ", " : ""} 
-                                ${oneItem?.supplierDetails?.billingCity ? oneItem.supplierDetails.billingCity + ", " : ""} 
-                                ${oneItem?.supplierDetails?.billingState ? oneItem.supplierDetails.billingState + ", " : ""} 
-                                ${oneItem?.supplierDetails?.billingCountry ? oneItem.supplierDetails.billingCountry + " - " : ""} 
-                                ${oneItem?.supplierDetails?.billingPinCode || ""}`}
+                                {`${oneItem?.preferredVendorBillingAddressStreet1 ? oneItem.preferredVendorBillingAddressStreet1 + ", " : ""} 
+                                ${oneItem?.preferredVendorBillingAddressStreet2 ? oneItem.preferredVendorBillingAddressStreet2 + ", " : ""} 
+                                ${oneItem?.preferredVendorBillingCity ? oneItem.preferredVendorBillingCity + ", " : ""} 
+                                ${oneItem?.preferredVendorBillingState ? oneItem.preferredVendorBillingState + ", " : ""} 
+                                ${oneItem?.preferredVendorBillingCountry ? oneItem.preferredVendorBillingCountry + " - " : ""} 
+                                ${oneItem?.preferredVendorBillingPinCode || ""}`}
 
                               </p>
                             )}
@@ -748,7 +754,7 @@ const ItemTable = ({ hsnsac }: Props) => {
             </Button>
             <Button
               onClick={() => {
-                handleDeleteImage();
+                handleDeleteImage(selectedItem._id); 
                 closeDeleteImageModal(); // Close the modal after confirming
               }}
               variant="primary"

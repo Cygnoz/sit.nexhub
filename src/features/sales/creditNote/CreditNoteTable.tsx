@@ -17,7 +17,7 @@ type Row = {
   sellingPrice: number | string;
   itemTotaltax:number | string;
   itemAmount: number | string;
-  sgst: number | string;
+  sgst: number | string; 
   cgst: number | string;
   igst: number | string;
   vat: number | string;
