@@ -150,8 +150,10 @@ const DebitNoteTable = ({
       isInterState as boolean
     );
 
-    newRows[index].itemAmount = itemAmount;
-    newRows[index].itemCgstAmount = cgstAmount;
+    newRows[index].itemAmount = isInterState
+    ? (itemAmount + igstAmount).toFixed(2)
+    : (itemAmount + cgstAmount + sgstAmount).toFixed(2);
+        newRows[index].itemCgstAmount = cgstAmount;
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
     
@@ -175,7 +177,6 @@ const DebitNoteTable = ({
       }),
     }));
   };
-
   const calculateTax = (
     totalCostPrice: number,
     item: any,
@@ -230,8 +231,10 @@ const DebitNoteTable = ({
       isInterState as boolean
     );
 
-    newRows[index].itemAmount = itemAmount;
-    newRows[index].itemCgstAmount = cgstAmount;
+    newRows[index].itemAmount = isInterState
+    ? (itemAmount + igstAmount).toFixed(2)
+    : (itemAmount + cgstAmount + sgstAmount).toFixed(2);
+        newRows[index].itemCgstAmount = cgstAmount;
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
     if(isInterState){
@@ -482,6 +485,11 @@ const DebitNoteTable = ({
     );
   };
   
+  useEffect(() => {
+    if(purchaseOrderState.items){
+      setRows(purchaseOrderState.items)
+    }
+  }, [purchaseOrderState.items]);
 
   useEffect(() => {
     getAllItems();
@@ -505,6 +513,8 @@ const DebitNoteTable = ({
           <tbody className="text-dropdownText text-center text-[13px] ">
             {rows?.map((row: any, index: number) => (
               <tr key={index}>
+                                    <td className="py-2.5 px-4 border-y border-tableBorder">{index+1}</td>
+
                 <td className="border-y py-3 px-2 border-tableBorder">
                   <div
                     className="relative w-full"

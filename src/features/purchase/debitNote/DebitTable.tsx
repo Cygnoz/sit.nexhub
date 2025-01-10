@@ -55,6 +55,10 @@ const DebitTable = () => {
     navigate(`/purchase/debit-note/view/${id}`);
   };
 
+  const handleEditClick = (id: string) => {
+    navigate(`/purchase/debit-note/edit/${id}`);
+  };
+
   const renderColumnContent = (colId: string, item: any) => {
     if (colId === "customerDetails") {
       return (
@@ -81,6 +85,7 @@ const DebitTable = () => {
         loading={loading.skeleton} 
         searchableFields={["supplierDisplayName","debitNote"]}
         setColumns={setColumns}
+        onEditClick={handleEditClick}
       />
     </div>
   );

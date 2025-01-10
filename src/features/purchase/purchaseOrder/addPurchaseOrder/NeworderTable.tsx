@@ -579,6 +579,7 @@ const NewOrderTable = ({
           <tbody className="text-dropdownText text-center text-[13px] ">
             {rows?.map((row: any, index: number) => (
               <tr key={index}>
+                <td className="border-y py-3 px-2 border-tableBorder">{index+1}</td>
                 <td className="border-y py-3 px-2 border-tableBorder">
                   <div
                     className="relative w-full"
