@@ -146,11 +146,11 @@ const CreditNoteTable = ({
       newRows[index],
       isInterState as boolean
     );
+newRows[index].itemAmount = (itemAmount + cgstAmount + sgstAmount + igstAmount);
+newRows[index].cgstAmount = cgstAmount;
+newRows[index].sgstAmount = sgstAmount;
+newRows[index].igstAmount = igstAmount;
 
-    newRows[index].itemAmount = itemAmount;
-    newRows[index].cgstAmount = cgstAmount;
-    newRows[index].sgstAmount = sgstAmount;
-    newRows[index].igstAmount = igstAmount;
     
     console.log(igstAmount, sgstAmount,cgstAmount,"igstsvdjgjgh")
 
