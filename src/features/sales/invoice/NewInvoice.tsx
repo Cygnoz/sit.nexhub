@@ -103,7 +103,8 @@ const initialSalesQuoteState: invoice = {
       discountType: "Percentage",
       discountAmount: "",
       amount: "",
-      itemAmount: ""
+      itemAmount: "",
+      salesAccountId:""
     },
   ],
 
@@ -1164,9 +1165,6 @@ const NewInvoice = ({ page}: Props) => {
                         {oneOrganization.baseCurrency}
                       </option>
                     </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700 ms-1">
-                      <CehvronDown color="gray" height={15} width={15} />
-                    </div>
                   </div>
                 </div>
                 <div className="w-full text-end">

@@ -34,6 +34,7 @@ export interface invoice {
       igstAmount: string | number;
       vatAmount: string | number;
       itemTotalTax: string;
+      salesAccountId:string;
     }>;
     totalItemDiscount:string;
     note: string;

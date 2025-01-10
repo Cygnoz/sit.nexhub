@@ -85,7 +85,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
   const [supplierData, setSupplierData] = useState<[]>([]);
   const [customerData, setCustomerData] = useState<[]>([]);
   const [selectedCustomer, setSelecetdCustomer] = useState<string>("");
-  const [selecteSupplier, setSelecetdSupplier] = useState<any | []>([]);
+  const [selectedSupplier, setSelecetdSupplier] = useState<any | []>([]);
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [destinationList, setDestinationList] = useState<any | []>([]);
@@ -237,18 +237,18 @@ const NewPurchaseOrder = ({ page }: Props) => {
     }
   };
   const handleDestination = () => {
-    if (selecteSupplier.billingCountry) {
+    if (selectedSupplier.billingCountry) {
       const country = countryData.find(
         (c: any) =>
-          c.name.toLowerCase() === selecteSupplier.billingCountry.toLowerCase()
+          c.name.toLowerCase() === selectedSupplier.billingCountry.toLowerCase()
       );
-      if (selecteSupplier) {
+      if (selectedSupplier) {
         setPurchaseOrderState((preData) => ({
           ...preData,
-          sourceOfSupply: selecteSupplier.billingState,
-          supplierDisplayName: selecteSupplier.supplierDisplayName,
-          supplierBillingCountry: selecteSupplier.billingCountry,
-          supplierBillingState: selecteSupplier.billingState,
+          sourceOfSupply: selectedSupplier.billingState,
+          supplierDisplayName: selectedSupplier.supplierDisplayName,
+          supplierBillingCountry: selectedSupplier.billingCountry,
+          supplierBillingState: selectedSupplier.billingState,
         }));
       }
 
@@ -436,7 +436,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
     handleDestination();
     handleplaceofSupply();
     fetchCountries();
-  }, [oneOrganization, selecteSupplier]);
+  }, [oneOrganization, selectedSupplier]);
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -495,9 +495,9 @@ const NewPurchaseOrder = ({ page }: Props) => {
                     >
                       <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                         <p>
-                          {selecteSupplier &&
-                          selecteSupplier.supplierDisplayName
-                            ? selecteSupplier.supplierDisplayName
+                          {selectedSupplier &&
+                          selectedSupplier.supplierDisplayName
+                            ? selectedSupplier.supplierDisplayName
                             : "Select Supplier"}
                         </p>
                       </div>

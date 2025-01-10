@@ -49,6 +49,11 @@ const Table = () => {
     navigate(`/purchase/bills/view/${id}`);
   };
 
+  
+  const handleEditClick = (id: string) => {
+    navigate(`/purchase/bills/edit/${id}`);
+  };
+
   const renderColumnContent = (colId: string, item: any) => {
     if (colId === "paidStatus") {
       return (
@@ -79,6 +84,8 @@ const Table = () => {
       loading={loading.skeleton}
       searchableFields={["billNumber", "supplierDisplayName"]}
       setColumns={setColumns}
+      onEditClick={handleEditClick}
+
     />
   );
 };

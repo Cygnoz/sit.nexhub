@@ -54,9 +54,9 @@ const NewSalesQuoteTable = ({
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<any>([]);
   const [qouteisTaxable,setQouteIsTaxable]=useState<boolean>(false)
-  const [previousItems, setPreviousItems] = useState<any[]>([]);
   // const { request: getAllItemsRequest } = useApi("get", 5003);
   const { request: getallItemSales } = useApi("get", 5003);
+  const previousItemsRef = useRef([]);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<Row[]>([
@@ -135,14 +135,11 @@ const NewSalesQuoteTable = ({
       amount: "",
       itemAmount: "",
       itemStock: "",
+      salesAccountId:"",
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
   };
-
-
-
-
 
 
   const calculateDiscountPrice = (
@@ -424,6 +421,7 @@ const NewSalesQuoteTable = ({
           amount: "0",
           itemAmount: "0",
           itemStock: "",
+          salesAccountId:""
         },
       ];
       setRows(newRows);
@@ -583,18 +581,7 @@ useEffect(() => {
 }, [salesQuoteState?.taxPreference]);
 
     
-  useEffect(() => {
-    if (salesQuoteState?.salesOrderNumber) {
-      const updatedItems = salesQuoteState.items.map((item: any) => {
-        const matchingItem = items.find((data: any) => data._id === item.itemId);
-        return {
-          ...item,
-          itemStock: matchingItem?.currentStock || "",
-        };
-      });
-      setRows(updatedItems);
-    }
-  }, [items]);
+ 
   
   useEffect(() => {
     setRows((prevData: any) => {
@@ -610,14 +597,25 @@ useEffect(() => {
   }, []);
 
 
+
   useEffect(() => {
     if (salesQuoteState?.items) {
-      if (JSON.stringify(salesQuoteState.items) !== JSON.stringify(previousItems)) {
-        setRows(salesQuoteState.items);
-        setPreviousItems(salesQuoteState.items); 
+      if (JSON.stringify(salesQuoteState.items) !== JSON.stringify(previousItemsRef.current)) {
+        const updatedItems = salesQuoteState.items.map((item: any) => {
+          const matchingItem = items.find((data: any) => data._id === item.itemId);
+
+          return {
+            ...item,
+            itemStock: matchingItem?.currentStock || "",
+            salesAccountId: matchingItem?.salesAccountId || ""
+          };
+        });
+
+        setRows(updatedItems);
+        previousItemsRef.current = salesQuoteState.items; 
       }
     }
-  }, [salesQuoteState?.items, previousItems]);
+  }, [salesQuoteState?.items, items]);
 
   useEffect(() => {
     getAllItems()
