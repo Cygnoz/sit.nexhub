@@ -484,6 +484,7 @@ const NewReceipt = ({page }: Props) => {
                 customerReciept={customerReciept}
                 recieptState={recieptState}
                 setRecieptState={setRecieptState}
+                page={page}
               />
 
               <div className="mt-5 text-textColor">

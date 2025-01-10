@@ -6,6 +6,7 @@ type Props = {
   customerReciept?: InvoiceType[];
   recieptState?: any;
   setRecieptState?: any;
+  page?:string
 }
 type InvoiceType = {
   invoiceId: string;
@@ -18,7 +19,7 @@ type InvoiceType = {
   paidStatus: string;
 };
 
-function NewRecieptTable({ customerReciept = [], recieptState, setRecieptState }: Props) {
+function NewRecieptTable({ customerReciept = [], recieptState, setRecieptState,page }: Props) {
 
   const [data, setData] = useState<InvoiceType[]>([
     {
@@ -34,6 +35,12 @@ function NewRecieptTable({ customerReciept = [], recieptState, setRecieptState }
   ]);
 
   useEffect(() => {
+    if (page === "edit") {
+      if (recieptState?.invoice && recieptState.invoice.length > 0) {
+        setData([...recieptState.invoice]);
+      }
+    } else {
+
     if (customerReciept && Array.isArray(customerReciept)) {
       const filteredInvoice = customerReciept?.filter(
         (invoice: any) => invoice.paidStatus === "Pending" || invoice.paidStatus === "Overdue"
@@ -52,7 +59,10 @@ function NewRecieptTable({ customerReciept = [], recieptState, setRecieptState }
         }))
       );
     }
+  }
   }, [customerReciept]);
+
+  console.log(data,"data")
 
   const handleRowChange = (
     index: number,
@@ -108,12 +118,7 @@ function NewRecieptTable({ customerReciept = [], recieptState, setRecieptState }
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
             {data && data.length > 0 ? (
-              data
-                .filter(
-                  (row) =>
-                    row.paidStatus === "Pending" || row.paidStatus === "Overdue"
-                )
-                .map((row, index) => (
+              data.map((row, index) => (
                   <tr key={index} className="relative">
                     <td className="py-2.5 px-4 border-y border-tableBorder">
                       <input
