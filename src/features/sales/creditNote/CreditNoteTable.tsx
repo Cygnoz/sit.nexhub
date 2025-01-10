@@ -259,7 +259,7 @@ const CreditNoteTable = ({
  
   const getAllItems = async () => {
     try {
-      const url = `${endponits.GET_ALL_ITEM}`;
+      const url = `${endponits.GET_ALL_ITEMS_SALES}`;
       const apiResponse = await getAllItemsRequest(url);
       // console.log(apiResponse, "api response");
       const { response, error } = apiResponse;
