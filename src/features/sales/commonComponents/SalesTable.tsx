@@ -43,6 +43,7 @@ const SalesTable = ({ page }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [data, setData] = useState<any | []>([]);
 
+
   const fetchAllQuotes = async () => {
     try {
       const url =
@@ -79,7 +80,6 @@ const SalesTable = ({ page }: Props) => {
     fetchAllQuotes();
   }, []);
 
-  console.log(data, "oo");
 
   const initialColumns: Column[] =
     page === "invoice" ? [
@@ -168,7 +168,6 @@ const SalesTable = ({ page }: Props) => {
       <span className="text-gray-500 italic">-</span>
     );
   };
-  // Initialize `data` as an empty array if it's undefined
   const filteredData = Array.isArray(data)
     ? data.filter((quote) => {
       const searchValueLower = searchValue?.toLowerCase();
@@ -180,7 +179,7 @@ const SalesTable = ({ page }: Props) => {
         );
       } else {
         return (
-          quote?.customerName?.toLowerCase()?.includes(searchValueLower) ||
+          quote?.customerDisplayName?.toLowerCase()?.includes(searchValueLower) ||
           quote?.reference?.toLowerCase()?.includes(searchValueLower) ||
           quote?.salesQuotes?.toLowerCase()?.includes(searchValueLower) ||
           quote?.salesInvoice?.toLowerCase()?.includes(searchValueLower) ||
@@ -189,6 +188,7 @@ const SalesTable = ({ page }: Props) => {
       }
     })
     : [];
+
 
 
   const handleRowClick = (id: string) => {

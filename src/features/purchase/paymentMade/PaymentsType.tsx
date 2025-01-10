@@ -38,7 +38,7 @@ const PaymentsType = () => {
           className="flex items-center gap-2 p-2 w-[100%] justify-center bg-white rounded "          style={{ border: "1px solid #DADBDD" }}
         >
           <PlusCircle color="#820000" />
-          <span
+          <span   
             style={{ color: "#820000", fontSize: "12px", fontWeight: "600" }}
           >
             New Custom View
