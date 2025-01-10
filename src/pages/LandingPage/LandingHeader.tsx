@@ -15,6 +15,7 @@ import OrganizationIcon from "../../assets/icons/OrganizationIcon";
 import { useEffect, useState } from "react";
 import Modal from "../../Components/model/Modal";
 import Button from "../../Components/Button";
+import SettingsIcons from "../../assets/icons/SettingsIcon";
 
 type Props = {
   setMode?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -52,6 +53,10 @@ function LandingHeader({ mode, setMode }: Props) {
     navigate("/login");
     setLogoutModalOpen(false);
 };
+
+const handleNavigate =()=>{
+  navigate("/settings")
+}
 
 
   const closeModal = () => {
@@ -99,6 +104,11 @@ function LandingHeader({ mode, setMode }: Props) {
               icon: <LogOut color={mode ? '#4B5C79' : '#DFE1E2'} />,
               onClick: confirmLogout,
             },
+            {
+              label: 'settings',
+              icon: <SettingsIcons  size="sm" color={mode ? '#4B5C79' : '#DFE1E2'} />,
+              onClick: handleNavigate,
+            },
           ]}
           backgroundColor={mode ? "bg-white" : "bg-[#3C474D]"}
           trigger={<OrganizationIcon height="10" width="10" />}
@@ -139,7 +149,7 @@ function LandingHeader({ mode, setMode }: Props) {
         <Modal
           open
           onClose={closeModal}
-          className="rounded-lg p-8 w-[546px] h-[160px] z-[1200] text-[#303F58] space-y-8 absolute top-0"
+          className="rounded-lg p-8 w-[546px] h-[160px] text-[#303F58] space-y-8 relative"
         >
           <p className="text-sm">Are you sure you want to log out?</p>
           <div className="flex justify-end gap-2 mb-3">

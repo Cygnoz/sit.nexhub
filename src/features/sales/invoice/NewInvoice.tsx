@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Button from "../../../Components/Button";
 import SearchBar from "../../../Components/SearchBar";
 import CehvronDown from "../../../assets/icons/CehvronDown";
@@ -15,7 +15,7 @@ import { endponits } from "../../../Services/apiEndpoints";
 import ViewMoreOrder from "../salesOrder/ViewMoreOrder";
 import NewSalesQuoteTable from "../quote/NewSalesQuoteTable";
 
-type Props = {};
+type Props = {page?:string};
 interface Customer {
   taxType: string;
 }
@@ -139,7 +139,7 @@ const initialSalesQuoteState: invoice = {
   totalAmount: "",
   salesOrderId: ""
 };
-const NewInvoice = ({ }: Props) => {
+const NewInvoice = ({ page}: Props) => {
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(null);
@@ -411,7 +411,6 @@ const NewInvoice = ({ }: Props) => {
     invoiceState?.placeOfSupply,
     oneOrganization.state
   ]);
-
   const fetchData = async (
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
@@ -419,13 +418,31 @@ const NewInvoice = ({ }: Props) => {
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
+  
       if (!error && response) {
-        setData(response.data);
+        if (url.includes(endponits.GET_ONE_INVOICE)) {
+          const totalAmount = parseFloat(response.data.totalAmount) || 0;
+          const discountTransactionAmount = parseFloat(response.data.discountTransactionAmount) || 0;
+  
+          setInvoiceState((prevData) => ({
+            ...prevData,
+            ...response.data,
+            totalAmount: totalAmount.toFixed(2),
+            discountTransactionAmount: discountTransactionAmount.toFixed(2),
+          }));
+        } else {
+          setData(response.data);
+        }
+  
+        console.log(response.data, "Invoice fetched successfully");
+      } else {
+        console.error("Error in response or no data received:", error);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+  
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
@@ -488,6 +505,35 @@ const NewInvoice = ({ }: Props) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openDropdownIndex]);
+
+  const { id } = useParams();
+  const { request: getOneSalesInvoice } = useApi("get", 5007);
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
+      const onePO = `${endponits.GET_ONE_INVOICE}/${id}`;
+
+      await fetchData(customerUrl, setCustomerData, AllCustomer);
+
+      if (page === "edit") {
+        await fetchData(onePO, setInvoiceState, getOneSalesInvoice);
+      }
+    };
+
+    fetchInitialData();
+  }, [page, id]);
+
+  useEffect(() => {
+    if (invoiceState.customerId && customerData) {
+      const customer = customerData.find(
+        (customer: any) => customer._id === invoiceState.customerId
+      );
+      if (customer) {
+        setSelecetdCustomer(customer);
+      }
+    }
+  }, [invoiceState]);
 
   const { request: newSalesInvoiceApi } = useApi("post", 5007);
   const handleSave = async () => {

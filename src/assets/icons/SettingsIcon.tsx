@@ -11,7 +11,7 @@ const sizeClasses = {
   xl: "w-10 h-10",
 };
 
-const SettingsIcons = ({ size = "md" }: Props) => {
+const SettingsIcons = ({ size = "md", color = "#4B5C79" }: Props) => {
   const sizeClass = sizeClasses[size];
 
   return (
@@ -21,8 +21,8 @@ const SettingsIcons = ({ size = "md" }: Props) => {
         fill="none"
         viewBox="0 0 24 24"
         strokeWidth="1.8"
-        stroke="#4B5C79"
-        className="text-gray-700  font-extrabold cursor-pointer"
+        stroke={color}
+        className="text-gray-700 font-extrabold cursor-pointer"
       >
         <path
           strokeLinecap="round"
@@ -38,5 +38,6 @@ const SettingsIcons = ({ size = "md" }: Props) => {
     </div>
   );
 };
+
 
 export default SettingsIcons;

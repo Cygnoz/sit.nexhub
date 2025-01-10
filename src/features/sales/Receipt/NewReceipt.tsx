@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Button from "../../../Components/Button";
 import SearchBar from "../../../Components/SearchBar";
 import CehvronDown from "../../../assets/icons/CehvronDown";
@@ -12,7 +12,7 @@ import useApi from "../../../Hooks/useApi";
 import NewRecieptTable from "./NewRecieptTable";
 import toast from "react-hot-toast";
 
-type Props = {};
+type Props = {page?:string};
 
 type InvoiceType = {
   invoiceId: string;
@@ -59,7 +59,7 @@ const initialReceipt: ReceiptType = {
   amountReceived: 0,
   amountUsedForPayments: 0,
 };
-const NewReceipt = ({ }: Props) => {
+const NewReceipt = ({page }: Props) => {
 
   const [searchValue, setSearchValue] = useState<string>("");
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
@@ -191,6 +191,34 @@ const NewReceipt = ({ }: Props) => {
       setOpenDropdownIndex(null);
     }
   };
+  const { id } = useParams();
+  const { request: getOneSalesReciept } = useApi("get", 5007);
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
+      const onePO = `${endponits.GET_ONE_SALES_RECIEPT}/${id}`;
+
+      await fetchData(customerUrl, setCustomerData, AllCustomer);
+
+      if (page === "edit") {
+        await fetchData(onePO, setRecieptState, getOneSalesReciept);
+      }
+    };
+
+    fetchInitialData();
+  }, [page, id]);
+
+  useEffect(() => {
+    if (recieptState.customerId && customerData) {
+      const customer = customerData.find(
+        (customer: any) => customer._id === recieptState.customerId
+      );
+      if (customer) {
+        setSelecetdCustomer(customer);
+      }
+    }
+  }, [recieptState]);
 
 
   const handleSave = async () => {
