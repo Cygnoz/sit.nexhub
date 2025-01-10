@@ -1,5 +1,5 @@
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import Button from "../../../Components/Button";
@@ -64,9 +64,9 @@ const initialSupplierBillState: DebitNoteBody = {
   grandTotal: "",
 };
 
-type Props = {};
+type Props = { page?: any };
 
-const NewDebitNote = ({}: Props) => {
+const NewDebitNote = ({ page }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
@@ -102,11 +102,13 @@ const NewDebitNote = ({}: Props) => {
   const { request: getPrefix } = useApi("get", 5005);
   const { request: getAllBills } = useApi("get", 5005);
   const { request: getAccountData } = useApi("get", 5001);
+  const { request: getOneDebit } = useApi("get", 5005);
+  const { request: newDebitNoteApi } = useApi("post", 5005);
+  const { id } = useParams();
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const { supplierResponse } = useContext(SupplierResponseContext)!;
   const navigate = useNavigate();
-  const { request: newDebitNoteApi } = useApi("post", 5005);
 
   console.log(debitNoteState, "debitnote state");
 
@@ -307,24 +309,57 @@ const NewDebitNote = ({}: Props) => {
   }, [debitNoteState?.sourceOfSupply, debitNoteState?.destinationOfSupply]);
 
   useEffect(() => {
+    if (debitNoteState && supplierData) {
+      const { supplierId } = debitNoteState;
+      if (supplierId) {
+        const supplier = supplierData.find(
+          (supplier: any) => supplier._id === supplierId
+        );
+        if (supplier) {
+          setSelecetdSupplier(supplier);
+        }
+      }
+    }
+
+    if (debitNoteState && allBills) {
+      const { billId } = debitNoteState;
+      if (billId) {
+        const bills = allBills?.allBills?.find((bill: any) => bill._id === billId);
+        if (bills) {
+          setSelectedBill(bills);
+        }
+      }
+    }
+  }, [debitNoteState, supplierData, allBills]);
+
+
+  useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
     const getAllBillsUrl = `${endponits.GET_ALL_BILLS}`;
-    const getPrefixUrl = `${endponits.GET_DEBIT_NOTE_PREFIX}`;
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
 
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
     fetchData(supplierUrl, setSupplierData, AllSuppliers);
     fetchData(getAllBillsUrl, setAllBills, getAllBills);
-    fetchData(getPrefixUrl, setDBPrefix, getPrefix);
     fetchData(allAccountsUrl, setAccounts, getAccountData);
+
+    if (page !== "edit") {
+      const getPrefixUrl = `${endponits.GET_DEBIT_NOTE_PREFIX}`;
+
+      fetchData(getPrefixUrl, setDBPrefix, getPrefix);
+    } else {
+      const getOneDN = `${endponits.GET_DEBIT_NOTE}/${id}`;
+
+      fetchData(getOneDN, setDebitNoteState, getOneDebit);
+    }
   }, []);
 
   useEffect(() => {
-    setDebitNoteState((preData) => ({
+   if(page!=="edit"){ setDebitNoteState((preData) => ({
       ...preData,
       debitNote: DBPrefix,
-    }));
+    }));}
   }, [DBPrefix]);
 
   useEffect(() => {
@@ -334,7 +369,6 @@ const NewDebitNote = ({}: Props) => {
     fetchCountries();
   }, [oneOrganization, selecteSupplier]);
 
-  console.log(errors)
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
