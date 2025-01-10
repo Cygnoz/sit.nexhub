@@ -575,6 +575,34 @@ function AddExpensePage({}: Props) {
     }));
   }, [Itemize]);
 
+  useEffect(() => {
+    if (expenseData.gstTreatment === "Unregistered Business" || expenseData.gstTreatment === "Consumer") {
+      setExpenseData((prevData) => ({
+        ...prevData,
+        gstin: "",
+        expense: prevData.expense.map((item: any) => ({
+          ...item,
+          taxGroup:"Non-Taxable", 
+          cgst:"",
+          sgst:"",
+          igst:"",
+        })),
+      }));
+      setSelectedTax("");
+    }
+  
+    if (expenseData.gstTreatment === "Overseas") {
+      setExpenseData((prevData) => ({
+        ...prevData,
+        sourceOfSupply: "",
+      }));
+      setSelectedTax("");
+    }
+  }, [expenseData.gstTreatment]); 
+  
+  
+  
+
   return (
     <>
       <div className="bg-white mx-7 py-7">
@@ -870,95 +898,96 @@ function AddExpensePage({}: Props) {
               </div>
               {Itemize && (
                 <>
-                  <div>
-                    <label
-                      className="block text-sm text-labelColor mt-2.5"
-                      htmlFor="itemType"
-                    >
-                      Expense Type
-                    </label>
-                    <div className="flex items-center space-x-4 text-textColor text-sm">
-                      {/* Goods Option */}
-                      <div className="flex gap-2 justify-center items-center mt-1">
-                        <div
-                          className="grid place-items-center mt-1"
-                          onClick={() => {
-                            setExpenseData((prev) => ({
-                              ...prev,
-                              expenseType: "Goods", // Use consistent property name
-                            }));
-                          }}
-                        >
-                          <input
-                            id="Goods"
-                            type="radio"
-                            name="expenseType"
-                            value="Goods"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                              expenseData.expenseType === "Goods"
-                                ? "border-8 border-[#97998E]"
-                                : "border-1 border-[#97998E]"
-                            }`}
-                            checked={expenseData.expenseType === "Goods"}
-                            readOnly // Avoid unnecessary onChange handling
-                          />
-                          <div
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              expenseData.expenseType === "Goods"
-                                ? "bg-neutral-50"
-                                : "bg-transparent"
-                            }`}
-                          />
-                        </div>
-                        <label
-                          htmlFor="Goods"
-                          className="text-start font-medium mt-1"
-                        >
-                          Goods
-                        </label>
-                      </div>
+                <div>
+  <label
+    className="block text-sm text-labelColor mt-2.5"
+    htmlFor="itemType"
+  >
+    Expense Type
+  </label>
+  <div className="flex items-center space-x-4 text-textColor text-sm">
+    {/* Goods Option */}
+    <div className="flex gap-2 justify-center items-center mt-1">
+      <div
+        className="grid place-items-center mt-1"
+        onClick={() => {
+          setExpenseData((prev) => ({
+            ...prev,
+            expenseType: "Goods", // Consistent property name
+          }));
+        }}
+      >
+        <input
+          id="Goods"
+          type="radio"
+          name="expenseType"
+          value="Goods"
+          className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+            expenseData.expenseType === "Goods"
+              ? "border-8 border-[#97998E]"
+              : "border-1 border-[#97998E]"
+          }`}
+          checked={expenseData.expenseType === "Goods"}
+          readOnly // Avoid unnecessary onChange handling
+        />
+        <div
+          className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+            expenseData.expenseType === "Goods"
+              ? "bg-neutral-50" // Correct color for checked state
+              : "bg-transparent"
+          }`}
+        />
+      </div>
+      <label
+        htmlFor="Goods"
+        className="text-start font-medium mt-1"
+      >
+        Goods
+      </label>
+    </div>
 
-                      {/* Service Option */}
-                      <div className="flex gap-2 justify-center items-center">
-                        <div
-                          className="grid place-items-center mt-1"
-                          onClick={() => {
-                            setExpenseData((prev) => ({
-                              ...prev,
-                              expenseType: "service", // Use consistent property name
-                            }));
-                          }}
-                        >
-                          <input
-                            id="Service"
-                            type="radio"
-                            name="expenseType"
-                            value="Service"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                              expenseData.expenseType === "Service"
-                                ? "border-8 border-[#97998E]"
-                                : "border-1 border-[#97998E]"
-                            }`}
-                            checked={expenseData.expenseType === "Service"}
-                            readOnly // Avoid unnecessary onChange handling
-                          />
-                          <div
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              expenseData.expenseType === "Service"
-                                ? "bg-neutral-50"
-                                : "bg-transparent"
-                            }`}
-                          />
-                        </div>
-                        <label
-                          htmlFor="Service"
-                          className="text-start font-medium mt-1"
-                        >
-                          Service
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+    {/* Service Option */}
+    <div className="flex gap-2 justify-center items-center">
+      <div
+        className="grid place-items-center mt-1"
+        onClick={() => {
+          setExpenseData((prev) => ({
+            ...prev,
+            expenseType: "Service", // Consistent property name
+          }));
+        }}
+      >
+        <input
+          id="Service"
+          type="radio"
+          name="expenseType"
+          value="Service"
+          className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+            expenseData.expenseType === "Service"
+              ? "border-8 border-[#97998E]"
+              : "border-1 border-[#97998E]"
+          }`}
+          checked={expenseData.expenseType === "Service"}
+          readOnly // Avoid unnecessary onChange handling
+        />
+        <div
+          className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+            expenseData.expenseType === "Service"
+              ? "bg-neutral-50" // Correct color for checked state
+              : "bg-transparent"
+          }`}
+        />
+      </div>
+      <label
+        htmlFor="Service"
+        className="text-start font-medium mt-1"
+      >
+        Service
+      </label>
+    </div>
+  </div>
+</div>
+
 
                   {expenseData.expenseType === "Goods" ? (
                     <div className="col-span-1 space-y-2">
@@ -1190,6 +1219,7 @@ function AddExpensePage({}: Props) {
 
                   <div className="relative w-full">
                     <select
+                    disabled={expenseData.supplierId===""}
                       onChange={handleChange}
                       name="sourceOfSupply"
                       value={expenseData.sourceOfSupply}
@@ -1376,7 +1406,7 @@ function AddExpensePage({}: Props) {
               )}
               {expenseData.expense[0].taxGroup &&
                 expenseData.expense[0].taxGroup !== "Non-Taxable" && (
-                  <div className=" -mt-5 ">
+                  <div className=" mt-1 ">
                     <label
                       className="block text-sm text-labelColor"
                       htmlFor="amountIs"
@@ -1517,6 +1547,22 @@ function AddExpensePage({}: Props) {
                 />
               </div>
             </div> */}
+             <div className="col-span-1 space-y-2">
+                <label className="text-sm mb-1 text-labelColor">
+                  Expense Number<span className="text-[#bd2e2e] ">*</span>
+                </label>
+                <div className="relative w-full">
+                  <input
+                    disabled
+                    type="text"
+                    name="expenseNumber"
+                    value={expenseData.expenseNumber}
+                    onChange={handleAddExpense}
+                    className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    placeholder="Expense Number"
+                  />
+                </div>
+              </div>
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">
                 Expense Account<span className="text-[#bd2e2e] ">*</span>

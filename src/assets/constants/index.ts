@@ -301,6 +301,7 @@ export const ReminderList = [
 ];
 
 export const newPurchaseOrderTableHead = [
+  "Sl.No.",
   "Product",
   "Quantity",
   "Rate",
@@ -310,6 +311,7 @@ export const newPurchaseOrderTableHead = [
   "Actions",
 ];
 export const newDebitTableHead = [
+  "Sl.No.",
   "Product",
   "Quantity",
   "Rate",
@@ -320,6 +322,7 @@ export const newDebitTableHead = [
 
 
 export const PaymentMadeUnpaidBillTable = [
+  "Sl.No.",
   "Date",
   "Due Date",
   "Bill Number",

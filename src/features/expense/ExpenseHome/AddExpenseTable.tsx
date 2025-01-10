@@ -232,7 +232,7 @@ const AddExpenseTable: React.FC<Props> = ({
                         expenseData.gstTreatment === "Unregistered Business" ||
                         expenseData.gstTreatment === "Overseas"
                       }
-                      value={row.taxGroup.taxName}
+                      value={row?.taxGroup?.taxName}
                       onChange={(e) =>
                         handleTaxGroupChange(index, e.target.value)
                       }
