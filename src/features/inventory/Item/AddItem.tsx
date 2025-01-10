@@ -428,6 +428,8 @@ useEffect(()=>{
   }
 },[initialItemData.taxPreference])
 
+console.log(selectedItem,"selectedItem");
+
 
   return (
     <>
@@ -1737,7 +1739,7 @@ useEffect(()=>{
               />
             </div>
 
-            {/* <div className="w-1/3">
+             <div className="w-1/3">
               <label
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="openingStockRatePerUnit"
@@ -1753,7 +1755,7 @@ useEffect(()=>{
                 value={initialItemData.openingStockRatePerUnit}
                 onChange={handleInputChange}
               />
-            </div> */}
+            </div> 
 
             <div className="w-[50%]">
               <label
