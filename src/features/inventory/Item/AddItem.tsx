@@ -1743,7 +1743,7 @@ console.log(selectedItem,"selectedItem");
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="openingStockRatePerUnit"
               >
-                Opening Stock Rate Per Unit
+                Opening Stock Rate Per Unit  <span className="text-[#bd2e2e] ">*</span>
               </label>
               <input
                 type="number"
