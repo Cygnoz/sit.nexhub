@@ -91,9 +91,10 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
         const sellingPrice = parseFloat(item.sellingPrice) || 0;
         const quantity = quantities[item._id] || 1; 
 
-        const cgst = item.cgst && !isNaN(parseFloat(item.cgst)) ? parseFloat(item.cgst) : undefined;
-        const sgst = item.sgst && !isNaN(parseFloat(item.sgst)) ? parseFloat(item.sgst) : undefined;
-        const igst = item.igst && !isNaN(parseFloat(item.igst)) ? parseFloat(item.igst) : undefined;
+        const cgst = item.cgst !== undefined && !isNaN(parseFloat(item.cgst)) ? parseFloat(item.cgst) : undefined;
+        const sgst = item.sgst !== undefined && !isNaN(parseFloat(item.sgst)) ? parseFloat(item.sgst) : undefined;
+        const igst = item.igst !== undefined && !isNaN(parseFloat(item.igst)) ? parseFloat(item.igst) : undefined;
+        
 
         const cgstAmount = selectedCustomer?.taxType === "Non-Tax" 
         ? "0.00" 

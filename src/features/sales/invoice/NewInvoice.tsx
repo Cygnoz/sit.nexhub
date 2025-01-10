@@ -154,7 +154,7 @@ const NewInvoice = ({ page}: Props) => {
   const [allAccounts, setAllAccounts] = useState<any>([]);
 
   const [invoiceState, setInvoiceState] = useState<invoice>(initialSalesQuoteState);
-  console.log(invoiceState);
+  console.log(invoiceState,"as");
 
 
   const { request: AllCustomer } = useApi("get", 5002);

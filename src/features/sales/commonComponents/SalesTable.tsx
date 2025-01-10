@@ -121,6 +121,7 @@ const SalesTable = ({ page }: Props) => {
           ] :
             page == "reciept" ? [
               { id: "paymentDate", label: "Date", visible: true },
+              { id: "receipt", label: "Reciept", visible: true },
               // { id: "payment", label: "Payment#", visible: true },
               { id: "customerDisplayName", label: "Customer Name", visible: true },
               // { id: "", label: "Invoice#", visible: true },

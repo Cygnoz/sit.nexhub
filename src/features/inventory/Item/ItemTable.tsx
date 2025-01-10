@@ -89,7 +89,6 @@ const ItemTable = ({ hsnsac }: Props) => {
   };
 
   const [allCategoryData, setAllcategoryData] = useState<any[]>([]);
-
   const { request: fetchAllCategories } = useApi("put", 5003);
   const loadCategories = async () => {
     try {
