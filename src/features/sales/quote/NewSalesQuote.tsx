@@ -23,7 +23,7 @@ interface Customer {
 }
 const initialSalesQuoteState: SalesQuote = {
   customerId: "",
-  customerName: "",
+  customerDisplayName: "",
   placeOfSupply: "",
   reference: "",
   salesQuoteDate: "",
@@ -498,7 +498,7 @@ console.log(customerData);
                             onClick={() => {
                               setSalesQuoteState((prevState) => ({
                                 ...prevState,
-                                customerId: customer._id, customerName: customer.customerDisplayName
+                                customerId: customer._id, customerDisplayName: customer.customerDisplayName
                               }));
                               setOpenDropdownIndex(null);
                               setSelecetdCustomer(customer);
