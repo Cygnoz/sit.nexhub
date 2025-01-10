@@ -28,6 +28,7 @@ interface CardData {
   count: string;
 }
 
+
 function SeeCustomerDetails() {
   const { setCustomerDatials } = useContext(CustomerDeatilsContext)!;
 
