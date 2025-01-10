@@ -189,7 +189,7 @@ console.log(paymentState,"paymentState")
         setPaymentState((prevData) => {
           return {
             ...prevData,
-            paymentMade: response.data
+            payment: response.data
           };
         });
       }
@@ -200,18 +200,7 @@ console.log(paymentState,"paymentState")
   };
   
 
-  // const handleChangeAmt = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (event.target.checked) {
-  //     setIsFullAmount(true);
-  //     setPaymentState((prevData) => ({
-  //       ...prevData,
-  //       paymentMade: paymentState.totalBillAmount,
-  //     }));
-  //   } else {
-  //     setIsFullAmount(false);
-    
-  //   }
-  // };
+
 
   const handleSave = async () => {
     try {
@@ -451,7 +440,6 @@ console.log(paymentState,"paymentState")
                   </label>
 
                   <input
-                  disabled
                     onChange={handleChange}
                     value={paymentState.payment}
                     name="payment"
@@ -542,6 +530,7 @@ console.log(paymentState,"paymentState")
             <div className="mt-5">
               <p className="font-bold text-base">Unpaid Bill</p>
               <NewPaymentMadeOrderTable
+              page={page}
                 isFullAmt={isFullAmt}
                 supplierBills={supplierBills}
                 paymentState={paymentState}
