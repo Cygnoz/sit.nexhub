@@ -14,8 +14,8 @@ import salesImage from "../../../assets/Images/shopping-cart_3706316 1.png";
 import CardSkeleton from "../../../Components/skeleton/CardSkeleton";
 import EditCustomerModal from "./EditCustomerModal";
 import Preview from "../../../assets/icons/Preview";
-import Payment from "../../../assets/icons/Payment";
-import HistoryIcon from "../../../assets/icons/HistoryIcon";
+// import Payment from "../../../assets/icons/Payment";
+// import HistoryIcon from "../../../assets/icons/HistoryIcon";
 import Button from "../../../Components/Button";
 import Trash2 from "../../../assets/icons/Trash2";
 
@@ -89,8 +89,8 @@ function SeeCustomerDetails() {
 
   const sideBarHead = [
     { icon: <Preview />, title: "Overview", onclick: () => setSelectedTab("Overview") },
-    { icon: <HistoryIcon/>, title: "Sales History", onclick: () => setSelectedTab("Sales History") },
-    { icon: <Payment />, title: "View Payment", onclick: () => setSelectedTab("View Payment") },
+    // { icon: <HistoryIcon/>, title: "Sales History", onclick: () => setSelectedTab("Sales History") },
+    // { icon: <Payment />, title: "View Payment", onclick: () => setSelectedTab("View Payment") },
   ];
 
   const cards: CardData[] = [
