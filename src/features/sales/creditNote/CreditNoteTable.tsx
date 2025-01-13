@@ -26,7 +26,8 @@ type Row = {
   igstAmount: number | string; 
   vatAmount: number | string; 
   stock:number | string; 
-  taxPreference:string
+  taxPreference:string;
+  salesAccountId?:string;
 };
 
 type Props = {
@@ -50,9 +51,8 @@ const CreditNoteTable = ({
   const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<any>([]);
+
   const { request: getAllItemsRequest } = useApi("get", 5003);
-  
-  console.log(selectedInvoice,"selectedInvoice");
   
   
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -73,7 +73,8 @@ const CreditNoteTable = ({
       igstAmount: "",
       vatAmount: "",
       stock:"",
-      taxPreference:""
+      taxPreference:"",
+       salesAccountId:""
     },
   ]);
 
@@ -113,6 +114,7 @@ const CreditNoteTable = ({
       vatAmount:"",
       stock:"",
       taxPreference:"",
+      salesAccountId:""
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
@@ -122,6 +124,8 @@ const CreditNoteTable = ({
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
+
+    const matchedItem = items.find((i: any) => i._id === item.itemId);
 
     const newRows = [...rows];
     newRows[index].itemName = item.itemName;
@@ -135,6 +139,7 @@ const CreditNoteTable = ({
     newRows[index].sellingPrice = item.sellingPrice;
     newRows[index].stock = item.returnQuantity? item.quantity - item.returnQuantity : item.quantity;
     newRows[index].taxPreference=item.taxPreference;
+    newRows[index].salesAccountId = matchedItem ? matchedItem.salesAccountId : null;
 
 
     const costPrice = Number(newRows[index].sellingPrice);
@@ -301,7 +306,8 @@ newRows[index].igstAmount = igstAmount;
         igstAmount: "",
         vatAmount: "",
         stock:"",
-        taxPreference:""
+        taxPreference:"",
+        salesAccountId:""
       };
   
       // Reset rows to default row
@@ -314,8 +320,6 @@ newRows[index].igstAmount = igstAmount;
       }));
     }
   };
-  
-  console.log(rows,"rows")
   
   const calculateTotalSGST = () => {
     return rows.reduce((total, row) => {
@@ -457,6 +461,7 @@ newRows[index].igstAmount = igstAmount;
         vatAmount: "",
         stock:"",
         taxPreference:"",
+        salesAccountId:""
       };
   
       setRows([defaultRow]);
@@ -470,20 +475,20 @@ newRows[index].igstAmount = igstAmount;
   }, [selectedInvoice]);   
 
   const filterItems = () => {
-    return selectedInvoice?.items?.filter((item: any) =>
-      item?.itemName?.toLowerCase().includes(searchValue.toLowerCase()) &&
-      items?.some((i: any) => i._id === item?.
-      itemId)
-    );
+    return selectedInvoice?.items?.filter((item: any) => {
+      const isItemAlreadySelected = rows.some((row) => row.itemId === item.itemId);
+      return (
+        !isItemAlreadySelected && 
+        item?.itemName?.toLowerCase().includes(searchValue.toLowerCase()) &&
+        items?.some((i: any) => i._id === item?.itemId)
+      );
+    });
   };
-  console.log(filterItems(),"filter")
-  
   
 
   useEffect(() => {
     getAllItems();
   }, []);
-console.log(items,"selected invoice")
 
 
 
