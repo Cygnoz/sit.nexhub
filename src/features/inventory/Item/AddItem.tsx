@@ -1562,7 +1562,7 @@ console.log(selectedItem,"selectedItem");
                 </label>
                 <div className="relative w-full">
                   <select
-                    className={`block appearance-none w-full mt-0.5 text-zinc-400 bg-white border ${errors.purchaseAccountId ? "border-red-800" : "border-inputBorder"
+                    className={`block appearance-none w-full mt-0.5 bg-white border ${errors.purchaseAccountId ? "border-red-800" : "border-inputBorder"
                       } text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white ${errors.purchaseAccountId ? "focus:border-red-800" : "focus:border-darkRed"
                       }`}
                     name="purchaseAccountId"
@@ -1594,7 +1594,6 @@ console.log(selectedItem,"selectedItem");
                   </div>
                 )}
               </div>
-
 
 
             </div>
@@ -1671,7 +1670,7 @@ console.log(selectedItem,"selectedItem");
 
               <div className="relative w-full">
                 <select
-                  className={`block appearance-none w-full mt-0.5 text-zinc-400 bg-white border ${errors.salesAccountId ? "border-red-800" : "border-inputBorder"
+                  className={`block appearance-none w-full mt-0.5  bg-white border ${errors.salesAccountId ? "border-red-800" : "border-inputBorder"
                     } text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white ${errors.salesAccountId ? "focus:border-red-800" : "focus:border-darkRed"
                     }`}
                   name="salesAccountId"
@@ -1744,7 +1743,7 @@ console.log(selectedItem,"selectedItem");
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="openingStockRatePerUnit"
               >
-                Opening Stock Rate Per Unit
+                Opening Stock Rate Per Unit  <span className="text-[#bd2e2e] ">*</span>
               </label>
               <input
                 type="number"
