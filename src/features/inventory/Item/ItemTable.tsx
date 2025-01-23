@@ -143,19 +143,14 @@ const ItemTable = ({ hsnsac }: Props) => {
     });
   };
 
- const handleEditOnTable = async (item: any) => {
-  await getOneItem(item);
-  navigate("/inventory/Item/new", {
-    state: {
-      item: {
-        ...item, // Include all properties of the original item
-        itemImage: selectedItem?.itemImage || "", // Add `itemImage` from `selectedItem`
+  const handleEditOnTable = (item: any) => {
+    navigate("/inventory/Item/new", {
+      state: {
+        item,
+        hsnSac: hsnsac || false,
       },
-      hsnSac: hsnsac || false,
-    },
-  });
-};
-
+    });
+  };
 
 
  const handleDeleteImage = async (itemId: string) => {

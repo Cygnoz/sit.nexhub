@@ -13,7 +13,7 @@ export interface CreditNoteBody {
   orderNumber: string;
   customerCreditDate: string;
   paymentMode: string;
-  depositTo: string;
+  paidThroughAccountId: string;
   subject: string;
   
   items: {
@@ -32,6 +32,7 @@ export interface CreditNoteBody {
     igstAmount: number | string;
     vatAmount: number | string;
     itemTotaltax: number | string;
+    salesAccountId:any;
   }[];
   
   addNotes: string;

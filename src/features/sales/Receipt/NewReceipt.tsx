@@ -387,7 +387,7 @@ const NewReceipt = ({page }: Props) => {
 
                 <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
-                    Payment Date
+                    Payment Date <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <input
@@ -417,7 +417,7 @@ const NewReceipt = ({page }: Props) => {
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
-                    Payment Mode
+                    Payment Mode  <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <select
@@ -452,7 +452,7 @@ const NewReceipt = ({page }: Props) => {
 
                 <div className="col-span-7">
                   <label className="block text-sm mb-1 text-labelColor">
-                    Deposit To
+                    Deposit To  <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <select

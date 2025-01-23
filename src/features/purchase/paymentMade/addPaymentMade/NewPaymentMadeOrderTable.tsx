@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { PaymentMadeUnpaidBillTable } from "../../../../assets/constants";
-import toast from "react-hot-toast";
 
 type Props = {
   paymentState?: any;
@@ -25,10 +24,8 @@ const NewPaymentMadeOrderTable = ({
   paymentState,
   setPaymentState,
   supplierBills = [],
-  isFullAmt = false,
   page,
 }: Props) => {
-  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [data, setData] = useState<BillData[]>([]);
 
   useEffect(() => {

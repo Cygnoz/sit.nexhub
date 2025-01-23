@@ -35,7 +35,7 @@ const initialCreditNoteState: CreditNoteBody = {
   orderNumber: "",
   customerCreditDate: "",
   paymentMode: "",
-  depositTo: "",
+  paidThroughAccountId: "",
   subject: "",
 
   items: [
@@ -55,6 +55,7 @@ const initialCreditNoteState: CreditNoteBody = {
       igstAmount: "",
       vatAmount: "",
       itemTotaltax: "",
+      salesAccountId:""
     },
   ],
 
@@ -88,10 +89,8 @@ const NewCreditNote = () => {
   const [creditNoteState, setCreditNoteState] = useState<any>(
     initialCreditNoteState
   );
-  console.log(isPlaceOfSupplyVisible,"isPlaceOfSupplyVisible");
+  console.log(creditNoteState,"creditNoteState");
 
-  
-console.log(selectedInvoice,"qwer")
 
   const [errors, setErrors] = useState({
     invoiceNumber: false,
@@ -99,7 +98,7 @@ console.log(selectedInvoice,"qwer")
     customerId: false,
     placeOfSupply: false,
     paymentMode: false,
-    depositTo: false,
+    paidThroughAccountId: false,
     itemTable: false,
     orderNumber: false,
   customerCreditDate: false,
@@ -108,7 +107,6 @@ console.log(selectedInvoice,"qwer")
 
 
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
-  console.log(selectedCustomer.taxType,"selectedCustomer");
   
   const { request: AllCustomer } = useApi("get", 5002);
   const { request: getOneOrganization } = useApi("get", 5004);
@@ -275,10 +273,10 @@ console.log(selectedInvoice,"qwer")
     } else {
       newErrors.paymentMode = false;
     }
-    if (creditNoteState.depositTo.trim() === "") {
-      newErrors.depositTo = true;
+    if (creditNoteState.paidThroughAccountId.trim() === "") {
+      newErrors.paidThroughAccountId = true;
     } else {
-      newErrors.depositTo = false;
+      newErrors.paidThroughAccountId = false;
     }
 
     if (Object.values(newErrors).some((error) => error)) {
@@ -363,9 +361,6 @@ console.log(selectedInvoice,"qwer")
 const handleGoBack = () => {
   navigate(-1); // Go back to the previous page
 };
-
-console.log(accounts,"77");
-
 
 
   return (
@@ -685,13 +680,13 @@ console.log(accounts,"77");
 
                 <div className="col-span-6">
                   <label className="block text-sm mb-1 text-labelColor">
-                    Deposit To <span className="text-[#bd2e2e] ">*</span>
+                    Paid Through Account <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <select
-                      name="depositTo"
+                      name="paidThroughAccountId"
                       onChange={handleChange}
-                      value={creditNoteState.depositTo}
+                      value={creditNoteState.paidThroughAccountId}
                       className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                     >
                       <option value="">Select Account</option>
