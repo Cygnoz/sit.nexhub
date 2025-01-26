@@ -45,6 +45,8 @@ const initialSalesQuoteState: any = {
   discountTransactionType: "",
   discountTransactionAmount: "",
 
+  paidAmount: "",
+
   subTotal: "",
   totalItem: "",
 
@@ -165,6 +167,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
         totalAmount,
         totalItem: totalItem.toString(),
         discountTransactionType: discountType,
+        paidAmount:total
       }));
     }
   }, [selectedItems, selectedCustomer?.taxType, quantities, discountType, total, discount, subtotal]);
