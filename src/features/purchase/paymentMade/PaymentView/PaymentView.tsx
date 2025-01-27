@@ -9,6 +9,7 @@ import { endponits } from '../../../../Services/apiEndpoints';
 import { useOrganization } from '../../../../context/OrganizationContext';
 import SideBar from './SideBar';
 import PrinterIcon from '../../../../assets/icons/PrinterIcon';
+import Jornal from '../../bills/ViewBill/Jornal';
 
 type Props = {};
 
@@ -91,6 +92,7 @@ function PaymentView({}: Props) {
         <PdfView data={paymentData} organization={organization}/>
         </div>
       </div>
+      <Jornal page={"DebitNote"} />
     </div>
   );
 }

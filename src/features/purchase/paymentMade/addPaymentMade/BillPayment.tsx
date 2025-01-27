@@ -12,7 +12,7 @@ import { endponits } from "../../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import SupplierView from "../../CommonComponents/SupplierView";
-import avatar from "../../../../assets/Images/avatar-3814049_1280.webp"
+import avatar from "../../../../assets/Images/avatar-3814049_1280.webp";
 
 interface UnpaidBill {
   billDate: string;
@@ -31,7 +31,7 @@ interface SupplierPayment {
   paymentDate: string;
   paymentMade: string;
   paymentMode: string;
-  paidThrough: string;
+  paidThroughAccountId: string;
   reference: string;
   notes: string;
   attachments: string;
@@ -53,7 +53,7 @@ const initialSupplierPayment: SupplierPayment = {
   paymentDate: "",
   paymentMade: "",
   paymentMode: "",
-  paidThrough: "",
+  paidThroughAccountId: "",
   reference: "",
   notes: "",
   attachments: "",
@@ -78,9 +78,9 @@ const initialSupplierPayment: SupplierPayment = {
   totalBillAmount: 0,
 };
 
-type Props = {page?:any};
+type Props = { page?: any };
 
-const NewPaymentMade = ({page}: Props) => {
+const NewPaymentMade = ({ page }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [selectedSupplier, setSelecetdSupplier] = useState<any | []>([]);
   const [supplierData, setSupplierData] = useState<[]>([]);
@@ -92,13 +92,14 @@ const NewPaymentMade = ({page}: Props) => {
     initialSupplierPayment
   );
 
-
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: getAllBills } = useApi("get", 5005);
   const { request: getAccounts } = useApi("get", 5001);
   const { request: addPayment } = useApi("post", 5005);
   const { request: getPrefix } = useApi("get", 5005);
   const { request: getOnepayment } = useApi("get", 5005);
+  const { request: editPayment } = useApi("put", 5005);
+
   const { id } = useParams();
 
   const navigate = useNavigate();
@@ -179,17 +180,17 @@ const NewPaymentMade = ({page}: Props) => {
       console.error("Error fetching data:", error);
     }
   };
-console.log(paymentState,"paymentState")
+  console.log(paymentState, "paymentState");
   const getlastPrefix = async () => {
     try {
       const url = `${endponits.PAYMENT_LAST_PREFIX}`;
       const { response, error } = await getPrefix(url);
-  
+
       if (!error && response) {
         setPaymentState((prevData) => {
           return {
             ...prevData,
-            payment: response.data
+            paymentMade: response.data,
           };
         });
       }
@@ -198,14 +199,19 @@ console.log(paymentState,"paymentState")
       console.error("Error fetching payment prefix:", error);
     }
   };
-  
-
-
 
   const handleSave = async () => {
     try {
-      const url = `${endponits.ADD_PAYMET_MADE}`;
-      const { response, error } = await addPayment(url, paymentState);
+      let url;
+      let api;
+      if (page === "edit") {
+        url = `${endponits.EDIT_PAYMENT_MADE}/${id}`;
+        api = editPayment;
+      } else {
+        url = `${endponits.ADD_PAYMET_MADE}`;
+        api = addPayment;
+      }
+      const { response, error } = await api(url, paymentState);
       if (!error && response) {
         toast.success(response.data.message);
         setTimeout(() => {
@@ -218,24 +224,25 @@ console.log(paymentState,"paymentState")
   };
 
   useEffect(() => {
-    const grandTotal = supplierBills?.filter((bill: any) => bill.paidStatus === "Pending" || bill.paidStatus === "Overdue")
+    const grandTotal = supplierBills
+      ?.filter(
+        (bill: any) =>
+          bill.paidStatus === "Pending" || bill.paidStatus === "Overdue"
+      )
       .reduce((total: number, bill: any) => total + bill.grandTotal, 0);
-  
+
     setPaymentState((prevData) => ({
       ...prevData,
       totalBillAmount: grandTotal,
     }));
   }, [supplierBills]);
-  
 
   useEffect(() => {
-    if(page!=="edit"){
-          getlastPrefix()
-
-    }else{
-      const paymentUrl =`${endponits.GET_PAYMENT}/${id}`
+    if (page !== "edit") {
+      getlastPrefix();
+    } else {
+      const paymentUrl = `${endponits.GET_PAYMENT}/${id}`;
       fetchData(paymentUrl, setPaymentState, getOnepayment);
-
     }
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
 
@@ -246,7 +253,7 @@ console.log(paymentState,"paymentState")
 
   useEffect(() => {
     if (paymentState && supplierData) {
-      const { supplierId } =paymentState;
+      const { supplierId } = paymentState;
       if (supplierId) {
         const supplier = supplierData.find(
           (supplier: any) => supplier._id === supplierId
@@ -333,11 +340,15 @@ console.log(paymentState,"paymentState")
                         filteredSupplier.map((supplier: any) => (
                           <div className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointe border border-slate-400 rounded-lg bg-lightPink cursor-pointer hover:bg-lightRose">
                             <div className="col-span-2 flex items-center justify-center">
-                            <img
+                              <img
                                 className="rounded-full "
-                                  src={supplier.supplierProfile?supplier.supplierProfile:avatar}
-                                  alt=""
-                                />
+                                src={
+                                  supplier.supplierProfile
+                                    ? supplier.supplierProfile
+                                    : avatar
+                                }
+                                alt=""
+                              />
                             </div>
                             <div
                               className="col-span-10 flex cursor-pointer "
@@ -347,31 +358,28 @@ console.log(paymentState,"paymentState")
                                   supplierId: supplier._id,
                                   supplierDisplayName:
                                     supplier.supplierDisplayName,
-                                 
-
                                 }));
-                                setIsFullAmount(false)
+                                setIsFullAmount(false);
                                 setOpenDropdownIndex(null);
                                 setSelecetdSupplier(supplier);
                               }}
                             >
                               <div
-                            className={` items-center space-y-1 ${
-                              supplier.mobile
-                                ? "justify-start"
-                                : "flex justify-center"
-                            }`}
-                          >
-                            <p className="font-bold text-sm">
-                              {supplier.supplierDisplayName}
-                            </p>
-                            {supplier.mobile && (
-                              <p className="text-xs text-gray-500">
-                                Phone: {supplier.mobile}
-                              </p>
-                            )}
-                          </div>
-                             
+                                className={` items-center space-y-1 ${
+                                  supplier.mobile
+                                    ? "justify-start"
+                                    : "flex justify-center"
+                                }`}
+                              >
+                                <p className="font-bold text-sm">
+                                  {supplier.supplierDisplayName}
+                                </p>
+                                {supplier.mobile && (
+                                  <p className="text-xs text-gray-500">
+                                    Phone: {supplier.mobile}
+                                  </p>
+                                )}
+                              </div>
                             </div>
                           </div>
                         ))
@@ -387,8 +395,7 @@ console.log(paymentState,"paymentState")
                 </div>
               </div>
               <div className="cols-12 hidden">
-              <SupplierView selectedSupplier={selectedSupplier}/>
-               
+                <SupplierView selectedSupplier={selectedSupplier} />
               </div>
 
               <div className="grid grid-cols-2 gap-4 mt-2">
@@ -441,8 +448,8 @@ console.log(paymentState,"paymentState")
 
                   <input
                     onChange={handleChange}
-                    value={paymentState.payment}
-                    name="payment"
+                    value={paymentState.paymentMade}
+                    name="paymentMade"
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />
@@ -475,8 +482,8 @@ console.log(paymentState,"paymentState")
                     onChange={handleChange}
                     className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   >
-                     <option value="" className="text-gray">
-                     Select Payment Mode
+                    <option value="" className="text-gray">
+                      Select Payment Mode
                     </option>
                     <option value="Bank Transfer" className="text-gray">
                       Bank Transfer
@@ -505,8 +512,8 @@ console.log(paymentState,"paymentState")
                 <div className="relative w-full">
                   <select
                     onChange={handleChange}
-                    value={paymentState.paidThrough}
-                    name="paidThrough"
+                    value={paymentState.paidThroughAccountId}
+                    name="paidThroughAccountId"
                     className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   >
                     <option>Select Payment Through</option>
@@ -530,7 +537,7 @@ console.log(paymentState,"paymentState")
             <div className="mt-5">
               <p className="font-bold text-base">Unpaid Bill</p>
               <NewPaymentMadeOrderTable
-              page={page}
+                page={page}
                 isFullAmt={isFullAmt}
                 supplierBills={supplierBills}
                 paymentState={paymentState}
@@ -633,7 +640,6 @@ console.log(paymentState,"paymentState")
             <Button variant="secondary" size="sm">
               Cancel
             </Button>
-           
             <Button variant="primary" size="sm" onClick={handleSave}>
               Save
             </Button>{" "}

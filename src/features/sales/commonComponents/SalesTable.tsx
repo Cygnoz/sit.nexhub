@@ -215,6 +215,9 @@ const SalesTable = ({ page }: Props) => {
     else if (page === "reciept") {
       navigate(`/sales/receipt/edit/${id}`);
     }
+    else if (page === "credit-Note"){
+      navigate(`/edit/${id}`)
+    }
     else {
       console.warn(`Unexpected page value: ${page}`);
     }

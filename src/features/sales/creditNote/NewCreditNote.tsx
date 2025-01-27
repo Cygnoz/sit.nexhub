@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import SearchBar from "../../../Components/SearchBar";
@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 interface Customer {
   taxType: string;
 }
+type props={page?:string}
 
 const initialCreditNoteState: CreditNoteBody = {
   organizationId: "",
@@ -73,7 +74,7 @@ const initialCreditNoteState: CreditNoteBody = {
   totalAmount: 0,
 };
 
-const NewCreditNote = () => {
+const NewCreditNote = ({page}:props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [customerData, setCustomerData] = useState<[]>([]);
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
@@ -115,6 +116,7 @@ const NewCreditNote = () => {
   const { request: getAllInvoice } = useApi("get", 5007);
   const { request: getAccountData } = useApi("get", 5001);
   const { request: newCreditNoteApi } = useApi("post", 5007);
+  const { request: getOneCreditNote } = useApi("get", 5007);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const navigate = useNavigate();
@@ -240,6 +242,53 @@ const NewCreditNote = () => {
     searchValue
   );
 
+    const { id } = useParams();
+
+    useEffect(() => {
+      const fetchInitialData = async () => {
+        const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
+        const oneCN = `${endponits.GET_ONE_CREDIT_NOTE}/${id}`;
+  
+        await fetchData(customerUrl, setCustomerData, AllCustomer);
+  
+        if (page === "edit") {
+          await fetchData(oneCN, setCreditNoteState, getOneCreditNote);
+        }
+      };
+  
+      fetchInitialData();
+    }, [page, id]);
+
+    useEffect(() => {
+      if (creditNoteState.customerId && customerData) {
+        const customer = customerData.find(
+          (customer: any) => customer._id === creditNoteState.customerId
+        );
+        if (customer) {
+          setSelecetdCustomer(customer);
+        }
+      }
+      if (creditNoteState && allInvoice) {
+        const { invoiceId } = creditNoteState;
+        if (invoiceId) {
+          const invoices = allInvoice?.allInvoice?.find((item: any) => {
+            console.log(item           ._id, "33"); // Logging inside the find callback
+            return item._id === invoiceId;
+          });
+          console.log(invoices, "77");
+          console.log(invoiceId, "66");
+    
+          if (invoices) {
+            setSelectedInvoice(invoices);
+          }
+        }
+      }
+      
+    }, [creditNoteState, customerData, allInvoice]);
+
+    
+  console.log(selectedInvoice,"88");
+  
 
   const handleSave = async () => {
     const newErrors = { ...errors };
