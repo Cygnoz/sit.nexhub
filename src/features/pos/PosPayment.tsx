@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Button from "../../Components/Button";
 import Modal from "../../Components/model/Modal";
 import defaultCustomerImage from "../../assets/Images/Rectangle 5558.png";
@@ -8,6 +8,7 @@ import useApi from "../../Hooks/useApi";
 import toast from "react-hot-toast";
 import { endponits } from "../../Services/apiEndpoints";
 import { useOrganization } from "../../context/OrganizationContext";
+import { PosResponseContext } from "../../context/ContextShare";
 
 const getCurrentDate = () => {
   const today = new Date();
@@ -204,6 +205,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
   };
 
   const { request: newSalesInvoiceApi } = useApi("post", 5007);
+    const { setPosResponse } = useContext(PosResponseContext)!;
 
   const handleSave = async () => {
     try {
@@ -211,6 +213,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
       const { response, error } = await newSalesInvoiceApi(url, invoiceState);
       if (!error && response) {
         toast.success(response.data.message);
+        setPosResponse(response.data.data)
         setTimeout(() => {
           handleGoBack();
         }, 500);
