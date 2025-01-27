@@ -99,6 +99,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
   const { request: getCountries } = useApi("get", 5004);
   const { request: newPurchaseOrderApi } = useApi("post", 5005);
   const { request: getOnePurchaseOrder } = useApi("get", 5005);
+  const { request: editPurchaseOrderApi } = useApi("put", 5005);
 
   const { id } = useParams();
 
@@ -350,12 +351,17 @@ const NewPurchaseOrder = ({ page }: Props) => {
 
     try {
       let url;
+      let api;
       if (page === "edit") {
-        url = `${endponits.EDIT_PURCHASE_ORDER}`;
+        url = `${endponits.EDIT_PURCHASE_ORDER}/${id}`;
+        api = editPurchaseOrderApi;
+
       } else {
         url = `${endponits.ADD_PURCHASE_ORDER}`;
+        api= newPurchaseOrderApi;
+
       }
-      const { response, error } = await newPurchaseOrderApi(
+      const { response, error } = await api(
         url,
         purchaseOrderState
       );
@@ -372,6 +378,8 @@ const NewPurchaseOrder = ({ page }: Props) => {
       setLoading(false);
     }
   };
+
+  
 
   useEffect(() => {
     if (purchaseOrderState?.destinationOfSupply == "") {

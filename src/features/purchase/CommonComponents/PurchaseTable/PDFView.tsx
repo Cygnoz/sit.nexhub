@@ -24,7 +24,7 @@ const PDFView = ({ data, page , organization}: Props) => {
   useEffect(() => {
     getSupplierAddress();
   }, [data]);
-  console.log(supplier);
+  // console.log(supplier);
   return (
     <div className="mt-4">
       <div className="flex items-center justify-center mb-4">
