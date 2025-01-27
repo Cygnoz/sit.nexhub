@@ -87,6 +87,7 @@ const PurchaseOrderTable = () => {
       searchableFields={["purchaseOrder", "supplierDisplayName"]}
       setColumns={setColumns}
       onEditClick={handleEditClick}
+      deleteUrl={endponits.DELETE_PURCHASE_ORDER}
     />
   );
 };

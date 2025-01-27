@@ -147,25 +147,36 @@ export const endponits = {
   GET_A_BILL:`get-a-Bill`,
   GET_BILL_JOURNAL:`/bill-journal`,
   GET_LAST_BILL_PREFIX:`get-last-bills-prefix`,
+  EDIT_BILL:`update-bill`,
+  DELETE_BILL:``,
+
 
   // Purchase order
   ADD_PURCHASE_ORDER: `add-purchaseOrder`,
   GET_LAST_PURCHASE_ORDER_PREFIX: `get-last-purchase-order-prefix`,
   GET_ALL_PURCHASE_ORDER: `get-all-purchaseOrders`,
   GET_ONE_PURCHASE_ORDER: `get-purchaseOrder`,
-  EDIT_PURCHASE_ORDER:``,
+  EDIT_PURCHASE_ORDER:`update-purchaseOrder`,
+  DELETE_PURCHASE_ORDER:``,
 
   // Payment Made
   ADD_PAYMET_MADE:`add-payment`,
   GET_PAYMENTMADE:`getAllPayments`,
   GET_PAYMENT:`getPayment`,
   PAYMENT_LAST_PREFIX:`get-last-debit-note-prefix`,
+  EDIT_PAYMENT_MADE:`update-paymentMade`,
+  DELETE_PAYMENT_MADE:``,
+  GET_PAYMENT_JOURNAL:`payment-journal`,
+
 
   // Debit note
  GET_DEBIT_NOTE_PREFIX:`get-last-debit-note-prefix`,
  ADD_DEBIT_NOTE:`add-DebitNote`,
  GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
  GET_DEBIT_NOTE:`getDebitNote`,
+ EDIT_DEBIT_NOTE:`update-paymentMade`,
+ DELETE_DEBIT_NOTE:``,
+
 
  // credit note
  GET_CREDIT_NOTE_PREFIX:`get-last-creditNote-prefix`,

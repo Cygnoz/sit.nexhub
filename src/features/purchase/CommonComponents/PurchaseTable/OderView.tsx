@@ -208,10 +208,9 @@ function OrderView({ data, page, organization }: Props) {
       {page === "PurchaseOrder" && <SendPurchaseOrder data={data} />}
       
       {renderItemTable()}
-      {
-  page==="Bills" && 
-  <Jornal/>
-}
+      {page === "Bills"  && <Jornal page={page} />}
+
+
       <hr className="mt-6 border-t border-inputBorder" />
       <div className="flex justify-between gap-6 mt-4 ">
         <div className="p-6 rounded-lg border border-billingBorder w-[50%] h-fit">

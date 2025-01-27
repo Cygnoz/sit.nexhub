@@ -10,7 +10,7 @@ const PaymentMadeTable = () => {
 
   const [columns] = useState([
     { id: "paymentDate", label: "Date", visible: true },
-    { id: "paymentId", label: "Payment#", visible: true },
+    { id: "paymentMade", label: "Payment#", visible: true },
     { id: "supplierDisplayName", label: "Vendor Name", visible: true },
     { id: "bill", label: "Bill#", visible: true },
     { id: "paymentMode", label: "Mode", visible: true },
