@@ -104,6 +104,8 @@ const NewDebitNote = ({ page }: Props) => {
   const { request: getAccountData } = useApi("get", 5001);
   const { request: getOneDebit } = useApi("get", 5005);
   const { request: newDebitNoteApi } = useApi("post", 5005);
+  const { request: editDebitNoteApi } = useApi("put", 5005);
+
   const { id } = useParams();
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -279,8 +281,19 @@ const NewDebitNote = ({ page }: Props) => {
       return;
     }
     try {
-      const url = `${endponits.ADD_DEBIT_NOTE}`;
-      const { response, error } = await newDebitNoteApi(url, debitNoteState);
+      let url;
+      let api;
+      if (page === "edit") {
+
+        url = `${endponits.EDIT_DEBIT_NOTE}/${id}`;
+        api = editDebitNoteApi;
+      } else {
+        console.log("working");
+
+        url = `${endponits.ADD_DEBIT_NOTE}`;
+        api = newDebitNoteApi;
+      }
+      const { response, error } = await api(url, debitNoteState);
       if (!error && response) {
         toast.success(response.data.message);
         setTimeout(() => {
@@ -324,14 +337,15 @@ const NewDebitNote = ({ page }: Props) => {
     if (debitNoteState && allBills) {
       const { billId } = debitNoteState;
       if (billId) {
-        const bills = allBills?.allBills?.find((bill: any) => bill._id === billId);
+        const bills = allBills?.allBills?.find(
+          (bill: any) => bill._id === billId
+        );
         if (bills) {
           setSelectedBill(bills);
         }
       }
     }
   }, [debitNoteState, supplierData, allBills]);
-
 
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
@@ -356,10 +370,12 @@ const NewDebitNote = ({ page }: Props) => {
   }, []);
 
   useEffect(() => {
-   if(page!=="edit"){ setDebitNoteState((preData) => ({
-      ...preData,
-      debitNote: DBPrefix,
-    }));}
+    if (page !== "edit") {
+      setDebitNoteState((preData) => ({
+        ...preData,
+        debitNote: DBPrefix,
+      }));
+    }
   }, [DBPrefix]);
 
   useEffect(() => {
@@ -368,7 +384,6 @@ const NewDebitNote = ({ page }: Props) => {
     handleplaceofSupply();
     fetchCountries();
   }, [oneOrganization, selecteSupplier]);
-
 
   useEffect(() => {
     if (openDropdownIndex !== null) {

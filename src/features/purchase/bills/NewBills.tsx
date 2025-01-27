@@ -48,6 +48,7 @@ const NewBills = ({page}: Props) => {
   const { request: getAccounts } = useApi("get", 5001);
   const { request: getPrefix } = useApi("get", 5005);
   const { request: getEditBill } = useApi("get", 5005);
+  const { request: updateBill } = useApi("put", 5005);
 
     const { id } = useParams();
   const navigate = useNavigate();
@@ -466,8 +467,16 @@ console.log(bill)
     }
 
     try {
-      const url = `${endponits.ADD_BILL}`;
-      const { response, error } = await newBillApi(url, bill);
+      let url;
+      let api;
+      if (page === "edit") {
+        url = `${endponits.EDIT_BILL}/${id}`;
+        api = updateBill;
+      } else {
+        url = `${endponits.ADD_BILL}`;
+        api = newBillApi
+      }
+      const { response, error } = await api(url, bill);
       if (!error && response) {
         toast.success(response.data.message);
         setTimeout(() => {

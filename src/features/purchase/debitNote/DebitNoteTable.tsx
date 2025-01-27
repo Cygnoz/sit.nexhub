@@ -12,21 +12,21 @@ import TrashCan from "../../../assets/icons/TrashCan";
 type Row = {
   itemImage?: string;
   itemId: string;
-  itemName: string; 
-  itemQuantity: number  | string;
+  itemName: string;
+  itemQuantity: number | string;
   itemCostPrice: number | string;
-  itemTax:number | string;
+  itemTax: number | string;
   itemAmount: number | string;
   itemSgst: number | string;
   itemCgst: number | string;
   itemIgst: number | string;
   itemVat: number | string;
-  itemSgstAmount: number | string; 
-  itemCgstAmount: number | string; 
-  itemIgstAmount: number | string; 
-  itemVatAmount: number | string; 
-  taxPreference:string
-  stock:number| string;
+  itemSgstAmount: number | string;
+  itemCgstAmount: number | string;
+  itemIgstAmount: number | string;
+  itemVatAmount: number | string;
+  taxPreference: string;
+  stock: number | string;
 };
 
 type Props = {
@@ -35,14 +35,14 @@ type Props = {
   setPurchaseOrderState?: (value: any) => void;
   oneOrganization?: any;
   isNonTaxable?: boolean;
-  selectedBill?:any
+  selectedBill?: any;
 };
 
 const DebitNoteTable = ({
   purchaseOrderState,
   setPurchaseOrderState,
   isInterState,
-  selectedBill
+  selectedBill,
 }: Props) => {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
@@ -50,7 +50,6 @@ const DebitNoteTable = ({
   const [items, setItems] = useState<any>([]);
   const { request: getAllItemsRequest } = useApi("get", 5003);
 
-  
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<Row[]>([
     {
@@ -68,8 +67,8 @@ const DebitNoteTable = ({
       itemCgstAmount: "",
       itemIgstAmount: "",
       itemVatAmount: "",
-      taxPreference:"",
-      stock:"",
+      taxPreference: "",
+      stock: "",
     },
   ]);
 
@@ -104,20 +103,18 @@ const DebitNoteTable = ({
       itemSgstAmount: "",
       itemCgstAmount: "",
       itemIgstAmount: "",
-      itemVat:"",
-      itemVatAmount:"",
-      taxPreference:"",
-      stock:"",
+      itemVat: "",
+      itemVatAmount: "",
+      taxPreference: "",
+      stock: "",
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
   };
 
-
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
-
 
     const newRows = [...rows];
     newRows[index].itemName = item.itemName;
@@ -129,15 +126,13 @@ const DebitNoteTable = ({
     newRows[index].itemIgst = item.itemIgst;
     newRows[index].itemAmount = item.itemAmount;
     newRows[index].itemCostPrice = item.itemCostPrice;
-    newRows[index].taxPreference=item.taxPreference;
+    newRows[index].taxPreference = item.taxPreference;
 
-    if(item.returnQuantity){
-      newRows[index].stock = item.itemQuantity-item.returnQuantity;
-    }
-    else{
+    if (item.returnQuantity) {
+      newRows[index].stock = item.itemQuantity - item.returnQuantity;
+    } else {
       newRows[index].stock = item.itemQuantity;
     }
-
 
     const costPrice = Number(newRows[index].itemCostPrice);
     const quantity = Number(newRows[index].itemQuantity);
@@ -150,12 +145,12 @@ const DebitNoteTable = ({
     );
 
     newRows[index].itemAmount = isInterState
-    ? (itemAmount + igstAmount).toFixed(2)
-    : (itemAmount + cgstAmount + sgstAmount).toFixed(2);
-        newRows[index].itemCgstAmount = cgstAmount;
+      ? (itemAmount + igstAmount).toFixed(2)
+      : (itemAmount + cgstAmount + sgstAmount).toFixed(2);
+
+    newRows[index].itemCgstAmount = cgstAmount;
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
-    
 
     if (isInterState) {
       newRows[index].itemTax = igstAmount;
@@ -164,8 +159,6 @@ const DebitNoteTable = ({
     }
 
     setRows(newRows);
-
-    
 
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
@@ -181,12 +174,9 @@ const DebitNoteTable = ({
     item: any,
     isInterState: boolean
   ) => {
-
     const cgstPercentage = item.itemCgst || 0;
     const sgstPercentage = item.itemSgst || 0;
     const igstPercentage = item.itemIgst || 0;
-
-
 
     let cgstAmount = 0;
     let sgstAmount = 0;
@@ -216,10 +206,10 @@ const DebitNoteTable = ({
     const purchaseQuantity = Number(newRows[index].stock);
 
     if (quantity > purchaseQuantity) {
-      newRows[index].itemQuantity = purchaseQuantity.toString()
-      
-      toast.error("The entered quantity exceeds available stock."); 
-      return; 
+      newRows[index].itemQuantity = purchaseQuantity.toString();
+
+      toast.error("The entered quantity exceeds available stock.");
+      return;
     }
 
     const totalCostPrice = quantity * costPrice;
@@ -231,20 +221,18 @@ const DebitNoteTable = ({
     );
 
     newRows[index].itemAmount = isInterState
-    ? (itemAmount + igstAmount).toFixed(2)
-    : (itemAmount + cgstAmount + sgstAmount).toFixed(2);
-        newRows[index].itemCgstAmount = cgstAmount;
+      ? (itemAmount + igstAmount).toFixed(2)
+      : (itemAmount + cgstAmount + sgstAmount).toFixed(2);
+    newRows[index].itemCgstAmount = cgstAmount;
     newRows[index].itemSgstAmount = sgstAmount;
     newRows[index].itemIgstAmount = igstAmount;
-    if(isInterState){
-      newRows[index].itemTax=igstAmount
-      newRows[index].itemCgstAmount=""
-      newRows[index].itemSgstAmount=""
-
-    }
-    else{
-      newRows[index].itemTax=cgstAmount+sgstAmount
-      newRows[index].itemIgstAmount=""
+    if (isInterState) {
+      newRows[index].itemTax = igstAmount;
+      newRows[index].itemCgstAmount = "";
+      newRows[index].itemSgstAmount = "";
+    } else {
+      newRows[index].itemTax = cgstAmount + sgstAmount;
+      newRows[index].itemIgstAmount = "";
     }
 
     setRows(newRows);
@@ -258,8 +246,6 @@ const DebitNoteTable = ({
       }),
     }));
   };
-
-
 
   const getAllItems = async () => {
     try {
@@ -280,7 +266,7 @@ const DebitNoteTable = ({
   const removeRow = (index: number) => {
     if (rows.length > 1) {
       const newRows = rows?.filter((_, i) => i !== index);
-  
+
       // Update both rows and purchaseOrderState
       setRows(newRows);
       setPurchaseOrderState?.((prevData: any) => ({
@@ -294,7 +280,7 @@ const DebitNoteTable = ({
         itemQuantity: "",
         itemCostPrice: "",
         itemTax: "",
-        
+
         itemAmount: "",
         itemSgst: "",
         itemCgst: "",
@@ -304,14 +290,14 @@ const DebitNoteTable = ({
         itemCgstAmount: "",
         itemIgstAmount: "",
         itemVatAmount: "",
-        itemPurchaseQuantity:"",
-        taxPreference:"",
-        stock:"",
+        itemPurchaseQuantity: "",
+        taxPreference: "",
+        stock: "",
       };
-  
+
       // Reset rows to default row
       setRows([defaultRow]);
-  
+
       // Update purchaseOrderState with the default row
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
@@ -319,21 +305,18 @@ const DebitNoteTable = ({
       }));
     }
   };
-  
-  
+
   const calculateTotalSGST = () => {
     return rows.reduce((total, row) => {
-      const sgst = !isInterState ? (Number(row.itemSgstAmount) || 0) : 0;
+      const sgst = !isInterState ? Number(row.itemSgstAmount) || 0 : 0;
       return total + sgst;
     }, 0);
   };
-  
 
   // Function to calculate total CGST
   const calculateTotalCGST = () => {
     return rows.reduce((total, row) => {
-
-      const cgst = !isInterState ? (Number(row.itemCgstAmount) || 0 ): 0;
+      const cgst = !isInterState ? Number(row.itemCgstAmount) || 0 : 0;
       return total + cgst;
     }, 0);
   };
@@ -341,7 +324,7 @@ const DebitNoteTable = ({
   // Function to calculate total IGST
   const calculateTotalIGST = () => {
     return rows.reduce((total, row) => {
-      const igst = isInterState ? (Number(row.itemIgstAmount) || 0) : 0;
+      const igst = isInterState ? Number(row.itemIgstAmount) || 0 : 0;
       return total + igst;
     }, 0);
   };
@@ -349,11 +332,11 @@ const DebitNoteTable = ({
   // Function to calculate total item quantity
   const calculateTotalQuantity = () => {
     return rows.reduce((total, row) => {
-      const quantity = parseFloat(row.itemQuantity?.toString() || '0'); 
+      const quantity = parseFloat(row.itemQuantity?.toString() || "0");
       return total + quantity;
     }, 0);
   };
-  
+
   // Function to calculate the total subtotal
   const calculateTotalSubtotal = () => {
     return rows.reduce((total, row) => {
@@ -363,11 +346,6 @@ const DebitNoteTable = ({
       return total + subtotal;
     }, 0);
   };
-  
- 
-
-   
-  
 
   useEffect(() => {
     if (openDropdownId !== null) {
@@ -380,7 +358,6 @@ const DebitNoteTable = ({
     };
   }, [openDropdownId]);
 
-
   useEffect(() => {
     const totalQuantity = calculateTotalQuantity();
     const totalSGST = calculateTotalSGST();
@@ -388,35 +365,29 @@ const DebitNoteTable = ({
     const totalIGST = calculateTotalIGST();
     const totalSellingPrice = calculateTotalSubtotal();
 
-    
-  
     setPurchaseOrderState?.((prevData: DebitNoteBody) => ({
       ...prevData,
       totalItem: totalQuantity,
-      sgst: isInterState?"": totalSGST ,
-      cgst: isInterState?"":totalCGST,
-      igst: isInterState?totalIGST:"",
+      sgst: isInterState ? "" : totalSGST,
+      cgst: isInterState ? "" : totalCGST,
+      igst: isInterState ? totalIGST : "",
       subTotal: totalSellingPrice,
-      totalTaxAmount: isInterState 
-      ? totalIGST 
-      : totalSGST + totalCGST, 
-      grandTotal:totalSellingPrice+purchaseOrderState.totalTaxAmount
-
+      totalTaxAmount: isInterState ? totalIGST : totalSGST + totalCGST,
+      grandTotal: totalSellingPrice + purchaseOrderState.totalTaxAmount,
     }));
-  }, [rows,purchaseOrderState.totalTaxAmount]);  
-  
+  }, [rows, purchaseOrderState.totalTaxAmount]);
 
   useEffect(() => {
     const updatedRows = rows?.map((row) => {
-      const originalPrice = (Number(row.itemCostPrice) || 0) * (Number(row.itemQuantity) || 0);
-  
+      const originalPrice =
+        (Number(row.itemCostPrice) || 0) * (Number(row.itemQuantity) || 0);
+
       const taxDetails = calculateTax(
         originalPrice,
         row,
         isInterState as boolean
       );
 
-  
       return {
         ...row,
         itemAmount: taxDetails.itemAmount,
@@ -425,7 +396,7 @@ const DebitNoteTable = ({
         itemIgstAmount: taxDetails.igstAmount > 0 ? taxDetails.igstAmount : "",
       };
     });
-  
+
     setRows(updatedRows);
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
@@ -435,21 +406,21 @@ const DebitNoteTable = ({
         return updatedItem;
       }),
     }));
-    
-  }, [ isInterState, purchaseOrderState?.destinationOfSupply,
-    purchaseOrderState?.sourceOfSupply,]);
-  
-  
+  }, [
+    isInterState,
+    purchaseOrderState?.destinationOfSupply,
+    purchaseOrderState?.sourceOfSupply,
+  ]);
 
   useEffect(() => {
-    if (selectedBill.length==0) {
+    if (selectedBill.length == 0) {
       const defaultRow = {
         itemId: "",
         itemName: "",
         itemQuantity: "",
         itemCostPrice: "",
         itemTax: "",
-      
+
         itemAmount: "",
         itemSgst: "",
         itemCgst: "",
@@ -459,32 +430,32 @@ const DebitNoteTable = ({
         itemCgstAmount: "",
         itemIgstAmount: "",
         itemVatAmount: "",
-        itemPurchaseQuantity:"",
-        taxPreference:"",
-        stock:""
+        itemPurchaseQuantity: "",
+        taxPreference: "",
+        stock: "",
       };
-  
+
       setRows([defaultRow]);
-  
+
       setPurchaseOrderState?.((prevData: any) => ({
         ...prevData,
-        items: [defaultRow], 
-        grandTotal:0
+        items: [defaultRow],
+        grandTotal: 0,
       }));
     }
-  }, [selectedBill]);   
-
+  }, [selectedBill]);
 
   const filterItems = () => {
-    return selectedBill?.items?.filter((item: any) =>
-      item.itemName.toLowerCase().includes(searchValue.toLowerCase()) && 
-      items.some((i: any) => i._id === item.itemId) 
+    return selectedBill?.items?.filter(
+      (item: any) =>
+        item.itemName.toLowerCase().includes(searchValue.toLowerCase()) &&
+        items.some((i: any) => i._id === item.itemId)
     );
   };
-  
+
   useEffect(() => {
-    if(purchaseOrderState.items){
-      setRows(purchaseOrderState.items)
+    if (purchaseOrderState.items) {
+      setRows(purchaseOrderState.items);
     }
   }, [purchaseOrderState.items]);
 
@@ -498,24 +469,26 @@ const DebitNoteTable = ({
           <thead className="text-[12px] text-center text-dropdownText">
             <tr className="bg-lightPink">
               {newDebitTableHead?.map((item, index) => (
-                  <th
-                    className="py-2 px-4 font-medium border-b border-tableBorder relative"
-                    key={index}
-                  >
-                    {item}
-                  </th>
-                ))}
+                <th
+                  className="py-2 px-4 font-medium border-b border-tableBorder relative"
+                  key={index}
+                >
+                  {item}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody className="text-dropdownText text-center text-[13px] ">
             {rows?.map((row: any, index: number) => (
               <tr key={index}>
-                                    <td className="py-2.5 px-4 border-y border-tableBorder">{index+1}</td>
+                <td className="py-2.5 px-4 border-y border-tableBorder">
+                  {index + 1}
+                </td>
 
                 <td className="border-y py-3 px-2 border-tableBorder">
-                  <button 
+                  <button
                     className="relative w-full"
-                    onClick={() => toggleDropdown(index, "searchProduct", row)} 
+                    onClick={() => toggleDropdown(index, "searchProduct", row)}
                   >
                     {row.itemName ? (
                       <div className="cursor-pointer gap-2 grid grid-cols-12 appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
@@ -537,53 +510,61 @@ const DebitNoteTable = ({
                       </div>
                     )}
                   </button>
-                  {openDropdownId === index && openDropdownType === "searchProduct" && (
-  <div
-    ref={dropdownRef}
-    className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[30%] space-y-1"
-  >
-    <SearchBar
-      searchValue={searchValue}
-      onSearchChange={setSearchValue}
-      placeholder="Select Item"
-    />
-  {selectedBill?.items?.length > 0 ? ( 
-  filterItems()?.length > 0 ? ( 
-    filterItems()?.map((item: any, idx: number) => (
-      <button 
-        key={idx}
-        className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-        onClick={() => handleItemSelect(item, index)}
-      >
-        <div className="col-span-2 flex justify-center">
-          <img
-            className="rounded-full h-10"
-            src={item.itemImage}
-            alt=""
-          />
-        </div>
-        <div className="col-span-10 flex">
-          <div className="text-start">
-            <p className="font-bold text-sm text-black">{item.itemName}</p>
-            <p className="text-xs text-gray-500">Rate: {item.costPrice?item.costPrice:"-"}</p>
-          </div>
-        </div>
-      </button>
-    ))
-  ) : (
-    <div className="text-center border-slate-400 border rounded-lg">
-      <p className="text-[red] text-sm py-4">Items Not Found!</p>
-    </div>
-  )
-) : (
-  <div className="text-center border-slate-400 border rounded-lg">
-    <p className="text-[darkRed] text-sm py-4 px-4">Please select a bill to view items!</p>
-  </div>
-)}
-
-  </div>
-)}
-
+                  {openDropdownId === index &&
+                    openDropdownType === "searchProduct" && (
+                      <div
+                        ref={dropdownRef}
+                        className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[30%] space-y-1"
+                      >
+                        <SearchBar
+                          searchValue={searchValue}
+                          onSearchChange={setSearchValue}
+                          placeholder="Select Item"
+                        />
+                        {selectedBill?.items?.length > 0 ? (
+                          filterItems()?.length > 0 ? (
+                            filterItems()?.map((item: any, idx: number) => (
+                              <button
+                                key={idx}
+                                className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                                onClick={() => handleItemSelect(item, index)}
+                              >
+                                <div className="col-span-2 flex justify-center">
+                                  <img
+                                    className="rounded-full h-10"
+                                    src={item.itemImage}
+                                    alt=""
+                                  />
+                                </div>
+                                <div className="col-span-10 flex">
+                                  <div className="text-start">
+                                    <p className="font-bold text-sm text-black">
+                                      {item.itemName}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                      Rate:{" "}
+                                      {item.costPrice ? item.costPrice : "-"}
+                                    </p>
+                                  </div>
+                                </div>
+                              </button>
+                            ))
+                          ) : (
+                            <div className="text-center border-slate-400 border rounded-lg">
+                              <p className="text-[red] text-sm py-4">
+                                Items Not Found!
+                              </p>
+                            </div>
+                          )
+                        ) : (
+                          <div className="text-center border-slate-400 border rounded-lg">
+                            <p className="text-[darkRed] text-sm py-4 px-4">
+                              Please select a bill to view items!
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input
@@ -594,8 +575,9 @@ const DebitNoteTable = ({
                     onChange={(e) =>
                       handleRowChange(index, "itemQuantity", e.target.value)
                     }
-                  /> <br />
-                  Stock : {row.stock?row.stock:"0"}
+                  />{" "}
+                  <br />
+                  Stock : {row.stock ? row.stock : "0"}
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input
@@ -611,29 +593,25 @@ const DebitNoteTable = ({
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   {
-                   <input
-                   disabled
-                   type="text"
-                   placeholder="0"
-                   className="w-[50px] focus:outline-none text-center"
-                   value={
-                     !isInterState
-                       ? (
-                           ((row.itemCgstAmount) || 0) + ((row.itemSgstAmount) || 0) === 0
-                             ? "nil"
-                             : ((row.itemCgstAmount) + (row.itemSgstAmount))
-                         )
-                       : ((row.itemIgstAmount) || 0) === 0
-                       ? "nil"
-                       : (row.itemIgstAmount)
-                   }
-                 />
-                 
-                 
+                    <input
+                      disabled
+                      type="text"
+                      placeholder="0"
+                      className="w-[50px] focus:outline-none text-center"
+                      value={
+                        !isInterState
+                          ? (row.itemCgstAmount || 0) +
+                              (row.itemSgstAmount || 0) ===
+                            0
+                            ? "nil"
+                            : row.itemCgstAmount + row.itemSgstAmount
+                          : (row.itemIgstAmount || 0) === 0
+                          ? "nil"
+                          : row.itemIgstAmount
+                      }
+                    />
                   }
                 </td>
-                
-                
 
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input

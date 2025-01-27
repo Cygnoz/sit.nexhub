@@ -8,6 +8,8 @@ import Pagination from "../../../../Components/Pagination/Pagination";
 import Eye from "../../../../assets/icons/Eye";
 import Trash2 from "../../../../assets/icons/Trash2"; // Include Trash Icon
 import Pen from "../../../../assets/icons/Pen";
+import useApi from "../../../../Hooks/useApi";
+import toast from "react-hot-toast";
 
 interface Column {
   id: string;
@@ -19,7 +21,7 @@ interface TableProps {
   columns: Column[];
   data: any[];
   onRowClick?: (id: string) => void;
-  onDelete?: (id: string) => void; // Add this prop for delete functionality
+  onDelete?: (id: string) => void; 
   renderColumnContent?: (colId: string, item: any) => JSX.Element;
   searchPlaceholder: string;
   loading: boolean;
@@ -27,6 +29,7 @@ interface TableProps {
   setColumns?: any;
   page?: any;
   onEditClick?: (id: string) => void;
+  deleteUrl?:string
 }
 
 const PurchaseTable: React.FC<TableProps> = ({
@@ -34,30 +37,34 @@ const PurchaseTable: React.FC<TableProps> = ({
   columns,
   data,
   onRowClick,
-  onDelete, // Add the delete function
   renderColumnContent,
   searchPlaceholder,
   loading,
   searchableFields,
   setColumns,
-  onEditClick
+  onEditClick,
+  deleteUrl
 }) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const { request: deleteData } = useApi("delete", 5005);
+  const { request: ocrDelete } = useApi("delete", 5000);
+
+
   const rowsPerPage = 10;
 
   const filteredData = Array.isArray(data)
-  ? data
-      .slice()
-      .reverse() 
-      .filter((item) => {
-        return searchableFields
-          .map((field) => item[field]?.toString().trim().toLowerCase())
-          .some((fieldValue) =>
-            fieldValue?.includes(searchValue.toLowerCase().trim())
-          );
-      })
-  : [];
+    ? data
+        .slice()
+        .reverse()
+        .filter((item) => {
+          return searchableFields
+            .map((field) => item[field]?.toString().trim().toLowerCase())
+            .some((fieldValue) =>
+              fieldValue?.includes(searchValue.toLowerCase().trim())
+            );
+        })
+    : [];
 
   const totalPages = Math.ceil(filteredData?.length / rowsPerPage);
   const paginatedData = filteredData?.slice(
@@ -71,6 +78,25 @@ const PurchaseTable: React.FC<TableProps> = ({
 
   const visibleColumns = columns.filter((col) => col.visible);
   const skeletonColumns = [...visibleColumns, {}, {}, {}];
+
+  const handleDelete = async (id: string) => {
+    try {
+      const url = `${deleteUrl}/${id}`;
+      const apiFunction = page === "ocr" ? ocrDelete : deleteData;
+      const { response, error } = await apiFunction(url);
+  
+      if (!error && response) {
+        const message = response?.data?.[0]?.message || "Item deleted successfully!";
+        toast.success(message);
+      } else {
+        toast.error("Failed to delete item. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error in deleting item:", error);
+      toast.error("An unexpected error occurred. Please try again later.");
+    }
+  };
+  
 
   return (
     <div>
@@ -142,21 +168,17 @@ const PurchaseTable: React.FC<TableProps> = ({
                       )
                   )}
                   <td className="py-3 px-4 border-b border-tableBorder flex items-center justify-center gap-2">
-               <button onClick={() => onEditClick && onEditClick(item._id)}>
-                    <Pen color={"green"}/>
+                    <button
+                      onClick={() => onEditClick && onEditClick(item._id)}
+                    >
+                      <Pen color={"green"} size={18} />
                     </button>
                     <button onClick={() => onRowClick && onRowClick(item._id)}>
                       <Eye color={"#569FBC"} />
                     </button>
-                  {page==="OCR" &&  <button
-                      onClick={() =>
-                        onDelete &&
-                       
-                        onDelete(item._id)
-                      }
-                    >
+                    <button onClick={()=>handleDelete(item._id)}>
                       <Trash2 color="#EA1E4F" size={18} />
-                    </button>}
+                    </button>
                   </td>
 
                   <td className="py-3 px-4 border-b border-tableBorder"></td>

@@ -47,7 +47,6 @@ function PdfView({ data, organization }: Props) {
       console.log("Error in fetching Supplier ,", error);
     }
   };
-  console.log(data, "data");
   const baseCurrency = currency.find((c: any) => c.baseCurrency === true);
 
   const formattedAmount = baseCurrency 
