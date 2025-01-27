@@ -76,6 +76,7 @@ const NewReceipt = ({page }: Props) => {
   const { request: getAllInvoice } = useApi("get", 5007);
   const { request: getAccounts } = useApi("get", 5001);
   const { request: addReciept } = useApi("post", 5007);
+  const { request: editReciept } = useApi("put", 5007);
   const { request: getPrfix } = useApi("get", 5007);
 
   const fetchData = async (
@@ -223,8 +224,9 @@ const NewReceipt = ({page }: Props) => {
 
   const handleSave = async () => {
     try {
-      const url = `${endponits.ADD_SALES_RECIEPT}`;
-      const { response, error } = await addReciept(url, recieptState);
+      const url = page === "edit" ? `${endponits.EDIT_SALES_RECIEPT}/${id}`: `${endponits.ADD_SALES_RECIEPT}`;
+      const apiRequest = page === "edit" ? editReciept : addReciept
+      const { response, error } = await apiRequest(url, recieptState);
       if (response && !error) {
         const { message} = response.data;
         toast.success(message || "Receipt saved successfully!");
@@ -269,7 +271,7 @@ const NewReceipt = ({page }: Props) => {
   return (
     <div className="px-8">
       <div className="flex gap-5">
-        <Link to={"/sales/invoice"}>
+        <Link to={"/sales/receipt"}>
           <div className="flex justify-center items-center h-11 w-11 bg-[#FFFFFF] rounded-full">
             <CheveronLeftIcon />
           </div>

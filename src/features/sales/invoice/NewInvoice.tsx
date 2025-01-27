@@ -537,10 +537,13 @@ const NewInvoice = ({ page}: Props) => {
   }, [invoiceState]);
 
   const { request: newSalesInvoiceApi } = useApi("post", 5007);
+  const { request: editSalesInvoiceApi } = useApi("put", 5007);
+
   const handleSave = async () => {
     try {
-      const url = `${endponits.ADD_SALES_INVOICE}`;
-      const { response, error } = await newSalesInvoiceApi(
+      const url = page === "edit" ? `${endponits.EDIT_SALES_INVOICE}/${id}`: `${endponits.ADD_SALES_INVOICE}`;
+      const apiRequest = page === "edit" ? editSalesInvoiceApi : newSalesInvoiceApi
+      const { response, error } = await apiRequest(
         url,
         invoiceState
       );

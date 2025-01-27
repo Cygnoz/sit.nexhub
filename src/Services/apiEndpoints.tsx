@@ -21,6 +21,11 @@ export const endponits = {
   GET_ONE_QUOTES: "get-one-sales-quotes",
   GET_ONE_SALES_ORDER: "get-one-sales-order",
 
+  EDIT_SALES_ORDER:"update-sales-order",
+  EDIT_SALES_QUOTE:"update-sales-quotes",
+  EDIT_SALES_INVOICE:"update-sales-invoice",
+  EDIT_SALES_RECIEPT:"update-sales-receipt",
+
   //sales order
   GET_LAST_SALES_ORDER_PREFIX: "get-last-sales-order-prefix",
   ADD_SALES_ORDER: "add-sales-order",

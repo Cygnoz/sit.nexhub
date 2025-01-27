@@ -317,7 +317,7 @@ const NewSalesOrder = ({ page }: Props) => {
       if (oneOrganization) {
         setSalesOrderState((preData) => ({
           ...preData,
-          placeOfSupply: oneOrganization.state,
+          placeOfSupply: selectedCustomer.billingState,
         }));
       }
       if (country) {
@@ -336,7 +336,7 @@ const NewSalesOrder = ({ page }: Props) => {
     } else {
       setIsIntraState(false);
     }
-  }, [salesOrderState?.placeOfSupply]);
+  }, [salesOrderState?.placeOfSupply , oneOrganization.state]);
 
   const fetchData = async (
     url: string,
@@ -459,19 +459,29 @@ const NewSalesOrder = ({ page }: Props) => {
     }
   }, [salesOrderState]);
 
-  const { request: newSalesOrdereApi } = useApi("post", 5007);
+  const { request: newSalesOrderApi } = useApi("post", 5007);
+  const { request: editSalesOrderApi } = useApi("put", 5007);
+  
   const handleSave = async () => {
     try {
-      const url = `${endponits.ADD_SALES_ORDER}`;
-      const { response, error } = await newSalesOrdereApi(url, salesOrderState);
+      const url =
+        page === "edit"
+          ? `${endponits.EDIT_SALES_ORDER}/${id}`
+          : `${endponits.ADD_SALES_ORDER}`;
+      const apiRequest = page === "edit" ? editSalesOrderApi : newSalesOrderApi;
+      const { response, error } = await apiRequest(url, salesOrderState);
       if (!error && response) {
         toast.success(response.data.message);
-        handleGoBack();
+        handleGoBack(); 
       } else {
-        toast.error(error?.response.data.message);
+        toast.error(error?.response?.data?.message || "An error occurred");
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Something went wrong. Please try again later.");
+      console.error("Error in handleSave:", error);
+    }
   };
+  
 
   // useEffect(() => {
   //   if (salesOrderState.discountTransactionAmount) {
@@ -483,7 +493,6 @@ const NewSalesOrder = ({ page }: Props) => {
   //   }
   // }, [salesOrderState.discountTransactionAmount, salesOrderState.totalAmount]);
 
-  console.log(salesOrderState)
 
   return (
     <div className="px-8">

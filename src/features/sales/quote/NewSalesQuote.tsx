@@ -220,7 +220,7 @@ const handleGoBack =()=>{
       if (oneOrganization) {
         setSalesQuoteState((preData) => ({
           ...preData,
-          placeOfSupply: oneOrganization.state,
+          placeOfSupply: selectedCustomer.billingState,
         }));
       }
       if (country) {
@@ -337,6 +337,7 @@ const handleGoBack =()=>{
     }
   }, [
     salesQuoteState?.placeOfSupply,
+    oneOrganization.state
   ]);
 
   useEffect(() => {
@@ -419,10 +420,13 @@ console.log(customerData);
 
 
   const { request: newSalesQuoteApi } = useApi("post", 5007);
+  const { request: editSalesQuoteApi } = useApi("put", 5007);
+
   const handleSave = async () => {
     try {
-      const url = `${endponits.ADD_SALES_QUOTE}`;
-      const { response, error } = await newSalesQuoteApi(
+      const url = page === "edit" ? `${endponits.EDIT_SALES_QUOTE}/${id}`: `${endponits.ADD_SALES_QUOTE}`;
+      const apiRequest = page === "edit" ? editSalesQuoteApi : newSalesQuoteApi;
+      const { response, error } = await apiRequest(
         url,
         salesQuoteState
       );
