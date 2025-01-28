@@ -32,7 +32,7 @@ const settingsData: reports[] = [
     title: "Balance Sheet",
     description: "ManageBalance Sheet",
     imageUrl: balanceSheet,
-    route: "",
+    route: "/reports/balancesheet",
   }
 ];
 
