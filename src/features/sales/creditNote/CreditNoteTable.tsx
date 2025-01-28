@@ -53,6 +53,8 @@ const CreditNoteTable = ({
   const [items, setItems] = useState<any>([]);
 
   const { request: getAllItemsRequest } = useApi("get", 5003);
+  const previousItemsRef = useRef([]);
+
   
   
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -484,6 +486,27 @@ newRows[index].igstAmount = igstAmount;
       );
     });
   };
+
+  useEffect(() => {
+    if (SalesOrderState?.items) {
+      if (JSON.stringify(SalesOrderState.items) !== JSON.stringify(previousItemsRef.current)) {
+        const updatedItems = SalesOrderState.items.map((item: any) => {
+          const matchingItem = items.find((data: any) => data._id === item.itemId);
+
+          return {
+            ...item,
+            itemStock: matchingItem?.currentStock || "",
+            salesAccountId: matchingItem?.salesAccountId || ""
+          };
+        });
+
+        setRows(updatedItems);
+        previousItemsRef.current = SalesOrderState.items; 
+      }
+    }
+  }, [SalesOrderState?.items, items]);
+
+
   
 
   useEffect(() => {

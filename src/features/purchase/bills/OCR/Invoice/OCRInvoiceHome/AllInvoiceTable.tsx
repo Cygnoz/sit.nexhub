@@ -5,7 +5,6 @@ import { endponits } from "../../../../../../Services/apiEndpoints";
 import useApi from "../../../../../../Hooks/useApi";
 import { TableResponseContext } from "../../../../../../context/ContextShare";
 import PurchaseTable from "../../../../CommonComponents/PurchaseTable/PurchaseTable";
-import toast from "react-hot-toast";
 import { OCRInvoiceContext } from "../../../../../../context/ContextShare";
 
 const AllInvoiceTable = () => {

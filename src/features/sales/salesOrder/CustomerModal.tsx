@@ -10,7 +10,6 @@ type Props = {
 
 function CustomerModal({ selectedCustomer }: Props) {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  console.log(selectedCustomer);
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);

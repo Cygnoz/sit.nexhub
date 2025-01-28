@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Button from "../../Components/Button";
 import Modal from "../../Components/model/Modal";
 import defaultCustomerImage from "../../assets/Images/Rectangle 5558.png";
@@ -8,6 +8,7 @@ import useApi from "../../Hooks/useApi";
 import toast from "react-hot-toast";
 import { endponits } from "../../Services/apiEndpoints";
 import { useOrganization } from "../../context/OrganizationContext";
+import { PosResponseContext } from "../../context/ContextShare";
 
 const getCurrentDate = () => {
   const today = new Date();
@@ -38,7 +39,7 @@ const initialSalesQuoteState: any = {
       itemTotaltax: "",
       amount: "",
       itemAmount: "",
-      salesAccountId:""
+      salesAccountId: ""
     },
   ],
   totalDiscount: "",
@@ -46,6 +47,7 @@ const initialSalesQuoteState: any = {
   discountTransactionAmount: "",
 
   paidAmount: "",
+  depositAccountId: "",
 
   subTotal: "",
   totalItem: "",
@@ -53,21 +55,22 @@ const initialSalesQuoteState: any = {
   totalTax: "",
   totalAmount: "",
 
-  paymentMethod:"",
+  paymentMethod: "",
 };
 
 type Props = {
   selectedItems: any[]; total: number; selectedCustomer: any; selectedMethodLabel: any; quantities: { [key: string]: number; };
-  discountType: any, discount: any, subtotal: any, discounts: any
+  discountType: any, discount: any, subtotal: any, discounts: any, depositAccountId: string
 };
 
 function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabel, quantities, discountType, discount, subtotal
-  , discounts
+  , discounts, depositAccountId
 }: Props) {
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [paidAmount, setPaidAmount] = useState<any>("");
   const [invoiceState, setInvoiceState] = useState<any>(initialSalesQuoteState);
-  console.log(invoiceState,"as");
+  console.log(invoiceState, "as");
 
   const { organization: orgData } = useOrganization();
 
@@ -86,50 +89,50 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
   }, [selectedCustomer, orgData, selectedMethodLabel, discount, discounts]);
 
 
-  
+
   useEffect(() => {
     if (selectedItems.length > 0) {
       const mappedItems = selectedItems.map((item) => {
         const sellingPrice = parseFloat(item.sellingPrice) || 0;
-        const quantity = quantities[item._id] || 1; 
+        const quantity = quantities[item._id] || 1;
 
         const cgst = item.cgst !== undefined && !isNaN(parseFloat(item.cgst)) ? parseFloat(item.cgst) : undefined;
         const sgst = item.sgst !== undefined && !isNaN(parseFloat(item.sgst)) ? parseFloat(item.sgst) : undefined;
         const igst = item.igst !== undefined && !isNaN(parseFloat(item.igst)) ? parseFloat(item.igst) : undefined;
-        
 
-        const cgstAmount = selectedCustomer?.taxType === "Non-Tax" 
-        ? "0.00" 
-        : cgst !== undefined 
-          ? ((sellingPrice * cgst * quantity) / 100).toFixed(2) 
-          : "0.00";
-      
-      const sgstAmount = selectedCustomer?.taxType === "Non-Tax" 
-        ? "0.00" 
-        : sgst !== undefined 
-          ? ((sellingPrice * sgst * quantity) / 100).toFixed(2) 
-          : "0.00";
-      
-      const igstAmount = selectedCustomer?.taxType === "Non-Tax" 
-        ? "0.00" 
-        : selectedCustomer?.taxType === "GST"
-          ? "0.00" 
-          : igst !== undefined 
-            ? ((sellingPrice * igst * quantity) / 100).toFixed(2) 
+
+        const cgstAmount = selectedCustomer?.taxType === "Non-Tax"
+          ? "0.00"
+          : cgst !== undefined
+            ? ((sellingPrice * cgst * quantity) / 100).toFixed(2)
             : "0.00";
-      
-      const itemTotaltax = selectedCustomer?.taxType === "Non-Tax" 
-        ? "0.00" 
-        : selectedCustomer?.taxType === "GST"
-          ? (parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
-          : parseFloat(igstAmount).toFixed(2);
-      
-      const itemAmount = selectedCustomer?.taxType === "Non-Tax" 
-        ? (sellingPrice * quantity).toFixed(2) // No tax added
-        : selectedCustomer?.taxType === "GST"
-          ? (sellingPrice * quantity + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
-          : (sellingPrice * quantity + parseFloat(igstAmount)).toFixed(2);
-      
+
+        const sgstAmount = selectedCustomer?.taxType === "Non-Tax"
+          ? "0.00"
+          : sgst !== undefined
+            ? ((sellingPrice * sgst * quantity) / 100).toFixed(2)
+            : "0.00";
+
+        const igstAmount = selectedCustomer?.taxType === "Non-Tax"
+          ? "0.00"
+          : selectedCustomer?.taxType === "GST"
+            ? "0.00"
+            : igst !== undefined
+              ? ((sellingPrice * igst * quantity) / 100).toFixed(2)
+              : "0.00";
+
+        const itemTotaltax = selectedCustomer?.taxType === "Non-Tax"
+          ? "0.00"
+          : selectedCustomer?.taxType === "GST"
+            ? (parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+            : parseFloat(igstAmount).toFixed(2);
+
+        const itemAmount = selectedCustomer?.taxType === "Non-Tax"
+          ? (sellingPrice * quantity).toFixed(2) // No tax added
+          : selectedCustomer?.taxType === "GST"
+            ? (sellingPrice * quantity + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+            : (sellingPrice * quantity + parseFloat(igstAmount)).toFixed(2);
+
 
         return {
           itemId: item._id || "",
@@ -167,10 +170,11 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
         totalAmount,
         totalItem: totalItem.toString(),
         discountTransactionType: discountType,
-        paidAmount:total
+        paidAmount: total,
+        depositAccountId: depositAccountId
       }));
     }
-  }, [selectedItems, selectedCustomer?.taxType, quantities, discountType, total, discount, subtotal]);
+  }, [selectedItems, selectedCustomer?.taxType, quantities, discountType, total, discount, subtotal, depositAccountId]);
 
 
 
@@ -201,6 +205,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
   };
 
   const { request: newSalesInvoiceApi } = useApi("post", 5007);
+    const { setPosResponse } = useContext(PosResponseContext)!;
 
   const handleSave = async () => {
     try {
@@ -208,9 +213,10 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
       const { response, error } = await newSalesInvoiceApi(url, invoiceState);
       if (!error && response) {
         toast.success(response.data.message);
+        setPosResponse(response.data.data)
         setTimeout(() => {
           handleGoBack();
-        }, 500); 
+        }, 500);
       } else {
         toast.error(error?.response.data.message);
       }
@@ -218,7 +224,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
       toast.error("Something went wrong.");
     }
   };
-  
+
 
   return (
     <>

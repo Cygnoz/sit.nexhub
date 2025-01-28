@@ -15,7 +15,7 @@ const chartOfAcc = [
   },
   {
     head: "Income",
-    subhead: ["Income", "Other Income"],
+    subhead: ["Income", "Other Income","Sales"],
   },
   {
     head: "Liability",

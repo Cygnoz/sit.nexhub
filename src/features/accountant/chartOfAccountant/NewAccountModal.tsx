@@ -57,7 +57,7 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
       Equity: ["Equity"],
     },
     Income: {
-      Income: ["Income", "Other Income"],
+      Income: ["Income", "Other Income","Sales"],
     },
     Liability: {
       Liabilities: [
