@@ -179,7 +179,7 @@ export const endponits = {
  ADD_DEBIT_NOTE:`add-DebitNote`,
  GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
  GET_DEBIT_NOTE:`getDebitNote`,
- EDIT_DEBIT_NOTE:`update-paymentMade`,
+ EDIT_DEBIT_NOTE:`update-debitNote`,
  DELETE_DEBIT_NOTE:``,
  GET_DEBITNOTE_JOURNAL:`debitNote-journal`,
 

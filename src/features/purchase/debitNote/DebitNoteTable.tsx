@@ -526,7 +526,7 @@ const DebitNoteTable = ({
                             filterItems()?.map((item: any, idx: number) => (
                               <button
                                 key={idx}
-                                className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
+                                className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg w-full  bg-lightPink"
                                 onClick={() => handleItemSelect(item, index)}
                               >
                                 <div className="col-span-2 flex justify-center">
