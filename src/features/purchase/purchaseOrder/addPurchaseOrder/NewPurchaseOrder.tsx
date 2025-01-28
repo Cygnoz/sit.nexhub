@@ -219,7 +219,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
           oneOrganization.organizationCountry.toLowerCase()
       );
       // console.log(country, "country");
-      if (oneOrganization) {
+      if (oneOrganization && page!=="edit") {
         setPurchaseOrderState((preData) => ({
           ...preData,
           destinationOfSupply: oneOrganization.state,
@@ -246,10 +246,15 @@ const NewPurchaseOrder = ({ page }: Props) => {
       if (selectedSupplier) {
         setPurchaseOrderState((preData) => ({
           ...preData,
-          sourceOfSupply: selectedSupplier.billingState,
           supplierDisplayName: selectedSupplier.supplierDisplayName,
           supplierBillingCountry: selectedSupplier.billingCountry,
           supplierBillingState: selectedSupplier.billingState,
+        }));
+      }
+      if(selectedSupplier&& page!=="edit"){
+        setPurchaseOrderState((preData) => ({
+          ...preData,
+          sourceOfSupply: selectedSupplier.billingState,
         }));
       }
 
