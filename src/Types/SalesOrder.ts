@@ -7,6 +7,8 @@ export interface SalesOrder {
   expiryDate: string;
   subject: string;
 
+  salesOrder:string;
+
   paymentMode:string;
   paymentTerms:string;
   deliveryMethod:string;

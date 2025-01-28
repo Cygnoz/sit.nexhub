@@ -31,6 +31,8 @@ const initialSalesQuoteState: SalesOrder = {
   expiryDate: "",
   subject: "",
 
+  salesOrder:"",
+
   paymentMode: "",
   paymentTerms: "",
   deliveryMethod: "",
@@ -315,10 +317,12 @@ const NewSalesOrder = ({ page }: Props) => {
           oneOrganization.organizationCountry.toLowerCase()
       );
       if (oneOrganization) {
-        setSalesOrderState((preData) => ({
-          ...preData,
-          placeOfSupply: selectedCustomer.billingState,
-        }));
+        if (!salesOrderState.placeOfSupply) {
+          setSalesOrderState((preData) => ({
+            ...preData,
+            placeOfSupply: selectedCustomer.billingState,
+          }));
+        }
       }
       if (country) {
         const states = country.states;
@@ -330,13 +334,14 @@ const NewSalesOrder = ({ page }: Props) => {
       console.log("No country selected");
     }
   };
+
   useEffect(() => {
     if (salesOrderState?.placeOfSupply !== oneOrganization.state) {
       setIsIntraState(true);
     } else {
       setIsIntraState(false);
     }
-  }, [salesOrderState?.placeOfSupply , oneOrganization.state]);
+  }, [salesOrderState?.placeOfSupply, oneOrganization.state]);
 
   const fetchData = async (
     url: string,
@@ -348,14 +353,14 @@ const NewSalesOrder = ({ page }: Props) => {
 
       if (!error && response) {
         if (url.includes(endponits.GET_ONE_SALES_ORDER)) {
-         const totalAmount = parseFloat(response.data.totalAmount) || 0;
-         const discountTransactionAmount = parseFloat(response.data.discountTransactionAmount) || 0;
-         setSalesOrderState((prevData) => ({
-           ...prevData,
-           ...response.data,
-           totalAmount: totalAmount.toFixed(2),
-           discountTransactionAmount: discountTransactionAmount.toFixed(2),
-         }));
+          const totalAmount = parseFloat(response.data.totalAmount) || 0;
+          const discountTransactionAmount = parseFloat(response.data.discountTransactionAmount) || 0;
+          setSalesOrderState((prevData) => ({
+            ...prevData,
+            ...response.data,
+            totalAmount: totalAmount.toFixed(2),
+            discountTransactionAmount: discountTransactionAmount.toFixed(2),
+          }));
         } else {
           setData(response.data);
         }
@@ -367,7 +372,7 @@ const NewSalesOrder = ({ page }: Props) => {
     }
   };
 
-  console.log(salesOrderState,"salesOrderState")
+  console.log(salesOrderState, "salesOrderState")
 
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
@@ -461,7 +466,7 @@ const NewSalesOrder = ({ page }: Props) => {
 
   const { request: newSalesOrderApi } = useApi("post", 5007);
   const { request: editSalesOrderApi } = useApi("put", 5007);
-  
+
   const handleSave = async () => {
     try {
       const url =
@@ -472,7 +477,7 @@ const NewSalesOrder = ({ page }: Props) => {
       const { response, error } = await apiRequest(url, salesOrderState);
       if (!error && response) {
         toast.success(response.data.message);
-        handleGoBack(); 
+        handleGoBack();
       } else {
         toast.error(error?.response?.data?.message || "An error occurred");
       }
@@ -481,7 +486,7 @@ const NewSalesOrder = ({ page }: Props) => {
       console.error("Error in handleSave:", error);
     }
   };
-  
+
 
   // useEffect(() => {
   //   if (salesOrderState.discountTransactionAmount) {
@@ -602,26 +607,23 @@ const NewSalesOrder = ({ page }: Props) => {
                     <div className="relative w-full">
                       <select
                         name="placeOfSupply"
-                        value={salesOrderState.placeOfSupply}
+                        value={salesOrderState.placeOfSupply || ""} 
                         onChange={handleChange}
                         className="block appearance-none w-full h-9 text-zinc-400 bg-white border
         border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight
         focus:outline-none focus:bg-white focus:border-gray-500"
                       >
-                        <option value="" disabled selected hidden>
+                        <option value="" disabled hidden>
                           Select place Of Supply
                         </option>
                         {placeOfSupplyList &&
                           placeOfSupplyList.map((item: any, index: number) => (
-                            <option
-                              key={index}
-                              value={item}
-                              className="text-gray"
-                            >
+                            <option key={index} value={item} className="text-gray">
                               {item}
                             </option>
                           ))}
                       </select>
+
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                         <CehvronDown color="gray" />
                       </div>
@@ -630,16 +632,15 @@ const NewSalesOrder = ({ page }: Props) => {
                 )}
 
                 <div
-                  className={`col-span-${
-                    isPlaceOfSupplyVisible ? "5" : "7"
-                  } relative`}
+                  className={`col-span-${isPlaceOfSupplyVisible ? "5" : "7"
+                    } relative`}
                 >
                   <label className="block text-sm mb-1 text-labelColor">
                     Sales Order#
                   </label>
                   <input
                     readOnly
-                    value={prefix}
+                    value={salesOrderState.salesOrder ?salesOrderState.salesOrder :  prefix}
                     // value={page === "edit" ? salesOrderState?.Prefix || prefix : prefix}
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
@@ -647,9 +648,8 @@ const NewSalesOrder = ({ page }: Props) => {
                 </div>
 
                 <div
-                  className={`col-span-${
-                    isPlaceOfSupplyVisible ? "7" : "5"
-                  } relative`}
+                  className={`col-span-${isPlaceOfSupplyVisible ? "7" : "5"
+                    } relative`}
                 >
                   <label className="block text-sm mb-1 text-labelColor">
                     Reference#
