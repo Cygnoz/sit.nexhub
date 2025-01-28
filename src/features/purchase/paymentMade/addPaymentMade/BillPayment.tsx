@@ -308,7 +308,7 @@ const NewPaymentMade = ({ page }: Props) => {
               <div className="cols-span-12">
                 <div className="col-span-6">
                   <label className="block text-sm mb-1 text-labelColor">
-                    Supplier Name
+                    Supplier Name <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div
                     className="relative w-full"
@@ -427,7 +427,7 @@ const NewPaymentMade = ({ page }: Props) => {
                 </div> */}
                 <div className="">
                   <label className="block text-sm mb-1 text-labelColor">
-                    Payment Date
+                    Payment Date <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <input
                     placeholder="Value"
@@ -473,7 +473,7 @@ const NewPaymentMade = ({ page }: Props) => {
             <div className="grid grid-cols-2 gap-4  mt-5">
               <div>
                 <label className="block text-sm mb-1 text-labelColor">
-                  Payment Mode
+                  Payment Mode <span className="text-[#bd2e2e] ">*</span>
                 </label>
                 <div className="relative w-full">
                   <select
@@ -507,7 +507,7 @@ const NewPaymentMade = ({ page }: Props) => {
 
               <div>
                 <label className="block text-sm mb-1 text-labelColor">
-                  Paid Through
+                  Paid Through <span className="text-[#bd2e2e] ">*</span>
                 </label>
                 <div className="relative w-full">
                   <select
@@ -517,15 +517,17 @@ const NewPaymentMade = ({ page }: Props) => {
                     className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   >
                     <option>Select Payment Through</option>
-                    {allAcoounts ? (
-                      allAcoounts.map((item: any) => (
-                        <option value={item._id} className="text-gray">
+                    {allAcoounts
+                      ?.filter(
+                        (item: { accountSubhead: string }) =>
+                          item.accountSubhead === "Bank" ||
+                          item.accountSubhead === "Cash"
+                      )
+                      ?.map((item: { _id: string; accountName: string }) => (
+                        <option key={item._id} value={item._id}>
                           {item.accountName}
                         </option>
-                      ))
-                    ) : (
-                      <option>No Accounts Available</option>
-                    )}
+                      ))}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <CehvronDown color="gray" />

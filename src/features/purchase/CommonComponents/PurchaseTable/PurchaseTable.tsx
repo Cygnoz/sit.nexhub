@@ -30,6 +30,7 @@ interface TableProps {
   page?: any;
   onEditClick?: (id: string) => void;
   deleteUrl?:string
+  fetchData?:any
 }
 
 const PurchaseTable: React.FC<TableProps> = ({
@@ -43,7 +44,8 @@ const PurchaseTable: React.FC<TableProps> = ({
   searchableFields,
   setColumns,
   onEditClick,
-  deleteUrl
+  deleteUrl,
+  fetchData
 }) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -82,13 +84,14 @@ const PurchaseTable: React.FC<TableProps> = ({
   const handleDelete = async (id: string) => {
     try {
       const url = `${deleteUrl}/${id}`;
-      const apiFunction = page === "ocr" ? ocrDelete : deleteData;
+      const apiFunction = page === "OCR" ? ocrDelete : deleteData;
       const { response, error } = await apiFunction(url);
-  
       if (!error && response) {
         const message = response?.data?.[0]?.message || "Item deleted successfully!";
         toast.success(message);
+        fetchData()
       } else {
+        console.log(error.response)
         toast.error("Failed to delete item. Please try again.");
       }
     } catch (error) {
