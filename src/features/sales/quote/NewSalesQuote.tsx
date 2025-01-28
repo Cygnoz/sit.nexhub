@@ -30,6 +30,8 @@ const initialSalesQuoteState: SalesQuote = {
   expiryDate: "",
   subject: "",
   taxPreference:"Taxable",
+  
+  salesQuotes:"",
   items: [
     {
       itemId: "",
@@ -81,7 +83,7 @@ const NewSalesQuote = ({page}: Props) => {
   const [countryData, setcountryData] = useState<any | any>([]);
   const [customerData, setCustomerData] = useState<[]>([]);
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
-  const [prefix, setPrifix] = useState("")
+  const [ prefix, setPrifix] = useState("")
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
 
 
@@ -146,8 +148,8 @@ const handleGoBack =()=>{
 
   const getSalesQuotePrefix = async () => {
     try {
-      const prefixUrl = `${endponits.GET_LAST_SALES_QUOTE_PREFIX}`;
-      const { response, error } = await getPrfix(prefixUrl);
+      const  prefixUrl = `${endponits.GET_LAST_SALES_QUOTE_PREFIX}`;
+      const { response, error } = await getPrfix( prefixUrl);
 
       if (!error && response) {
         setPrifix(response.data)
@@ -210,7 +212,7 @@ const handleGoBack =()=>{
 
 
 
-  const handleplaceofSupply = () => {
+  const handleplaceofSupply  = () => {
     if (oneOrganization.organizationCountry) {
       const country = countryData.find(
         (c: any) =>
@@ -218,10 +220,12 @@ const handleGoBack =()=>{
           oneOrganization.organizationCountry.toLowerCase()
       );
       if (oneOrganization) {
-        setSalesQuoteState((preData) => ({
-          ...preData,
-          placeOfSupply: selectedCustomer.billingState,
-        }));
+        if (!salesQuoteState.placeOfSupply) {
+          setSalesQuoteState((preData) => ({
+            ...preData,
+            placeOfSupply: selectedCustomer.billingState,
+          }));
+        }
       }
       if (country) {
         const states = country.states;
@@ -574,7 +578,7 @@ console.log(customerData);
 
                     <input
                       readOnly
-                      value={prefix}
+                      value={salesQuoteState.salesQuotes? salesQuoteState.salesQuotes : prefix}
                       type="text"
                       className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                       />

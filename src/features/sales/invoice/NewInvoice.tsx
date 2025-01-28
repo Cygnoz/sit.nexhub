@@ -15,7 +15,7 @@ import { endponits } from "../../../Services/apiEndpoints";
 import ViewMoreOrder from "../salesOrder/ViewMoreOrder";
 import NewSalesQuoteTable from "../quote/NewSalesQuoteTable";
 
-type Props = {page?:string};
+type Props = { page?: string };
 interface Customer {
   taxType: string;
 }
@@ -73,6 +73,8 @@ const initialSalesQuoteState: invoice = {
   placeOfSupply: "",
   reference: "",
 
+  salesInvoice:"",
+
   salesInvoiceDate: getCurrentDate(),
   dueDate: getCurrentDate(),
 
@@ -104,7 +106,7 @@ const initialSalesQuoteState: invoice = {
       discountAmount: "",
       amount: "",
       itemAmount: "",
-      salesAccountId:""
+      salesAccountId: ""
     },
   ],
 
@@ -140,7 +142,7 @@ const initialSalesQuoteState: invoice = {
   totalAmount: "",
   salesOrderId: ""
 };
-const NewInvoice = ({ page}: Props) => {
+const NewInvoice = ({ page }: Props) => {
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(null);
@@ -154,7 +156,7 @@ const NewInvoice = ({ page}: Props) => {
   const [allAccounts, setAllAccounts] = useState<any>([]);
 
   const [invoiceState, setInvoiceState] = useState<invoice>(initialSalesQuoteState);
-  console.log(invoiceState,"as");
+  console.log(invoiceState, "as");
 
 
   const { request: AllCustomer } = useApi("get", 5002);
@@ -382,10 +384,12 @@ const NewInvoice = ({ page}: Props) => {
           oneOrganization.organizationCountry.toLowerCase()
       );
       if (oneOrganization) {
-        setInvoiceState((preData) => ({
-          ...preData,
-          placeOfSupply: selectedCustomer.billingState,
-        }));
+        if (!invoiceState.placeOfSupply) {
+          setInvoiceState((preData) => ({
+            ...preData,
+            placeOfSupply: selectedCustomer.billingState,
+          }));
+        }
       }
       if (country) {
         const states = country.states;
@@ -397,6 +401,7 @@ const NewInvoice = ({ page}: Props) => {
       console.log("No country selected");
     }
   };
+
   useEffect(() => {
 
     if (
@@ -419,12 +424,12 @@ const NewInvoice = ({ page}: Props) => {
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
-  
+
       if (!error && response) {
         if (url.includes(endponits.GET_ONE_INVOICE)) {
           const totalAmount = parseFloat(response.data.totalAmount) || 0;
           const discountTransactionAmount = parseFloat(response.data.discountTransactionAmount) || 0;
-  
+
           setInvoiceState((prevData) => ({
             ...prevData,
             ...response.data,
@@ -434,7 +439,7 @@ const NewInvoice = ({ page}: Props) => {
         } else {
           setData(response.data);
         }
-  
+
         console.log(response.data, "Invoice fetched successfully");
       } else {
         console.error("Error in response or no data received:", error);
@@ -443,7 +448,7 @@ const NewInvoice = ({ page}: Props) => {
       console.error("Error fetching data:", error);
     }
   };
-  
+
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
@@ -541,7 +546,7 @@ const NewInvoice = ({ page}: Props) => {
 
   const handleSave = async () => {
     try {
-      const url = page === "edit" ? `${endponits.EDIT_SALES_INVOICE}/${id}`: `${endponits.ADD_SALES_INVOICE}`;
+      const url = page === "edit" ? `${endponits.EDIT_SALES_INVOICE}/${id}` : `${endponits.ADD_SALES_INVOICE}`;
       const apiRequest = page === "edit" ? editSalesInvoiceApi : newSalesInvoiceApi
       const { response, error } = await apiRequest(
         url,
@@ -690,7 +695,7 @@ const NewInvoice = ({ page}: Props) => {
                   </label>
                   <input
                     readOnly
-                    value={prefix}
+                    value={invoiceState.salesInvoice ? invoiceState.salesInvoice : prefix}
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />

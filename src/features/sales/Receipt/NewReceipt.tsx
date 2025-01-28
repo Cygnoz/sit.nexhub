@@ -12,7 +12,7 @@ import useApi from "../../../Hooks/useApi";
 import NewRecieptTable from "./NewRecieptTable";
 import toast from "react-hot-toast";
 
-type Props = {page?:string};
+type Props = { page?: string };
 
 type InvoiceType = {
   invoiceId: string;
@@ -28,6 +28,7 @@ type ReceiptType = {
   customerId: string;
   customerName: string;
   customerDisplayName: string;
+  receipt: string;
   paymentDate: string;
   payment: string;
   paymentMode: string;
@@ -46,6 +47,7 @@ const initialReceipt: ReceiptType = {
   customerId: "",
   customerName: "",
   customerDisplayName: "",
+  receipt: "",
   paymentDate: "",
   payment: "",
   paymentMode: "",
@@ -59,7 +61,7 @@ const initialReceipt: ReceiptType = {
   amountReceived: 0,
   amountUsedForPayments: 0,
 };
-const NewReceipt = ({page }: Props) => {
+const NewReceipt = ({ page }: Props) => {
 
   const [searchValue, setSearchValue] = useState<string>("");
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
@@ -127,7 +129,7 @@ const NewReceipt = ({page }: Props) => {
   };
   const getSalesRecieptPrefix = async () => {
     try {
-      const prefixUrl = `${endponits. GET_LAST_SALES_RECIEPT_PREFIX}`;
+      const prefixUrl = `${endponits.GET_LAST_SALES_RECIEPT_PREFIX}`;
       const { response, error } = await getPrfix(prefixUrl);
 
       if (!error && response) {
@@ -224,11 +226,11 @@ const NewReceipt = ({page }: Props) => {
 
   const handleSave = async () => {
     try {
-      const url = page === "edit" ? `${endponits.EDIT_SALES_RECIEPT}/${id}`: `${endponits.ADD_SALES_RECIEPT}`;
+      const url = page === "edit" ? `${endponits.EDIT_SALES_RECIEPT}/${id}` : `${endponits.ADD_SALES_RECIEPT}`;
       const apiRequest = page === "edit" ? editReciept : addReciept
       const { response, error } = await apiRequest(url, recieptState);
       if (response && !error) {
-        const { message} = response.data;
+        const { message } = response.data;
         toast.success(message || "Receipt saved successfully!");
         navigate(-1);
       } else {
@@ -241,7 +243,7 @@ const NewReceipt = ({page }: Props) => {
       toast.error("Unexpected error occurred. Please try again.");
     }
   };
-  
+
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -373,7 +375,7 @@ const NewReceipt = ({page }: Props) => {
 
                     <input
                       onChange={handleChange}
-                      value={prefix}
+                      value={recieptState.receipt ? recieptState.receipt : prefix}
                       readOnly
                       type="text"
                       className="w-full text-sm p-1.5 pl-2 h-9 border-none outline-none rounded-l-lg"
