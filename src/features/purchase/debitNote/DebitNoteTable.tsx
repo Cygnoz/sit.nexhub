@@ -390,7 +390,7 @@ const DebitNoteTable = ({
 
       return {
         ...row,
-        itemAmount: taxDetails.itemAmount,
+        itemAmount: isInterState?taxDetails.itemAmount+taxDetails.igstAmount:taxDetails.itemAmount+taxDetails.cgstAmount+taxDetails.sgstAmount,
         itemCgstAmount: taxDetails.cgstAmount > 0 ? taxDetails.cgstAmount : "",
         itemSgstAmount: taxDetails.sgstAmount > 0 ? taxDetails.sgstAmount : "",
         itemIgstAmount: taxDetails.igstAmount > 0 ? taxDetails.igstAmount : "",

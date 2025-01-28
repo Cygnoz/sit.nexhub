@@ -218,7 +218,6 @@ const NewPurchaseOrder = ({ page }: Props) => {
           c.name.toLowerCase() ===
           oneOrganization.organizationCountry.toLowerCase()
       );
-      // console.log(country, "country");
       if (oneOrganization && page!=="edit") {
         setPurchaseOrderState((preData) => ({
           ...preData,
@@ -227,8 +226,6 @@ const NewPurchaseOrder = ({ page }: Props) => {
       }
       if (country) {
         const states = country.states;
-        // console.log(states);
-
         setPlaceOfSupplyList(states);
       } else {
         console.log("Country not found");
