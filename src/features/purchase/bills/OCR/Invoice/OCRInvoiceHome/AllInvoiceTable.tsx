@@ -5,7 +5,6 @@ import { endponits } from "../../../../../../Services/apiEndpoints";
 import useApi from "../../../../../../Hooks/useApi";
 import { TableResponseContext } from "../../../../../../context/ContextShare";
 import PurchaseTable from "../../../../CommonComponents/PurchaseTable/PurchaseTable";
-import toast from "react-hot-toast";
 import { OCRInvoiceContext } from "../../../../../../context/ContextShare";
 
 const AllInvoiceTable = () => {
@@ -18,7 +17,6 @@ const AllInvoiceTable = () => {
   ]);
 
   const { request: getInvoice } = useApi("get", 5000);
-  const { request: Ocrdelete } = useApi("delete", 5000);
   const [invoice, setInvoice] = useState([]);
 
   const { ocrInvoice } = useContext(OCRInvoiceContext);
@@ -60,20 +58,7 @@ const AllInvoiceTable = () => {
 
     return columnValue || <span className="text-gray-500 italic">-</span>;
   };
-  const handleDelete = async (id: string) => {
-    try {
-      const url = `${endponits.DELETE_OCR_INVOICE}/${id}`;
-      const { response, error } = await Ocrdelete(url);
-
-      if (!error && response) {
-        toast.success(response.data[0].message);
-        getallInvoice();
-      }
-    } catch (error) {
-      console.error("Error in deleting invoice", error);
-      toast.error("Failed to delete invoice.");
-    }
-  };
+ 
 
   useEffect(() => {
     setLoading("");
@@ -91,7 +76,8 @@ const AllInvoiceTable = () => {
       loading={loading.skeleton}
       searchableFields={["supplier_name", "status"]}
       setColumns={setColumns}
-      onDelete={handleDelete}
+      deleteUrl={endponits.DELETE_OCR_INVOICE}
+      fetchData={getallInvoice}
     />
   );
 };
