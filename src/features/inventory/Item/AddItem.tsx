@@ -1682,7 +1682,7 @@ console.log(selectedItem,"selectedItem");
                   </option>
                   {allAccounts
                     ?.filter(
-                      (item: { accountSubhead: string }) => item.accountSubhead === "Income"
+                      (item: { accountSubhead: string }) => item.accountSubhead === "Sales"
                     )
                     .sort((a: { accountName: string }, b: { accountName: string }) =>
                       a.accountName.localeCompare(b.accountName)
@@ -1738,7 +1738,7 @@ console.log(selectedItem,"selectedItem");
               />
             </div>
 
-             <div className="w-1/3">
+             {/* <div className="w-1/3">
               <label
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="openingStockRatePerUnit"
@@ -1754,7 +1754,7 @@ console.log(selectedItem,"selectedItem");
                 value={initialItemData.openingStockRatePerUnit}
                 onChange={handleInputChange}
               />
-            </div> 
+            </div>  */}
 
             <div className="w-[50%]">
               <label
