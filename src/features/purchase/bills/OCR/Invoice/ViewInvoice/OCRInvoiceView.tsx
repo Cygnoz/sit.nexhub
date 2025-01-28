@@ -467,7 +467,8 @@ const OCRInvoiceView = () => {
             title="PDF Viewer"
           ></iframe>
         ) : (
-          <img
+          <img 
+          className="min-w-[65%]"
           src={invoice?.image}
           alt="Uploaded Content"
             style={{
