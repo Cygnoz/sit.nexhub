@@ -233,7 +233,7 @@ const NewDebitNote = ({ page }: Props) => {
     "supplierDisplayName",
     searchValue
   );
-
+console.log(errors)
   const handleSave = async () => {
     const newErrors = { ...errors };
 
@@ -269,11 +269,11 @@ const NewDebitNote = ({ page }: Props) => {
     } else {
       newErrors.paymentMode = false;
     }
-    if (debitNoteState.depositAccountId.trim() === "") {
-      newErrors.depositTo = true;
-    } else {
-      newErrors.depositTo = false;
-    }
+    // if (debitNoteState.depositAccountId.trim() === "") {
+    //   newErrors.depositTo = true;
+    // } else {
+    //   newErrors.depositTo = false;
+    // }
 
     if (Object.values(newErrors).some((error) => error)) {
       setErrors(newErrors);
