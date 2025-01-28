@@ -25,14 +25,24 @@ const AllInvoiceTable = () => {
 
   const getallInvoice = async () => {
     try {
+      setLoading({ ...loading, skeleton: true, noDataFound: false });
+
       const url = `${endponits.GET_ALL_OCR_INVOICE}`;
       const { response, error } = await getInvoice(url);
 
       if (!error && response) {
         setInvoice(response.data);
+        setLoading({ ...loading, skeleton: false });
+
+      }
+      else{
+        setLoading({ ...loading, skeleton: false, noDataFound: true });
+
       }
     } catch (error) {
       console.error("Error in fetching invoice data", error);
+      setLoading({ ...loading, skeleton: false, noDataFound: true });
+
     }
   };
 
