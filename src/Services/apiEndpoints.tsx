@@ -176,6 +176,7 @@ export const endponits = {
  GET_DEBIT_NOTE:`getDebitNote`,
  EDIT_DEBIT_NOTE:`update-paymentMade`,
  DELETE_DEBIT_NOTE:``,
+ GET_DEBITNOTE_JOURNAL:`debitNote-journal`,
 
 
  // credit note

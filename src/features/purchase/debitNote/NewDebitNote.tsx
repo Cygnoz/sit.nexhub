@@ -31,7 +31,7 @@ const initialSupplierBillState: DebitNoteBody = {
   orderNumber: "",
   supplierDebitDate: "",
   paymentMode: "",
-  depositTo: "",
+  depositAccountId: "",
   subject: "",
 
   items: [
@@ -269,7 +269,7 @@ const NewDebitNote = ({ page }: Props) => {
     } else {
       newErrors.paymentMode = false;
     }
-    if (debitNoteState.depositTo.trim() === "") {
+    if (debitNoteState.depositAccountId.trim() === "") {
       newErrors.depositTo = true;
     } else {
       newErrors.depositTo = false;
@@ -768,15 +768,15 @@ const NewDebitNote = ({ page }: Props) => {
               </div>
             </div>
 
-            <div>
+         { debitNoteState.paymentMode==="Cash" &&  <div>
               <label className="block text-sm mb-1 text-labelColor">
                 Deposit To<span className="text-[#bd2e2e] ">*</span>
               </label>
               <div className="relative w-full">
                 <select
                   onChange={handleInputChange}
-                  name="depositTo"
-                  value={debitNoteState.depositTo}
+                  name="depositAccountId"
+                  value={debitNoteState.depositAccountId}
                   className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 >
                   <option value="">Select Account</option>
@@ -796,7 +796,7 @@ const NewDebitNote = ({ page }: Props) => {
                   <CehvronDown color="gray" />
                 </div>
               </div>
-            </div>
+            </div>}
 
             <div className=" w-full">
               <label className="block text-sm mb-1 text-labelColor">

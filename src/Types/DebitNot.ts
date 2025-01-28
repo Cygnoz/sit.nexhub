@@ -15,7 +15,7 @@ export interface DebitNoteBody {
     orderNumber: string;
     supplierDebitDate: string; 
     paymentMode:string;
-    depositTo:string;
+    depositAccountId:string;
     subject: string;
   
     items: {

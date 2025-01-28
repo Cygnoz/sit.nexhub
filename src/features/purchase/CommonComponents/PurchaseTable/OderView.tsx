@@ -209,6 +209,7 @@ function OrderView({ data, page, organization }: Props) {
       
       {renderItemTable()}
       {page === "Bills"  && <Jornal page={page} />}
+      {page === "DebitNote"  && <Jornal page={page} />}
 
 
       <hr className="mt-6 border-t border-inputBorder" />

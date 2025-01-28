@@ -115,9 +115,8 @@ const OCRInvoiceView = () => {
   const prevAllItems = usePrevious(allItems);
   const prevCurrentItems = usePrevious(currentItems);
 
-
   const handleZoomIn = () => {
-    setZoomLevel((prevZoom) => Math.min(prevZoom + 0.1, 2)); 
+    setZoomLevel((prevZoom) => Math.min(prevZoom + 0.1, 2));
   };
 
   const handleZoomOut = () => {
@@ -197,8 +196,6 @@ const OCRInvoiceView = () => {
     }
   };
 
-
-
   const fetchData = async (
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
@@ -214,7 +211,6 @@ const OCRInvoiceView = () => {
     }
   };
   const handleSupplierMatch = () => {
-
     if (!invoice || invoice.length === 0) {
       console.error("No invoice data available.");
       return;
@@ -288,7 +284,6 @@ const OCRInvoiceView = () => {
       }));
     }
   };
-
 
   const handleItemMatch = () => {
     const matches = currentItems.map((item: any) => {
@@ -391,7 +386,6 @@ const OCRInvoiceView = () => {
     }
   }, [allItems, currentItems]);
 
-
   useEffect(() => {
     const allItemUrl = `${endponits.GET_ALL_ITEM}`;
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
@@ -414,7 +408,7 @@ const OCRInvoiceView = () => {
   }, [openDropdownIndex]);
 
   console.log(invoice, "invoice");
-
+  const isPDF = invoice?.image?.startsWith("data:application/pdf");
   return (
     <>
       <div className="mx-5 my-4 flex items-center  gap-x-4">
@@ -439,13 +433,13 @@ const OCRInvoiceView = () => {
         >
           {/* Header Section */}
           <div className="h-10 header-div bg-[#E5E5E5] rounded-t-lg text-xs font-bold text-[#4B5C79] flex items-center px-4 z-10 relative">
-                        <p>INV-001.png</p>
-           <div className="ml-auto flex items-center justify-center gap-4">
+            <p>INV-001.png</p>
+            <div className="ml-auto flex items-center justify-center gap-4">
               <button onClick={handleZoomIn}>
                 <ZoomIn />
               </button>
-  
-              <button onClick={handleZoomOut} >
+
+              <button onClick={handleZoomOut}>
                 <ZoomOut />
               </button>
               <button
@@ -454,20 +448,37 @@ const OCRInvoiceView = () => {
               >
                 <Expand />
               </button>
-           </div>
+            </div>
           </div>
 
           <div className="flex items-center justify-center h-[760px] py-2 bg-[#F3F3F3] relative overflow-auto hide-scrollbar">
-            {loading ? (
-              <div className="loader"></div>
-            ) : (
-              <img
-                src={invoice?.image?.file}
-                alt="Invoice"
-                className="max-w-2xl h-[700px] object-contain"
-                                style={{ transform: `scale(${zoomLevel})` }}
-              />
-            )}
+          {loading ? (
+          <div className="loader"></div>
+        ) : isPDF ? (
+          <iframe
+            src={invoice.image}
+            width="100%"
+            height="100%"
+            style={{
+              border: "none",
+              transform: `scale(${zoomLevel})`,
+              transformOrigin: "top center",
+            }}
+            title="PDF Viewer"
+          ></iframe>
+        ) : (
+          <img
+            src={invoice.image}
+            alt="Uploaded Content"
+            style={{
+              maxWidth: "100%",
+              height: "auto",
+              borderRadius: "8px",
+              transform: `scale(${zoomLevel})`,
+              transformOrigin: "top center",
+            }}
+          />
+        )}
 
             {openDropdownIndex === "items" && (
               <div
@@ -687,39 +698,39 @@ const OCRInvoiceView = () => {
                       : "grid-cols-1 gap-2"
                   }`}
                 >
-                <div className="space-y-2">
-  {currentItems?.slice(0, 5).map((item: any) => {
-    const matchedItem = currentItemsMatch.find(
-      (match: any) => match.item_id === item.item_id
-    );
-    const isMatched = matchedItem?.isMatch ?? false;
+                  <div className="space-y-2">
+                    {currentItems?.slice(0, 5).map((item: any) => {
+                      const matchedItem = currentItemsMatch.find(
+                        (match: any) => match.item_id === item.item_id
+                      );
+                      const isMatched = matchedItem?.isMatch ?? false;
 
-    return (
-      <div
-        onClick={() => toggleDropdown("items")}
-        key={item.item_id}
-        className="flex items-center gap-4 font-semibold p-2 max-w-full"
-      >
-        <DotIcon
-          color={isMatched ? "#32A370" : "#DD2020"}
-          size={10}
-        />
-        <p className="text-textColor whitespace-nowrap flex-shrink-0">
-          Line Item
-        </p>
-        <p
-          className={`truncate ${
-            isMatched ? "text-[#32A370]" : "text-[#DD2020]"
-          }`}
-          title={item.product_name}
-          style={{ maxWidth: "calc(100% - 150px)" }}
-        >
-          {item.product_name}
-        </p>
-      </div>
-    );
-  })}
-</div>
+                      return (
+                        <div
+                          onClick={() => toggleDropdown("items")}
+                          key={item.item_id}
+                          className="flex items-center gap-4 font-semibold p-2 max-w-full"
+                        >
+                          <DotIcon
+                            color={isMatched ? "#32A370" : "#DD2020"}
+                            size={10}
+                          />
+                          <p className="text-textColor whitespace-nowrap flex-shrink-0">
+                            Line Item
+                          </p>
+                          <p
+                            className={`truncate ${
+                              isMatched ? "text-[#32A370]" : "text-[#DD2020]"
+                            }`}
+                            title={item.product_name}
+                            style={{ maxWidth: "calc(100% - 150px)" }}
+                          >
+                            {item.product_name}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
 
                   <div className="space-y-2">
                     {currentItems?.slice(5, 10).map((item: any) => {
@@ -731,15 +742,17 @@ const OCRInvoiceView = () => {
 
                       return (
                         <div
-                        onClick={() => toggleDropdown("items")}
-        key={item.item_id}
-        className="flex items-center gap-4 font-semibold p-2 max-w-full"
+                          onClick={() => toggleDropdown("items")}
+                          key={item.item_id}
+                          className="flex items-center gap-4 font-semibold p-2 max-w-full"
                         >
                           <DotIcon
                             color={isMatched ? "#32A370" : "#DD2020"}
                             size={10}
                           />
-                          <p className="text-textColor whitespace-nowrap flex-shrink-0">Line Item</p>
+                          <p className="text-textColor whitespace-nowrap flex-shrink-0">
+                            Line Item
+                          </p>
                           <p
                             className={`truncate ${
                               isMatched ? "text-[#32A370]" : "text-[#DD2020]"
