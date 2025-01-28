@@ -444,7 +444,7 @@ newRows[index].igstAmount = igstAmount;
   
 
   useEffect(() => {
-    if (selectedInvoice.length==0) {
+    if (selectedInvoice?.length==0) {
       const defaultRow = {
         itemId: "",
         itemName: "",

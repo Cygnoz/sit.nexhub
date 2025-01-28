@@ -19,7 +19,7 @@ import toast from "react-hot-toast";
 interface Customer {
   taxType: string;
 }
-type props={page?:string}
+type props = { page?: string }
 
 const initialCreditNoteState: CreditNoteBody = {
   organizationId: "",
@@ -56,7 +56,7 @@ const initialCreditNoteState: CreditNoteBody = {
       igstAmount: "",
       vatAmount: "",
       itemTotaltax: "",
-      salesAccountId:""
+      salesAccountId: ""
     },
   ],
 
@@ -74,7 +74,7 @@ const initialCreditNoteState: CreditNoteBody = {
   totalAmount: 0,
 };
 
-const NewCreditNote = ({page}:props) => {
+const NewCreditNote = ({ page }: props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [customerData, setCustomerData] = useState<[]>([]);
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
@@ -82,7 +82,7 @@ const NewCreditNote = ({page}:props) => {
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [isInterState, setIsInterState] = useState<boolean>(false);
   const [countryData, setcountryData] = useState<any | any>([]);
-  const [selectedInvoice, setSelectedInvoice] = useState<any | []>([]);
+  const [selectedInvoice, setSelectedInvoice] = useState<any | null>(null);
   const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(true);
   const [accounts, setAccounts] = useState<any>([]);
   const [allInvoice, setAllInvoice] = useState<any | []>([]);
@@ -90,7 +90,7 @@ const NewCreditNote = ({page}:props) => {
   const [creditNoteState, setCreditNoteState] = useState<any>(
     initialCreditNoteState
   );
-  console.log(creditNoteState,"creditNoteState");
+  console.log(creditNoteState, "creditNoteState");
 
 
   const [errors, setErrors] = useState({
@@ -102,13 +102,13 @@ const NewCreditNote = ({page}:props) => {
     paidThroughAccountId: false,
     itemTable: false,
     orderNumber: false,
-  customerCreditDate: false,
+    customerCreditDate: false,
 
   })
 
 
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
-  
+
   const { request: AllCustomer } = useApi("get", 5002);
   const { request: getOneOrganization } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
@@ -242,53 +242,53 @@ const NewCreditNote = ({page}:props) => {
     searchValue
   );
 
-    const { id } = useParams();
+  const { id } = useParams();
 
-    useEffect(() => {
-      const fetchInitialData = async () => {
-        const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
-        const oneCN = `${endponits.GET_ONE_CREDIT_NOTE}/${id}`;
-  
-        await fetchData(customerUrl, setCustomerData, AllCustomer);
-  
-        if (page === "edit") {
-          await fetchData(oneCN, setCreditNoteState, getOneCreditNote);
-        }
-      };
-  
-      fetchInitialData();
-    }, [page, id]);
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
+      const oneCN = `${endponits.GET_ONE_CREDIT_NOTE}/${id}`;
 
-    useEffect(() => {
-      if (creditNoteState.customerId && customerData) {
-        const customer = customerData.find(
-          (customer: any) => customer._id === creditNoteState.customerId
-        );
-        if (customer) {
-          setSelecetdCustomer(customer);
+      await fetchData(customerUrl, setCustomerData, AllCustomer);
+
+      if (page === "edit") {
+        await fetchData(oneCN, setCreditNoteState, getOneCreditNote);
+      }
+    };
+
+    fetchInitialData();
+  }, [page, id]);
+
+  useEffect(() => {
+    if (creditNoteState.customerId && customerData.length) {
+      const customer = customerData.find(
+        (customer: any) => customer._id === creditNoteState.customerId
+      );
+      if (customer) {
+        setSelecetdCustomer(customer);
+      }
+    }
+
+    if (creditNoteState && allInvoice?.length) {
+      const { invoiceId } = creditNoteState;
+      if (invoiceId) {
+        const invoices = allInvoice.find((item: any) => item._id === invoiceId);
+
+        // Debugging logs
+        console.log("Selected Invoice:", invoices);
+        console.log("Invoice ID:", invoiceId);
+        console.log("All Invoices:", allInvoice);
+
+        if (invoices) {
+          setSelectedInvoice(invoices);
+        } else {
+          console.warn("Invoice not found for the given ID.");
         }
       }
-      if (creditNoteState && allInvoice) {
-        const { invoiceId } = creditNoteState;
-        if (invoiceId) {
-          const invoices = allInvoice?.allInvoice?.find((item: any) => {
-            console.log(item           ._id, "33"); // Logging inside the find callback
-            return item._id === invoiceId;
-          });
-          console.log(invoices, "77");
-          console.log(invoiceId, "66");
-    
-          if (invoices) {
-            setSelectedInvoice(invoices);
-          }
-        }
-      }
-      
-    }, [creditNoteState, customerData, allInvoice]);
+    }
+  }, [creditNoteState, customerData, allInvoice]);
 
-    
-  console.log(selectedInvoice,"88");
-  
+  console.log("Selected Invoice State:", selectedInvoice);
 
   const handleSave = async () => {
     const newErrors = { ...errors };
@@ -351,21 +351,21 @@ const NewCreditNote = ({page}:props) => {
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
-    };
-    
-    const checkTaxType = (customer: Customer) => {
-      if (customer.taxType === "GST") {
-        setIsPlaceOfSupplyVisible(true);
-      } else{
-        setIsPlaceOfSupplyVisible(false);
-      }
-    };
-    
-    useEffect(() => {
-      if (selectedCustomer) {
-        checkTaxType(selectedCustomer);
-      }
-    }, [selectedCustomer]);
+  };
+
+  const checkTaxType = (customer: Customer) => {
+    if (customer.taxType === "GST") {
+      setIsPlaceOfSupplyVisible(true);
+    } else {
+      setIsPlaceOfSupplyVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedCustomer) {
+      checkTaxType(selectedCustomer);
+    }
+  }, [selectedCustomer]);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -405,11 +405,11 @@ const NewCreditNote = ({page}:props) => {
           (invoice.salesInvoice?.toLowerCase().includes(searchValue.toLowerCase()))
       )
       : [];
-  
 
-const handleGoBack = () => {
-  navigate(-1); // Go back to the previous page
-};
+
+  const handleGoBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
 
 
   return (
@@ -519,28 +519,28 @@ const handleGoBack = () => {
                   <div className="col-span-6">
                     <label className="block  text-sm mb-1 text-labelColor">
                       Place Of Supply <span className="text-[#bd2e2e] ">*</span>
-                  
-                    <div className="relative w-full">
-                      <select
-                        name="placeOfSupply"
-                        onChange={handleChange}
-                        value={creditNoteState.placeOfSupply}
-                        className="block appearance-none w-full h-9 text-zinc-400 bg-white border
+
+                      <div className="relative w-full">
+                        <select
+                          name="placeOfSupply"
+                          onChange={handleChange}
+                          value={creditNoteState.placeOfSupply}
+                          className="block appearance-none w-full h-9 text-zinc-400 bg-white border
                                    border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight
                                    focus:outline-none focus:bg-white focus:border-gray-500"
-                      >
-                        <option value="">Select place Of Supply</option>
-                        {placeOfSupplyList &&
-                          placeOfSupplyList.map((item: any, index: number) => (
-                            <option key={index} value={item} className="text-gray">
-                              {item}
-                            </option>
-                          ))}
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <CehvronDown color="gray" />
+                        >
+                          <option value="">Select place Of Supply</option>
+                          {placeOfSupplyList &&
+                            placeOfSupplyList.map((item: any, index: number) => (
+                              <option key={index} value={item} className="text-gray">
+                                {item}
+                              </option>
+                            ))}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                          <CehvronDown color="gray" />
+                        </div>
                       </div>
-                    </div>
                     </label>
                   </div>
                 )}
@@ -596,9 +596,7 @@ const handleGoBack = () => {
                   >
                     <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer">
                       <p>
-                        {selectedInvoice && selectedInvoice.salesInvoice
-                          ? selectedInvoice.salesInvoice
-                          : "Select Invoice"}
+                        {selectedInvoice?.salesInvoice || "Select Invoice"}
                       </p>
                     </div>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -621,11 +619,10 @@ const handleGoBack = () => {
                             key={invoice._id}
                             className="gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink "
                             onClick={() => {
-                              // Map salesInvoice to invoiceNumber
                               setCreditNoteState((prevState: any) => ({
                                 ...prevState,
                                 invoiceId: invoice._id,
-                                invoiceNumber: invoice.salesInvoice, // Map salesInvoice to invoiceNumber
+                                invoiceNumber: invoice.salesInvoice,
                                 invoiceDate: invoice.salesInvoiceDate,
                                 orderNumber: invoice.salesOrderNumber,
                               }));
