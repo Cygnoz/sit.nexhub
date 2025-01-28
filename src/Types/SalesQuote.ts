@@ -7,6 +7,7 @@ export interface SalesQuote {
   expiryDate: string;
   subject: string;
   taxPreference:string;
+  salesQuotes:string;
   items: {
     itemId: string;
     itemName: string;

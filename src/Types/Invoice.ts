@@ -14,6 +14,8 @@ export interface invoice {
     salesOrderId:string;
 
     taxPreference:string;
+
+    salesInvoice:string;
     
     items: Array<{
       itemId: string;
