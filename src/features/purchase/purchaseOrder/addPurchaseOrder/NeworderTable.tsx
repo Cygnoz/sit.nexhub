@@ -117,7 +117,7 @@ const NewOrderTable = ({
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
-  
+
     const newRows = [...rows];
     newRows[index].itemName = item.itemName;
     newRows[index].itemImage = item.itemImage;
@@ -128,40 +128,39 @@ const NewOrderTable = ({
     newRows[index].itemSgst = item.sgst;
     newRows[index].itemIgst = item.igst;
     newRows[index].taxPreference = item.taxPreference;
-  
+
     const costPrice = Number(newRows[index].itemCostPrice);
     const itemDiscount = Number(newRows[index].itemDiscount);
     const itemDiscountType = newRows[index].itemDiscountType;
-  
+
     const discountedPrice = calculateDiscountPrice(
       costPrice,
       itemDiscount,
       itemDiscountType
     );
-  
+
     const taxResults = calculateTax(
       discountedPrice,
       newRows[index],
       isInterState as boolean,
       newRows[index].taxPreference
     );
-  
+
     const { itemAmount, cgstAmount, sgstAmount, igstAmount } = taxResults;
-  
+
     newRows[index].itemAmount = isInterState
       ? (itemAmount + igstAmount).toFixed(2)
       : (itemAmount + cgstAmount + sgstAmount).toFixed(2);
-  
     newRows[index].itemCgstAmount = !isInterState ? cgstAmount : "";
     newRows[index].itemSgstAmount = !isInterState ? sgstAmount : "";
     newRows[index].itemIgstAmount = isInterState ? igstAmount : "";
-  
+
     newRows[index].itemTax = isInterState
       ? igstAmount
-      : (cgstAmount + sgstAmount);
-  
+      : cgstAmount + sgstAmount;
+
     setRows(newRows);
-  
+
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
       items: newRows.map((row) => {
@@ -171,7 +170,6 @@ const NewOrderTable = ({
       }),
     }));
   };
-  
 
   const calculateDiscountPrice = (
     totalCostPrice: number,
@@ -181,14 +179,15 @@ const NewOrderTable = ({
   ): number => {
     let discount =
       typeof discountValue === "string" ? Number(discountValue) : discountValue;
-  
+
     if (discount < 0) {
       toast.error("Discount cannot be negative");
       return totalCostPrice;
     }
-  
-    const validItemAmount = itemAmount !== undefined ? Number(itemAmount) : totalCostPrice;
-  
+
+    const validItemAmount =
+      itemAmount !== undefined ? Number(itemAmount) : totalCostPrice;
+
     if (discountType === "percentage") {
       if (discount > 100) {
         discount = 100;
@@ -203,10 +202,6 @@ const NewOrderTable = ({
       return validItemAmount - discount;
     }
   };
-  
-  
-  
-  
 
   const calculateTax = (
     discountedPrice: number,
@@ -222,9 +217,9 @@ const NewOrderTable = ({
         igstAmount: 0,
       };
     }
-  
+
     const { itemCgst = 0, itemSgst = 0, itemIgst = 0 } = rowData;
-  
+
     if (isInterState) {
       const igstAmount = (discountedPrice * Number(itemIgst)) / 100;
       return {
@@ -234,7 +229,7 @@ const NewOrderTable = ({
         igstAmount: Number(igstAmount),
       };
     }
-  
+
     const cgstAmount = (discountedPrice * Number(itemCgst)) / 100;
     const sgstAmount = (discountedPrice * Number(itemSgst)) / 100;
     return {
@@ -244,22 +239,19 @@ const NewOrderTable = ({
       igstAmount: 0,
     };
   };
-  
-  
-  
 
   const handleRowChange = (index: number, field: keyof Row, value: string) => {
     const newRows = [...rows];
     newRows[index] = { ...newRows[index], [field]: value };
-  
+
     const quantity = Number(newRows[index].itemQuantity) || 0;
     const costPrice = Number(newRows[index].itemCostPrice) || 0;
     const totalCostPrice = quantity * costPrice;
     const taxPreference = newRows[index].taxPreference;
-  
+
     let itemDiscount = Number(newRows[index].itemDiscount) || 0;
     const itemDiscountType = newRows[index].itemDiscountType;
-  
+
     if (itemDiscountType === "percentage") {
       if (itemDiscount > 100) {
         itemDiscount = 100;
@@ -273,36 +265,36 @@ const NewOrderTable = ({
         toast.error("Discount cannot exceed the total cost price");
       }
     }
-  
+
     const discountedAmount = calculateDiscountPrice(
       totalCostPrice,
       itemDiscount,
       itemDiscountType
     );
-  
+
     const taxResults = calculateTax(
       discountedAmount,
       newRows[index],
       isInterState as boolean,
       taxPreference
     );
-  
+
     const { itemAmount, cgstAmount, sgstAmount, igstAmount } = taxResults;
-  
+
     newRows[index].itemAmount = isInterState
       ? (itemAmount + igstAmount).toFixed(2)
       : (itemAmount + cgstAmount + sgstAmount).toFixed(2);
-  
+
     newRows[index].itemCgstAmount = !isInterState ? cgstAmount : "";
     newRows[index].itemSgstAmount = !isInterState ? sgstAmount : "";
     newRows[index].itemIgstAmount = isInterState ? igstAmount : "";
-  
+
     newRows[index].itemTax = isInterState
       ? igstAmount
-      : (cgstAmount + sgstAmount);
-  
+      : cgstAmount + sgstAmount;
+
     setRows(newRows);
-  
+
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
       items: newRows.map((row) => {
@@ -312,10 +304,6 @@ const NewOrderTable = ({
       }),
     }));
   };
-  
-  
-  
-  
 
   const getAllItems = async () => {
     try {
@@ -399,7 +387,7 @@ const NewOrderTable = ({
 
   const calculateTotalQuantity = () => {
     return rows.reduce((total, row) => {
-      const quantity = parseFloat((row.itemQuantity).toString() || "0");
+      const quantity = parseFloat(row.itemQuantity.toString() || "0");
       return total + quantity;
     }, 0);
   };
@@ -456,33 +444,32 @@ const NewOrderTable = ({
 
   useEffect(() => {
     const updatedRows = rows?.map((row) => {
-      // Get the discounted price for the item
       const discountedPrice = calculateDiscountPrice(
         (Number(row.itemCostPrice) || 0) * (Number(row.itemQuantity) || 0),
         Number(row.itemDiscount) || 0,
         row.itemDiscountType
       );
-  
-      // Calculate tax details, including tax preference
+
       const taxDetails = calculateTax(
         discountedPrice,
         row,
         isInterState as boolean,
-        row.taxPreference // Ensure taxPreference is passed correctly
+        row.taxPreference
       );
-  
+
+      console.log(taxDetails.itemAmount, "item");
       return {
         ...row,
-        itemAmount: taxDetails.itemAmount,
+        itemAmount: isInterState?taxDetails.itemAmount+taxDetails.igstAmount:taxDetails.itemAmount+taxDetails.cgstAmount+taxDetails.sgstAmount,
         itemCgstAmount: taxDetails.cgstAmount > 0 ? taxDetails.cgstAmount : 0,
         itemSgstAmount: taxDetails.sgstAmount > 0 ? taxDetails.sgstAmount : 0,
         itemIgstAmount: taxDetails.igstAmount > 0 ? taxDetails.igstAmount : 0,
-        taxPreference: row.taxPreference, // Ensure taxPreference is included in the row
+        taxPreference: row.taxPreference,
       };
     });
-  
+
     setRows(updatedRows);
-  
+
     setPurchaseOrderState?.((prevData: any) => ({
       ...prevData,
       items: updatedRows?.map((row) => {
@@ -492,11 +479,10 @@ const NewOrderTable = ({
       }),
     }));
   }, [
-    purchaseOrderState?.destinationOfSupply,
-    purchaseOrderState?.sourceOfSupply,
+    // purchaseOrderState?.destinationOfSupply,
+    // purchaseOrderState?.sourceOfSupply,
     isInterState,
   ]);
-  
 
   useEffect(() => {
     const updatedRows = rows?.map((row) => ({
@@ -532,7 +518,7 @@ const NewOrderTable = ({
       cgst: isInterState ? "" : totalCGST,
       igst: isInterState ? totalIGST : "",
       subTotal: totalSellingPrice,
-      itemTotalDiscount: totalDiscount<=0?"":totalDiscount,
+      itemTotalDiscount: totalDiscount <= 0 ? "" : totalDiscount,
       totalTaxAmount: isInterState ? totalIGST : totalSGST + totalCGST,
     }));
   }, [rows]);
@@ -542,7 +528,9 @@ const NewOrderTable = ({
       setRows(purchaseOrderState.items);
     }
   }, [purchaseOrderState.orderNumber, purchaseOrderState.items]);
-  
+
+  console.log(rows, "rows");
+
   useEffect(() => {
     setRows((prevData: any) => {
       if (Array.isArray(prevData)) {
@@ -579,7 +567,9 @@ const NewOrderTable = ({
           <tbody className="text-dropdownText text-center text-[13px] ">
             {rows?.map((row: any, index: number) => (
               <tr key={index}>
-                <td className="border-y py-3 px-2 border-tableBorder">{index+1}</td>
+                <td className="border-y py-3 px-2 border-tableBorder">
+                  {index + 1}
+                </td>
                 <td className="border-y py-3 px-2 border-tableBorder">
                   <div
                     className="relative w-full"
@@ -639,7 +629,6 @@ const NewOrderTable = ({
                                     Rate: {item.costPrice}
                                   </p>
                                 </div>
-                               
                               </div>
                             </div>
                           ))
@@ -662,19 +651,18 @@ const NewOrderTable = ({
                     )}
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
-                <input
-  type="text"
-  placeholder="0"
-  className="w-[50px] focus:outline-none text-center"
-  value={row.itemQuantity || ""}
-  onChange={(e) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value)) {
-      handleRowChange(index, "itemQuantity", value);
-    }
-  }}
-/>
-
+                  <input
+                    type="text"
+                    placeholder="0"
+                    className="w-[50px] focus:outline-none text-center"
+                    value={row.itemQuantity || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (/^\d*$/.test(value)) {
+                        handleRowChange(index, "itemQuantity", value);
+                      }
+                    }}
+                  />
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   <input
@@ -688,7 +676,6 @@ const NewOrderTable = ({
                         handleRowChange(index, "itemCostPrice", value);
                       }
                     }}
-                    
                   />
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder">

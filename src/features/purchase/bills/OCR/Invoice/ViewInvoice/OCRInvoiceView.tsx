@@ -456,7 +456,7 @@ const OCRInvoiceView = () => {
           <div className="loader"></div>
         ) : isPDF ? (
           <iframe
-            src={invoice.image}
+            src={invoice?.image}
             width="100%"
             height="100%"
             style={{
@@ -468,14 +468,11 @@ const OCRInvoiceView = () => {
           ></iframe>
         ) : (
           <img
-            src={invoice.image}
-            alt="Uploaded Content"
+          src={invoice?.image}
+          alt="Uploaded Content"
             style={{
-              maxWidth: "100%",
-              height: "auto",
-              borderRadius: "8px",
+          
               transform: `scale(${zoomLevel})`,
-              transformOrigin: "top center",
             }}
           />
         )}
