@@ -96,6 +96,7 @@ const NewDebitNote = ({ page }: Props) => {
     itemTable: false,
   });
 
+  
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: getCountries } = useApi("get", 5004);
   const { request: getOneOrganization } = useApi("get", 5004);
@@ -234,6 +235,8 @@ const NewDebitNote = ({ page }: Props) => {
     searchValue
   );
 console.log(errors)
+
+
   const handleSave = async () => {
     const newErrors = { ...errors };
 

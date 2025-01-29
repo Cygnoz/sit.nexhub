@@ -178,20 +178,23 @@ export const endponits = {
   GET_PAYMENT_JOURNAL: `payment-journal`,
 
   // Debit note
-  GET_DEBIT_NOTE_PREFIX: `get-last-debit-note-prefix`,
-  ADD_DEBIT_NOTE: `add-DebitNote`,
-  GET_ALL_DEBIT_NOTE: `get-all-debitNote`,
-  GET_DEBIT_NOTE: `getDebitNote`,
-  EDIT_DEBIT_NOTE: `update-debitNote`,
-  DELETE_DEBIT_NOTE: ``,
-  GET_DEBITNOTE_JOURNAL: `debitNote-journal`,
+ GET_DEBIT_NOTE_PREFIX:`get-last-debit-note-prefix`,
+ ADD_DEBIT_NOTE:`add-DebitNote`,
+ GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
+ GET_DEBIT_NOTE:`getDebitNote`,
+ EDIT_DEBIT_NOTE:`update-debitNote`,
+ DELETE_DEBIT_NOTE:``,
+ GET_DEBITNOTE_JOURNAL:`debitNote-journal`,
 
-  // credit note
-  GET_CREDIT_NOTE_PREFIX: `get-last-creditNote-prefix`,
-  ADD_CREDIT_NOTE: `add-creditNote`,
-  GET_ALL_CREDIT_NOTE: `get-all-creditNote`,
-  GET_ONE_CREDIT_NOTE: `get-one-creditNote`,
-  GET_CreditNOTE_JOURNAL: `creditNote-journal`,
+
+ // credit note
+ GET_CREDIT_NOTE_PREFIX:`get-last-creditNote-prefix`,
+ ADD_CREDIT_NOTE:`add-creditNote`,
+ GET_ALL_CREDIT_NOTE:`get-all-creditNote`,
+ GET_ONE_CREDIT_NOTE: `get-one-creditNote`,
+ GET_CreditNOTE_JOURNAL:`creditNote-journal`,
+ EDIT_CREDIT_NOTE:`update-creditNote`,
+
 
   // Login
   LOGIN: "/login",
