@@ -21,7 +21,7 @@ export const getInitialColumns = (page: string | undefined) => {
         ]
       : page === "quote"
       ? [
-          { id: "customerName", label: "Customer Name", visible: true },
+          { id: "customerDisplayName", label: "Customer Name", visible: true },
           { id: "createdDate", label: "Date", visible: true },
           { id: "reference", label: "Reference", visible: true },
           { id: "salesQuotes", label: "Quote Number", visible: true },

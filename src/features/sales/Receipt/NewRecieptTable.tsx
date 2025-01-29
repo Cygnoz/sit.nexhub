@@ -62,8 +62,6 @@ function NewRecieptTable({ customerReciept = [], recieptState, setRecieptState,p
   }
   }, [customerReciept]);
 
-  console.log(data,"data")
-
   const handleRowChange = (
     index: number,
     field: keyof InvoiceType,
@@ -176,7 +174,7 @@ function NewRecieptTable({ customerReciept = [], recieptState, setRecieptState,p
                         disabled
                         type="number"
                         className="w-full focus:outline-none text-center"
-                        value={row.balanceAmount}
+                        value={row.balanceAmount.toFixed(2)}
                         onChange={(e) =>
                           handleRowChange(
                             index,
