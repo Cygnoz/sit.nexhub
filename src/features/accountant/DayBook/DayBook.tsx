@@ -1,131 +1,129 @@
-import Ellipsis from "../../../assets/icons/Ellipsis";
-import PlusCircle from "../../../assets/icons/PlusCircle";
 import Table from "./Table";
-import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
-import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
-import { useEffect, useRef, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import PrinterIcon from "@heroicons/react/20/solid/PrinterIcon";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import Calender from "../../../assets/icons/Calender";
 import SearchBar from "../../../Components/SearchBar";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import { Link } from "react-router-dom";
+import { endponits } from "../../../Services/apiEndpoints";
+import useApi from "../../../Hooks/useApi";
 
 type Props = {};
 
-function DayBook({}: Props) {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-  const dropdownRef = useRef<HTMLDivElement>(null);
+function formatDate(dateStr: string) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("en-GB").split("/").join("-");
+}
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+function getTodayDate() {
+  return new Date().toISOString().split("T")[0];
+}
+
+function DayBook({}: Props) {
+  const [searchValue, setSearchValue] = useState("");
+  const [fromDate, setFromDate] = useState(getTodayDate());
+  const [toDate, setToDate] = useState(getTodayDate());
+
+  const fromDateRef = useRef<HTMLInputElement>(null);
+  const toDateRef = useRef<HTMLInputElement>(null);
+
+  const handleFromDateClick = () => {
+    fromDateRef.current?.showPicker();
   };
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
-      setIsDropdownOpen(false);
+  const handleToDateClick = () => {
+    toDateRef.current?.showPicker();
+  };
+
+  const { request: getDayBookUrl } = useApi("get", 5006);
+
+  const getDayBook = async () => {
+    try {
+      const formattedFromDate = formatDate(fromDate);
+      const formattedToDate = formatDate(toDate);
+      const url = `${endponits.GET_DAYBOOK}/${formattedFromDate}/${formattedToDate}`;
+
+      const apiResponse = await getDayBookUrl(url);
+      const { response, error } = apiResponse;
+
+      if (!error && response) {
+        console.log(response.data, "response");
+      } else {
+        console.log(error);
+      }
+    } catch (error) {
+      console.error("Error fetching items:", error);
     }
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const dropdownItems = [
-    {
-      icon: <ArrowDownIcon />,
-      text: "Import Journal",
-      onClick: () => {
-        console.log("Import Sales Order clicked");
-      },
-    },
-    {
-      icon: <ArrowUpIcon />,
-      text: "Export Journal",
-      onClick: () => {
-        console.log("Export Sales Order clicked");
-      },
-    },
-    {
-      icon: <ArrowUpIcon />,
-      text: "Manage Journal",
-      onClick: () => {
-        console.log("Export Current View clicked");
-      },
-    },
-  ];
+    getDayBook();
+  }, [fromDate, toDate]);
 
   return (
     <>
       <div className="flex items-center mx-5 my-4">
-          <div className="flex justify-center items-center"> 
+        <div className="flex justify-center items-center">
           <Link to={"/reports"}>
             <div className="flex justify-center items-center h-11 w-11 bg-[#F3F3F3] rounded-full">
               <CheveronLeftIcon />
             </div>
           </Link>
-            <h3 className="font-bold text-2xl ms-4 text-textColor">Day Book</h3>
-          </div>
-          <div className="ml-auto gap-3 flex items-center">
-            <div className="flex text-dropdownText gap-4">
-              <div className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center">
-                <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
-                  <Calender color="currentColor" height={18} width={18} />
-                </div>
-                Select From Date
-                <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
+          <h3 className="font-bold text-2xl ms-4 text-textColor">Day Book</h3>
+        </div>
+        <div className="ml-auto gap-3 flex items-center">
+          <div className="flex text-dropdownText gap-4">
+            <div
+              className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer"
+              onClick={handleFromDateClick}
+            >
+              <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
+                <Calender color="currentColor" height={18} width={18} />
               </div>
-              <div className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center">
-                Select To Date
-                <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
+              {formatDate(fromDate)}
+              <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <CehvronDown color="gray" />
               </div>
-              <div className="ml-auto flex items-center">
-                <button className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">
-                  <PrinterIcon color="gray" height={18} width={20} />
-                  <span className="text-sm text-neutral-500">Print</span>
-                </button>
-              </div>
+              <input
+                type="date"
+                ref={fromDateRef}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+              />
             </div>
-            <PlusCircle color="white" />
-            <div className="relative">
-              <div onClick={toggleDropdown} className="cursor-pointer">
-                <Ellipsis />
+
+            <div
+              className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer"
+              onClick={handleToDateClick}
+            >
+              <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
+                <Calender color="currentColor" height={18} width={18} />
               </div>
-              {isDropdownOpen && (
-                <div
-                  ref={dropdownRef}
-                  className="absolute top-full right-0 mt-2 w-48 bg-white shadow-xl z-10"
-                >
-                  <ul className="py-1 text-dropdownText">
-                    {dropdownItems.map((item, index) => (
-                      <li
-                        key={index}
-                        onClick={item.onClick}
-                        className="px-4 py-2 flex items-center gap-2 hover:bg-orange-100 rounded-md text-sm cursor-pointer"
-                      >
-                        {item.icon}
-                        {item.text}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              {formatDate(toDate)}
+              <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <CehvronDown color="gray" />
+              </div>
+              <input
+                type="date"
+                ref={toDateRef}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+              />
+            </div>
+
+            <div className="ml-auto flex items-center">
+              <button className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">
+                <PrinterIcon color="gray" height={18} width={20} />
+                <span className="text-sm text-neutral-500">Print</span>
+              </button>
             </div>
           </div>
         </div>
+      </div>
       <div className="mx-5 my-4 bg-slate-50 h-[100vh]">
-      
         <div className="mt-5 bg-white p-5 rounded-xl">
           <SearchBar
             searchValue={searchValue}
