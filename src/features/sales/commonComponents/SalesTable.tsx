@@ -11,6 +11,10 @@ import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTabl
 import { TableResponseContext } from "../../../context/ContextShare";
 import Eye from "../../../assets/icons/Eye";
 import PencilEdit from "../../../assets/icons/PencilEdit";
+import TrashCan from "../../../assets/icons/TrashCan";
+import { getInitialColumns } from "./InitialColumns";
+import toast from "react-hot-toast";
+import ConfirmModal from "../../../Components/ConfirmModal";
 
 
 interface Column {
@@ -40,9 +44,16 @@ const SalesTable = ({ page }: Props) => {
   const navigate = useNavigate();
   const { loading, setLoading } = useContext(TableResponseContext)!;
   const { request: getAllQuotes } = useApi("get", 5007);
+  const { request: deleteSales } = useApi("delete", 5007);
   const [searchValue, setSearchValue] = useState<string>("");
   const [data, setData] = useState<any | []>([]);
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
+  const confirmDelete = (id: string) => {
+    setDeleteId(id);
+    setConfirmModalOpen(true);
+  };
 
   const fetchAllQuotes = async () => {
     try {
@@ -80,62 +91,8 @@ const SalesTable = ({ page }: Props) => {
     fetchAllQuotes();
   }, []);
 
+  const initialColumns = getInitialColumns(page);
 
-  const initialColumns: Column[] =
-    page === "invoice" ? [
-      { id: "createdDate", label: "Date", visible: true },
-      { id: "", label: "Due Date", visible: false },
-      { id: "salesInvoice", label: "Invoice#", visible: true },
-      { id: "reference", label: "Reference", visible: true },
-      { id: "paidStatus", label: "Status", visible: true },
-      { id: "customerDisplayName", label: "Customer Name", visible: true },
-      { id: "totalAmount", label: "Amount", visible: true },
-      { id: "", label: "Balance Due", visible: false },
-    ]
-      : page === "salesOrder" ? [
-        { id: "salesOrder", label: "Order Number", visible: true },
-        { id: "createdDate", label: "Order Date", visible: true },
-        // { id: "salesOrder", label: "Sales Order#", visible: true },
-        { id: "customerDisplayName", label: "Customer Name", visible: true },
-        { id: "totalAmount", label: "Total", visible: true },
-        { id: "status", label: "Status", visible: true },
-      ]
-        : page === "quote" ? [
-          { id: "customerName", label: "Customer Name", visible: true },
-          { id: "createdDate", label: "Date", visible: true },
-          { id: "reference", label: "Reference", visible: true },
-          { id: "salesQuotes", label: "Quote Number", visible: true },
-          { id: "status", label: "Status", visible: true },
-          { id: "totalAmount", label: "Amount", visible: true },
-
-        ]
-          :
-          page === "salesReturn" ? [
-            { id: "createdDate", label: "Date", visible: true },
-            { id: "customerRMA", label: "RMA#", visible: true },
-            { id: "salesOrder", label: "SalesOrder", visible: true },
-            { id: "status", label: "Status", visible: true },
-            { id: "customerName", label: "Customer Name", visible: true },
-            { id: "totalAmount", label: "Amount", visible: true },
-            { id: "returned", label: "Returned", visible: true },
-          ] :
-            page == "reciept" ? [
-              { id: "paymentDate", label: "Date", visible: true },
-              { id: "receipt", label: "Reciept", visible: true },
-              // { id: "payment", label: "Payment#", visible: true },
-              { id: "customerDisplayName", label: "Customer Name", visible: true },
-              // { id: "", label: "Invoice#", visible: true },
-              { id: "paymentMode", label: "Mode", visible: true },
-              { id: "amountReceived", label: "Amount Received", visible: true },
-              // { id: "", label: "Unsend Amount", visible: true },
-            ] :
-              page == "credit-Note" ? [
-                { id: "creditNote", label: "Credit Note", visible: true },
-                { id: "customerDisplayName", label: "Customer Name", visible: true },
-                { id: "customerCreditDate", label: "Date", visible: true },
-                { id: "orderNumber", label: "orderNumber", visible: true },
-                { id: "totalAmount", label: "Balance", visible: true },
-              ] : [];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
 
@@ -215,14 +172,43 @@ const SalesTable = ({ page }: Props) => {
     else if (page === "reciept") {
       navigate(`/sales/receipt/edit/${id}`);
     }
-    else if (page === "credit-Note"){
+    else if (page === "credit-Note") {
       navigate(`/edit/${id}`)
     }
     else {
       console.warn(`Unexpected page value: ${page}`);
     }
   };
-  
+
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    try {
+      const url = 
+      page === "salesOrder"?
+      `${endponits.DELETE_SALES_ORDER}/${deleteId}`
+      : page === "quote" ?
+      `${endponits.DELETE_SALES_QUOTE}/${deleteId}`
+      : page === "invoice" ?
+      `${endponits.DELETE_SALES_INVOICE}/${deleteId}`
+      : page === "reciept" ?
+      `${endponits.DELETE_SALES_RECIEPT}/${deleteId}`
+      :""
+      const { response, error } = await deleteSales(url);
+      if (!error && response) {
+        toast.success(response.data.message);
+        fetchAllQuotes();
+      } else {
+        toast.error(error.response.data.message);
+      }
+    } catch (error) {
+      toast.error("Error occurred while deleting.");
+    } finally {
+      setConfirmModalOpen(false);
+      setDeleteId(null);
+    }
+  };
+
 
   return (
     <div className="w-full">
@@ -291,10 +277,13 @@ const SalesTable = ({ page }: Props) => {
                   )}
                   <td className="py-3 px-4 border-b gap-3 border-tableBorder flex justify-center items-center">
                     <div onClick={() => handleEditClick(item._id)}>
-                      <PencilEdit color={'#0B9C56'}  className="cursor-pointer"/>
+                      <PencilEdit color={'#0B9C56'} className="cursor-pointer" />
                     </div>
                     <div onClick={() => handleRowClick(item._id)}>
                       <Eye color="#569FBC" className="cursor-pointer" />
+                    </div>
+                    <div onClick={() => confirmDelete(item._id)}>
+                      <TrashCan color="red" />
                     </div>
                   </td>
                   <td className="py-3 px-4 border-b border-tableBorder"></td>
@@ -302,11 +291,17 @@ const SalesTable = ({ page }: Props) => {
               ))
             ) : (
               // Render "no data found" row if data is empty
-              <NoDataFoundTable columns={page == 'salesOrder' || page == 'reciept' || page == 'quote'  || page == 'credit-Note' ? [...columns, "ff", "tt"] : columns } />
+              <NoDataFoundTable columns={page == 'salesOrder' || page == 'reciept' || page == 'quote' || page == 'credit-Note' ? [...columns, "ff", "tt"] : columns} />
             )}
           </tbody>
         </table>
       </div>
+      <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete?"
+      />
     </div>
   );
 };

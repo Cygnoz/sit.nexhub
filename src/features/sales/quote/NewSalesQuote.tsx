@@ -51,7 +51,8 @@ const initialSalesQuoteState: SalesQuote = {
       discountType: "",
       discountAmount: "",
       amount: "",
-      itemAmount: ""
+      itemAmount: "",
+      salesAccountId:"",
     },
   ],
 

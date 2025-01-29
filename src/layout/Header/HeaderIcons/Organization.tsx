@@ -4,8 +4,7 @@ import OrganizationIcon from "../../../assets/icons/OrganizationIcon";
 import SettingsIcons from "../../../assets/icons/SettingsIcon";
 import Button from "../../../Components/Button";
 import Drawer from "../../../Components/drawer/drawer";
-import Modal from "../../../Components/model/Modal";
-// import { useOrganization } from "../../../context/OrganizationContext";
+import ConfirmModal from "../../../Components/ConfirmModal";
 
 type Props = {
   organizationData: any;
@@ -14,15 +13,7 @@ type Props = {
 const Organization = ({ organizationData }: Props) => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
-  // const [organization, setOrganization] = useState<any>(null);
   const navigate = useNavigate();
-
-  // const { organization: orgData } = useOrganization();
-   
-  // useEffect(() => {
-  //   setOrganization(orgData);
-  // }, [orgData]);
-  
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);
@@ -38,14 +29,10 @@ const Organization = ({ organizationData }: Props) => {
     setLogoutModalOpen(false);
   };
 
-  const closeModal = () => {
-    setLogoutModalOpen(false);
-  };
-
   return (
     <>
       <button onClick={toggleDrawer}>
-        <OrganizationIcon  />
+        <OrganizationIcon />
       </button>
 
       <Drawer onClose={toggleDrawer} open={isDrawerOpen} position="right">
@@ -55,7 +42,7 @@ const Organization = ({ organizationData }: Props) => {
           </h5>
           <div className="flex gap-2 items-center">
             <Link to={"/settings"}>
-            <SettingsIcons size="sm" />
+              <SettingsIcons size="sm" />
             </Link>
             <button
               onClick={toggleDrawer}
@@ -69,9 +56,9 @@ const Organization = ({ organizationData }: Props) => {
           {organizationData ? (
             <div className="flex flex-col border border-slate-200 p-4 rounded-md shadow-sm">
               <div className="flex items-center mb-4">
-                <OrganizationIcon   width="12" height="12"  />
+                <OrganizationIcon width="12" height="12" />
                 <div className="flex flex-col ms-5">
-                  <h5 className="font-bold text-sm  text-gray-700">
+                  <h5 className="font-bold text-sm text-gray-700">
                     {organizationData.organizationName}
                   </h5>
                   <p className="text-xs text-gray-700">
@@ -125,31 +112,12 @@ const Organization = ({ organizationData }: Props) => {
         </div>
       </Drawer>
 
-      {isLogoutModalOpen && (
-        <Modal
-          open
-          onClose={closeModal}
-          className="rounded-lg p-8 w-[546px] h-[160px] text-[#303F58] space-y-8"
-        >
-          <p className="text-sm">Are you sure you want to log out?</p>
-          <div className="flex justify-end gap-2 mb-3">
-            <Button
-              onClick={closeModal}
-              variant="secondary"
-              className="pl-8 pr-8 text-sm h-10"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleLogout}
-              variant="primary"
-              className="pl-8 pr-8 text-sm h-10"
-            >
-              Ok
-            </Button>
-          </div>
-        </Modal>
-      )}
+      <ConfirmModal
+        open={isLogoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
+        onConfirm={handleLogout}
+        message="Are you sure you want to log out?"
+      />
     </>
   );
 };
