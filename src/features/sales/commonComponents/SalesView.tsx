@@ -64,9 +64,13 @@ function SalesView({ data, page }: SalesOrderViewProps) {
   const { request: getOneCustomer } = useApi("get", 5002);
   const [customerData, setCustomerData] = useState<Customer | null>(null);
   const [invoiceJournal, setInvoiceJournal] = useState<any>([])
+  const [creditNoteJournal, setIcreditNoteJournal] = useState<any>([])
+
   const { organization } = useOrganization();
   const { id } = useParams<{ id: string }>();
   const { request: getOneInvoiceDetails } = useApi("get", 5007);
+  const { request: getOneCreditNoteDetails } = useApi("get", 5007);
+
 
   const toggleItemDetails = (itemId: string) => {
     setOpenItemId((prev) => (prev === itemId ? null : itemId));
@@ -82,6 +86,21 @@ function SalesView({ data, page }: SalesOrderViewProps) {
       console.error("Error fetching sales order:", error);
     }
   };
+
+  const fetchOneCreditNote = async () => {
+    try {
+      const url = `${endponits.GET_CreditNOTE_JOURNAL}/${id}`;
+      const { response, error } = await getOneCreditNoteDetails(url);
+      if (!error && response) {
+        setIcreditNoteJournal(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching creditNote:", error);
+    }
+  };
+
+
+
   const fetchOneCustomer = async () => {
     try {
       if (data?.customerId) {
@@ -99,6 +118,7 @@ function SalesView({ data, page }: SalesOrderViewProps) {
   useEffect(() => {
     fetchOneCustomer();
     fetchOneInvoice()
+    fetchOneCreditNote()
   }, [data?.customerId, id]);
 
   return (
@@ -261,42 +281,48 @@ function SalesView({ data, page }: SalesOrderViewProps) {
 
       <hr className="mt-6 border-t border-inputBorder" />
       {
-        page == "invoice" &&
-        <>
-          {/* Invoice Details */}
-          <div className="p-4 rounded-lg bg-[#F6F6F6] mt-6">
-            <h2 className="font-semibold text-base mb-4 text-textColor">Invoice</h2>
+        (page === "invoice" || page === "credit-Note") && (
+          <>
+            {/* Invoice or Credit Note Details */}
+            <div className="p-4 rounded-lg bg-[#F6F6F6] mt-6">
+              <h2 className="font-semibold text-base mb-4 text-textColor">
+                {page === "invoice" ? "Invoice" : "credit Note"}
+              </h2>
 
-            <div className="grid grid-cols-3 font-bold gap-x-4 text-base text-dropdownText mb-2">
-              <div>Account</div>
-              <div className="text-right">Debit</div>
-              <div className="text-right">Credit</div>
+              <div className="grid grid-cols-3 font-bold gap-x-4 text-base text-dropdownText mb-2">
+                <div>Account</div>
+                <div className="text-right">Debit</div>
+                <div className="text-right">Credit</div>
+              </div>
+
+              {/* Mapping over respective journal data */}
+              {(page === "invoice" ? invoiceJournal : creditNoteJournal).map((item: any) => (
+                <div key={item._id} className="grid grid-cols-3 text-dropdownText gap-x-4 text-base mb-2">
+                  <div className="text-sm">{item.accountName}</div>
+                  <div className="text-right">{item.debitAmount.toFixed(2)}</div>
+                  <div className="text-right">{item.creditAmount.toFixed(2)}</div>
+                </div>
+              ))}
+
+              {/* Total Row */}
+              <div className="grid grid-cols-3 gap-x-4 text-lg font-bold text-[#0B1320] mt-5">
+                <div className="text-base">Total</div>
+                <div className="text-right">
+                  {(page === "invoice" ? invoiceJournal : creditNoteJournal)
+                    .reduce((total: any, item: any) => total + item.debitAmount, 0)
+                    .toFixed(2)}
+                </div>
+                <div className="text-right">
+                  {(page === "invoice" ? invoiceJournal : creditNoteJournal)
+                    .reduce((total: any, item: any) => total + item.creditAmount, 0)
+                    .toFixed(2)}
+                </div>
+              </div>
             </div>
 
-            {/* Mapping over invoiceJournal to display each row */}
-            {invoiceJournal.map((item: any) => (
-              <div key={item._id} className="grid grid-cols-3 text-dropdownText gap-x-4 text-base mb-2">
-                <div className="text-sm">{item.accountName}</div>
-                <div className="text-right">{item.debitAmount.toFixed(2)}</div>
-                <div className="text-right">{item.creditAmount.toFixed(2)}</div>
-              </div>
-            ))}
-
-            {/* Total Row */}
-            <div className="grid grid-cols-3 gap-x-4 text-lg font-bold text-[#0B1320] mt-5">
-              <div className="text-base">Total</div>
-              <div className="text-right">
-                {invoiceJournal.reduce((total: any, item: any) => total + item.debitAmount, 0).toFixed(2)}
-              </div>
-              <div className="text-right">
-                {invoiceJournal.reduce((total: any, item: any) => total + item.creditAmount, 0).toFixed(2)}
-              </div>
-            </div>
-          </div>
-
-
-          <hr className="mt-6 border-t border-inputBorder" />
-        </>
+            <hr className="mt-6 border-t border-inputBorder" />
+          </>
+        )
       }
 
       {/* Billing Address */}
