@@ -41,8 +41,6 @@ interface SupplierPayment {
   total: number;
   amountPaid: number;
   amountUsedForPayments: number;
-  amountRefunded: number;
-  amountInExcess: number;
   totalBillAmount: number;
 }
 
@@ -73,8 +71,6 @@ const initialSupplierPayment: SupplierPayment = {
   total: 0,
   amountPaid: 0,
   amountUsedForPayments: 0,
-  amountRefunded: 0,
-  amountInExcess: 0,
   totalBillAmount: 0,
 };
 

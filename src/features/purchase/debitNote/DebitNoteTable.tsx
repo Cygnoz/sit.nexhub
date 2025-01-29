@@ -454,7 +454,7 @@ const DebitNoteTable = ({
   const filterItems = () => {
     return selectedBill?.items?.filter(
       (item: any) =>
-        item.itemName.toLowerCase().includes(searchValue.toLowerCase()) &&
+        item.itemName?.toLowerCase()?.includes(searchValue.toLowerCase()) &&
         items.some((i: any) => i._id === item.itemId)
     );
   };
