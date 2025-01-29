@@ -181,13 +181,13 @@ export const endponits = {
 
 
   // Debit note
-  GET_DEBIT_NOTE_PREFIX: `get-last-debit-note-prefix`,
-  ADD_DEBIT_NOTE: `add-DebitNote`,
-  GET_ALL_DEBIT_NOTE: `get-all-debitNote`,
-  GET_DEBIT_NOTE: `getDebitNote`,
-  EDIT_DEBIT_NOTE: `update-paymentMade`,
-  DELETE_DEBIT_NOTE: ``,
-  GET_DEBITNOTE_JOURNAL: `debitNote-journal`,
+ GET_DEBIT_NOTE_PREFIX:`get-last-debit-note-prefix`,
+ ADD_DEBIT_NOTE:`add-DebitNote`,
+ GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
+ GET_DEBIT_NOTE:`getDebitNote`,
+ EDIT_DEBIT_NOTE:`update-debitNote`,
+ DELETE_DEBIT_NOTE:``,
+ GET_DEBITNOTE_JOURNAL:`debitNote-journal`,
 
 
   // credit note
