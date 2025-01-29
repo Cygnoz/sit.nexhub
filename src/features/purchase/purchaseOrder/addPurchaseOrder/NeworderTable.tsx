@@ -29,6 +29,7 @@ type Row = {
   itemIgstAmount: number | string;
   itemVatAmount: number | string;
   taxPreference: string;
+  purchaseAccountId: string;
 };
 
 type Props = {
@@ -70,6 +71,7 @@ const NewOrderTable = ({
       itemIgstAmount: "",
       itemVatAmount: "",
       taxPreference: "",
+      purchaseAccountId: "",
     },
   ]);
 
@@ -109,6 +111,7 @@ const NewOrderTable = ({
       itemIgstAmount: "",
       itemVatAmount: "",
       taxPreference: "",
+      purchaseAccountId: "",
     };
     const updatedRows = [...rows, newRow];
     setRows(updatedRows);
@@ -128,7 +131,7 @@ const NewOrderTable = ({
     newRows[index].itemSgst = item.sgst;
     newRows[index].itemIgst = item.igst;
     newRows[index].taxPreference = item.taxPreference;
-
+    newRows[index].purchaseAccountId = item.purchaseAccountId;
     const costPrice = Number(newRows[index].itemCostPrice);
     const itemDiscount = Number(newRows[index].itemDiscount);
     const itemDiscountType = newRows[index].itemDiscountType;
@@ -351,6 +354,7 @@ const NewOrderTable = ({
         itemIgstAmount: "",
         itemVatAmount: "",
         taxPreference: "",
+        purchaseAccountId:"",
       };
 
       setRows([defaultRow]);
@@ -460,7 +464,11 @@ const NewOrderTable = ({
       console.log(taxDetails.itemAmount, "item");
       return {
         ...row,
-        itemAmount: isInterState?taxDetails.itemAmount+taxDetails.igstAmount:taxDetails.itemAmount+taxDetails.cgstAmount+taxDetails.sgstAmount,
+        itemAmount: isInterState
+          ? taxDetails.itemAmount + taxDetails.igstAmount
+          : taxDetails.itemAmount +
+            taxDetails.cgstAmount +
+            taxDetails.sgstAmount,
         itemCgstAmount: taxDetails.cgstAmount > 0 ? taxDetails.cgstAmount : 0,
         itemSgstAmount: taxDetails.sgstAmount > 0 ? taxDetails.sgstAmount : 0,
         itemIgstAmount: taxDetails.igstAmount > 0 ? taxDetails.igstAmount : 0,

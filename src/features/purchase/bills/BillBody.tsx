@@ -29,6 +29,7 @@ export interface Bill {
         itemSgstAmount: number | string ;
         itemCgstAmount: number | string ;
         taxPreference:string;
+        purchaseAccountId:string;
     }[];
     otherExpenseAmount: number | string ;
     otherExpenseAccountId:string;

@@ -55,6 +55,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
         itemIgstAmount: 0,
         itemVatAmount: 0,
         taxPreference: "",
+        purchaseAccountId:""
       },
     ],
     otherExpenseAmount: 0,
