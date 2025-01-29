@@ -108,7 +108,7 @@ function DayBook({}: Props) {
               <input
                 type="date"
                 ref={toDateRef}
-                className="absolute inset-0 opacity-0 cursor-pointer"
+                className="absolute inset-1 opacity-0 cursor-pointer"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
               />
