@@ -88,6 +88,7 @@ const NewBills = ({page}: Props) => {
         itemSgstAmount: "",
         itemCgstAmount: "",
         taxPreference: "",
+        purchaseAccountId:""
       },
     ],
     otherExpenseAccountId: "",

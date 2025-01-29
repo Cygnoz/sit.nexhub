@@ -832,9 +832,9 @@ const NewSalesQuoteTable = ({
                     type="number"
                     placeholder="0"
                     className="w-[50px]  focus:outline-none text-center"
-                    value={row.amount}
+                    value={row.itemAmount}
                     onChange={(e) =>
-                      handleRowChange(index, "amount", e.target.value)
+                      handleRowChange(index, "itemAmount", e.target.value)
                     }
                   />
                 </td>
