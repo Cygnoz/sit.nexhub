@@ -27,7 +27,7 @@ export interface SalesQuote {
     discountAmount: string;
     amount: string;
     itemAmount:string;
-   
+    salesAccountId:string;
   }[];
   totalItemDiscount:string;
   note: string;

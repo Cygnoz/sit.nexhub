@@ -169,60 +169,64 @@ const NewSalesQuoteTable = ({
   };
 
   const handleItemSelect = (item: any, index: number) => {
-    setOpenDropdownId(null);
-    setOpenDropdownType(null);
-    const newRows = [...rows];
+  setOpenDropdownId(null);
+  setOpenDropdownType(null);
+  const newRows = [...rows];
 
-    newRows[index].itemName = item.itemName;
-    newRows[index].itemImage = item.itemImage;
-    newRows[index].sellingPrice = item.sellingPrice || "0";
-    newRows[index].quantity = "1";
-    newRows[index].itemId = item._id;
-    newRows[index].cgst = item.cgst;
-    newRows[index].sgst = item.sgst;
-    newRows[index].igst = item.igst;
-    newRows[index].taxPreference = item.taxPreference;
-    newRows[index].taxGroup = item.taxRate;
-    newRows[index].itemStock = item.currentStock;
-    newRows[index].salesAccountId = item.salesAccountId;
-
-    const sellingPrice = parseFloat(newRows[index].sellingPrice);
-    const discountedPrice = calculateDiscountPrice(
-      sellingPrice,
-      newRows[index].discountAmount,
-      newRows[index].discountType
-    );
-
-    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
-      discountedPrice,
-      newRows[index],
-      isIntraState as boolean
-    );
-
-    newRows[index].amount = itemAmount;
-
-    newRows[index].cgstAmount = isPlaceOfSupplyVisible ? cgstAmount : "0.00";
-    newRows[index].sgstAmount = isPlaceOfSupplyVisible ? sgstAmount : "0.00";
-    newRows[index].igstAmount = isPlaceOfSupplyVisible ? igstAmount : "0.00";
-
-    newRows[index].itemAmount =
-      !isPlaceOfSupplyVisible
-        ? parseFloat(itemAmount).toFixed(2)
-        : !isIntraState
-          ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
-          : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
-
-    setRows(newRows);
-
-    setSalesQuoteState?.((prevData: any) => ({
-      ...prevData,
-      items: newRows.map((row) => {
-        const updatedItem = { ...row };
-        delete updatedItem.itemImage;
-        return updatedItem;
-      }),
-    }));
+  // Update row data
+  newRows[index] = {
+    ...newRows[index],
+    itemName: item.itemName,
+    itemImage: item.itemImage,
+    sellingPrice: item.sellingPrice || "0",
+    quantity: "1",
+    itemId: item._id,
+    cgst: item.cgst,
+    sgst: item.sgst,
+    igst: item.igst,
+    taxPreference: item.taxPreference,
+    taxGroup: item.taxRate,
+    itemStock: item.currentStock,
+    salesAccountId: item.salesAccountId, // Properly set salesAccountId
   };
+
+  // Calculate discounted price and tax amounts
+  const sellingPrice = parseFloat(newRows[index].sellingPrice);
+  const discountedPrice = calculateDiscountPrice(
+    sellingPrice,
+    newRows[index].discountAmount,
+    newRows[index].discountType
+  );
+
+  const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+    discountedPrice,
+    newRows[index],
+    isIntraState as boolean
+  );
+
+  newRows[index].amount = itemAmount;
+  newRows[index].cgstAmount = isPlaceOfSupplyVisible ? cgstAmount : "0.00";
+  newRows[index].sgstAmount = isPlaceOfSupplyVisible ? sgstAmount : "0.00";
+  newRows[index].igstAmount = isPlaceOfSupplyVisible ? igstAmount : "0.00";
+  newRows[index].itemAmount =
+    !isPlaceOfSupplyVisible
+      ? parseFloat(itemAmount).toFixed(2)
+      : !isIntraState
+      ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+      : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
+
+  // Update rows and state
+  setRows(newRows);
+
+  setSalesQuoteState?.((prevData: any) => ({
+    ...prevData,
+    items: newRows.map((row) => {
+      const updatedItem = { ...row };
+      delete updatedItem.itemImage; // Remove itemImage before saving
+      return updatedItem;
+    }),
+  }));
+};
 
   const calculateTax = (
     discountedPrice: number,
@@ -616,19 +620,20 @@ const NewSalesQuoteTable = ({
       if (JSON.stringify(salesQuoteState.items) !== JSON.stringify(previousItemsRef.current)) {
         const updatedItems = salesQuoteState.items.map((item: any) => {
           const matchingItem = items.find((data: any) => data._id === item.itemId);
-
+  
           return {
             ...item,
             itemStock: matchingItem?.currentStock || "",
-            salesAccountId: matchingItem?.salesAccountId || ""
+            salesAccountId: matchingItem?.salesAccountId || item.salesAccountId || "", // Ensure salesAccountId is properly set
           };
         });
-
+  
         setRows(updatedItems);
         previousItemsRef.current = salesQuoteState.items;
       }
     }
   }, [salesQuoteState?.items, items]);
+  
 
   useEffect(() => {
     getAllItems()

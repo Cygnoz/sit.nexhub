@@ -14,36 +14,42 @@ export const endponits = {
   ADD_PREFIX: "add-prefix",
   EDIT_PREFIX: "edit-prefix",
   STATUS_PREFIX: "status-prefix",
-  DELETE_PREFIX:"prefix",
+  DELETE_PREFIX: "prefix",
   ADD_SALES_QUOTE: "add-sales-quotes",
   GET_LAST_SALES_QUOTE_PREFIX: "get-last-sales-quotes-prefix",
   GET_ALL_QUOTES: "get-all-sales-quotes",
   GET_ONE_QUOTES: "get-one-sales-quotes",
   GET_ONE_SALES_ORDER: "get-one-sales-order",
 
-  EDIT_SALES_ORDER:"update-sales-order",
-  EDIT_SALES_QUOTE:"update-sales-quotes",
-  EDIT_SALES_INVOICE:"update-sales-invoice",
-  EDIT_SALES_RECIEPT:"update-sales-receipt",
+  EDIT_SALES_ORDER: "update-sales-order",
+  EDIT_SALES_QUOTE: "update-sales-quotes",
+  EDIT_SALES_INVOICE: "update-sales-invoice",
+  EDIT_SALES_RECIEPT: "update-sales-receipt",
+
+  DELETE_SALES_ORDER: "delete-sales-order",
+  DELETE_SALES_QUOTE: "delete-sales-quotes",
+  DELETE_SALES_INVOICE: "delete-sales-invoice",
+  DELETE_SALES_RECIEPT: "delete-sales-receipt",
+
 
   //sales order
   GET_LAST_SALES_ORDER_PREFIX: "get-last-sales-order-prefix",
   ADD_SALES_ORDER: "add-sales-order",
   //invoice
-  GET_INVOICE_PREFIX:"sales-invoice-prefix",
-  ADD_SALES_INVOICE:"sales-invoice",
-  GET_ALL_SALES_INVOICE:"sales-invoice",
-  GET_ONE_INVOICE:"sales-order",
-  GET_ONE_JOURNAL_INVOICE:"invoice-journal",
+  GET_INVOICE_PREFIX: "sales-invoice-prefix",
+  ADD_SALES_INVOICE: "sales-invoice",
+  GET_ALL_SALES_INVOICE: "sales-invoice",
+  GET_ONE_INVOICE: "sales-order",
+  GET_ONE_JOURNAL_INVOICE: "invoice-journal",
   //sales reciept
-  ADD_SALES_RECIEPT:"sales-receipt",
-  GET_ALL_SALES_RECIEPT:"get-all-receipt",
-  GET_ONE_SALES_RECIEPT:"get-receipt",
-  GET_LAST_SALES_RECIEPT_PREFIX:"get-last-salesReceipt-prefix",
-  GET_SALES_RECIEPT_JOURNAL:"receipt-journal",
+  ADD_SALES_RECIEPT: "sales-receipt",
+  GET_ALL_SALES_RECIEPT: "get-all-receipt",
+  GET_ONE_SALES_RECIEPT: "get-receipt",
+  GET_LAST_SALES_RECIEPT_PREFIX: "get-last-salesReceipt-prefix",
+  GET_SALES_RECIEPT_JOURNAL: "receipt-journal",
   //getall-item-sales
   GET_ALL_ITEMS_SALES: "get-all-item-xs",
-  GET_ALL_ITEMS_TABLE:"get-all-item-m",
+  GET_ALL_ITEMS_TABLE: "get-all-item-m",
   //sales order
   GET_ALL_SALES_ORDER: "get-all-sales-order",
 
@@ -82,7 +88,7 @@ export const endponits = {
   GET_ONE_JOURNAL: "get-one-journal",
   Add_NEW_ACCOUNT: "add-account",
   GET_ONE_TRIAL_BALANCE: "get-one-trial-balance",
-  GET_ONE_ACCOUNT:"get-one-account",
+  GET_ONE_ACCOUNT: "get-one-account",
 
   // Customer
   GET_ALL_CUSTOMER: "get-all-customer",
@@ -112,7 +118,7 @@ export const endponits = {
 
   // Inventory
   GET_INVENTORY_DASHBOARD: `/get-inventory-Dashboard`,
-  GET_ONE_ITEM:`get-one-item`,
+  GET_ONE_ITEM: `get-one-item`,
 
   // Item Tracking
   GET_ALL_ITEM_TRANKING: `get-all-item-track`,
@@ -149,11 +155,11 @@ export const endponits = {
   // bill
   ADD_BILL: `/add-Bills`,
   GET_ALL_BILLS: `/get-all-Bills`,
-  GET_A_BILL:`get-a-Bill`,
-  GET_BILL_JOURNAL:`/bill-journal`,
-  GET_LAST_BILL_PREFIX:`get-last-bills-prefix`,
-  EDIT_BILL:`update-bill`,
-  DELETE_BILL:``,
+  GET_A_BILL: `get-a-Bill`,
+  GET_BILL_JOURNAL: `/bill-journal`,
+  GET_LAST_BILL_PREFIX: `get-last-bills-prefix`,
+  EDIT_BILL: `update-bill`,
+  DELETE_BILL: ``,
 
 
   // Purchase order
@@ -161,17 +167,17 @@ export const endponits = {
   GET_LAST_PURCHASE_ORDER_PREFIX: `get-last-purchase-order-prefix`,
   GET_ALL_PURCHASE_ORDER: `get-all-purchaseOrders`,
   GET_ONE_PURCHASE_ORDER: `get-purchaseOrder`,
-  EDIT_PURCHASE_ORDER:`update-purchaseOrder`,
-  DELETE_PURCHASE_ORDER:``,
+  EDIT_PURCHASE_ORDER: `update-purchaseOrder`,
+  DELETE_PURCHASE_ORDER: ``,
 
   // Payment Made
-  ADD_PAYMET_MADE:`add-payment`,
-  GET_PAYMENTMADE:`getAllPayments`,
-  GET_PAYMENT:`getPayment`,
-  PAYMENT_LAST_PREFIX:`get-last-debit-note-prefix`,
-  EDIT_PAYMENT_MADE:`update-paymentMade`,
-  DELETE_PAYMENT_MADE:``,
-  GET_PAYMENT_JOURNAL:`payment-journal`,
+  ADD_PAYMET_MADE: `add-payment`,
+  GET_PAYMENTMADE: `getAllPayments`,
+  GET_PAYMENT: `getPayment`,
+  PAYMENT_LAST_PREFIX: `get-last-debit-note-prefix`,
+  EDIT_PAYMENT_MADE: `update-paymentMade`,
+  DELETE_PAYMENT_MADE: ``,
+  GET_PAYMENT_JOURNAL: `payment-journal`,
 
 
   // Debit note
@@ -197,25 +203,25 @@ export const endponits = {
   GET_OTP: "/verify-otp",
 
 
-    //  Expense 
-    ADD_EXPENSES:`add-expense`,
-    GET_ALL_EXPENSE:`get-all-expense`,
-    GET_A_EXPENSE:`get-one-expense`,
-    GET_LAST_EXPENSE_PREFIX: `get-last-expense-prefix`,
+  //  Expense 
+  ADD_EXPENSES: `add-expense`,
+  GET_ALL_EXPENSE: `get-all-expense`,
+  GET_A_EXPENSE: `get-one-expense`,
+  GET_LAST_EXPENSE_PREFIX: `get-last-expense-prefix`,
 
   //Expense > category
-  ADD_EXPENSE_CATEGORY:`add-category`,
-  GET_ALL_EXPENSE_CATEGORY:`get-all-category`,
-  GET_ONE_EXPENSE_CATEGORY:`get-one-category`,
-  UPDATE_EXPENSE_CATEGORY:`update-category`,
-  DELETE_EXPENSE_CATEGORY:`delete-category`,
+  ADD_EXPENSE_CATEGORY: `add-category`,
+  GET_ALL_EXPENSE_CATEGORY: `get-all-category`,
+  GET_ONE_EXPENSE_CATEGORY: `get-one-category`,
+  UPDATE_EXPENSE_CATEGORY: `update-category`,
+  DELETE_EXPENSE_CATEGORY: `delete-category`,
 
 
   // ocr
 
-  UPLOAD_INVOICE:`api/upload`,
-  GET_ALL_OCR_INVOICE:`api/get_all_invoices`,
-  GET_A_OCR_INVOICE:`api/view_invoice`,
-  UPDATE_OCR_DATA:`api/update_status`,
-  DELETE_OCR_INVOICE:`api/delete_invoice`,
+  UPLOAD_INVOICE: `api/upload`,
+  GET_ALL_OCR_INVOICE: `api/get_all_invoices`,
+  GET_A_OCR_INVOICE: `api/view_invoice`,
+  UPDATE_OCR_DATA: `api/update_status`,
+  DELETE_OCR_INVOICE: `api/delete_invoice`,
 };

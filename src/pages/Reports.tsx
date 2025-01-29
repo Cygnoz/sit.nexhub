@@ -5,6 +5,8 @@ import ArrowrightUp from "../assets/icons/ArrowrightUp";
 import dayBook from "../assets/Images/DayBook.png"
 import profitAndLoss from "../assets/Images/ProfitAndLoss.png"
 import balanceSheet from "../assets/Images/BalanceSheet.png"
+import tradingAccBgImage from "../assets/Images/tradingAccBg.png"
+import trialBalanceBgIMage from "../assets/Images/trialBalanceBg.png"
 import Button from "../Components/Button";
 
 interface reports {
@@ -18,10 +20,10 @@ const settingsData: reports[] = [
   {
     title: "Day Book",
     description: "Manage Day Book",
-    imageUrl: dayBook,
+    imageUrl: balanceSheet,
     route: "/reports/daybook",
   },
- 
+
   {
     title: "Profit and Loss",
     description: "Manage Profit and Loss",
@@ -31,9 +33,22 @@ const settingsData: reports[] = [
   {
     title: "Balance Sheet",
     description: "ManageBalance Sheet",
-    imageUrl: balanceSheet,
-    route: "/reports/balancesheet",
-  }
+    imageUrl: dayBook,
+    route: "/reports/balanceSheet",
+  },
+  {
+    title: "Trading Account",
+    description: "Manage Trading Account",
+    imageUrl: tradingAccBgImage,
+    route: "/reports/tradingAccount",
+  },
+  {
+    title: "Trail Balance",
+    description: "Manage Trail Balance",
+    imageUrl: trialBalanceBgIMage,
+    route: "/reports/trialBalance",
+  },
+
 ];
 
 const ReportsCard: React.FC<reports> = ({
