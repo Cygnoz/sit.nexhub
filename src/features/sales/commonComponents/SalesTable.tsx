@@ -193,7 +193,9 @@ const SalesTable = ({ page }: Props) => {
       `${endponits.DELETE_SALES_INVOICE}/${deleteId}`
       : page === "reciept" ?
       `${endponits.DELETE_SALES_RECIEPT}/${deleteId}`
-      :""
+      : page === "credit-Note" ?
+       `${endponits.DELETE_CREDIT_NOTE}/${deleteId}`
+       :""
       const { response, error } = await deleteSales(url);
       if (!error && response) {
         toast.success(response.data.message);

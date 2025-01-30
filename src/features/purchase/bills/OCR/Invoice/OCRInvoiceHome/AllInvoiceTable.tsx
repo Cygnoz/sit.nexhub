@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DotIcon from "../../../../../../assets/icons/DotIcon";
 import { endponits } from "../../../../../../Services/apiEndpoints";
 import useApi from "../../../../../../Hooks/useApi";
-import { TableResponseContext } from "../../../../../../context/ContextShare";
+import { PurchaseContext, TableResponseContext } from "../../../../../../context/ContextShare";
 import PurchaseTable from "../../../../CommonComponents/PurchaseTable/PurchaseTable";
 import { OCRInvoiceContext } from "../../../../../../context/ContextShare";
 
@@ -21,6 +21,8 @@ const AllInvoiceTable = () => {
 
   const { ocrInvoice } = useContext(OCRInvoiceContext);
   const { loading, setLoading } = useContext(TableResponseContext)!;
+      const {purchaseResponse}=useContext(PurchaseContext)!;
+  
   const navigate = useNavigate();
 
   const getallInvoice = async () => {
@@ -73,7 +75,7 @@ const AllInvoiceTable = () => {
   useEffect(() => {
     setLoading("");
     getallInvoice();
-  }, [ocrInvoice]);
+  }, [ocrInvoice,purchaseResponse]);
 
   return (
     <PurchaseTable
@@ -87,7 +89,6 @@ const AllInvoiceTable = () => {
       searchableFields={["supplier_name", "status"]}
       setColumns={setColumns}
       deleteUrl={endponits.DELETE_OCR_INVOICE}
-      fetchData={getallInvoice}
     />
   );
 };

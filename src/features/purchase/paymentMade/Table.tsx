@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useApi from "../../../Hooks/useApi";
-import { TableResponseContext } from "../../../context/ContextShare";
+import { PurchaseContext, TableResponseContext } from "../../../context/ContextShare";
 import { endponits } from "../../../Services/apiEndpoints";
 import PurchaseTable from "../CommonComponents/PurchaseTable/PurchaseTable";
 
@@ -20,6 +20,7 @@ const PaymentMadeTable = () => {
   const [allBill, setAllBill] = useState<any[]>([]);
   const { request: getBills } = useApi("get", 5005);
   const { loading, setLoading } = useContext(TableResponseContext)!;
+    const {purchaseResponse}=useContext(PurchaseContext)!;
 
   const getAllBill = async () => {
     try {
@@ -42,7 +43,7 @@ const PaymentMadeTable = () => {
 
   useEffect(() => {
     getAllBill();
-  }, []);
+  }, [purchaseResponse]);
 
   const handleRowClick = (id: string) => {
     navigate(`/purchase/payment-made/view/${id}`);

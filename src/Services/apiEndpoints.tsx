@@ -158,7 +158,7 @@ export const endponits = {
   GET_BILL_JOURNAL: `/bill-journal`,
   GET_LAST_BILL_PREFIX: `get-last-bills-prefix`,
   EDIT_BILL: `update-bill`,
-  DELETE_BILL: ``,
+  DELETE_BILL: `delete-bill`,
 
   // Purchase order
   ADD_PURCHASE_ORDER: `add-purchaseOrder`,
@@ -166,7 +166,7 @@ export const endponits = {
   GET_ALL_PURCHASE_ORDER: `get-all-purchaseOrders`,
   GET_ONE_PURCHASE_ORDER: `get-purchaseOrder`,
   EDIT_PURCHASE_ORDER: `update-purchaseOrder`,
-  DELETE_PURCHASE_ORDER: ``,
+  DELETE_PURCHASE_ORDER: `delete-purchaseOrder`,
 
   // Payment Made
   ADD_PAYMET_MADE: `add-payment`,
@@ -194,6 +194,8 @@ export const endponits = {
  GET_ONE_CREDIT_NOTE: `get-one-creditNote`,
  GET_CreditNOTE_JOURNAL:`creditNote-journal`,
  EDIT_CREDIT_NOTE:`update-creditNote`,
+ DELETE_CREDIT_NOTE:`delete-creditNote`,
+
 
 
   // Login
@@ -212,6 +214,10 @@ export const endponits = {
   GET_ONE_EXPENSE_CATEGORY: `get-one-category`,
   UPDATE_EXPENSE_CATEGORY: `update-category`,
   DELETE_EXPENSE_CATEGORY: `delete-category`,
+
+  // Reports
+  GET_BS_DATA:`balanceSheet`,
+
 
   // ocr
 

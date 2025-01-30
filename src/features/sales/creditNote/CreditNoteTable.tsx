@@ -140,7 +140,8 @@ const CreditNoteTable = ({
       sgst: item.sgst,
       igst: item.igst,
       itemAmount: item.itemAmount,
-      stock: item.returnQuantity ? item.quantity - item.returnQuantity : item.quantity,
+      // stock: item.returnQuantity ? item.quantity - item.returnQuantity : item.quantity,
+      stock: item.stock,
       taxPreference: item.taxPreference,
       salesAccountId: item.salesAccountId, // Properly set salesAccountId
 
