@@ -1,9 +1,8 @@
-import Table from "./Table";
+import DayBookTable from "./DayBookTable";
 import { useState, useRef, useEffect } from "react";
 import PrinterIcon from "@heroicons/react/20/solid/PrinterIcon";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import Calender from "../../../assets/icons/Calender";
-import SearchBar from "../../../Components/SearchBar";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import { Link } from "react-router-dom";
 import { endponits } from "../../../Services/apiEndpoints";
@@ -20,10 +19,11 @@ function getTodayDate() {
   return new Date().toISOString().split("T")[0];
 }
 
-function DayBook({}: Props) {
-  const [searchValue, setSearchValue] = useState("");
+function DayBook({ }: Props) {
   const [fromDate, setFromDate] = useState(getTodayDate());
   const [toDate, setToDate] = useState(getTodayDate());
+  const [dayBookData, setDayBookData] = useState<any>([])
+  const [total, setTotal] = useState<any>({})
 
   const fromDateRef = useRef<HTMLInputElement>(null);
   const toDateRef = useRef<HTMLInputElement>(null);
@@ -48,7 +48,9 @@ function DayBook({}: Props) {
       const { response, error } = apiResponse;
 
       if (!error && response) {
-        console.log(response.data, "response");
+        setDayBookData(response.data.data)
+        setTotal(response.data.totals);
+
       } else {
         console.log(error);
       }
@@ -125,12 +127,7 @@ function DayBook({}: Props) {
       </div>
       <div className="mx-5 my-4 bg-slate-50 h-[100vh]">
         <div className="mt-5 bg-white p-5 rounded-xl">
-          <SearchBar
-            searchValue={searchValue}
-            onSearchChange={setSearchValue}
-            placeholder="Search Currency"
-          />
-          <Table />
+          <DayBookTable dayBookData={dayBookData} total={total} />
         </div>
       </div>
     </>
