@@ -71,6 +71,7 @@ const PaymentMadeTable = () => {
       loading={loading.skeleton}
       searchableFields={["paymentDate", "supplierDisplayName"]}
       onEditClick={handleEditClick}
+      deleteUrl={endponits.DELETE_PAYMENT_MADE}
     />
   );
 };

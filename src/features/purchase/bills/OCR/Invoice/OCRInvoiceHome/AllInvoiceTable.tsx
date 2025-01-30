@@ -9,9 +9,9 @@ import { OCRInvoiceContext } from "../../../../../../context/ContextShare";
 
 const AllInvoiceTable = () => {
   const [columns, setColumns] = useState([
-    { id: "supplier_name", label: "Supplier", visible: true },
-    { id: "invoice_no", label: "Invoice Number", visible: true },
-    { id: "bill_date", label: "Uploaded Date", visible: true },
+    { id: "supplierDisplayName", label: "Supplier", visible: true },
+    { id: "billNumber", label: "Invoice Number", visible: true },
+    { id: "uploadedDate", label: "Uploaded Date", visible: true },
     { id: "status", label: "Review Status", visible: true },
     { id: "review_date", label: "Review Date", visible: true },
   ]);

@@ -28,12 +28,12 @@ interface BankDetails {
 }
 
 interface Header {
-  invoice_no: string | number | readonly string[] | undefined;
-  due_date: string;
-  invoice_date: string;
-  supplier_address: string;
-  supplier_name: string;
-  supplier_phone: string;
+  billNumber: string | number | readonly string[] | undefined;
+  dueDate: string;
+  billDate: string;
+  supplierAddress: string;
+  supplierDisplayName: string;
+  supplierPhone: string;
   supplier_id: string;
 }
 
@@ -82,12 +82,12 @@ const OCRInvoiceView = () => {
   });
 
   const [header, setHeader] = useState<Header>({
-    due_date: "",
-    invoice_no: "",
-    invoice_date: "",
-    supplier_address: "",
-    supplier_name: "",
-    supplier_phone: "",
+    dueDate: "",
+    billNumber: "",
+    billDate: "",
+    supplierAddress: "",
+    supplierDisplayName: "",
+    supplierPhone: "",
     supplier_id: "",
   });
 
@@ -288,7 +288,7 @@ const OCRInvoiceView = () => {
   const handleItemMatch = () => {
     const matches = currentItems.map((item: any) => {
       const isMatch = allItems.some(
-        (innerItem: any) => innerItem.itemName === item.product_name
+        (innerItem: any) => innerItem.itemName === item.itemName
       );
       return {
         item_id: item.item_id,
@@ -408,7 +408,7 @@ const OCRInvoiceView = () => {
   }, [openDropdownIndex]);
 
   console.log(invoice, "invoice");
-  const isPDF = invoice?.image?.startsWith("data:application/pdf");
+  const isPDF = invoice?.image?.file?.startsWith("data:application/pdf");
   return (
     <>
       <div className="mx-5 my-4 flex items-center  gap-x-4">
@@ -456,7 +456,7 @@ const OCRInvoiceView = () => {
           <div className="loader"></div>
         ) : isPDF ? (
           <iframe
-            src={invoice?.image}
+            src={invoice?.image?.file}
             width="100%"
             height="100%"
             style={{
@@ -469,7 +469,7 @@ const OCRInvoiceView = () => {
         ) : (
           <img 
           className="min-w-[65%]"
-          src={invoice?.image}
+          src={invoice?.image?.file}
           alt="Uploaded Content"
             style={{
           
@@ -519,7 +519,7 @@ const OCRInvoiceView = () => {
                     type="text"
                     className="invoice-input"
                     name="invoice_no"
-                    value={header.invoice_no}
+                    value={header?.billNumber}
                     placeholder="Invoice"
                     onChange={(e) =>
                       handleChange("header", e.target.name, e.target.value)
@@ -543,7 +543,7 @@ const OCRInvoiceView = () => {
                       sameSupplier ? "text-[#32A370]" : "text-[#DD2020]"
                     }`}
                   >
-                    <span>{header.supplier_name}</span>
+                    <span>{header.supplierDisplayName}</span>
                   </p>
                 </div>
                 {openDropdownIndex === "supplierName" && (
@@ -632,7 +632,7 @@ const OCRInvoiceView = () => {
                   <input
                     type="text"
                     className="invoice-input w-[50%]"
-                    value={header.supplier_address}
+                    value={header.supplierAddress}
                     placeholder="Invoice"
                     onChange={(e) =>
                       handleChange("header", e.target.name, e.target.value)
@@ -647,7 +647,7 @@ const OCRInvoiceView = () => {
                     name="supplier_phone"
                     type="text"
                     className="invoice-input"
-                    value={header.supplier_phone}
+                    value={header.supplierPhone}
                     placeholder="Supplier Phone"
                     onChange={(e) =>
                       handleChange("header", e.target.name, e.target.value)
@@ -661,7 +661,7 @@ const OCRInvoiceView = () => {
                     type="text"
                     name="invoice_date"
                     className="invoice-input"
-                    value={header.invoice_date}
+                    value={header.billDate}
                     placeholder="Invoice Date"
                     onChange={(e) =>
                       handleChange("header", e.target.name, e.target.value)
@@ -675,7 +675,7 @@ const OCRInvoiceView = () => {
                     type="text"
                     name="due_date"
                     className="invoice-input"
-                    value={header.due_date}
+                    value={header.dueDate}
                     placeholder="Due Date"
                     onChange={(e) =>
                       handleChange("header", e.target.name, e.target.value)
@@ -720,10 +720,10 @@ const OCRInvoiceView = () => {
                             className={`truncate ${
                               isMatched ? "text-[#32A370]" : "text-[#DD2020]"
                             }`}
-                            title={item.product_name}
+                            title={item.itemName}
                             style={{ maxWidth: "calc(100% - 150px)" }}
                           >
-                            {item.product_name}
+                            {item.itemName}
                           </p>
                         </div>
                       );
@@ -755,10 +755,10 @@ const OCRInvoiceView = () => {
                             className={`truncate ${
                               isMatched ? "text-[#32A370]" : "text-[#DD2020]"
                             }`}
-                            title={item.product_name}
+                            title={item.itemName}
                             style={{ maxWidth: "calc(100% - 150px)" }}
                           >
-                            {item.product_name}
+                            {item.itemName}
                           </p>
                         </div>
                       );
