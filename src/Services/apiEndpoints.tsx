@@ -174,7 +174,7 @@ export const endponits = {
   GET_PAYMENT: `getPayment`,
   PAYMENT_LAST_PREFIX: `get-last-debit-note-prefix`,
   EDIT_PAYMENT_MADE: `update-paymentMade`,
-  DELETE_PAYMENT_MADE: ``,
+  DELETE_PAYMENT_MADE: `delete-paymentMade`,
   GET_PAYMENT_JOURNAL: `payment-journal`,
 
   // Debit note
@@ -183,7 +183,7 @@ export const endponits = {
  GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
  GET_DEBIT_NOTE:`getDebitNote`,
  EDIT_DEBIT_NOTE:`update-debitNote`,
- DELETE_DEBIT_NOTE:``,
+ DELETE_DEBIT_NOTE:`delete-debitNote`,
  GET_DEBITNOTE_JOURNAL:`debitNote-journal`,
 
 
@@ -215,9 +215,6 @@ export const endponits = {
   UPDATE_EXPENSE_CATEGORY: `update-category`,
   DELETE_EXPENSE_CATEGORY: `delete-category`,
 
-  // Reports
-  GET_BS_DATA:`balanceSheet`,
-
 
   // ocr
 
@@ -229,4 +226,6 @@ export const endponits = {
 
   //Report
   GET_DAYBOOK: "dayBook",
+  GET_BS_DATA:`balanceSheet`,
+  GET_TRIAL_BALANCE:`trialBalance`
 };

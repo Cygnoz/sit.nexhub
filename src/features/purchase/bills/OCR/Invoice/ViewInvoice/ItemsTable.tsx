@@ -7,16 +7,16 @@ import CehvronDown from "../../../../../../assets/icons/CehvronDown";
 
 type Item = {
   id: string;
-  product_name: string;
+  itemName: string;
   hsn_sac: string;
-  quantity: string;
-  rate: string;
+  itemQuantity: string;
+  itemCostPrice: string;
   gross: string;
-  discount: string;
+  itemDiscount: string;
   net_amount: string;
-  tax: string;
-  tax_amount: string;
-  total_amount: string;
+  itemTax: string;
+  itemCgstAmount: string;
+  itemAmount: string;
   batch_no: string | null;
   expiry_date?: string | null;
 };
@@ -59,7 +59,7 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
   };
 
   const toggleDropdown = (index: number) => {
-    const selectedItem = items[index]?.product_name?.toLowerCase().trim();
+    const selectedItem = items[index]?.itemName?.toLowerCase().trim();
     
     const isProductAlreadyExists = allItems?.some(
       (item: any) => 
@@ -85,7 +85,7 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
       return;
     }   
 
-    const invoiceItem = invoiceSelectedItem.product_name?.toLowerCase().trim();
+    const invoiceItem = invoiceSelectedItem.itemName?.toLowerCase().trim();
     if (!invoiceItem) {
       return;
     }
@@ -124,7 +124,7 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
       if (index === selectedIndex) {
         return {
           ...item,
-          product_name: finalItem.itemName,
+          itemName: finalItem.itemName,
         };
       }
       return item;
@@ -204,7 +204,7 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
                 <div
                  
                 >
-                  {item.product_name}
+                  {item.itemName}
                   {openDropdownIndex === index && (
                     <div
                       className="absolute z-10  -ms-5 bg-white rounded-md mt-3.5 p-2 space-y-1 max-h-72 overflow-y-auto hide-scrollbar"
@@ -278,28 +278,28 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
                 {item.hsn_sac|| "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.quantity}
+                {item.itemQuantity}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.rate ? (item.rate) : "-"}
+                {item.itemCostPrice ? (item.itemCostPrice) : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
                 {item.gross ? (item.gross) : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.discount ? (item.discount): "-"}
+                {item.itemDiscount ? (item.itemDiscount): "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
                 {item.net_amount ? (item.net_amount) : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.tax ? (item.tax) : "-"}
+                {item.itemTax ? (item.itemTax) : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.tax_amount ? (item.tax_amount): "-"}
+                {item.itemCgstAmount ? (item.itemCgstAmount): "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.total_amount ? (item.total_amount): "-"}
+                {item.itemAmount ? (item.itemAmount): "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
                 {item.batch_no|| "-"}
