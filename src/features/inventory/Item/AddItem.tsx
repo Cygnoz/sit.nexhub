@@ -1575,7 +1575,7 @@ console.log(selectedItem,"selectedItem");
                     {allAccounts
                       ?.filter(
                         (item: { accountSubhead: string }) =>
-                          item.accountSubhead === "Expense" ||
+                          // item.accountSubhead === "Expense" ||
                           item.accountSubhead === "Cost of Goods Sold"
                       )
                       ?.map((item: { _id: string; accountName: string }) => (

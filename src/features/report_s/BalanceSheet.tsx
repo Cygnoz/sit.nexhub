@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import CheveronLeftIcon from "../../assets/icons/CheveronLeftIcon";
-import SearchBar from "../../Components/SearchBar";
 import { useEffect, useState } from "react";
 import useApi from "../../Hooks/useApi";
 import toast from "react-hot-toast";

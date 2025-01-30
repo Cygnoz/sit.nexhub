@@ -31,7 +31,6 @@ export const endponits = {
   DELETE_SALES_INVOICE: "delete-sales-invoice",
   DELETE_SALES_RECIEPT: "delete-sales-receipt",
 
-
   //sales order
   GET_LAST_SALES_ORDER_PREFIX: "get-last-sales-order-prefix",
   ADD_SALES_ORDER: "add-sales-order",
@@ -161,7 +160,6 @@ export const endponits = {
   EDIT_BILL: `update-bill`,
   DELETE_BILL: `delete-bill`,
 
-
   // Purchase order
   ADD_PURCHASE_ORDER: `add-purchaseOrder`,
   GET_LAST_PURCHASE_ORDER_PREFIX: `get-last-purchase-order-prefix`,
@@ -179,7 +177,6 @@ export const endponits = {
   DELETE_PAYMENT_MADE: ``,
   GET_PAYMENT_JOURNAL: `payment-journal`,
 
-
   // Debit note
  GET_DEBIT_NOTE_PREFIX:`get-last-debit-note-prefix`,
  ADD_DEBIT_NOTE:`add-DebitNote`,
@@ -196,14 +193,16 @@ export const endponits = {
  GET_ALL_CREDIT_NOTE:`get-all-creditNote`,
  GET_ONE_CREDIT_NOTE: `get-one-creditNote`,
  GET_CreditNOTE_JOURNAL:`creditNote-journal`,
+ EDIT_CREDIT_NOTE:`update-creditNote`,
+ DELETE_CREDIT_NOTE:`delete-creditNote`,
+
 
 
   // Login
   LOGIN: "/login",
   GET_OTP: "/verify-otp",
 
-
-  //  Expense 
+  //  Expense
   ADD_EXPENSES: `add-expense`,
   GET_ALL_EXPENSE: `get-all-expense`,
   GET_A_EXPENSE: `get-one-expense`,
@@ -227,4 +226,7 @@ export const endponits = {
   GET_A_OCR_INVOICE: `api/view_invoice`,
   UPDATE_OCR_DATA: `api/update_status`,
   DELETE_OCR_INVOICE: `api/delete_invoice`,
+
+  //Report
+  GET_DAYBOOK: "dayBook",
 };

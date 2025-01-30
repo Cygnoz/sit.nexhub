@@ -173,7 +173,7 @@ const SalesTable = ({ page }: Props) => {
       navigate(`/sales/receipt/edit/${id}`);
     }
     else if (page === "credit-Note") {
-      navigate(`/edit/${id}`)
+      navigate(`/sales/credit-note/edit/${id}`)
     }
     else {
       console.warn(`Unexpected page value: ${page}`);
@@ -193,7 +193,9 @@ const SalesTable = ({ page }: Props) => {
       `${endponits.DELETE_SALES_INVOICE}/${deleteId}`
       : page === "reciept" ?
       `${endponits.DELETE_SALES_RECIEPT}/${deleteId}`
-      :""
+      : page === "credit-Note" ?
+       `${endponits.DELETE_CREDIT_NOTE}/${deleteId}`
+       :""
       const { response, error } = await deleteSales(url);
       if (!error && response) {
         toast.success(response.data.message);

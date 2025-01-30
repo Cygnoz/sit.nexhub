@@ -117,6 +117,8 @@ const NewCreditNote = ({ page }: props) => {
   const { request: getAccountData } = useApi("get", 5001);
   const { request: newCreditNoteApi } = useApi("post", 5007);
   const { request: getOneCreditNote } = useApi("get", 5007);
+  const { request: editCreditNoteApi } = useApi("put", 5007);
+
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const navigate = useNavigate();
@@ -334,20 +336,32 @@ const NewCreditNote = ({ page }: props) => {
       return;
     }
     try {
-      const url = `${endponits.ADD_CREDIT_NOTE}`;
-      const { response, error } = await newCreditNoteApi(url, creditNoteState);
+      let url;
+      let api;
+      
+      if (page === "edit") {
+        url = `${endponits.EDIT_CREDIT_NOTE}/${id}`;
+        api = editCreditNoteApi; // ✅ Assign correct API function (PUT)
+      } else {
+        console.log("working");
+        url = `${endponits.ADD_CREDIT_NOTE}`;
+        api = newCreditNoteApi; // ✅ Assign correct API function (POST)
+      }
+    
+      const { response, error } = await api(url, creditNoteState); // ✅ Uses the correct function dynamically
+    
       if (!error && response) {
         toast.success(response.data.message);
         setTimeout(() => {
           navigate("/sales/credit-note");
         }, 1000);
       } else {
-        toast.error(error?.response.data.message);
+        toast.error(error?.response?.data?.message);
       }
     } catch (error) {
       console.log(error);
     }
-  };
+      };
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
