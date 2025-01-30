@@ -94,6 +94,11 @@ interface ocrAddItemContextType {
   setOcrAddItem: React.Dispatch<React.SetStateAction<any>>;
 }
 
+interface purchaseTableContextType {
+  purchaseResponse: any;
+  setPurchaseResponse: React.Dispatch<React.SetStateAction<any>>;
+}
+
 export const cashResponseContext = createContext<CashResponseContextType | undefined>(undefined);
 export const BankResponseContext = createContext<BankResponseContextType | undefined>(undefined);
 export const PosResponseContext = createContext<PosResponseContextType | undefined>(undefined);
@@ -110,6 +115,7 @@ export const TableResponseContext = createContext<TableLoadingContextType | unde
 export const PreviousPathContext = createContext<PreviousPathContextType | undefined>(undefined);
 export const CustomerDeatilsContext = createContext<CustomerDeatilsContextType | undefined>(undefined);
 export const SupplierDetailsContext = createContext<SupplierDetailsContextType | undefined>(undefined);
+export const PurchaseContext = createContext<purchaseTableContextType | undefined>(undefined);
 export const OCRInvoiceContext = createContext<OCRInvoiceContextType>({ ocrInvoice: null, setOcrInvoice: () => { }, });
 export const octAddItemContext = createContext<ocrAddItemContextType>({ ocrAddItem: null, setOcrAddItem: () => { }, });
 
@@ -136,6 +142,7 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
   const [unitEditResponse, setEditUnitResponse] = useState<any>({});
   const [ocrInvoice, setOcrInvoice] = useState<any>({})
   const [ocrAddItem, setOcrAddItem] = useState<any>({})
+  const [purchaseResponse,setPurchaseResponse]=useState<any>({})
 
   const [loading, setLoading] = useState<any>({
     skelton: false,
@@ -179,7 +186,7 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
                                   <PreviousPathContext.Provider value={{ previousPath, setPreviousPath }}>
                                     <OCRInvoiceContext.Provider value={{ ocrInvoice, setOcrInvoice }}>
                                       <octAddItemContext.Provider value={{ ocrAddItem, setOcrAddItem }}>
-                                        {children}
+                                       <PurchaseContext.Provider value={{purchaseResponse,setPurchaseResponse}}> {children}</PurchaseContext.Provider>
                                       </octAddItemContext.Provider>
                                     </OCRInvoiceContext.Provider>
                                   </PreviousPathContext.Provider>

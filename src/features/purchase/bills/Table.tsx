@@ -1,13 +1,13 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useApi from "../../../Hooks/useApi";
-import { TableResponseContext } from "../../../context/ContextShare";
+import { PurchaseContext, TableResponseContext } from "../../../context/ContextShare";
 import { endponits } from "../../../Services/apiEndpoints";
 import DotIcon from "../../../assets/icons/DotIcon";
 import PurchaseTable from "../CommonComponents/PurchaseTable/PurchaseTable";
 
 const Table = () => {
-  const [columns,setColumns] = useState([
+  const [columns, setColumns] = useState([
     { id: "billNumber", label: "Bill#", visible: true },
     { id: "billDate", label: "Bill Date", visible: true },
     { id: "supplierDisplayName", label: "Supplier Name", visible: true },
@@ -19,6 +19,7 @@ const Table = () => {
   const [allBills, setAllBills] = useState<any[]>([]);
   const { request: getBills } = useApi("get", 5005);
   const { loading, setLoading } = useContext(TableResponseContext)!;
+    const {purchaseResponse}=useContext(PurchaseContext)!;
   const navigate = useNavigate();
 
   const getAllBills = async () => {
@@ -43,13 +44,12 @@ const Table = () => {
 
   useEffect(() => {
     getAllBills();
-  }, []);
+  }, [purchaseResponse]);
 
   const handleRowClick = (id: string) => {
     navigate(`/purchase/bills/view/${id}`);
   };
 
-  
   const handleEditClick = (id: string) => {
     navigate(`/purchase/bills/edit/${id}`);
   };
@@ -60,22 +60,26 @@ const Table = () => {
         <div className="flex justify-center items-center">
           <div
             className={`${
-              item.paidStatus === "Pending" ? "bg-zinc-200" :item.paidStatus==="Completed"? "bg-[#94dca9]":"bg-[#dcd894]"
+              item.paidStatus === "Pending"
+                ? "bg-zinc-200"
+                : item.paidStatus === "Completed"
+                ? "bg-[#94dca9]"
+                : "bg-[#dcd894]"
             } text-[13px] rounded-lg text-center items-center text-textColor h-[18px] px-2 max-w-fit gap-2 py-2 flex justify-center`}
           >
             <DotIcon color="#495160" />
             {item.paidStatus}
           </div>
-       </div>
+        </div>
       );
     }
-   
+
     return item[colId as keyof typeof item];
   };
 
   return (
     <PurchaseTable
-    page={"Bills"}
+      page={"Bills"}
       columns={columns}
       data={allBills}
       onRowClick={handleRowClick}
@@ -85,7 +89,7 @@ const Table = () => {
       searchableFields={["billNumber", "supplierDisplayName"]}
       setColumns={setColumns}
       onEditClick={handleEditClick}
-
+      deleteUrl={endponits.DELETE_BILL}
     />
   );
 };

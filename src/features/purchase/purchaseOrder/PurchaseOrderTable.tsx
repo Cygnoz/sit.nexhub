@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useApi from "../../../Hooks/useApi";
-import { TableResponseContext } from "../../../context/ContextShare";
+import { PurchaseContext, TableResponseContext } from "../../../context/ContextShare";
 import { endponits } from "../../../Services/apiEndpoints";
 import DotIcon from "../../../assets/icons/DotIcon";
 import PurchaseTable from "../CommonComponents/PurchaseTable/PurchaseTable";
@@ -23,6 +23,7 @@ const PurchaseOrderTable = () => {
   const [allPoData, setAllPOData] = useState<any[]>([]);
   const { request: getPO } = useApi("get", 5005);
   const { loading, setLoading } = useContext(TableResponseContext)!;
+  const {purchaseResponse}=useContext(PurchaseContext)!;
   const navigate = useNavigate();
 
   const getAllPO = async () => {
@@ -47,7 +48,7 @@ const PurchaseOrderTable = () => {
 
   useEffect(() => {
     getAllPO();
-  }, []);
+  }, [purchaseResponse]);
 
   const handleRowClick = (id: string) => {
     navigate(`/purchase/purchase-order/view/${id}`);

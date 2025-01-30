@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import TableSkelton from "../../../../Components/skeleton/Table/TableSkelton";
 import SearchBar from "../../../../Components/SearchBar";
 import NoDataFoundTable from "../../../../Components/skeleton/Table/NoDataFoundTable";
@@ -10,6 +10,7 @@ import Trash2 from "../../../../assets/icons/Trash2"; // Include Trash Icon
 import Pen from "../../../../assets/icons/Pen";
 import useApi from "../../../../Hooks/useApi";
 import toast from "react-hot-toast";
+import { PurchaseContext } from "../../../../context/ContextShare";
 
 interface Column {
   id: string;
@@ -21,7 +22,7 @@ interface TableProps {
   columns: Column[];
   data: any[];
   onRowClick?: (id: string) => void;
-  onDelete?: (id: string) => void; 
+  onDelete?: (id: string) => void;
   renderColumnContent?: (colId: string, item: any) => JSX.Element;
   searchPlaceholder: string;
   loading: boolean;
@@ -29,8 +30,9 @@ interface TableProps {
   setColumns?: any;
   page?: any;
   onEditClick?: (id: string) => void;
-  deleteUrl?:string
-  fetchData?:any
+  deleteUrl?: string;
+  fetchUrl?:string;
+  fetchData?: any;
 }
 
 const PurchaseTable: React.FC<TableProps> = ({
@@ -45,14 +47,12 @@ const PurchaseTable: React.FC<TableProps> = ({
   setColumns,
   onEditClick,
   deleteUrl,
-  fetchData
 }) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { request: deleteData } = useApi("delete", 5005);
   const { request: ocrDelete } = useApi("delete", 5000);
-
-
+const {setPurchaseResponse}=useContext(PurchaseContext)!;
   const rowsPerPage = 10;
 
   const filteredData = Array.isArray(data)
@@ -87,19 +87,35 @@ const PurchaseTable: React.FC<TableProps> = ({
       const apiFunction = page === "OCR" ? ocrDelete : deleteData;
       const { response, error } = await apiFunction(url);
       if (!error && response) {
-        const message = response?.data?.[0]?.message || "Item deleted successfully!";
-        toast.success(message);
-        fetchData()
+        console.log(response)
+        if(page==="OCR"){
+          toast.success(response?.data[0]?.message);
+
+        }else{
+          toast.success(response?.data?.message);
+
+        }
+          setPurchaseResponse((prevData: any) => {
+          const updatedData = prevData?.data?.filter((item: any) => item._id !== id);
+          return {
+            ...prevData,
+            data: updatedData,
+          };
+        });
       } else {
-        console.log(error.response)
-        toast.error("Failed to delete item. Please try again.");
+        console.log(error.response);
+        if(page==="OCR"){
+          toast.error(error?.response?.data?.message);
+
+        }else{
+          toast.error(error?.response?.data?.message);
+
+        }
       }
     } catch (error) {
       console.error("Error in deleting item:", error);
-      toast.error("An unexpected error occurred. Please try again later.");
     }
   };
-  
 
   return (
     <div>
@@ -179,7 +195,7 @@ const PurchaseTable: React.FC<TableProps> = ({
                     <button onClick={() => onRowClick && onRowClick(item._id)}>
                       <Eye color={"#569FBC"} />
                     </button>
-                    <button onClick={()=>handleDelete(item._id)}>
+                    <button onClick={() => handleDelete(item._id)}>
                       <Trash2 color="#EA1E4F" size={18} />
                     </button>
                   </td>

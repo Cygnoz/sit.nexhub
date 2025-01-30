@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DotIcon from "../../../assets/icons/DotIcon";
 import PurchaseTable from "../CommonComponents/PurchaseTable/PurchaseTable";
-import { TableResponseContext } from "../../../context/ContextShare";
+import { PurchaseContext, TableResponseContext } from "../../../context/ContextShare";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
 
@@ -28,6 +28,7 @@ const DebitTable = () => {
   const [allDNdata, setAllDNdata] = useState<any[]>([]);
   const { request: getDN } = useApi("get", 5005);
   const { loading, setLoading } = useContext(TableResponseContext)!;
+    const {purchaseResponse}=useContext(PurchaseContext)!;
 
   const getDebitNotes = async () => {
     try {
@@ -49,7 +50,7 @@ const DebitTable = () => {
 
   useEffect(() => {
     getDebitNotes();
-  }, []);
+  }, [purchaseResponse]);
 
   const handleRowClick = (id: string) => {
     navigate(`/purchase/debit-note/view/${id}`);
