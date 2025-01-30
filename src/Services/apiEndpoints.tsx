@@ -194,6 +194,8 @@ export const endponits = {
  GET_ONE_CREDIT_NOTE: `get-one-creditNote`,
  GET_CreditNOTE_JOURNAL:`creditNote-journal`,
  EDIT_CREDIT_NOTE:`update-creditNote`,
+ DELETE_CREDIT_NOTE:`delete-creditNote`,
+
 
 
   // Login
