@@ -231,5 +231,7 @@ export const endponits = {
   //Report
   GET_DAYBOOK: "dayBook",
   // GET_BS_DATA:`balanceSheet`,
-  GET_TRIAL_BALANCE:`trialBalance`
+  GET_TRIAL_BALANCE:`trialBalance`,
+  GET_TRADING_ACCONUT:`tradingAccount`
+
 };

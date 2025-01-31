@@ -512,7 +512,7 @@ const DebitNoteTable = ({
                     ) : (
                       <div className="cursor-pointer flex appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
                         <p>Type or click</p>
-                        <CheveronDownIcon color="currentColor" />
+                        <CheveronDownIcon color="currentColor" strokeWidth={2} />
                       </div>
                     )}
                   </button>

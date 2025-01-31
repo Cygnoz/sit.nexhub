@@ -1,15 +1,49 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CheveronLeftIcon from "../../assets/icons/CheveronLeftIcon";
 import useApi from "../../Hooks/useApi";
 import toast from "react-hot-toast";
 import SearchBar from "../../Components/SearchBar";
+import PrinterIcon from "../../assets/icons/PrinterIcon";
+import CehvronDown from "../../assets/icons/CehvronDown";
+import Calender from "../../assets/icons/Calender";
+import { endponits } from "../../Services/apiEndpoints";
+
+function formatDate(dateStr: string) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("en-GB").split("/").join("-");
+}
+
+function getFirstDayOfMonth() {
+  const date = new Date();
+  return `${date.getFullYear()}-${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-01`;
+}
+
+function getLastDayOfMonth() {
+  const date = new Date();
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0)
+    .toISOString()
+    .split("T")[0];
+}
 
 const TradingAccount = () => {
   const [tradingData, setTradingData] = useState([]);
   const { request: fetchOneItem } = useApi("get", 5006);
   const [searchValue, setSearchValue] = useState("");
+  const [fromDate, setFromDate] = useState(getFirstDayOfMonth());
+  const [toDate, setToDate] = useState(getLastDayOfMonth());
+  const fromDateRef = useRef<HTMLInputElement>(null);
+  const toDateRef = useRef<HTMLInputElement>(null);
 
+  const handleFromDateClick = () => {
+    fromDateRef.current?.showPicker();
+  };
+
+  const handleToDateClick = () => {
+    toDateRef.current?.showPicker();
+  };
 
   const dataLeft = [
     { account: "Opening Stock", total: "₹30,000" },
@@ -27,10 +61,12 @@ const TradingAccount = () => {
     { account: "Gross Profit", total: "₹30,000" },
     { account: "Total", total: "₹30,000" },
   ];
-
+console.log(tradingData)
   const getTradingData = async () => {
     try {
-      const url = `${""}/01/07/2024/30/09/2024`;
+      const formattedFromDate = formatDate(fromDate);
+      const formattedToDate = formatDate(toDate);
+      const url = `${endponits.GET_TRADING_ACCONUT}/${formattedFromDate}/${formattedToDate}`;
       const { response, error } = await fetchOneItem(url);
       if (!error && response) {
         setTradingData(response.data);
@@ -59,7 +95,56 @@ const TradingAccount = () => {
         <div className="flex justify-start item-start ms-2">
           <h4 className="font-bold text-xl text-textColor">Trading Account</h4>
         </div>
+        <div className="ml-auto gap-3 flex items-center">
+          <div className="flex text-dropdownText gap-4">
+            <div
+              className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer bg-white"
+              onClick={handleFromDateClick}
+            >
+              <div className="pointer-events-none flex items-center px-2 text-gray-700">
+                <Calender color="currentColor" height={18} width={18} />
+              </div>
+              {formatDate(fromDate)}
+              <div className="pointer-events-none flex items-center px-2 text-gray-700">
+                <CehvronDown color="gray" />
+              </div>
+              <input
+                type="date"
+                ref={fromDateRef}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+              />
+            </div>
 
+            <div
+              className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer bg-white"
+              onClick={handleToDateClick}
+            >
+              <div className="pointer-events-none flex items-center px-2 text-gray-700">
+                <Calender color="currentColor" height={18} width={18} />
+              </div>
+              {formatDate(toDate)}
+              <div className="pointer-events-none flex items-center px-2 text-gray-700">
+                <CehvronDown color="gray" />
+              </div>
+              <input
+                type="date"
+                ref={toDateRef}
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+              />
+            </div>
+
+            <div className="ml-auto flex items-center">
+              <button className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">
+                <PrinterIcon color="gray" height={18} width={20} />
+                <span className="text-sm text-neutral-500">Print</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Trading Account Tables */}

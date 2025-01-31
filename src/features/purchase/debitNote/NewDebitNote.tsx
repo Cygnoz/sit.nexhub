@@ -239,50 +239,56 @@ console.log(errors)
 
   const handleSave = async () => {
     const newErrors = { ...errors };
-
-    // newErrors.supplierInvoiceNum =
-    // typeof debitNoteState.supplierInvoiceNum === "string"
-    //   ? debitNoteState.supplierInvoiceNum.trim() === ""
-    //   : false;
-
+    const missingFields: string[] = [];
+    
     if (debitNoteState.supplierId.trim() === "") {
       newErrors.supplierId = true;
+      missingFields.push("Supplier");
     } else {
       newErrors.supplierId = false;
     }
-
+    
     if (debitNoteState.destinationOfSupply.trim() === "") {
       newErrors.destinationOfSupply = true;
+      missingFields.push("Destination of Supply");
     } else {
       newErrors.destinationOfSupply = false;
     }
-
+    
     if (debitNoteState.sourceOfSupply.trim() === "") {
       newErrors.sourceOfSupply = true;
+      missingFields.push("Source of Supply");
     } else {
       newErrors.sourceOfSupply = false;
     }
+    
     if (debitNoteState.supplierDebitDate.trim() === "") {
       newErrors.debitDate = true;
+      missingFields.push("Debit Date");
     } else {
       newErrors.debitDate = false;
     }
+    
     if (debitNoteState.paymentMode.trim() === "") {
       newErrors.paymentMode = true;
+      missingFields.push("Payment Mode");
     } else {
       newErrors.paymentMode = false;
     }
-    // if (debitNoteState.depositAccountId.trim() === "") {
-    //   newErrors.depositTo = true;
-    // } else {
-    //   newErrors.depositTo = false;
-    // }
-
-    if (Object.values(newErrors).some((error) => error)) {
+    
+    if (debitNoteState.depositAccountId.trim() === "" && debitNoteState.paymentMode === "Cash") {
+      newErrors.depositTo = true;
+      missingFields.push("Deposit To");
+    } else {
+      newErrors.depositTo = false;
+    }
+    
+    if (missingFields.length > 0) {
       setErrors(newErrors);
-      toast.error("Fill the required fields");
+      toast.error(`Fill the required fields: ${missingFields.join(", ")}`);
       return;
     }
+    
     try {
       let url;
       let api;
@@ -380,6 +386,16 @@ console.log(errors)
       }));
     }
   }, [DBPrefix]);
+
+  useEffect(() => {
+    if (debitNoteState.paymentMode === "Credit") {
+      setDebitNoteState((prevData) => ({
+        ...prevData,
+        depositAccountId: "", 
+      }));
+    }
+  }, [debitNoteState.paymentMode]);
+  
 
   useEffect(() => {
     supplierResponse;
