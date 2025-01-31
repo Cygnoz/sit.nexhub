@@ -140,8 +140,8 @@ const CreditNoteTable = ({
       sgst: item.sgst,
       igst: item.igst,
       itemAmount: item.itemAmount,
-      // stock: item.returnQuantity ? item.quantity - item.returnQuantity : item.quantity,
-      stock: item.stock,
+      stock: item.returnQuantity ? item.quantity - item.returnQuantity : item.quantity,
+      // stock: item.stock,
       taxPreference: item.taxPreference,
       salesAccountId: item.salesAccountId, // Properly set salesAccountId
 
@@ -561,7 +561,7 @@ const CreditNoteTable = ({
                     ) : (
                       <div className="cursor-pointer flex appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
                         <p>Type or click</p>
-                        <CheveronDownIcon color="currentColor" />
+                        <CheveronDownIcon strokeWidth={""} color="currentColor" />
                       </div>
                     )}
                   </div>
