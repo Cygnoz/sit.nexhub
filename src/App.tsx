@@ -16,6 +16,7 @@ import ReportsRoutes from "./routes/ReportsRoutes";
 import ReportsLayout from "./layout/ReportsLayout";
 import Pos from "./features/pos/Pos";
 import PosReceipt from "./features/pos/PosReceipt";
+import AgentChat from "./pages/Chatboat/AgentChat";
 
 // Lazy imports of components
 const Login = lazy(() => import("./features/login/Login"));
@@ -78,6 +79,14 @@ const App: React.FC = () => {
         <Navigate to="/login" replace />
       ),
     },
+    {
+      path: "/agent-chat",
+      element: isAuthenticated ? (
+        <AgentChat />
+      ) : (
+        <Navigate to="/login" replace />
+      ),
+    },  
     {
       path: "/login",
       element: <Login />,
