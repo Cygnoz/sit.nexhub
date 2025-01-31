@@ -16,6 +16,7 @@ export interface Organization {
   pincode: string;
   primaryContactName: string;
   primaryContactNum: string;
+  primaryContactEmail:string;
   state: string;
   timeZone: string;
   timeZoneExp: string;
