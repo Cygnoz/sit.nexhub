@@ -73,7 +73,7 @@ const initialSalesQuoteState: invoice = {
   placeOfSupply: "",
   reference: "",
 
-  salesInvoice:"",
+  salesInvoice: "",
 
   salesInvoiceDate: getCurrentDate(),
   dueDate: getCurrentDate(),
@@ -208,6 +208,8 @@ const NewInvoice = ({ page }: Props) => {
     navigate("/sales/invoice")
     setInvoiceState(initialSalesQuoteState)
   }
+  const toastShown = useRef({ overLimit: false, belowZero: false });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     const totalTax = parseFloat(invoiceState?.totalTax) || 0;
@@ -258,11 +260,21 @@ const NewInvoice = ({ page }: Props) => {
       } else if (name === "paidAmount") {
         let paidAmount = parseFloat(value) || 0;
         if (paidAmount > totalAmountForPaid) {
+          if (!toastShown.current.overLimit) {
+            toast.error("Paid Amount cannot exceed Total Amount");
+            toastShown.current.overLimit = true;
+          }
           paidAmount = totalAmountForPaid;
-          toast.error("Paid Amount cannot exceed Total Amount");
         } else if (paidAmount < 0) {
+          if (!toastShown.current.belowZero) {
+            toast.error("Paid Amount cannot be less than 0");
+            toastShown.current.belowZero = true;
+          }
           paidAmount = 0;
-          toast.error("Paid Amount cannot be less than 0");
+        } else {
+          // Reset the toast flags if the value is within the valid range
+          toastShown.current.overLimit = false;
+          toastShown.current.belowZero = false;
         }
         newState.paidAmount = paidAmount.toString();
       }

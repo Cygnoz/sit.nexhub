@@ -85,6 +85,8 @@ export const endponits = {
   Add_NEW_Journel: "add-journal-entry",
   GET_ALL_JOURNALS: "get-all-journal",
   GET_ONE_JOURNAL: "get-one-journal",
+  DELET_JOURNAL: "",
+  EDIT_JOURNAL: "",
   Add_NEW_ACCOUNT: "add-account",
   GET_ONE_TRIAL_BALANCE: "get-one-trial-balance",
   GET_ONE_ACCOUNT: "get-one-account",
@@ -118,7 +120,7 @@ export const endponits = {
   // Inventory
   GET_INVENTORY_DASHBOARD: `/get-inventory-Dashboard`,
   GET_ONE_ITEM: `get-one-item`,
-
+  DELETE_ITEM:"",
   // Item Tracking
   GET_ALL_ITEM_TRANKING: `get-all-item-track`,
 
@@ -178,23 +180,23 @@ export const endponits = {
   GET_PAYMENT_JOURNAL: `payment-journal`,
 
   // Debit note
- GET_DEBIT_NOTE_PREFIX:`get-last-debit-note-prefix`,
- ADD_DEBIT_NOTE:`add-DebitNote`,
- GET_ALL_DEBIT_NOTE:`get-all-debitNote`,
- GET_DEBIT_NOTE:`getDebitNote`,
- EDIT_DEBIT_NOTE:`update-debitNote`,
- DELETE_DEBIT_NOTE:`delete-debitNote`,
- GET_DEBITNOTE_JOURNAL:`debitNote-journal`,
+  GET_DEBIT_NOTE_PREFIX: `get-last-debit-note-prefix`,
+  ADD_DEBIT_NOTE: `add-DebitNote`,
+  GET_ALL_DEBIT_NOTE: `get-all-debitNote`,
+  GET_DEBIT_NOTE: `getDebitNote`,
+  EDIT_DEBIT_NOTE: `update-debitNote`,
+  DELETE_DEBIT_NOTE: `delete-debitNote`,
+  GET_DEBITNOTE_JOURNAL: `debitNote-journal`,
 
 
- // credit note
- GET_CREDIT_NOTE_PREFIX:`get-last-creditNote-prefix`,
- ADD_CREDIT_NOTE:`add-creditNote`,
- GET_ALL_CREDIT_NOTE:`get-all-creditNote`,
- GET_ONE_CREDIT_NOTE: `get-one-creditNote`,
- GET_CreditNOTE_JOURNAL:`creditNote-journal`,
- EDIT_CREDIT_NOTE:`update-creditNote`,
- DELETE_CREDIT_NOTE:`delete-creditNote`,
+  // credit note
+  GET_CREDIT_NOTE_PREFIX: `get-last-creditNote-prefix`,
+  ADD_CREDIT_NOTE: `add-creditNote`,
+  GET_ALL_CREDIT_NOTE: `get-all-creditNote`,
+  GET_ONE_CREDIT_NOTE: `get-one-creditNote`,
+  GET_CreditNOTE_JOURNAL: `creditNote-journal`,
+  EDIT_CREDIT_NOTE: `update-creditNote`,
+  DELETE_CREDIT_NOTE: `delete-creditNote`,
 
 
 
@@ -204,6 +206,8 @@ export const endponits = {
 
   //  Expense
   ADD_EXPENSES: `add-expense`,
+  EDIT_EXPENSE: "",
+  DELETE_EXPENSE: "",
   GET_ALL_EXPENSE: `get-all-expense`,
   GET_A_EXPENSE: `get-one-expense`,
   GET_LAST_EXPENSE_PREFIX: `get-last-expense-prefix`,
@@ -216,8 +220,8 @@ export const endponits = {
   DELETE_EXPENSE_CATEGORY: `delete-category`,
 
   // Reports
-  GET_BS_DATA:`balanceSheet`,
-  GET_PL_DATA:`profitAndLoss`,
+  GET_BS_DATA: `balanceSheet`,
+  GET_PL_DATA: `profitAndLoss`,
 
 
   // ocr

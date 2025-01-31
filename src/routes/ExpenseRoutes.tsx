@@ -12,6 +12,9 @@ const ExpenseRoutes: RouteObject[] = [
   { path: "/expense/home", element: <ExpenseHome /> },
   { path: "/expense/view/:id", element: <ExpenseView /> },
   {path:"/expense/add-expense",element:<AddExpensePage/>},
+
+  {path:"/expense/edit-expense/:id",element:<AddExpensePage page="edit"/>},
+
   
   
 ];

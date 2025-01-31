@@ -1,13 +1,7 @@
 const chartOfAcc = [
   {
     head: "Asset",
-    subhead: [
-      "Other Asset",
-      "Current Asset",
-      "Fixed Asset",
-      "Stock",
-      "Payment Clearing",
-    ],
+    subhead: ["Current Asset", "Non-Current Asset"],
   },
   {
     head: "Equity",
@@ -15,21 +9,15 @@ const chartOfAcc = [
   },
   {
     head: "Income",
-    subhead: ["Income", "Other Income","Sales"],
+    subhead: ["Sales", "Indirect Income"],
   },
   {
     head: "Liability",
-    subhead: [
-      "Current Liability",
-      "Credit Card",
-      "Long Term Liability",
-      "Other Liability",
-      "Overseas Tax Payable",
-    ],
+    subhead: ["Current Liability", "Non-Current Liability"],
   },
   {
     head: "Expenses",
-    subhead: ["Expense", "Cost of Goods Sold", "Other Expense"],
+    subhead: ["Direct Expense", "Cost of Goods Sold", "Indirect Expense"],
   },
 ];
 

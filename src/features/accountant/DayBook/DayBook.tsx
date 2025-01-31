@@ -63,9 +63,13 @@ function DayBook({ }: Props) {
     }
   };
 
+  const handleRun = () => {
+    getDayBook()
+  }
+
   useEffect(() => {
     getDayBook();
-  }, [fromDate, toDate]);
+  }, []);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -272,6 +276,9 @@ function DayBook({ }: Props) {
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
               />
+            </div>
+            <div>
+              <Button className="text-xs pl-5 pr-5" size="sm" onClick={handleRun}>Run</Button>
             </div>
 
             <div className="relative ml-auto flex items-center">

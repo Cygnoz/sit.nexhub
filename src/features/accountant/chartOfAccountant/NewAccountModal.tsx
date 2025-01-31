@@ -46,30 +46,24 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
   const accountCategories = {
     Asset: {
       Asset: [
-        "Other Asset",
         "Current Asset",
-        "Fixed Asset",
-        "Stock",
-        "Payment Clearing",
+        "Non-Current Asset",
       ],
     },
     Equity: {
       Equity: ["Equity"],
     },
     Income: {
-      Income: ["Income", "Other Income","Sales"],
+      Income: ["Sales", "Indirect Income"],
     },
     Liability: {
       Liabilities: [
         "Current Liability",
-        "Credit Card",
-        "Long Term Liability",
-        "Other Liability",
-        "Overseas Tax Payable",
+        "Non-Current Liability",
       ],
     },
     Expenses: {
-      Expenses: ["Expense", "Cost of Goods Sold", "Other Expense"],
+      Expenses: ["Direct Expense", "Cost of Goods Sold", "Indirect Expense"],
     },
   };
 
@@ -82,7 +76,7 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
       setFormValues(accountData);
       if (accountData.parentAccountId) {
         setIsSubAccount(true);
-      }else{
+      } else {
         setIsSubAccount(false)
       }
       setOpeningType(accountData.debitOpeningBalance ? "Debit" : "Credit");
@@ -156,7 +150,7 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
           accountSubhead: value,
           accountHead: "",
           accountGroup: "",
-          parentAccountId: "", 
+          parentAccountId: "",
         }));
       }
     } else if (name === "openingType") {
