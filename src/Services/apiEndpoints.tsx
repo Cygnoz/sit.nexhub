@@ -215,6 +215,10 @@ export const endponits = {
   UPDATE_EXPENSE_CATEGORY: `update-category`,
   DELETE_EXPENSE_CATEGORY: `delete-category`,
 
+  // Reports
+  GET_BS_DATA:`balanceSheet`,
+  GET_PL_DATA:`profitAndLoss`,
+
 
   // ocr
 
@@ -226,6 +230,6 @@ export const endponits = {
 
   //Report
   GET_DAYBOOK: "dayBook",
-  GET_BS_DATA:`balanceSheet`,
+  // GET_BS_DATA:`balanceSheet`,
   GET_TRIAL_BALANCE:`trialBalance`
 };
