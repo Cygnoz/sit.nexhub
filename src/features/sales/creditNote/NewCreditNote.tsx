@@ -738,7 +738,7 @@ const NewCreditNote = ({ page }: props) => {
                   </div>
                 </div>
 
-                <div className="col-span-6">
+             { creditNoteState.paymentMode ==="Cash" &&   <div className="col-span-6">
                   <label className="block text-sm mb-1 text-labelColor">
                     Paid Through Account <span className="text-[#bd2e2e] ">*</span>
                   </label>
@@ -762,7 +762,7 @@ const NewCreditNote = ({ page }: props) => {
                       <CehvronDown color="gray" />
                     </div>
                   </div>
-                </div>
+                </div>}
 
                 <div className="col-span-6">
                   <label className="block text-sm text-labelColor">
