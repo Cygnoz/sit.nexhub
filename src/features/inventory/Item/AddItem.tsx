@@ -302,6 +302,9 @@ const AddItem = ({ }: Props) => {
     taxExemptReason: false,
     purchaseAccountId: false,
     salesAccountId: false,
+    costPrice:false,
+    sellingPrice:false,
+    
 
   });
 
@@ -320,6 +323,8 @@ const AddItem = ({ }: Props) => {
       taxExemptReason: initialItemData.taxPreference === "Non-taxable" && !initialItemData.taxExemptReason,
       purchaseAccountId: Boolean(initialItemData.costPrice) && initialItemData.purchaseAccountId === "",
       salesAccountId: Boolean(initialItemData.sellingPrice) && initialItemData.salesAccountId === "",
+      costprice: !initialItemData.costPrice,
+      sellingPrice: !initialItemData.sellingPrice,
     };
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) {
@@ -419,16 +424,16 @@ const AddItem = ({ }: Props) => {
   }, [selectedItem]);
   const hsnSac = location.state?.hsnSac;
 
-useEffect(()=>{
-  if(initialItemData.taxPreference==="Non-taxable"){
-    setInitialItemData((prevData:any) => ({
-      ...prevData,
-      taxRate: ""
-    }));
-  }
-},[initialItemData.taxPreference])
+  useEffect(() => {
+    if (initialItemData.taxPreference === "Non-taxable") {
+      setInitialItemData((prevData: any) => ({
+        ...prevData,
+        taxRate: ""
+      }));
+    }
+  }, [initialItemData.taxPreference])
 
-console.log(selectedItem,"selectedItem");
+  console.log(selectedItem, "selectedItem");
 
 
   return (
@@ -1439,10 +1444,7 @@ console.log(selectedItem,"selectedItem");
             <div className="grid grid-cols-2 gap-4">
               {/* Cost Price Section */}
               <div className="relative mt-1.5">
-                <label
-                  className="text-slate-600 flex text-sm items-center gap-2"
-                  htmlFor="costPrice"
-                >
+                <label className="text-slate-600 flex text-sm items-center gap-2" htmlFor="costPrice">
                   Cost Price
                 </label>
                 <div className="flex">
@@ -1452,7 +1454,8 @@ console.log(selectedItem,"selectedItem");
                   <input
                     type="number"
                     min={0}
-                    className="pl-3 text-sm w-[100%] mt-0.5 rounded-r-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    className={`pl-3 text-sm w-[100%] mt-0.5 rounded-r-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed ${errors.costprice ? "border-red-500" : ""
+                      }`}
                     placeholder="Enter Price"
                     name="costPrice"
                     value={initialItemData.costPrice}
@@ -1462,16 +1465,24 @@ console.log(selectedItem,"selectedItem");
                         // Automatically set "Cost of Goods Sold" as the default selection
                         setInitialItemData((prevState) => ({
                           ...prevState,
-                          purchaseAccountId: allAccounts.find(
-                            (item: any) => item.accountSubhead === "Cost of Goods Sold"
-                          )?._id || "",
+                          purchaseAccountId:
+                            allAccounts.find((item: any) => item.accountSubhead === "Cost of Goods Sold")?._id || "",
                         }));
                       }
                     }}
                     onWheel={(e) => e.currentTarget.blur()}
                   />
                 </div>
+
+                {/* ✅ Display Error Message if costPrice is missing */}
+                {errors.costprice && (
+                  <div className="text-red-800 text-xs mt-1 ms-1">
+                    Cost Price is required
+                  </div>
+                )}
               </div>
+
+
               <div className="relative mt-2">
                 <label
                   htmlFor="vendor-input"
@@ -1617,7 +1628,8 @@ console.log(selectedItem,"selectedItem");
                   <input
                     type="number"
                     min={0}
-                    className="pl-3 text-sm w-[100%] mt-0.5 rounded-r-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    className={`pl-3 text-sm w-[100%] mt-0.5 rounded-r-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed ${errors.sellingPrice ? "border-red-500" : ""
+                      }`}
                     placeholder="Enter Price"
                     name="sellingPrice"
                     value={initialItemData.sellingPrice}
@@ -1627,15 +1639,22 @@ console.log(selectedItem,"selectedItem");
                         // Automatically set "Sales" as the default selection
                         setInitialItemData((prevState) => ({
                           ...prevState,
-                          salesAccountId: allAccounts.find(
-                            (item: any) => item.accountName === "Sales"
-                          )?._id || "",
+                          salesAccountId:
+                            allAccounts.find((item: any) => item.accountName === "Sales")?._id || "",
                         }));
                       }
                     }}
                   />
                 </div>
+
+                {/* ✅ Display Selling Price Error Message */}
+                {errors.sellingPrice && (
+                  <div className="text-red-800 text-xs mt-1 ms-1">
+                    Selling Price is required
+                  </div>
+                )}
               </div>
+
 
               {/* MRP Section */}
               <div className="w-1/2">
@@ -1738,7 +1757,7 @@ console.log(selectedItem,"selectedItem");
               />
             </div>
 
-             {/* <div className="w-1/3">
+            {/* <div className="w-1/3">
               <label
                 className="text-slate-600 flex text-sm gap-2 mb-0.5"
                 htmlFor="openingStockRatePerUnit"
