@@ -217,6 +217,7 @@ export const endponits = {
 
   // Reports
   GET_BS_DATA:`balanceSheet`,
+  GET_PL_DATA:`profitAndLoss`,
 
 
   // ocr
