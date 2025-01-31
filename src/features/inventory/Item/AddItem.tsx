@@ -302,7 +302,7 @@ const AddItem = ({ }: Props) => {
     taxExemptReason: false,
     purchaseAccountId: false,
     salesAccountId: false,
-    costPrice:false,
+    costPrice: false,
     sellingPrice:false,
     
 
@@ -323,7 +323,7 @@ const AddItem = ({ }: Props) => {
       taxExemptReason: initialItemData.taxPreference === "Non-taxable" && !initialItemData.taxExemptReason,
       purchaseAccountId: Boolean(initialItemData.costPrice) && initialItemData.purchaseAccountId === "",
       salesAccountId: Boolean(initialItemData.sellingPrice) && initialItemData.salesAccountId === "",
-      costprice: !initialItemData.costPrice,
+      costPrice: !initialItemData.costPrice,
       sellingPrice: !initialItemData.sellingPrice,
     };
     setErrors(newErrors);
@@ -1454,7 +1454,7 @@ const AddItem = ({ }: Props) => {
                   <input
                     type="number"
                     min={0}
-                    className={`pl-3 text-sm w-[100%] mt-0.5 rounded-r-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed ${errors.costprice ? "border-red-500" : ""
+                    className={`pl-3 text-sm w-[100%] mt-0.5 rounded-r-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed ${errors.costPrice ? "border-red-500" : ""
                       }`}
                     placeholder="Enter Price"
                     name="costPrice"
@@ -1475,7 +1475,7 @@ const AddItem = ({ }: Props) => {
                 </div>
 
                 {/* ✅ Display Error Message if costPrice is missing */}
-                {errors.costprice && (
+                {errors.costPrice && (
                   <div className="text-red-800 text-xs mt-1 ms-1">
                     Cost Price is required
                   </div>
