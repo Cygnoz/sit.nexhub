@@ -1,27 +1,37 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import Calender from "../../../assets/icons/Calender";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
-import { Link } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
   return date.toLocaleDateString("en-GB").split("/").join("-");
 }
 
-function getTodayDate() {
-  return new Date().toISOString().split("T")[0];
+function getFirstDayOfMonth() {
+  const date = new Date();
+  return `${date.getFullYear()}-${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-01`;
 }
+
+function getLastDayOfMonth() {
+  const date = new Date();
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0)
+    .toISOString()
+    .split("T")[0];
+}
+
 
 function TrialBalance() {
   const { request: trailBalance } = useApi("get", 5006);
 
-  const [fromDate, setFromDate] = useState(getTodayDate());
-  const [toDate, setToDate] = useState(getTodayDate());
+  const [fromDate, setFromDate] = useState(getFirstDayOfMonth());
+  const [toDate, setToDate] = useState(getLastDayOfMonth());
   const [tbData, setTbData] = useState<[] | any>([]);
   const fromDateRef = useRef<HTMLInputElement>(null);
   const toDateRef = useRef<HTMLInputElement>(null);
@@ -53,11 +63,10 @@ function TrialBalance() {
     }
   };
 
-console.log(tbData)
-
   useEffect(() => {
     getDayBook();
   }, [fromDate, toDate]);
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4 gap-2">
@@ -67,7 +76,7 @@ console.log(tbData)
           </div>
         </Link>
         <div className="flex justify-center items-center">
-          <h4 className="font-bold text-xl text-textColor ">Trail Balance </h4>
+          <h4 className="font-bold text-xl text-textColor">Trial Balance</h4>
         </div>
 
         <div className="ml-auto gap-3 flex items-center">
@@ -76,11 +85,11 @@ console.log(tbData)
               className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer bg-white"
               onClick={handleFromDateClick}
             >
-              <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
+              <div className="pointer-events-none flex items-center px-2 text-gray-700">
                 <Calender color="currentColor" height={18} width={18} />
               </div>
               {formatDate(fromDate)}
-              <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <div className="pointer-events-none flex items-center px-2 text-gray-700">
                 <CehvronDown color="gray" />
               </div>
               <input
@@ -96,17 +105,17 @@ console.log(tbData)
               className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer bg-white"
               onClick={handleToDateClick}
             >
-              <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
+              <div className="pointer-events-none flex items-center px-2 text-gray-700">
                 <Calender color="currentColor" height={18} width={18} />
               </div>
               {formatDate(toDate)}
-              <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <div className="pointer-events-none flex items-center px-2 text-gray-700">
                 <CehvronDown color="gray" />
               </div>
               <input
                 type="date"
                 ref={toDateRef}
-                className="absolute inset-1 opacity-0 cursor-pointer"
+                className="absolute inset-0 opacity-0 cursor-pointer"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
               />
@@ -122,20 +131,20 @@ console.log(tbData)
         </div>
       </div>
 
-      <div className="bg-white p-5 rounded-xl ">
-        <div className="flex items-center  justify-center gap-3 text-center py-2">
+      <div className="bg-white p-5 rounded-xl">
+        <div className="flex items-center justify-center gap-3 text-center py-2">
           <div>
             <p className="text-textColor font-bold whitespace-nowrap">
               Company Name
             </p>
             <p className="text-sm text-textColor whitespace-nowrap">
-              01/01/2025 To 31/01/2025
+              {fromDate} To {toDate}
             </p>
           </div>
         </div>
         <table className="w-full text-[#495060]">
           <thead>
-            <tr className="bg-lightPink text-left border-b font-bold text-sm  border-[#ebecf0]">
+            <tr className="bg-lightPink text-left border-b font-bold text-sm border-[#ebecf0]">
               <th className="p-2">Particulars</th>
               <th className="p-2 text-right min-w-[30px] max-w-[30px] px-1 truncate">
                 Debit
@@ -145,10 +154,17 @@ console.log(tbData)
               </th>
             </tr>
           </thead>
-          <tbody className="text-xs ">
-            {tbData.data?.map((item:any) => (
-              <tr className="border-b border-[#ebecf0]">
-                 <Link to={`/reports/trialBalance/${item.accountSubHead}`} state={{ item }} ><td className="py-3">{item.accountSubHead}</td></Link> 
+          <tbody className="text-xs">
+            {tbData.data?.map((item: any) => (
+              <tr key={item.accountSubHead} className="border-b border-[#ebecf0]">
+                <td className="py-3">
+                  <Link
+                    to={`/reports/trialBalance/${item.accountSubHead}`}
+                    state={{ item, fromDate, toDate }}
+                  >
+                    {item.accountSubHead}
+                  </Link>
+                </td>
                 <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
                   {item.totalDebit}
                 </td>
@@ -157,9 +173,11 @@ console.log(tbData)
                 </td>
               </tr>
             ))}
-            <td className="py-3 font-bold">Total</td>
-            <td className="py-3 text-right font-bold">000</td>
-            <td className="py-3 text-right font-bold">000</td>
+            <tr>
+              <td className="py-3 font-bold">Total</td>
+              <td className="py-3 text-right font-bold">000</td>
+              <td className="py-3 text-right font-bold">000</td>
+            </tr>
           </tbody>
         </table>
       </div>
