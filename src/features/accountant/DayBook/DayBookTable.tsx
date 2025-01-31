@@ -1,10 +1,14 @@
 import React from "react";
-import No_Data_found from '../../../assets/Images/NO_DATA.png';
+import No_Data_found from "../../../assets/Images/NO_DATA.png";
+import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 
-type Props = { dayBookData: any, total: any };
+type Props = {
+  dayBookData: any;
+  total: any;
+  loading: boolean;
+};
 
-const dayBookTable = ({ dayBookData, total }: Props) => {
-
+const DayBookTable = ({ dayBookData, total, loading }: Props) => {
   const tableHeadings = [
     "Date",
     "Transaction Id",
@@ -13,9 +17,6 @@ const dayBookTable = ({ dayBookData, total }: Props) => {
     "Debit Balance",
     "Credit Balance",
   ];
-
-  console.log(dayBookData, "dayBookData");
-
 
   return (
     <div className="overflow-x-auto my-4">
@@ -33,12 +34,13 @@ const dayBookTable = ({ dayBookData, total }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {dayBookData.length > 1 ? (
+          {loading ? (
+            [...Array(5)].map((_, i) => <TableSkelton key={i} columns={tableHeadings} />)
+          ) : dayBookData.length > 1 ? (
             dayBookData.slice(1).map((entry: any, index: any) => (
               <React.Fragment key={index}>
                 {entry.entries.map((r: any, subIndex: any) => (
-                  <tr key={`${index}-${subIndex}`} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                    {/* Display date and transaction ID only for the first row of each entry */}
+                  <tr key={`${index}-${subIndex}`} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
                     {subIndex === 0 && (
                       <>
                         <td className="py-2.5 px-4 border border-[#EAECF0] text-sm text-[#495160] text-center" rowSpan={entry.entries.length}>
@@ -49,21 +51,10 @@ const dayBookTable = ({ dayBookData, total }: Props) => {
                         </td>
                       </>
                     )}
-                    {/* Account Name */}
-                    <td className="py-3 px-4 border border-[#EAECF0] text-sm text-[#495160] text-center">
-                      {r.accountName}
-                    </td>
-                    <td className="py-3 px-4 border border-[#EAECF0] text-sm text-[#495160] text-center">
-                      {r.action}
-                    </td>
-                    {/* Debit Amount */}
-                    <td className="py-3 px-4 border border-[#EAECF0] text-sm text-[#495160] text-center">
-                      {r.debitAmount}
-                    </td>
-                    {/* Credit Amount */}
-                    <td className="py-3 px-4 border border-[#EAECF0] text-sm text-[#495160] text-center">
-                      {r.creditAmount}
-                    </td>
+                    <td className="py-3 px-4 border border-[#EAECF0] text-sm text-[#495160] text-center">{r.accountName}</td>
+                    <td className="py-3 px-4 border border-[#EAECF0] text-sm text-[#495160] text-center">{r.action}</td>
+                    <td className="py-3 px-4 border border-[#EAECF0] text-sm text-[#495160] text-center">{r.debitAmount}</td>
+                    <td className="py-3 px-4 border border-[#EAECF0] text-sm text-[#495160] text-center">{r.creditAmount}</td>
                   </tr>
                 ))}
               </React.Fragment>
@@ -78,22 +69,23 @@ const dayBookTable = ({ dayBookData, total }: Props) => {
               </td>
             </tr>
           )}
-          {dayBookData.length > 1 && (
+          {!loading && dayBookData.length > 1 && (
             <tr className="font-semibold">
-              <td className="py-2 px-4 border border-[#EAECF0] text-base text-center text-[#495160]" colSpan={4}>Total :</td>
-              <td className="py-5 px-4 border border-[#EAECF0] text-base text-[#495160] text-center font-bold">{total.totalCredit}</td>
-              <td className="py-5 px-4 border border-[#EAECF0] text-base text-[#495160] text-center font-bold">{total.totalDebit}</td>
+              <td className="py-2 px-4 border border-[#EAECF0] text-base text-center text-[#495160]" colSpan={4}>
+                Total :
+              </td>
+              <td className="py-5 px-4 border border-[#EAECF0] text-base text-[#495160] text-center font-bold">
+                {total.totalCredit}
+              </td>
+              <td className="py-5 px-4 border border-[#EAECF0] text-base text-[#495160] text-center font-bold">
+                {total.totalDebit}
+              </td>
             </tr>
           )}
         </tbody>
-
-
       </table>
-
-
-
     </div>
   );
 };
 
-export default dayBookTable;
+export default DayBookTable;

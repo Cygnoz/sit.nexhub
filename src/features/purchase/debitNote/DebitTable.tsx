@@ -87,6 +87,7 @@ const DebitTable = () => {
         searchableFields={["supplierDisplayName","debitNote"]}
         setColumns={setColumns}
         onEditClick={handleEditClick}
+        deleteUrl={endponits.DELETE_DEBIT_NOTE}
       />
     </div>
   );
