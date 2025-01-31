@@ -12,6 +12,10 @@ import { TableResponseContext } from "../../../context/ContextShare";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
 import { useNavigate } from "react-router-dom";
+import PencilEdit from "../../../assets/icons/PencilEdit";
+import TrashCan from "../../../assets/icons/TrashCan";
+import ConfirmModal from "../../../Components/ConfirmModal";
+import toast from "react-hot-toast";
 
 
 
@@ -22,6 +26,14 @@ const ExpenseTable = () => {
   const { request: getExpense } = useApi("get", 5008);
   const { loading, setLoading } = useContext(TableResponseContext)!;
   const navigate = useNavigate();
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const confirmDelete = (id: string) => {
+    setDeleteId(id);
+    setConfirmModalOpen(true);
+  };
+
   const rowsPerPage = 10;
 
   const [columns, setColumns] = useState([
@@ -40,11 +52,11 @@ const ExpenseTable = () => {
       account?.expenseAccount?.toLowerCase()?.trim()?.startsWith(searchValueLower) ||
       account?.expenseCategory?.toLowerCase()?.trim()?.startsWith(searchValueLower) ||
       account?.expenseDate?.toLowerCase()?.trim()?.startsWith(searchValueLower) ||
-      account?.supplierDisplayName?.toLowerCase()?.trim()?.startsWith(searchValueLower) 
+      account?.supplierDisplayName?.toLowerCase()?.trim()?.startsWith(searchValueLower)
 
     );
   });
-  
+
   const totalPages = Math.ceil(filteredData?.length / rowsPerPage);
   const paginatedData = filteredData?.slice(
     (currentPage - 1) * rowsPerPage,
@@ -66,16 +78,16 @@ const ExpenseTable = () => {
       const { response, error } = await getExpense(url);
 
       if (!error && response) {
-        console.log("Fetched Expenses:", response.data); 
-        setAllExpense(response.data); 
-        setLoading({ ...loading, skeleton: false, noDataFound: false });  
+        console.log("Fetched Expenses:", response.data);
+        setAllExpense(response.data);
+        setLoading({ ...loading, skeleton: false, noDataFound: false });
       } else {
-        console.log("Error fetching data:", error); 
-        setLoading({ ...loading, skeleton: false, noDataFound: true });  
+        console.log("Error fetching data:", error);
+        setLoading({ ...loading, skeleton: false, noDataFound: true });
       }
     } catch (error) {
-      console.error("API call error:", error); 
-      setLoading({ ...loading, skeleton: false, noDataFound: true });  
+      console.error("API call error:", error);
+      setLoading({ ...loading, skeleton: false, noDataFound: true });
     }
   };
 
@@ -86,12 +98,12 @@ const ExpenseTable = () => {
   const renderColumnContent = (colId: string, item: any) => {
     // Split colId to handle nested properties
     const keys = colId.split(".");
-  
+
     // Drill down through the object to fetch the value
     let columnValue = keys.reduce((current: any, key: string) => {
       return current ? current[key] : undefined;
     }, item);
-  
+
     // Handle expense array specifically
     if (keys[0] === "expense" && Array.isArray(item.expense)) {
       columnValue = item.expense.map((expense: any, index: number) => (
@@ -100,13 +112,31 @@ const ExpenseTable = () => {
         </div>
       ));
     }
-  
+
     return columnValue || <span className="text-gray-500 italic">-</span>;
   };
-  
 
-  const handleRowClick = (id: string) => {
-    navigate(`/expense/view/${id}`);
+  const handleEditClick = (id: any) => {
+    navigate(`/expense/edit-expense/${id}`)
+  }
+  const { request: deleteExpense } = useApi("delete", 5001);
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    try {
+      const url = `${endponits.DELETE_EXPENSE}/${deleteId}`;
+      const { response, error } = await deleteExpense(url);
+      if (!error && response) {
+        toast.success(response.data.message);
+        getAllExpenses();
+      } else {
+        toast.error(error.response.data.message);
+      }
+    } catch (error) {
+      toast.error("Error occurred while deleting.");
+    } finally {
+      setConfirmModalOpen(false);
+      setDeleteId(null);
+    }
   };
 
   return (
@@ -153,7 +183,7 @@ const ExpenseTable = () => {
                 <TableSkelton key={idx} columns={skeletonColumns} />
               ))
             ) : paginatedData && paginatedData.length > 0 ? (
-              paginatedData.map((item:any, rowIndex:number) => (
+              paginatedData.map((item: any, rowIndex: number) => (
                 <tr key={item.id} className="relative cursor-pointer">
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {(currentPage - 1) * rowsPerPage + rowIndex + 1}
@@ -169,12 +199,16 @@ const ExpenseTable = () => {
                         </td>
                       )
                   )}
-                  <td className="py-3 px-4 border-b border-tableBorder flex items-center justify-center gap-2">
-                    {/* <Pen color="#0B9C56" size={18} /> */}
-                    <button onClick={() => handleRowClick(item._id)}>
-                      <Eye color={"#569FBC"} />
-                    </button>
-                    {/* <Trash2 color="#EA1E4F" size={18} /> */}
+                  <td className="py-3 px-4 border-b border-tableBorder gap-3 flex items-center justify-center">
+                    <div onClick={() => handleEditClick(item._id)}>
+                      <PencilEdit color={'#0B9C56'} className="cursor-pointer" />
+                    </div>
+                    <div onClick={() => navigate(`/expense/view/${item._id}`)}>
+                      <Eye color="#569FBC" className="cursor-pointer" />
+                    </div>
+                    <div onClick={() => confirmDelete(item._id)}>
+                      <TrashCan color="red" />
+                    </div>
                   </td>
 
                   <td className="py-3 px-4 border-b border-tableBorder"></td>
@@ -191,6 +225,12 @@ const ExpenseTable = () => {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
+      />
+       <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete?"
       />
     </div>
   );

@@ -22,6 +22,8 @@ import line from '../../../assets/Images/Rectangle 5557.png'
 import { useOrganization } from "../../../context/OrganizationContext";
 import PencilEdit from "../../../assets/icons/PencilEdit";
 import Eye from "../../../assets/icons/Eye";
+import TrashCan from "../../../assets/icons/TrashCan";
+import ConfirmModal from "../../../Components/ConfirmModal";
 
 interface Column {
   id: string;
@@ -41,6 +43,7 @@ const ItemTable = ({ hsnsac }: Props) => {
   console.log(selectedItem, "selectedItem");
 
   const { request: UpdateItem } = useApi("put", 5003);
+  const { request: deleteItem } = useApi("delete", 5003);
   const { organization: orgData } = useOrganization();
 
   const openModal = (item: any) => {
@@ -112,9 +115,9 @@ const ItemTable = ({ hsnsac }: Props) => {
       const url = `${endponits.GET_ONE_ITEM}/${item._id}`;
       const { response, error } = await fetchOneItem(url);
       if (!error && response) {
-        setSelectedItem((prevSelectedItem:any) => ({
+        setSelectedItem((prevSelectedItem: any) => ({
           ...prevSelectedItem,
-          itemImage: response.data.itemImage, 
+          itemImage: response.data.itemImage,
         }));
         setOneItem(response.data);
       } else {
@@ -125,7 +128,7 @@ const ItemTable = ({ hsnsac }: Props) => {
       console.error("Error in fetching one item data", error);
     }
   };
-  
+
 
   useEffect(() => {
     loadCategories();
@@ -153,28 +156,28 @@ const ItemTable = ({ hsnsac }: Props) => {
   };
 
 
- const handleDeleteImage = async (itemId: string) => {
-  if (selectedItem) {
-    const updatedItem = { ...selectedItem, itemImage: "" };
+  const handleDeleteImage = async (itemId: string) => {
+    if (selectedItem) {
+      const updatedItem = { ...selectedItem, itemImage: "" };
 
-    try {
-      const url = `${endponits.UPDATE_ITEM}/${itemId}`; // Use the passed itemId here
-      const { response, error } = await UpdateItem(url, updatedItem);
+      try {
+        const url = `${endponits.UPDATE_ITEM}/${itemId}`; // Use the passed itemId here
+        const { response, error } = await UpdateItem(url, updatedItem);
 
-      if (!error && response) {
-        toast.success("Image removed and item updated successfully.");
-        setSelectedItem(updatedItem);
-        fetchAllItems();
-        getOneItem(updatedItem);
-      } else {
-        toast.error("Error updating item: " + error.response.data.message);
+        if (!error && response) {
+          toast.success("Image removed and item updated successfully.");
+          setSelectedItem(updatedItem);
+          fetchAllItems();
+          getOneItem(updatedItem);
+        } else {
+          toast.error("Error updating item: " + error.response.data.message);
+        }
+      } catch (error) {
+        console.error("Error updating item:", error);
+        toast.error("Failed to update item.");
       }
-    } catch (error) {
-      console.error("Error updating item:", error);
-      toast.error("Failed to update item.");
     }
-  }
-};
+  };
 
   const confirmDeleteImage = () => {
     setDeleteImageModalOpen(true);
@@ -183,6 +186,33 @@ const ItemTable = ({ hsnsac }: Props) => {
   const closeDeleteImageModal = () => {
     setDeleteImageModalOpen(false);
   };
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  const confirmDelete = (id: string) => {
+    setDeleteId(id);
+    setConfirmModalOpen(true);
+  };
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    try {
+      const url = `${endponits.DELETE_ITEM}/${deleteId}`;
+      const { response, error } = await deleteItem(url);
+      if (!error && response) {
+        toast.success(response.data.message);
+        fetchAllItems();
+      } else {
+        toast.error(error.response.data.message);
+      }
+    } catch (error) {
+      toast.error("Error occurred while deleting.");
+    } finally {
+      setConfirmModalOpen(false);
+      setDeleteId(null);
+    }
+  };
+
+
   const renderColumnContent = (colId: string, item: any) => {
     if (colId === "itemName") {
       return <span className="font-bold text-sm">{item[colId]}</span>;
@@ -194,6 +224,9 @@ const ItemTable = ({ hsnsac }: Props) => {
           </div>
           <div onClick={() => openModal(item)} className="cursor-pointer">
             <Eye color={'#569FBC'} />
+          </div>
+          <div onClick={() => confirmDelete(item._id)}>
+            <TrashCan color="red" />
           </div>
         </div>
       )
@@ -753,7 +786,7 @@ const ItemTable = ({ hsnsac }: Props) => {
             </Button>
             <Button
               onClick={() => {
-                handleDeleteImage(selectedItem._id); 
+                handleDeleteImage(selectedItem._id);
                 closeDeleteImageModal(); // Close the modal after confirming
               }}
               variant="primary"
@@ -764,6 +797,12 @@ const ItemTable = ({ hsnsac }: Props) => {
           </div>
         </Modal>
       )}
+        <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete?"
+      />
     </div>
   );
 };

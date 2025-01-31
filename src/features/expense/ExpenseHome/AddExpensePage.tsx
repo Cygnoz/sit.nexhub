@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import Upload from "../../../assets/icons/Upload";
@@ -14,9 +14,10 @@ import toast from "react-hot-toast";
 import List from "../../../assets/icons/List";
 import { ExpenseData } from "../../../Types/Expense";
 
-type Props = {};
+type Props = { page?: string };
 
-function AddExpensePage({}: Props) {
+function AddExpensePage({ page }: Props) {
+  const { id } = useParams();
   const [selectedSection, setSelectedSection] = useState<
     "expense" | "mileage" | null
   >(null);
@@ -80,6 +81,7 @@ function AddExpensePage({}: Props) {
   const { request: getCountries } = useApi("get", 5004);
   const { request: getOrg } = useApi("get", 5004);
   const { request: getPrefix } = useApi("get", 5008);
+  const { request: getOneExpense } = useApi("get", 5008);
 
   const [countryData, setcountryData] = useState<any | any>([]);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -207,7 +209,7 @@ function AddExpensePage({}: Props) {
         return;
       }
 
-      const url = `${endponits.ADD_EXPENSES}`;
+      const url = page === "edit" ? `${endponits.EDIT_EXPENSE}` : `${endponits.ADD_EXPENSES}`;
       const { response, error } = await AddExpenses(url, expenseData);
 
       if (response) {
@@ -582,15 +584,15 @@ function AddExpensePage({}: Props) {
         gstin: "",
         expense: prevData.expense.map((item: any) => ({
           ...item,
-          taxGroup:"Non-Taxable", 
-          cgst:"",
-          sgst:"",
-          igst:"",
+          taxGroup: "Non-Taxable",
+          cgst: "",
+          sgst: "",
+          igst: "",
         })),
       }));
       setSelectedTax("");
     }
-  
+
     if (expenseData.gstTreatment === "Overseas") {
       setExpenseData((prevData) => ({
         ...prevData,
@@ -598,10 +600,26 @@ function AddExpensePage({}: Props) {
       }));
       setSelectedTax("");
     }
-  }, [expenseData.gstTreatment]); 
-  
-  
-  
+  }, [expenseData.gstTreatment]);
+
+  useEffect(() => {
+    const fetchJournal = async () => {
+      if (page === "edit") {
+        try {
+          const url = `${endponits.GET_A_EXPENSE}/${id}`;
+          const { response, error } = await getOneExpense(url);
+          if (!error && response) {
+            setExpenseData(response.data)
+          }
+        } catch (error) {
+          console.log("Error in fetching", error);
+        }
+      }
+    };
+
+    fetchJournal();
+  }, [page, id]);
+
 
   return (
     <>
@@ -827,7 +845,7 @@ function AddExpensePage({}: Props) {
                   <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                     <p>
                       {expenseData.expenseCategory &&
-                      expenseData.expenseCategory
+                        expenseData.expenseCategory
                         ? expenseData.expenseCategory
                         : "Select Category"}
                     </p>
@@ -898,95 +916,91 @@ function AddExpensePage({}: Props) {
               </div>
               {Itemize && (
                 <>
-                <div>
-  <label
-    className="block text-sm text-labelColor mt-2.5"
-    htmlFor="itemType"
-  >
-    Expense Type
-  </label>
-  <div className="flex items-center space-x-4 text-textColor text-sm">
-    {/* Goods Option */}
-    <div className="flex gap-2 justify-center items-center mt-1">
-      <div
-        className="grid place-items-center mt-1"
-        onClick={() => {
-          setExpenseData((prev) => ({
-            ...prev,
-            expenseType: "Goods", // Consistent property name
-          }));
-        }}
-      >
-        <input
-          id="Goods"
-          type="radio"
-          name="expenseType"
-          value="Goods"
-          className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-            expenseData.expenseType === "Goods"
-              ? "border-8 border-[#97998E]"
-              : "border-1 border-[#97998E]"
-          }`}
-          checked={expenseData.expenseType === "Goods"}
-          readOnly // Avoid unnecessary onChange handling
-        />
-        <div
-          className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-            expenseData.expenseType === "Goods"
-              ? "bg-neutral-50" // Correct color for checked state
-              : "bg-transparent"
-          }`}
-        />
-      </div>
-      <label
-        htmlFor="Goods"
-        className="text-start font-medium mt-1"
-      >
-        Goods
-      </label>
-    </div>
+                  <div>
+                    <label
+                      className="block text-sm text-labelColor mt-2.5"
+                      htmlFor="itemType"
+                    >
+                      Expense Type
+                    </label>
+                    <div className="flex items-center space-x-4 text-textColor text-sm">
+                      {/* Goods Option */}
+                      <div className="flex gap-2 justify-center items-center mt-1">
+                        <div
+                          className="grid place-items-center mt-1"
+                          onClick={() => {
+                            setExpenseData((prev) => ({
+                              ...prev,
+                              expenseType: "Goods", // Consistent property name
+                            }));
+                          }}
+                        >
+                          <input
+                            id="Goods"
+                            type="radio"
+                            name="expenseType"
+                            value="Goods"
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${expenseData.expenseType === "Goods"
+                              ? "border-8 border-[#97998E]"
+                              : "border-1 border-[#97998E]"
+                              }`}
+                            checked={expenseData.expenseType === "Goods"}
+                            readOnly // Avoid unnecessary onChange handling
+                          />
+                          <div
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${expenseData.expenseType === "Goods"
+                              ? "bg-neutral-50" // Correct color for checked state
+                              : "bg-transparent"
+                              }`}
+                          />
+                        </div>
+                        <label
+                          htmlFor="Goods"
+                          className="text-start font-medium mt-1"
+                        >
+                          Goods
+                        </label>
+                      </div>
 
-    {/* Service Option */}
-    <div className="flex gap-2 justify-center items-center">
-      <div
-        className="grid place-items-center mt-1"
-        onClick={() => {
-          setExpenseData((prev) => ({
-            ...prev,
-            expenseType: "Service", // Consistent property name
-          }));
-        }}
-      >
-        <input
-          id="Service"
-          type="radio"
-          name="expenseType"
-          value="Service"
-          className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-            expenseData.expenseType === "Service"
-              ? "border-8 border-[#97998E]"
-              : "border-1 border-[#97998E]"
-          }`}
-          checked={expenseData.expenseType === "Service"}
-          readOnly // Avoid unnecessary onChange handling
-        />
-        <div
-          className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-            expenseData.expenseType === "Service"
-              ? "bg-neutral-50" // Correct color for checked state
-              : "bg-transparent"
-          }`}
-        />
-      </div>
-      <label
-        htmlFor="Service"
-        className="text-start font-medium mt-1"
-      >
-        Service
-      </label>
-    </div>
-  </div>
-</div>
+                      {/* Service Option */}
+                      <div className="flex gap-2 justify-center items-center">
+                        <div
+                          className="grid place-items-center mt-1"
+                          onClick={() => {
+                            setExpenseData((prev) => ({
+                              ...prev,
+                              expenseType: "Service", // Consistent property name
+                            }));
+                          }}
+                        >
+                          <input
+                            id="Service"
+                            type="radio"
+                            name="expenseType"
+                            value="Service"
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${expenseData.expenseType === "Service"
+                              ? "border-8 border-[#97998E]"
+                              : "border-1 border-[#97998E]"
+                              }`}
+                            checked={expenseData.expenseType === "Service"}
+                            readOnly // Avoid unnecessary onChange handling
+                          />
+                          <div
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${expenseData.expenseType === "Service"
+                              ? "bg-neutral-50" // Correct color for checked state
+                              : "bg-transparent"
+                              }`}
+                          />
+                        </div>
+                        <label
+                          htmlFor="Service"
+                          className="text-start font-medium mt-1"
+                        >
+                          Service
+                        </label>
+                      </div>
+                    </div>
+                  </div>
 
 
                   {expenseData.expenseType === "Goods" ? (
@@ -1040,7 +1054,7 @@ function AddExpensePage({}: Props) {
                   <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                     <p>
                       {expenseData.supplierDisplayName &&
-                      expenseData.supplierDisplayName
+                        expenseData.supplierDisplayName
                         ? expenseData.supplierDisplayName
                         : "Select Supplier"}
                     </p>
@@ -1177,13 +1191,13 @@ function AddExpensePage({}: Props) {
                       {(expenseData.gstTreatment ===
                         "Registered Business - Regular" ||
                         expenseData.gstTreatment ===
-                          "Registered Business - Composition" ||
+                        "Registered Business - Composition" ||
                         expenseData.gstTreatment === "Special Economic Zone" ||
                         expenseData.gstTreatment === "Deemed Export" ||
                         expenseData.gstTreatment === "Tax Deductor" ||
                         expenseData.gstTreatment === "SEZ Developer") && (
-                        <span className="text-[#bd2e2e]">*</span>
-                      )}
+                          <span className="text-[#bd2e2e]">*</span>
+                        )}
                     </label>
                     <div className="relative w-full">
                       <input
@@ -1205,7 +1219,7 @@ function AddExpensePage({}: Props) {
                     {(expenseData.gstTreatment ===
                       "Registered Business - Regular" ||
                       expenseData.gstTreatment ===
-                        "Registered Business - Composition" ||
+                      "Registered Business - Composition" ||
                       expenseData.gstTreatment === "Special Economic Zone" ||
                       expenseData.gstTreatment === "Deemed Export" ||
                       expenseData.gstTreatment === "Tax Deductor" ||
@@ -1213,13 +1227,13 @@ function AddExpensePage({}: Props) {
                       expenseData.gstTreatment === "Unregistered Business" ||
                       expenseData.gstTreatment === "Consumer" ||
                       expenseData.gstTreatment === "SEZ Developer") && (
-                      <span className="text-[#bd2e2e]">*</span>
-                    )}
+                        <span className="text-[#bd2e2e]">*</span>
+                      )}
                   </label>
 
                   <div className="relative w-full">
                     <select
-                    disabled={expenseData.supplierId===""}
+                      disabled={expenseData.supplierId === ""}
                       onChange={handleChange}
                       name="sourceOfSupply"
                       value={expenseData.sourceOfSupply}
@@ -1250,7 +1264,7 @@ function AddExpensePage({}: Props) {
                   {(expenseData.gstTreatment ===
                     "Registered Business - Regular" ||
                     expenseData.gstTreatment ===
-                      "Registered Business - Composition" ||
+                    "Registered Business - Composition" ||
                     expenseData.gstTreatment === "Special Economic Zone" ||
                     expenseData.gstTreatment === "Deemed Export" ||
                     expenseData.gstTreatment === "Unregistered Business" ||
@@ -1258,8 +1272,8 @@ function AddExpensePage({}: Props) {
                     expenseData.gstTreatment === "Tax Deductor" ||
                     expenseData.gstTreatment === "Overseas" ||
                     expenseData.gstTreatment === "SEZ Developer") && (
-                    <span className="text-[#bd2e2e]">*</span>
-                  )}
+                      <span className="text-[#bd2e2e]">*</span>
+                    )}
                 </label>
                 <div className="relative w-full">
                   <select
@@ -1289,7 +1303,7 @@ function AddExpensePage({}: Props) {
                     <select
                       disabled={
                         expenseData.gstTreatment ===
-                          "Registered Business - Composition" ||
+                        "Registered Business - Composition" ||
                         expenseData.gstTreatment === "Unregistered Business" ||
                         expenseData.gstTreatment === "Overseas"
                       }
@@ -1363,13 +1377,13 @@ function AddExpensePage({}: Props) {
                   {(expenseData.gstTreatment ===
                     "Registered Business - Regular" ||
                     expenseData.gstTreatment ===
-                      "Registered Business - Composition" ||
+                    "Registered Business - Composition" ||
                     expenseData.gstTreatment === "Special Economic Zone" ||
                     expenseData.gstTreatment === "Deemed Export" ||
                     expenseData.gstTreatment === "Tax Deductor" ||
                     expenseData.gstTreatment === "SEZ Developer") && (
-                    <span className="text-[#bd2e2e]">*</span>
-                  )}
+                      <span className="text-[#bd2e2e]">*</span>
+                    )}
                 </label>
                 <div className="relative w-full">
                   <input
@@ -1429,20 +1443,18 @@ function AddExpensePage({}: Props) {
                             type="radio"
                             name="amountIs" // Corrected name
                             value="Tax Inclusive"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                              expenseData.amountIs === "Tax Inclusive"
-                                ? "border-8 border-[#97998E]"
-                                : "border-1 border-[#97998E]"
-                            }`}
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${expenseData.amountIs === "Tax Inclusive"
+                              ? "border-8 border-[#97998E]"
+                              : "border-1 border-[#97998E]"
+                              }`}
                             checked={expenseData.amountIs === "Tax Inclusive"}
                             readOnly
                           />
                           <div
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              expenseData.amountIs === "Tax Inclusive"
-                                ? "bg-neutral-50"
-                                : "bg-transparent"
-                            }`}
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${expenseData.amountIs === "Tax Inclusive"
+                              ? "bg-neutral-50"
+                              : "bg-transparent"
+                              }`}
                           />
                         </div>
                         <label
@@ -1468,20 +1480,18 @@ function AddExpensePage({}: Props) {
                             type="radio"
                             name="amountIs"
                             value="Tax Exclusive"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                              expenseData.amountIs === "Tax Exclusive"
-                                ? "border-8 border-[#97998E]"
-                                : "border-1 border-[#97998E]"
-                            }`}
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${expenseData.amountIs === "Tax Exclusive"
+                              ? "border-8 border-[#97998E]"
+                              : "border-1 border-[#97998E]"
+                              }`}
                             checked={expenseData.amountIs === "Tax Exclusive"} // Correct checked logic
                             readOnly // Prevent unnecessary onChange handling
                           />
                           <div
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              expenseData.amountIs === "Tax Exclusive"
-                                ? "bg-neutral-50"
-                                : "bg-transparent"
-                            }`}
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${expenseData.amountIs === "Tax Exclusive"
+                              ? "bg-neutral-50"
+                              : "bg-transparent"
+                              }`}
                           />
                         </div>
                         <label
@@ -1547,22 +1557,22 @@ function AddExpensePage({}: Props) {
                 />
               </div>
             </div> */}
-             <div className="col-span-1 space-y-2">
-                <label className="text-sm mb-1 text-labelColor">
-                  Expense Number<span className="text-[#bd2e2e] ">*</span>
-                </label>
-                <div className="relative w-full">
-                  <input
-                    disabled
-                    type="text"
-                    name="expenseNumber"
-                    value={expenseData.expenseNumber}
-                    onChange={handleAddExpense}
-                    className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    placeholder="Expense Number"
-                  />
-                </div>
+            <div className="col-span-1 space-y-2">
+              <label className="text-sm mb-1 text-labelColor">
+                Expense Number<span className="text-[#bd2e2e] ">*</span>
+              </label>
+              <div className="relative w-full">
+                <input
+                  disabled
+                  type="text"
+                  name="expenseNumber"
+                  value={expenseData.expenseNumber}
+                  onChange={handleAddExpense}
+                  className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  placeholder="Expense Number"
+                />
               </div>
+            </div>
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">
                 Expense Account<span className="text-[#bd2e2e] ">*</span>
@@ -1708,7 +1718,7 @@ function AddExpensePage({}: Props) {
                 <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                   <p>
                     {expenseData.supplierDisplayName &&
-                    expenseData.supplierDisplayName
+                      expenseData.supplierDisplayName
                       ? expenseData.supplierDisplayName
                       : "Select Supplier"}
                   </p>

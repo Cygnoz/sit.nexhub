@@ -14,16 +14,16 @@ import useApi from "../../../Hooks/useApi";
 import toast from "react-hot-toast";
 import ViewDetails from "../purchaseOrder/addPurchaseOrder/ViewDetails";
 
-type Props = {page?:string};
+type Props = { page?: string };
 
-const NewBills = ({page}: Props) => {
+const NewBills = ({ page }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
   );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [supplierData, setSupplierData] = useState<[]>([]);
-  const [selecteSupplier, setSelecetdSupplier] = useState< [] | any>([]);
+  const [selecteSupplier, setSelecetdSupplier] = useState<[] | any>([]);
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [destinationList, setDestinationList] = useState<any | []>([]);
@@ -50,7 +50,7 @@ const NewBills = ({page}: Props) => {
   const { request: getEditBill } = useApi("get", 5005);
   const { request: updateBill } = useApi("put", 5005);
 
-    const { id } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -68,7 +68,7 @@ const NewBills = ({page}: Props) => {
     purchaseOrderDate: "",
     expectedShipmentDate: "",
     paymentTerms: "Pay Now",
-    paymentMode: "",
+    paymentMode: "Cash",
     PaidThrough: "",
     billDate: new Date().toISOString().slice(0, 10),
     dueDate: "",
@@ -88,7 +88,7 @@ const NewBills = ({page}: Props) => {
         itemSgstAmount: "",
         itemCgstAmount: "",
         taxPreference: "",
-        purchaseAccountId:""
+        purchaseAccountId: ""
       },
     ],
     otherExpenseAccountId: "",
@@ -141,13 +141,13 @@ const NewBills = ({page}: Props) => {
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
-  
+
       if (!error && response) {
         if (url.includes(endponits.GET_ONE_SALES_ORDER)) {
           // Correct the typo and ensure proper parsing
           const grandTotal = parseFloat(response.data.grandTotal) || 0;
           const transactionDiscountAmount = parseFloat(response.data.transactionDiscountAmount) || 0; // Fixed the typo here
-  
+
           setBill((prevData) => ({
             ...prevData,
             ...response.data,
@@ -164,7 +164,7 @@ const NewBills = ({page}: Props) => {
       console.error("Error fetching data:", err);
     }
   };
-  
+
 
   const handleplaceofSupply = () => {
     if (oneOrganization.organizationCountry) {
@@ -229,6 +229,8 @@ const NewBills = ({page}: Props) => {
     }
   };
 
+  const toastShown = useRef(false);
+
   const filterByDisplayName = (
     data: any[],
     displayNameKey: string,
@@ -265,8 +267,14 @@ const NewBills = ({page}: Props) => {
       const grandTotal = Number(bill.grandTotal) || "";
 
       if (paidAmount > grandTotal) {
-        toast.error("Paid Amount cannot exceed Grand Total.");
+        if (!toastShown.current) {
+          toast.error("Paid Amount cannot exceed Grand Total.");
+          toastShown.current = true;
+        }
         paidAmount = grandTotal;
+      } else {
+        // Reset the flag when the value is within the valid range
+        toastShown.current = false;
       }
 
       setBill((prevState: any) => ({
@@ -386,17 +394,17 @@ const NewBills = ({page}: Props) => {
       totalTaxAmount = 0,
       subTotal = 0,
     } = bill;
-  
+
     const totalAmount =
       Number(subTotal) +
       Number(otherExpenseAmount) +
-      Number(totalTaxAmount) +  
+      Number(totalTaxAmount) +
       Number(freightAmount) -
       (Number(itemTotalDiscount) + Number(roundOffAmount));
-  
+
     return totalAmount.toFixed(2);
   };
-  
+
 
   useEffect(() => {
     const { grandTotal, paidAmount } = bill;
@@ -419,8 +427,8 @@ const NewBills = ({page}: Props) => {
     }));
   }, [bill.grandTotal, bill.paidAmount, bill.paymentTerms]);
 
-  
-console.log(bill)
+
+  console.log(bill)
 
   const handleSave = async () => {
     const newErrors = { ...errors };
@@ -493,24 +501,24 @@ console.log(bill)
 
   useEffect(() => {
     const newGrandTotal = calculateTotalAmount();
-  
+
     const {
       transactionDiscountType,
       transactionDiscount = "",
       transactionDiscountAmount = 0,
     } = bill;
-  
+
     const transactionDiscountValueAMT =
       transactionDiscountType === "percentage"
         ? (Number(transactionDiscount) / 100) * Number(newGrandTotal)
         : Number(transactionDiscount);
-  
+
     const roundedDiscountValue =
       Math.round(transactionDiscountValueAMT * 100) / 100;
-  
+
     const updatedGrandTotal =
       Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
-  
+
     if (
       transactionDiscountAmount !== roundedDiscountValue ||
       bill.grandTotal !== updatedGrandTotal
@@ -531,7 +539,7 @@ console.log(bill)
     bill.itemTotalDiscount,
     bill.roundOffAmount,
   ]);
-  
+
 
   useEffect(() => {
     if (bill?.destinationOfSupply == "") {
@@ -592,7 +600,7 @@ console.log(bill)
   }, [oneOrganization, selecteSupplier]);
 
   useEffect(() => {
-    if (lastBillPrefix && page!=="edit") {
+    if (lastBillPrefix && page !== "edit") {
       setBill((preData) => ({
         ...preData,
         billNumber: lastBillPrefix,
@@ -730,12 +738,11 @@ console.log(bill)
                             setSelecetdSupplier(supplier);
                           }}
                         >
-                         <div
-                            className={` items-center space-y-1 ${
-                              supplier.mobile
-                                ? "justify-start"
-                                : "flex justify-center"
-                            }`}
+                          <div
+                            className={` items-center space-y-1 ${supplier.mobile
+                              ? "justify-start"
+                              : "flex justify-center"
+                              }`}
                           >
                             <p className="font-bold text-sm">
                               {supplier.supplierDisplayName}
@@ -1082,7 +1089,7 @@ console.log(bill)
                   className="hidden"
                   value=""
                   name="documents"
-                  // onChange={(e)=>handleFileChange(e)}
+                // onChange={(e)=>handleFileChange(e)}
                 />
               </label>
             </div>
@@ -1293,85 +1300,85 @@ console.log(bill)
               </div>
             </div>
 
-          {  bill.paymentMode==="Cash" &&
-        <>
-             <div className="flex gap-4 items-center justify-center mb-2">
-                <label className=" text-sm mb-1 text-labelColor min-w-fit left-0">
-                  Paid Through Account
-                </label>
-                <div className="relative w-full  ml-auto  ps-5">
-                  <select
-                    onChange={handleChange}
-                    value={bill.paidAccountId}
-                    name="paidAccountId"
-                    className="block appearance-none w-full  text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  >
-                    <option value="" selected hidden disabled>
-                      Select Account
-                    </option>
-                    {allAccounts
-                      ?.filter(
-                        (item: { accountSubhead: string }) =>
-                          item.accountSubhead === "Bank" ||
-                          item.accountSubhead === "Cash"
-                      )
-                      ?.map((item: { _id: string; accountName: string }) => (
-                        <option key={item._id} value={item._id}>
-                          {item.accountName}
-                        </option>
-                      ))}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <CehvronDown color="gray" />
+            {bill.paymentMode === "Cash" &&
+              <>
+                <div className="flex gap-4 items-center justify-center mb-2">
+                  <label className=" text-sm mb-1 text-labelColor min-w-fit left-0">
+                    Paid Through Account
+                  </label>
+                  <div className="relative w-full  ml-auto  ps-5">
+                    <select
+                      onChange={handleChange}
+                      value={bill.paidAccountId}
+                      name="paidAccountId"
+                      className="block appearance-none w-full  text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                    >
+                      <option value="" selected hidden disabled>
+                        Select Account
+                      </option>
+                      {allAccounts
+                        ?.filter(
+                          (item: { accountSubhead: string }) =>
+                            item.accountSubhead === "Bank" ||
+                            item.accountSubhead === "Cash"
+                        )
+                        ?.map((item: { _id: string; accountName: string }) => (
+                          <option key={item._id} value={item._id}>
+                            {item.accountName}
+                          </option>
+                        ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="flex gap-4 items-center justify-center">
-                <label
-                  className="block text-sm mb-1 text-labelColor max-w-fit"
-                  htmlFor="paidAmount"
-                >
-                  Paid Amount
-                </label>
-  
-                <div className="ml-auto">
-                  <input
-                    className="border-inputBorder w-full text-sm border rounded-lg p-1.5 pl-2 h-9"
-                    type="text"
-                    placeholder="Enter paid amount"
-                    name="paidAmount"
-                    value={bill.paidAmount === 0 ? "" : bill.paidAmount}
-                    onChange={(e) => {
-                      const { value } = e.target;
-                      if (/^\d*\.?\d*$/.test(value)) {
-                        handleChange(e);
-                      }
-                    }}
-                  />
+                <div className="flex gap-4 items-center justify-center">
+                  <label
+                    className="block text-sm mb-1 text-labelColor max-w-fit"
+                    htmlFor="paidAmount"
+                  >
+                    Paid Amount
+                  </label>
+
+                  <div className="ml-auto">
+                    <input
+                      className="border-inputBorder w-full text-sm border rounded-lg p-1.5 pl-2 h-9"
+                      type="text"
+                      placeholder="Enter paid amount"
+                      name="paidAmount"
+                      value={bill.paidAmount === 0 ? "" : bill.paidAmount}
+                      onChange={(e) => {
+                        const { value } = e.target;
+                        if (/^\d*\.?\d*$/.test(value)) {
+                          handleChange(e);
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
-  
-              <div className=" flex gap-4 items-center justify-center">
-                <label
-                  htmlFor="balanceAmount"
-                  className="block text-sm mb-1 text-labelColor max-w-fit"
-                >
-                  Balance Amount
-                </label>
-                <div className="ml-auto">
-                  <input
-                    disabled
-                    name="balanceAmount"
-                    id="balanceAmount"
-                    value={bill.balanceAmount}
-                    onChange={handleChange}
-                    placeholder="Balance Amount"
-                    className="border-inputBorder bg-white  text-sm border rounded-lg text-dropdownText  p-2 h-9 mt-2 "
-                  />
+
+                <div className=" flex gap-4 items-center justify-center">
+                  <label
+                    htmlFor="balanceAmount"
+                    className="block text-sm mb-1 text-labelColor max-w-fit"
+                  >
+                    Balance Amount
+                  </label>
+                  <div className="ml-auto">
+                    <input
+                      disabled
+                      name="balanceAmount"
+                      id="balanceAmount"
+                      value={bill.balanceAmount}
+                      onChange={handleChange}
+                      placeholder="Balance Amount"
+                      className="border-inputBorder bg-white  text-sm border rounded-lg text-dropdownText  p-2 h-9 mt-2 "
+                    />
+                  </div>
                 </div>
-              </div>
-        </>
-}
+              </>
+            }
             <div className="flex gap-4 m-5 justify-end">
               {" "}
               <Button variant="secondary" size="sm">
