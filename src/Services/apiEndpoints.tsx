@@ -236,6 +236,10 @@ export const endponits = {
   GET_DAYBOOK: "dayBook",
   // GET_BS_DATA:`balanceSheet`,
   GET_TRIAL_BALANCE:`trialBalance`,
-  GET_TRADING_ACCONUT:`tradingAccount`
+  GET_TRADING_ACCONUT:`tradingAccount`,
 
+
+  // Ticket Rising
+  UNASSIGNED_TICKET:'unassigned-ticket',
+  CHAT_HISTORY:'/chat-history'
 };

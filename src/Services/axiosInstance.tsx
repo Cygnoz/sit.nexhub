@@ -11,6 +11,7 @@ const BASE_URLS: Record<number, string> = {
   5007: import.meta.env.VITE_REACT_APP_SALES,
   5008: import.meta.env.VITE_REACT_APP_STAFF,
   5009: import.meta.env.VITE_REACT_APP_SUPPLIER,
+  3004: import.meta.env.VITE_REACT_APP_TICKETS,
 };
 
 const createInstance = (
