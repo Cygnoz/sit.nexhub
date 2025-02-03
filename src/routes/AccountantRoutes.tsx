@@ -26,6 +26,8 @@ const AccountantRoutes: RouteObject[] = [
   { path: "/accountant/chart-OF-accountant", element: <ChartOfAccountant /> },
   { path: "/accountant/info", element: <AccountantInfo /> },
   { path: "/accountant/view/:id", element: <AccountantView /> },
+
+  { path: "/accountant/editjournal/:id", element: <NewJournal page="edit"/> },
 ];
 
 export default AccountantRoutes;

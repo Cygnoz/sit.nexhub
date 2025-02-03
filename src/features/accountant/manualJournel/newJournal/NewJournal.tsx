@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import AccountDropdown from "./AccountDropdown";
 // import ContactDropdown from "./ContactDropdown";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
@@ -11,9 +11,10 @@ import { endponits } from "../../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
 import { useOrganization } from "../../../../context/OrganizationContext";
 
-type Props = {};
+type Props = { page?: string };
 
-function NewJournal({ }: Props) {
+function NewJournal({ page }: Props) {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { request: NewJournalAdd } = useApi("post", 5001);
   const { request: GetLastJournelPrefix } = useApi("get", 5001);
@@ -60,6 +61,8 @@ function NewJournal({ }: Props) {
     totalDebitAmount: 0,
     totalCreditAmount: 0,
   });
+  console.log(newJournalDatas, "newJournalDatas");
+
 
   const tableHeaders = [
     "Account",
@@ -180,7 +183,6 @@ function NewJournal({ }: Props) {
 
   useEffect(() => {
     if (!Array.isArray(newJournalDatas.transaction)) {
-      // Ensure transaction is always an array
       return;
     }
 
@@ -273,7 +275,7 @@ function NewJournal({ }: Props) {
       toast.error(`Please fill the following fields: ${errors.join(", ")}`);
     } else {
       try {
-        const url = `${endponits.Add_NEW_Journel}`;
+        const url = page === "edit" ? `${endponits.EDIT_JOURNAL}/${id}` : `${endponits.Add_NEW_Journel}`;
         const apiResponse = await NewJournalAdd(url, newJournalDatas);
         console.log("api response", apiResponse);
         const { response, error } = apiResponse;
@@ -394,7 +396,29 @@ function NewJournal({ }: Props) {
     });
   };
 
-  console.log("new", newJournalDatas);
+
+  const { request: getOneJournal } = useApi("get", 5001);
+  useEffect(() => {
+    const fetchJournal = async () => {
+      if (page === "edit") {
+        try {
+          const url = `${endponits.GET_ONE_JOURNAL}/${id}`;
+          const { response, error } = await getOneJournal(url);
+          if (!error && response) {
+            setNewJournelDatas((prevData) => ({
+              ...prevData,
+              ...response.data,
+              transaction: response.data.transaction || initialTransactions,
+            }));
+          }
+        } catch (error) {
+          console.log("Error in fetching", error);
+        }
+      }
+    };
+
+    fetchJournal();
+  }, [page, id]);
 
   return (
     <div className="p-5">
@@ -582,13 +606,13 @@ function NewJournal({ }: Props) {
                         }}
                         className="mt-1 w-[150px] border border-inputBorder rounded-md text-sm p-2"
                         placeholder="0.00"
+                        value={row.debitAmount || ""} // Bind the value
                         onChange={(e) => {
-                          let value = parseFloat(e.target.value);
+                          let value = parseFloat(e.target.value) || 0;
 
-                          // If the entered value is negative, reset it to 0
+                          // Prevent negative values
                           if (value < 0) {
                             value = 0;
-                            e.target.value = "0"; // Update the displayed value to 0
                           }
 
                           if (!row.creditAmount) {
@@ -598,9 +622,8 @@ function NewJournal({ }: Props) {
                           }
                         }}
                       />
-
-
                     </td>
+
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <input
                         type="number"
@@ -611,13 +634,13 @@ function NewJournal({ }: Props) {
                         }}
                         className="mt-1 w-[130px] border border-inputBorder rounded-md text-sm p-2"
                         placeholder="0.00"
+                        value={row.creditAmount || ""} // Bind the value
                         onChange={(e) => {
-                          let value = parseFloat(e.target.value);
+                          let value = parseFloat(e.target.value) || 0;
 
-                          // If the entered value is negative, reset it to 0
+                          // Prevent negative values
                           if (value < 0) {
                             value = 0;
-                            e.target.value = "0"; // Update the displayed value to 0
                           }
 
                           if (!row.debitAmount) {
@@ -627,8 +650,8 @@ function NewJournal({ }: Props) {
                           }
                         }}
                       />
-
                     </td>
+
                     <td
                       onClick={() => deleteRow(index)}
                       className={`px-6 py-6 items-center whitespace-nowrap text-sm flex justify-center cursor-pointer ${index < 2 ? "cursor-not-allowed text-gray-400" : ""

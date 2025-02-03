@@ -145,21 +145,21 @@ const navlist = [
       { headName: "Expense", subRoute: "/expense/home" },
     ],
   },
-  {
-    nav: "Staff",
-    icon: usersRound,
-    route: "/staffs/home",
-    subhead: [
-      // {
-      //   headName: "Dashboard",
-      //   subRoute: "/",
-      // },
-      {
-        headName: "Staff",
-        subRoute: "/staffs/home",
-      },
-    ],
-  },
+  // {
+  //   nav: "Staff",
+  //   icon: usersRound,
+  //   route: "/staffs/home",
+  //   subhead: [
+  //     // {
+  //     //   headName: "Dashboard",
+  //     //   subRoute: "/",
+  //     // },
+  //     {
+  //       headName: "Staff",
+  //       subRoute: "/staffs/home",
+  //     },
+  //   ],
+  // },
   {
     nav: "Purchase",
     icon: shoppingBag,
@@ -188,11 +188,11 @@ const navlist = [
     ],
   },
 
-  {
-    nav: "Payroll",
-    icon: receiptIndianRupee,
-    route: "/home",
-  },
+  // {
+  //   nav: "Payroll",
+  //   icon: receiptIndianRupee,
+  //   route: "/home",
+  // },
   {
     nav: "Reports",
     icon: newspapper,
