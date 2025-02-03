@@ -271,13 +271,13 @@ const NewSalesQuoteTable = ({
 
   const handleRowChange = (index: number, field: keyof Row, value: string) => {
     const newRows = [...rows];
-    const currentStock = parseFloat(newRows[index].itemStock) || 0;
-    const enteredQuantity = parseFloat(value) || 0;
+    // const currentStock = parseFloat(newRows[index].itemStock) || 0;
+    // const enteredQuantity = parseFloat(value) || 0;
 
-    if (field === "quantity" && enteredQuantity > currentStock) {
-      toast.error("Quantity exceeds available stock!");
-      return;
-    }
+    // if (field === "quantity" && enteredQuantity > currentStock) {
+    //   toast.error("Quantity exceeds available stock!");
+    //   return;
+    // }
 
     newRows[index] = { ...newRows[index], [field]: value };
 

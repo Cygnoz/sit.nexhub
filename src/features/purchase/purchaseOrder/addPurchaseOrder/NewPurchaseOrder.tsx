@@ -58,9 +58,9 @@ const NewPurchaseOrder = ({ page }: Props) => {
         purchaseAccountId:""
       },
     ],
-    otherExpenseAmount: 0,
+    otherExpenseAmount: "",
     otherExpenseReason: "",
-    freightAmount: 0,
+    freightAmount: "",
     vehicleNo: "",
     addNotes: "",
     termsAndConditions: "",
