@@ -38,6 +38,7 @@ interface CustomerTableProps {
   searchValue: string;
   loading: any;
   setSearchValue: (value: string) => void;
+  refreshCustomers: () => void; 
 }
 
 
@@ -56,7 +57,8 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
   customerData,
   searchValue,
   setSearchValue,
-  loading
+  loading,
+  refreshCustomers,
 }) => {
   const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [onecustomerData, setOneCustomerData] = useState<any | []>([]);
@@ -110,7 +112,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
       const { response, error } = await deleteCustomer(url);
       if (!error && response) {
         toast.success(response.data.message);
-        customerData();
+        refreshCustomers();
       } else {
         toast.error(error.response.data.message);
       }

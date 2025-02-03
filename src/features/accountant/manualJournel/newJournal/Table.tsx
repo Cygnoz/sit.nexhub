@@ -24,7 +24,7 @@ interface Journal {
 
 type Props = {};
 
-function Table({ }: Props) {
+function Table({}: Props) {
   const navigate = useNavigate();
   const { loading, setLoading } = useContext(TableResponseContext)!;
   const [journalData, setJournalData] = useState<Journal[]>([]);
@@ -37,7 +37,6 @@ function Table({ }: Props) {
     setConfirmModalOpen(true);
   };
 
-
   const { request: AllJournals } = useApi("get", 5001);
   const { request: deleteJournal } = useApi("delete", 5001);
 
@@ -47,14 +46,14 @@ function Table({ }: Props) {
     "Reference#",
     "Notes",
     "Amount",
-    "Actions"
+    "Actions",
     // "",
   ];
 
   const getAllJournals = async () => {
     try {
       const url = `${endponits.GET_ALL_JOURNALS}`;
-      setLoading({ ...loading, skeleton: true});
+      setLoading({ ...loading, skeleton: true });
       const { response, error } = await AllJournals(url);
 
       if (error || !response) {
@@ -73,68 +72,48 @@ function Table({ }: Props) {
     getAllJournals();
   }, []);
 
-
-
   const filteredJournals = journalData.filter((journal) => {
     const searchValueLower = searchValue.toLowerCase().trim();
 
     return (
-      (journal.journalId?.toString().toLowerCase().startsWith(searchValueLower) || false)
+      journal.journalId
+        ?.toString()
+        .toLowerCase()
+        .startsWith(searchValueLower) || false
     );
   });
 
   const handleEditClick = (id: any) => {
-    navigate(`/accountant/editjournal/${id}`)
-  }
-
-  // const handleDelete = async () => {
-  //   if (!deleteId) return;
-  //   try {
-  //     const url = `${endponits.DELET_JOURNAL}/${deleteId}`;
-  //     const { response, error } = await deleteJournal(url);
-  //     if (!error && response) {
-  //       getAllJournals();
-  //       toast.success(response.data.message);
-  //     } else {
-  //       toast.error(error.response.data.message);
-  //     }
-  //   } catch (error) {
-  //     toast.error("Error occurred while deleting.");
-  //   } finally {
-  //     setConfirmModalOpen(false);
-  //     setDeleteId(null);
-  //   }
-  // };
+    navigate(`/accountant/editjournal/${id}`);
+  };
 
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      setLoading({ ...loading, skeleton: true }); 
       const url = `${endponits.DELET_JOURNAL}/${deleteId}`;
       const { response, error } = await deleteJournal(url);
+
       if (!error && response) {
         toast.success(response.data.message);
+        if (journalData.length === 1) {
+          setJournalData([]);
+          setLoading({ ...loading, skeleton: false, noDataFound: true }); 
+        } else {
+          setJournalData((prevData) =>
+            prevData.filter((journal) => journal._id !== deleteId)
+          );
+        }
         await getAllJournals();
-        setJournalData((prev) => {
-          const updatedData = prev.filter((journal) => journal._id !== deleteId);
-          if (updatedData.length === 0) {
-            setLoading({ ...loading, skeleton: false, noDataFound: true }); // Show "No Records Found"
-          }
-          return updatedData;
-        });
       } else {
         toast.error(error.response.data.message);
       }
     } catch (error) {
-      toast.error("Error occurred while deleting.");
+      toast.error("Error occurred while deleting the journal.");
     } finally {
       setConfirmModalOpen(false);
       setDeleteId(null);
     }
   };
-  
-
-
 
   return (
     <div className="overflow-x-auto my-1">
@@ -150,7 +129,10 @@ function Table({ }: Props) {
           <tr style={{ backgroundColor: "#F9F7F0" }}>
             <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
             {tableHeaders.map((heading, index) => (
-              <th className="py-2 px-4 font-medium border-b border-tableBorder" key={index}>
+              <th
+                className="py-2 px-4 font-medium border-b border-tableBorder"
+                key={index}
+              >
                 {heading}
               </th>
             ))}
@@ -159,16 +141,15 @@ function Table({ }: Props) {
 
         <tbody className="text-dropdownText text-center text-[13px]">
           {loading.skeleton ? (
-            [...Array(filteredJournals.length ? filteredJournals.length : 5)].map((_, idx) => (
+            [
+              ...Array(filteredJournals.length ? filteredJournals.length : 5),
+            ].map((_, idx) => (
               <TableSkelton key={idx} columns={[...tableHeaders, "rr"]} />
             ))
           ) : filteredJournals.length > 0 ? (
             filteredJournals.reverse().map((item, index) => (
               // Render actual data rows here
-              <tr
-                key={item._id}
-                className="relative"
-              >
+              <tr key={item._id} className="relative">
                 <td className="py-2.5 px-4 border-y border-tableBorder">
                   {index + 1}
                 </td>
@@ -189,9 +170,13 @@ function Table({ }: Props) {
                 </td>
                 <td className="py-2.5 px-4 border-y border-tableBorder gap-3 flex justify-center items-center">
                   <div onClick={() => handleEditClick(item._id)}>
-                    <PencilEdit color={'#0B9C56'} className="cursor-pointer" />
+                    <PencilEdit color={"#0B9C56"} className="cursor-pointer" />
                   </div>
-                  <div onClick={() => navigate(`/accountant/manualjournal/view/${item._id}`)}>
+                  <div
+                    onClick={() =>
+                      navigate(`/accountant/manualjournal/view/${item._id}`)
+                    }
+                  >
                     <Eye color="#569FBC" className="cursor-pointer" />
                   </div>
                   <div onClick={() => confirmDelete(item._id)}>

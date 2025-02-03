@@ -38,16 +38,17 @@ interface SupplierTableProps {
   supplierData: Supplier[];
   searchValue: string;
   setSearchValue: (value: string) => void;
-  loading: any; // Add loading prop
+  loading: any;
+  refreshSuppliers: () => void;
 }
 
 const SupplierTable = ({
   supplierData,
   searchValue,
   setSearchValue,
-  loading, // Destructure loading prop
+  loading,
+  refreshSuppliers,
 }: SupplierTableProps) => {
-
   const initialColumns: Column[] = [
     { id: "supplierDisplayName", label: "Name", visible: true },
     { id: "companyName", label: "Company Name", visible: true },
@@ -63,7 +64,9 @@ const SupplierTable = ({
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedSupplier, setSelectedSupplier] = useState<SupplierData | null>(null);
+  const [selectedSupplier, setSelectedSupplier] = useState<SupplierData | null>(
+    null
+  );
 
   const navigate = useNavigate();
 
@@ -107,6 +110,7 @@ const SupplierTable = ({
       const { response, error } = await deleteCustomer(url);
       if (!error && response) {
         toast.success(response.data.message);
+        refreshSuppliers()
       } else {
         toast.error(error.response.data.message);
       }
@@ -117,7 +121,6 @@ const SupplierTable = ({
       setDeleteId(null);
     }
   };
-
 
   const renderColumnContent = (colId: string, item: SupplierData) => {
     if (colId === "supplierDetails") {
@@ -136,9 +139,9 @@ const SupplierTable = ({
       );
     }
 
-
     if (colId === "status") {
-      const statusStyles = item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400";
+      const statusStyles =
+        item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400";
 
       return (
         <p
@@ -188,7 +191,11 @@ const SupplierTable = ({
                   )
               )}
               <th className="py-2 px-4 font-medium border-b border-tableBorder relative">
-                <CustomiseColmn columns={columns} setColumns={setColumns} tableId={"supplier"} />
+                <CustomiseColmn
+                  columns={columns}
+                  setColumns={setColumns}
+                  tableId={"supplier"}
+                />
               </th>
             </tr>
           </thead>
