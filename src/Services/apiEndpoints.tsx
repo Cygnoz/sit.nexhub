@@ -122,7 +122,7 @@ export const endponits = {
   // Inventory
   GET_INVENTORY_DASHBOARD: `/get-inventory-Dashboard`,
   GET_ONE_ITEM: `get-one-item`,
-  DELETE_ITEM: "",
+  DELETE_ITEM: "delete-item",
   // Item Tracking
   GET_ALL_ITEM_TRANKING: `get-all-item-track`,
 

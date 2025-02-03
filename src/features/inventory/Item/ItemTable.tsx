@@ -115,20 +115,23 @@ const ItemTable = ({ hsnsac }: Props) => {
       const url = `${endponits.GET_ONE_ITEM}/${item._id}`;
       const { response, error } = await fetchOneItem(url);
       if (!error && response) {
-        setSelectedItem((prevSelectedItem: any) => ({
-          ...prevSelectedItem,
-          itemImage: response.data.itemImage,
-        }));
-        setOneItem(response.data);
+        const updatedItem = {
+          ...item,
+          itemImage: response.data.itemImage, 
+        };
+        setOneItem(updatedItem);
+        return updatedItem; 
       } else {
         console.error("Failed to fetch one item data.");
+        return item;
       }
     } catch (error) {
       toast.error("Error in fetching one item data.");
       console.error("Error in fetching one item data", error);
+      return item;
     }
   };
-
+  
 
   useEffect(() => {
     loadCategories();
@@ -146,14 +149,17 @@ const ItemTable = ({ hsnsac }: Props) => {
     });
   };
 
-  const handleEditOnTable = (item: any) => {
-    navigate("/inventory/Item/new", {
-      state: {
-        item,
-        hsnSac: hsnsac || false,
-      },
-    });
+  const handleEditOnTable = async (item: any) => {
+    const fullItemData = await getOneItem(item); 
+  
+      navigate("/inventory/Item/new", {
+        state: {
+          item: fullItemData || item, 
+          hsnSac: hsnsac || false,
+        },
+      });
   };
+  
 
 
   const handleDeleteImage = async (itemId: string) => {
