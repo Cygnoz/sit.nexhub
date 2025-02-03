@@ -36,8 +36,8 @@ const DayBookTable = ({ dayBookData, total, loading }: Props) => {
         <tbody>
           {loading ? (
             [...Array(5)].map((_, i) => <TableSkelton key={i} columns={tableHeadings} />)
-          ) : dayBookData.length > 1 ? (
-            dayBookData.slice(1).map((entry: any, index: any) => (
+          ) : dayBookData.length > 0 ? ( 
+            dayBookData.map((entry: any, index: any) => (
               <React.Fragment key={index}>
                 {entry.entries.map((r: any, subIndex: any) => (
                   <tr key={`${index}-${subIndex}`} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
@@ -69,7 +69,7 @@ const DayBookTable = ({ dayBookData, total, loading }: Props) => {
               </td>
             </tr>
           )}
-          {!loading && dayBookData.length > 1 && (
+          {!loading && dayBookData.length > 0 && (
             <tr className="font-semibold">
               <td className="py-2 px-4 border border-[#EAECF0] text-base text-center text-[#495160]" colSpan={4}>
                 Total :
@@ -83,6 +83,7 @@ const DayBookTable = ({ dayBookData, total, loading }: Props) => {
             </tr>
           )}
         </tbody>
+
       </table>
     </div>
   );

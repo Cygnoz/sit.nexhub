@@ -17,6 +17,7 @@ function NewJournal({ page }: Props) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { request: NewJournalAdd } = useApi("post", 5001);
+  const { request: EditJournal } = useApi("put", 5001);
   const { request: GetLastJournelPrefix } = useApi("get", 5001);
   const { request: GetAllAcounts } = useApi("get", 5001);
   const { organization } = useOrganization()
@@ -276,7 +277,8 @@ function NewJournal({ page }: Props) {
     } else {
       try {
         const url = page === "edit" ? `${endponits.EDIT_JOURNAL}/${id}` : `${endponits.Add_NEW_Journel}`;
-        const apiResponse = await NewJournalAdd(url, newJournalDatas);
+        const apiRequest = page === "edit" ? EditJournal : NewJournalAdd
+        const apiResponse = await apiRequest(url, newJournalDatas);
         console.log("api response", apiResponse);
         const { response, error } = apiResponse;
         if (!error && response) {
@@ -294,7 +296,7 @@ function NewJournal({ page }: Props) {
           });
           setTimeout(() => {
             navigate("/accountant/manualjournal");
-          }, 2000);
+          }, 100);
         } else {
           toast.error(error?.response.data.message);
           console.log("error", error);
