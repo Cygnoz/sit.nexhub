@@ -38,9 +38,9 @@ export interface PurchaseOrder {
     purchaseAccountId:string;
   }>;
 
-  otherExpenseAmount: number;
+  otherExpenseAmount: string ;
   otherExpenseReason: string;
-  freightAmount: number;
+  freightAmount: string ;
   vehicleNo: string;
   addNotes: string;
   termsAndConditions: string;

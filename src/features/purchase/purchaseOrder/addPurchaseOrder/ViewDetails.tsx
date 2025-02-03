@@ -1,34 +1,29 @@
-import {  useState } from "react";
+import { useState } from "react";
 import ScanEye from "../../../../assets/icons/ScanEye";
 import CehvronDown from "../../../../assets/icons/CehvronDown";
 
 type Props = {
   purchaseOrderState: any;
   setPurchaseOrderState: (value: any) => void;
-  page?:string
-  allAccounts?:any
+  page?: string;
+  allAccounts?: any;
 };
 
-const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccounts  } : Props) => {
+const ViewDetails = ({
+  purchaseOrderState,
+  setPurchaseOrderState,
+  page,
+  allAccounts,
+}: Props) => {
   const [viewDetails, setViewDetails] = useState<boolean>(false);
   const handleChange = (event: any) => {
     const { name, value } = event.target;
 
-    const numericFields = ['otherExpenseAmount', 'roundOff', 'freight',];
-    const stringFields = ['vehicleNo', 'otherExpenseReason'];
-
-    const numericValue = numericFields.includes(name) ? Number(value) : value;
-
-    const newValue = stringFields.includes(name) ? value : numericValue;
-
     setPurchaseOrderState((prevState: any) => ({
       ...prevState,
-      [name]: newValue,
+      [name]: value,
     }));
   };
-
-
-
 
   return (
     <>
@@ -40,8 +35,14 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
           >
             <ScanEye /> View Less Details
           </button>
-          <div className={`${page == "bill" ? "grid grid-cols-3 gap-4 my-4 text-textColor text-sm" : "grid grid-cols-2 gap-4 my-4 text-textColor text-sm"}`}>
-          {page === "bill" && (
+          <div
+            className={`${
+              page == "bill"
+                ? "grid grid-cols-3 gap-4 my-4 text-textColor text-sm"
+                : "grid grid-cols-2 gap-4 my-4 text-textColor text-sm"
+            }`}
+          >
+            {page === "bill" && (
               <div>
                 <label className="block text-sm mb-1 text-labelColor">
                   Other Expense Account ID
@@ -53,9 +54,14 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
                     name="otherExpenseAccountId"
                     className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-9 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                   >
-                    <option value="" selected hidden disabled>Select Account</option>
+                    <option value="" selected hidden disabled>
+                      Select Account
+                    </option>
                     {allAccounts
-                      .filter((item: { accountHead: string }) => item.accountHead === "Expenses")
+                      .filter(
+                        (item: { accountHead: string }) =>
+                          item.accountHead === "Expenses"
+                      )
                       .map((item: { _id: string; accountName: string }) => (
                         <option key={item._id} value={item._id}>
                           {item.accountName}
@@ -68,33 +74,30 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
                 </div>
               </div>
             )}
-        <div className="text-sm">
-  <label htmlFor="otherExpense" className="">
-    Other Expense Amount
-    <input
-      type="text" // Use 'text' instead of 'number' to have better control
-      value={purchaseOrderState.otherExpenseAmount || ''}
-      name="otherExpenseAmount"
-      onChange={(e) => {
-        const value = e.target.value;
+            <div className="text-sm">
+              <label htmlFor="otherExpense" className="">
+                Other Expense Amount
+                <input
+                  type="text"
+                  value={purchaseOrderState.otherExpenseAmount || ""}
+                  name="otherExpenseAmount"
+                  onChange={(e) => {
+                    const value = e.target.value;
 
-        if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
-          handleChange(e); // Update state only if the input is valid
-        }
-      }}
-      onKeyDown={(e) => {
-        // Prevent 'e', 'E', '+', and '-' keys
-        if (['e', 'E', '+', '-'].includes(e.key)) {
-          e.preventDefault();
-        }
-      }}
-      placeholder="Enter expense amount"
-      className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-1 text-[#495160]"
-    />
-  </label>
-</div>
-
-
+                    if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
+                      handleChange(e);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (["e", "E", "+", "-"].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  placeholder="Enter expense amount"
+                  className="border-inputBorder w-full text-sm border rounded p-2 h-9 mt-1 text-[#495160]"
+                />
+              </label>
+            </div>
 
             <div className="text-sm">
               <label htmlFor="otherExpenseReason" className="">
@@ -120,9 +123,14 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
                     name="freightAccountId"
                     className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                   >
-                    <option value="" selected hidden disabled>Select Account</option>
+                    <option value="" selected hidden disabled>
+                      Select Account
+                    </option>
                     {allAccounts
-                      .filter((item: { accountSubhead: string }) => item.accountSubhead === "Expense")
+                      .filter(
+                        (item: { accountSubhead: string }) =>
+                          item.accountSubhead === "Expense"
+                      )
                       .map((item: { _id: string; accountName: string }) => (
                         <option key={item._id} value={item._id}>
                           {item.accountName}
@@ -145,14 +153,14 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
                   name="freightAmount"
                   onChange={(e) => {
                     const value = e.target.value;
-            
-                    if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
+
+                    if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
                       handleChange(e); // Update state only if the input is valid
                     }
                   }}
                   onKeyDown={(e) => {
                     // Prevent 'e', 'E', '+', and '-' keys
-                    if (['e', 'E', '+', '-'].includes(e.key)) {
+                    if (["e", "E", "+", "-"].includes(e.key)) {
                       e.preventDefault();
                     }
                   }}
@@ -171,14 +179,14 @@ const ViewDetails = ({ purchaseOrderState, setPurchaseOrderState ,page,allAccoun
                   name="roundOffAmount"
                   onChange={(e) => {
                     const value = e.target.value;
-            
-                    if (/^\d*\.?\d{0,2}$/.test(value) || value === '') {
+
+                    if (/^\d*\.?\d{0,2}$/.test(value) || value === "") {
                       handleChange(e); // Update state only if the input is valid
                     }
                   }}
                   onKeyDown={(e) => {
                     // Prevent 'e', 'E', '+', and '-' keys
-                    if (['e', 'E', '+', '-'].includes(e.key)) {
+                    if (["e", "E", "+", "-"].includes(e.key)) {
                       e.preventDefault();
                     }
                   }}

@@ -1,4 +1,4 @@
-import  { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CheveronLeftIcon from "../../assets/icons/CheveronLeftIcon";
 import useApi from "../../Hooks/useApi";
@@ -29,7 +29,8 @@ function getLastDayOfMonth() {
 }
 
 const TradingAccount = () => {
-  const [tradingData, setTradingData] = useState([]);
+  const [debitData, setDebitData] = useState([]);
+  const [creditData, setCreditData] = useState([]);
   const { request: fetchOneItem } = useApi("get", 5006);
   const [searchValue, setSearchValue] = useState("");
   const [fromDate, setFromDate] = useState(getFirstDayOfMonth());
@@ -45,23 +46,6 @@ const TradingAccount = () => {
     toDateRef.current?.showPicker();
   };
 
-  const dataLeft = [
-    { account: "Opening Stock", total: "₹30,000" },
-    { account: "Purchase Account", total: "₹30,000" },
-    { account: "Direct Expense", total: "₹30,000" },
-    { account: "Gross Profit", total: "₹30,000" },
-    { account: "Indirect Expense", total: "₹30,000" },
-    { account: "Net Profit", total: "₹30,000" },
-    { account: "Total", total: "₹30,000" },
-  ];
-
-  const dataRight = [
-    { account: "Sales Accounts", total: "₹30,000" },
-    { account: "Closing Stock", total: "₹30,000" },
-    { account: "Gross Profit", total: "₹30,000" },
-    { account: "Total", total: "₹30,000" },
-  ];
-console.log(tradingData)
   const getTradingData = async () => {
     try {
       const formattedFromDate = formatDate(fromDate);
@@ -69,7 +53,9 @@ console.log(tradingData)
       const url = `${endponits.GET_TRADING_ACCONUT}/${formattedFromDate}/${formattedToDate}`;
       const { response, error } = await fetchOneItem(url);
       if (!error && response) {
-        setTradingData(response.data);
+        console.log(response.data.data.credit);
+        setDebitData(response.data.data.debit);
+        setCreditData(response.data.data.credit);
       }
     } catch (error) {
       toast.error("Error in fetching trading data.");
@@ -83,8 +69,6 @@ console.log(tradingData)
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-
-
       {/* Header */}
       <div className="flex justify-start items-center mb-6 ">
         <Link to="/reports">
@@ -170,19 +154,54 @@ console.log(tradingData)
               {/* Table Header */}
               <table className="min-w-full">
                 <thead>
-                  <tr >
-                    <th className="flex items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9] mx-5">Particulars</th>
-                    <th className="items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9]">Amount</th>
+                  <tr>
+                    <th className="flex items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9] mx-5">
+                      Particulars
+                    </th>
+                    <th className="items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9]">
+                      Amount
+                    </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#EAECF0] ">
-                  {dataLeft.map((item, index) => (
-                    <tr key={index} className={index === dataLeft.length - 1 ? "font-semibold bg-gray-50" : ""}>
-                      <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">{item.account}</td>
-                      <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">{item.total}</td>
-                    </tr>
-                  ))}
-                </tbody>
+                <tbody className="divide-y divide-[#EAECF0]">
+  {debitData.map((item: any, index: number) => {
+    let accountName = "";
+    let totalAmount = 0;
+    let items = [];
+    if (item.openingStock) {
+      accountName = "Opening Stock";
+      totalAmount = item.openingStock.total;
+      items = item.openingStock.item;
+    } else if (item.purchases) {
+      accountName = "Purchases";
+      totalAmount = item.purchases.overallNetDebit;
+      items = item.purchases.item;
+    } else if (item.directExpenses) {
+      accountName = "Direct Expenses";
+      totalAmount = item.directExpenses.overallNetDebit;
+      items = item.directExpenses.item;
+    }
+
+    return (
+      <tr
+        key={index}
+        className={
+          index === debitData.length - 1 ? "font-semibold bg-gray-50" : ""
+        }
+      >
+        <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
+          <Link to={`/reports/trialBalance/${accountName}`} state={{ items }}>
+            {accountName}
+          </Link>
+        </td>
+        <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">
+          {totalAmount}
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+
               </table>
             </div>
           </div>
@@ -194,18 +213,46 @@ console.log(tradingData)
               {/* Table Header */}
               <table className="min-w-full">
                 <thead>
-                  <tr >
-                    <th className="flex items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9] mx-5">Particulars</th>
-                    <th className="items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9]">Amount</th>
+                  <tr>
+                    <th className="flex items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9] mx-5">
+                      Particulars
+                    </th>
+                    <th className="items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9]">
+                      Amount
+                    </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#EAECF0]">
-                  {dataRight.map((item, index) => (
-                    <tr key={index} className={index === dataRight.length - 1 ? "font-semibold bg-gray-50" : ""}>
-                      <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">{item.account}</td>
-                      <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">{item.total}</td>
-                    </tr>
-                  ))}
+                <tbody className="divide-y divide-[#EAECF0] ">
+                  {creditData.map((item: any, index: number) => {
+                    let accountName = "";
+                    let totalAmount = 0;
+
+                    if (item.sales) {
+                      accountName = "Sales";
+                      totalAmount = item.sales.netCredit;
+                    } else if (item.closingStock) {
+                      accountName = "Closing Stock";
+                      totalAmount = item.closingStock.total;
+                    }
+
+                    return (
+                      <tr
+                        key={index}
+                        className={
+                          index === creditData.length - 1
+                            ? "font-semibold bg-gray-50"
+                            : ""
+                        }
+                      >
+                        <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
+                          {accountName}
+                        </td>
+                        <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">
+                          {totalAmount}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
