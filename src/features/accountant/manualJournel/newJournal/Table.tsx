@@ -53,28 +53,19 @@ function Table({ }: Props) {
 
   const getAllJournals = async () => {
     try {
-      // Set loading skeleton state before API call
-      setLoading({ ...loading, skeleton: true, noDataFound: false });
-
       const url = `${endponits.GET_ALL_JOURNALS}`;
+      setLoading({ ...loading, skeleton: true});
       const { response, error } = await AllJournals(url);
 
       if (error || !response) {
-        // If there's an error or no response, show "No Data Found"
         setLoading({ ...loading, skeleton: false, noDataFound: true });
         return;
       }
-
-      // If data is received, set the journal data
       setJournalData(response.data);
-
-      // Turn off the skeleton loader after data is received
       setLoading({ ...loading, skeleton: false });
-
     } catch (error) {
-      // Handle error
       console.error("Something went wrong:", error);
-      setLoading({ ...loading, skeleton: false, noDataFound: true });
+      setLoading({ ...loading, noDataFound: true, skelton: false });
     }
   };
 
@@ -96,14 +87,41 @@ function Table({ }: Props) {
     navigate(`/accountant/editjournal/${id}`)
   }
 
+  // const handleDelete = async () => {
+  //   if (!deleteId) return;
+  //   try {
+  //     const url = `${endponits.DELET_JOURNAL}/${deleteId}`;
+  //     const { response, error } = await deleteJournal(url);
+  //     if (!error && response) {
+  //       getAllJournals();
+  //       toast.success(response.data.message);
+  //     } else {
+  //       toast.error(error.response.data.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error("Error occurred while deleting.");
+  //   } finally {
+  //     setConfirmModalOpen(false);
+  //     setDeleteId(null);
+  //   }
+  // };
+
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
+      setLoading({ ...loading, skeleton: true }); 
       const url = `${endponits.DELET_JOURNAL}/${deleteId}`;
       const { response, error } = await deleteJournal(url);
       if (!error && response) {
         toast.success(response.data.message);
-        getAllJournals();
+        await getAllJournals();
+        setJournalData((prev) => {
+          const updatedData = prev.filter((journal) => journal._id !== deleteId);
+          if (updatedData.length === 0) {
+            setLoading({ ...loading, skeleton: false, noDataFound: true }); // Show "No Records Found"
+          }
+          return updatedData;
+        });
       } else {
         toast.error(error.response.data.message);
       }
@@ -114,6 +132,7 @@ function Table({ }: Props) {
       setDeleteId(null);
     }
   };
+  
 
 
 
@@ -140,7 +159,7 @@ function Table({ }: Props) {
 
         <tbody className="text-dropdownText text-center text-[13px]">
           {loading.skeleton ? (
-            [...Array(filteredJournals.length > 0 ? filteredJournals.length : 5)].map((_, idx) => (
+            [...Array(filteredJournals.length ? filteredJournals.length : 5)].map((_, idx) => (
               <TableSkelton key={idx} columns={[...tableHeaders, "rr"]} />
             ))
           ) : filteredJournals.length > 0 ? (

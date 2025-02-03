@@ -9,6 +9,9 @@ import Eye from "../../../assets/icons/Eye";
 import EditCustomerModal from "./EditCustomerModal";
 import { endponits } from "../../../Services/apiEndpoints";
 import useApi from "../../../Hooks/useApi";
+import TrashCan from "../../../assets/icons/TrashCan";
+import ConfirmModal from "../../../Components/ConfirmModal";
+import toast from "react-hot-toast";
 
 interface Column {
   id: string;
@@ -91,6 +94,34 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
     });
   }, [customerData, searchValue]);
 
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const { request: deleteCustomer } = useApi("delete", 5002);
+
+  const confirmDelete = (id: string) => {
+    setDeleteId(id);
+    setConfirmModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    try {
+      const url = `${endponits.DELETE_CUSTOMER}/${deleteId}`;
+      const { response, error } = await deleteCustomer(url);
+      if (!error && response) {
+        toast.success(response.data.message);
+        customerData();
+      } else {
+        toast.error(error.response.data.message);
+      }
+    } catch (error) {
+      toast.error("Error occurred while deleting.");
+    } finally {
+      setConfirmModalOpen(false);
+      setDeleteId(null);
+    }
+  };
+
   const renderColumnContent = (colId: string, item: Customer) => {
     if (colId === "supplierDetails") {
       return (
@@ -100,9 +131,11 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
           </div>
           <div onClick={() => getCustomer(item._id)}>
             <EditCustomerModal customerDataPorps={onecustomerData} page="editCustomer" />
-
-          </div> 
-               </div>
+          </div>
+          <div onClick={() => confirmDelete(item._id)}>
+            <TrashCan color="red" />
+          </div>
+        </div>
       );
     } else if (colId === "status") {
       return (
@@ -192,7 +225,12 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
 
       </div>
 
-
+      <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete?"
+      />
 
     </div>
   );

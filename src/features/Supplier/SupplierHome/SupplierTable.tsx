@@ -9,6 +9,11 @@ import Eye from "../../../assets/icons/Eye";
 import PencilEdit from "../../../assets/icons/PencilEdit";
 import EditSupplier from "./EditSupplier"; // Import the EditSupplier component
 import { SupplierData } from "../../../Types/Supplier";
+import TrashCan from "../../../assets/icons/TrashCan";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
+import toast from "react-hot-toast";
+import ConfirmModal from "../../../Components/ConfirmModal";
 
 interface Column {
   id: string;
@@ -30,7 +35,7 @@ interface Supplier {
 }
 
 interface SupplierTableProps {
-  supplierData: Supplier[]; 
+  supplierData: Supplier[];
   searchValue: string;
   setSearchValue: (value: string) => void;
   loading: any; // Add loading prop
@@ -42,8 +47,7 @@ const SupplierTable = ({
   setSearchValue,
   loading, // Destructure loading prop
 }: SupplierTableProps) => {
-  console.log(supplierData,"supplierData");
-  
+
   const initialColumns: Column[] = [
     { id: "supplierDisplayName", label: "Name", visible: true },
     { id: "companyName", label: "Company Name", visible: true },
@@ -86,7 +90,34 @@ const SupplierTable = ({
       account?.supplierEmail?.toLowerCase().includes(searchValueLower)
     );
   });
-  
+
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const { request: deleteCustomer } = useApi("delete", 5009);
+
+  const confirmDelete = (id: string) => {
+    setDeleteId(id);
+    setConfirmModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    try {
+      const url = `${endponits.DELETE_SUPPLIER}/${deleteId}`;
+      const { response, error } = await deleteCustomer(url);
+      if (!error && response) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(error.response.data.message);
+      }
+    } catch (error) {
+      toast.error("Error occurred while deleting.");
+    } finally {
+      setConfirmModalOpen(false);
+      setDeleteId(null);
+    }
+  };
+
 
   const renderColumnContent = (colId: string, item: SupplierData) => {
     if (colId === "supplierDetails") {
@@ -98,11 +129,14 @@ const SupplierTable = ({
           <div onClick={() => handleEdit(item)} className="cursor-pointer">
             <PencilEdit color={"#0B9C56"} />
           </div>
+          <div onClick={() => confirmDelete(item._id)}>
+            <TrashCan color="red" />
+          </div>
         </div>
       );
     }
 
-    
+
     if (colId === "status") {
       const statusStyles = item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400";
 
@@ -164,7 +198,7 @@ const SupplierTable = ({
                 <TableSkelton key={idx} columns={columns} />
               ))
             ) : filteredAccounts && filteredAccounts.length > 0 ? (
-              filteredAccounts.reverse().map((item,index) => (
+              filteredAccounts.reverse().map((item, index) => (
                 <tr key={item._id} className="relative">
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {index + 1}
@@ -189,6 +223,12 @@ const SupplierTable = ({
           </tbody>
         </table>
       </div>
+      <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete?"
+      />
 
       {/* Edit Supplier Modal */}
       {isModalOpen && selectedSupplier && (

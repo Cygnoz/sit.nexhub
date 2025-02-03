@@ -35,29 +35,20 @@ function CustomerHome({}: Props) {
 
   const fetchAllCustomers = async () => {
     try {
-      // Set loading state to show the skeleton loader
       setLoading({ ...loading, skeleton: true });
-  
       const url = `${endponits.GET_ALL_CUSTOMER}`;
       const { response, error } = await AllCustomers(url);
   
       if (!error && response) {
         setCustomerData(response.data);
         console.log(response, "all customers");
-        
-        // Turn off the skeleton loader after data is received
         setLoading({ ...loading, skeleton: false });
       } else {
-        // Handle error scenario
         console.log(error, "all customers error");
-  
-        // Update the loading state in case of error
         setLoading({ ...loading, skeleton: false, noDataFound: true });
       }
     } catch (error) {
       console.error("Error fetching accounts:", error);
-  
-      // Handle error state
       setLoading({ ...loading, skeleton: false, noDataFound: true });
     }
   };
