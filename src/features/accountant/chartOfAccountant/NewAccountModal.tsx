@@ -35,6 +35,8 @@ const initialFormValues: any = {
 function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModalProps) {
   const [isModalOpen, setModalOpen] = useState(false);
   const { request: NewAccount } = useApi("post", 5001);
+  const { request: EditAccount } = useApi("put", 5001);
+
   const [openingType, setOpeningType] = useState("Debit");
   const [formValues, setFormValues] = useState(initialFormValues);
   const [isSubAccount, setIsSubAccount] = useState(false);
@@ -209,13 +211,15 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
       return;
     }
 
-    const toastId = toast.loading("Adding new account...");
+    const toastId = toast.loading(page === "Edit" ? "Editing account..." : "Adding new account...");
 
     try {
-      const url = `${endponits.Add_NEW_ACCOUNT}`;
+      const url = page === "Edit" 
+      ? `${endponits.EDIT_NEW_ACCOUNT}/${formValues._id}` 
+      : endponits.Add_NEW_ACCOUNT;
+          const API = page === "Edit" ? EditAccount : NewAccount;
       const body = formValues;
-      const { response, error } = await NewAccount(url, body);
-
+      const { response, error } = await API(url, body);
       if (!error && response) {
         toast.dismiss(toastId);
         closeModal();
@@ -228,6 +232,8 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
       toast.error(error.response?.data?.message || error.message || "Failed to add account");
     }
   };
+
+  console.log(formValues)
 
   return (
     <div>

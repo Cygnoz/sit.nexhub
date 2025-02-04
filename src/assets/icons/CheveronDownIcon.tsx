@@ -1,4 +1,4 @@
-type Props = { color: string, strokeWidth: any };
+type Props = { color: string, strokeWidth?: any };
 
 function CheveronDownIcon({ color, strokeWidth }: Props) {
   return (

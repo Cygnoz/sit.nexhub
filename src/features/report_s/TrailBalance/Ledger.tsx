@@ -1,6 +1,7 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
+import { useEffect, useState } from "react";
 
 type Props = {}
 
@@ -9,8 +10,17 @@ const Ledger = ({}: Props) => {
     const { accountSubHead } = useParams();
 
     const location = useLocation();
-    const { item, fromDate ,toDate} = location.state || {};
-  console.log(item.data, "item")
+    const { item} = location.state || {};
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  useEffect(() => {
+    const storedFromDate = localStorage.getItem("fromDate");
+    const storedToDate = localStorage.getItem("toDate");
+
+    if (storedFromDate) setFromDate(storedFromDate);
+    if (storedToDate) setToDate(storedToDate);
+  }, []);
    
 return (
 <div className="p-6 bg-gray-100 min-h-screen">

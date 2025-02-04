@@ -44,6 +44,14 @@ function TrialBalance() {
     toDateRef.current?.showPicker();
   };
 
+  const formattedFromDate = formatDate(fromDate);
+  const formattedToDate = formatDate(toDate);
+
+  useEffect(() => {
+    localStorage.setItem("fromDate", formattedFromDate);
+    localStorage.setItem("toDate", formattedToDate);
+  }, [fromDate, toDate]);
+
   const getDayBook = async () => {
     try {
       const formattedFromDate = formatDate(fromDate);
@@ -175,8 +183,8 @@ function TrialBalance() {
             ))}
             <tr>
               <td className="py-3 font-bold">Total</td>
-              <td className="py-3 text-right font-bold">000</td>
-              <td className="py-3 text-right font-bold">000</td>
+              <td className="py-3 text-right font-bold">0</td>
+              <td className="py-3 text-right font-bold">0</td>
             </tr>
           </tbody>
         </table>

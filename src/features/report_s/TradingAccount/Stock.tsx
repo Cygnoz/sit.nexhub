@@ -1,16 +1,18 @@
-import { Link, useLocation, useParams } from "react-router-dom";
-import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
-import PrinterIcon from "../../../assets/icons/PrinterIcon";
-import { useEffect, useState } from "react";
+import { Link, useLocation, useParams } from 'react-router-dom';
+import CheveronLeftIcon from '../../../assets/icons/CheveronLeftIcon';
+import PrinterIcon from '../../../assets/icons/PrinterIcon';
+import { useEffect, useState } from 'react';
 
-type Props = {};
+type Props = {}
 
-const MonthlySummery = ({}: Props) => {
-  const { accountSubHead } = useParams();
+const Stock = ({}: Props) => {
+     const { accountName } = useParams();
+    
+      const location = useLocation();
+      const { items } = location.state || {};
+      console.log(items);
 
-  const location = useLocation();
-  const { items } = location.state || {};
-  const [fromDate, setFromDate] = useState("");
+      const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
   useEffect(() => {
@@ -20,11 +22,11 @@ const MonthlySummery = ({}: Props) => {
     if (storedFromDate) setFromDate(storedFromDate);
     if (storedToDate) setToDate(storedToDate);
   }, []);
-  console.log(items);
+    
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4 gap-2">
-        <Link to={"/reports/trialBalance"}>
+        <Link to={"/reports/tradingAccount"}>
           <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
             <CheveronLeftIcon />
           </div>
@@ -32,7 +34,7 @@ const MonthlySummery = ({}: Props) => {
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
             {" "}
-            Monthly Summery{" "}
+            {accountName} Summery{" "}
           </h4>
         </div>
 
@@ -64,39 +66,45 @@ const MonthlySummery = ({}: Props) => {
             <tr className="bg-lightPink text-left border-b font-bold text-sm  border-[#ebecf0]">
               <th className="p-2">Particulars</th>
               <th className="p-2 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                Debit
+                Quantity
               </th>
               <th className="p-2 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                Credit
+                Rate
+              </th>
+              <th className="p-2 text-right min-w-[30px] max-w-[30px] px-1 truncate">
+                Value
               </th>
             </tr>
           </thead>
           <tbody className="text-xs ">
-            {items?.months?.map((item: any) => (
+            {items?.items?.map((items: any) => (
               <tr className="border-b border-[#ebecf0]">
-                <Link
-                  to={`/reports/trialBalance/${accountSubHead}/monthly-summery/ledger`}
-                  state={{ item, fromDate, toDate }}
-                >
+               
                   {" "}
-                  <td className="py-3">{item.date}</td>
-                </Link>
+                  <td className="py-3">{items.itemName}</td>
+           
                 <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                  {item.totalDebit}
+                  {Number(items.totalDebit) - Number(items.totalCredit)}
                 </td>
                 <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                  {item.totalCredit}
+                  {items.lastCostPrice
+                  }
+                </td>
+                <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
+                {(Number(items.totalDebit) - Number(items.totalCredit))*items.lastCostPrice}
                 </td>
               </tr>
             ))}
             <td className="py-3 font-bold">Total</td>
-            <td className="py-3 text-right font-bold">{items.totalDebit}</td>
-            <td className="py-3 text-right font-bold">{items.totalCredit}</td>
+            <td className="py-3 text-right font-bold"></td>
+            <td className="py-3 text-right font-bold"></td>
+
+            <td className="py-3 text-right font-bold">{items.total}</td>
           </tbody>
         </table>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MonthlySummery;
+export default Stock
