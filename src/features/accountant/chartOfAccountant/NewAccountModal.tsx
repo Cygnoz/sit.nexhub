@@ -7,14 +7,14 @@ import chartOfAcc from "../../../assets/constants/chartOfAcc";
 import Modal from "../../../Components/model/Modal";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import PencilEdit from "../../../assets/icons/PencilEdit";
 
 interface NewAccountModalProps {
   fetchAllAccounts: () => void;
   accountData: any;
-  page?: string
+  page?: string;
 }
 
 const initialFormValues: any = {
@@ -30,9 +30,13 @@ const initialFormValues: any = {
   debitOpeningBalance: "",
   creditOpeningBalance: "",
   parentAccountId: "",
-}
+};
 
-function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModalProps) {
+function NewAccountModal({
+  fetchAllAccounts,
+  accountData,
+  page,
+}: NewAccountModalProps) {
   const [isModalOpen, setModalOpen] = useState(false);
   const { request: NewAccount } = useApi("post", 5001);
   const { request: EditAccount } = useApi("put", 5001);
@@ -47,10 +51,7 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
 
   const accountCategories = {
     Asset: {
-      Asset: [
-        "Current Asset",
-        "Non-Current Asset",
-      ],
+      Asset: ["Current Asset", "Non-Current Asset"],
     },
     Equity: {
       Equity: ["Equity"],
@@ -59,10 +60,7 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
       Income: ["Sales", "Indirect Income"],
     },
     Liability: {
-      Liabilities: [
-        "Current Liability",
-        "Non-Current Liability",
-      ],
+      Liabilities: ["Current Liability", "Non-Current Liability"],
     },
     Expenses: {
       Expenses: ["Direct Expense", "Cost of Goods Sold", "Indirect Expense"],
@@ -79,7 +77,7 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
       if (accountData.parentAccountId) {
         setIsSubAccount(true);
       } else {
-        setIsSubAccount(false)
+        setIsSubAccount(false);
       }
       setOpeningType(accountData.debitOpeningBalance ? "Debit" : "Credit");
     }
@@ -108,8 +106,8 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
             group === "Asset" || group === "Income" || group === "Equity"
               ? "Asset"
               : group === "Liability" || group === "Expenses"
-                ? "Liability"
-                : group;
+              ? "Liability"
+              : group;
           return { accountHead: head, accountGroup };
         }
       }
@@ -130,7 +128,7 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
       if (!target.checked) {
         setFormValues((prev: any) => ({
           ...prev,
-          parentAccountId: ""
+          parentAccountId: "",
         }));
       }
       return;
@@ -159,8 +157,10 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
       setOpeningType(value);
       setFormValues((prevFormValues: any) => ({
         ...prevFormValues,
-        debitOpeningBalance: value === "Debit" ? prevFormValues.debitOpeningBalance : "",
-        creditOpeningBalance: value === "Credit" ? prevFormValues.creditOpeningBalance : "",
+        debitOpeningBalance:
+          value === "Debit" ? prevFormValues.debitOpeningBalance : "",
+        creditOpeningBalance:
+          value === "Credit" ? prevFormValues.creditOpeningBalance : "",
       }));
     } else if (name === "openingBalance") {
       if (parseFloat(value) < 0) return;
@@ -170,7 +170,9 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
         debitOpeningBalance:
           openingType === "Debit" ? value : prevFormValues.debitOpeningBalance,
         creditOpeningBalance:
-          openingType === "Credit" ? value : prevFormValues.creditOpeningBalance,
+          openingType === "Credit"
+            ? value
+            : prevFormValues.creditOpeningBalance,
       }));
     } else {
       setFormValues((prevFormValues: any) => ({
@@ -211,42 +213,53 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
       return;
     }
 
-    const toastId = toast.loading(page === "Edit" ? "Editing account..." : "Adding new account...");
+    // const toastId = toast.loading(page === "Edit" ? "Editing account..." : "Adding new account...");
 
     try {
-      const url = page === "Edit" 
-      ? `${endponits.EDIT_NEW_ACCOUNT}/${formValues._id}` 
-      : endponits.Add_NEW_ACCOUNT;
-          const API = page === "Edit" ? EditAccount : NewAccount;
+      const url =
+        page === "Edit"
+          ? `${endponits.EDIT_NEW_ACCOUNT}/${formValues._id}`
+          : endponits.Add_NEW_ACCOUNT;
+      const API = page === "Edit" ? EditAccount : NewAccount;
       const body = formValues;
       const { response, error } = await API(url, body);
       if (!error && response) {
-        toast.dismiss(toastId);
+        toast.success(response.data.message);
         closeModal();
         fetchAllAccounts();
-      } else {
-        throw new Error(error?.response?.data?.message || "Something went wrong");
+      }
+      else{
+        toast.error(error.response.data.message);
+
       }
     } catch (error: any) {
-      toast.dismiss(toastId);
-      toast.error(error.response?.data?.message || error.message || "Failed to add account");
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to add account"
+      );
     }
   };
 
-  console.log(formValues)
+  console.log(formValues);
 
   return (
     <div>
-      {page === "Edit" ?
+      {page === "Edit" ? (
         <div onClick={openModal} className="cursor-pointer">
-          <PencilEdit color={'#0B9C56'} />
+          <PencilEdit color={"#0B9C56"} />
         </div>
-        :
+      ) : (
         <Button onClick={openModal} variant="primary">
           <CirclePlus color="white" size="16" />
           <p className="text-sm">New Account</p>
-        </Button>}
-      <Modal open={isModalOpen} onClose={closeModal} className="w-[68%] text-start">
+        </Button>
+      )}
+      <Modal
+        open={isModalOpen}
+        onClose={closeModal}
+        className="w-[68%] text-start"
+      >
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
             <div
@@ -254,7 +267,9 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
               style={{ backgroundImage: `url(${bgImage})` }}
             ></div>
             <div className="relative z-10">
-              <h3 className="text-xl font-bold text-textColor">{page === "Edit" ? "Edit" : "Create"} Account</h3>
+              <h3 className="text-xl font-bold text-textColor">
+                {page === "Edit" ? "Edit" : "Create"} Account
+              </h3>
               <p className="text-dropdownText font-semibold text-sm mt-2">
                 Start your journey with us create your account in moments!
               </p>
@@ -282,7 +297,9 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
                   onChange={handleChange}
                   className="w-full border border-inputBorder rounded p-1.5 pl-2 text-sm"
                 >
-                  <option disabled hidden value="">Select type</option>
+                  <option disabled hidden value="">
+                    Select type
+                  </option>
                   {chartOfAcc.map((item, index) => (
                     <optgroup
                       className="text-maroon"
@@ -305,21 +322,35 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
 
               <div className="mb-2">
                 <label className="block text-sm mb-1 text-labelColor">
-                  {formValues?.accountSubhead === "Credit Card" ? "Credit Card Name" : "Account Name"}
+                  {formValues?.accountSubhead === "Credit Card"
+                    ? "Credit Card Name"
+                    : "Account Name"}
                 </label>
                 <input
                   type="text"
                   name="accountName"
                   value={formValues.accountName}
                   onChange={handleChange}
-                  placeholder={formValues?.accountSubhead === "Credit Card" ? "Enter Credit Card Name" : "Enter Account Name"}
+                  placeholder={
+                    formValues?.accountSubhead === "Credit Card"
+                      ? "Enter Credit Card Name"
+                      : "Enter Account Name"
+                  }
                   className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
                 />
               </div>
 
               {formValues.accountSubhead &&
-                !["Other Asset", "Bank", "Payment Clearing", "Credit Card", "Other Liability",
-                  "Overseas Tax Payable", "Other Income", "Other Expense"].includes(formValues.accountSubhead) && (
+                ![
+                  "Other Asset",
+                  "Bank",
+                  "Payment Clearing",
+                  "Credit Card",
+                  "Other Liability",
+                  "Overseas Tax Payable",
+                  "Other Income",
+                  "Other Expense",
+                ].includes(formValues.accountSubhead) && (
                   <>
                     <div className="mb-2 flex items-center gap-1 text-textColor">
                       <input
@@ -348,15 +379,21 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
                         </label>
                         <div className="relative w-full">
                           <select
-                            className={`block appearance-none w-full mt-0.5 text-zinc-400 bg-white border text-sm h-9 pl-3 pr-8 rounded-md leading-tight focus:outline-none ${showValidationError ? "border-red-500" : "border-inputBorder"
-                              }`}
+                            className={`block appearance-none w-full mt-0.5 text-zinc-400 bg-white border text-sm h-9 pl-3 pr-8 rounded-md leading-tight focus:outline-none ${
+                              showValidationError
+                                ? "border-red-500"
+                                : "border-inputBorder"
+                            }`}
                             name="parentAccountId"
                             onChange={(e) => {
                               const selectedAccountName = e.target.value;
                               const selectedAccount = AllAccountz?.find(
-                                (account: any) => account.accountName === selectedAccountName
+                                (account: any) =>
+                                  account.accountName === selectedAccountName
                               );
-                              const selectedId = selectedAccount ? selectedAccount._id : "";
+                              const selectedId = selectedAccount
+                                ? selectedAccount._id
+                                : "";
                               setFormValues((prevFormValues: any) => ({
                                 ...prevFormValues,
                                 parentAccountId: selectedId,
@@ -365,21 +402,24 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
                             }}
                             value={
                               AllAccountz?.find(
-                                (account: any) => account._id === formValues.parentAccountId
+                                (account: any) =>
+                                  account._id === formValues.parentAccountId
                               )?.accountName || ""
                             }
                           >
                             <option value="">Select Parent Account</option>
-                            {AllAccountz
-                              ?.filter(
-                                (account: any) =>
-                                  account.accountSubhead === formValues.accountSubhead
-                              )
-                              ?.map((account: any) => (
-                                <option key={account._id} value={account.accountName}>
-                                  {account.accountName}
-                                </option>
-                              ))}
+                            {AllAccountz?.filter(
+                              (account: any) =>
+                                account.accountSubhead ===
+                                formValues.accountSubhead
+                            )?.map((account: any) => (
+                              <option
+                                key={account._id}
+                                value={account.accountName}
+                              >
+                                {account.accountName}
+                              </option>
+                            ))}
                           </select>
                           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <CehvronDown color="gray" />
@@ -395,12 +435,10 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
                   </>
                 )}
 
-
-
-
-
               <div className="mb-4">
-                <label className="block mb-1 text-labelColor text-sm">Opening Balance</label>
+                <label className="block mb-1 text-labelColor text-sm">
+                  Opening Balance
+                </label>
                 <div className="flex">
                   <div className="relative w-20 ">
                     <select
@@ -434,7 +472,6 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
                 </div>
               </div>
 
-
               <div className="mb-4">
                 <label className="block text-sm mb-1 text-labelColor">
                   Description
@@ -447,7 +484,7 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
                   className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
                 />
               </div>
-              <div >
+              <div>
                 <label className="block text-sm mb-1 text-labelColor">
                   Account Code
                 </label>
@@ -470,7 +507,11 @@ function NewAccountModal({ fetchAllAccounts, accountData, page }: NewAccountModa
                 >
                   Cancel
                 </Button>
-                <Button type="submit" variant="primary" className="rounded text-sm h-10">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  className="rounded text-sm h-10"
+                >
                   {page === "Edit" ? "Edit" : "Add"} Account
                 </Button>
               </div>

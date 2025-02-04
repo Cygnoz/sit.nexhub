@@ -97,6 +97,7 @@ function AddExpensePage({ page }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [Itemize, setItemize] = useState<boolean>(true);
   const [prefix, setPrefix] = useState<any>(null);
+  const [selectedExpenseAcount,setSelectedExpenseAccount]=useState<any>("")
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
   );
@@ -610,6 +611,7 @@ function AddExpensePage({ page }: Props) {
           const { response, error } = await getOneExpense(url);
           if (!error && response) {
             setExpenseData(response.data)
+            selectedExpenseAcount(response.data.expense[0].expenseAccount)
           }
         } catch (error) {
           console.log("Error in fetching", error);
@@ -718,11 +720,11 @@ function AddExpensePage({ page }: Props) {
                         name="expenseAccount"
                         value={expenseData?.expense[0]?.expenseAccount || ""}
                         onChange={(e) => {
-                          const selectedValue = e.target.value;
+                         setSelectedExpenseAccount( e.target.value);
                           const selectedAccount: any =
                             accountData?.liabilities?.find(
                               (account: any) =>
-                                account.accountName === selectedValue
+                                account.accountName === selectedExpenseAcount
                             );
 
                           setExpenseData({
@@ -730,7 +732,7 @@ function AddExpensePage({ page }: Props) {
                             expense: [
                               {
                                 ...expenseData.expense[0],
-                                expenseAccount: selectedValue,
+                                expenseAccount: selectedExpenseAcount,
                                 expenseAccountId: selectedAccount
                                   ? selectedAccount._id
                                   : "",

@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent, useContext,} from "react";
+import { useState, ChangeEvent, FormEvent, useContext, useEffect,} from "react";
 import Button from "../../../Components/Button";
 import Modal from "../../../Components/model/Modal";
 import useApi from "../../../Hooks/useApi";
@@ -10,9 +10,10 @@ import PlusCircle from "../../../assets/icons/PlusCircle";
 // import BankHome from "./BankHome";
 import { BankResponseContext } from "../../../context/ContextShare";
 import toast from "react-hot-toast";
+import Pen from "../../../assets/icons/Pen";
 // import { useOrganization } from "../../../context/OrganizationContext";
 
-type Props = {};
+type Props = {page?:string,id?:string};
 
 const initialBankAccount = {
   accountName: "",
@@ -30,12 +31,14 @@ const initialBankAccount = {
   creditOpeningBalance: "",
 };
 
-const NewBankModal = ({ }: Props) => {
+const NewBankModal = ({page,id }: Props) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [bankAccount, setBankAccount] = useState(initialBankAccount);
   const [openingType, setOpeningType] = useState("Debit");
   const { setBankResponse } = useContext(BankResponseContext)!;
   const { request: CreateAccount } = useApi("post", 5001);
+  const { request:editAccount } = useApi("put", 5001);
+
   // const {organization}=nization()
   const openModal = () => {
     setModalOpen(true);
@@ -43,6 +46,8 @@ const NewBankModal = ({ }: Props) => {
   };
   const [currencyData, setcurrencyData] = useState<any | []>([]);
   const { request: getCurrencyData } = useApi("get", 5004);
+  const { request: fetchOneItem } = useApi("get", 5001);
+
   const getcurrencyData = async () => {
     try {
       const url = `${endponits.GET_CURRENCY_LIST}`;
@@ -56,7 +61,21 @@ const NewBankModal = ({ }: Props) => {
     }
   };
 
-
+  const getOneItem = async () => {
+    try {
+      const url = `${endponits.GET_ONE_ACCOUNT}/${id}`;
+      const { response, error } = await fetchOneItem(url);
+      if (!error && response) {
+        setBankAccount(response.data);
+        console.log(response.data);
+      } else {
+        console.error("Failed to fetch one item data.");
+      }
+    } catch (error) {
+      toast.error("Error in fetching one item data.");
+      console.error("Error in fetching one item data", error);
+    }
+  };
 
   const closeModal = () => {
     setModalOpen(false);
@@ -98,9 +117,14 @@ const NewBankModal = ({ }: Props) => {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const url = `${endponits.Add_NEW_ACCOUNT}`;
+      const url =
+      page === "Edit"
+        ? `${endponits.EDIT_NEW_ACCOUNT}/${id}`
+        : endponits.Add_NEW_ACCOUNT;
+          const API = page === "Edit" ? editAccount : CreateAccount ;
+
       const body = bankAccount;
-      const { response, error } = await CreateAccount(url, body);
+      const { response, error } = await API(url, body);
       if (!error && response) {
         toast.success(response.data.message);
         setBankResponse((prevBankResponse: any) => ({
@@ -117,17 +141,21 @@ const NewBankModal = ({ }: Props) => {
     }
   };
 
+  useEffect(()=>{
+    getOneItem()
+  },[])
+
 
 
 
   return (
     <div>
-      <Button onClick={openModal} variant="primary" size="xl">
+     { page ==="edit" ?<button onClick={openModal}> <Pen size={18} color="green"/></button>: <Button onClick={openModal} variant="primary" size="xl">
         <PlusCircle color="white" />{" "}
         <p className="text-sm font-medium">Create Account</p>
-      </Button>
+      </Button>}
 
-      <Modal open={isModalOpen} onClose={closeModal} className="w-[68%]">
+      <Modal open={isModalOpen} onClose={closeModal} className="w-[68%] text-start">
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
             <div

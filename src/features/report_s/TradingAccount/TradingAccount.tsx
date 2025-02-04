@@ -50,8 +50,6 @@ const TradingAccount = () => {
       const url = `${endponits.GET_TRADING_ACCONUT}/${formattedFromDate}/${formattedToDate}`;
       const { response, error } = await fetchOneItem(url);
       if (!error && response) {
-        console.log(response.data);
-
         setTradingData(response.data.data);
       }
     } catch (error) {
@@ -65,6 +63,7 @@ const TradingAccount = () => {
     localStorage.setItem("toDate", formattedToDate);
   }, [fromDate, toDate]);
   
+
 
   useEffect(() => {
     getTradingData();
@@ -174,10 +173,10 @@ const TradingAccount = () => {
                     } else if (item.purchases) {
                       const accountSubhead = "purchases";
                       accountName = "Purchases";
-                      totalAmount = item.purchases.overallNetDebit;
+                      totalAmount = item.purchases.totalDebit;
                       items = item;
-                      console.log(item, "items");
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
+                      console.log(item,'purchase')
                     } else if (item.directExpenses) {
                       const accountSubhead = "directExpenses";
                       accountName = "Direct Expenses";

@@ -19,6 +19,8 @@ const Accounts = ({}: Props) => {
     if (storedFromDate) setFromDate(storedFromDate);
     if (storedToDate) setToDate(storedToDate);
   }, []);
+
+  console.log(items,"items")
   
   return (
     <div className="p-6 bg-gray-100 min-h-screen">

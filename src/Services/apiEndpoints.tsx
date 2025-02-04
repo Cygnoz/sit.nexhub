@@ -91,6 +91,7 @@ export const endponits = {
   GET_ONE_TRIAL_BALANCE: "get-one-trial-balance",
   GET_ONE_ACCOUNT: "get-one-account",
   EDIT_NEW_ACCOUNT:`edit-account`,
+  DELETE_ACCONUT:`delete-account`,
 
   // Customer
   GET_ALL_CUSTOMER: "get-all-customer",
