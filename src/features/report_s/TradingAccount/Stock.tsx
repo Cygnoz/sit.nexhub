@@ -1,6 +1,7 @@
 import { Link, useLocation, useParams } from 'react-router-dom';
 import CheveronLeftIcon from '../../../assets/icons/CheveronLeftIcon';
 import PrinterIcon from '../../../assets/icons/PrinterIcon';
+import { useEffect, useState } from 'react';
 
 type Props = {}
 
@@ -8,9 +9,19 @@ const Stock = ({}: Props) => {
      const { accountName } = useParams();
     
       const location = useLocation();
-      const { items, fromDate, toDate } = location.state || {};
+      const { items } = location.state || {};
       console.log(items);
 
+      const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  useEffect(() => {
+    const storedFromDate = localStorage.getItem("fromDate");
+    const storedToDate = localStorage.getItem("toDate");
+
+    if (storedFromDate) setFromDate(storedFromDate);
+    if (storedToDate) setToDate(storedToDate);
+  }, []);
     
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -23,7 +34,7 @@ const Stock = ({}: Props) => {
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
             {" "}
-            {accountName} Account{" "}
+            {accountName} Summery{" "}
           </h4>
         </div>
 
@@ -68,13 +79,10 @@ const Stock = ({}: Props) => {
           <tbody className="text-xs ">
             {items?.items?.map((items: any) => (
               <tr className="border-b border-[#ebecf0]">
-                <Link
-                  to={`/reports/trading-account/${accountName}/monthly-summery`}
-                  state={{ items, fromDate, toDate }}
-                >
+               
                   {" "}
                   <td className="py-3">{items.itemName}</td>
-                </Link>
+           
                 <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
                   {Number(items.totalDebit) - Number(items.totalCredit)}
                 </td>

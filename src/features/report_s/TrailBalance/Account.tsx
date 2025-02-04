@@ -1,6 +1,7 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
+import { useEffect, useState } from "react";
 
 type Props = {};
 
@@ -8,8 +9,19 @@ const Account = ({}: Props) => {
   const { accountSubHead } = useParams();
 
   const location = useLocation();
-  const { item, fromDate, toDate } = location.state || {};
+  const { item } = location.state || {};
   console.log(item);
+
+    const [fromDate, setFromDate] = useState("");
+    const [toDate, setToDate] = useState("");
+  
+    useEffect(() => {
+      const storedFromDate = localStorage.getItem("fromDate");
+      const storedToDate = localStorage.getItem("toDate");
+  
+      if (storedFromDate) setFromDate(storedFromDate);
+      if (storedToDate) setToDate(storedToDate);
+    }, []);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -80,8 +92,8 @@ const Account = ({}: Props) => {
               </tr>
             ))}
             <td className="py-3 font-bold">Total</td>
-            <td className="py-3 text-right font-bold">000</td>
-            <td className="py-3 text-right font-bold">000</td>
+            <td className="py-3 text-right font-bold">{item.totalDebit}</td>
+            <td className="py-3 text-right font-bold">{item.totalCredit}</td>
           </tbody>
         </table>
       </div>

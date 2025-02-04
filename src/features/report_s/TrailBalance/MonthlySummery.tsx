@@ -1,6 +1,7 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
+import { useEffect, useState } from "react";
 
 type Props = {};
 
@@ -8,9 +9,18 @@ const MonthlySummery = ({}: Props) => {
   const { accountSubHead } = useParams();
 
   const location = useLocation();
-  const { items, fromDate, toDate } = location.state || {};
-  console.log(items, "item");
+  const { items } = location.state || {};
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
+  useEffect(() => {
+    const storedFromDate = localStorage.getItem("fromDate");
+    const storedToDate = localStorage.getItem("toDate");
+
+    if (storedFromDate) setFromDate(storedFromDate);
+    if (storedToDate) setToDate(storedToDate);
+  }, []);
+  console.log(items);
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4 gap-2">
@@ -59,9 +69,6 @@ const MonthlySummery = ({}: Props) => {
               <th className="p-2 text-right min-w-[30px] max-w-[30px] px-1 truncate">
                 Credit
               </th>
-              <th className="p-2 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                Closing Balance
-              </th>
             </tr>
           </thead>
           <tbody className="text-xs ">
@@ -83,8 +90,8 @@ const MonthlySummery = ({}: Props) => {
               </tr>
             ))}
             <td className="py-3 font-bold">Total</td>
-            <td className="py-3 text-right font-bold">000</td>
-            <td className="py-3 text-right font-bold">000</td>
+            <td className="py-3 text-right font-bold">{items.totalDebit}</td>
+            <td className="py-3 text-right font-bold">{items.totalCredit}</td>
           </tbody>
         </table>
       </div>

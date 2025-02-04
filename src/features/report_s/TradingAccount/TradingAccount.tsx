@@ -42,11 +42,11 @@ const TradingAccount = () => {
   const handleToDateClick = () => {
     toDateRef.current?.showPicker();
   };
-
+  const formattedFromDate = formatDate(fromDate);
+  const formattedToDate = formatDate(toDate);
   const getTradingData = async () => {
     try {
-      const formattedFromDate = formatDate(fromDate);
-      const formattedToDate = formatDate(toDate);
+  
       const url = `${endponits.GET_TRADING_ACCONUT}/${formattedFromDate}/${formattedToDate}`;
       const { response, error } = await fetchOneItem(url);
       if (!error && response) {
@@ -59,6 +59,12 @@ const TradingAccount = () => {
       console.error("Error in fetching trading data", error);
     }
   };
+
+  useEffect(() => {
+    localStorage.setItem("fromDate", formattedFromDate);
+    localStorage.setItem("toDate", formattedToDate);
+  }, [fromDate, toDate]);
+  
 
   useEffect(() => {
     getTradingData();
@@ -133,7 +139,7 @@ const TradingAccount = () => {
         <div className="flex justify-center items-center mb-2">
           <div className="text-center">
             <p className="font-bold text-textColor">Company Name</p>
-            <p className="text-sm text-textColor">01/07/2024 To 30/09/2024</p>
+            <p className="text-sm text-textColor">{formattedFromDate} To {formattedToDate}</p>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-8">
@@ -176,7 +182,7 @@ const TradingAccount = () => {
                       const accountSubhead = "directExpenses";
                       accountName = "Direct Expenses";
                       totalAmount = item.directExpenses.overallNetDebit;
-                      items = item.directExpenses.items;
+                      items = item;
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
                     } else if (item.grossProfit) {
                       accountName = "Gross Profit";
@@ -193,7 +199,7 @@ const TradingAccount = () => {
                         }
                       >
                         <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
-                          <Link to={link} state={{ items, fromDate, toDate }}>
+                          <Link to={link} state={{ items }}>
                             {accountName}
                           </Link>
                         </td>
@@ -241,12 +247,16 @@ const TradingAccount = () => {
                     let items = [];
                     let link = "";
                     if (item.sales) {
+                      const accountSubhead = "sales";
                       accountName = "Sales";
                       totalAmount = item.sales.overallNetCredit;
+                      items = item;
+                      link = `/reports/trading-account/accounts/${accountSubhead}`;
+
                     } else if (item.closingStock) {
                       accountName = "Closing Stock";
                       totalAmount = item.closingStock.total;
-                      items = item.closingStock.items;
+                      items = item.closingStock;
                       link = `/reports/trading-account/${accountName}`;
                     } else if (item.grossLoss) {
                       accountName = "Gross Loss";
