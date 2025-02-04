@@ -91,7 +91,7 @@ getBSData()
   return (
     <div className="p-5">
       <div className="flex gap-5">
-        <Link to={"/purchase/debitNote"}>
+        <Link to={"/reports"}>
           <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
             <CheveronLeftIcon />
           </div>
