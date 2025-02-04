@@ -6,6 +6,10 @@ import { BankResponseContext, TableResponseContext } from "../../../context/Cont
 import { useNavigate } from "react-router-dom";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
+import Trash2 from "../../../assets/icons/Trash2";
+import NewBankModal from "./NewBankModal";
+import Eye from "../../../assets/icons/Eye";
+import toast from "react-hot-toast";
 
 interface Account {
   _id: string;
@@ -18,6 +22,7 @@ interface Account {
 
 const Table = () => {
   const { request: AllAccounts } = useApi("get", 5001);
+  const { request: deleteAccount } = useApi("delete", 5001);
   const [searchValue, setSearchValue] = useState<string>("");
   const [accountData, setAccountData] = useState<Account[]>([]);
   const { bankResponse } = useContext(BankResponseContext)!;
@@ -32,7 +37,7 @@ const Table = () => {
     "Account Type",
     "Documents",
     "Parent Account Type",
-    // "",
+    "Action",
   ];
 
   useEffect(() => {
@@ -71,6 +76,22 @@ const Table = () => {
   };
   
   
+  const handleDelete=async(id:string)=>{
+    try {
+      const url = `${endponits.DELETE_ACCONUT}/${id}`;
+      const { response, error } = await deleteAccount(url);
+      if (!error && response) {
+        toast.success(response.data.message);
+        fetchAllAccounts()
+        console.log(response.data);
+      } else {
+        toast.error(error.response.data.message);
+      }
+    } catch (error) {
+      toast.error("Error in fetching one item data.");
+      console.error("Error in fetching one item data", error);
+    }
+  }
   
   const filteredAccounts = accountData.filter((account) => {
     const searchValueLower = searchValue.toLowerCase().trim();
@@ -114,7 +135,7 @@ const Table = () => {
               ))
             ) : filteredAccounts.length > 0 ? (
               filteredAccounts.reverse().map((item, index) => (
-                <tr key={item._id} className="relative cursor-pointer" onClick={()=>navigate(`/accountant/view/${item._id}?fromBank=true`)}>
+                <tr key={item._id} className="relative cursor-pointer" >
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {index + 1}
                   </td>
@@ -135,11 +156,13 @@ const Table = () => {
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {item.accountHead || '-'}
                   </td>
-                  {/* <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
-                    <div className="flex justify-end">
-                      <Ellipsis height={17} />
+                  <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
+                    <div className="flex justify-center gap-3">
+                      <div onClick={()=>navigate(`/accountant/view/${item._id}?fromBank=true`)}><Eye color="#569FBC"/></div>
+                  <div ><NewBankModal id={item._id} page="edit"/> </div>
+                <button onClick={()=>handleDelete(item._id)}>   <Trash2 color="red" size={18}/></button>
                     </div>
-                  </td> */}
+                  </td>
                 </tr>
               ))              
             ) : (

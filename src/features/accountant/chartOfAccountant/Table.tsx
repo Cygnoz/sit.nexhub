@@ -9,6 +9,7 @@ import NewAccountModal from "./NewAccountModal";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
+import TrashCan from "../../../assets/icons/TrashCan";
 
 interface Account {
   _id: string;
@@ -24,9 +25,16 @@ interface TableProps {
   searchValue: string;
   setSearchValue: (value: string) => void;
   loading: any;
+  fetchAllAccounts:any
 }
 
-const Table = ({ accountData, searchValue, setSearchValue, loading }: TableProps) => {
+const Table = ({
+  accountData,
+  searchValue,
+  setSearchValue,
+  loading,
+  fetchAllAccounts,
+}: TableProps) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
@@ -52,18 +60,18 @@ const Table = ({ accountData, searchValue, setSearchValue, loading }: TableProps
     currentPage * rowsPerPage
   );
 
-  const [oneAccountData,setOneAccountData]=useState <any> ({})
-console.log(oneAccountData,"oneAccountData");
+  const [oneAccountData, setOneAccountData] = useState<any>({});
+  console.log(oneAccountData, "oneAccountData");
 
   const { request: fetchOneItem } = useApi("get", 5001);
+  const { request: deleteAccount } = useApi("delete", 5001);
   const getOneItem = async (item: Account) => {
     try {
       const url = `${endponits.GET_ONE_ACCOUNT}/${item._id}`;
       const { response, error } = await fetchOneItem(url);
       if (!error && response) {
         setOneAccountData(response.data);
-        console.log(response.data,"diwudew");
-        
+        console.log(response.data);
       } else {
         console.error("Failed to fetch one item data.");
       }
@@ -72,7 +80,23 @@ console.log(oneAccountData,"oneAccountData");
       console.error("Error in fetching one item data", error);
     }
   };
-  
+
+  const handleDelete=async(id:string)=>{
+    try {
+      const url = `${endponits.DELETE_ACCONUT}/${id}`;
+      const { response, error } = await deleteAccount(url);
+      if (!error && response) {
+        toast.success(response.data.message);
+        fetchAllAccounts()
+        console.log(response.data);
+      } else {
+        toast.error(error.response.data.message);
+      }
+    } catch (error) {
+      toast.error("Error in fetching one item data.");
+      console.error("Error in fetching one item data", error);
+    }
+  }
 
   useEffect(() => {
     setCurrentPage(1);
@@ -111,15 +135,14 @@ console.log(oneAccountData,"oneAccountData");
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
             {loading.skeleton ? (
-              [...Array(paginatedData.length > 0 ? paginatedData.length : 5)].map(
-                (_, idx) => <TableSkelton key={idx} columns={tableHeaders} />
-              )
+              [
+                ...Array(paginatedData.length > 0 ? paginatedData.length : 5),
+              ].map((_, idx) => (
+                <TableSkelton key={idx} columns={tableHeaders} />
+              ))
             ) : paginatedData && paginatedData.length > 0 ? (
               paginatedData.map((item, index) => (
-                <tr
-                  key={item._id}
-                  className="relative"
-                >
+                <tr key={item._id} className="relative">
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {(currentPage - 1) * rowsPerPage + index + 1}
                   </td>
@@ -136,16 +159,25 @@ console.log(oneAccountData,"oneAccountData");
                     {item.accountHead}
                   </td>
                   <td className="py-3 gap-3 px-4 border-b border-tableBorder flex justify-center items-center">
-
-                    <div onClick={() => {
-                      getOneItem(item); 
-                    }}>
-                      <NewAccountModal page="Edit" fetchAllAccounts={function (): void {
-                        throw new Error("Function not implemented.");
-                      }} accountData={oneAccountData} />
+                    <div onClick={()=>handleDelete(item._id)} >
+<TrashCan color={"red"}/>
+                    </div>
+                    <div
+                      onClick={() => {
+                        getOneItem(item);
+                      }}
+                    >
+                      <NewAccountModal
+                        page="Edit"
+                        fetchAllAccounts={() => {}}
+                        accountData={oneAccountData}
+                      />
                     </div>
 
-                    <div onClick={() => navigate(`/accountant/view/${item._id}`)} className="cursor-pointer">
+                    <div
+                      onClick={() => navigate(`/accountant/view/${item._id}`)}
+                      className="cursor-pointer"
+                    >
                       <Eye color="#569FBC" />
                     </div>
                   </td>

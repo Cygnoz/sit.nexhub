@@ -5,7 +5,6 @@ import Table from "./Table";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { Account } from "../../../Types/Accountant";
-import toast from "react-hot-toast";
 
 type Props = {};
 
@@ -52,7 +51,7 @@ const fetchAllAccounts = async () => {
 
   const HandleOnSave = () =>{
     fetchAllAccounts();
-    toast.success('Account successfully added!'); 
+    // toast.success('Account successfully added!'); 
   }
 
   return (
@@ -74,6 +73,7 @@ const fetchAllAccounts = async () => {
         {/* <AccountTypes /> */}
         {/* Pass accountData and searchValue as props to Table */}
         <Table
+        fetchAllAccounts={fetchAllAccounts}
           accountData={accountData}
           searchValue={searchValue}
           setSearchValue={setSearchValue}
