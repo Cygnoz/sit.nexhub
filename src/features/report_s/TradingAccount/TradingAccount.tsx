@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import CheveronLeftIcon from "../../assets/icons/CheveronLeftIcon";
-import useApi from "../../Hooks/useApi";
+import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
+import useApi from "../../../Hooks/useApi";
 import toast from "react-hot-toast";
-import SearchBar from "../../Components/SearchBar";
-import PrinterIcon from "../../assets/icons/PrinterIcon";
-import CehvronDown from "../../assets/icons/CehvronDown";
-import Calender from "../../assets/icons/Calender";
-import { endponits } from "../../Services/apiEndpoints";
+import PrinterIcon from "../../../assets/icons/PrinterIcon";
+import CehvronDown from "../../../assets/icons/CehvronDown";
+import Calender from "../../../assets/icons/Calender";
+import { endponits } from "../../../Services/apiEndpoints";
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
@@ -29,10 +28,8 @@ function getLastDayOfMonth() {
 }
 
 const TradingAccount = () => {
-  const [debitData, setDebitData] = useState([]);
-  const [creditData, setCreditData] = useState([]);
+  const [tradingData, setTradingData] = useState<[] | any>([]);
   const { request: fetchOneItem } = useApi("get", 5006);
-  const [searchValue, setSearchValue] = useState("");
   const [fromDate, setFromDate] = useState(getFirstDayOfMonth());
   const [toDate, setToDate] = useState(getLastDayOfMonth());
   const fromDateRef = useRef<HTMLInputElement>(null);
@@ -53,9 +50,9 @@ const TradingAccount = () => {
       const url = `${endponits.GET_TRADING_ACCONUT}/${formattedFromDate}/${formattedToDate}`;
       const { response, error } = await fetchOneItem(url);
       if (!error && response) {
-        console.log(response.data.data.credit);
-        setDebitData(response.data.data.debit);
-        setCreditData(response.data.data.credit);
+        console.log(response.data);
+
+        setTradingData(response.data.data);
       }
     } catch (error) {
       toast.error("Error in fetching trading data.");
@@ -133,23 +130,16 @@ const TradingAccount = () => {
 
       {/* Trading Account Tables */}
       <div className="bg-white rounded-xl shadow-sm p-6">
-        <div className="flex justify-between items-center mb-6">
-          <div className="w-1/2">
-            <SearchBar
-              searchValue={searchValue}
-              onSearchChange={setSearchValue}
-              placeholder="Search Currency"
-            />
-          </div>
-          <div className="text-right">
+        <div className="flex justify-center items-center mb-2">
+          <div className="text-center">
             <p className="font-bold text-textColor">Company Name</p>
-            <p className="text-sm text-gray-500">01/07/2024 To 30/09/2024</p>
+            <p className="text-sm text-textColor">01/07/2024 To 30/09/2024</p>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-8">
           {/* Debit Table */}
           <div>
-            <h3 className="text-gray-700 font-medium mb-4">Debit</h3>
+            <h3 className=" text-textColor   mb-4">Debit</h3>
             <div className="overflow-hidden ">
               {/* Table Header */}
               <table className="min-w-full">
@@ -164,51 +154,73 @@ const TradingAccount = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#EAECF0]">
-  {debitData.map((item: any, index: number) => {
-    let accountName = "";
-    let totalAmount = 0;
-    let items = [];
-    if (item.openingStock) {
-      accountName = "Opening Stock";
-      totalAmount = item.openingStock.total;
-      items = item.openingStock.item;
-    } else if (item.purchases) {
-      accountName = "Purchases";
-      totalAmount = item.purchases.overallNetDebit;
-      items = item.purchases.item;
-    } else if (item.directExpenses) {
-      accountName = "Direct Expenses";
-      totalAmount = item.directExpenses.overallNetDebit;
-      items = item.directExpenses.item;
-    }
+                  {tradingData?.debit?.map((item: any, index: number) => {
+                    let accountName = "";
+                    let totalAmount = 0;
+                    let items = [];
+                    let link = "";
 
-    return (
-      <tr
-        key={index}
-        className={
-          index === debitData.length - 1 ? "font-semibold bg-gray-50" : ""
-        }
-      >
-        <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
-          <Link to={`/reports/trialBalance/${accountName}`} state={{ items }}>
-            {accountName}
-          </Link>
-        </td>
-        <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">
-          {totalAmount}
-        </td>
-      </tr>
-    );
-  })}
-</tbody>
+                    if (item.openingStock) {
+                      accountName = "Opening Stock";
+                      totalAmount = item.openingStock.total;
+                      items = item.openingStock;
+                      link = `/reports/trading-account/${accountName}`;
+                    } else if (item.purchases) {
+                      const accountSubhead = "purchases";
+                      accountName = "Purchases";
+                      totalAmount = item.purchases.overallNetDebit;
+                      items = item;
+                      console.log(item, "items");
+                      link = `/reports/trading-account/accounts/${accountSubhead}`;
+                    } else if (item.directExpenses) {
+                      const accountSubhead = "directExpenses";
+                      accountName = "Direct Expenses";
+                      totalAmount = item.directExpenses.overallNetDebit;
+                      items = item.directExpenses.items;
+                      link = `/reports/trading-account/accounts/${accountSubhead}`;
+                    } else if (item.grossProfit) {
+                      accountName = "Gross Profit";
+                      totalAmount = item.grossProfit;
+                    }
 
+                    return (
+                      <tr
+                        key={index}
+                        className={
+                          index === tradingData?.debit.length - 1
+                            ? "font-semibold bg-gray-50"
+                            : ""
+                        }
+                      >
+                        <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
+                          <Link to={link} state={{ items, fromDate, toDate }}>
+                            {accountName}
+                          </Link>
+                        </td>
+                        <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">
+                          {totalAmount}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  <tr>
+                    <td className="px-6 py-3  text-sm text-[#4B5C79] font-bold">
+                      Total
+                    </td>
+                    <td className="px-6 py-3 text-right  text-sm text-[#4B5C79] font-bold">
+                      {tradingData.finalDebit}
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
 
           {/* Credit Table */}
           <div>
-            <h3 className="text-gray-700 font-medium mb-4">Credit</h3>
+            <div className="">
+              <h3 className="text-textColor text-end  mb-4">Credit</h3>
+            </div>{" "}
             <div className="overflow-hidden ">
               {/* Table Header */}
               <table className="min-w-full">
@@ -223,36 +235,52 @@ const TradingAccount = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#EAECF0] ">
-                  {creditData.map((item: any, index: number) => {
+                  {tradingData?.credit?.map((item: any, index: number) => {
                     let accountName = "";
                     let totalAmount = 0;
-
+                    let items = [];
+                    let link = "";
                     if (item.sales) {
                       accountName = "Sales";
-                      totalAmount = item.sales.netCredit;
+                      totalAmount = item.sales.overallNetCredit;
                     } else if (item.closingStock) {
                       accountName = "Closing Stock";
                       totalAmount = item.closingStock.total;
+                      items = item.closingStock.items;
+                      link = `/reports/trading-account/${accountName}`;
+                    } else if (item.grossLoss) {
+                      accountName = "Gross Loss";
+                      totalAmount = item.grossLoss.total;
                     }
 
                     return (
                       <tr
                         key={index}
                         className={
-                          index === creditData.length - 1
+                          index === tradingData?.credit.length - 1
                             ? "font-semibold bg-gray-50"
                             : ""
                         }
                       >
-                        <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
-                          {accountName}
-                        </td>
+                        <Link to={link} state={{ items, fromDate, toDate }}>
+                          <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
+                            {accountName}
+                          </td>
+                        </Link>
                         <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">
                           {totalAmount}
                         </td>
                       </tr>
                     );
                   })}
+                  <tr>
+                    <td className="px-6 py-3  text-sm text-[#4B5C79] font-bold">
+                      Total
+                    </td>
+                    <td className="px-6 py-3 text-right  text-sm text-[#4B5C79] font-bold">
+                      {tradingData.finalCredit}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>

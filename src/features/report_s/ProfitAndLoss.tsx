@@ -29,7 +29,7 @@ const ProfitAndLoss = ({}: Props) => {
   const navigate = useNavigate();
 
 
-
+console.log(total,PLData)
 
   const fromDateRef = useRef<HTMLInputElement>(null);
     const toDateRef = useRef<HTMLInputElement>(null);

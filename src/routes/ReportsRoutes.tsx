@@ -7,7 +7,7 @@ const DayBook = lazy(() => import("../features/accountant/DayBook/DayBook"));
 const BalanceSheet = lazy(() => import("../features/report_s/BalanceSheet"));
 const ProfitAndLoss = lazy(() => import("../features/report_s/ProfitAndLoss"));
 const TradingAccount = lazy(
-  () => import("../features/report_s/TradingAccount")
+  () => import("../features/report_s/TradingAccount/TradingAccount")
 );
 const TrialBalance = lazy(
   () => import("../features/report_s/TrailBalance/TrialBalance")
@@ -17,6 +17,12 @@ const MonthlySummery = lazy(
   () => import("../features/report_s/TrailBalance/MonthlySummery")
 );
 const Ledger = lazy(() => import("../features/report_s/TrailBalance/Ledger"));
+const Stock = lazy(
+  () => import("../features/report_s/TradingAccount/Stock")
+);
+const Accounts = lazy(
+  () => import("../features/report_s/TradingAccount/Accounts")
+);
 
 const ReportsRoutes: RouteObject[] = [
   { path: "/reports", element: <Reports /> },
@@ -35,7 +41,8 @@ const ReportsRoutes: RouteObject[] = [
     path: "/reports/trialBalance/:accountSubHead/monthly-summery/ledger",
     element: <Ledger />,
   },
-  { path: "/reports/trialBalance/:account", element: <Account /> },
+  { path: "/reports/trading-account/:accountName", element: <Stock /> },
+  {path:"/reports/trading-account/accounts/:accountSubhead", element: <Accounts />}
 ];
 
 export default ReportsRoutes;

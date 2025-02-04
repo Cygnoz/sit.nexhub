@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import CheveronLeftIcon from "../../assets/icons/CheveronLeftIcon";
 import { useEffect, useRef, useState } from "react";
 import useApi from "../../Hooks/useApi";
@@ -24,8 +24,8 @@ const BalanceSheet = ({}: Props) => {
   
     const [fromDate, setFromDate] = useState(getTodayDate());
     const [toDate, setToDate] = useState(getTodayDate());
-    const [total, setTotal] = useState<any>({})
-      const navigate = useNavigate();
+    // const [total, setTotal] = useState<any>({})
+      // const navigate = useNavigate();
 
       
       
@@ -81,12 +81,12 @@ getBSData()
   },[])
 
 
-  const handleItemClick = (account: string) => {
-    if (account === "Capital Account") {
-      // Navigate to the specific path for Indirect Expense
-      navigate("/reports/profitandloss/indirectExpense");
-    } 
-  };
+  // const handleItemClick = (account: string) => {
+  //   if (account === "Capital Account") {
+  //     // Navigate to the specific path for Indirect Expense
+  //     navigate("/reports/profitandloss/indirectExpense");
+  //   } 
+  // };
 
   return (
     <div className="p-5">
