@@ -189,6 +189,10 @@ const TradingAccount = () => {
                       totalAmount = item.grossProfit;
                     }
 
+                    if (totalAmount === 0) {
+                      link = "";
+                    }
+
                     return (
                       <tr
                         key={index}
@@ -261,6 +265,11 @@ const TradingAccount = () => {
                     } else if (item.grossLoss) {
                       accountName = "Gross Loss";
                       totalAmount = item.grossLoss.total;
+                    }
+
+                    
+                    if (totalAmount === 0) {
+                      link = "";
                     }
 
                     return (
