@@ -5,7 +5,11 @@ import CustomerTable from "./CustomerTable";
 // import Customers from "./Customers";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import { CustomerEditResponseContext, CustomerResponseContext, TableResponseContext } from "../../../context/ContextShare";
+import {
+  CustomerEditResponseContext,
+  CustomerResponseContext,
+  TableResponseContext,
+} from "../../../context/ContextShare";
 import Dropdown from "./Dropdown";
 
 interface Customer {
@@ -35,40 +39,34 @@ function CustomerHome({}: Props) {
 
   const fetchAllCustomers = async () => {
     try {
-      // Set loading state to show the skeleton loader
       setLoading({ ...loading, skeleton: true });
-  
       const url = `${endponits.GET_ALL_CUSTOMER}`;
       const { response, error } = await AllCustomers(url);
-  
+
       if (!error && response) {
         setCustomerData(response.data);
         console.log(response, "all customers");
-        
-        // Turn off the skeleton loader after data is received
         setLoading({ ...loading, skeleton: false });
       } else {
-        // Handle error scenario
         console.log(error, "all customers error");
-  
-        // Update the loading state in case of error
         setLoading({ ...loading, skeleton: false, noDataFound: true });
       }
     } catch (error) {
       console.error("Error fetching accounts:", error);
-  
-      // Handle error state
       setLoading({ ...loading, skeleton: false, noDataFound: true });
     }
   };
-  
 
   useEffect(() => {
     fetchAllCustomers();
-  }, [customerResponse,customerEditResponse]);
+  }, [customerResponse, customerEditResponse]);
 
-  const activeCustomers = customerData.filter(customer => customer.status === "Active").length;
-  const inactiveCustomers = customerData.filter(customer => customer.status === "Inactive").length;
+  const activeCustomers = customerData.filter(
+    (customer) => customer.status === "Active"
+  ).length;
+  const inactiveCustomers = customerData.filter(
+    (customer) => customer.status === "Inactive"
+  ).length;
 
   // Find duplicate customers
   const findDuplicateCustomers = (customers: Customer[]) => {
@@ -76,7 +74,7 @@ function CustomerHome({}: Props) {
     const seen = new Set<string>();
     const seenDuplicates = new Set<string>();
 
-    customers.forEach(customer => {
+    customers.forEach((customer) => {
       if (seen.has(customer.customerDisplayName)) {
         if (!seenDuplicates.has(customer.customerDisplayName)) {
           duplicates.push(customer);
@@ -96,11 +94,13 @@ function CustomerHome({}: Props) {
     setActiveFilter(filter);
   };
 
-  const filteredCustomers = customerData.filter(customer => {
+  const filteredCustomers = customerData.filter((customer) => {
     if (activeFilter === "Active") return customer.status === "Active";
     if (activeFilter === "Inactive") return customer.status === "Inactive";
     if (activeFilter === "Duplicate") {
-      return findDuplicateCustomers(customerData).some(dup => dup.customerDisplayName === customer.customerDisplayName);
+      return findDuplicateCustomers(customerData).some(
+        (dup) => dup.customerDisplayName === customer.customerDisplayName
+      );
     }
     return true;
   });
@@ -118,7 +118,7 @@ function CustomerHome({}: Props) {
         <div className="ml-auto gap-3 flex items-center">
           <NewCustomerModal page="" />
           <div>
-          <Dropdown/>
+            <Dropdown />
           </div>
         </div>
       </div>
@@ -133,7 +133,13 @@ function CustomerHome({}: Props) {
       </div>
       <div className="px-6 mt-3">
         <div className="bg-white p-5">
-          <CustomerTable loading={loading} customerData={filteredCustomers} searchValue={searchValue} setSearchValue={setSearchValue} />
+          <CustomerTable
+            loading={loading}
+            customerData={filteredCustomers}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+            refreshCustomers={fetchAllCustomers} 
+          />
         </div>
       </div>
     </>

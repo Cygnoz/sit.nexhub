@@ -97,6 +97,7 @@ export const endponits = {
   GET_TAX: `customer-additional-data`,
   GET_ONE_CUSTOMER: `/get-one-customer`,
   EDIT_CUSTOMER: `edit-customer`,
+  DELETE_CUSTOMER: "delete-customer",
   UPDATE_CUSTOMER_STATUS: `update-customer-status`,
   GET_CUSTOMER_HISTORY: `get-one-customer-history`,
   GET_CUSTOMER_TRANSACTIONS: `get-Customer-Trandactions`,
@@ -106,6 +107,7 @@ export const endponits = {
   GET_ALL_SUPPLIER: "get-all-supplier",
   GET_ONE_SUPPLIER: "get-supplier",
   EDIT_SUPPLIER: "update-supplier",
+  DELETE_SUPPLIER:"delete-supplier",
   GET_TAX_SUPPLIER: `supplier-additional-data`,
   UPDATE_SUPPLIER_STATUS: `update-supplier-status`,
   GET_ONE_SUPPLIER_HISTORY: `get-one-supplier-history`,
@@ -120,7 +122,7 @@ export const endponits = {
   // Inventory
   GET_INVENTORY_DASHBOARD: `/get-inventory-Dashboard`,
   GET_ONE_ITEM: `get-one-item`,
-  DELETE_ITEM:"",
+  DELETE_ITEM: "delete-item",
   // Item Tracking
   GET_ALL_ITEM_TRANKING: `get-all-item-track`,
 
@@ -235,11 +237,11 @@ export const endponits = {
   //Report
   GET_DAYBOOK: "dayBook",
   // GET_BS_DATA:`balanceSheet`,
-  GET_TRIAL_BALANCE:`trialBalance`,
-  GET_TRADING_ACCONUT:`tradingAccount`,
+  GET_TRIAL_BALANCE: `trialBalance`,
+  GET_TRADING_ACCONUT: `tradingAccount`,
 
 
   // Ticket Rising
-  UNASSIGNED_TICKET:'unassigned-ticket',
-  CHAT_HISTORY:'/chat-history'
+  UNASSIGNED_TICKET: 'unassigned-ticket',
+  CHAT_HISTORY: '/chat-history'
 };

@@ -4,7 +4,10 @@ import Cards from "./Cards";
 import SupplierTable from "./SupplierTable";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import { SupplierResponseContext, TableResponseContext } from "../../../context/ContextShare";
+import {
+  SupplierResponseContext,
+  TableResponseContext,
+} from "../../../context/ContextShare";
 
 interface Supplier {
   _id: string;
@@ -26,22 +29,21 @@ const SupplierHome = () => {
   const { supplierResponse } = useContext(SupplierResponseContext)!;
   const [searchValue, setSearchValue] = useState<string>("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const {loading,setLoading}=useContext(TableResponseContext)!;
-
+  const { loading, setLoading } = useContext(TableResponseContext)!;
 
   const fetchAllSuppliers = async () => {
     try {
       const url = `${endponits.GET_ALL_SUPPLIER}`;
       setLoading({ ...loading, skelton: true });
-  
+
       const { response, error } = await AllSuppliers(url);
       console.log("API Response:", response); // Debugging line
-  
+
       if (error || !response) {
         setLoading({ ...loading, skelton: false, noDataFound: true });
         return;
       }
-  
+
       setSupplierData(response.data); // Check if response.data contains all suppliers
       setLoading({ ...loading, skelton: false });
     } catch (error) {
@@ -49,13 +51,17 @@ const SupplierHome = () => {
       setLoading({ ...loading, noDataFound: true, skelton: false });
     }
   };
-  
+
   useEffect(() => {
     fetchAllSuppliers();
   }, [supplierResponse]); // Ensure supplierResponse updates properly
-  
-  const activeSuppliers = supplierData.filter(supplier => supplier.status === "Active").length;
-  const inactiveSuppliers = supplierData.filter(supplier => supplier.status === "Inactive").length;
+
+  const activeSuppliers = supplierData.filter(
+    (supplier) => supplier.status === "Active"
+  ).length;
+  const inactiveSuppliers = supplierData.filter(
+    (supplier) => supplier.status === "Inactive"
+  ).length;
 
   // Find duplicate suppliers
   const findDuplicateSuppliers = (suppliers: Supplier[]) => {
@@ -63,7 +69,7 @@ const SupplierHome = () => {
     const seen = new Set<string>();
     const seenDuplicates = new Set<string>();
 
-    suppliers.forEach(supplier => {
+    suppliers.forEach((supplier) => {
       if (seen.has(supplier.supplierDisplayName)) {
         if (!seenDuplicates.has(supplier.supplierDisplayName)) {
           duplicates.push(supplier);
@@ -77,18 +83,19 @@ const SupplierHome = () => {
     return duplicates;
   };
 
-  
   const duplicateSuppliers = findDuplicateSuppliers(supplierData).length;
 
   const handleCardClick = (filter: string | null) => {
     setActiveFilter(filter);
   };
 
-  const filteredSuppliers = supplierData.filter(supplier => {
+  const filteredSuppliers = supplierData.filter((supplier) => {
     if (activeFilter === "Active") return supplier.status === "Active";
     if (activeFilter === "Inactive") return supplier.status === "Inactive";
     if (activeFilter === "Duplicate") {
-      return findDuplicateSuppliers(supplierData).some(dup => dup.supplierDisplayName === supplier.supplierDisplayName);
+      return findDuplicateSuppliers(supplierData).some(
+        (dup) => dup.supplierDisplayName === supplier.supplierDisplayName
+      );
     }
     return true;
   });
@@ -99,14 +106,12 @@ const SupplierHome = () => {
         <div>
           <h3 className="font-bold text-2xl text-textColor">Supplier</h3>
           <p className="text-sm text-gray mt-1">
-          Organize supplier details to enhance purchasing and collaboration.
+            Organize supplier details to enhance purchasing and collaboration.
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">
           <NewSupplierModal />
-          <div>
-          {/* <Dropdown /> */}
-          </div>
+          <div>{/* <Dropdown /> */}</div>
         </div>
       </div>
       <div>
@@ -120,7 +125,13 @@ const SupplierHome = () => {
       </div>
       <div className="px-6 mt-3">
         <div className="bg-white p-5">
-          <SupplierTable loading={loading} supplierData={filteredSuppliers} searchValue={searchValue} setSearchValue={setSearchValue} />
+          <SupplierTable
+            loading={loading}
+            supplierData={filteredSuppliers}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+            refreshSuppliers={fetchAllSuppliers}
+          />
         </div>
       </div>
     </>
