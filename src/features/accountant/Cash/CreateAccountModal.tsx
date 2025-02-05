@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import CashImage from "../../../assets/Images/Group 11.png";
 import bgImage from "../../../assets/Images/14.png";
 import Button from "../../../Components/Button";
@@ -10,9 +10,11 @@ import toast from "react-hot-toast";
 import { useContext } from "react";
 import { cashResponseContext } from "../../../context/ContextShare"; 
 import CehvronDown from "../../../assets/icons/CehvronDown";
-type Props = {};
+import PencilEdit from "../../../assets/icons/PencilEdit";
 
-const CreateAccountModal = ({}: Props) => {
+type Props = {page?:string,id?:string};
+
+const CreateAccountModal = ({page,id}: Props) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const initialAccounts = {
     accountName: "",
@@ -30,10 +32,14 @@ const CreateAccountModal = ({}: Props) => {
   const [accounts, setAccounts] = useState(initialAccounts);
   const [openingType, setOpeningType] = useState("Debit");
   const { request: CreateAccount } = useApi("post", 5001);
+  const { request:editAccount } = useApi("put", 5001);
   const { setCashResponse } = useContext(cashResponseContext)!;
 
   const openModal = () => {
     setModalOpen(true);
+    if(page=="edit"){
+      getOneItem();
+    }
   };
 
   const closeModal = () => {
@@ -74,14 +80,39 @@ const CreateAccountModal = ({}: Props) => {
       }));
     }
   };
+
+    const { request: fetchOneItem } = useApi("get", 5001);
+
+  const getOneItem = async () => {
+    try {
+      const url = `${endponits.GET_ONE_ACCOUNT}/${id}`;
+      const { response, error } = await fetchOneItem(url);
+      if (!error && response) {
+        setAccounts(response.data);
+        console.log(response.data);
+      } else {
+        console.error("Failed to fetch one item data.");
+      }
+    } catch (error) {
+      toast.error("Error in fetching one item data.");
+      console.error("Error in fetching one item data", error);
+    }
+  };
+
+  console.log(id,"id")
   
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const url = `${endponits.Add_NEW_ACCOUNT}`;
+      const url = 
+      page === "edit"
+      ?
+     `${endponits.EDIT_NEW_ACCOUNT}/${id}`
+     : endponits.Add_NEW_ACCOUNT;
+     const API = page === "edit" ? editAccount : CreateAccount ;
       const body = accounts;
-      const { response, error } = await CreateAccount(url, body);
+      const { response, error } = await API(url, body);
       
       if (!error && response) {
         toast.success(response.data.message);
@@ -99,8 +130,17 @@ const CreateAccountModal = ({}: Props) => {
     }
   };
 
+  
+   
+  
+
   return (
     <div>
+       {page === "edit" ?
+        <div onClick={openModal} className="cursor-pointer">
+          <PencilEdit color={'#0B9C56'} />
+        </div>
+        :
       <Button
         onClick={openModal}
         variant="primary"
@@ -110,9 +150,8 @@ const CreateAccountModal = ({}: Props) => {
         <span className="flex items-center ">
           <PlusCircle color="" /> &nbsp;&nbsp;<p className="text-sm">Create Account</p>
         </span>
-      </Button>
-
-      <Modal open={isModalOpen} onClose={closeModal} className="">
+      </Button>}
+      <Modal open={isModalOpen} onClose={closeModal} className="text-start w-[60%]">
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
             <div
@@ -124,7 +163,7 @@ const CreateAccountModal = ({}: Props) => {
             ></div>
             <div className="relative z-10">
               <h3 className="text-xl font-bold text-textColor">
-                Create Cash Account
+              {page === "edit" ? "Edit" : "Create"} Cash Account
               </h3>
               <p className="text-dropdownText font-semibold text-sm mt-2">
                 Set up your cash account effortlessly!
