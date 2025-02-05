@@ -1,17 +1,18 @@
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import { useEffect, useState } from "react";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 type Props = {};
 
 const MonthlySummery = ({}: Props) => {
-  const { accountSubHead } = useParams();
 
   const location = useLocation();
   const { items } = location.state || {};
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+      const {organization} = useOrganization()
 
   useEffect(() => {
     const storedFromDate = localStorage.getItem("fromDate");
@@ -25,20 +26,22 @@ const MonthlySummery = ({}: Props) => {
       return "/reports/trialBalance";
     } else if (location.pathname.includes("trading-account")) {
       return "/reports/trading-account";
+    } else if (location.pathname.includes("balance-sheet")) {
+      return "/reports/balance-sheet";
     } else {
       return "/reports";
     }
   };
-  console.log(location.pathname)
+  console.log(items);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4 gap-2">
-      <Link to={reportPath()}>
-  <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
-    <CheveronLeftIcon />
-  </div>
-</Link>
+        <Link to={reportPath()}>
+          <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
+            <CheveronLeftIcon />
+          </div>
+        </Link>
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
             {" "}
@@ -62,7 +65,8 @@ const MonthlySummery = ({}: Props) => {
         <div className="flex items-center  justify-center gap-3 text-center py-2">
           <div>
             <p className="text-textColor font-bold whitespace-nowrap">
-              Company Name
+            {organization?.organizationName}
+
             </p>
             <p className="text-sm text-textColor whitespace-nowrap">
               {fromDate} To {toDate}
@@ -85,8 +89,8 @@ const MonthlySummery = ({}: Props) => {
             {items?.entries?.map((item: any) => (
               <tr className="border-b border-[#ebecf0]">
                 <Link
-                      to={`${reportPath()}/${accountSubHead}/monthly-summery/ledger`}
-                      state={{ item, fromDate, toDate }}
+                  to={`${reportPath()}/${items.accountName}/monthly-summery/ledger`}
+                  state={{ item, fromDate, toDate }}
                 >
                   {" "}
                   <td className="py-3">{item.date}</td>

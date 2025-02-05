@@ -7,6 +7,7 @@ import { endponits } from "../../Services/apiEndpoints";
 import Calender from "../../assets/icons/Calender";
 import CehvronDown from "../../assets/icons/CehvronDown";
 import { PrinterIcon } from "@heroicons/react/20/solid";
+import { useOrganization } from "../../context/OrganizationContext";
 
 type Props = {};
 
@@ -15,56 +16,46 @@ function formatDate(dateStr: string) {
   return date.toLocaleDateString("en-GB").split("/").join("-");
 }
 
-function getTodayDate() {
-  return new Date().toISOString().split("T")[0];
+function getFirstDayOfMonth() {
+  const date = new Date();
+  return `${date.getFullYear()}-${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-01`;
+}
+
+function getLastDayOfMonth() {
+  const date = new Date();
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0)
+    .toISOString()
+    .split("T")[0];
 }
 
 const BalanceSheet = ({}: Props) => {
-  const [BSData,setBSData]=useState([])
-  
-    const [fromDate, setFromDate] = useState(getTodayDate());
-    const [toDate, setToDate] = useState(getTodayDate());
-    // const [total, setTotal] = useState<any>({})
-      // const navigate = useNavigate();
+  const [BSData, setBSData] = useState<any | []>([]);
+      const {organization} = useOrganization()
 
-      
-      
-        const fromDateRef = useRef<HTMLInputElement>(null);
-          const toDateRef = useRef<HTMLInputElement>(null);
-        
-          const handleFromDateClick = () => {
-            fromDateRef.current?.showPicker();
-          };
-        
-          const handleToDateClick = () => {
-            toDateRef.current?.showPicker();
-          };
-    
+  const [fromDate, setFromDate] = useState(getFirstDayOfMonth());
+  const [toDate, setToDate] = useState(getLastDayOfMonth());
+  // const [total, setTotal] = useState<any>({})
+  // const navigate = useNavigate();
+
+  const fromDateRef = useRef<HTMLInputElement>(null);
+  const toDateRef = useRef<HTMLInputElement>(null);
+
+  const handleFromDateClick = () => {
+    fromDateRef.current?.showPicker();
+  };
+
+  const handleToDateClick = () => {
+    toDateRef.current?.showPicker();
+  };
 
   const { request: fetchOneItem } = useApi("get", 5006);
 
-
-  const liabilities = [
-    { account: "Capital Account", total: "₹30,000" },
-    { account: "Loans(Liability)", total: "₹30,000" },
-    { account: "Current Liabilities", total: "₹30,000" },
-    { account: "#INV-1005", total: "₹30,000" },
-  ];
-
-  const assets = [
-    { account: "Fixed Assets", total: "₹30,000" },
-    { account: "Current assets", total: "₹30,000" },
-    { account: "Suspense A/c", total: "₹30,000" },
-    { account: "Profit & Loss A/c", total: "₹30,000" },
-  ];
-
-  console.log(BSData)
-
-  const getBSData= async () => {
+  const formattedFromDate = formatDate(fromDate);
+  const formattedToDate = formatDate(toDate);
+  const getBSData = async () => {
     try {
-      // Format the date range dynamically (if needed)
-      const formattedFromDate = formatDate(fromDate); // Example: Replace `fromDate` with your state
-      const formattedToDate = formatDate(toDate); // Example: Replace `toDate` with your state
       const url = `${endponits.GET_BS_DATA}/${formattedFromDate}/${formattedToDate}`;
 
       // Fetch data using the API hook
@@ -81,17 +72,18 @@ const BalanceSheet = ({}: Props) => {
       toast.error("Failed to fetchBalance Sheet data.");
     }
   };
-  useEffect(()=>{
-getBSData()
-  },[fromDate, toDate])
-
+  useEffect(() => {
+    getBSData();
+  }, [fromDate, toDate]);
 
   // const handleItemClick = (account: string) => {
   //   if (account === "Capital Account") {
   //     // Navigate to the specific path for Indirect Expense
   //     navigate("/reports/profitandloss/indirectExpense");
-  //   } 
+  //   }
   // };
+
+  console.log(BSData.summary, "dert");
 
   return (
     <div className="p-5">
@@ -155,52 +147,182 @@ getBSData()
           </div>
         </div>
       </div>
-      <div className="bg-white rounded-lg my-4 p-3">
-        <div className="flex items-center justify-center gap-3 text-center py-2">
-         
-           <div>
-              <p className="text-textColor font-bold whitespace-nowrap">
-                Company Name
-              </p>
-              <p className="text-sm text-textColor whitespace-nowrap">
-                01/01/2025 To 31/01/2025
-              </p>
-           </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4 my-2 text-sm text-[#585953]">
-          <div>
-            <div className="flex items-centertext-[#585953] font-semibold justify-center rounded-md text-sm py-2 text-[#585953] bg-gradient-to-r from-[#E3E6D5] via-[#E3E6D5] to-[#F7E7CE]">
-              Liabilities
-            </div>
-            <div className="flex text-textColor text-sm font-semibold py-4 mt-2 border-b border-[#F4F4F4]">
-              <div>Account</div>
-              <div className="ml-auto">Amount</div>
-            </div>
-            {liabilities.map((item, index) => (
-              <div
-                key={index}
-                className="flex justify-between text-sm text-[#4B5C79] font-medium py-4  border-b border-[#F4F4F4]"
-              >
-                <span>{item.account}</span>
-                <span>{item.total}</span>
-              </div>
-            ))}
-          </div>
-          <div>
-            <div className="flex  font-semibold justify-center rounded-md text-sm py-2 text-[#585953] bg-gradient-to-r from-[#FFE3B8] via-[#D5DCB3] to-[#D5DCB3]">
-              Assets
-            </div>
-            <div className="flex text-textColor text-sm font-semibold py-4 mt-2 border-b border-[#F4F4F4]">
-              <div>Account</div>
-              <div className="ml-auto">Amount</div>
-            </div>
 
-            {assets.map((item, index) => (
-              <div key={index} className="flex justify-between py-4 text-sm text-[#4B5C79] font-medium border-b border-[#F4F4F4]">
-                <span>{item.account}</span>
-                <span>{item.total}</span>
-              </div>
-            ))}
+      <div className="bg-white rounded-xl shadow-sm p-6 mt-2">
+        <div className="flex justify-center items-center mb-2">
+          <div className="text-center">
+            <p className="font-bold text-textColor"> {organization?.organizationName}</p>
+            <p className="text-sm text-textColor">
+              {formattedFromDate} To {formattedToDate}
+            </p>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-8">
+          {/* Debit Table */}
+          <div>
+            <div className="overflow-hidden ">
+              {/* Table Header */}
+              <table className="min-w-full">
+                <thead>
+                  <tr>
+                    <th className="flex items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9] me-5 ">
+                      Particulars
+                    </th>
+                    <th className="items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9]">
+                      Amount
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#EAECF0]">
+                  {BSData?.credit?.map((item: any, index: number) => {
+                    let accountName = "";
+                    let totalAmount = 0;
+                    let items = [];
+                    let link = "";
+
+                    if (item.equity) {
+                      accountName = "equity";
+                      totalAmount =
+                        item.equity.overallNetCredit -
+                        item.equity.overallNetDebit;
+                      items = item;
+                      link = `/reports/balance-sheet/accounts/${accountName}`;
+                      console.log(item.equity);
+                    } else if (item.currentLiabilities) {
+                      const accountSubhead = "currentLiabilities";
+                      accountName = "Current Liabilities";
+                      totalAmount =
+                        item.currentLiabilities.overallNetCredit -
+                        item.currentLiabilities.overallNetDebit;
+                      items = item;
+                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+                      console.log(item, "purchase");
+                    } else if (item.nonCurrentLiabilities) {
+                      const accountSubhead = "nonCurrentLiabilities";
+                      accountName = "Non-Current Liabilities";
+                      totalAmount =
+                        item.nonCurrentLiabilities.overallNetCredit -
+                        item.nonCurrentLiabilities.overallNetDebit;
+                      items = item;
+                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+                    } else if (item.grossProfit) {
+                      accountName = "Net Loss (c/d)";
+                      totalAmount = item.grossProfit;
+                    }
+                    if (totalAmount === 0) {
+                      link = "";
+                    }
+
+                    return (
+                      <tr
+                        key={index}
+                        className={
+                          index === BSData?.debit.length - 1
+                            ? "font-semibold bg-gray-50"
+                            : ""
+                        }
+                      >
+                        <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
+                          <Link to={link} state={{ items }}>
+                            {accountName}
+                          </Link>
+                        </td>
+                        <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">
+                          {totalAmount}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  <tr>
+                    <td className="px-6 py-3  text-sm text-[#4B5C79] font-bold">
+                      Total
+                    </td>
+                    <td className="px-6 py-3 text-right  text-sm text-[#4B5C79] font-bold">
+                      {BSData?.summary?.finalCredit}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Credit Table */}
+          <div>
+            <div className=""></div>{" "}
+            <div className="overflow-hidden ">
+              {/* Table Header */}
+              <table className="min-w-full">
+                <thead>
+                  <tr>
+                    <th className="flex items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9] mx-5">
+                      Particulars
+                    </th>
+                    <th className="items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9]">
+                      Amount
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#EAECF0] ">
+                  {BSData?.debit?.map((item: any, index: number) => {
+                    let accountName = "";
+                    let totalAmount = 0;
+                    let items = [];
+                    let link = "";
+                    if (item.currentAssets) {
+                      const accountSubhead = "currentAssets";
+                      accountName = "Current Assets";
+                      totalAmount =
+                        item.currentAssets.overallNetDebit -
+                        item.currentAssets.overallNetCredit;
+                      items = item;
+                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+                    } else if (item.nonCurrentAssets) {
+                      accountName = "nonCurrentAssets";
+                      totalAmount =
+                        item.nonCurrentAssets.overallNetDebit -
+                        item.nonCurrentAssets.overallNetCredit;
+                      items = item;
+                      link = `/reports/balance-sheet/accounts/${accountName}`;
+                    } else if (item.grossLoss) {
+                      accountName = "Gross Loss";
+                      totalAmount = item.grossLoss;
+                    }
+
+                    if (totalAmount === 0) {
+                      link = "";
+                    }
+
+                    return (
+                      <tr
+                        key={index}
+                        className={
+                          index === BSData?.credit.length - 1
+                            ? "font-semibold bg-gray-50"
+                            : ""
+                        }
+                      >
+                        <Link to={link} state={{ items, fromDate, toDate }}>
+                          <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
+                            {accountName}
+                          </td>
+                        </Link>
+                        <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">
+                          {totalAmount}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  <tr>
+                    <td className="px-6 py-3  text-sm text-[#4B5C79] font-bold">
+                      Total
+                    </td>
+                    <td className="px-6 py-3 text-right  text-sm text-[#4B5C79] font-bold">
+                      {BSData?.summary?.finalCredit}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

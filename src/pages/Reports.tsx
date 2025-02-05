@@ -34,7 +34,7 @@ const settingsData: reports[] = [
     title: "Balance Sheet",
     description: "ManageBalance Sheet",
     imageUrl: dayBook,
-    route: "/reports/balanceSheet",
+    route: "/reports/balance-sheet",
   },
   {
     title: "Trading Account",

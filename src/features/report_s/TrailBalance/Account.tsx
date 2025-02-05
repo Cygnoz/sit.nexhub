@@ -2,11 +2,13 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import { useEffect, useState } from "react";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 type Props = {};
 
 const Account = ({}: Props) => {
   const { accountSubHead } = useParams();
+      const {organization} = useOrganization()
 
   const location = useLocation();
   const { item } = location.state || {};
@@ -22,6 +24,8 @@ const Account = ({}: Props) => {
       if (storedFromDate) setFromDate(storedFromDate);
       if (storedToDate) setToDate(storedToDate);
     }, []);
+
+    console.log(item)
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -54,7 +58,7 @@ const Account = ({}: Props) => {
         <div className="flex items-center  justify-center gap-3 text-center py-2">
           <div>
             <p className="text-textColor font-bold whitespace-nowrap">
-              Company Name
+            {organization?.organizationName}
             </p>
             <p className="text-sm text-textColor whitespace-nowrap">
               {fromDate} To {toDate}
@@ -92,8 +96,8 @@ const Account = ({}: Props) => {
               </tr>
             ))}
             <td className="py-3 font-bold">Total</td>
-            <td className="py-3 text-right font-bold">{item.totalDebit}</td>
-            <td className="py-3 text-right font-bold">{item.totalCredit}</td>
+            <td className="py-3 text-right font-bold">{item?.totalDebit}</td>
+            <td className="py-3 text-right font-bold">{item?.totalCredit}</td>
           </tbody>
         </table>
       </div>

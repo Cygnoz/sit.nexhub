@@ -7,6 +7,7 @@ import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import Calender from "../../../assets/icons/Calender";
 import { endponits } from "../../../Services/apiEndpoints";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
@@ -34,6 +35,7 @@ const TradingAccount = () => {
   const [toDate, setToDate] = useState(getLastDayOfMonth());
   const fromDateRef = useRef<HTMLInputElement>(null);
   const toDateRef = useRef<HTMLInputElement>(null);
+      const {organization} = useOrganization()
 
   const handleFromDateClick = () => {
     fromDateRef.current?.showPicker();
@@ -137,7 +139,8 @@ const TradingAccount = () => {
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex justify-center items-center mb-2">
           <div className="text-center">
-            <p className="font-bold text-textColor">Company Name</p>
+            <p className="font-bold text-textColor">            {organization?.organizationName}
+            </p>
             <p className="text-sm text-textColor">{formattedFromDate} To {formattedToDate}</p>
           </div>
         </div>
@@ -173,14 +176,14 @@ const TradingAccount = () => {
                     } else if (item.purchases) {
                       const accountSubhead = "purchases";
                       accountName = "Purchases";
-                      totalAmount = item.purchases.overallNetDebit;
+                      totalAmount = item.purchases.overallNetDebit - item.purchases.overallNetCredit;
                       items = item;
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
                       console.log(item,'purchase')
                     } else if (item.directExpenses) {
                       const accountSubhead = "directExpenses";
                       accountName = "Direct Expenses";
-                      totalAmount = item.directExpenses.overallNetDebit;
+                      totalAmount = item.directExpenses.overallNetDebit -  item.directExpenses.overallNetCredit;
                       items = item;
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
                     } else if (item.grossProfit) {
@@ -251,7 +254,7 @@ const TradingAccount = () => {
                     if (item.sales) {
                       const accountSubhead = "sales";
                       accountName = "Sales";
-                      totalAmount = item.sales.overallNetCredit;
+                      totalAmount = item.sales.overallNetCredit-item.sales.overallNetDebit;
                       items = item;
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
 

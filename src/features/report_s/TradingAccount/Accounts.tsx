@@ -2,6 +2,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import { useEffect, useState } from "react";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 type Props = {};
 
@@ -19,13 +20,16 @@ const Accounts = ({}: Props) => {
     if (storedFromDate) setFromDate(storedFromDate);
     if (storedToDate) setToDate(storedToDate);
   }, []);
+  const {organization} = useOrganization()
 
   const reportPath = () => {
     if (location.pathname.includes("trialBalance")) {
       return "/reports/trialBalance";
     } else if (location.pathname.includes("trading-account")) {
       return "/reports/trading-account";
-    } else {
+    }else if (location.pathname.includes("balance-sheet")) {
+      return "/reports/balance-sheet";} 
+    else {
       return "/reports";
     }
   };
@@ -56,7 +60,7 @@ const Accounts = ({}: Props) => {
         <div className="flex items-center justify-center gap-3 text-center py-2">
           <div>
             <p className="text-textColor font-bold whitespace-nowrap">
-              Company Name
+              {organization?.organizationName}
             </p>
             <p className="text-sm text-textColor whitespace-nowrap">
               {fromDate} To {toDate}

@@ -26,7 +26,7 @@ const ReportsRoutes: RouteObject[] = [
   { path: "/reports", element: <Reports /> },
   { path: "/reports/daybook", element: <DayBook /> },
   { path: "/reports/profitandloss", element: <ProfitAndLoss /> },
-  { path: "/reports/balanceSheet", element: <BalanceSheet /> },
+  { path: "/reports/balance-sheet", element: <BalanceSheet /> },
   { path: "/reports/trading-account", element: <TradingAccount /> },
   { path: "/reports/trialBalance", element: <TrialBalance /> },
   { path: "/reports/profitandloss/groupsummary/:accountSubhead", element: <GroupSummary /> },
@@ -51,6 +51,15 @@ const ReportsRoutes: RouteObject[] = [
   {
     path: "/reports/trading-account/:accountSubHead/monthly-summery/ledger",
     element: <Ledger />,
+    
+  },
+  { path: "/reports/balance-sheet/accounts/:accountSubhead", element: <Accounts /> },
+  { path: "/reports/balance-sheet/:accountSubhead/monthly-summery", element: <MonthlySummery /> },
+
+  {
+    path: "/reports/balance-sheet/:accountSubHead/monthly-summery/ledger",
+    element: <Ledger />,
+    
   },
 ];
 

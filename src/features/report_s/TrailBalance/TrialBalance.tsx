@@ -6,6 +6,7 @@ import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
@@ -35,6 +36,7 @@ function TrialBalance() {
   const [tbData, setTbData] = useState<[] | any>([]);
   const fromDateRef = useRef<HTMLInputElement>(null);
   const toDateRef = useRef<HTMLInputElement>(null);
+      const {organization} = useOrganization()
 
   const handleFromDateClick = () => {
     fromDateRef.current?.showPicker();
@@ -143,7 +145,8 @@ function TrialBalance() {
         <div className="flex items-center justify-center gap-3 text-center py-2">
           <div>
             <p className="text-textColor font-bold whitespace-nowrap">
-              Company Name
+            {organization?.organizationName}
+
             </p>
             <p className="text-sm text-textColor whitespace-nowrap">
               {fromDate} To {toDate}
