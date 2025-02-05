@@ -1,7 +1,7 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useState } from "react";
-import CheveronLeftIcon from "../../assets/icons/CheveronLeftIcon";
-import SearchBar from "../../Components/SearchBar";
+import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
+import SearchBar from "../../../Components/SearchBar";
 
 function GroupSummary() {
     const location = useLocation();
@@ -11,6 +11,7 @@ function GroupSummary() {
     console.log(accountSubhead, "accountSubhead")
     const [searchValue, setSearchValue] = useState("");
     const { data } = location.state || {};
+
 
     console.log(data)
     return (
@@ -57,8 +58,10 @@ function GroupSummary() {
                     <tbody>
                         {data?.data.map((expense: any) => (
                             <tr key={expense.id} className="bg-white border border-[#EAECF0] text-[#818894]">
-                                <td className="py-4 px-6">{expense.accountName?.trim() || "N/A"}</td>
+                                <Link to={`/reports/profitandloss/groupsummary/account/${expense.accountName}`} state={{ items: expense }}>
+                                    <td className="py-4 px-6">{expense.accountName?.trim() || "N/A"}</td>
 
+                                </Link>
                                 <td className="py-4 px-6 text-right">{expense.overallNetDebit
                                     || 0}</td>
                                 <td className="py-4 px-6 text-right">{expense.overallNetCredit || 0}</td>

@@ -25,11 +25,16 @@ const MonthlySummery = ({}: Props) => {
       return "/reports/trialBalance";
     } else if (location.pathname.includes("trading-account")) {
       return "/reports/trading-account";
-    } else {
+    } else if(location.pathname.includes("profitandloss")){
+      return "/reports/profitandloss";
+    } 
+    else {
       return "/reports";
     }
   };
-  console.log(location.pathname)
+  console.log(items.accountName, "items");
+
+
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -85,7 +90,7 @@ const MonthlySummery = ({}: Props) => {
             {items?.entries?.map((item: any) => (
               <tr className="border-b border-[#ebecf0]">
                 <Link
-                      to={`${reportPath()}/${accountSubHead}/monthly-summery/ledger`}
+                      to={`${reportPath()}/${items.accountName}/monthly-summery/ledger`}
                       state={{ item, fromDate, toDate }}
                 >
                   {" "}
