@@ -10,9 +10,9 @@ pipeline {
         AWS_ACCOUNT_ID = '654654462146' // Add your AWS account ID here
         SONARQUBE_PROJECT_KEY = 'billbizz_cygnoz'
         SONARQUBE_SCANNER_CREDENTIALS_ID = '6f4fe4b6-2139-4027-9d48-bebad4dee161' // Jenkins credentials ID for SonarQube token
-        ECS_CLUSTER_NAME = 'dev-billbizz' // Replace with your ECS cluster name
-        ECS_SERVICE_NAME = 'billbizz-frontend' // Replace with your ECS service name
-        ECS_TASK_DEFINITION_NAME = 'billbizz-frontend' // Replace with your ECS task definition name
+        ECS_CLUSTER_NAME = 'Dev-billbizz' // Replace with your ECS cluster name
+        ECS_SERVICE_NAME = 'Billbizz-frontend' // Replace with your ECS service name
+        ECS_TASK_DEFINITION_NAME = 'Billbizz-frontend' // Replace with your ECS task definition name
     }
 
     stages {
