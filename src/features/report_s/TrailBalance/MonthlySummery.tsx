@@ -1,4 +1,4 @@
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import { useEffect, useState } from "react";
@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 type Props = {};
 
 const MonthlySummery = ({}: Props) => {
-  const { accountSubHead } = useParams();
+  // const { accountSubHead } = useParams();
 
   const location = useLocation();
   const { items } = location.state || {};

@@ -7,6 +7,7 @@ import { endponits } from "../../../Services/apiEndpoints";
 import { PrinterIcon } from "@heroicons/react/20/solid";
 import Calender from "../../../assets/icons/Calender";
 import CehvronDown from "../../../assets/icons/CehvronDown";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 type Props = {};
 
@@ -31,7 +32,7 @@ function getLastDayOfMonth() {
 
 const ProfitAndLoss = ({ }: Props) => {
 
-
+  const {organization} = useOrganization()
   const [fromDate, setFromDate] = useState(getFirstDayOfMonth());
   const [toDate, setToDate] = useState(getLastDayOfMonth());
   const [PLData, setPLData] = useState<any>({
@@ -165,7 +166,7 @@ const ProfitAndLoss = ({ }: Props) => {
 
       <div className="bg-white rounded-lg my-4 p-5">
         <div className="text-center py-4">
-          <p className="text-lg font-bold text-textColor">Company Name</p>
+          <p className="text-lg font-bold text-textColor">{organization?.organizationName}</p>
           <p className="text-sm text-textColor">{formattedFromDate} To {formattedToDate}</p>
           </div>
 
