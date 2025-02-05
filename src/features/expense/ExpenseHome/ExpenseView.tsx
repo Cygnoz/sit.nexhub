@@ -3,11 +3,11 @@ import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import Button from "../../../Components/Button";
 import Pen from "../../../assets/icons/Pen";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
-import CircleDollerSign from "../../../assets/icons/CircleDollerSign";
 import { useEffect, useState } from "react";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { useOrganization } from "../../../context/OrganizationContext";
+import Journal from "../../purchase/bills/ViewBill/Jornal";
 
 type Props = {};
 
@@ -18,26 +18,6 @@ const ExpenseView = ({}: Props) => {
   const {organization}=useOrganization()
   const { id } = useParams();
 
-  const historyData = [
-    {
-      date: "30/05/2024",
-      time: "02:30 PM",
-      title: "Expense Created",
-      amount: "2000",
-    },
-    {
-      date: "30/05/2024",
-      time: "02:30 PM",
-      title: "Expense Created",
-      amount: "2000",
-    },
-    {
-      date: "30/05/2024",
-      time: "02:30 PM",
-      title: "Expense Created",
-      amount: "2000",
-    },
-  ];
 
   const getExpenses = async () => {
     try {
@@ -155,27 +135,7 @@ const ExpenseView = ({}: Props) => {
             </div>
           </div>
 
-          <div className="my-5">
-            <p className="font-bold text-xl">Journal</p>
-            <table className="w-full">
-            <thead>
-    <tr className="border-b py-2 border-gray ">
-        <th className="w-[70%] text-start font-[300] text-sm">Account</th>
-        <th className="text-start font-[300] text-sm">Debit</th>
-        <th className="text-start font-[300] text-sm">Credit</th>
-    </tr>
-</thead>
-
-    <tbody>
-        <tr>
-            <td>Cost of goods sold</td>
-            <td>0.00</td>
-            <td>5000.00</td>
-        </tr>
-    </tbody>
-</table>
-
-          </div>
+<Journal page="Expense"/>
         </div>
 
         {/* <div className="col-span-4 bg-[#F6F6F6] py-6 px-4">

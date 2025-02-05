@@ -657,7 +657,7 @@ const NewCustomerModal = ({ page }: Props) => {
                   <div className="mt-3">
                     <label
                       className="block text-sm mb-1 text-labelColor"
-                      htmlFor=""
+                      htmlFor="customerType"
                     >
                       Customer Type
                     </label>
@@ -679,6 +679,7 @@ const NewCustomerModal = ({ page }: Props) => {
                             }
                           />
                           <div
+                           id="Business"
                             className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
                               selected === "Business"
                                 ? "bg-neutral-100"
@@ -709,7 +710,8 @@ const NewCustomerModal = ({ page }: Props) => {
                               handleRadioChange("Individual", "customerType")
                             }
                           />
-                          <div
+                          <div 
+                          id="Individual"
                             className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
                               selected === "Individual"
                                 ? "bg-neutral-100"

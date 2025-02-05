@@ -17,9 +17,7 @@ const MonthlySummery = lazy(
   () => import("../features/report_s/TrailBalance/MonthlySummery")
 );
 const Ledger = lazy(() => import("../features/report_s/TrailBalance/Ledger"));
-const Stock = lazy(
-  () => import("../features/report_s/TradingAccount/Stock")
-);
+const Stock = lazy(() => import("../features/report_s/TradingAccount/Stock"));
 const Accounts = lazy(
   () => import("../features/report_s/TradingAccount/Accounts")
 );
@@ -29,7 +27,7 @@ const ReportsRoutes: RouteObject[] = [
   { path: "/reports/daybook", element: <DayBook /> },
   { path: "/reports/profitandloss", element: <ProfitAndLoss /> },
   { path: "/reports/balanceSheet", element: <BalanceSheet /> },
-  { path: "/reports/tradingAccount", element: <TradingAccount /> },
+  { path: "/reports/trading-account", element: <TradingAccount /> },
   { path: "/reports/trialBalance", element: <TrialBalance /> },
   { path: "/reports/profitandloss/groupsummary/:accountSubhead", element: <GroupSummary /> },
   { path: "/reports/trialBalance/:accountSubHead", element: <Account /> },
@@ -42,7 +40,18 @@ const ReportsRoutes: RouteObject[] = [
     element: <Ledger />,
   },
   { path: "/reports/trading-account/:accountName", element: <Stock /> },
-  {path:"/reports/trading-account/accounts/:accountSubhead", element: <Accounts />}
+  {
+    path: "/reports/trading-account/accounts/:accountSubhead",
+    element: <Accounts />,
+  },
+  {
+    path: "/reports/trading-account/:accountSubHead/monthly-summery",
+    element: <MonthlySummery />,
+  },
+  {
+    path: "/reports/trading-account/:accountSubHead/monthly-summery/ledger",
+    element: <Ledger />,
+  },
 ];
 
 export default ReportsRoutes;

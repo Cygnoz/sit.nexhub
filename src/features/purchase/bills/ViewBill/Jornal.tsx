@@ -4,7 +4,7 @@ import { endponits } from "../../../../Services/apiEndpoints";
 import { useParams } from "react-router-dom";
 
 interface Props {
-  page?: "Bills" | "DebitNote" | "Payments";
+  page?: "Bills" | "DebitNote" | "Payments" |"Expense";
 }
 
 interface BillJournal {
@@ -17,18 +17,24 @@ interface BillJournal {
 const Journal = ({ page }: Props) => {
   const [billJournal, setBillJournal] = useState<BillJournal[]>([]);
   const { request: getOneInvoiceDetails } = useApi("get", 5005);
+  const { request: getExpense } = useApi("get", 5008);
+
   const { id } = useParams<{ id: string }>();
 
   const fetchOneInvoice = async () => {
     try {
       const url =
-        page === "Bills"
-          ? `${endponits.GET_BILL_JOURNAL}/${id}`
-          : page === "DebitNote"
-          ? `${endponits.GET_DEBITNOTE_JOURNAL}/${id}`
-          : `${endponits.GET_PAYMENT_JOURNAL}/${id}`;
+      page === "Bills"
+        ? `${endponits.GET_BILL_JOURNAL}/${id}`
+        : page === "DebitNote"
+        ? `${endponits.GET_DEBITNOTE_JOURNAL}/${id}`
+        : page === "Expense"
+        ? `${endponits.eXPENSE_JOURNAL}/${id}`
+        : `${endponits.GET_PAYMENT_JOURNAL}/${id}`;
+    
+        const api = page==="Expense"?getExpense:getOneInvoiceDetails
 
-      const { response, error } = await getOneInvoiceDetails(url);
+      const { response, error } = await api(url);
 
       if (!error && response) {
         console.log(response)
@@ -37,7 +43,7 @@ const Journal = ({ page }: Props) => {
     } catch (error) {
       console.log(error)
 
-      console.error("Error fetching invoice:", error); // Replace with a toast in production
+      console.error("Error fetching invoice:", error); 
     }
   };
 

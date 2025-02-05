@@ -26,7 +26,7 @@ const Stock = ({}: Props) => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4 gap-2">
-        <Link to={"/reports/tradingAccount"}>
+        <Link to={"/reports/trading-account"}>
           <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
             <CheveronLeftIcon />
           </div>
