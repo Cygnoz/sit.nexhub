@@ -15,15 +15,25 @@ function formatDate(dateStr: string) {
   return date.toLocaleDateString("en-GB").split("/").join("-");
 }
 
-function getTodayDate() {
-  return new Date().toISOString().split("T")[0];
+function getFirstDayOfMonth() {
+  const date = new Date();
+  return `${date.getFullYear()}-${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-01`;
+}
+
+function getLastDayOfMonth() {
+  const date = new Date();
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0)
+    .toISOString()
+    .split("T")[0];
 }
 
 const ProfitAndLoss = ({ }: Props) => {
 
 
-  const [fromDate, setFromDate] = useState(getTodayDate());
-  const [toDate, setToDate] = useState(getTodayDate());
+  const [fromDate, setFromDate] = useState(getFirstDayOfMonth());
+  const [toDate, setToDate] = useState(getLastDayOfMonth());
   const [PLData, setPLData] = useState<any>({
     debit: [],
     credit: [],
@@ -39,6 +49,9 @@ const ProfitAndLoss = ({ }: Props) => {
     fromDateRef.current?.showPicker();
   };
 
+  const formattedFromDate = formatDate(fromDate);
+  const formattedToDate = formatDate(toDate);
+
   const handleToDateClick = () => {
     toDateRef.current?.showPicker();
   };
@@ -52,15 +65,15 @@ const ProfitAndLoss = ({ }: Props) => {
 
   const getPL = async () => {
     try {
-      const formattedFromDate = formatDate(fromDate); 
-      const formattedToDate = formatDate(toDate); 
+      const formattedFromDate = formatDate(fromDate);
+      const formattedToDate = formatDate(toDate);
       const url = `${endponits.GET_PL_DATA}/${formattedFromDate}/${formattedToDate}`;
 
       const apiResponse = await fetchOneItem(url);
       const { response, error } = apiResponse;
 
       if (!error && response) {
-        setPLData(response.data.data); 
+        setPLData(response.data.data);
       } else {
         console.error("Error fetching Profit & Loss data:", error);
       }
@@ -70,17 +83,17 @@ const ProfitAndLoss = ({ }: Props) => {
     }
   };
 
+
+  useEffect(() => {
+    localStorage.setItem("fromDate", formattedFromDate);
+    localStorage.setItem("toDate", formattedToDate);
+  }, [fromDate, toDate]);
+
   useEffect(() => {
     getPL();
-  }, [fromDate, toDate]); 
+  }, [fromDate, toDate]);
 
 
-  // const handleItemClick = (account: string) => {
-  //   if (account === "Indirect Expense") {
-  //     // Navigate to the specific path for Indirect Expense
-  //     navigate("/reports/profitandloss/indirectExpense");
-  //   }
-  // };
 
   console.log(
 
@@ -153,8 +166,8 @@ const ProfitAndLoss = ({ }: Props) => {
       <div className="bg-white rounded-lg my-4 p-5">
         <div className="text-center py-4">
           <p className="text-lg font-bold text-textColor">Company Name</p>
-          <p className="text-sm text-textColor">01/07/2024 To 30/09/2024</p>
-        </div>
+          <p className="text-sm text-textColor">{formattedFromDate} To {formattedToDate}</p>
+          </div>
 
         <div className="grid grid-cols-2 gap-8">
           {/* Left Section (Debit) */}
