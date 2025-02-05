@@ -7,6 +7,7 @@ import { useOrganization } from "../../../context/OrganizationContext";
 type Props = {};
 
 const MonthlySummery = ({}: Props) => {
+  // const { accountSubHead } = useParams();
 
   const location = useLocation();
   const { items } = location.state || {};
@@ -28,11 +29,16 @@ const MonthlySummery = ({}: Props) => {
       return "/reports/trading-account";
     } else if (location.pathname.includes("balance-sheet")) {
       return "/reports/balance-sheet";
+    }  else if(location.pathname.includes("profitandloss")){
+      return "/reports/profitandloss";
     } else {
       return "/reports";
     }
   };
-  console.log(items);
+   
+  console.log(items.accountName, "items");
+
+
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -91,6 +97,7 @@ const MonthlySummery = ({}: Props) => {
                 <Link
                   to={`${reportPath()}/${items.accountName}/monthly-summery/ledger`}
                   state={{ item, fromDate, toDate }}
+                     
                 >
                   {" "}
                   <td className="py-3">{item.date}</td>

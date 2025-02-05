@@ -1,11 +1,10 @@
 import { RouteObject } from "react-router-dom";
 import { lazy } from "react";
-import GroupSummary from "../features/report_s/GroupSummary";
 
 const Reports = lazy(() => import("../pages/Reports"));
 const DayBook = lazy(() => import("../features/accountant/DayBook/DayBook"));
 const BalanceSheet = lazy(() => import("../features/report_s/BalanceSheet"));
-const ProfitAndLoss = lazy(() => import("../features/report_s/ProfitAndLoss"));
+const ProfitAndLoss = lazy(() => import("../features/report_s/P&L/ProfitAndLoss"));
 const TradingAccount = lazy(
   () => import("../features/report_s/TradingAccount/TradingAccount")
 );
@@ -21,6 +20,10 @@ const Stock = lazy(() => import("../features/report_s/TradingAccount/Stock"));
 const Accounts = lazy(
   () => import("../features/report_s/TradingAccount/Accounts")
 );
+const GroupSummary = lazy(
+  () => import("../features/report_s/P&L/GroupSummary")
+);
+
 
 const ReportsRoutes: RouteObject[] = [
   { path: "/reports", element: <Reports /> },
@@ -60,6 +63,14 @@ const ReportsRoutes: RouteObject[] = [
     path: "/reports/balance-sheet/:accountSubHead/monthly-summery/ledger",
     element: <Ledger />,
     
+  },
+  {
+    path: "/reports/profitandloss/groupsummary/account/:accountSubhead",
+    element: <MonthlySummery />,
+  },
+  {
+    path: "/reports/profitandloss/:accountSubHead/monthly-summery/ledger",
+    element: <Ledger />,
   },
 ];
 

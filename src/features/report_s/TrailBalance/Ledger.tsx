@@ -29,10 +29,16 @@ const Ledger = ({}: Props) => {
     } else if (location.pathname.includes("trading-account")) {
       return "/reports/trading-account";
     }else if (location.pathname.includes("balance-sheet")) {
-      return "/reports/balance-sheet";}  else {
+      return "/reports/balance-sheet";} 
+    
+    else if(location.pathname.includes("profitandloss")){
+      return "/reports/profitandloss";
+    }  else {
       return "/reports";
     }
   };
+
+  console.log(accountSubHead, "item");
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
