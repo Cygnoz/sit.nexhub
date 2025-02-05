@@ -52,17 +52,15 @@ const ProfitAndLoss = ({ }: Props) => {
 
   const getPL = async () => {
     try {
-      // Format the date range dynamically (if needed)
-      const formattedFromDate = formatDate(fromDate); // Example: Replace `fromDate` with your state
-      const formattedToDate = formatDate(toDate); // Example: Replace `toDate` with your state
+      const formattedFromDate = formatDate(fromDate); 
+      const formattedToDate = formatDate(toDate); 
       const url = `${endponits.GET_PL_DATA}/${formattedFromDate}/${formattedToDate}`;
 
-      // Fetch data using the API hook
       const apiResponse = await fetchOneItem(url);
       const { response, error } = apiResponse;
 
       if (!error && response) {
-        setPLData(response.data.data); // Assuming `data` contains the main records
+        setPLData(response.data.data); 
       } else {
         console.error("Error fetching Profit & Loss data:", error);
       }
@@ -72,10 +70,9 @@ const ProfitAndLoss = ({ }: Props) => {
     }
   };
 
-  // Use the effect hook to trigger fetch on date change
   useEffect(() => {
     getPL();
-  }, [fromDate, toDate]); // Dependency array to re-fetch on date changes
+  }, [fromDate, toDate]); 
 
 
   // const handleItemClick = (account: string) => {
