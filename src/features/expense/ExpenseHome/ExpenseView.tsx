@@ -99,8 +99,8 @@ const ExpenseView = ({}: Props) => {
         <span className="me-4">Expense Date:</span> {expense?.expenseDate}
       </p>
 
-      <div className="grid grid-cols-12 text-textColor gap-4">
-        <div className="col-span-7">
+      <div className=" text-textColor gap-4">
+        <div className="">
           <div className="bg-gradient-to-r from-[#E3E6D5] to-[#F7E7CE] h-[77px] flex items-center px-5">
             <p className="font-bold">
               {expense.grandTotal}{" "}
@@ -178,7 +178,7 @@ const ExpenseView = ({}: Props) => {
           </div>
         </div>
 
-        <div className="col-span-4 bg-[#F6F6F6] py-6 px-4">
+        {/* <div className="col-span-4 bg-[#F6F6F6] py-6 px-4">
           <p className="text-lg font-bold text-textColor">Expense History</p>
           <div className="relative ms-5 my-6">
             {historyData.map((item, index) => (
@@ -209,7 +209,7 @@ const ExpenseView = ({}: Props) => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
