@@ -1,4 +1,4 @@
-import { Link, } from "react-router-dom";
+import { Link } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import { useEffect, useRef, useState } from "react";
 import useApi from "../../../Hooks/useApi";
@@ -30,9 +30,8 @@ function getLastDayOfMonth() {
     .split("T")[0];
 }
 
-const ProfitAndLoss = ({ }: Props) => {
-
-  const {organization} = useOrganization()
+const ProfitAndLoss = ({}: Props) => {
+  const { organization } = useOrganization();
   const [fromDate, setFromDate] = useState(getFirstDayOfMonth());
   const [toDate, setToDate] = useState(getLastDayOfMonth());
   const [PLData, setPLData] = useState<any>({
@@ -40,8 +39,6 @@ const ProfitAndLoss = ({ }: Props) => {
     credit: [],
     summary: {},
   });
-
-
 
   const fromDateRef = useRef<HTMLInputElement>(null);
   const toDateRef = useRef<HTMLInputElement>(null);
@@ -57,12 +54,9 @@ const ProfitAndLoss = ({ }: Props) => {
     toDateRef.current?.showPicker();
   };
 
-
-
   const { request: fetchOneItem } = useApi("get", 5006);
 
-  console.log(PLData, "PLData")
-
+  console.log(PLData, "PLData");
 
   const getPL = async () => {
     try {
@@ -84,7 +78,6 @@ const ProfitAndLoss = ({ }: Props) => {
     }
   };
 
-
   useEffect(() => {
     localStorage.setItem("fromDate", formattedFromDate);
     localStorage.setItem("toDate", formattedToDate);
@@ -94,11 +87,7 @@ const ProfitAndLoss = ({ }: Props) => {
     getPL();
   }, [fromDate, toDate]);
 
-
-
-  console.log(
-
-    "pl")
+  console.log("pl");
 
   return (
     <div className="p-5">
@@ -166,9 +155,13 @@ const ProfitAndLoss = ({ }: Props) => {
 
       <div className="bg-white rounded-lg my-4 p-5">
         <div className="text-center py-4">
-          <p className="text-lg font-bold text-textColor">{organization?.organizationName}</p>
-          <p className="text-sm text-textColor">{formattedFromDate} To {formattedToDate}</p>
-          </div>
+          <p className="text-lg font-bold text-textColor">
+            {organization?.organizationName}
+          </p>
+          <p className="text-sm text-textColor">
+            {formattedFromDate} To {formattedToDate}
+          </p>
+        </div>
 
         <div className="grid grid-cols-2 gap-8">
           {/* Left Section (Debit) */}
@@ -180,25 +173,36 @@ const ProfitAndLoss = ({ }: Props) => {
               <tbody>
                 <tr className="border-b border-[#F4F4F4] text-[#4B5C79] font-medium text-sm">
                   <td className="py-4">Gross Loss</td>
-                  <td className="py-4 text-right">{PLData.summary?.grossLoss || 0}</td>
+                  <td className="py-4 text-right">
+                    {PLData.summary?.grossLoss || 0}
+                  </td>
                 </tr>
 
                 <tr className="border-b border-[#F4F4F4] text-[#4B5C79] font-medium text-sm cursor-pointer hover:bg-gray-100">
                   <td className="py-4">
-                    <Link to={`/reports/profitandloss/groupsummary/indirectExpense`} state={{ data: PLData?.debit[0]?.indirectExpenses }}>
+                    <Link
+                      to={`/reports/profitandloss/groupsummary/indirectExpense`}
+                      state={{ data: PLData?.debit[0]?.indirectExpenses }}
+                    >
                       Indirect Expense
                     </Link>
                   </td>
-                  <td className="py-4 text-right">{PLData.debit[0]?.indirectExpenses?.overallNetDebit || 0}</td>
+                  <td className="py-4 text-right">
+                    {PLData.debit[0]?.indirectExpenses?.overallNetDebit-PLData.debit[0]?.indirectExpenses?.overallNetCredit || 0}
+                  </td>
                 </tr>
 
                 <tr className="border-b border-[#F4F4F4] text-[#4B5C79] font-medium text-sm">
                   <td className="py-4">Net Profit</td>
-                  <td className="py-4 text-right">{PLData.summary?.netProfit || 0}</td>
+                  <td className="py-4 text-right">
+                    {PLData.summary?.netProfit || 0}
+                  </td>
                 </tr>
                 <tr className="text-[#4B5C79] font-medium text-sm">
                   <td className="py-4"></td>
-                  <td className="py-4 text-right">{PLData.summary?.finalDebit || 0}</td>
+                  <td className="py-4 text-right">
+                    {PLData.summary?.finalDebit || 0}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -213,35 +217,42 @@ const ProfitAndLoss = ({ }: Props) => {
               <tbody>
                 <tr className="border-b border-[#F4F4F4] text-[#4B5C79] font-medium text-sm">
                   <td className="py-4">Gross Profit b/f</td>
-                  <td className="py-4 text-right">{PLData.credit[0]?.["Gross Profit (c/d)"] || 0}</td>
+                  <td className="py-4 text-right">
+                    {PLData.credit[0]?.["Gross Profit (c/d)"] || 0}
+                  </td>
                 </tr>
 
                 <tr className="border-b border-[#F4F4F4] text-[#4B5C79] font-medium text-sm">
                   <td className="py-4">
-                    <Link to={`/reports/profitandloss/groupsummary/indirectIncome`} state={{ data: PLData.credit[1]?.indirectIncome }}>
+                    <Link
+                      to={`/reports/profitandloss/groupsummary/indirectIncome`}
+                      state={{ data: PLData.credit[1]?.indirectIncome }}
+                    >
                       Indirect Income
                     </Link>
                   </td>
-                  <td className="py-4 text-right">{PLData.credit[1]?.indirectIncome?.
-                    overallNetCredit || 0}</td>
+                  <td className="py-4 text-right">
+                    {PLData.credit[1]?.indirectIncome?.overallNetCredit-PLData.credit[1]?.indirectIncome?.overallNetDebit || 0}
+                  </td>
                 </tr>
 
                 <tr className="border-b border-[#F4F4F4] text-[#4B5C79] font-medium text-sm">
                   <td className="py-4">Net Loss</td>
-                  <td className="py-4 text-right">{PLData.summary?.netLoss || 0}</td>
+                  <td className="py-4 text-right">
+                    {PLData.summary?.netLoss || 0}
+                  </td>
                 </tr>
                 <tr className="text-[#4B5C79] font-medium text-sm">
                   <td className="py-4"></td>
-                  <td className="py-4 text-right">{PLData.summary?.finalCredit || 0}</td>
+                  <td className="py-4 text-right">
+                    {PLData.summary?.finalCredit || 0}
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
-
-
       </div>
-
     </div>
   );
 };

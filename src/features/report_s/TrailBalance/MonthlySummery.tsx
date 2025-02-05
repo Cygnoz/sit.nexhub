@@ -13,7 +13,7 @@ const MonthlySummery = ({}: Props) => {
   const { items } = location.state || {};
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-      const {organization} = useOrganization()
+  const { organization } = useOrganization();
 
   useEffect(() => {
     const storedFromDate = localStorage.getItem("fromDate");
@@ -29,16 +29,14 @@ const MonthlySummery = ({}: Props) => {
       return "/reports/trading-account";
     } else if (location.pathname.includes("balance-sheet")) {
       return "/reports/balance-sheet";
-    }  else if(location.pathname.includes("profitandloss")){
+    } else if (location.pathname.includes("profitandloss")) {
       return "/reports/profitandloss";
     } else {
       return "/reports";
     }
   };
-   
+
   console.log(items.accountName, "items");
-
-
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -71,8 +69,7 @@ const MonthlySummery = ({}: Props) => {
         <div className="flex items-center  justify-center gap-3 text-center py-2">
           <div>
             <p className="text-textColor font-bold whitespace-nowrap">
-            {organization?.organizationName}
-
+              {organization?.organizationName}
             </p>
             <p className="text-sm text-textColor whitespace-nowrap">
               {fromDate} To {toDate}
@@ -94,14 +91,18 @@ const MonthlySummery = ({}: Props) => {
           <tbody className="text-xs ">
             {items?.entries?.map((item: any) => (
               <tr className="border-b border-[#ebecf0]">
-                <Link
-                  to={`${reportPath()}/${items.accountName}/monthly-summery/ledger`}
-                  state={{ item, fromDate, toDate }}
-                     
-                >
-                  {" "}
-                  <td className="py-3">{item.date}</td>
-                </Link>
+               {item.date !== "Opening Balance" || item.transactions.length > 0 ? (
+  <Link
+    to={`${reportPath()}/${items.accountName}/monthly-summery/ledger`}
+    state={{ item, fromDate, toDate }}
+  >
+    <td className="py-3">{item.date}</td>
+  </Link>
+) : (
+  <td className="py-3">{item.date}</td>
+)}
+
+
                 <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
                   {item.overAllNetDebit}
                 </td>
