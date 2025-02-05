@@ -29,7 +29,7 @@ const ReportsRoutes: RouteObject[] = [
   { path: "/reports/balanceSheet", element: <BalanceSheet /> },
   { path: "/reports/trading-account", element: <TradingAccount /> },
   { path: "/reports/trialBalance", element: <TrialBalance /> },
-  { path: "/reports/profitandloss/indirectExpense", element: <GroupSummary /> },
+  { path: "/reports/profitandloss/groupsummary", element: <GroupSummary /> },
   { path: "/reports/trialBalance/:accountSubHead", element: <Account /> },
   {
     path: "/reports/trialBalance/:accountSubHead/monthly-summery",

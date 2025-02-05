@@ -1,13 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
 import CheveronLeftIcon from "../../assets/icons/CheveronLeftIcon";
 import SearchBar from "../../Components/SearchBar";
-import { useState } from "react";
 
 function GroupSummary() {
+    const location = useLocation();
+    const indirectExpenses = location.state?.data || [];
 
 
     const [searchValue, setSearchValue] = useState("");
-
+console.log(indirectExpenses.indirectExpenses[0],"indirect")
     return (
         <div className="px-6 py-4 bg-gray-50 min-h-screen">
             {/* Header Section */}
@@ -31,7 +33,7 @@ function GroupSummary() {
                         <SearchBar
                             searchValue={searchValue}
                             onSearchChange={setSearchValue}
-                            placeholder="Search Currency"
+                            placeholder="Search Account"
                         />
                     </div>
                     <div className="text-right">
@@ -41,7 +43,7 @@ function GroupSummary() {
                 </div>
 
                 {/* Table Section */}
-                <table className="w-full text-sm text-left text-gray-500 ">
+                <table className="w-full text-sm text-left text-gray-500">
                     <thead className="text-xs text-[#495160] font-bold uppercase bg-[#F7ECD9]">
                         <tr>
                             <th scope="col" className="py-3 px-6">Particulars</th>
@@ -50,17 +52,23 @@ function GroupSummary() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className="bg-white border border-[#EAECF0]  text-[#818894]">
-                            <td className="py-4 px-6">Salary</td>
-                            <td className="py-4 px-6 text-right"></td> {/* Empty Debit */}
-                            <td className="py-4 px-6 text-right">1,000.00</td> {/* Credit Amount */}
-                        </tr>
+                        {indirectExpenses &&
+                            indirectExpenses.indirectExpenses[0].accounts.map((expense: any,) => (
+                              
+                                    <tr  className="bg-white border border-[#EAECF0] text-[#818894]">
+                                        <td className="py-4 px-6">{expense.accountName.trim()}</td>
+                                        <td className="py-4 px-6 text-right">{expense.totalDebit || 0}</td>
+                                        <td className="py-4 px-6 text-right">{expense.totalCredit || 0}</td>
+                                    </tr>
+                                
+                            ))
+                        }
                     </tbody>
                     <tfoot>
-                        <tr className="font-bold border border-[#EAECF0]  text-[#818894] bg-gray-100">
+                        <tr className="font-bold border border-[#EAECF0] text-[#818894] bg-gray-100">
                             <td className="py-4 px-6">Grand Total</td>
-                            <td className="py-4 px-6 text-right"></td> {/* Empty Debit */}
-                            <td className="py-4 px-6 text-right">1,000.00</td> {/* Credit Total */}
+                            <td className="py-4 px-6 text-right">{indirectExpenses.indirectExpenses[0].netDebit}</td>
+                            <td className="py-4 px-6 text-right">{indirectExpenses.indirectExpenses[0].netCredit}</td>
                         </tr>
                     </tfoot>
                 </table>
