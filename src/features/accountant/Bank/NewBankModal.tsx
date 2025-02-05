@@ -118,10 +118,10 @@ const NewBankModal = ({page,id }: Props) => {
     e.preventDefault();
     try {
       const url =
-      page === "Edit"
+      page === "edit"
         ? `${endponits.EDIT_NEW_ACCOUNT}/${id}`
         : endponits.Add_NEW_ACCOUNT;
-          const API = page === "Edit" ? editAccount : CreateAccount ;
+          const API = page === "edit" ? editAccount : CreateAccount ;
 
       const body = bankAccount;
       const { response, error } = await API(url, body);
@@ -167,7 +167,7 @@ const NewBankModal = ({page,id }: Props) => {
             ></div>
             <div className="relative z-10">
               <h3 className="text-xl font-bold text-textColor">
-                Create Bank Account
+                {page==="edit"?"Edit":"Create"} Bank Account
               </h3>
               <p className="text-dropdownText font-semibold text-sm mt-2">
                 Open a new bank account swiftly and securely.

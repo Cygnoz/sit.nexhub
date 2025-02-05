@@ -205,10 +205,7 @@ function AddExpensePage({ page }: Props) {
         page === "edit"
           ? `${endponits.EDIT_EXPENSE}/${id}`
           : `${endponits.ADD_EXPENSES}`;
-          const api =
-          page === "edit"
-            ?  EditExpenses
-            : AddExpenses ;
+      const api = page === "edit" ? EditExpenses : AddExpenses;
       const { response, error } = await api(url, expenseData);
 
       if (response) {
@@ -374,31 +371,31 @@ function AddExpensePage({ page }: Props) {
   console.log(selectedTax.taxName, "erty");
 
   const handleTaxSelect = (e: any) => {
-    // Check if the selected value is 'Non-Taxable'
+    let updatedTax;
+  
     if (e.target.value === "Non-Taxable") {
-      setSelectedTax({
+      updatedTax = {
         taxName: "Non-Taxable",
         cgst: 0,
         sgst: 0,
         igst: 0,
-        taxRate: 0,  // You can add this if needed
-      });
+        taxRate: 0, 
+      };
     } else {
-      // Find the matching tax value from the gstTaxRate
-      const selectedTaxRate = JSON.parse(e.target.value);
-      setSelectedTax(selectedTaxRate);
+      updatedTax = JSON.parse(e.target.value);
     }
   
-    // Update expense data with the selected tax details
+    setSelectedTax(updatedTax);
+  
     setExpenseData((prevData) => {
       const updatedExpenses = prevData.expense.map((item, index) =>
         index === 0
           ? {
               ...item,
-              taxGroup: selectedTax.taxName,
-              cgst: selectedTax.cgst,
-              sgst: selectedTax.sgst,
-              igst: selectedTax.igst,
+              taxGroup: updatedTax.taxName, 
+              cgst: updatedTax.cgst,
+              sgst: updatedTax.sgst,
+              igst: updatedTax.igst,
             }
           : item
       );
@@ -554,14 +551,14 @@ function AddExpensePage({ page }: Props) {
 
   console.log(expenseData, "expenseData");
 
-  useEffect(() => {
-    if (expenseData?.expense[0]?.taxGroup) {
-      setExpenseData((prevData) => ({
-        ...prevData,
-        amountIs: "Tax Exclusive",
-      }));
-    }
-  }, [expenseData.expense]);
+  // useEffect(() => {
+  //   if (expenseData?.expense[0]?.taxGroup) {
+  //     setExpenseData((prevData) => ({
+  //       ...prevData,
+  //       amountIs: "Tax Exclusive",
+  //     }));
+  //   }
+  // }, [expenseData.expense]);
 
   useEffect(() => {
     fetchAllAccounts();
@@ -675,20 +672,20 @@ function AddExpensePage({ page }: Props) {
         (tax: any) => tax.taxName === expenseData?.expense[0]?.taxGroup
       );
       if (matchingTax) {
-        console.log(matchingTax,"matchingTax")
+        console.log(matchingTax, "matchingTax");
         setSelectedTax(matchingTax);
       }
     }
   }, [id, supplierData, expenseData?.supplierId, taxRate]);
 
-  useEffect(()=>{
-    if(expenseData.expense.length>1){
-      setItemize(false)
+  useEffect(() => {
+    if (expenseData.expense.length > 1) {
+      setItemize(false);
     }
-    if(expenseData.expense.length===0){
-      setItemize(true)
+    if (expenseData.expense.length === 0) {
+      setItemize(true);
     }
-  },[id,expenseData.expense])
+  }, [id, expenseData.expense]);
 
   return (
     <>
@@ -990,7 +987,7 @@ function AddExpensePage({ page }: Props) {
                           onClick={() => {
                             setExpenseData((prev) => ({
                               ...prev,
-                              expenseType: "Goods", // Consistent property name
+                              expenseType: "Goods", 
                             }));
                           }}
                         >
@@ -1005,12 +1002,12 @@ function AddExpensePage({ page }: Props) {
                                 : "border-1 border-[#97998E]"
                             }`}
                             checked={expenseData.expenseType === "Goods"}
-                            readOnly // Avoid unnecessary onChange handling
+                            readOnly
                           />
                           <div
                             className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
                               expenseData.expenseType === "Goods"
-                                ? "bg-neutral-50" // Correct color for checked state
+                                ? "bg-neutral-50" 
                                 : "bg-transparent"
                             }`}
                           />
@@ -1399,6 +1396,8 @@ function AddExpensePage({ page }: Props) {
                       <CehvronDown color="gray" />
                     </div>
                   </div>
+                  <div><p className="text-xs -mt-1 text-textColor">Tax Amount = {expenseData.igst > 0 ? expenseData.igst : expenseData.sgst + expenseData.cgst}
+                  </p></div>
                 </div>
               )}
 
@@ -1451,7 +1450,7 @@ function AddExpensePage({ page }: Props) {
               )}
               {expenseData.expense[0].taxGroup &&
                 expenseData.expense[0].taxGroup !== "Non-Taxable" && (
-                  <div className=" mt-1 ">
+                  <div className="mt-1">
                     <label
                       className="block text-sm text-labelColor"
                       htmlFor="amountIs"
@@ -1459,20 +1458,21 @@ function AddExpensePage({ page }: Props) {
                       Amount Is
                     </label>
                     <div className="flex items-center space-x-4 text-textColor text-sm">
+                      {/* Tax Inclusive */}
                       <div className="flex gap-2 justify-center items-center">
                         <div
                           className="grid place-items-center mt-2"
-                          onClick={() => {
+                          onClick={() =>
                             setExpenseData((prev) => ({
                               ...prev,
                               amountIs: "Tax Inclusive",
-                            }));
-                          }}
+                            }))
+                          }
                         >
                           <input
                             id="Tax Inclusive"
                             type="radio"
-                            name="amountIs" // Corrected name
+                            name="amountIs"
                             value="Tax Inclusive"
                             className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
                               expenseData.amountIs === "Tax Inclusive"
@@ -1480,7 +1480,12 @@ function AddExpensePage({ page }: Props) {
                                 : "border-1 border-[#97998E]"
                             }`}
                             checked={expenseData.amountIs === "Tax Inclusive"}
-                            readOnly
+                            onChange={() =>
+                              setExpenseData((prev) => ({
+                                ...prev,
+                                amountIs: "Tax Inclusive",
+                              }))
+                            }
                           />
                           <div
                             className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
@@ -1492,21 +1497,28 @@ function AddExpensePage({ page }: Props) {
                         </div>
                         <label
                           htmlFor="Tax Inclusive"
-                          className="text-start font-medium mt-1"
+                          className="text-start font-medium mt-1 cursor-pointer"
+                          onClick={() =>
+                            setExpenseData((prev) => ({
+                              ...prev,
+                              amountIs: "Tax Inclusive",
+                            }))
+                          }
                         >
                           Tax Inclusive
                         </label>
                       </div>
 
+                      {/* Tax Exclusive */}
                       <div className="flex gap-2 justify-center items-center">
                         <div
                           className="grid place-items-center mt-1"
-                          onClick={() => {
+                          onClick={() =>
                             setExpenseData((prev) => ({
                               ...prev,
                               amountIs: "Tax Exclusive",
-                            }));
-                          }}
+                            }))
+                          }
                         >
                           <input
                             id="Tax Exclusive"
@@ -1518,8 +1530,13 @@ function AddExpensePage({ page }: Props) {
                                 ? "border-8 border-[#97998E]"
                                 : "border-1 border-[#97998E]"
                             }`}
-                            checked={expenseData.amountIs === "Tax Exclusive"} // Correct checked logic
-                            readOnly // Prevent unnecessary onChange handling
+                            checked={expenseData.amountIs === "Tax Exclusive"}
+                            onChange={() =>
+                              setExpenseData((prev) => ({
+                                ...prev,
+                                amountIs: "Tax Exclusive",
+                              }))
+                            }
                           />
                           <div
                             className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
@@ -1531,7 +1548,13 @@ function AddExpensePage({ page }: Props) {
                         </div>
                         <label
                           htmlFor="Tax Exclusive"
-                          className="text-start font-medium mt-1"
+                          className="text-start font-medium mt-1 cursor-pointer"
+                          onClick={() =>
+                            setExpenseData((prev) => ({
+                              ...prev,
+                              amountIs: "Tax Exclusive",
+                            }))
+                          }
                         >
                           Tax Exclusive
                         </label>
@@ -1554,7 +1577,7 @@ function AddExpensePage({ page }: Props) {
 
             {!Itemize && (
               <AddExpenseTable
-              accountData={accountData}
+                accountData={accountData}
                 expenseData={expenseData}
                 taxRate={taxRate}
                 setExpenseData={setExpenseData}
