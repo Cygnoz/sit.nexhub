@@ -1,4 +1,4 @@
-import { Link,} from "react-router-dom";
+import { Link, } from "react-router-dom";
 import CheveronLeftIcon from "../../assets/icons/CheveronLeftIcon";
 import { useEffect, useRef, useState } from "react";
 import useApi from "../../Hooks/useApi";
@@ -28,10 +28,9 @@ const ProfitAndLoss = ({ }: Props) => {
     debit: [],
     credit: [],
     summary: {},
-  }); 
+  });
 
 
-console.log(total,PLData)
 
   const fromDateRef = useRef<HTMLInputElement>(null);
   const toDateRef = useRef<HTMLInputElement>(null);
@@ -48,7 +47,7 @@ console.log(total,PLData)
 
   const { request: fetchOneItem } = useApi("get", 5006);
 
-
+  console.log(PLData, "PLData")
 
 
   const getPL = async () => {
@@ -85,6 +84,10 @@ console.log(total,PLData)
   //     navigate("/reports/profitandloss/indirectExpense");
   //   }
   // };
+
+  console.log(
+
+    "pl")
 
   return (
     <div className="p-5">
@@ -168,16 +171,16 @@ console.log(total,PLData)
                   <td className="py-4">Gross Loss</td>
                   <td className="py-4 text-right">{PLData.summary?.grossLoss || 0}</td>
                 </tr>
-                {PLData.debit[0]?.indirectExpenses?.overallTotalDebit > 0 && (
-                  <tr className="border-b border-[#F4F4F4] text-[#4B5C79] font-medium text-sm cursor-pointer hover:bg-gray-100">
-                    <td className="py-4">
-                      <Link to={`/reports/profitandloss/groupsummary`} state={{ data: PLData.debit[0]?.indirectExpenses }}>
-                        Indirect Expense
-                      </Link>
-                    </td>
-                    <td className="py-4 text-right">{PLData.debit[0]?.indirectExpenses?.overallTotalDebit || 0}</td>
-                  </tr>
-                )}
+
+                <tr className="border-b border-[#F4F4F4] text-[#4B5C79] font-medium text-sm cursor-pointer hover:bg-gray-100">
+                  <td className="py-4">
+                    <Link to={`/reports/profitandloss/groupsummary/indirectExpense`} state={{ data: PLData?.debit[0]?.indirectExpenses }}>
+                      Indirect Expense
+                    </Link>
+                  </td>
+                  <td className="py-4 text-right">{PLData.debit[0]?.indirectExpenses?.overallNetDebit || 0}</td>
+                </tr>
+
                 <tr className="border-b border-[#F4F4F4] text-[#4B5C79] font-medium text-sm">
                   <td className="py-4">Net Profit</td>
                   <td className="py-4 text-right">{PLData.summary?.netProfit || 0}</td>
@@ -201,16 +204,17 @@ console.log(total,PLData)
                   <td className="py-4">Gross Profit b/f</td>
                   <td className="py-4 text-right">{PLData.credit[0]?.["Gross Profit (c/d)"] || 0}</td>
                 </tr>
-                {PLData.debit[0]?.indirectExpenses?.overallTotalDebit === 0 && PLData.credit[1]?.indirectIncome?.overallTotalCredit > 0 && (
-                  <tr className="border-b border-[#F4F4F4] text-[#4B5C79] font-medium text-sm">
-                    <td className="py-4">
-                      <Link to={`/reports/profitandloss/groupsummary`} state={{ data: PLData.credit[1]?.indirectIncome }}>
-                        Indirect Income
-                      </Link>
-                    </td>
-                    <td className="py-4 text-right">{PLData.credit[1]?.indirectIncome?.overallTotalCredit || 0}</td>
-                  </tr>
-                )}
+
+                <tr className="border-b border-[#F4F4F4] text-[#4B5C79] font-medium text-sm">
+                  <td className="py-4">
+                    <Link to={`/reports/profitandloss/groupsummary/indirectIncome`} state={{ data: PLData.credit[1]?.indirectIncome }}>
+                      Indirect Income
+                    </Link>
+                  </td>
+                  <td className="py-4 text-right">{PLData.credit[1]?.indirectIncome?.
+                    overallNetCredit || 0}</td>
+                </tr>
+
                 <tr className="border-b border-[#F4F4F4] text-[#4B5C79] font-medium text-sm">
                   <td className="py-4">Net Loss</td>
                   <td className="py-4 text-right">{PLData.summary?.netLoss || 0}</td>

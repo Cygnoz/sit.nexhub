@@ -1,15 +1,18 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useState } from "react";
 import CheveronLeftIcon from "../../assets/icons/CheveronLeftIcon";
 import SearchBar from "../../Components/SearchBar";
 
 function GroupSummary() {
     const location = useLocation();
-    const indirectExpenses = location.state?.data || [];
 
+    const { accountSubhead } = useParams();
 
+    console.log(accountSubhead, "accountSubhead")
     const [searchValue, setSearchValue] = useState("");
-console.log(indirectExpenses.indirectExpenses[0],"indirect")
+    const { data } = location.state || {};
+
+    console.log(data)
     return (
         <div className="px-6 py-4 bg-gray-50 min-h-screen">
             {/* Header Section */}
@@ -52,25 +55,40 @@ console.log(indirectExpenses.indirectExpenses[0],"indirect")
                         </tr>
                     </thead>
                     <tbody>
-                        {indirectExpenses &&
-                            indirectExpenses.indirectExpenses[0].accounts.map((expense: any,) => (
-                              
-                                    <tr  className="bg-white border border-[#EAECF0] text-[#818894]">
-                                        <td className="py-4 px-6">{expense.accountName.trim()}</td>
-                                        <td className="py-4 px-6 text-right">{expense.totalDebit || 0}</td>
-                                        <td className="py-4 px-6 text-right">{expense.totalCredit || 0}</td>
-                                    </tr>
-                                
-                            ))
+                        {data?.data.map((expense: any) => (
+                            <tr key={expense.id} className="bg-white border border-[#EAECF0] text-[#818894]">
+                                <td className="py-4 px-6">{expense.accountName?.trim() || "N/A"}</td>
+
+                                <td className="py-4 px-6 text-right">{expense.overallNetDebit
+                                    || 0}</td>
+                                <td className="py-4 px-6 text-right">{expense.overallNetCredit || 0}</td>
+                            </tr>
+                        ))
                         }
                     </tbody>
+
                     <tfoot>
-                        <tr className="font-bold border border-[#EAECF0] text-[#818894] bg-gray-100">
-                            <td className="py-4 px-6">Grand Total</td>
-                            <td className="py-4 px-6 text-right">{indirectExpenses.indirectExpenses[0].netDebit}</td>
-                            <td className="py-4 px-6 text-right">{indirectExpenses.indirectExpenses[0].netCredit}</td>
-                        </tr>
+                        {data ? (
+                            <tr className="font-bold border border-[#EAECF0] text-[#818894] bg-gray-100">
+                                <td className="py-4 px-6">Grand Total</td>
+                                <td className="py-4 px-6 text-right">
+                                    {data.
+                                        overallNetDebit
+                                    }
+                                </td>
+                                <td className="py-4 px-6 text-right">
+                                    {data.
+                                        overallNetCredit
+                                    }
+                                </td>
+                            </tr>
+                        ) : (
+                            <tr className="font-bold border border-[#EAECF0] text-[#818894] bg-gray-100">
+                                <td className="py-4 px-6 text-center" colSpan={3}>No Data Available</td>
+                            </tr>
+                        )}
                     </tfoot>
+
                 </table>
 
             </div>
