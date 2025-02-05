@@ -60,25 +60,30 @@ const BalanceSheet = ({}: Props) => {
 
   console.log(BSData)
 
-  const getBSData = async () => {
+  const getBSData= async () => {
     try {
-      const url = `${endponits.GET_BS_DATA}/01/12/2024/31/12/2024`;
-      const { response, error } = await fetchOneItem(url);
+      // Format the date range dynamically (if needed)
+      const formattedFromDate = formatDate(fromDate); // Example: Replace `fromDate` with your state
+      const formattedToDate = formatDate(toDate); // Example: Replace `toDate` with your state
+      const url = `${endponits.GET_BS_DATA}/${formattedFromDate}/${formattedToDate}`;
+
+      // Fetch data using the API hook
+      const apiResponse = await fetchOneItem(url);
+      const { response, error } = apiResponse;
+
       if (!error && response) {
-        setBSData(response.data);
-        console.log(response.data,);
-        
+        setBSData(response.data.data); // Assuming `data` contains the main records
       } else {
-        console.error("Failed to fetch one item data.");
+        console.error("Error fetching Balance Sheet data:", error);
       }
     } catch (error) {
-      toast.error("Error in fetching one item data.");
-      console.error("Error in fetching one item data", error);
+      console.error("Error in fetching Balance Sheet data:", error);
+      toast.error("Failed to fetchBalance Sheet data.");
     }
   };
   useEffect(()=>{
 getBSData()
-  },[])
+  },[fromDate, toDate])
 
 
   // const handleItemClick = (account: string) => {
