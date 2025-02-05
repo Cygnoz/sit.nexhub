@@ -150,7 +150,7 @@ const TradingAccount = () => {
               <table className="min-w-full">
                 <thead>
                   <tr>
-                    <th className="flex items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9] mx-5">
+                    <th className="flex items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9] me-5 ">
                       Particulars
                     </th>
                     <th className="items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9]">
@@ -173,7 +173,7 @@ const TradingAccount = () => {
                     } else if (item.purchases) {
                       const accountSubhead = "purchases";
                       accountName = "Purchases";
-                      totalAmount = item.purchases.totalDebit;
+                      totalAmount = item.purchases.overallNetDebit;
                       items = item;
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
                       console.log(item,'purchase')
@@ -187,7 +187,6 @@ const TradingAccount = () => {
                       accountName = "Gross Profit";
                       totalAmount = item.grossProfit;
                     }
-
                     if (totalAmount === 0) {
                       link = "";
                     }
@@ -263,7 +262,7 @@ const TradingAccount = () => {
                       link = `/reports/trading-account/${accountName}`;
                     } else if (item.grossLoss) {
                       accountName = "Gross Loss";
-                      totalAmount = item.grossLoss.total;
+                      totalAmount = item.grossLoss;
                     }
 
                     

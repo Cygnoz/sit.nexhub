@@ -20,16 +20,26 @@ const Accounts = ({}: Props) => {
     if (storedToDate) setToDate(storedToDate);
   }, []);
 
-  console.log(items,"items")
-  
+  const reportPath = () => {
+    if (location.pathname.includes("trialBalance")) {
+      return "/reports/trialBalance";
+    } else if (location.pathname.includes("trading-account")) {
+      return "/reports/trading-account";
+    } else {
+      return "/reports";
+    }
+  };
+
+  console.log(items, "items");
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4 gap-2">
-        <Link to={"/reports/tradingAccount"}>
-          <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
-            <CheveronLeftIcon />
-          </div>
-        </Link>
+      <Link to={reportPath()}>
+  <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
+    <CheveronLeftIcon />
+  </div>
+</Link>
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">Group Summery</h4>
         </div>
@@ -66,42 +76,32 @@ const Accounts = ({}: Props) => {
             </tr>
           </thead>
           <tbody className="text-xs">
-            <tr className="border-b border-[#ebecf0]">
-              <td className="py-3 text-start min-w-[30px] max-w-[30px] px-1 truncate">
-                Opening Balance
-              </td>
-              <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                {items?.[accountSubhead as string]?.openingBalance
-                  ?.totalDebit ?? "0.00"}
-              </td>
-              <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                {items?.[accountSubhead as string]?.openingBalance
-                  ?.totalCredit ?? "0.00"}
-              </td>
-            </tr>
-
-            {items?.[accountSubhead as string]?.[
-              accountSubhead as string
-            ]?.[0]?.accounts?.map((items: any, index: number) => (
-              <tr key={index} className="border-b border-[#ebecf0]">
-                <td className="py-3">
-                  <Link
-                    style={{ textDecoration: "none", color: "rgb(48,63,88,1)" }}
-                    to={`/reports/trialBalance/${accountSubhead}/monthly-summery`}
-                    state={{ items, fromDate, toDate }}
-                    className="text-blue-600 underline"
-                  >
-                    {items.accountName}
-                  </Link>
-                </td>
-                <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                  {items.totalDebit ?? "0.00"}
-                </td>
-                <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                  {items.totalCredit ?? "0.00"}
-                </td>
-              </tr>
-            ))}
+          
+            {items?.[accountSubhead as string]?.data?.map(
+              (items: any, index: number) => (
+                <tr key={index} className="border-b border-[#ebecf0]">
+                  <td className="py-3">
+                    <Link
+                      style={{
+                        textDecoration: "none",
+                        color: "rgb(48,63,88,1)",
+                      }}
+                      to={`${reportPath()}/${accountSubhead}/monthly-summery`}
+                      state={{ items, fromDate, toDate }}
+                      className="text-blue-600 underline"
+                    >
+                      {items.accountName}
+                    </Link>
+                  </td>
+                  <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
+                    {items.overallNetDebit ?? "0.00"}
+                  </td>
+                  <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
+                    {items.overallNetCredit ?? "0.00"}
+                  </td>
+                </tr>
+              )
+            )}
 
             <tr>
               <td className="py-3 font-bold">Total</td>

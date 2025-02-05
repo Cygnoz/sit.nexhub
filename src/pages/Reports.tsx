@@ -40,7 +40,7 @@ const settingsData: reports[] = [
     title: "Trading Account",
     description: "Manage Trading Account",
     imageUrl: tradingAccBgImage,
-    route: "/reports/tradingAccount",
+    route: "/reports/trading-account",
   },
   {
     title: "Trail Balance",

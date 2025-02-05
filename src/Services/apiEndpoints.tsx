@@ -215,6 +215,7 @@ export const endponits = {
   GET_ALL_EXPENSE: `get-all-expense`,
   GET_A_EXPENSE: `get-one-expense`,
   GET_LAST_EXPENSE_PREFIX: `get-last-expense-prefix`,
+  eXPENSE_JOURNAL:`expense-journal`,
 
   //Expense > category
   ADD_EXPENSE_CATEGORY: `add-category`,

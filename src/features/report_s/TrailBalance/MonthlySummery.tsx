@@ -20,15 +20,25 @@ const MonthlySummery = ({}: Props) => {
     if (storedFromDate) setFromDate(storedFromDate);
     if (storedToDate) setToDate(storedToDate);
   }, []);
-  console.log(items);
+  const reportPath = () => {
+    if (location.pathname.includes("trialBalance")) {
+      return "/reports/trialBalance";
+    } else if (location.pathname.includes("trading-account")) {
+      return "/reports/trading-account";
+    } else {
+      return "/reports";
+    }
+  };
+  console.log(location.pathname)
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4 gap-2">
-        <Link to={"/reports/trialBalance"}>
-          <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
-            <CheveronLeftIcon />
-          </div>
-        </Link>
+      <Link to={reportPath()}>
+  <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
+    <CheveronLeftIcon />
+  </div>
+</Link>
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
             {" "}
@@ -72,26 +82,30 @@ const MonthlySummery = ({}: Props) => {
             </tr>
           </thead>
           <tbody className="text-xs ">
-            {items?.months?.map((item: any) => (
+            {items?.entries?.map((item: any) => (
               <tr className="border-b border-[#ebecf0]">
                 <Link
-                  to={`/reports/trialBalance/${accountSubHead}/monthly-summery/ledger`}
-                  state={{ item, fromDate, toDate }}
+                      to={`${reportPath()}/${accountSubHead}/monthly-summery/ledger`}
+                      state={{ item, fromDate, toDate }}
                 >
                   {" "}
                   <td className="py-3">{item.date}</td>
                 </Link>
                 <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                  {item.totalDebit}
+                  {item.overAllNetDebit}
                 </td>
                 <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                  {item.totalCredit}
+                  {item.overAllNetCredit}
                 </td>
               </tr>
             ))}
             <td className="py-3 font-bold">Total</td>
-            <td className="py-3 text-right font-bold">{items.totalDebit}</td>
-            <td className="py-3 text-right font-bold">{items.totalCredit}</td>
+            <td className="py-3 text-right font-bold">
+              {items.overallNetDebit}
+            </td>
+            <td className="py-3 text-right font-bold">
+              {items.overallNetCredit}
+            </td>
           </tbody>
         </table>
       </div>
