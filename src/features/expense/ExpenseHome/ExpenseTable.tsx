@@ -119,7 +119,7 @@ const ExpenseTable = () => {
   const handleEditClick = (id: any) => {
     navigate(`/expense/edit-expense/${id}`)
   }
-  const { request: deleteExpense } = useApi("delete", 5001);
+  const { request: deleteExpense } = useApi("delete", 5008);
   const handleDelete = async () => {
     if (!deleteId) return;
     try {

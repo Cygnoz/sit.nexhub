@@ -31,8 +31,7 @@ function AddExpensePage({ page }: Props) {
   const [expenseData, setExpenseData] = useState<ExpenseData>({
     expenseNumber: "",
     expenseDate: "",
-    paidThrough: "",
-    paidThroughId: "",
+    paidThroughAccountId: "",
     expenseCategory: "",
     expenseType: "Goods",
     hsnCode: "",
@@ -57,7 +56,6 @@ function AddExpensePage({ page }: Props) {
     expense: [
       {
         expenseAccountId: "",
-        expenseAccount: "",
         note: "",
         taxGroup: "",
         taxExemption: "",
@@ -76,6 +74,7 @@ function AddExpensePage({ page }: Props) {
   const { request: AllAccounts } = useApi("get", 5001);
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: AddExpenses } = useApi("post", 5008);
+  const { request: EditExpenses } = useApi("put", 5008);
   const { request: getAllExpenseCategory } = useApi("get", 5008);
   const { request: getTax } = useApi("get", 5004);
   const { request: getCountries } = useApi("get", 5004);
@@ -97,15 +96,11 @@ function AddExpensePage({ page }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [Itemize, setItemize] = useState<boolean>(true);
   const [prefix, setPrefix] = useState<any>(null);
-  const [selectedExpenseAcount,setSelectedExpenseAccount]=useState<any>("")
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
     null
   );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const [accountData, setAccountData] = useState({
-    paidThrough: [],
-    liabilities: [],
-  });
+  const [accountData, setAccountData] = useState<any>([]);
 
   const handleAddExpense = async () => {
     try {
@@ -113,7 +108,6 @@ function AddExpensePage({ page }: Props) {
 
       const updatedErrors: any = {
         expenseDate: !expenseData.expenseDate,
-        paidThrough: !expenseData.paidThrough,
         gstTreatment:
           selectedSection === "expense" ? !expenseData.gstTreatment : false,
         distance: selectedSection === "mileage" ? !expenseData.distance : false,
@@ -192,9 +186,6 @@ function AddExpensePage({ page }: Props) {
           if (!expense.amount) {
             updatedErrors[`expense amount`] = true;
           }
-          if (!expense.expenseAccount) {
-            updatedErrors[`expense Account`] = true;
-          }
         });
       }
 
@@ -210,8 +201,15 @@ function AddExpensePage({ page }: Props) {
         return;
       }
 
-      const url = page === "edit" ? `${endponits.EDIT_EXPENSE}` : `${endponits.ADD_EXPENSES}`;
-      const { response, error } = await AddExpenses(url, expenseData);
+      const url =
+        page === "edit"
+          ? `${endponits.EDIT_EXPENSE}/${id}`
+          : `${endponits.ADD_EXPENSES}`;
+          const api =
+          page === "edit"
+            ?  EditExpenses
+            : AddExpenses ;
+      const { response, error } = await api(url, expenseData);
 
       if (response) {
         toast.success(response.data.message);
@@ -298,6 +296,15 @@ function AddExpensePage({ page }: Props) {
       ...prevData,
       [name]: value,
     }));
+
+    if (name === "expenseAccountId") {
+      setExpenseData((prevData) => ({
+        ...prevData,
+        expense: prevData.expense.map((item, index) =>
+          index === 0 ? { ...item, expenseAccountId: value } : item
+        ),
+      }));
+    }
   };
 
   const fetchCountries = async () => {
@@ -317,15 +324,7 @@ function AddExpensePage({ page }: Props) {
       const url = `${endponits.Get_ALL_Acounts}`;
       const { response, error } = await AllAccounts(url);
       if (!error || response) {
-        setAccountData({
-          paidThrough: response?.data.filter(
-            (acc: any) =>
-              acc.accountSubhead === "Cash" || acc.accountSubhead === "Bank"
-          ),
-          liabilities: response?.data.filter(
-            (acc: any) => acc.accountGroup == "Liability"
-          ),
-        });
+        setAccountData(response?.data);
         return;
       }
     } catch (error) {
@@ -372,6 +371,45 @@ function AddExpensePage({ page }: Props) {
   const handleItemizeTrue = () => {
     setItemize(true);
   };
+  console.log(selectedTax.taxName, "erty");
+
+  const handleTaxSelect = (e: any) => {
+    // Check if the selected value is 'Non-Taxable'
+    if (e.target.value === "Non-Taxable") {
+      setSelectedTax({
+        taxName: "Non-Taxable",
+        cgst: 0,
+        sgst: 0,
+        igst: 0,
+        taxRate: 0,  // You can add this if needed
+      });
+    } else {
+      // Find the matching tax value from the gstTaxRate
+      const selectedTaxRate = JSON.parse(e.target.value);
+      setSelectedTax(selectedTaxRate);
+    }
+  
+    // Update expense data with the selected tax details
+    setExpenseData((prevData) => {
+      const updatedExpenses = prevData.expense.map((item, index) =>
+        index === 0
+          ? {
+              ...item,
+              taxGroup: selectedTax.taxName,
+              cgst: selectedTax.cgst,
+              sgst: selectedTax.sgst,
+              igst: selectedTax.igst,
+            }
+          : item
+      );
+  
+      return {
+        ...prevData,
+        expense: updatedExpenses,
+      };
+    });
+  };
+  
 
   const handleExpenseChange = (
     index: number,
@@ -532,7 +570,8 @@ function AddExpensePage({ page }: Props) {
     const taxRateUrl = `${endponits.GET_ALL_TAX}`;
     const organizationURL = `${endponits.GET_ONE_ORGANIZATION}`;
     const getPrefixUrl = `${endponits.GET_LAST_EXPENSE_PREFIX}`;
-
+    const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
+    fetchData(supplierUrl, setSupplierData, AllSuppliers);
     fetchData(organizationURL, setOrganization, getOrg);
     fetchData(categoryUrl, setCategories, getAllExpenseCategory);
     fetchData(taxRateUrl, setTaxRate, getTax);
@@ -547,8 +586,6 @@ function AddExpensePage({ page }: Props) {
       }));
     }
   }, [prefix]);
-
-  console.log(prefix);
 
   useEffect(() => {
     handlePlaceOfSupply();
@@ -579,7 +616,10 @@ function AddExpensePage({ page }: Props) {
   }, [Itemize]);
 
   useEffect(() => {
-    if (expenseData.gstTreatment === "Unregistered Business" || expenseData.gstTreatment === "Consumer") {
+    if (
+      expenseData.gstTreatment === "Unregistered Business" ||
+      expenseData.gstTreatment === "Consumer"
+    ) {
       setExpenseData((prevData) => ({
         ...prevData,
         gstin: "",
@@ -610,18 +650,45 @@ function AddExpensePage({ page }: Props) {
           const url = `${endponits.GET_A_EXPENSE}/${id}`;
           const { response, error } = await getOneExpense(url);
           if (!error && response) {
-            setExpenseData(response.data)
-            selectedExpenseAcount(response.data.expense[0].expenseAccount)
+            setExpenseData(response.data);
           }
         } catch (error) {
           console.log("Error in fetching", error);
         }
       }
     };
-
     fetchJournal();
   }, [page, id]);
 
+  useEffect(() => {
+    if (id && supplierData?.length > 0) {
+      const matchingSupplier = supplierData.find(
+        (supplier: any) => supplier._id === expenseData?.supplierId
+      );
+
+      if (matchingSupplier) {
+        setSelecetdSupplier(matchingSupplier);
+      }
+    }
+    if (id && taxRate?.gstTaxRate?.length > 0) {
+      const matchingTax = taxRate.gstTaxRate.find(
+        (tax: any) => tax.taxName === expenseData?.expense[0]?.taxGroup
+      );
+      if (matchingTax) {
+        console.log(matchingTax,"matchingTax")
+        setSelectedTax(matchingTax);
+      }
+    }
+  }, [id, supplierData, expenseData?.supplierId, taxRate]);
+
+  useEffect(()=>{
+    if(expenseData.expense.length>1){
+      setItemize(false)
+    }
+    if(expenseData.expense.length===0){
+      setItemize(true)
+    }
+  },[id,expenseData.expense])
 
   return (
     <>
@@ -715,39 +782,34 @@ function AddExpensePage({ page }: Props) {
                     <label className="text-sm mb-1 text-labelColor">
                       Expense Account<span className="text-[#bd2e2e] ">*</span>
                     </label>
-                    <div className="relative w-full">
+                    <div className="relative w-full  ml-auto  ">
                       <select
-                        name="expenseAccount"
-                        value={expenseData?.expense[0]?.expenseAccount || ""}
-                        onChange={(e) => {
-                         setSelectedExpenseAccount( e.target.value);
-                          const selectedAccount: any =
-                            accountData?.liabilities?.find(
-                              (account: any) =>
-                                account.accountName === selectedExpenseAcount
-                            );
-
-                          setExpenseData({
-                            ...expenseData,
-                            expense: [
-                              {
-                                ...expenseData.expense[0],
-                                expenseAccount: selectedExpenseAcount,
-                                expenseAccountId: selectedAccount
-                                  ? selectedAccount._id
-                                  : "",
-                              },
-                            ],
-                          });
-                        }}
-                        className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                        onChange={handleChange}
+                        value={
+                          expenseData?.expense?.[0]?.expenseAccountId || ""
+                        }
+                        name="expenseAccountId"
+                        className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                       >
-                        <option value="">Select an Account</option>
-                        {accountData?.liabilities &&
-                          accountData.liabilities.map(
-                            (account: any, index: number) => (
-                              <option key={index} value={account.accountName}>
-                                {account.accountName}
+                        <option value="" hidden disabled>
+                          {expenseData?.expense?.[0]?.expenseAccountId
+                            ? accountData?.find(
+                                (item: any) =>
+                                  item._id ===
+                                  expenseData?.expense?.[0]?.expenseAccountId
+                              )?.accountName || "Select Account"
+                            : "Select Account"}
+                        </option>
+
+                        {accountData
+                          ?.filter(
+                            (item: { accountGroup: string }) =>
+                              item.accountGroup === "Liability"
+                          )
+                          ?.map(
+                            (item: { _id: string; accountName: string }) => (
+                              <option key={item._id} value={item._id}>
+                                {item.accountName}
                               </option>
                             )
                           )}
@@ -793,38 +855,33 @@ function AddExpensePage({ page }: Props) {
                 <label className="text-sm mb-1 text-labelColor">
                   Paid Through Account<span className="text-[#bd2e2e] ">*</span>
                 </label>
-                <div className="relative w-full">
+                <div className="relative w-full ml-auto ">
                   <select
-                    name="paidThrough"
-                    value={expenseData.paidThrough}
-                    onChange={(e) => {
-                      const selectedValue = e.target.value;
-                      const selectedAccount: any =
-                        accountData?.paidThrough?.find(
-                          (account: any) =>
-                            account.accountName === selectedValue
-                        );
-                      setExpenseData({
-                        ...expenseData,
-                        paidThrough: selectedValue,
-                        paidThroughId: selectedAccount
-                          ? selectedAccount._id
-                          : "",
-                      });
-                    }}
-                    className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                    onChange={handleChange}
+                    value={expenseData.paidThroughAccountId}
+                    name="paidThroughAccountId"
+                    className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                   >
-                    <option value="">Select an Account</option>
-                    {accountData?.paidThrough &&
-                      accountData.paidThrough.map(
-                        (account: any, index: number) => (
-                          <option key={index} value={account.accountName}>
-                            {account.accountName}
-                          </option>
-                        )
-                      )}
+                    <option value="" hidden disabled>
+                      {expenseData.paidThroughAccountId
+                        ? accountData.find(
+                            (item: any) =>
+                              item._id === expenseData.paidThroughAccountId
+                          )?.accountName || "Select Account"
+                        : "Select Account"}
+                    </option>
+                    {accountData
+                      ?.filter(
+                        (item: { accountSubhead: string }) =>
+                          item.accountSubhead === "Bank" ||
+                          item.accountSubhead === "Cash"
+                      )
+                      ?.map((item: { _id: string; accountName: string }) => (
+                        <option key={item._id} value={item._id}>
+                          {item.accountName}
+                        </option>
+                      ))}
                   </select>
-
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <CehvronDown color="gray" />
                   </div>
@@ -847,7 +904,7 @@ function AddExpensePage({ page }: Props) {
                   <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                     <p>
                       {expenseData.expenseCategory &&
-                        expenseData.expenseCategory
+                      expenseData.expenseCategory
                         ? expenseData.expenseCategory
                         : "Select Category"}
                     </p>
@@ -942,18 +999,20 @@ function AddExpensePage({ page }: Props) {
                             type="radio"
                             name="expenseType"
                             value="Goods"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${expenseData.expenseType === "Goods"
-                              ? "border-8 border-[#97998E]"
-                              : "border-1 border-[#97998E]"
-                              }`}
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                              expenseData.expenseType === "Goods"
+                                ? "border-8 border-[#97998E]"
+                                : "border-1 border-[#97998E]"
+                            }`}
                             checked={expenseData.expenseType === "Goods"}
                             readOnly // Avoid unnecessary onChange handling
                           />
                           <div
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${expenseData.expenseType === "Goods"
-                              ? "bg-neutral-50" // Correct color for checked state
-                              : "bg-transparent"
-                              }`}
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                              expenseData.expenseType === "Goods"
+                                ? "bg-neutral-50" // Correct color for checked state
+                                : "bg-transparent"
+                            }`}
                           />
                         </div>
                         <label
@@ -980,18 +1039,20 @@ function AddExpensePage({ page }: Props) {
                             type="radio"
                             name="expenseType"
                             value="Service"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${expenseData.expenseType === "Service"
-                              ? "border-8 border-[#97998E]"
-                              : "border-1 border-[#97998E]"
-                              }`}
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                              expenseData.expenseType === "Service"
+                                ? "border-8 border-[#97998E]"
+                                : "border-1 border-[#97998E]"
+                            }`}
                             checked={expenseData.expenseType === "Service"}
                             readOnly // Avoid unnecessary onChange handling
                           />
                           <div
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${expenseData.expenseType === "Service"
-                              ? "bg-neutral-50" // Correct color for checked state
-                              : "bg-transparent"
-                              }`}
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                              expenseData.expenseType === "Service"
+                                ? "bg-neutral-50" // Correct color for checked state
+                                : "bg-transparent"
+                            }`}
                           />
                         </div>
                         <label
@@ -1003,7 +1064,6 @@ function AddExpensePage({ page }: Props) {
                       </div>
                     </div>
                   </div>
-
 
                   {expenseData.expenseType === "Goods" ? (
                     <div className="col-span-1 space-y-2">
@@ -1046,7 +1106,6 @@ function AddExpensePage({ page }: Props) {
                 <div
                   className="relative w-full"
                   onClick={(e) => {
-                    // Prevent the dropdown from opening when clicking the clear button
                     if (!expenseData.supplierDisplayName) {
                       e.stopPropagation();
                       toggleDropdown("supplier");
@@ -1056,7 +1115,7 @@ function AddExpensePage({ page }: Props) {
                   <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                     <p>
                       {expenseData.supplierDisplayName &&
-                        expenseData.supplierDisplayName
+                      expenseData.supplierDisplayName
                         ? expenseData.supplierDisplayName
                         : "Select Supplier"}
                     </p>
@@ -1193,13 +1252,13 @@ function AddExpensePage({ page }: Props) {
                       {(expenseData.gstTreatment ===
                         "Registered Business - Regular" ||
                         expenseData.gstTreatment ===
-                        "Registered Business - Composition" ||
+                          "Registered Business - Composition" ||
                         expenseData.gstTreatment === "Special Economic Zone" ||
                         expenseData.gstTreatment === "Deemed Export" ||
                         expenseData.gstTreatment === "Tax Deductor" ||
                         expenseData.gstTreatment === "SEZ Developer") && (
-                          <span className="text-[#bd2e2e]">*</span>
-                        )}
+                        <span className="text-[#bd2e2e]">*</span>
+                      )}
                     </label>
                     <div className="relative w-full">
                       <input
@@ -1221,7 +1280,7 @@ function AddExpensePage({ page }: Props) {
                     {(expenseData.gstTreatment ===
                       "Registered Business - Regular" ||
                       expenseData.gstTreatment ===
-                      "Registered Business - Composition" ||
+                        "Registered Business - Composition" ||
                       expenseData.gstTreatment === "Special Economic Zone" ||
                       expenseData.gstTreatment === "Deemed Export" ||
                       expenseData.gstTreatment === "Tax Deductor" ||
@@ -1229,8 +1288,8 @@ function AddExpensePage({ page }: Props) {
                       expenseData.gstTreatment === "Unregistered Business" ||
                       expenseData.gstTreatment === "Consumer" ||
                       expenseData.gstTreatment === "SEZ Developer") && (
-                        <span className="text-[#bd2e2e]">*</span>
-                      )}
+                      <span className="text-[#bd2e2e]">*</span>
+                    )}
                   </label>
 
                   <div className="relative w-full">
@@ -1266,7 +1325,7 @@ function AddExpensePage({ page }: Props) {
                   {(expenseData.gstTreatment ===
                     "Registered Business - Regular" ||
                     expenseData.gstTreatment ===
-                    "Registered Business - Composition" ||
+                      "Registered Business - Composition" ||
                     expenseData.gstTreatment === "Special Economic Zone" ||
                     expenseData.gstTreatment === "Deemed Export" ||
                     expenseData.gstTreatment === "Unregistered Business" ||
@@ -1274,8 +1333,8 @@ function AddExpensePage({ page }: Props) {
                     expenseData.gstTreatment === "Tax Deductor" ||
                     expenseData.gstTreatment === "Overseas" ||
                     expenseData.gstTreatment === "SEZ Developer") && (
-                      <span className="text-[#bd2e2e]">*</span>
-                    )}
+                    <span className="text-[#bd2e2e]">*</span>
+                  )}
                 </label>
                 <div className="relative w-full">
                   <select
@@ -1305,54 +1364,24 @@ function AddExpensePage({ page }: Props) {
                     <select
                       disabled={
                         expenseData.gstTreatment ===
-                        "Registered Business - Composition" ||
+                          "Registered Business - Composition" ||
                         expenseData.gstTreatment === "Unregistered Business" ||
                         expenseData.gstTreatment === "Overseas"
                       }
                       name="taxGroup"
                       value={
-                        selectedTax.taxName === "Non-Taxable"
+                        selectedTax?.taxName === "Non-Taxable"
                           ? "Non-Taxable"
-                          : JSON.stringify(selectedTax) || ""
+                          : selectedTax && selectedTax.taxName
+                          ? JSON.stringify(selectedTax)
+                          : ""
                       }
                       onChange={(e) => {
-                        let selectedValue;
-
-                        // Handle "Non-Taxable" case safely
-                        if (e.target.value === "Non-Taxable") {
-                          selectedValue = {
-                            taxName: "Non-Taxable",
-                            cgst: 0,
-                            sgst: 0,
-                            igst: 0,
-                          };
-                        } else {
-                          selectedValue = JSON.parse(e.target.value);
-                        }
-
-                        // Update state with the selected tax value
-                        setExpenseData((prevData) => {
-                          const updatedExpenses = [...prevData.expense];
-                          updatedExpenses[0] = {
-                            ...updatedExpenses[0],
-                            taxGroup: selectedValue.taxName,
-                            cgst: selectedValue.cgst,
-                            sgst: selectedValue.sgst,
-                            igst: selectedValue.igst,
-                          };
-
-                          return {
-                            ...prevData,
-                            expense: updatedExpenses,
-                          };
-                        });
-
-                        setSelectedTax(selectedValue);
+                        handleTaxSelect(e);
                       }}
                       className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                     >
                       <option value="">Select Tax Rate</option>
-
                       <option value="Non-Taxable">Non-Taxable</option>
                       <optgroup label="Tax">
                         {taxRate?.gstTaxRate?.map(
@@ -1379,13 +1408,13 @@ function AddExpensePage({ page }: Props) {
                   {(expenseData.gstTreatment ===
                     "Registered Business - Regular" ||
                     expenseData.gstTreatment ===
-                    "Registered Business - Composition" ||
+                      "Registered Business - Composition" ||
                     expenseData.gstTreatment === "Special Economic Zone" ||
                     expenseData.gstTreatment === "Deemed Export" ||
                     expenseData.gstTreatment === "Tax Deductor" ||
                     expenseData.gstTreatment === "SEZ Developer") && (
-                      <span className="text-[#bd2e2e]">*</span>
-                    )}
+                    <span className="text-[#bd2e2e]">*</span>
+                  )}
                 </label>
                 <div className="relative w-full">
                   <input
@@ -1445,18 +1474,20 @@ function AddExpensePage({ page }: Props) {
                             type="radio"
                             name="amountIs" // Corrected name
                             value="Tax Inclusive"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${expenseData.amountIs === "Tax Inclusive"
-                              ? "border-8 border-[#97998E]"
-                              : "border-1 border-[#97998E]"
-                              }`}
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                              expenseData.amountIs === "Tax Inclusive"
+                                ? "border-8 border-[#97998E]"
+                                : "border-1 border-[#97998E]"
+                            }`}
                             checked={expenseData.amountIs === "Tax Inclusive"}
                             readOnly
                           />
                           <div
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${expenseData.amountIs === "Tax Inclusive"
-                              ? "bg-neutral-50"
-                              : "bg-transparent"
-                              }`}
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                              expenseData.amountIs === "Tax Inclusive"
+                                ? "bg-neutral-50"
+                                : "bg-transparent"
+                            }`}
                           />
                         </div>
                         <label
@@ -1482,18 +1513,20 @@ function AddExpensePage({ page }: Props) {
                             type="radio"
                             name="amountIs"
                             value="Tax Exclusive"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${expenseData.amountIs === "Tax Exclusive"
-                              ? "border-8 border-[#97998E]"
-                              : "border-1 border-[#97998E]"
-                              }`}
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                              expenseData.amountIs === "Tax Exclusive"
+                                ? "border-8 border-[#97998E]"
+                                : "border-1 border-[#97998E]"
+                            }`}
                             checked={expenseData.amountIs === "Tax Exclusive"} // Correct checked logic
                             readOnly // Prevent unnecessary onChange handling
                           />
                           <div
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${expenseData.amountIs === "Tax Exclusive"
-                              ? "bg-neutral-50"
-                              : "bg-transparent"
-                              }`}
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                              expenseData.amountIs === "Tax Exclusive"
+                                ? "bg-neutral-50"
+                                : "bg-transparent"
+                            }`}
                           />
                         </div>
                         <label
@@ -1521,7 +1554,7 @@ function AddExpensePage({ page }: Props) {
 
             {!Itemize && (
               <AddExpenseTable
-                liabilities={accountData.liabilities}
+              accountData={accountData}
                 expenseData={expenseData}
                 taxRate={taxRate}
                 setExpenseData={setExpenseData}
@@ -1582,7 +1615,7 @@ function AddExpensePage({ page }: Props) {
               <div className="relative w-full">
                 <select
                   name="expenseAccount"
-                  value={expenseData?.expense[0]?.expenseAccount || ""}
+                  value={expenseData?.expense[0]?.expenseAccountId || ""}
                   onChange={(e) => {
                     const selectedValue = e.target.value;
                     const selectedAccount: any = accountData?.liabilities?.find(
@@ -1594,7 +1627,6 @@ function AddExpensePage({ page }: Props) {
                       expense: [
                         {
                           ...expenseData.expense[0],
-                          expenseAccount: selectedValue,
                           expenseAccountId: selectedAccount
                             ? selectedAccount._id
                             : "",
@@ -1625,34 +1657,27 @@ function AddExpensePage({ page }: Props) {
               <label className="text-sm mb-1 text-labelColor">
                 Paid Through<span className="text-[#bd2e2e] ">*</span>
               </label>
-              <div className="relative w-full">
+              <div className="relative w-full  ml-auto  ps-5">
                 <select
-                  name="paidThrough"
-                  value={expenseData.paidThrough}
-                  onChange={(e) => {
-                    const selectedValue = e.target.value;
-                    // Find the selected account's ID
-                    const selectedAccount: any = accountData?.paidThrough?.find(
-                      (account: any) => account.accountName === selectedValue
-                    );
-                    // Update both paidThrough and paidThroughId in expenseData
-                    setExpenseData({
-                      ...expenseData,
-                      paidThrough: selectedValue,
-                      paidThroughId: selectedAccount?._id || "",
-                    });
-                  }}
-                  className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                  onChange={handleChange}
+                  value={expenseData.paidThroughAccountId}
+                  name="paidAccountId"
+                  className="block appearance-none w-full  text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                 >
-                  <option value="">Select an Account</option>
-                  {accountData?.paidThrough &&
-                    accountData.paidThrough?.map(
-                      (account: any, index: number) => (
-                        <option key={index} value={account.accountName}>
-                          {account.accountName}
-                        </option>
-                      )
-                    )}
+                  <option value="" selected hidden disabled>
+                    Select Account
+                  </option>
+                  {accountData
+                    ?.filter(
+                      (item: { accountSubhead: string }) =>
+                        item.accountSubhead === "Bank" ||
+                        item.accountSubhead === "Cash"
+                    )
+                    ?.map((item: { _id: string; accountName: string }) => (
+                      <option key={item._id} value={item._id}>
+                        {item.accountName}
+                      </option>
+                    ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <CehvronDown color="gray" />
@@ -1720,7 +1745,7 @@ function AddExpensePage({ page }: Props) {
                 <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                   <p>
                     {expenseData.supplierDisplayName &&
-                      expenseData.supplierDisplayName
+                    expenseData.supplierDisplayName
                       ? expenseData.supplierDisplayName
                       : "Select Supplier"}
                   </p>

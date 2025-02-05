@@ -210,8 +210,8 @@ export const endponits = {
 
   //  Expense
   ADD_EXPENSES: `add-expense`,
-  EDIT_EXPENSE: "",
-  DELETE_EXPENSE: "",
+  EDIT_EXPENSE: "update-expense",
+  DELETE_EXPENSE: "delete-expense",
   GET_ALL_EXPENSE: `get-all-expense`,
   GET_A_EXPENSE: `get-one-expense`,
   GET_LAST_EXPENSE_PREFIX: `get-last-expense-prefix`,

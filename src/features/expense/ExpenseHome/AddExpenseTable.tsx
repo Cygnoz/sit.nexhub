@@ -5,7 +5,7 @@ import CehvronDown from "../../../assets/icons/CehvronDown";
 type Props = {
   expenseData: any;
   setExpenseData: React.Dispatch<React.SetStateAction<any>>;
-  liabilities: any[];
+  accountData: any[];
   taxRate?: {
     gstTaxRate: { taxName: string; sgst: number; cgst: number; igst: number }[];
   };
@@ -28,7 +28,7 @@ type Row = {
 const AddExpenseTable: React.FC<Props> = ({
   expenseData,
   setExpenseData,
-  liabilities,
+  accountData,
   taxRate,
 }) => {
   const [rows, setRows] = useState<Row[]>([
@@ -46,6 +46,8 @@ const AddExpenseTable: React.FC<Props> = ({
       amount: 0,
     },
   ]);
+
+
 
   const calculateTax = (row: Row) => {
     const amount = row.amount || 0;
@@ -65,32 +67,38 @@ const AddExpenseTable: React.FC<Props> = ({
         ? {
             ...row,
             ...updatedFields,
-            ...calculateTax({ ...row, ...updatedFields }),
+            ...calculateTax({ ...row, ...updatedFields }), // assuming calculateTax updates the tax-related fields
           }
         : row
     );
-
-    setRows(updatedRows);
+  
+    setRows(updatedRows);  // Update rows state
     setExpenseData((prev: any) => ({
       ...prev,
-      expense: updatedRows,
+      expense: updatedRows,  // Update expense data
     }));
   };
+  
   const handleTaxGroupChange = (index: number, taxName: string) => {
-    const selectedTax = taxName ? JSON.parse(taxName) : null;
-
-    const matchedTax = taxRate?.gstTaxRate?.find(
-      (tax) => tax.taxName === selectedTax?.taxName
-    );
-
-    // Update the row with the appropriate tax details
-    handleRowChange(index, {
-      taxGroup: selectedTax?.taxName || "",
-      sgst: matchedTax?.sgst || 0,
-      cgst: matchedTax?.cgst || 0,
-      igst: matchedTax?.igst || 0,
-    });
+    const selectedTax = taxName ? taxRate?.gstTaxRate?.find(tax => tax.taxName === taxName) : null;
+  
+    if (selectedTax) {
+      handleRowChange(index, {
+        taxGroup: selectedTax.taxName,  // Set the correct taxGroup
+        sgst: selectedTax.sgst || 0,    // Set SGST if exists
+        cgst: selectedTax.cgst || 0,    // Set CGST if exists
+        igst: selectedTax.igst || 0,    // Set IGST if exists
+      });
+    } else {
+      handleRowChange(index, {
+        taxGroup: "",   
+        sgst: 0,        
+        cgst: 0,       
+        igst: 0,       
+      });
+    }
   };
+  
 
   // console.log(rows.)
 
@@ -113,35 +121,15 @@ const AddExpenseTable: React.FC<Props> = ({
     ]);
   };
 
+
+
   const handleRemoveRow = (index: number) => {
     setRows((prevRows) => {
-      let updatedRows = [...prevRows];
-
-      if (updatedRows.length === 1) {
-        updatedRows[0] = {
-          expenseAccountId: "",
-          expenseAccount: "",
-          note: "",
-          taxGroup: "",
-          sgst: 0,
-          cgst: 0,
-          igst: 0,
-          sgstAmount: 0,
-          cgstAmount: 0,
-          igstAmount: 0,
-          amount: 0,
-        };
-      } else if (index === 0) {
-        updatedRows.splice(index, 1);
-      } else {
-        updatedRows.splice(index, 1);
-      }
-
+      const updatedRows = prevRows.filter((_, rowIndex) => rowIndex !== index);
       setExpenseData((prev: any) => ({
         ...prev,
         expense: updatedRows,
       }));
-
       return updatedRows;
     });
   };
@@ -151,6 +139,8 @@ const AddExpenseTable: React.FC<Props> = ({
       setRows(expenseData.expense);
     }
   }, []);
+
+  console.log(rows,"rows")
 
   const calculateTotalTaxes = () => {
     const sgstPctg = rows.reduce((acc, row) => acc + row.sgst, 0);
@@ -185,33 +175,44 @@ const AddExpenseTable: React.FC<Props> = ({
               <tr key={index} className="border-b border-inputBorder">
                 <td className="p-2">
                   <div className="relative w-full">
-                    <select
-                      value={row.expenseAccount || ""}
-                      onChange={(e) => {
-                        const selectedAccount = liabilities.find(
-                          (account: any) =>
-                            account.accountName === e.target.value
-                        );
-                        handleRowChange(index, {
-                          expenseAccount: e.target.value,
-                          expenseAccountId: selectedAccount?._id || "",
-                        });
-                      }}
-                      className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
-                    >
-                      <option value="">Select an Account</option>
-                      {liabilities &&
-                        liabilities.map((account: any) => (
-                          <option key={account._id} value={account.accountName}>
-                            {account.accountName}
-                          </option>
-                        ))}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
+                    <div className="relative w-full ml-auto">
+                      <select
+                        onChange={(e) =>
+                          handleRowChange(index, {
+                            expenseAccountId: e.target.value,
+                          })
+                        }
+                        value={row.expenseAccountId || ""}
+                        name="expenseAccountId"
+                        className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                      >
+                        <option value="" hidden disabled>
+                          {row.expenseAccountId
+                            ? accountData.find(
+                                (item: any) => item._id === row.expenseAccountId
+                              )?.accountName || "Select Account"
+                            : "Select Account"}
+                        </option>
+
+                        {accountData
+                          .filter(
+                            (item: { accountGroup: string }) =>
+                              item.accountGroup === "Liability"
+                          )
+                          .map((item: { _id: string; accountName: string }) => (
+                            <option key={item._id} value={item._id}>
+                              {item.accountName}
+                            </option>
+                          ))}
+                      </select>
+
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <CehvronDown color="gray" />
+                      </div>
                     </div>
                   </div>
                 </td>
+
                 <td className="p-2">
                   <input
                     type="text"
@@ -225,31 +226,26 @@ const AddExpenseTable: React.FC<Props> = ({
                 </td>
                 <td className="p-2">
                   <div className="relative w-full">
-                    <select
-                      disabled={
-                        expenseData.gstTreatment ===
-                          "Registered Business - Composition" ||
-                        expenseData.gstTreatment === "Unregistered Business" ||
-                        expenseData.gstTreatment === "Overseas"
-                      }
-                      value={row?.taxGroup?.taxName}
-                      onChange={(e) =>
-                        handleTaxGroupChange(index, e.target.value)
-                      }
-                      className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
-                    >
-                      <option value="">Select Tax</option>
-                      <option value="Non-Taxable">Non-Taxable</option>
-                      <optgroup label="Tax">
-                        {taxRate?.gstTaxRate?.map(
-                          (account: any, index: number) => (
-                            <option key={index} value={JSON.stringify(account)}>
-                              {account?.taxName}
-                            </option>
-                          )
-                        )}
-                      </optgroup>
-                    </select>
+                  <select
+  disabled={expenseData.gstTreatment === "Registered Business - Composition" || expenseData.gstTreatment === "Unregistered Business" || expenseData.gstTreatment === "Overseas"}
+  name="taxGroup"
+  value={row.taxGroup || ""}  // Ensure value is an empty string if no taxGroup is selected
+  onChange={(e) => handleTaxGroupChange(index, e.target.value)} // Correct handler to update state
+  className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+>
+  <option value="">Select Tax Rate</option>
+  <option value="Non-Taxable">Non-Taxable</option>
+  <optgroup label="Tax">
+    {taxRate?.gstTaxRate?.map((account: any, index: number) => (
+      <option key={index} value={account.taxName}> {/* Using taxName as value */}
+        {account.taxName}
+      </option>
+    ))}
+  </optgroup>
+</select>
+
+
+
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <CehvronDown color="gray" />
                     </div>

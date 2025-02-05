@@ -1,6 +1,5 @@
 interface ExpenseDetail {
     expenseAccountId: string;
-    expenseAccount: string;
     note: string;
     taxGroup: string;
     taxExemption: string;
@@ -17,8 +16,7 @@ interface ExpenseDetail {
   export interface ExpenseData {
     expenseNumber:string;
     expenseDate: string;
-    paidThrough: string;
-    paidThroughId: string;
+    paidThroughAccountId: string;
     expenseCategory: string;
     expenseType: string;
     hsnCode: string;
