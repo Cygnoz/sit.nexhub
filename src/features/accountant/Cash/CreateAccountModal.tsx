@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import CashImage from "../../../assets/Images/Group 11.png";
 import bgImage from "../../../assets/Images/14.png";
 import Button from "../../../Components/Button";

@@ -205,9 +205,9 @@ const BalanceSheet = ({}: Props) => {
                         item.nonCurrentLiabilities.overallNetDebit;
                       items = item;
                       link = `/reports/balance-sheet/accounts/${accountSubhead}`;
-                    } else if (item.grossProfit) {
+                    } else if (item.netLossCd) {
                       accountName = "Net Loss (c/d)";
-                      totalAmount = item.grossProfit;
+                      totalAmount = item.netLossCd;
                     }
                     if (totalAmount === 0) {
                       link = "";
