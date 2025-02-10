@@ -22,12 +22,12 @@ interface Customer {
 
 const getCurrentDate = () => {
   const today = new Date();
-  return today.toISOString().split('T')[0];
+  return today.toISOString().split("T")[0];
 };
 
 const getEndOfMonthDate = (date: Date) => {
   const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-  return endOfMonth.toISOString().split('T')[0];
+  return endOfMonth.toISOString().split("T")[0];
 };
 
 const calculateDueDate = (invoiceDate: string, term: string) => {
@@ -40,13 +40,17 @@ const calculateDueDate = (invoiceDate: string, term: string) => {
       const endOfMonthDate = getEndOfMonthDate(date);
       const endOfMonth = new Date(endOfMonthDate);
       endOfMonth.setDate(endOfMonth.getDate() + 1);
-      return endOfMonth.toISOString().split('T')[0];
+      return endOfMonth.toISOString().split("T")[0];
     case "Due end of next month":
-      const nextMonthDate = new Date(date.getFullYear(), date.getMonth() + 2, 0);
+      const nextMonthDate = new Date(
+        date.getFullYear(),
+        date.getMonth() + 2,
+        0
+      );
       const endOfNextMonth = getEndOfMonthDate(nextMonthDate);
       const nextMonth = new Date(endOfNextMonth);
       nextMonth.setDate(nextMonth.getDate() + 1);
-      return nextMonth.toISOString().split('T')[0];
+      return nextMonth.toISOString().split("T")[0];
     case "Net 15":
       date.setDate(date.getDate() + 15);
       break;
@@ -63,11 +67,10 @@ const calculateDueDate = (invoiceDate: string, term: string) => {
       return invoiceDate;
   }
 
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split("T")[0];
 };
 
 const initialSalesQuoteState: invoice = {
-
   customerId: "",
   customerName: "",
   placeOfSupply: "",
@@ -106,7 +109,7 @@ const initialSalesQuoteState: invoice = {
       discountAmount: "",
       amount: "",
       itemAmount: "",
-      salesAccountId: ""
+      salesAccountId: "",
     },
   ],
 
@@ -126,7 +129,6 @@ const initialSalesQuoteState: invoice = {
   paidAmount: "",
   depositAccountId: "",
 
-
   totalDiscount: "",
   discountTransactionType: "Percentage",
   discountTransactionAmount: "",
@@ -140,24 +142,28 @@ const initialSalesQuoteState: invoice = {
   vat: "",
   totalTax: "",
   totalAmount: "",
-  salesOrderId: ""
+  salesOrderId: "",
 };
 const NewInvoice = ({ page }: Props) => {
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(null);
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
+    null
+  );
   const [customerData, setCustomerData] = useState<[]>([]);
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
-  const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(true);
-  const [prefix, setPrifix] = useState("")
+  const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] =
+    useState<boolean>(true);
+  const [prefix, setPrifix] = useState("");
   const [allAccounts, setAllAccounts] = useState<any>([]);
 
-  const [invoiceState, setInvoiceState] = useState<invoice>(initialSalesQuoteState);
+  const [invoiceState, setInvoiceState] = useState<invoice>(
+    initialSalesQuoteState
+  );
   console.log(invoiceState, "as");
-
 
   const { request: AllCustomer } = useApi("get", 5002);
   const { request: getOneOrganization } = useApi("get", 5004);
@@ -166,8 +172,7 @@ const NewInvoice = ({ page }: Props) => {
   const { request: getAccounts } = useApi("get", 5001);
   const { request: getOneInvoice } = useApi("get", 5007);
 
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const invoiceId = queryParams.get("id");
@@ -183,10 +188,12 @@ const NewInvoice = ({ page }: Props) => {
           ...prevData,
           ...response.data,
           salesOrderNumber: response.data.salesOrder,
-          salesOrderId: response.data._id
+          salesOrderId: response.data._id,
         }));
 
-        const matchingSupplier = customerData.find((sup: any) => sup._id === response.data.customerId);
+        const matchingSupplier = customerData.find(
+          (sup: any) => sup._id === response.data.customerId
+        );
         if (matchingSupplier) {
           setSelecetdCustomer(matchingSupplier);
         }
@@ -199,18 +206,20 @@ const NewInvoice = ({ page }: Props) => {
   useEffect(() => {
     const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
     fetchData(customerUrl, setCustomerData, AllCustomer);
-  }, [])
+  }, []);
   useEffect(() => {
-    getBills()
-  }, [selectedCustomer, oneOrganization])
+    getBills();
+  }, [selectedCustomer, oneOrganization]);
 
   const handleGoBack = () => {
-    navigate("/sales/invoice")
-    setInvoiceState(initialSalesQuoteState)
-  }
+    navigate("/sales/invoice");
+    setInvoiceState(initialSalesQuoteState);
+  };
   const toastShown = useRef({ overLimit: false, belowZero: false });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     const totalTax = parseFloat(invoiceState?.totalTax) || 0;
     const totalAmount = parseFloat(invoiceState.subtotalTotal + totalTax) || 0;
@@ -233,10 +242,14 @@ const NewInvoice = ({ page }: Props) => {
             toast.error("Discount cannot exceed 100%");
             discountValue = 0; // Reset if exceeds 100%
           }
-          newState.discountTransactionAmount = percentageDiscount ? percentageDiscount.toFixed(2) : "0";
+          newState.discountTransactionAmount = percentageDiscount
+            ? percentageDiscount.toFixed(2)
+            : "0";
         } else {
           const currencyDiscount = (discountValue / 100) * totalAmount;
-          newState.discountTransactionAmount = currencyDiscount ? currencyDiscount.toFixed(2) : "0";
+          newState.discountTransactionAmount = currencyDiscount
+            ? currencyDiscount.toFixed(2)
+            : "0";
         }
       } else if (name === "discountTransactionAmount") {
         discountValue = parseFloat(value) || 0;
@@ -247,15 +260,23 @@ const NewInvoice = ({ page }: Props) => {
             toast.error("Discount cannot exceed 100%");
           }
           const discountAmount = (discountValue / 100) * totalAmount;
-          newState.discountTransactionAmount = discountValue ? discountValue.toString() : "0";
-          newState.transactionDiscount = discountAmount ? discountAmount.toFixed(2) : "0";
+          newState.discountTransactionAmount = discountValue
+            ? discountValue.toString()
+            : "0";
+          newState.transactionDiscount = discountAmount
+            ? discountAmount.toFixed(2)
+            : "0";
         } else {
           if (discountValue > totalAmount) {
             discountValue = totalAmount;
             toast.error("Discount cannot exceed the subtotal amount");
           }
-          newState.discountTransactionAmount = discountValue ? discountValue.toString() : "0";
-          newState.transactionDiscount = discountValue ? discountValue.toFixed(2) : "0";
+          newState.discountTransactionAmount = discountValue
+            ? discountValue.toString()
+            : "0";
+          newState.transactionDiscount = discountValue
+            ? discountValue.toFixed(2)
+            : "0";
         }
       } else if (name === "paidAmount") {
         let paidAmount = parseFloat(value) || 0;
@@ -282,10 +303,10 @@ const NewInvoice = ({ page }: Props) => {
     });
   };
 
-
-
   useEffect(() => {
-    if (new Date(invoiceState.dueDate) < new Date(invoiceState.salesInvoiceDate)) {
+    if (
+      new Date(invoiceState.dueDate) < new Date(invoiceState.salesInvoiceDate)
+    ) {
       setInvoiceState((prevState) => ({
         ...prevState,
         dueDate: invoiceState.salesInvoiceDate,
@@ -327,10 +348,15 @@ const NewInvoice = ({ page }: Props) => {
         ? (Number(discountTransactionAmount) / 100) * Number(newGrandTotal)
         : Number(discountTransactionAmount);
 
-    const roundedDiscountValue = Math.round(transactionDiscountValueAMT * 100) / 100;
-    const updatedGrandTotal = Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
+    const roundedDiscountValue =
+      Math.round(transactionDiscountValueAMT * 100) / 100;
+    const updatedGrandTotal =
+      Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
 
-    if (Number(transactionDiscount) !== roundedDiscountValue || Number(invoiceState.totalAmount) !== updatedGrandTotal) {
+    if (
+      Number(transactionDiscount) !== roundedDiscountValue ||
+      Number(invoiceState.totalAmount) !== updatedGrandTotal
+    ) {
       setInvoiceState((prevState) => ({
         ...prevState,
         transactionDiscount: roundedDiscountValue.toFixed(2),
@@ -351,7 +377,10 @@ const NewInvoice = ({ page }: Props) => {
   useEffect(() => {
     setInvoiceState((prevState: any) => ({
       ...prevState,
-      totalDiscount: ((parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.transactionDiscount) || 0)).toFixed(2),
+      totalDiscount: (
+        (parseFloat(prevState.totalItemDiscount) || 0) +
+        (parseFloat(prevState.transactionDiscount) || 0)
+      ).toFixed(2),
     }));
   }, [invoiceState.transactionDiscount, invoiceState.totalItemDiscount]);
 
@@ -379,7 +408,7 @@ const NewInvoice = ({ page }: Props) => {
       const { response, error } = await getPrfix(prefixUrl);
 
       if (!error && response) {
-        setPrifix(response.data)
+        setPrifix(response.data);
       } else {
         console.log(error);
       }
@@ -415,20 +444,12 @@ const NewInvoice = ({ page }: Props) => {
   };
 
   useEffect(() => {
-
-    if (
-      invoiceState?.placeOfSupply !==
-      oneOrganization.state
-    ) {
+    if (invoiceState?.placeOfSupply !== oneOrganization.state) {
       setIsIntraState(true);
     } else {
       setIsIntraState(false);
-
     }
-  }, [
-    invoiceState?.placeOfSupply,
-    oneOrganization.state
-  ]);
+  }, [invoiceState?.placeOfSupply, oneOrganization.state]);
   const fetchData = async (
     url: string,
     setData: React.Dispatch<React.SetStateAction<any>>,
@@ -440,7 +461,8 @@ const NewInvoice = ({ page }: Props) => {
       if (!error && response) {
         if (url.includes(endponits.GET_ONE_INVOICE)) {
           const totalAmount = parseFloat(response.data.totalAmount) || 0;
-          const discountTransactionAmount = parseFloat(response.data.discountTransactionAmount) || 0;
+          const discountTransactionAmount =
+            parseFloat(response.data.discountTransactionAmount) || 0;
 
           setInvoiceState((prevData) => ({
             ...prevData,
@@ -475,7 +497,6 @@ const NewInvoice = ({ page }: Props) => {
     }
   }, [selectedCustomer]);
 
-
   const filterByDisplayName = (
     data: any[],
     displayNameKey: string,
@@ -494,11 +515,10 @@ const NewInvoice = ({ page }: Props) => {
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
-    setSearchValue("")
+    setSearchValue("");
 
     fetchData(customerUrl, setCustomerData, AllCustomer);
   };
-
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -510,7 +530,6 @@ const NewInvoice = ({ page }: Props) => {
       setOpenDropdownIndex(null);
     }
   };
-
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -558,19 +577,20 @@ const NewInvoice = ({ page }: Props) => {
 
   const handleSave = async () => {
     try {
-      const url = page === "edit" ? `${endponits.EDIT_SALES_INVOICE}/${id}` : `${endponits.ADD_SALES_INVOICE}`;
-      const apiRequest = page === "edit" ? editSalesInvoiceApi : newSalesInvoiceApi
-      const { response, error } = await apiRequest(
-        url,
-        invoiceState
-      );
+      const url =
+        page === "edit"
+          ? `${endponits.EDIT_SALES_INVOICE}/${id}`
+          : `${endponits.ADD_SALES_INVOICE}`;
+      const apiRequest =
+        page === "edit" ? editSalesInvoiceApi : newSalesInvoiceApi;
+      const { response, error } = await apiRequest(url, invoiceState);
       if (!error && response) {
         toast.success(response.data.message);
-        handleGoBack()
+        handleGoBack();
       } else {
         toast.error(error?.response.data.message);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
 
   return (
@@ -582,9 +602,7 @@ const NewInvoice = ({ page }: Props) => {
           </div>
         </Link>
         <div className="flex justify-center items-center">
-          <h4 className="font-bold text-xl text-textColor ">
-            New Invoice
-          </h4>
+          <h4 className="font-bold text-xl text-textColor ">New Invoice</h4>
         </div>
       </div>
 
@@ -605,12 +623,13 @@ const NewInvoice = ({ page }: Props) => {
                     className="relative w-full"
                     onClick={() => toggleDropdown("customer")}
                   >
-                    <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border
-                         border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer">
+                    <div
+                      className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border
+                         border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                    >
                       <p>
-                        {(
-                          selectedCustomer as { customerDisplayName?: string }
-                        )?.customerDisplayName ?? "Select Customer"}
+                        {(selectedCustomer as { customerDisplayName?: string })
+                          ?.customerDisplayName ?? "Select Customer"}
                       </p>
                     </div>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -636,7 +655,8 @@ const NewInvoice = ({ page }: Props) => {
                             onClick={() => {
                               setInvoiceState((prevState) => ({
                                 ...prevState,
-                                customerId: customer._id, customerName: customer.customerDisplayName
+                                customerId: customer._id,
+                                customerName: customer.customerDisplayName,
                               }));
                               setOpenDropdownIndex(null);
                               setSelecetdCustomer(customer);
@@ -654,10 +674,11 @@ const NewInvoice = ({ page }: Props) => {
                                 <p className="font-bold text-sm">
                                   {customer.customerDisplayName}
                                 </p>
-                                {customer.mobile &&
+                                {customer.mobile && (
                                   <p className="text-xs text-gray-500">
                                     Phone: {customer.mobile}
-                                  </p>}
+                                  </p>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -686,10 +707,16 @@ const NewInvoice = ({ page }: Props) => {
         border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight
         focus:outline-none focus:bg-white focus:border-gray-500"
                       >
-                        <option value="" disabled selected hidden>Select place Of Supply</option>
+                        <option value="" disabled selected hidden>
+                          Select place Of Supply
+                        </option>
                         {placeOfSupplyList &&
                           placeOfSupplyList.map((item: any, index: number) => (
-                            <option key={index} value={item} className="text-gray">
+                            <option
+                              key={index}
+                              value={item}
+                              className="text-gray"
+                            >
                               {item}
                             </option>
                           ))}
@@ -701,19 +728,31 @@ const NewInvoice = ({ page }: Props) => {
                   </div>
                 )}
 
-                <div className={`col-span-${isPlaceOfSupplyVisible ? "5" : "7"} relative`}>
+                <div
+                  className={`col-span-${
+                    isPlaceOfSupplyVisible ? "5" : "7"
+                  } relative`}
+                >
                   <label className="block text-sm mb-1 text-labelColor">
                     Invoice#
                   </label>
                   <input
                     readOnly
-                    value={invoiceState.salesInvoice ? invoiceState.salesInvoice : prefix}
+                    value={
+                      invoiceState.salesInvoice
+                        ? invoiceState.salesInvoice
+                        : prefix
+                    }
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
                   />
                 </div>
 
-                <div className={`col-span-${isPlaceOfSupplyVisible ? "7" : "5"} relative`}>
+                <div
+                  className={`col-span-${
+                    isPlaceOfSupplyVisible ? "7" : "5"
+                  } relative`}
+                >
                   <label className="block text-sm  text-labelColor">
                     Sales Order Number
                     <input
@@ -727,15 +766,14 @@ const NewInvoice = ({ page }: Props) => {
                     />
                   </label>
                 </div>
-
-
               </div>
 
-
               <div className="grid grid-cols-12 gap-4">
-
-
-                <div className={`col-span-${isPlaceOfSupplyVisible ? "5" : "5"} relative`}>
+                <div
+                  className={`col-span-${
+                    isPlaceOfSupplyVisible ? "5" : "5"
+                  } relative`}
+                >
                   <label className="block text-sm mb-1 text-labelColor">
                     Reference#
                   </label>
@@ -763,9 +801,6 @@ const NewInvoice = ({ page }: Props) => {
                     />
                   </div>
                 </div>
-
-
-
               </div>
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-5">
@@ -797,8 +832,6 @@ const NewInvoice = ({ page }: Props) => {
                     />
                   </div>
                 </div>
-
-
               </div>
               <div className="grid grid-cols-12 gap-4">
                 {/* <div className="col-span-5 relative">
@@ -851,13 +884,20 @@ const NewInvoice = ({ page }: Props) => {
                       value={invoiceState.paymentTerms}
                       onChange={handleChange}
                       name="paymentTerms"
-                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    >
                       <option value="" className="text-gray">
                         Select Payment Terms
                       </option>
-                      <option value="Due on Receipt" selected>Due on Receipt</option>
-                      <option value="Due end of the month">Due end of the month</option>
-                      <option value="Due end of next month">Due end of next month</option>
+                      <option value="Due on Receipt" selected>
+                        Due on Receipt
+                      </option>
+                      <option value="Due end of the month">
+                        Due end of the month
+                      </option>
+                      <option value="Due end of next month">
+                        Due end of next month
+                      </option>
                       <option value="Pay Now">Pay Now</option>
                       <option value="Net 15">Net 15</option>
                       <option value="Net 30">Net 30</option>
@@ -871,7 +911,6 @@ const NewInvoice = ({ page }: Props) => {
                   </div>
                 </div>
 
-
                 <div className="col-span-7">
                   <label className="block text-sm mb-1 text-labelColor">
                     Delivery Method
@@ -881,8 +920,15 @@ const NewInvoice = ({ page }: Props) => {
                       value={invoiceState.deliveryMethod}
                       name="deliveryMethod"
                       onChange={handleChange}
-                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                      <option value="" disabled hidden selected className="text-gray">
+                      className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    >
+                      <option
+                        value=""
+                        disabled
+                        hidden
+                        selected
+                        className="text-gray"
+                      >
                         Select Shipment Preference
                       </option>
                       <option value="Road">Road</option>
@@ -950,7 +996,6 @@ const NewInvoice = ({ page }: Props) => {
               />
             </div>
           </div>
-
         </div>
         <div className="col-span-4">
           <div className="bg-secondary_main p-5 text-sm rounded-xl space-y-4 text-textColor">
@@ -997,7 +1042,6 @@ const NewInvoice = ({ page }: Props) => {
             </div>
 
             <div className=" pb-4  text-dropdownText border-b-2 border-slate-200 space-y-2">
-
               <div className="flex ">
                 <div className="w-[75%]">
                   {" "}
@@ -1022,9 +1066,7 @@ const NewInvoice = ({ page }: Props) => {
                 <div className="w-full text-end">
                   {" "}
                   <p className="text-end">
-                    {invoiceState.totalItem
-                      ? invoiceState.totalItem
-                      : "0"}
+                    {invoiceState.totalItem ? invoiceState.totalItem : "0"}
                   </p>
                 </div>
               </div>
@@ -1036,7 +1078,9 @@ const NewInvoice = ({ page }: Props) => {
                 <div className="w-full text-end">
                   <p className="text-end">
                     {oneOrganization.baseCurrency}{" "}
-                    {invoiceState.totalDiscount ? invoiceState.totalDiscount : "0.00"}
+                    {invoiceState.totalDiscount
+                      ? invoiceState.totalDiscount
+                      : "0.00"}
                   </p>
                 </div>
               </div>
@@ -1051,9 +1095,7 @@ const NewInvoice = ({ page }: Props) => {
                     {" "}
                     <p className="text-end">
                       {oneOrganization.baseCurrency}{" "}
-                      {invoiceState.igst
-                        ? invoiceState.igst
-                        : "0.00"}
+                      {invoiceState.igst ? invoiceState.igst : "0.00"}
                     </p>
                   </div>
                 </div>
@@ -1068,9 +1110,7 @@ const NewInvoice = ({ page }: Props) => {
                       {" "}
                       <p className="text-end">
                         {oneOrganization.baseCurrency}{" "}
-                        {invoiceState.sgst
-                          ? invoiceState.sgst
-                          : "0.00"}
+                        {invoiceState.sgst ? invoiceState.sgst : "0.00"}
                       </p>
                     </div>
                   </div>
@@ -1084,9 +1124,7 @@ const NewInvoice = ({ page }: Props) => {
                       {" "}
                       <p className="text-end">
                         {oneOrganization.baseCurrency}{" "}
-                        {invoiceState.cgst
-                          ? invoiceState.cgst
-                          : "0.00"}
+                        {invoiceState.cgst ? invoiceState.cgst : "0.00"}
                       </p>
                     </div>
                   </div>
@@ -1103,8 +1141,7 @@ const NewInvoice = ({ page }: Props) => {
                   {" "}
                   <p className="text-end">
                     {" "}
-                    {oneOrganization.baseCurrency}{" "}
-                    {invoiceState?.totalTax}
+                    {oneOrganization.baseCurrency} {invoiceState?.totalTax}
                   </p>
                 </div>
               </div>
@@ -1206,13 +1243,11 @@ const NewInvoice = ({ page }: Props) => {
                 {" "}
                 <p className="text-end">
                   {invoiceState?.totalAmount &&
-                    `${oneOrganization.baseCurrency} ${invoiceState.totalAmount}`
-                  }
+                    `${oneOrganization.baseCurrency} ${invoiceState.totalAmount}`}
                 </p>
-
               </div>
             </div>
-            {invoiceState?.paymentMode !== "Credit" &&
+            {invoiceState?.paymentMode !== "Credit" && (
               <>
                 <div>
                   <label className="block text-sm mb-1 text-labelColor">
@@ -1225,9 +1260,15 @@ const NewInvoice = ({ page }: Props) => {
                       name="depositAccountId"
                       className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                     >
-                      <option value="" selected hidden disabled>Select Account</option>
+                      <option value="" selected hidden disabled>
+                        Select Account
+                      </option>
                       {allAccounts
-                        .filter((item: { accountSubhead: string }) => item.accountSubhead === "Bank" || item.accountSubhead === "Cash")
+                        .filter(
+                          (item: { accountSubhead: string }) =>
+                            item.accountSubhead === "Bank" ||
+                            item.accountSubhead === "Cash"
+                        )
                         .map((item: { _id: string; accountName: string }) => (
                           <option key={item._id} value={item._id}>
                             {item.accountName}
@@ -1253,7 +1294,7 @@ const NewInvoice = ({ page }: Props) => {
                   </label>
                 </div>
               </>
-            }
+            )}
 
             <div className="flex gap-4 m-5 justify-end">
               {" "}
@@ -1272,8 +1313,6 @@ const NewInvoice = ({ page }: Props) => {
         </div>
       </div>
     </div>
-
-
   );
 };
 

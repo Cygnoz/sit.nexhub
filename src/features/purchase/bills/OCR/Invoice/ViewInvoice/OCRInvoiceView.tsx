@@ -34,7 +34,7 @@ interface Header {
   supplierAddress: string;
   supplierDisplayName: string;
   supplierPhone: string;
-  supplier_id: string;
+  supplierId: string;
 }
 
 interface Footer {
@@ -88,7 +88,7 @@ const OCRInvoiceView = () => {
     supplierAddress: "",
     supplierDisplayName: "",
     supplierPhone: "",
-    supplier_id: "",
+    supplierId: "",
   });
 
   const [footer, setFooter] = useState<Footer>({
@@ -220,7 +220,7 @@ const OCRInvoiceView = () => {
       return;
     }
 
-    const invoiceSupplierName = invoice?.invoice?.header?.supplier_name;
+    const invoiceSupplierName = invoice?.invoice?.header?.supplierDisplayName;
     if (!invoiceSupplierName) {
       console.error("No supplier name found in the invoice.");
       return;
@@ -278,7 +278,7 @@ const OCRInvoiceView = () => {
           ...prevData.invoice,
           header: {
             ...prevData.invoice.header,
-            supplier_id: exactMatches[0]?._id,
+            supplierId: exactMatches[0]?._id,
           },
         },
       }));
@@ -367,15 +367,15 @@ const OCRInvoiceView = () => {
 
     setHeader((prevData) => ({
       ...prevData,
-      supplier_name: selectedSupplier.supplierDisplayName,
-      supplier_id: selectedSupplier._id,
+      supplierDisplayName: selectedSupplier.supplierDisplayName,
+      supplierId: selectedSupplier._id,
     }));
     handleSupplierMatch();
   };
 
   useEffect(() => {
     handleSupplierMatch();
-  }, [supplier, invoice?.invoice?.header?.supplier_name]);
+  }, [supplier, invoice?.invoice?.header?.supplierDisplayName]);
 
   useEffect(() => {
     if (
@@ -518,7 +518,7 @@ const OCRInvoiceView = () => {
                   <input
                     type="text"
                     className="invoice-input"
-                    name="invoice_no"
+                    name="billNumber"
                     value={header?.billNumber}
                     placeholder="Invoice"
                     onChange={(e) =>
@@ -637,14 +637,14 @@ const OCRInvoiceView = () => {
                     onChange={(e) =>
                       handleChange("header", e.target.name, e.target.value)
                     }
-                    name="supplier_address"
+                    name="supplierAddress"
                   />
                 </div>
                 <div className="flex gap-5 p-2 items-center font-semibold">
                   <DotIcon color={"#32A370"} size={10} />
                   <p className="text-textColor w-[20%]">Supplier Phone</p>
                   <input
-                    name="supplier_phone"
+                    name="supplierPhone"
                     type="text"
                     className="invoice-input"
                     value={header.supplierPhone}
@@ -659,7 +659,7 @@ const OCRInvoiceView = () => {
                   <p className="text-textColor w-[20%]">Invoice Date</p>
                   <input
                     type="text"
-                    name="invoice_date"
+                    name="billDate"
                     className="invoice-input"
                     value={header.billDate}
                     placeholder="Invoice Date"
@@ -673,7 +673,7 @@ const OCRInvoiceView = () => {
                   <p className="text-textColor w-[20%]">Due Date</p>
                   <input
                     type="text"
-                    name="due_date"
+                    name="dueDate"
                     className="invoice-input"
                     value={header.dueDate}
                     placeholder="Due Date"
