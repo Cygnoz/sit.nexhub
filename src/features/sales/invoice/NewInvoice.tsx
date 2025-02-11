@@ -84,7 +84,7 @@ const initialSalesQuoteState: invoice = {
   paymentMode: "Cash",
   paymentTerms: "Due on Receipt",
   deliveryMethod: "",
-  expectedShipmentDate: "",
+  expectedShipmentDate: new Date().toISOString().split("T")[0],
   salesOrderNumber: "",
 
   taxPreference: "Taxable",
@@ -590,7 +590,7 @@ const NewInvoice = ({ page }: Props) => {
       } else {
         toast.error(error?.response.data.message);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   return (
@@ -729,9 +729,8 @@ const NewInvoice = ({ page }: Props) => {
                 )}
 
                 <div
-                  className={`col-span-${
-                    isPlaceOfSupplyVisible ? "5" : "7"
-                  } relative`}
+                  className={`col-span-${isPlaceOfSupplyVisible ? "5" : "7"
+                    } relative`}
                 >
                   <label className="block text-sm mb-1 text-labelColor">
                     Invoice#
@@ -749,9 +748,8 @@ const NewInvoice = ({ page }: Props) => {
                 </div>
 
                 <div
-                  className={`col-span-${
-                    isPlaceOfSupplyVisible ? "7" : "5"
-                  } relative`}
+                  className={`col-span-${isPlaceOfSupplyVisible ? "7" : "5"
+                    } relative`}
                 >
                   <label className="block text-sm  text-labelColor">
                     Sales Order Number
@@ -770,9 +768,8 @@ const NewInvoice = ({ page }: Props) => {
 
               <div className="grid grid-cols-12 gap-4">
                 <div
-                  className={`col-span-${
-                    isPlaceOfSupplyVisible ? "5" : "5"
-                  } relative`}
+                  className={`col-span-${isPlaceOfSupplyVisible ? "5" : "5"
+                    } relative`}
                 >
                   <label className="block text-sm mb-1 text-labelColor">
                     Reference#

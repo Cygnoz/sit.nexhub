@@ -27,7 +27,7 @@ const initialSalesQuoteState: SalesOrder = {
   customerName: "",
   placeOfSupply: "",
   reference: "",
-  salesOrderDate: "",
+  salesOrderDate: new Date().toISOString().split("T")[0],
   expiryDate: "",
   subject: "",
 
@@ -36,7 +36,7 @@ const initialSalesQuoteState: SalesOrder = {
   paymentMode: "",
   paymentTerms: "",
   deliveryMethod: "",
-  expectedShipmentDate: "",
+  expectedShipmentDate: new Date().toISOString().split("T")[0],
 
   taxPreference: "Taxable",
 
