@@ -98,17 +98,17 @@ function SeeCustomerDetails() {
     {
       icon: walletCashImage,
       title: "Total Payment",
-      count: "$3,500",
+      count: "",
     },
     {
       icon: salesImage,
       title: "Total Sales",
-      count: "21",
+      count: "",
     },
     {
       icon: walletImage,
       title: "Outstanding Balance",
-      count: "$1,500",
+      count: "",
     },
 
   ]
