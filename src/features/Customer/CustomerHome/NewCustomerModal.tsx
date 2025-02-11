@@ -28,7 +28,7 @@ const initialCustomerData: CustomerData = {
   customerEmail: "",
   workPhone: "",
   mobile: "",
-  dob: "",
+  dob: new Date().toISOString().slice(0, 10),
   cardNumber: "",
   pan: "",
   currency: "",
@@ -225,29 +225,29 @@ const NewCustomerModal = ({ page }: Props) => {
         value.trim() === ""
           ? ""
           : /^[A-Za-z]+$/.test(value)
-          ? ""
-          : "Only letters.";
+            ? ""
+            : "Only letters.";
     } else if (field === "lastName") {
       updatedRows[index].lastNameError =
         value.trim() === ""
           ? ""
           : /^[A-Za-z]+$/.test(value)
-          ? ""
-          : "Only letters.";
+            ? ""
+            : "Only letters.";
     } else if (field === "email") {
       updatedRows[index].emailError =
         value.trim() === ""
           ? ""
           : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-          ? ""
-          : "Invalid email.";
+            ? ""
+            : "Invalid email.";
     } else if (field === "mobile") {
       updatedRows[index].mobileError =
         value.trim() === ""
           ? ""
           : /^[0-9]+$/.test(value)
-          ? ""
-          : "Only numbers.";
+            ? ""
+            : "Only numbers.";
     }
 
     setRows(updatedRows);
@@ -279,11 +279,11 @@ const NewCustomerModal = ({ page }: Props) => {
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, type, value } = e.target;
-  
+
     if (customerdata.customerType === "Business" && name === "companyName") {
       setCustomerData({ ...customerdata, customerDisplayName: value });
     }
-  
+
     if (
       customerdata.customerType === "Individual" &&
       (name === "firstName" || name === "lastName")
@@ -291,12 +291,11 @@ const NewCustomerModal = ({ page }: Props) => {
       setCustomerData((prevData) => ({
         ...prevData,
         [name]: value,
-        customerDisplayName: `${name === "firstName" ? value : prevData.firstName} ${
-          name === "lastName" ? value : prevData.lastName
-        }`.trim(),
+        customerDisplayName: `${name === "firstName" ? value : prevData.firstName} ${name === "lastName" ? value : prevData.lastName
+          }`.trim(),
       }));
     }
-  
+
     if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
       setCustomerData((prevData) => ({
@@ -311,10 +310,10 @@ const NewCustomerModal = ({ page }: Props) => {
         }));
       }
     }
-  
+
     if (name === "openingType") {
       setOpeningtype(value);
-  
+
       if (value === "Debit") {
         setCustomerData((prevData) => ({
           ...prevData,
@@ -329,7 +328,7 @@ const NewCustomerModal = ({ page }: Props) => {
         }));
       }
     }
-  
+
     if (name === "openingBalance") {
       if (openingType === "Credit") {
         setCustomerData((prevData) => ({
@@ -344,7 +343,7 @@ const NewCustomerModal = ({ page }: Props) => {
       }
     }
   };
-  
+
 
   // get-------------------------------------------------------
   const getAdditionalData = async () => {
@@ -376,8 +375,8 @@ const NewCustomerModal = ({ page }: Props) => {
       const taxUrl = `${endponits.GET_TAX}`;
       console.log("additional data working");
       const { response: taxResponse, error: taxError } = await getTax(taxUrl);
-        console.log(response?.data,"as");
-        
+      console.log(response?.data, "as");
+
       if (!taxError && taxResponse) {
         if (!taxError && taxResponse) {
           if (taxResponse) {
@@ -584,12 +583,17 @@ const NewCustomerModal = ({ page }: Props) => {
           <Pen color={"#303F58"} />
           Edit
         </Button>
-      ) : (
-        <Button onClick={() => setModalOpen(true)} variant="primary" size="sm">
-          <PlusCircle color="white" />
-          <p className="text-sm font-medium">Add Customer</p>
+      ) : page === "pos" ? (
+        <Button onClick={() => setModalOpen(true)} className="text-xs h-[32px]">
+          <PlusCircle /> Create Customer
         </Button>
-      )}
+      ) :
+        (
+          <Button onClick={() => setModalOpen(true)} variant="primary" size="sm">
+            <PlusCircle color="white" />
+            <p className="text-sm font-medium">Add Customer</p>
+          </Button>
+        )}
 
       <Modal
         open={isModalOpen}
@@ -668,23 +672,21 @@ const NewCustomerModal = ({ page }: Props) => {
                             id="Business"
                             type="radio"
                             name="customerType"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                              selected === "Business"
-                                ? "border-8 border-neutral-400"
-                                : "border-1 border-neutral-400"
-                            }`}
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${selected === "Business"
+                              ? "border-8 border-neutral-400"
+                              : "border-1 border-neutral-400"
+                              }`}
                             checked={selected === "Business"}
                             onChange={() =>
                               handleRadioChange("Business", "customerType")
                             }
                           />
                           <div
-                           id="Business"
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              selected === "Business"
-                                ? "bg-neutral-100"
-                                : "bg-transparent"
-                            }`}
+                            id="Business"
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${selected === "Business"
+                              ? "bg-neutral-100"
+                              : "bg-transparent"
+                              }`}
                           />
                         </div>
                         <label
@@ -700,23 +702,21 @@ const NewCustomerModal = ({ page }: Props) => {
                             id="Individual"
                             type="radio"
                             name="customerType"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                              selected === "Individual"
-                                ? "border-8 border-neutral-400"
-                                : "border-1 border-neutral-400"
-                            }`}
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${selected === "Individual"
+                              ? "border-8 border-neutral-400"
+                              : "border-1 border-neutral-400"
+                              }`}
                             checked={selected === "Individual"}
                             onChange={() =>
                               handleRadioChange("Individual", "customerType")
                             }
                           />
-                          <div 
-                          id="Individual"
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              selected === "Individual"
-                                ? "bg-neutral-100"
-                                : "bg-transparent"
-                            }`}
+                          <div
+                            id="Individual"
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${selected === "Individual"
+                              ? "bg-neutral-100"
+                              : "bg-transparent"
+                              }`}
                           />
                         </div>
                         <label
@@ -822,7 +822,7 @@ const NewCustomerModal = ({ page }: Props) => {
               </div>
 
               <div className="grid grid-cols-3 gap-x-4 gap-y-2 mt-2 ">
-              { customerdata.customerType==="Business" &&   <div>
+                {customerdata.customerType === "Business" && <div>
                   <label htmlFor="companyName">Company Name </label>
                   <input
                     type="text"
@@ -854,7 +854,7 @@ const NewCustomerModal = ({ page }: Props) => {
                       </div>
                     )}
                 </div>}
-              <div>
+                <div>
                   <label htmlFor="companyName">Customer Display Name <span className="text-[#bd2e2e] ">*</span> </label>
                   <input
                     required
@@ -926,19 +926,19 @@ const NewCustomerModal = ({ page }: Props) => {
                   )}
                 </div>
 
-{
-  customerdata.customerType=="Individual" &&   <div>
-  <label htmlFor="">Work Phone</label>
-  <PhoneInput
-    inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-    inputStyle={{ height: "38px", width: "100%" }}
-    containerStyle={{ width: "100%" }}
-    country={"in"}
-    value={customerdata.workPhone}
-    onChange={(e) => handlePhoneChange("workPhone", e)}
-  />
-</div>
-}
+                {
+                  customerdata.customerType == "Individual" && <div>
+                    <label htmlFor="">Work Phone</label>
+                    <PhoneInput
+                      inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                      inputStyle={{ height: "38px", width: "100%" }}
+                      containerStyle={{ width: "100%" }}
+                      country={"in"}
+                      value={customerdata.workPhone}
+                      onChange={(e) => handlePhoneChange("workPhone", e)}
+                    />
+                  </div>
+                }
 
                 {/* <div className="hidden">
                   <label htmlFor="cardNumber">Membership Card Number</label>
@@ -954,7 +954,7 @@ const NewCustomerModal = ({ page }: Props) => {
               </div>
 
               <div className="grid grid-cols-3 mt-2 gap-x-4">
-              { customerdata.customerType=="Business" &&   <div>
+                {customerdata.customerType == "Business" && <div>
                   <label htmlFor="">Work Phone</label>
                   <PhoneInput
                     inputClass="appearance-none text-[#818894] bg-white border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
@@ -1341,7 +1341,7 @@ const NewCustomerModal = ({ page }: Props) => {
                             className="hidden"
                             value={customerdata.documents}
                             name="documents"
-                            // onChange={(e)=>handleFileChange(e)}
+                          // onChange={(e)=>handleFileChange(e)}
                           />
                         </label>
                       </div>
@@ -1427,7 +1427,7 @@ const NewCustomerModal = ({ page }: Props) => {
 
                   {activeTab === "taxes" && (
                     <>
-                      <div className="mb-1.5" style={{display:"none"}}>
+                      <div className="mb-1.5" style={{ display: "none" }}>
                         <label className="block text-sm mb-0.5 text-labelColor">
                           Tax Preference
                         </label>
@@ -1443,19 +1443,17 @@ const NewCustomerModal = ({ page }: Props) => {
                               <input
                                 id="Taxable"
                                 type="radio"
-                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                                  taxselected === "Taxable"
-                                    ? "border-8 border-neutral-400"
-                                    : "border-1 border-neutral-400"
-                                }`}
+                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${taxselected === "Taxable"
+                                  ? "border-8 border-neutral-400"
+                                  : "border-1 border-neutral-400"
+                                  }`}
                                 checked={taxselected === "Taxable"}
                               />
                               <div
-                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                                  taxselected === "Taxable"
-                                    ? "bg-neutral-100"
-                                    : "bg-transparent"
-                                }`}
+                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${taxselected === "Taxable"
+                                  ? "bg-neutral-100"
+                                  : "bg-transparent"
+                                  }`}
                               />
                             </div>
                             <label
@@ -1476,19 +1474,17 @@ const NewCustomerModal = ({ page }: Props) => {
                               <input
                                 id="Tax Exempt"
                                 type="radio"
-                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-                                  taxselected === "Tax Exempt"
-                                    ? "border-8 border-neutral-400"
-                                    : "border-1 border-neutral-400"
-                                }`}
+                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${taxselected === "Tax Exempt"
+                                  ? "border-8 border-neutral-400"
+                                  : "border-1 border-neutral-400"
+                                  }`}
                                 checked={taxselected === "Tax Exempt"}
                               />
                               <div
-                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                                  taxselected === "Tax Exempt"
-                                    ? "bg-neutral-100"
-                                    : "bg-transparent"
-                                }`}
+                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${taxselected === "Tax Exempt"
+                                  ? "bg-neutral-100"
+                                  : "bg-transparent"
+                                  }`}
                               />
                             </div>
                             <label

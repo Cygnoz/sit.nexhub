@@ -48,7 +48,7 @@ const initialReceipt: ReceiptType = {
   customerName: "",
   customerDisplayName: "",
   receipt: "",
-  paymentDate: "",
+  paymentDate: new Date().toISOString().split("T")[0],
   payment: "",
   paymentMode: "",
   depositAccountId: "",

@@ -26,8 +26,8 @@ const initialSalesQuoteState: SalesQuote = {
   customerDisplayName: "",
   placeOfSupply: "",
   reference: "",
-  salesQuoteDate: "",
-  expiryDate: "",
+  salesQuoteDate: new Date().toISOString().split("T")[0],
+  expiryDate: new Date().toISOString().split("T")[0],   
   subject: "",
   taxPreference:"Taxable",
   

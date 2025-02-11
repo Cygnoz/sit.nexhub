@@ -213,7 +213,6 @@ const Overview: React.FC<OverviewProps> = ({
                 name="status"
                 onChange={handleStatusSubmit}
               >
-                <option value="">Status</option>
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>

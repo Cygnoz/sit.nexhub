@@ -16,9 +16,7 @@ function SelectCustomerModal({ onButtonClick }: Props) {
   const [isModalOpen, setModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const openModal = () => {
-    setModalOpen(true);
-  };
+
 
   const closeModal = () => {
     setModalOpen(false);
@@ -45,7 +43,11 @@ function SelectCustomerModal({ onButtonClick }: Props) {
   useEffect(() => {
     fetchAllCustomers();
   }, []);
-
+  
+  const openModal = () => {
+    fetchAllCustomers()
+    setModalOpen(true);
+  };
 
   useEffect(() => {
     fetchAllCustomers();
@@ -97,8 +99,8 @@ function SelectCustomerModal({ onButtonClick }: Props) {
               <div
                 key={customer.id}
                 className={`bg-[#F5F2EE] rounded-lg p-4 flex flex-col h-32 items-center justify-center cursor-pointer ${selectedCustomer?._id === customer._id
-                    ? "border-2 border-[#948B7C]"
-                    : ""
+                  ? "border-2 border-[#948B7C]"
+                  : ""
                   }`}
                 onClick={() => setSelectedCustomer(customer)}
               >

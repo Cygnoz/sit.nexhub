@@ -1,17 +1,16 @@
 import backHomeIcon from "../../assets/Images/Frame 630214.png";
 import calenderIcon from "../../assets/Images/Frame 630162 (1).png";
 import timeIcon from "../../assets/Images/Frame 630162.png";
-import Button from "../../Components/Button";
-import PlusCircle from "../../assets/icons/PlusCircle";
 import SelectCustomerModal from "./SelectCustomerModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import NewCustomerModal from "../Customer/CustomerHome/NewCustomerModal";
 
 type Props = {
-  onSelectCustomer: (customer: any) => void; 
+  onSelectCustomer: (customer: any) => void;
 };
 
-function PosHeader({onSelectCustomer }: Props) {
+function PosHeader({ onSelectCustomer }: Props) {
   const today = new Date();
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     weekday: "short",
@@ -26,16 +25,16 @@ function PosHeader({onSelectCustomer }: Props) {
   });
 
   const handleSelectedCustomer = (customer: any) => {
-    onSelectCustomer(customer); 
+    onSelectCustomer(customer);
   };
   const Navigate = useNavigate();
   const location = useLocation();
-  
+
   const handleGoBack = () => {
     if (location.state?.from === "/landing") {
-      Navigate("/landing"); 
+      Navigate("/landing");
     } else {
-      Navigate("/sales/invoice"); 
+      Navigate("/sales/invoice");
     }
   };
   return (
@@ -60,9 +59,7 @@ function PosHeader({onSelectCustomer }: Props) {
           <span className="text-dropdownText text-[10px] font-bold">{formattedTime}</span>
         </div>
         <SelectCustomerModal onButtonClick={handleSelectedCustomer} />
-         <Button className="text-xs h-[32px]">
-         <PlusCircle/> Create Customer   
-        </Button>     
+        <NewCustomerModal page="pos" />
       </div>
       <Toaster reverseOrder={false} />
     </div>

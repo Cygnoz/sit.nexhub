@@ -30,7 +30,7 @@ function AddExpensePage({ page }: Props) {
 
   const [expenseData, setExpenseData] = useState<ExpenseData>({
     expenseNumber: "",
-    expenseDate: "",
+    expenseDate: new Date().toISOString().slice(0, 10),
     paidThroughAccountId: "",
     expenseCategory: "",
     expenseType: "Goods",
@@ -272,8 +272,10 @@ function AddExpensePage({ page }: Props) {
     displayNameKey: string,
     searchValue: string
   ) => {
-    return data.filter((item: any) =>
-      item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
+    return data.filter(
+      (item: any) =>
+        item.status === "Active" &&
+        item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
     );
   };
   const filteredSupplier = filterByDisplayName(
@@ -852,7 +854,7 @@ function AddExpensePage({ page }: Props) {
                 <label className="text-sm mb-1 text-labelColor">
                   Paid Through Account<span className="text-[#bd2e2e] ">*</span>
                 </label>
-                <div className="relative w-full ml-auto ">
+                <div className="relative w-full  ">
                   <select
                     onChange={handleChange}
                     value={expenseData.paidThroughAccountId}
@@ -1680,7 +1682,7 @@ function AddExpensePage({ page }: Props) {
               <label className="text-sm mb-1 text-labelColor">
                 Paid Through<span className="text-[#bd2e2e] ">*</span>
               </label>
-              <div className="relative w-full  ml-auto  ps-5">
+              <div className="relative w-full  ml-auto ">
                 <select
                   onChange={handleChange}
                   value={expenseData.paidThroughAccountId}
