@@ -8,6 +8,7 @@ import Calender from "../../assets/icons/Calender";
 import CehvronDown from "../../assets/icons/CehvronDown";
 import { PrinterIcon } from "@heroicons/react/20/solid";
 import { useOrganization } from "../../context/OrganizationContext";
+import Button from "../../Components/Button";
 
 type Props = {};
 
@@ -74,7 +75,7 @@ const BalanceSheet = ({}: Props) => {
   };
   useEffect(() => {
     getBSData();
-  }, [fromDate, toDate]);
+  }, []);
 
   // const handleItemClick = (account: string) => {
   //   if (account === "Capital Account") {
@@ -137,6 +138,10 @@ const BalanceSheet = ({}: Props) => {
                 onChange={(e) => setToDate(e.target.value)}
               />
             </div>
+
+              <Button className="text-xs pl-5 pr-5" size="sm" onClick={getBSData}>
+                          Run
+                        </Button>
 
             <div className="ml-auto flex items-center">
               <button className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">

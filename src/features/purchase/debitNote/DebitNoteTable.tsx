@@ -118,7 +118,7 @@ const DebitNoteTable = ({
   const handleItemSelect = (item: any, index: number) => {
     setOpenDropdownId(null);
     setOpenDropdownType(null);
-
+console.log(item,"item")
     const newRows = [...rows];
     newRows[index].itemName = item.itemName;
     newRows[index].itemCostPrice = item.costPrice;
@@ -450,6 +450,8 @@ const DebitNoteTable = ({
       }));
     }
   }, [selectedBill]);
+
+  console.log("rows", selectedBill);
 
   const filterItems = () => {
     return selectedBill?.items?.filter(

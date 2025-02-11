@@ -8,6 +8,7 @@ import CehvronDown from "../../../assets/icons/CehvronDown";
 import Calender from "../../../assets/icons/Calender";
 import { endponits } from "../../../Services/apiEndpoints";
 import { useOrganization } from "../../../context/OrganizationContext";
+import Button from "../../../Components/Button";
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
@@ -69,7 +70,7 @@ const TradingAccount = () => {
 
   useEffect(() => {
     getTradingData();
-  }, [fromDate,toDate]);
+  }, []);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -124,6 +125,10 @@ const TradingAccount = () => {
                 onChange={(e) => setToDate(e.target.value)}
               />
             </div>
+
+              <Button className="text-xs pl-5 pr-5" size="sm" onClick={getTradingData}>
+                          Run
+                        </Button>
 
             <div className="ml-auto flex items-center">
               <button className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">

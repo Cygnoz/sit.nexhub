@@ -7,6 +7,7 @@ import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { useOrganization } from "../../../context/OrganizationContext";
+import Button from "../../../Components/Button";
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
@@ -75,7 +76,7 @@ function TrialBalance() {
 
   useEffect(() => {
     getDayBook();
-  }, [fromDate, toDate]);
+  }, []);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -130,6 +131,10 @@ function TrialBalance() {
                 onChange={(e) => setToDate(e.target.value)}
               />
             </div>
+
+              <Button className="text-xs pl-5 pr-5" size="sm" onClick={getDayBook}>
+                                      Run
+                                    </Button>
 
             <div className="ml-auto flex items-center">
               <button className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">

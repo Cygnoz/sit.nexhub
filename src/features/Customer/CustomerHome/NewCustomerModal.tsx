@@ -45,7 +45,7 @@ const initialCustomerData: CustomerData = {
   websiteURL: "",
   taxType: "",
   taxReason: "",
-  taxPreference: "",
+  taxPreference: "Taxable",
   gstTreatment: "",
   gstin_uin: "",
   placeOfSupply: "",
@@ -513,22 +513,39 @@ const NewCustomerModal = ({ page }: Props) => {
 
 
 
-  useEffect(() => {
-    if (taxPreference === "Tax Exempt") {
+  // useEffect(() => {
+  //   if (taxPreference === "Tax Exempt") {
+  //     setCustomerData((prevData: any) => ({
+  //       ...prevData,
+  //       taxType: "Non-Tax",
+  //       taxPreference: "Tax Exepmt",
+  //       taxReason: "",
+  //     }));
+  //   } else {
+  //     setCustomerData((prevData: any) => ({
+  //       ...prevData,
+  //       taxType: gstOrVat.taxType,
+  //       taxPreference: "Taxable",
+  //     }));
+  //   }
+  // }, [taxPreference]);
+
+  useEffect(()=>{
+    if(gstOrVat){
+      if(gstOrVat.taxType === "GST"){
       setCustomerData((prevData: any) => ({
         ...prevData,
-        taxType: "Non-Tax",
-        taxPreference: "Tax Exepmt",
-        taxReason: "",
+        gstTreatment: "Consumer",
       }));
-    } else {
+    }
+    if(gstOrVat){
       setCustomerData((prevData: any) => ({
         ...prevData,
         taxType: gstOrVat.taxType,
-        taxPreference: "Taxable",
       }));
     }
-  }, [taxPreference]);
+    }
+  },[gstOrVat,isModalOpen])
 
   useEffect(() => {
     if (customerdata.billingCountry) {
@@ -553,11 +570,11 @@ const NewCustomerModal = ({ page }: Props) => {
   useEffect(() => {
     getAdditionalData();
     getOneOrganization();
-  }, []);
+  }, [isModalOpen]);
 
   useEffect(() => {
     handleplaceofSupply();
-  }, [getOneOrganization]);
+  }, [getOneOrganization,isModalOpen]);
 
   return (
     <div>

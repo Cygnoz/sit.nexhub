@@ -8,6 +8,7 @@ import { PrinterIcon } from "@heroicons/react/20/solid";
 import Calender from "../../../assets/icons/Calender";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import { useOrganization } from "../../../context/OrganizationContext";
+import Button from "../../../Components/Button";
 
 type Props = {};
 
@@ -85,9 +86,9 @@ const ProfitAndLoss = ({}: Props) => {
 
   useEffect(() => {
     getPL();
-  }, [fromDate, toDate]);
+  }, []);
 
-  console.log("pl");
+  console.log(PLData.debit, "pl");
 
   return (
     <div className="p-5">
@@ -122,7 +123,6 @@ const ProfitAndLoss = ({}: Props) => {
                 onChange={(e) => setFromDate(e.target.value)}
               />
             </div>
-
             <div
               className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer"
               onClick={handleToDateClick}
@@ -142,6 +142,10 @@ const ProfitAndLoss = ({}: Props) => {
                 onChange={(e) => setToDate(e.target.value)}
               />
             </div>
+
+            <Button className="text-xs pl-5 pr-5" size="sm" onClick={getPL}>
+              Run
+            </Button>
 
             <div className="ml-auto flex items-center">
               <button className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">
@@ -188,7 +192,8 @@ const ProfitAndLoss = ({}: Props) => {
                     </Link>
                   </td>
                   <td className="py-4 text-right">
-                    {PLData.debit[0]?.indirectExpenses?.overallNetDebit-PLData.debit[0]?.indirectExpenses?.overallNetCredit || 0}
+                    {PLData.debit[1]?.indirectExpenses?.overallNetDebit -
+                      PLData.debit[1]?.indirectExpenses?.overallNetCredit || 0}
                   </td>
                 </tr>
 
@@ -232,7 +237,8 @@ const ProfitAndLoss = ({}: Props) => {
                     </Link>
                   </td>
                   <td className="py-4 text-right">
-                    {PLData.credit[1]?.indirectIncome?.overallNetCredit-PLData.credit[1]?.indirectIncome?.overallNetDebit || 0}
+                    {PLData.credit[1]?.indirectIncome?.overallNetCredit -
+                      PLData.credit[1]?.indirectIncome?.overallNetDebit || 0}
                   </td>
                 </tr>
 
