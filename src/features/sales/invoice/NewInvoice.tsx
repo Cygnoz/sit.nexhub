@@ -471,10 +471,17 @@ const NewInvoice = ({ page }: Props) => {
             discountTransactionAmount: discountTransactionAmount.toFixed(2),
           }));
         } else {
-          setData(response.data);
+          // **Filter out inactive customers if fetching customers**
+          let filteredData = response.data;
+          if (url.includes(endponits.GET_ALL_CUSTOMER)) {
+            filteredData = response.data.filter(
+              (customer: { status: string }) => customer.status !== "Inactive"
+            );
+          }
+          setData(filteredData);
         }
 
-        console.log(response.data, "Invoice fetched successfully");
+        console.log(response.data, "Data fetched successfully");
       } else {
         console.error("Error in response or no data received:", error);
       }
@@ -602,7 +609,7 @@ const NewInvoice = ({ page }: Props) => {
           </div>
         </Link>
         <div className="flex justify-center items-center">
-          <h4 className="font-bold text-xl text-textColor ">New Invoice</h4>
+          <h4 className="font-bold text-xl text-textColor ">{page === "edit" ? "Edit" : "New"} Invoice</h4>
         </div>
       </div>
 

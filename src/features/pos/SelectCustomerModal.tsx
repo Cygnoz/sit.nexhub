@@ -26,8 +26,12 @@ function SelectCustomerModal({ onButtonClick }: Props) {
     try {
       const url = `${endponits.GET_ALL_CUSTOMER}`;
       const { response, error } = await AllCustomers(url);
+  
       if (!error && response) {
-        const customers = response.data;
+        const customers = response.data.filter(
+          (customer: { status?: string }) => customer.status !== "Inactive"
+        );
+  
         setCustomerData(customers);
         if (customers.length > 0) {
           setSelectedCustomer(customers[0]);
@@ -36,9 +40,10 @@ function SelectCustomerModal({ onButtonClick }: Props) {
         console.log(error, "all customers error");
       }
     } catch (error) {
-      console.error("Error fetching accounts:", error);
+      console.error("Error fetching customers:", error);
     }
   };
+  
 
   useEffect(() => {
     fetchAllCustomers();

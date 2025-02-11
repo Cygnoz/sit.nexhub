@@ -31,7 +31,7 @@ const initialSalesQuoteState: SalesOrder = {
   expiryDate: "",
   subject: "",
 
-  salesOrder:"",
+  salesOrder: "",
 
   paymentMode: "",
   paymentTerms: "",
@@ -354,7 +354,9 @@ const NewSalesOrder = ({ page }: Props) => {
       if (!error && response) {
         if (url.includes(endponits.GET_ONE_SALES_ORDER)) {
           const totalAmount = parseFloat(response.data.totalAmount) || 0;
-          const discountTransactionAmount = parseFloat(response.data.discountTransactionAmount) || 0;
+          const discountTransactionAmount =
+            parseFloat(response.data.discountTransactionAmount) || 0;
+
           setSalesOrderState((prevData) => ({
             ...prevData,
             ...response.data,
@@ -362,7 +364,14 @@ const NewSalesOrder = ({ page }: Props) => {
             discountTransactionAmount: discountTransactionAmount.toFixed(2),
           }));
         } else {
-          setData(response.data);
+          let filteredData = response.data;
+          if (url.includes(endponits.GET_ALL_CUSTOMER)) {
+            filteredData = response.data.filter(
+              (customer: { status: string }) => customer.status !== "Inactive"
+            );
+          }
+
+          setData(filteredData);
         }
       } else {
         console.error("Error in response or no data received:", error);
@@ -607,7 +616,7 @@ const NewSalesOrder = ({ page }: Props) => {
                     <div className="relative w-full">
                       <select
                         name="placeOfSupply"
-                        value={salesOrderState.placeOfSupply || ""} 
+                        value={salesOrderState.placeOfSupply || ""}
                         onChange={handleChange}
                         className="block appearance-none w-full h-9 text-zinc-400 bg-white border
         border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight
@@ -640,7 +649,7 @@ const NewSalesOrder = ({ page }: Props) => {
                   </label>
                   <input
                     readOnly
-                    value={salesOrderState.salesOrder ?salesOrderState.salesOrder :  prefix}
+                    value={salesOrderState.salesOrder ? salesOrderState.salesOrder : prefix}
                     // value={page === "edit" ? salesOrderState?.Prefix || prefix : prefix}
                     type="text"
                     className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"

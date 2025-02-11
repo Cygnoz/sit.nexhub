@@ -15,7 +15,7 @@ import NewSalesQuoteTable from "./NewSalesQuoteTable"
 import Button from "../../../Components/Button";
 // import { PrinterIcon } from "@heroicons/react/20/solid";
 
-type Props = {page?:string};
+type Props = { page?: string };
 
 interface Customer {
   taxType: string;
@@ -27,11 +27,11 @@ const initialSalesQuoteState: SalesQuote = {
   placeOfSupply: "",
   reference: "",
   salesQuoteDate: new Date().toISOString().split("T")[0],
-  expiryDate: new Date().toISOString().split("T")[0],   
+  expiryDate: new Date().toISOString().split("T")[0],
   subject: "",
-  taxPreference:"Taxable",
-  
-  salesQuotes:"",
+  taxPreference: "Taxable",
+
+  salesQuotes: "",
   items: [
     {
       itemId: "",
@@ -52,7 +52,7 @@ const initialSalesQuoteState: SalesQuote = {
       discountAmount: "",
       amount: "",
       itemAmount: "",
-      salesAccountId:"",
+      salesAccountId: "",
     },
   ],
 
@@ -75,16 +75,16 @@ const initialSalesQuoteState: SalesQuote = {
   totalAmount: ""
 };
 
-const NewSalesQuote = ({page}: Props) => {
+const NewSalesQuote = ({ page }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const [oneOrganization, setOneOrganization] = useState<any | []>([]);  
+  const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
   const [countryData, setcountryData] = useState<any | any>([]);
   const [customerData, setCustomerData] = useState<[]>([]);
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
-  const [ prefix, setPrifix] = useState("")
+  const [prefix, setPrifix] = useState("")
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
 
 
@@ -96,12 +96,12 @@ const NewSalesQuote = ({page}: Props) => {
   const [salesQuoteState, setSalesQuoteState] = useState<SalesQuote>(initialSalesQuoteState);
 
 
-  
-const navigate=useNavigate()
-const handleGoBack =()=>{
-  navigate(-1)
-  setSalesQuoteState(initialSalesQuoteState)
-}
+
+  const navigate = useNavigate()
+  const handleGoBack = () => {
+    navigate(-1)
+    setSalesQuoteState(initialSalesQuoteState)
+  }
 
   const fetchData = async (
     url: string,
@@ -110,13 +110,22 @@ const handleGoBack =()=>{
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
+
       if (!error && response) {
-        setData(response.data);
+        let filteredData = response.data;
+        if (url.includes(endponits.GET_ALL_CUSTOMER)) {
+          filteredData = response.data.filter(
+            (customer: { status: string }) => customer.status !== "Inactive"
+          );
+        }
+
+        setData(filteredData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
@@ -149,8 +158,8 @@ const handleGoBack =()=>{
 
   const getSalesQuotePrefix = async () => {
     try {
-      const  prefixUrl = `${endponits.GET_LAST_SALES_QUOTE_PREFIX}`;
-      const { response, error } = await getPrfix( prefixUrl);
+      const prefixUrl = `${endponits.GET_LAST_SALES_QUOTE_PREFIX}`;
+      const { response, error } = await getPrfix(prefixUrl);
 
       if (!error && response) {
         setPrifix(response.data)
@@ -187,15 +196,15 @@ const handleGoBack =()=>{
       discountTransactionAmount = "0", // Previously `transactionDiscount`
       transactionDiscount = "0", // Previously `discountTransactionAmount`
     } = salesQuoteState;
-  
+
     const transactionDiscountValueAMT =
       discountTransactionType === "Percentage"
         ? (Number(discountTransactionAmount) / 100) * Number(newGrandTotal) // Use `discountTransactionAmount` here
         : Number(discountTransactionAmount); // Use `discountTransactionAmount`
-  
+
     const roundedDiscountValue = Math.round(transactionDiscountValueAMT * 100) / 100;
     const updatedGrandTotal = Math.round((Number(newGrandTotal) - roundedDiscountValue) * 100) / 100;
-  
+
     if (Number(transactionDiscount) !== roundedDiscountValue || Number(salesQuoteState.totalAmount) !== updatedGrandTotal) {
       setSalesQuoteState((prevState) => ({
         ...prevState,
@@ -213,7 +222,7 @@ const handleGoBack =()=>{
 
 
 
-  const handleplaceofSupply  = () => {
+  const handleplaceofSupply = () => {
     if (oneOrganization.organizationCountry) {
       const country = countryData.find(
         (c: any) =>
@@ -247,19 +256,19 @@ const handleGoBack =()=>{
     const totalTax = parseFloat(salesQuoteState?.totalTax);
     let discountValue = parseFloat(salesQuoteState.discountTransactionAmount) || 0; // Use `discountTransactionAmount`
     const totalAmount = parseFloat(salesQuoteState.subtotalTotal + totalTax) || 0;
-  
+
     if (name === "transactionDiscountType") {
       setSalesQuoteState((prevState: any) => ({
         ...prevState,
         discountTransactionType: value,
       }));
-  
+
       if (value === "Percentage") {
         const PercentageDiscount = (discountValue / totalAmount) * 100;
         if (PercentageDiscount > 100) {
           toast.error("Discount cannot exceed 100%");
         }
-  
+
         setSalesQuoteState((prevState: any) => ({
           ...prevState,
           discountTransactionAmount: PercentageDiscount ? PercentageDiscount.toFixed(2) : '0', // Set `discountTransactionAmount`
@@ -272,17 +281,17 @@ const handleGoBack =()=>{
         }));
       }
     }
-  
+
     if (name === "discountTransactionAmount") { // Previously `transactionDiscount`
       discountValue = parseFloat(value) || 0;
-  
+
       if (salesQuoteState.discountTransactionType === "Percentage") {
         if (discountValue > 100) {
           discountValue = 0;
           toast.error("Discount cannot exceed 100%");
         }
         const discountAmount = (discountValue / 100) * totalAmount;
-  
+
         setSalesQuoteState((prevState: any) => ({
           ...prevState,
           discountTransactionAmount: discountValue ? discountValue.toString() : '0', // Set `discountTransactionAmount`
@@ -293,7 +302,7 @@ const handleGoBack =()=>{
           discountValue = totalAmount;
           toast.error("Discount cannot exceed the subtotal amount");
         }
-  
+
         setSalesQuoteState((prevState: any) => ({
           ...prevState,
           discountTransactionAmount: discountValue ? discountValue.toString() : '0', // Set `discountTransactionAmount`
@@ -301,7 +310,7 @@ const handleGoBack =()=>{
         }));
       }
     }
-  
+
     if (name !== "discountTransactionAmount" && name !== "transactionDiscountType") {
       setSalesQuoteState((prevState: any) => ({
         ...prevState,
@@ -309,8 +318,8 @@ const handleGoBack =()=>{
       }));
     }
   };
-  
-  
+
+
 
 
   const filterByDisplayName = (
@@ -323,7 +332,7 @@ const handleGoBack =()=>{
     );
   };
 
-  
+
   const filteredCustomer = filterByDisplayName(
     customerData,
     "customerDisplayName",
@@ -348,10 +357,10 @@ const handleGoBack =()=>{
   useEffect(() => {
     setSalesQuoteState((prevState: any) => ({
       ...prevState,
-      totalDiscount:( (parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.transactionDiscount) || 0)).toFixed(2),
+      totalDiscount: ((parseFloat(prevState.totalItemDiscount) || 0) + (parseFloat(prevState.transactionDiscount) || 0)).toFixed(2),
     }));
   }, [salesQuoteState.transactionDiscount, salesQuoteState.totalItemDiscount]);
-console.log(customerData);
+  console.log(customerData);
 
 
   useEffect(() => {
@@ -429,7 +438,7 @@ console.log(customerData);
 
   const handleSave = async () => {
     try {
-      const url = page === "edit" ? `${endponits.EDIT_SALES_QUOTE}/${id}`: `${endponits.ADD_SALES_QUOTE}`;
+      const url = page === "edit" ? `${endponits.EDIT_SALES_QUOTE}/${id}` : `${endponits.ADD_SALES_QUOTE}`;
       const apiRequest = page === "edit" ? editSalesQuoteApi : newSalesQuoteApi;
       const { response, error } = await apiRequest(
         url,
@@ -456,7 +465,7 @@ console.log(customerData);
         </Link>
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
-            {page == "edit" ? "Edit": "Create"} Sales Quote
+            {page == "edit" ? "Edit" : "Create"} Sales Quote
           </h4>
         </div>
       </div>
@@ -579,10 +588,10 @@ console.log(customerData);
 
                     <input
                       readOnly
-                      value={salesQuoteState.salesQuotes? salesQuoteState.salesQuotes : prefix}
+                      value={salesQuoteState.salesQuotes ? salesQuoteState.salesQuotes : prefix}
                       type="text"
                       className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2 h-9"
-                      />
+                    />
                     {/* <div className="p-1.5">
                       <SettingsIcons color="#495160" />
                     </div> */}
@@ -636,7 +645,7 @@ console.log(customerData);
                   </div>
                 </div>
 
-              
+
 
                 <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
@@ -653,28 +662,28 @@ console.log(customerData);
                 </div>
 
                 <div className="relative col-span-7">
-                <label
-                  htmlFor="taxPreference"
-                  className="text-slate-600 text-sm flex items-center gap-2"
-                >
-                  Tax Preference
-                </label>
-                <div className="relative w-full ">
-                  <select
-                    className="block appearance-none w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    name="taxPreference"
-                    value={salesQuoteState.taxPreference}
-                    onChange={handleChange}
+                  <label
+                    htmlFor="taxPreference"
+                    className="text-slate-600 text-sm flex items-center gap-2"
                   >
-                    <option value="Taxable">Taxable</option>
-                    <option value="Non-taxable">Non-taxable</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <CehvronDown color="gray" />
+                    Tax Preference
+                  </label>
+                  <div className="relative w-full ">
+                    <select
+                      className="block appearance-none w-full mt-0.5 text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                      name="taxPreference"
+                      value={salesQuoteState.taxPreference}
+                      onChange={handleChange}
+                    >
+                      <option value="Taxable">Taxable</option>
+                      <option value="Non-taxable">Non-taxable</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <CehvronDown color="gray" />
+                    </div>
                   </div>
+
                 </div>
-               
-              </div>
                 {/* <div className="col-span-7 relative">
                   <label className="block text-sm mb-1 text-labelColor">
                     Sales Person
@@ -894,7 +903,7 @@ console.log(customerData);
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex justify-center items-center ">
                 <div className="w-[150%]">
                   <p>Bill Discount</p>
@@ -904,8 +913,8 @@ console.log(customerData);
                   <div className="border border-inputBorder rounded-lg flex items-center justify-center p-1 gap-1">
                     <input
                       onChange={handleChange}
-                      value={salesQuoteState?.discountTransactionAmount} 
-                      name="discountTransactionAmount" 
+                      value={salesQuoteState?.discountTransactionAmount}
+                      name="discountTransactionAmount"
                       type="number"
                       step="0.01"
                       placeholder="0"
@@ -962,7 +971,7 @@ console.log(customerData);
       <div>
         <div className="flex gap-4 my-5 -mt-14 justify-end">
           {" "}
-          <Button variant="secondary" size="sm"  onClick={handleGoBack}>
+          <Button variant="secondary" size="sm" onClick={handleGoBack}>
             Cancel
           </Button>
           {/* <Button variant="secondary" size="sm">

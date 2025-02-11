@@ -88,8 +88,16 @@ const NewReceipt = ({ page }: Props) => {
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
+
       if (!error && response) {
-        setData(response.data);
+        let filteredData = response.data;
+        if (url.includes(endponits.GET_ALL_CUSTOMER)) {
+          filteredData = response.data.filter(
+            (customer: { status: string }) => customer.status !== "Inactive"
+          );
+        }
+
+        setData(filteredData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
