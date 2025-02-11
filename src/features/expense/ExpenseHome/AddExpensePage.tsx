@@ -30,7 +30,7 @@ function AddExpensePage({ page }: Props) {
 
   const [expenseData, setExpenseData] = useState<ExpenseData>({
     expenseNumber: "",
-    expenseDate: "",
+    expenseDate: new Date().toISOString().split("T")[0],
     paidThroughAccountId: "",
     expenseCategory: "",
     expenseType: "Goods",

@@ -53,7 +53,7 @@ function NewJournal({ page }: Props) {
   });
   const [newJournalDatas, setNewJournelDatas] = useState({
     journel: "",
-    date: "",
+    date: new Date().toISOString().split("T")[0],
     reference: "",
     note: "",
     cashBasedJournal: false,
