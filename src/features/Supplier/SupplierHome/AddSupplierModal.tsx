@@ -458,8 +458,8 @@ const AddSupplierModal = ({ page }: Props) => {
         setErrors({ ...errors, supplierDisplayName: false });
       }
     }
-    
-    
+
+
 
     // Handle checkbox updates
     if (type === "checkbox") {
@@ -1111,6 +1111,7 @@ const AddSupplierModal = ({ page }: Props) => {
                             </div>
                           </div>
                         </div>
+                        
                         <div>
                           <label className="block mb-1">Payment Terms</label>
                           <select
@@ -1134,8 +1135,13 @@ const AddSupplierModal = ({ page }: Props) => {
                                   {item.name}
                                 </option>
                               ))}
+
                           </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <CehvronDown color="grey" />
+                          </div>
                         </div>
+
                         <div className="">
                           <label htmlFor="" className="block mb-1">
                             TDS

@@ -48,7 +48,7 @@ const initialSupplierPayment: SupplierPayment = {
   supplierId: "",
   supplierDisplayName: "",
   payment: "",
-  paymentDate: "",
+  paymentDate: new Date().toISOString().slice(0, 10),
   paymentMade: "",
   paymentMode: "",
   paidThroughAccountId: "",
@@ -142,8 +142,10 @@ const NewPaymentMade = ({ page }: Props) => {
     displayNameKey: string,
     searchValue: string
   ) => {
-    return data.filter((item: any) =>
-      item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
+    return data.filter(
+      (item: any) =>
+        item.status === "Active" &&
+        item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
     );
   };
 

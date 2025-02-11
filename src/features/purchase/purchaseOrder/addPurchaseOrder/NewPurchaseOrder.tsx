@@ -272,8 +272,10 @@ const NewPurchaseOrder = ({ page }: Props) => {
     displayNameKey: string,
     searchValue: string
   ) => {
-    return data.filter((item: any) =>
-      item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
+    return data.filter(
+      (item: any) =>
+        item.status === "Active" &&
+        item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
     );
   };
 

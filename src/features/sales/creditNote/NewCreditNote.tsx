@@ -34,7 +34,7 @@ const initialCreditNoteState: CreditNoteBody = {
   invoiceType: "",
   creditNote: "",
   orderNumber: "",
-  customerCreditDate: "",
+  customerCreditDate: new Date().toISOString().split("T")[0],
   paymentMode: "",
   paidThroughAccountId: "",
   subject: "",
@@ -130,8 +130,18 @@ const NewCreditNote = ({ page }: props) => {
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
+ 
       if (!error && response) {
-        setData(response.data);
+        let filteredData = response.data;
+ 
+        // Filter out inactive customers if fetching all customers
+        if (url.includes(endponits.GET_ALL_CUSTOMER)) {
+          filteredData = response.data.filter(
+            (customer: { status?: string }) => customer.status !== "Inactive"
+          );
+        }
+ 
+        setData(filteredData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -294,6 +304,7 @@ const NewCreditNote = ({ page }: props) => {
 
   const handleSave = async () => {
     const newErrors = { ...errors };
+    const missingFields: string[] = [];
 
     newErrors.invoiceNumber =
       typeof creditNoteState.invoiceNumber === "string"
@@ -303,6 +314,7 @@ const NewCreditNote = ({ page }: props) => {
 
     if (creditNoteState.customerId.trim() === "") {
       newErrors.customerId = true;
+      missingFields.push("Customer")
     } else {
       newErrors.customerId = false;
     }
@@ -311,28 +323,32 @@ const NewCreditNote = ({ page }: props) => {
 
     if (creditNoteState.placeOfSupply.trim() === "") {
       newErrors.placeOfSupply = true;
+      missingFields.push("Place of Supply")
     } else {
       newErrors.placeOfSupply = false;
     }
     if (creditNoteState.customerCreditDate.trim() === "") {
       newErrors.customerCreditDate = true;
+      missingFields.push("Credit Date");
     } else {
       newErrors.customerCreditDate = false;
     }
     if (creditNoteState.paymentMode.trim() === "") {
       newErrors.paymentMode = true;
+      missingFields.push("Payment Mode");
     } else {
       newErrors.paymentMode = false;
     }
-    if (creditNoteState.paidThroughAccountId.trim() === "") {
+    if (creditNoteState.paidThroughAccountId.trim() === "" && creditNoteState.paymentMode === "Cash") {
       newErrors.paidThroughAccountId = true;
+      missingFields.push("Paid Through Account")
     } else {
       newErrors.paidThroughAccountId = false;
     }
 
-    if (Object.values(newErrors).some((error) => error)) {
+    if (missingFields.length > 0) {
       setErrors(newErrors);
-      toast.error("Fill the required fields");
+      toast.error(`Fill the required fields: ${missingFields.join(", ")}`);
       return;
     }
     try {

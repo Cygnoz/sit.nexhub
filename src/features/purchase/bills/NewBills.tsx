@@ -65,13 +65,13 @@ const NewBills = ({ page }: Props) => {
     destinationOfSupply: "",
     taxMode: "",
     orderNumber: "",
-    purchaseOrderDate: "",
-    expectedShipmentDate: "",
+    purchaseOrderDate: new Date().toISOString().slice(0, 10),
+    expectedShipmentDate: new Date().toISOString().slice(0, 10),
     paymentTerms: "Pay Now",
     paymentMode: "Cash",
     PaidThrough: "",
     billDate: new Date().toISOString().slice(0, 10),
-    dueDate: "",
+    dueDate: new Date().toISOString().slice(0, 10),
     items: [
       {
         itemId: "",
@@ -236,8 +236,10 @@ const NewBills = ({ page }: Props) => {
     displayNameKey: string,
     searchValue: string
   ) => {
-    return data.filter((item: any) =>
-      item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
+    return data.filter(
+      (item: any) =>
+        item.status === "Active" &&
+        item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
     );
   };
 
