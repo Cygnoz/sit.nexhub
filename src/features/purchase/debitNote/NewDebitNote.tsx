@@ -29,7 +29,7 @@ const initialSupplierBillState: DebitNoteBody = {
   billType: "",
   debitNote: "",
   orderNumber: "",
-  supplierDebitDate: "",
+  supplierDebitDate: new Date().toISOString().slice(0, 10),
   paymentMode: "",
   depositAccountId: "",
   subject: "",
@@ -158,8 +158,10 @@ const NewDebitNote = ({ page }: Props) => {
     displayNameKey: string,
     searchValue: string
   ) => {
-    return data?.filter((item: any) =>
-      item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
+    return data.filter(
+      (item: any) =>
+        item.status === "Active" &&
+        item[displayNameKey]?.toLowerCase().includes(searchValue.toLowerCase())
     );
   };
 

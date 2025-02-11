@@ -28,7 +28,7 @@ const initialCustomerData: CustomerData = {
   customerEmail: "",
   workPhone: "",
   mobile: "",
-  dob: "",
+  dob: new Date().toISOString().slice(0, 10),
   cardNumber: "",
   pan: "",
   currency: "",

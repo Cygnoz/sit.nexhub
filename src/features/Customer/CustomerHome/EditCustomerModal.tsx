@@ -26,8 +26,6 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
   const [countryData, setcountryData] = useState<any | []>([]);
   const [stateList, setStateList] = useState<any | []>([]);
   const [shippingstateList, setshippingStateList] = useState<any | []>([]);
-  const [taxPreference, SetTaxPreference] = useState<string>("Taxable");
-  const [taxselected, setTaxSelected] = useState<string | null>("Taxable");
   const [openingType, setOpeningtype] = useState<any | null>("Debit");
   const shippingAddressRef = useRef<HTMLDivElement | null>(null);
   const BillingAddressRef = useRef<HTMLDivElement | null>(null);
@@ -80,7 +78,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
     customerEmail: "",
     workPhone: "",
     mobile: "",
-    dob: "",
+    dob: new Date().toISOString().slice(0, 10),
     cardNumber: "",
     pan: "",
     currency: "",
@@ -1409,77 +1407,13 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
 
                   {activeTab === "taxes" && (
                     <>
-                      <div className="mb-1.5">
-                        <label className="block text-sm mb-0.5 text-labelColor">
-                          Tax Preference
-                        </label>
-                        <div className="flex items-center space-x-4 text-textColor text-sm">
-                          <div className="flex gap-2 justify-center items-center">
-                            <div className="grid place-items-center mt-1">
-                              <input
-                                id="Taxable"
-                                type="radio"
-                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${taxselected === "Taxable"
-                                  ? "border-8 border-neutral-400"
-                                  : "border-1 border-neutral-400"
-                                  }`}
-                                checked={taxselected === "Taxable"}
-                                onClick={() => {
-                                  SetTaxPreference("Taxable");
-                                  setTaxSelected("Taxable");
-                                }}
-                              />
-                              <div
-                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${taxselected === "Taxable"
-                                  ? "bg-neutral-100"
-                                  : "bg-transparent"
-                                  }`}
-                              />
-                            </div>
-                            <label
-                              htmlFor="Taxable"
-                              className="text-start font-medium"
-                            >
-                              Taxable
-                            </label>
-                          </div>
-                          <div className="flex gap-2 justify-center items-center">
-                            <div className="grid place-items-center mt-0.5">
-                              <input
-                                id="Tax Exempt"
-                                type="radio"
-                                className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${taxselected === "Tax Exempt"
-                                  ? "border-8 border-neutral-400"
-                                  : "border-1 border-neutral-400"
-                                  }`}
-                                checked={taxselected === "Tax Exempt"}
-                                onClick={() => {
-                                  SetTaxPreference("Tax Exempt");
-                                  setTaxSelected("Tax Exempt");
-                                }}
-                              />
-                              <div
-                                className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${taxselected === "Tax Exempt"
-                                  ? "bg-neutral-100"
-                                  : "bg-transparent"
-                                  }`}
-                              />
-                            </div>
-                            <label
-                              htmlFor="Tax Exempt"
-                              className="text-start font-medium"
-                            >
-                              Tax Exempt
-                            </label>
-                          </div>
-                        </div>
-                      </div>
+                     
 
-                      {taxPreference == "Taxable" && (
+                  
                         <>
                           {gstOrVat.taxType === "GST" && (
                             <div>
-                              <div className="grid grid-cols-2 gap-4">
+                              <div className="grid grid-cols-2 gap-4 mt-3">
                                 <div className="relative w-full">
                                   <label
                                     htmlFor="gstTreatment"
@@ -1713,8 +1647,8 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
                             </div>
                           )}
                         </>
-                      )}
-                      {taxPreference === "Tax Exempt" && (
+                    
+                      {/* {taxPreference === "Tax Exempt" && (
                         <div>
                           <label className="block mb-0.5">Exemption Reason</label>
                           <input
@@ -1726,7 +1660,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
                             onChange={handleChange}
                           />
                         </div>
-                      )}
+                      )} */}
                     </>
                   )}
 
