@@ -1,6 +1,7 @@
 import { RouteObject } from "react-router-dom";
 import { lazy } from "react";
 
+
 const Reports = lazy(() => import("../pages/Reports"));
 const DayBook = lazy(() => import("../features/accountant/DayBook/DayBook"));
 const BalanceSheet = lazy(() => import("../features/report_s/BalanceSheet"));
@@ -23,6 +24,9 @@ const Accounts = lazy(
 const GroupSummary = lazy(
   () => import("../features/report_s/P&L/GroupSummary")
 );
+const TrailBalanceMonthlySummary = lazy(
+  () => import("../features/report_s/TrailBalance/TrailBalanceMonthlySummary")
+);
 
 
 const ReportsRoutes: RouteObject[] = [
@@ -36,7 +40,7 @@ const ReportsRoutes: RouteObject[] = [
   { path: "/reports/trialBalance/:accountSubHead", element: <Account /> },
   {
     path: "/reports/trialBalance/:accountSubHead/monthly-summery",
-    element: <MonthlySummery />,
+    element: <TrailBalanceMonthlySummary />,
   },
   {
     path: "/reports/trialBalance/:accountSubHead/monthly-summery/ledger",

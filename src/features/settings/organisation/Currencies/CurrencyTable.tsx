@@ -85,31 +85,34 @@ const CurrencyTable = () => {
 
               {/* Actions */}
               <td className="py-2.5 px-4 border-y border-tableBorder flex items-center justify-center w-full ">
-  <div className="flex items-center w-full justify-center gap-2">
-    {/* View Exchange Rate (Placeholder for now) */}
-    <div className="h-[26px]">
-      <div className="bg-[#fefdfa]">
-        <div className="text-[#565148] border px-[10px] py-1 rounded-lg">
-          <p>View Exchange Rate</p>
-        </div>
-      </div>
-    </div>
+                <div className="flex items-center w-full justify-center gap-2">
+                  {/* View Exchange Rate (Placeholder for now) */}
+                  <div className="h-[26px]">
+                    <div className="bg-[#fefdfa]">
+                      <div className="text-[#565148] border px-[10px] py-1 rounded-lg">
+                        <p>View Exchange Rate</p>
+                      </div>
+                    </div>
+                  </div>
 
-    {/* Edit Currency Modal */}
-    <div onClick={() => setSelectedCurrency(item)}>
-      <EditCurrencyModal selectedCurrency={selectedCurrency} />
-    </div>
+                  {/* Edit Currency Modal */}
+                  <div onClick={() => setSelectedCurrency(item)}>
+                    <EditCurrencyModal selectedCurrency={selectedCurrency} />
+                  </div>
 
-    {/* Delete Currency (only if not base currency) */}
-    {item.baseCurrency === false ? (
-      <div onClick={() => handleDelete(item._id)}>
-        <TrashCan color={"red"} />
-      </div>
-    ):(<>        <TrashCan color={"transparant"} />
-</>)}
-  </div>
-</td>
-
+                  {/* Delete Currency (only if not base currency) */}
+                  {item.baseCurrency === false ? (
+                    <div onClick={() => handleDelete(item._id)}>
+                      <TrashCan color={"red"} />
+                    </div>
+                  ) : (
+                    <>
+                      {" "}
+                      <TrashCan color={"transparant"} />
+                    </>
+                  )}
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>

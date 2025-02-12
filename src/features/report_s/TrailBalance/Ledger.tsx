@@ -38,7 +38,7 @@ const Ledger = ({}: Props) => {
     }
   };
 
-  console.log(accountSubHead, "item");
+  console.log(item, "item");
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -52,7 +52,7 @@ const Ledger = ({}: Props) => {
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
             {" "}
-            {accountSubHead} (Ledger Vouchers){" "}
+            {accountSubHead} - {item.date}
           </h4>
         </div>
 
@@ -94,28 +94,25 @@ const Ledger = ({}: Props) => {
               </th>
             </tr>
           </thead>
-          <tbody className="text-xs ">
-            {item?.transactions?.map((item: any) => (
-              <tr className="border-b border-[#ebecf0]">
-               
-                  {" "}
-                  <td className="py-3 text-start">
-                    {new Date(item.date).toLocaleDateString("en-GB")}
-                  </td>
-              
-                <td className="py-3 text-center min-w-[30px] max-w-[30px] px-1 truncate">
-                  {item.transactionId}
-                </td>
+          <tbody className="text-xs">
+  {(location.pathname.includes("trialBalance") ? item?.data : item?.transactions)?.map((entry: any) => (
+    <tr key={entry.transactionId} className="border-b border-[#ebecf0]">
+      <td className="py-3 text-start">
+      {new Date(item.date).toLocaleDateString("en-GB")}
+      </td>
+      <td className="py-3 text-center min-w-[30px] max-w-[30px] px-1 truncate">
+        {entry.transactionId}
+      </td>
+      <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
+        {entry.debitAmount}
+      </td>
+      <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
+        {entry.creditAmount}
+      </td>
+    </tr>
+  ))}
+</tbody>
 
-                <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                  {item.debitAmount}
-                </td>
-                <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                  {item.creditAmount}
-                </td>
-              </tr>
-            ))}
-          </tbody>
         </table>
       </div>
     </div>

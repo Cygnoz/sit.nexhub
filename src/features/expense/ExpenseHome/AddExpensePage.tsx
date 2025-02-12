@@ -1634,81 +1634,92 @@ function AddExpensePage({ page }: Props) {
               </div>
             </div>
             <div className="col-span-1 space-y-2">
-              <label className="text-sm mb-1 text-labelColor">
-                Expense Account<span className="text-[#bd2e2e] ">*</span>
-              </label>
-              <div className="relative w-full">
-                <select
-                  name="expenseAccount"
-                  value={expenseData?.expense[0]?.expenseAccountId || ""}
-                  onChange={(e) => {
-                    const selectedValue = e.target.value;
-                    const selectedAccount: any = accountData?.liabilities?.find(
-                      (account: any) => account.accountName === selectedValue
-                    );
-
-                    setExpenseData({
-                      ...expenseData,
-                      expense: [
-                        {
-                          ...expenseData.expense[0],
-                          expenseAccountId: selectedAccount
-                            ? selectedAccount._id
-                            : "",
-                        },
-                      ],
-                    });
-                  }}
-                  className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
-                >
-                  <option value="">Select an Account</option>
-                  {accountData?.liabilities &&
-                    accountData.liabilities.map(
-                      (account: any, index: number) => (
-                        <option key={index} value={account.accountName}>
-                          {account.accountName}
+                    <label className="text-sm mb-1 text-labelColor">
+                      Expense Account<span className="text-[#bd2e2e] ">*</span>
+                    </label>
+                    <div className="relative w-full  ml-auto  ">
+                      <select
+                        onChange={handleChange}
+                        value={
+                          expenseData?.expense?.[0]?.expenseAccountId || ""
+                        }
+                        name="expenseAccountId"
+                        className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                      >
+                        <option value="" hidden disabled>
+                          {expenseData?.expense?.[0]?.expenseAccountId
+                            ? accountData?.find(
+                                (item: any) =>
+                                  item._id ===
+                                  expenseData?.expense?.[0]?.expenseAccountId
+                              )?.accountName || "Select Account"
+                            : "Select Account"}
                         </option>
+
+                        {accountData
+                          ?.filter(
+                            (item: { accountGroup: string }) =>
+                              item.accountGroup === "Liability"
+                          )
+                          ?.map(
+                            (item: { _id: string; accountName: string }) => (
+                              <option key={item._id} value={item._id}>
+                                {item.accountName}
+                              </option>
+                            )
+                          )}
+                      </select>
+
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <CehvronDown color="gray" />
+                      </div>
+                    </div>
+                    <button
+                      className="flex items-center  gap-2"
+                      onClick={handleItemizeFlase}
+                    >
+                      <List />{" "}
+                      <p className="font-semibold text-[#680000]">Itemize</p>
+                    </button>
+                  </div>
+
+
+                  <div className="col-span-1 space-y-2">
+                <label className="text-sm mb-1 text-labelColor">
+                  Paid Through Account<span className="text-[#bd2e2e] ">*</span>
+                </label>
+                <div className="relative w-full  ">
+                  <select
+                    onChange={handleChange}
+                    value={expenseData.paidThroughAccountId}
+                    name="paidThroughAccountId"
+                    className="block appearance-none w-full text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                  >
+                    <option value="" hidden disabled>
+                      {expenseData.paidThroughAccountId
+                        ? accountData.find(
+                            (item: any) =>
+                              item._id === expenseData.paidThroughAccountId
+                          )?.accountName || "Select Account"
+                        : "Select Account"}
+                    </option>
+                    {accountData
+                      ?.filter(
+                        (item: { accountSubhead: string }) =>
+                          item.accountSubhead === "Bank" ||
+                          item.accountSubhead === "Cash"
                       )
-                    )}
-                </select>
-
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
+                      ?.map((item: { _id: string; accountName: string }) => (
+                        <option key={item._id} value={item._id}>
+                          {item.accountName}
+                        </option>
+                      ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="col-span-1 space-y-2">
-              <label className="text-sm mb-1 text-labelColor">
-                Paid Through<span className="text-[#bd2e2e] ">*</span>
-              </label>
-              <div className="relative w-full  ml-auto ">
-                <select
-                  onChange={handleChange}
-                  value={expenseData.paidThroughAccountId}
-                  name="paidAccountId"
-                  className="block appearance-none w-full  text-[#495160] bg-white border border-inputBorder text-sm h-[39px] pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                >
-                  <option value="" selected hidden disabled>
-                    Select Account
-                  </option>
-                  {accountData
-                    ?.filter(
-                      (item: { accountSubhead: string }) =>
-                        item.accountSubhead === "Bank" ||
-                        item.accountSubhead === "Cash"
-                    )
-                    ?.map((item: { _id: string; accountName: string }) => (
-                      <option key={item._id} value={item._id}>
-                        {item.accountName}
-                      </option>
-                    ))}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
-              </div>
-            </div>
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">
                 Distance<span className="text-[#bd2e2e] ">*</span>

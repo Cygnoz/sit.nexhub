@@ -38,7 +38,7 @@ const ExpenseTable = () => {
 
   const [columns, setColumns] = useState([
     { id: "expenseDate", label: "Date", visible: true },
-    { id: "expense.expenseAccount", label: "Name", visible: true },
+    { id: "expense.expenseAccountName", label: "Name", visible: true },
     { id: "expenseCategory", label: "Category", visible: true },
     { id: "supplierDisplayName", label: "Vendor Name", visible: true },
     { id: "paidThrough", label: "Paid Through", visible: true },

@@ -152,7 +152,7 @@ const TradingAccount = () => {
         <div className="grid grid-cols-2 gap-8">
           {/* Debit Table */}
           <div>
-            <h3 className=" text-textColor   mb-4">Debit</h3>
+          
             <div className="overflow-hidden ">
               {/* Table Header */}
               <table className="min-w-full">
@@ -209,7 +209,7 @@ const TradingAccount = () => {
                         }
                       >
                         <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
-                          <Link to={link} state={{ items }}>
+                          <Link to={link} state={{ items ,accountName:accountName}}> 
                             {accountName}
                           </Link>
                         </td>
@@ -235,7 +235,7 @@ const TradingAccount = () => {
           {/* Credit Table */}
           <div>
             <div className="">
-              <h3 className="text-textColor text-end  mb-4">Credit</h3>
+      
             </div>{" "}
             <div className="overflow-hidden ">
               {/* Table Header */}

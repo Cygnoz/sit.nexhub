@@ -64,9 +64,6 @@ const CurrencyTable = ({ }: Props) => {
                     <p className="text-[#565148] text-[12px] mt-[3px]">Delete</p>
                   </div>
 
-
-
-
                 </td>
               </tr>
             ))}

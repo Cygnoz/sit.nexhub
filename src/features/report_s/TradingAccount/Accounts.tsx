@@ -9,7 +9,7 @@ type Props = {};
 const Accounts = ({}: Props) => {
   const { accountSubhead } = useParams();
   const location = useLocation();
-  const { items } = location.state || {};
+  const { items,accountName } = location.state || {};
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
@@ -20,32 +20,32 @@ const Accounts = ({}: Props) => {
     if (storedFromDate) setFromDate(storedFromDate);
     if (storedToDate) setToDate(storedToDate);
   }, []);
-  const {organization} = useOrganization()
+  const { organization } = useOrganization();
 
   const reportPath = () => {
     if (location.pathname.includes("trialBalance")) {
       return "/reports/trialBalance";
     } else if (location.pathname.includes("trading-account")) {
       return "/reports/trading-account";
-    }else if (location.pathname.includes("balance-sheet")) {
-      return "/reports/balance-sheet";} 
-    else {
+    } else if (location.pathname.includes("balance-sheet")) {
+      return "/reports/balance-sheet";
+    } else {
       return "/reports";
     }
   };
 
-  console.log(items, "items");
+  console.log(accountName, "items sdfs");
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-4 gap-2">
-      <Link to={reportPath()}>
-  <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
-    <CheveronLeftIcon />
-  </div>
-</Link>
+        <Link to={reportPath()}>
+          <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
+            <CheveronLeftIcon />
+          </div>
+        </Link>
         <div className="flex justify-center items-center">
-          <h4 className="font-bold text-xl text-textColor ">Group Summery</h4>
+          <h4 className="font-bold text-xl text-textColor ">Group Summery - {accountName}</h4>
         </div>
 
         <div className="ml-auto gap-3 flex items-center">
@@ -80,7 +80,6 @@ const Accounts = ({}: Props) => {
             </tr>
           </thead>
           <tbody className="text-xs">
-          
             {items?.[accountSubhead as string]?.data?.map(
               (items: any, index: number) => (
                 <tr key={index} className="border-b border-[#ebecf0]">

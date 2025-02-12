@@ -33,7 +33,7 @@ function getLastDayOfMonth() {
 
 const BalanceSheet = ({}: Props) => {
   const [BSData, setBSData] = useState<any | []>([]);
-      const {organization} = useOrganization()
+  const { organization } = useOrganization();
 
   const [fromDate, setFromDate] = useState(getFirstDayOfMonth());
   const [toDate, setToDate] = useState(getLastDayOfMonth());
@@ -139,9 +139,9 @@ const BalanceSheet = ({}: Props) => {
               />
             </div>
 
-              <Button className="text-xs pl-5 pr-5" size="sm" onClick={getBSData}>
-                          Run
-                        </Button>
+            <Button className="text-xs pl-5 pr-5" size="sm" onClick={getBSData}>
+              Run
+            </Button>
 
             <div className="ml-auto flex items-center">
               <button className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">
@@ -156,7 +156,10 @@ const BalanceSheet = ({}: Props) => {
       <div className="bg-white rounded-xl shadow-sm p-6 mt-2">
         <div className="flex justify-center items-center mb-2">
           <div className="text-center">
-            <p className="font-bold text-textColor"> {organization?.organizationName}</p>
+            <p className="font-bold text-textColor">
+              {" "}
+              {organization?.organizationName}
+            </p>
             <p className="text-sm text-textColor">
               {formattedFromDate} To {formattedToDate}
             </p>
@@ -184,14 +187,16 @@ const BalanceSheet = ({}: Props) => {
                     let totalAmount = 0;
                     let items = [];
                     let link = "";
+                    let accountSubhead = "";
 
                     if (item.equity) {
-                      accountName = "equity";
+                      accountName = "Equity";
+                      accountSubhead = "equity";
                       totalAmount =
                         item.equity.overallNetCredit -
                         item.equity.overallNetDebit;
                       items = item;
-                      link = `/reports/balance-sheet/accounts/${accountName}`;
+                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
                       console.log(item.equity);
                     } else if (item.currentLiabilities) {
                       const accountSubhead = "currentLiabilities";
@@ -228,7 +233,7 @@ const BalanceSheet = ({}: Props) => {
                         }
                       >
                         <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
-                          <Link to={link} state={{ items }}>
+                          <Link to={link} state={{ items , accountName:accountName }}>
                             {accountName}
                           </Link>
                         </td>
@@ -273,8 +278,9 @@ const BalanceSheet = ({}: Props) => {
                     let totalAmount = 0;
                     let items = [];
                     let link = "";
+                    let accountSubhead = "";
                     if (item.currentAssets) {
-                      const accountSubhead = "currentAssets";
+                     accountSubhead = "currentAssets";
                       accountName = "Current Assets";
                       totalAmount =
                         item.currentAssets.overallNetDebit -
@@ -282,12 +288,13 @@ const BalanceSheet = ({}: Props) => {
                       items = item;
                       link = `/reports/balance-sheet/accounts/${accountSubhead}`;
                     } else if (item.nonCurrentAssets) {
-                      accountName = "nonCurrentAssets";
+                      accountName = "Non Current Assets";
+                      accountSubhead = "nonCurrentAssets";
                       totalAmount =
                         item.nonCurrentAssets.overallNetDebit -
                         item.nonCurrentAssets.overallNetCredit;
                       items = item;
-                      link = `/reports/balance-sheet/accounts/${accountName}`;
+                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
                     } else if (item.grossLoss) {
                       accountName = "Gross Loss";
                       totalAmount = item.grossLoss;
@@ -306,7 +313,7 @@ const BalanceSheet = ({}: Props) => {
                             : ""
                         }
                       >
-                        <Link to={link} state={{ items, fromDate, toDate }}>
+                        <Link to={link} state={{ items , accountName:accountName }}>
                           <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
                             {accountName}
                           </td>

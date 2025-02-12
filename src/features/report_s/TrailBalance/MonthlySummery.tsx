@@ -36,7 +36,7 @@ const MonthlySummery = ({}: Props) => {
     }
   };
 
-  console.log(items.accountName, "items");
+  console.log(items, "items");
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -49,7 +49,7 @@ const MonthlySummery = ({}: Props) => {
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
             {" "}
-            Monthly Summery{" "}
+            Monthly Summery{" "} - {items.accountName}
           </h4>
         </div>
 
@@ -91,17 +91,19 @@ const MonthlySummery = ({}: Props) => {
           <tbody className="text-xs ">
             {items?.entries?.map((item: any) => (
               <tr className="border-b border-[#ebecf0]">
-               {item.date !== "Opening Balance" || item.transactions.length > 0 ? (
-  <Link
-    to={`${reportPath()}/${items.accountName}/monthly-summery/ledger`}
-    state={{ item, fromDate, toDate }}
-  >
-    <td className="py-3">{item.date}</td>
-  </Link>
-) : (
-  <td className="py-3">{item.date}</td>
-)}
-
+                {item.date !== "Opening Balance" ||
+                item.transactions.length > 0 ? (
+                  <Link
+                    to={`${reportPath()}/${
+                      items.accountName
+                    }/monthly-summery/ledger`}
+                    state={{ item, fromDate, toDate }}
+                  >
+                    <td className="py-3">{item.date}</td>
+                  </Link>
+                ) : (
+                  <td className="py-3">{item.date}</td>
+                )}
 
                 <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
                   {item.overAllNetDebit}

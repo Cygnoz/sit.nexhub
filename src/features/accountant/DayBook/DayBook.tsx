@@ -230,7 +230,7 @@ function DayBook({ }: Props) {
       <div className="flex items-center mx-5 my-4">
         <div className="flex justify-center items-center">
           <Link to={"/reports"}>
-            <div className="flex justify-center items-center h-11 w-11 bg-[#F3F3F3] rounded-full">
+            <div className="flex justify-center items-center h-11 w-11 bg-[white] rounded-full">
               <CheveronLeftIcon />
             </div>
           </Link>

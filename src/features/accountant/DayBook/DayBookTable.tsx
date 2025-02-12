@@ -14,8 +14,8 @@ const DayBookTable = ({ dayBookData, total, loading }: Props) => {
     "Transaction Id",
     "Particulars",
     "Voucher Type",
-    "Debit Balance",
-    "Credit Balance",
+    "Debit",
+    "Credit",
   ];
 
   return (
