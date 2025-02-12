@@ -84,6 +84,10 @@ const BalanceSheet = ({}: Props) => {
   //   }
   // };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   console.log(BSData.summary, "dert");
 
   return (
@@ -144,7 +148,7 @@ const BalanceSheet = ({}: Props) => {
             </Button>
 
             <div className="ml-auto flex items-center">
-              <button className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">
+              <button  onClick={handlePrint}  className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">
                 <PrinterIcon color="gray" height={18} width={20} />
                 <span className="text-sm text-neutral-500">Print</span>
               </button>
@@ -153,7 +157,7 @@ const BalanceSheet = ({}: Props) => {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm p-6 mt-2">
+      <div className="bg-white rounded-xl shadow-sm p-6 mt-2" id="">
         <div className="flex justify-center items-center mb-2">
           <div className="text-center">
             <p className="font-bold text-textColor">
@@ -216,7 +220,7 @@ const BalanceSheet = ({}: Props) => {
                       items = item;
                       link = `/reports/balance-sheet/accounts/${accountSubhead}`;
                     } else if (item.netLossCd) {
-                      accountName = "Net Loss (c/d)";
+                      accountName = " Profit & Loss A/C ";
                       totalAmount = item.netLossCd;
                     }
                     if (totalAmount === 0) {
@@ -233,7 +237,10 @@ const BalanceSheet = ({}: Props) => {
                         }
                       >
                         <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
-                          <Link to={link} state={{ items , accountName:accountName }}>
+                          <Link
+                            to={link}
+                            state={{ items, accountName: accountName }}
+                          >
                             {accountName}
                           </Link>
                         </td>
@@ -243,14 +250,6 @@ const BalanceSheet = ({}: Props) => {
                       </tr>
                     );
                   })}
-                  <tr>
-                    <td className="px-6 py-3  text-sm text-[#4B5C79] font-bold">
-                      Total
-                    </td>
-                    <td className="px-6 py-3 text-right  text-sm text-[#4B5C79] font-bold">
-                      {BSData?.summary?.finalCredit}
-                    </td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -280,7 +279,7 @@ const BalanceSheet = ({}: Props) => {
                     let link = "";
                     let accountSubhead = "";
                     if (item.currentAssets) {
-                     accountSubhead = "currentAssets";
+                      accountSubhead = "currentAssets";
                       accountName = "Current Assets";
                       totalAmount =
                         item.currentAssets.overallNetDebit -
@@ -295,9 +294,9 @@ const BalanceSheet = ({}: Props) => {
                         item.nonCurrentAssets.overallNetCredit;
                       items = item;
                       link = `/reports/balance-sheet/accounts/${accountSubhead}`;
-                    } else if (item.grossLoss) {
-                      accountName = "Gross Loss";
-                      totalAmount = item.grossLoss;
+                    } else if (item.netLossCd) {
+                      accountName = " Profit & Loss A/C ";
+                      totalAmount = item.netLossCd;
                     }
 
                     if (totalAmount === 0) {
@@ -309,11 +308,14 @@ const BalanceSheet = ({}: Props) => {
                         key={index}
                         className={
                           index === BSData?.credit.length - 1
-                            ? "font-semibold bg-gray-50"
+                            ? "font-semibold bg-gray-50 border-b border-stone-200 "
                             : ""
                         }
                       >
-                        <Link to={link} state={{ items , accountName:accountName }}>
+                        <Link
+                          to={link}
+                          state={{ items, accountName: accountName }}
+                        >
                           <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
                             {accountName}
                           </td>
@@ -324,18 +326,32 @@ const BalanceSheet = ({}: Props) => {
                       </tr>
                     );
                   })}
-                  <tr>
-                    <td className="px-6 py-3  text-sm text-[#4B5C79] font-bold">
-                      Total
-                    </td>
-                    <td className="px-6 py-3 text-right  text-sm text-[#4B5C79] font-bold">
-                      {BSData?.summary?.finalCredit}
-                    </td>
-                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
+        </div>
+        <div className="grid grid-cols-2 gap-8 border-t border-stone-200">
+          <table className="min-w-full">
+            <tbody>
+              <tr className="font-bold">
+                <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
+                <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
+                  {BSData?.summary?.finalCredit}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="min-w-full">
+            <tbody>
+              <tr className="font-bold">
+                <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
+                <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
+                  {BSData?.summary?.finalDebit}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

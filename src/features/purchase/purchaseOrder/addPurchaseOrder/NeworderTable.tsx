@@ -9,6 +9,7 @@ import useApi from "../../../../Hooks/useApi";
 import PlusCircle from "../../../../assets/icons/PlusCircle";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import img from "../../../../assets/images/image (7).png";
 
 type Row = {
   itemImage?: string;
@@ -310,7 +311,7 @@ const NewOrderTable = ({
 
   const getAllItems = async () => {
     try {
-      const url = `${endponits.GET_ALL_ITEM}`;
+      const url = `${endponits.GET_ALL_ITEMS_SALES}`;
       const apiResponse = await getAllItemsRequest(url);
       // console.log(apiResponse, "api response");
       const { response, error } = apiResponse;
@@ -624,7 +625,7 @@ const NewOrderTable = ({
                               <div className="col-span-2 flex justify-center">
                                 <img
                                   className="rounded-full h-10"
-                                  src={item.itemImage}
+                                  src={item.itemImage? item.itemImage : img}
                                   alt="Img"
                                 />
                               </div>

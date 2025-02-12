@@ -249,8 +249,6 @@ function NewJournal({ page }: Props) {
     // Validate required fields
     if (!journel) errors.push("Journal");
     if (!date) errors.push("Date");
-    if (!reference) errors.push("Reference");
-    if (!note) errors.push("Note");
     if (!currency) errors.push("Currency");
     if (totalDebitAmount === undefined || totalCreditAmount === undefined) {
       errors.push("Total Debit and Credit Amounts");
@@ -503,7 +501,7 @@ function NewJournal({ page }: Props) {
                 }
               />
             </div>
-            <div className="w-[26%]">
+            <div className="w-[26%] hidden">
               <label className="block text-sm text-textColor">
                 Journal Type
               </label>

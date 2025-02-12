@@ -178,7 +178,7 @@ const ProfitAndLoss = ({}: Props) => {
                 Amount
               </div>
             </div>
-            <tbody className="divide-y divide-[#EAECF0]">
+            <tbody className="divide-y divide-[#576582]">
               {[
                 {
                   accountName: "Gross Loss b/f",
@@ -195,7 +195,7 @@ const ProfitAndLoss = ({}: Props) => {
                   items: PLData?.debit[1]?.indirectExpenses,
                 },
                 {
-                  accountName: "Net Profit c/f",
+                  accountName: "Net Profit ",
                   totalAmount: PLData.summary?.netProfit || 0,
                   link: "",
                   items: null,
@@ -203,13 +203,13 @@ const ProfitAndLoss = ({}: Props) => {
               ].map((item, index) =>
                 (item.accountName === "Gross Loss b/f" &&
                   item.totalAmount === 0) ||
-                (item.accountName === "Net Profit c/f" &&
+                (item.accountName === "Net Profit " &&
                   item.totalAmount === 0) ? null : (
                   <tr
                     key={index}
-                    className={index === 2 ? "font-semibold bg-gray-50" : ""}
+                    className={index === 2 ? "font-semibold bg-gray-50 " : ""}
                   >
-                    <td className="px-6 py-3 text-sm w-full text-[#4B5C79] font-medium">
+                    <td className="px-6 py-3 text-sm w-full text-[#4B5C79] font-medium border-b border-stone-200 ">
                       {item.link ? (
                         <Link to={item.link} state={{ data: item.items , accountName: item.accountName}} >
                           {item.accountName}
@@ -218,20 +218,13 @@ const ProfitAndLoss = ({}: Props) => {
                         item.accountName
                       )}
                     </td>
-                    <td className="px-6 py-3 ml-auto text-right text-sm text-[#4B5C79] font-medium">
+                    <td className="px-6 border-b border-stone-200 py-3 ml-auto text-right text-sm text-[#4B5C79] font-medium">
                       {item.totalAmount}
                     </td>
                   </tr>
                 )
               )}
-              <tr>
-                <td className="px-6 py-3 text-sm text-[#4B5C79] font-bold">
-                  Total
-                </td>
-                <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-bold">
-                  {PLData.summary?.finalDebit || 0}
-                </td>
-              </tr>
+             
             </tbody>
           </div>
 
@@ -246,7 +239,7 @@ const ProfitAndLoss = ({}: Props) => {
               </div>
             </div>
             <table className="w-full border-collapse">
-              <tbody className="divide-y divide-[#EAECF0]">
+              <tbody className="">
                 {[
                   {
                     accountName: "Gross Profit b/f",
@@ -264,7 +257,7 @@ const ProfitAndLoss = ({}: Props) => {
                     items: PLData.credit[1]?.indirectIncome,
                   },
                   {
-                    accountName: "Net Loss c/f ",
+                    accountName: "Net Loss ",
                     totalAmount: PLData.summary?.netLoss || 0,
                     link: "",
                     items: null,
@@ -272,13 +265,13 @@ const ProfitAndLoss = ({}: Props) => {
                 ].map((item, index) =>
                   (item.accountName === "Gross Profit b/f" &&
                     item.totalAmount === 0) ||
-                  (item.accountName === "Net Loss c/f" &&
+                  (item.accountName === "Net Loss " &&
                     item.totalAmount === 0) ? null : ( 
                     <tr
                       key={index}
                       className={index === 2 ? "font-semibold bg-gray-50" : ""}
                     >
-                      <td className="px-6 py-3 text-sm w-full text-[#4B5C79] font-medium">
+                      <td className="px-6 py-3 text-sm w-full text-[#4B5C79] font-medium border-b border-stone-200">
                         {item.link ? (
                           <Link
                             to={item.link}
@@ -293,23 +286,38 @@ const ProfitAndLoss = ({}: Props) => {
                           item.accountName
                         )}
                       </td>
-                      <td className="px-6 py-3 ml-auto text-right text-sm text-[#4B5C79] font-medium">
+                      <td className="px-6 py-3 ml-auto text-right text-sm text-[#4B5C79] font-medium border-b border-stone-200">
                         {item.totalAmount}
                       </td>
                     </tr>
                   )
                 )}
-                <tr>
-                  <td className="px-6 py-3 text-sm text-[#4B5C79] font-bold">
-                    Total
-                  </td>
-                  <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-bold">
-                    {PLData.summary?.finalCredit || 0}
-                  </td>
-                </tr>
+              
               </tbody>
             </table>
           </div>
+        </div>
+        <div className="grid grid-cols-2 gap-8">
+        <table className="min-w-full">
+      <tbody>
+        <tr className="font-bold">
+          <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
+          <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
+          {PLData.summary?.finalDebit || 0}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table className="min-w-full">
+      <tbody>
+        <tr className="font-bold">
+          <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
+          <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
+          {PLData.summary?.finalCredit || 0}
+          </td>
+        </tr>
+      </tbody>
+    </table>
         </div>
       </div>
     </div>

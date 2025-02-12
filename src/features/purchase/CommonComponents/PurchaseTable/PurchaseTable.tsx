@@ -3,7 +3,6 @@ import TableSkelton from "../../../../Components/skeleton/Table/TableSkelton";
 import SearchBar from "../../../../Components/SearchBar";
 import NoDataFoundTable from "../../../../Components/skeleton/Table/NoDataFoundTable";
 import CustomiseColmn from "../../../../Components/CustomiseColum";
-import PrintButton from "../../../../Components/PrintButton";
 import Pagination from "../../../../Components/Pagination/Pagination";
 import Eye from "../../../../assets/icons/Eye";
 import Trash2 from "../../../../assets/icons/Trash2"; // Include Trash Icon
@@ -11,6 +10,7 @@ import Pen from "../../../../assets/icons/Pen";
 import useApi from "../../../../Hooks/useApi";
 import toast from "react-hot-toast";
 import { PurchaseContext } from "../../../../context/ContextShare";
+import ConfirmModal from "../../../../Components/ConfirmModal";
 
 interface Column {
   id: string;
@@ -54,7 +54,12 @@ const PurchaseTable: React.FC<TableProps> = ({
   const { request: ocrDelete } = useApi("delete", 5000);
 const {setPurchaseResponse}=useContext(PurchaseContext)!;
   const rowsPerPage = 10;
-
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const confirmDelete = (id: string) => {
+    setDeleteId(id);
+    setConfirmModalOpen(true);
+  };
   const filteredData = Array.isArray(data)
     ? data
         .slice()
@@ -81,22 +86,24 @@ const {setPurchaseResponse}=useContext(PurchaseContext)!;
   const visibleColumns = columns.filter((col) => col.visible);
   const skeletonColumns = [...visibleColumns, {}, {}, {}];
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async () => {
     try {
-      const url = `${deleteUrl}/${id}`;
+      const url = `${deleteUrl}/${deleteId}`;
       const apiFunction = page === "OCR" ? ocrDelete : deleteData;
       const { response, error } = await apiFunction(url);
       if (!error && response) {
         console.log(response)
         if(page==="OCR"){
           toast.success(response?.data[0]?.message);
+          setConfirmModalOpen(false);
 
         }else{
           toast.success(response?.data?.message);
+          setConfirmModalOpen(false);
 
         }
           setPurchaseResponse((prevData: any) => {
-          const updatedData = prevData?.data?.filter((item: any) => item._id !== id);
+          const updatedData = prevData?.data?.filter((item: any) => item._id !== deleteId);
           return {
             ...prevData,
             data: updatedData,
@@ -128,7 +135,6 @@ const {setPurchaseResponse}=useContext(PurchaseContext)!;
             setCurrentPage(1);
           }}
         />
-        <PrintButton />
       </div>
 
       <div className="overflow-x-auto mt-3 hide-scrollbar overflow-y-scroll max-h-[25rem]">
@@ -195,7 +201,7 @@ const {setPurchaseResponse}=useContext(PurchaseContext)!;
                     <button onClick={() => onRowClick && onRowClick(item._id)}>
                       <Eye color={"#569FBC"} />
                     </button>
-                    <button onClick={() => handleDelete(item._id)}>
+                    <button onClick={() => confirmDelete(item._id)}>
                       <Trash2 color="#EA1E4F" size={18} />
                     </button>
                   </td>
@@ -214,6 +220,12 @@ const {setPurchaseResponse}=useContext(PurchaseContext)!;
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
+      />
+      <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete?"
       />
     </div>
   );

@@ -219,14 +219,7 @@ const TradingAccount = () => {
                       </tr>
                     );
                   })}
-                  <tr>
-                    <td className="px-6 py-3  text-sm text-[#4B5C79] font-bold">
-                      Total
-                    </td>
-                    <td className="px-6 py-3 text-right  text-sm text-[#4B5C79] font-bold">
-                      {tradingData.finalDebit}
-                    </td>
-                  </tr>
+                 
                 </tbody>
               </table>
             </div>
@@ -298,18 +291,33 @@ const TradingAccount = () => {
                       </tr>
                     );
                   })}
-                  <tr>
-                    <td className="px-6 py-3  text-sm text-[#4B5C79] font-bold">
-                      Total
-                    </td>
-                    <td className="px-6 py-3 text-right  text-sm text-[#4B5C79] font-bold">
-                      {tradingData.finalCredit}
-                    </td>
-                  </tr>
+                 
                 </tbody>
               </table>
             </div>
           </div>
+        </div>
+        <div className="grid grid-cols-2 gap-8 border-t border-stone-200">
+        <table className="min-w-full">
+      <tbody>
+        <tr className="font-bold">
+          <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
+          <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
+          {tradingData.finalDebit}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table className="min-w-full">
+      <tbody>
+        <tr className="font-bold">
+          <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
+          <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
+          {tradingData.finalCredit}
+          </td>
+        </tr>
+      </tbody>
+    </table>
         </div>
       </div>
     </div>
