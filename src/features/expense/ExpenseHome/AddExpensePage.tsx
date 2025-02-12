@@ -650,6 +650,9 @@ function AddExpensePage({ page }: Props) {
           const { response, error } = await getOneExpense(url);
           if (!error && response) {
             setExpenseData(response.data);
+            if(response.data.ratePerKm || response.data.distance){
+              setSelectedSection("mileage")
+            }
           }
         } catch (error) {
           console.log("Error in fetching", error);

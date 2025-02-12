@@ -39,14 +39,15 @@ const ExpenseTable = () => {
   const [columns, setColumns] = useState([
     { id: "expenseDate", label: "Date", visible: true },
     { id: "expense.expenseAccountName", label: "Name", visible: true },
+    { id: "expenseNumber", label: "Expense", visible: true },
     { id: "expenseCategory", label: "Category", visible: true },
     { id: "supplierDisplayName", label: "Vendor Name", visible: true },
-    { id: "paidThrough", label: "Paid Through", visible: true },
+    { id:"paidThroughAccountName", label: "Paid Through", visible: true },
     { id: "grandTotal", label: "Amount", visible: true },
 
   ]);
 
-  const filteredData = allExpense?.filter((account) => {
+  const filteredData = allExpense.reverse()?.filter((account) => {
     const searchValueLower = searchValue.toLowerCase().trim();
     return (
       account?.expenseAccount?.toLowerCase()?.trim()?.startsWith(searchValueLower) ||
