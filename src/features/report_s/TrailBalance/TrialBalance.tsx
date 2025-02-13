@@ -191,8 +191,8 @@ function TrialBalance() {
             ))}
             <tr>
               <td className="py-3 font-bold">Total</td>
-              <td className="py-3 text-right font-bold">0</td>
-              <td className="py-3 text-right font-bold">0</td>
+              <td className="py-3 text-right font-bold">{tbData?.summary?.totalDebit}</td>
+              <td className="py-3 text-right font-bold">{tbData?.summary?.totalCredit}</td>
             </tr>
           </tbody>
         </table>

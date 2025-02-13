@@ -11,6 +11,7 @@ interface ExpenseDetail {
     cgstAmount: number;
     igstAmount:number;
     amount: number;
+    total: number;
   }
   
   export interface ExpenseData {

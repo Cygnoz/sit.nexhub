@@ -4,7 +4,7 @@ import { endponits } from "../../../Services/apiEndpoints";
 import Button from "../../../Components/Button";
 import CheveronDownIcon from "../../../assets/icons/CheveronDownIcon";
 import CheveronUp from "../../../assets/icons/CheveronUp";
-import { useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import { useOrganization } from "../../../context/OrganizationContext";
 import SendSalesOrder from "./SendSalesOrder";
 
@@ -120,6 +120,11 @@ function SalesView({ data, page }: SalesOrderViewProps) {
     fetchOneInvoice()
     fetchOneCreditNote()
   }, [data?.customerId, id]);
+
+
+
+ 
+
 
   return (
     <div className="mt-4">

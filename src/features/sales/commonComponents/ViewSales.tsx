@@ -88,7 +88,17 @@ function ViewSales() {
   const handleGoBack = () => {
     navigate(-1)
   }
-
+  const haneleEdit = () => {
+    if (page === "salesOrder") {
+      navigate(`/sales/salesorder/edit/${id}`);
+    } else if (page === "invoice") {
+      navigate(`/sales/invoice/edit/${id}`);
+    } else if (page === "quote") {
+      navigate(`/sales/quote/edit/${id}`);
+    } else if (page === "credit-Note") {
+      navigate(`/sales/credit-note/edit/${id}`);
+    }
+  }
   return (
     <div className="px-6">
       <div className="bg-white rounded-md p-5 mb-32">
@@ -141,7 +151,7 @@ function ViewSales() {
 
           </div>
           <div className="flex gap-3 items-center">
-            <Button variant="secondary" className="pl-6 pr-6" size="sm">
+            <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={haneleEdit}>
               <Pen color="#565148" />
               <p className="text-sm font-medium">Edit</p>
             </Button>

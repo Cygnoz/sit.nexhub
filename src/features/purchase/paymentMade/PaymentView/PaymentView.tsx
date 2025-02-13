@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Button from '../../../../Components/Button';
 import CheveronLeftIcon from '../../../../assets/icons/CheveronLeftIcon';
 import PencilEdit from '../../../../assets/icons/PencilEdit';
@@ -40,6 +40,12 @@ function PaymentView({}: Props) {
     getPayments()
   },[])
 
+  const navigate = useNavigate();
+
+  const handleEdit = () => {
+    navigate(`/purchase/payment-made/edit/${id}`);
+  }
+
   return (
     <div className="p-6 text-pdftext bg-white rounded-lg mx-7">
       <div className="flex items-center space-x-2 mb-4">
@@ -61,7 +67,7 @@ function PaymentView({}: Props) {
           <p className="w-[47px] h-[25px] bg-[#F3F3F3] rounded-lg flex items-center justify-center">Draft</p>
         </div>
         <div className="flex space-x-3 mb-4">
-          <Button className="h-[38px] w-[100px] flex justify-center items-center" variant="secondary">
+          <Button className="h-[38px] w-[100px] flex justify-center items-center" variant="secondary" onClick={handleEdit}>
             <PencilEdit color="black" />
             Edit
           </Button>

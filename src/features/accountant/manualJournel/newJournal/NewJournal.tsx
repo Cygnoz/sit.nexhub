@@ -235,8 +235,6 @@ function NewJournal({ page }: Props) {
     const {
       journel,
       date,
-      reference,
-      note,
       currency,
       transaction,
       totalDebitAmount,

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
 import Button from "../../../../Components/Button";
 import Pen from "../../../../assets/icons/Pen";
-// import MailIcon from "../../../../assets/icons/MailIcon";
 import OrderView from "./OderView";
 import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
@@ -62,7 +61,18 @@ function Purchaseview({ page }: Props) {
       fetchData(endponits.GET_DEBIT_NOTE, getDebitN, "Debit Note");
     }
   }, [page, POid]);
-  
+
+  const navigate = useNavigate();
+
+  const handleEdit =()=>{
+    if(page === "PurchaseOrder"){
+      navigate(`/purchase/purchase-order/edit/${POid}`)
+    }else if(page === "Bills"){
+      navigate(`/purchase/bills/edit/${POid}`)
+    }else if(page === "DebitNote"){
+      navigate(`/purchase/debit-note/edit/${POid}`)
+    }
+  }
 
   return (
     <div className="mt-4">
@@ -119,7 +129,7 @@ function Purchaseview({ page }: Props) {
                 </Button>
              </div>
               <>
-               <Button variant="secondary" className="pl-5 pr-5" size="sm">
+               <Button variant="secondary" className="pl-5 pr-5" size="sm" onClick={handleEdit}>
                   <Pen color="#565148" />
                   <p className="text-sm font-medium">Edit</p>
                 </Button>

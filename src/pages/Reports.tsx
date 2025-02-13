@@ -43,8 +43,8 @@ const settingsData: reports[] = [
     route: "/reports/trading-account",
   },
   {
-    title: "Trail Balance",
-    description: "Manage Trail Balance",
+    title: "Trial Balance",
+    description: "Manage Trial Balance",
     imageUrl: trialBalanceBgIMage,
     route: "/reports/trialBalance",
   },
