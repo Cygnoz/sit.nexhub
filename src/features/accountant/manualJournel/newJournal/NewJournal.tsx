@@ -69,8 +69,8 @@ function NewJournal({ page }: Props) {
     "Account",
     "Description",
     // "Contact (INR)",
-    "Debits",
-    "Credits",
+    "Debit",
+    "Credit",
     "Actions",
   ];
 

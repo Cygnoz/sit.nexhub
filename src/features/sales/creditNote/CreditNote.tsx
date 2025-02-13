@@ -4,7 +4,7 @@ import Button from "../../../Components/Button";
 // import SearchBar from "../../../Components/SearchBar";
 // import { useState } from "react";
 import CreditDropdown from "./CreditDropdown";
-import TypeOfCredits from "./TypeOfCredits";
+// import TypeOfCredits from "./TypeOfCredits";
 // import CreditTable from "./CreditTable";
 // import ListIcon from "../../../assets/icons/ListIcon";
 // import PrinterIcon from "../../../assets/icons/PrinterIcon";
@@ -40,7 +40,7 @@ function DebitNote({}: Props) {
       <div className="px-6 mt-3">
         <div className="bg-white p-5">
           <div className="w-[100%] p-3 bg-gray-100">
-            <TypeOfCredits />
+            {/* <TypeOfCredits /> */}
           </div>
           {/* <div className="flex pl-3 pr-3 items-center gap-4 mt-2">
             <div className="w-[80%]">

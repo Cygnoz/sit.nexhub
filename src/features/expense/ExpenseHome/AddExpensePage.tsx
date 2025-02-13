@@ -475,104 +475,100 @@ function AddExpensePage({ page }: Props) {
       })),
     }));
   }, [selectedSection, organization.state]);
-  useEffect(() => {
-    if (expenseData?.expense?.length) {
-      const { sourceOfSupply, destinationOfSupply, amountIs } = expenseData;
-  
-      const updatedExpenses = expenseData.expense.map((expenseItem) => {
-        const { amount, sgst, cgst, igst } = expenseItem;
-  
-        let sgstAmount = 0;
-        let cgstAmount = 0;
-        let igstAmount = 0;
-        let total = 0;
-        let totalTax = 0;
-  
-        if (amountIs === "Tax Inclusive") {
-          if (sourceOfSupply === destinationOfSupply) {
-            total = (amount / (100 + sgst + cgst)) * 100;
-            totalTax = (total * (sgst + cgst)) / 100;
-            sgstAmount = parseFloat((totalTax / 2).toFixed(2));
-            cgstAmount = parseFloat((totalTax / 2).toFixed(2));
-          } else {
-            total = (amount / (100 + igst)) * 100;
-            totalTax = (total * igst) / 100;
-            igstAmount = parseFloat(totalTax.toFixed(2));
-          }
-        } else if (amountIs === "Tax Exclusive") {
-          if (sourceOfSupply === destinationOfSupply) {
-            sgstAmount = (amount * sgst) / 100;
-            cgstAmount = (amount * cgst) / 100;
-          } else {
-            igstAmount = (amount * igst) / 100;
-          }
-        }
-  
-        return {
-          ...expenseItem,
-          sgstAmount,
-          cgstAmount,
-          igstAmount,
-          total: total, // Add total to the expense item
-        };
-      });
-  
-      let subTotal = 0;
-  
+
+
+useEffect(() => {
+  if (expenseData?.expense?.length) {
+    const { sourceOfSupply, destinationOfSupply, amountIs } = expenseData;
+
+    const updatedExpenses = expenseData.expense.map((expenseItem) => {
+      const { amount, sgst, cgst, igst } = expenseItem;
+
+      let sgstAmount = 0;
+      let cgstAmount = 0;
+      let igstAmount = 0;
+      let total = 0;
+      let totalTax = 0;
+
       if (amountIs === "Tax Inclusive") {
-        subTotal = updatedExpenses.reduce((sum, item) => sum + (item.total || 0), 0);
-        subTotal = parseFloat(subTotal.toFixed(2));
-      } else {
-        subTotal = updatedExpenses.reduce((sum, item) => sum + (item.amount || 0), 0);
-        subTotal = parseFloat(subTotal.toFixed(2));
+        if (sourceOfSupply === destinationOfSupply) {
+          total = (amount / (100 + sgst + cgst)) * 100;
+          totalTax = (total * (sgst + cgst)) / 100;
+          sgstAmount = Number((totalTax / 2).toFixed(2));
+          cgstAmount = Number((totalTax / 2).toFixed(2));
+        } else {
+          total = (amount / (100 + igst)) * 100;
+          totalTax = (total * igst) / 100;
+          igstAmount = Number(totalTax.toFixed(2));
+        }
+      } else if (amountIs === "Tax Exclusive") {
+        if (sourceOfSupply === destinationOfSupply) {
+          total= amount
+          sgstAmount = (amount * sgst) / 100;
+          cgstAmount = (amount * cgst) / 100;
+        } else {
+          total= amount
+          igstAmount = (amount * igst) / 100;
+        }
       }
 
-      // const totalTax = updatedExpenses.reduce(
-      //   (sum, item) =>
-      //     sum + (item.sgstAmount || 0) + (item.cgstAmount || 0) + (item.igstAmount || 0),
-      //   0
-      // );
-      const totalSgst = updatedExpenses.reduce(
-        (sum, item) => sum + (item.sgstAmount || 0),
-        0
-      );
-      const totalCgst = updatedExpenses.reduce(
-        (sum, item) => sum + (item.cgstAmount || 0),
-        0
-      );
-      const totalIgst = updatedExpenses.reduce(
-        (sum, item) => sum + (item.igstAmount || 0),
-        0
-      );
-  
-      const grandTotal = parseFloat((subTotal + totalSgst + totalCgst + totalIgst).toFixed(2));
-  
-      console.log(subTotal, "subTotal");
-      console.log(grandTotal, "grandTotal");
-  
-      setExpenseData((prevData) => ({
-        ...prevData,
-        subTotal,
-        grandTotal,
-        sgst: totalSgst,
-        cgst: totalCgst,
-        igst: totalIgst,
-        expense: updatedExpenses,
-      }));
+      return {
+        ...expenseItem,
+        sgstAmount,
+        cgstAmount,
+        igstAmount,
+        total,
+      };
+    });
+
+    let subTotal = 0;
+
+    if (amountIs === "Tax Inclusive") {
+      subTotal = updatedExpenses.reduce((sum, item) => sum + (item.total || 0), 0);
+    } else {
+      subTotal = updatedExpenses.reduce((sum, item) => sum + (item.amount || 0), 0);
     }
-  }, [
-    JSON.stringify(
-      expenseData?.expense?.map(({ amount, sgst, cgst, igst }) => ({
-        amount,
-        sgst,
-        cgst,
-        igst,
-      }))
-    ),
-    expenseData?.sourceOfSupply,
-    expenseData?.destinationOfSupply,
-    expenseData?.amountIs,
-  ]);
+    subTotal = Number(subTotal.toFixed(2));
+
+    const totalSgst = Number(
+      updatedExpenses.reduce((sum, item) => sum + (item.sgstAmount || 0), 0).toFixed(2)
+    );
+    const totalCgst = Number(
+      updatedExpenses.reduce((sum, item) => sum + (item.cgstAmount || 0), 0).toFixed(2)
+    );
+    const totalIgst = Number(
+      updatedExpenses.reduce((sum, item) => sum + (item.igstAmount || 0), 0).toFixed(2)
+    );
+
+    const grandTotal = Number((subTotal + totalSgst + totalCgst + totalIgst).toFixed(2));
+
+    console.log(subTotal, "subTotal");
+    console.log(grandTotal, "grandTotal");
+
+    setExpenseData((prevData) => ({
+      ...prevData,
+      subTotal,
+      grandTotal: Number(grandTotal.toFixed(2)),
+            sgst: totalSgst,
+      cgst: totalCgst,
+      igst: totalIgst,
+      expense: updatedExpenses,
+    }));
+  }
+}, [
+  JSON.stringify(
+    expenseData?.expense?.map(({ amount, sgst, cgst, igst }) => ({
+      amount,
+      sgst,
+      cgst,
+      igst,
+    }))
+  ),
+  expenseData?.sourceOfSupply,
+  expenseData?.destinationOfSupply,
+  expenseData?.amountIs,
+]);
+
   
 
   console.log(expenseData, "expenseData");
@@ -1596,7 +1592,6 @@ function AddExpensePage({ page }: Props) {
     </div>
   </div>
 )}
-``
 
             </div>
             {!Itemize && (
@@ -1921,7 +1916,7 @@ function AddExpensePage({ page }: Props) {
           </div>
         )}
       </div>
-      <div className="col-span-1 flex justify-end items-start mt-4 space-x-2">
+      <div className="col-span-1 flex justify-end items-start mt-4 space-x-2   pe-5">
         <Button
           onClick={() => navigate("/expense/home")}
           variant="secondary"
