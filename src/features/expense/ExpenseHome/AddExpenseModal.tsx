@@ -32,3 +32,4 @@ const AddExpenseModal = ({}: Props) => {
 };
 
 export default AddExpenseModal;
+

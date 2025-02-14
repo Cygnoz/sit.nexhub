@@ -371,7 +371,6 @@ function AddExpensePage({ page }: Props) {
   const handleItemizeTrue = () => {
     setItemize(true);
   };
-  console.log(selectedTax.taxName, "erty");
 
   const handleTaxSelect = (e: any) => {
     let updatedTax;
@@ -426,6 +425,7 @@ function AddExpensePage({ page }: Props) {
       cgstAmount: number;
       igstAmount: number;
       amount: number;
+      total:number;
     }>
   ) => {
     setExpenseData((prevData) => {
@@ -455,12 +455,15 @@ function AddExpensePage({ page }: Props) {
           {
             ...prevData.expense[0],
             amount: totalExpense,
+            total: totalExpense,
           },
-          ...prevData.expense.slice(1),
         ],
       }));
     }
-  }, [expenseData.ratePerKm, expenseData.distance]);
+  }, [expenseData.ratePerKm, expenseData.distance, expenseData.expense[0].amount]);
+
+  
+  
 
   useEffect(() => {
     setExpenseData((prevData) => ({
@@ -474,102 +477,118 @@ function AddExpensePage({ page }: Props) {
         taxGroup: selectedSection === "mileage" ? "Non-Taxable" : "",
       })),
     }));
-  }, [selectedSection, organization.state]);
+  }, [selectedSection, organization.state, ]);
+
+  useEffect(() => {
+    if (expenseData?.expense?.length) {
+      const { sourceOfSupply, destinationOfSupply, amountIs } = expenseData;
+
+      const updatedExpenses = expenseData.expense.map((expenseItem) => {
+        const { amount, sgst, cgst, igst } = expenseItem;
+
+        let sgstAmount = 0;
+        let cgstAmount = 0;
+        let igstAmount = 0;
+        let total = 0;
+        let totalTax = 0;
+
+        if (amountIs === "Tax Inclusive") {
+          if (sourceOfSupply === destinationOfSupply) {
+            total = (amount / (100 + sgst + cgst)) * 100;
+            totalTax = Number(((total * (sgst + cgst)) / 100).toFixed(2));
+            sgstAmount = Number((totalTax / 2).toFixed(2));
+            cgstAmount = Number((totalTax / 2).toFixed(2));
+          } else {
+            total = Number(((amount / (100 + igst)) * 100).toFixed(2));
+            totalTax = (total * igst) / 100;
+            igstAmount = Number(totalTax.toFixed(2));
+          }
+        } else if (amountIs === "Tax Exclusive") {
+          if (sourceOfSupply === destinationOfSupply) {
+            total = amount;
+            sgstAmount = (amount * sgst) / 100;
+            cgstAmount = (amount * cgst) / 100;
+          } else {
+            total = amount;
+            igstAmount = (amount * igst) / 100;
+          }
+        }
+        
+        if(selectedSection==="mileage"){
+          total=amount
+        }
 
 
-useEffect(() => {
-  if (expenseData?.expense?.length) {
-    const { sourceOfSupply, destinationOfSupply, amountIs } = expenseData;
+        return {
+          ...expenseItem,
+          sgstAmount,
+          cgstAmount,
+          igstAmount,
+          total,
+        };
+      });
 
-    const updatedExpenses = expenseData.expense.map((expenseItem) => {
-      const { amount, sgst, cgst, igst } = expenseItem;
-
-      let sgstAmount = 0;
-      let cgstAmount = 0;
-      let igstAmount = 0;
-      let total = 0;
-      let totalTax = 0;
+      let subTotal = 0;
 
       if (amountIs === "Tax Inclusive") {
-        if (sourceOfSupply === destinationOfSupply) {
-          total = (amount / (100 + sgst + cgst)) * 100;
-          totalTax = (total * (sgst + cgst)) / 100;
-          sgstAmount = Number((totalTax / 2).toFixed(2));
-          cgstAmount = Number((totalTax / 2).toFixed(2));
-        } else {
-          total = (amount / (100 + igst)) * 100;
-          totalTax = (total * igst) / 100;
-          igstAmount = Number(totalTax.toFixed(2));
-        }
-      } else if (amountIs === "Tax Exclusive") {
-        if (sourceOfSupply === destinationOfSupply) {
-          total= amount
-          sgstAmount = (amount * sgst) / 100;
-          cgstAmount = (amount * cgst) / 100;
-        } else {
-          total= amount
-          igstAmount = (amount * igst) / 100;
-        }
+        subTotal = updatedExpenses.reduce(
+          (sum, item) => sum + (item.total || 0),
+          0
+        );
+      } else {
+        subTotal = updatedExpenses.reduce(
+          (sum, item) => sum + (item.amount || 0),
+          0
+        );
       }
+      subTotal = Number(subTotal.toFixed(2));
 
-      return {
-        ...expenseItem,
-        sgstAmount,
-        cgstAmount,
-        igstAmount,
-        total,
-      };
-    });
+      const totalSgst = Number(
+        updatedExpenses
+          .reduce((sum, item) => sum + (item.sgstAmount || 0), 0)
+          .toFixed(2)
+      );
+      const totalCgst = Number(
+        updatedExpenses
+          .reduce((sum, item) => sum + (item.cgstAmount || 0), 0)
+          .toFixed(2)
+      );
+      const totalIgst = Number(
+        updatedExpenses
+          .reduce((sum, item) => sum + (item.igstAmount || 0), 0)
+          .toFixed(2)
+      );
 
-    let subTotal = 0;
+      const grandTotal = Number(
+        (subTotal + totalSgst + totalCgst + totalIgst).toFixed(2)
+      );
 
-    if (amountIs === "Tax Inclusive") {
-      subTotal = updatedExpenses.reduce((sum, item) => sum + (item.total || 0), 0);
-    } else {
-      subTotal = updatedExpenses.reduce((sum, item) => sum + (item.amount || 0), 0);
+      console.log(subTotal, "subTotal");
+      console.log(grandTotal, "grandTotal");
+
+      setExpenseData((prevData) => ({
+        ...prevData,
+        subTotal,
+        grandTotal: Number(grandTotal.toFixed(2)),
+        sgst: totalSgst,
+        cgst: totalCgst,
+        igst: totalIgst,
+        expense: updatedExpenses,
+      }));
     }
-    subTotal = Number(subTotal.toFixed(2));
-
-    const totalSgst = Number(
-      updatedExpenses.reduce((sum, item) => sum + (item.sgstAmount || 0), 0).toFixed(2)
-    );
-    const totalCgst = Number(
-      updatedExpenses.reduce((sum, item) => sum + (item.cgstAmount || 0), 0).toFixed(2)
-    );
-    const totalIgst = Number(
-      updatedExpenses.reduce((sum, item) => sum + (item.igstAmount || 0), 0).toFixed(2)
-    );
-
-    const grandTotal = Number((subTotal + totalSgst + totalCgst + totalIgst).toFixed(2));
-
-    console.log(subTotal, "subTotal");
-    console.log(grandTotal, "grandTotal");
-
-    setExpenseData((prevData) => ({
-      ...prevData,
-      subTotal,
-      grandTotal: Number(grandTotal.toFixed(2)),
-            sgst: totalSgst,
-      cgst: totalCgst,
-      igst: totalIgst,
-      expense: updatedExpenses,
-    }));
-  }
-}, [
-  JSON.stringify(
-    expenseData?.expense?.map(({ amount, sgst, cgst, igst }) => ({
-      amount,
-      sgst,
-      cgst,
-      igst,
-    }))
-  ),
-  expenseData?.sourceOfSupply,
-  expenseData?.destinationOfSupply,
-  expenseData?.amountIs,
-]);
-
-  
+  }, [
+    JSON.stringify(
+      expenseData?.expense?.map(({ amount, sgst, cgst, igst }) => ({
+        amount,
+        sgst,
+        cgst,
+        igst,
+      }))
+    ),
+    expenseData?.sourceOfSupply,
+    expenseData?.destinationOfSupply,
+    expenseData?.amountIs,
+  ]);
 
   console.log(expenseData, "expenseData");
 
@@ -698,7 +717,6 @@ useEffect(() => {
         (tax: any) => tax.taxName === expenseData?.expense[0]?.taxGroup
       );
       if (matchingTax) {
-        console.log(matchingTax, "matchingTax");
         setSelectedTax(matchingTax);
       }
     }
@@ -712,6 +730,8 @@ useEffect(() => {
       setItemize(true);
     }
   }, [id, expenseData.expense]);
+
+  
 
   return (
     <>
@@ -1480,119 +1500,121 @@ useEffect(() => {
                   </div>
                 </>
               )}
-             {expenseData.expense.some(
-  (item) => item.taxGroup && item.taxGroup !== "Non-Taxable"
-) && (
-  <div className="mt-1">
-    <label className="block text-sm text-labelColor" htmlFor="amountIs">
-      Amount Is
-    </label>
-    <div className="flex items-center space-x-4 text-textColor text-sm">
-      {/* Tax Inclusive */}
-      <div className="flex gap-2 justify-center items-center">
-        <div
-          className="grid place-items-center mt-2"
-          onClick={() =>
-            setExpenseData((prev) => ({
-              ...prev,
-              amountIs: "Tax Inclusive",
-            }))
-          }
-        >
-          <input
-            id="Tax Inclusive"
-            type="radio"
-            name="amountIs"
-            value="Tax Inclusive"
-            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-              expenseData.amountIs === "Tax Inclusive"
-                ? "border-8 border-[#97998E]"
-                : "border-1 border-[#97998E]"
-            }`}
-            checked={expenseData.amountIs === "Tax Inclusive"}
-            onChange={() =>
-              setExpenseData((prev) => ({
-                ...prev,
-                amountIs: "Tax Inclusive",
-              }))
-            }
-          />
-          <div
-            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-              expenseData.amountIs === "Tax Inclusive"
-                ? "bg-neutral-50"
-                : "bg-transparent"
-            }`}
-          />
-        </div>
-        <label
-          htmlFor="Tax Inclusive"
-          className="text-start font-medium mt-1 cursor-pointer"
-          onClick={() =>
-            setExpenseData((prev) => ({
-              ...prev,
-              amountIs: "Tax Inclusive",
-            }))
-          }
-        >
-          Tax Inclusive
-        </label>
-      </div>
+              {expenseData.expense.some(
+                (item) => item.taxGroup && item.taxGroup !== "Non-Taxable"
+              ) && (
+                <div className="mt-1">
+                  <label
+                    className="block text-sm text-labelColor"
+                    htmlFor="amountIs"
+                  >
+                    Amount Is
+                  </label>
+                  <div className="flex items-center space-x-4 text-textColor text-sm">
+                    {/* Tax Inclusive */}
+                    <div className="flex gap-2 justify-center items-center">
+                      <div
+                        className="grid place-items-center mt-2"
+                        onClick={() =>
+                          setExpenseData((prev) => ({
+                            ...prev,
+                            amountIs: "Tax Inclusive",
+                          }))
+                        }
+                      >
+                        <input
+                          id="Tax Inclusive"
+                          type="radio"
+                          name="amountIs"
+                          value="Tax Inclusive"
+                          className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                            expenseData.amountIs === "Tax Inclusive"
+                              ? "border-8 border-[#97998E]"
+                              : "border-1 border-[#97998E]"
+                          }`}
+                          checked={expenseData.amountIs === "Tax Inclusive"}
+                          onChange={() =>
+                            setExpenseData((prev) => ({
+                              ...prev,
+                              amountIs: "Tax Inclusive",
+                            }))
+                          }
+                        />
+                        <div
+                          className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                            expenseData.amountIs === "Tax Inclusive"
+                              ? "bg-neutral-50"
+                              : "bg-transparent"
+                          }`}
+                        />
+                      </div>
+                      <label
+                        htmlFor="Tax Inclusive"
+                        className="text-start font-medium mt-1 cursor-pointer"
+                        onClick={() =>
+                          setExpenseData((prev) => ({
+                            ...prev,
+                            amountIs: "Tax Inclusive",
+                          }))
+                        }
+                      >
+                        Tax Inclusive
+                      </label>
+                    </div>
 
-      {/* Tax Exclusive */}
-      <div className="flex gap-2 justify-center items-center">
-        <div
-          className="grid place-items-center mt-1"
-          onClick={() =>
-            setExpenseData((prev) => ({
-              ...prev,
-              amountIs: "Tax Exclusive",
-            }))
-          }
-        >
-          <input
-            id="Tax Exclusive"
-            type="radio"
-            name="amountIs"
-            value="Tax Exclusive"
-            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
-              expenseData.amountIs === "Tax Exclusive"
-                ? "border-8 border-[#97998E]"
-                : "border-1 border-[#97998E]"
-            }`}
-            checked={expenseData.amountIs === "Tax Exclusive"}
-            onChange={() =>
-              setExpenseData((prev) => ({
-                ...prev,
-                amountIs: "Tax Exclusive",
-              }))
-            }
-          />
-          <div
-            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-              expenseData.amountIs === "Tax Exclusive"
-                ? "bg-neutral-50"
-                : "bg-transparent"
-            }`}
-          />
-        </div>
-        <label
-          htmlFor="Tax Exclusive"
-          className="text-start font-medium mt-1 cursor-pointer"
-          onClick={() =>
-            setExpenseData((prev) => ({
-              ...prev,
-              amountIs: "Tax Exclusive",
-            }))
-          }
-        >
-          Tax Exclusive
-        </label>
-      </div>
-    </div>
-  </div>
-)}
-
+                    {/* Tax Exclusive */}
+                    <div className="flex gap-2 justify-center items-center">
+                      <div
+                        className="grid place-items-center mt-1"
+                        onClick={() =>
+                          setExpenseData((prev) => ({
+                            ...prev,
+                            amountIs: "Tax Exclusive",
+                          }))
+                        }
+                      >
+                        <input
+                          id="Tax Exclusive"
+                          type="radio"
+                          name="amountIs"
+                          value="Tax Exclusive"
+                          className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${
+                            expenseData.amountIs === "Tax Exclusive"
+                              ? "border-8 border-[#97998E]"
+                              : "border-1 border-[#97998E]"
+                          }`}
+                          checked={expenseData.amountIs === "Tax Exclusive"}
+                          onChange={() =>
+                            setExpenseData((prev) => ({
+                              ...prev,
+                              amountIs: "Tax Exclusive",
+                            }))
+                          }
+                        />
+                        <div
+                          className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
+                            expenseData.amountIs === "Tax Exclusive"
+                              ? "bg-neutral-50"
+                              : "bg-transparent"
+                          }`}
+                        />
+                      </div>
+                      <label
+                        htmlFor="Tax Exclusive"
+                        className="text-start font-medium mt-1 cursor-pointer"
+                        onClick={() =>
+                          setExpenseData((prev) => ({
+                            ...prev,
+                            amountIs: "Tax Exclusive",
+                          }))
+                        }
+                      >
+                        Tax Exclusive
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             {!Itemize && (
               <button
@@ -1656,7 +1678,7 @@ useEffect(() => {
                   type="text"
                   name="expenseNumber"
                   value={expenseData.expenseNumber}
-                  onChange={handleAddExpense}
+                  onChange={handleChange}
                   className="appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                   placeholder="Expense Number"
                 />
