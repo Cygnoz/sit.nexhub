@@ -419,7 +419,7 @@ console.log(errors)
   }, [openDropdownIndex]);
 
   return (
-    <div className="mx-5 my-4 text-sm">
+    <div className="mx-3 my-4 text-sm">
       <div className="flex gap-5">
         <Link to={"/purchase/debitNote"}>
           <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
@@ -431,7 +431,7 @@ console.log(errors)
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-4 py-5">
+      <div className="grid grid-cols-12 gap-4  h-[85vh] overflow-y-scroll hide-scrollbar ">
         <div className="bg-secondary_main p-5 min-h-max rounded-xl relative col-span-8">
           <div className="grid grid-cols-2 gap-4 mt-5 space-y-">
             <div>

@@ -47,8 +47,6 @@ const AddExpenseTable: React.FC<Props> = ({
     },
   ]);
 
-
-
   const calculateTax = (row: Row) => {
     const amount = row.amount || 0;
     const isSameSupply =
@@ -71,30 +69,40 @@ const AddExpenseTable: React.FC<Props> = ({
           }
         : row
     );
-  
-    setRows(updatedRows);  // Update rows state
+
+    setRows(updatedRows); // Update rows state
     setExpenseData((prev: any) => ({
       ...prev,
-      expense: updatedRows,  // Update expense data
+      expense: updatedRows, // Update expense data
     }));
   };
-  
+
   const handleTaxGroupChange = (index: number, taxName: string) => {
-    const selectedTax = taxName ? taxRate?.gstTaxRate?.find(tax => tax.taxName === taxName) : null;
+    if (taxName === "Non-Taxable") {
+      handleRowChange(index, {
+        taxGroup: "Non-Taxable",
+        sgst: 0,
+        cgst: 0,
+        igst: 0,
+      });
+      return;
+    }
+  
+    const selectedTax = taxRate?.gstTaxRate?.find((tax) => tax.taxName === taxName);
   
     if (selectedTax) {
       handleRowChange(index, {
-        taxGroup: selectedTax.taxName,  // Set the correct taxGroup
-        sgst: selectedTax.sgst || 0,    // Set SGST if exists
-        cgst: selectedTax.cgst || 0,    // Set CGST if exists
-        igst: selectedTax.igst || 0,    // Set IGST if exists
+        taxGroup: selectedTax.taxName,
+        sgst: selectedTax.sgst || 0,
+        cgst: selectedTax.cgst || 0,
+        igst: selectedTax.igst || 0,
       });
     } else {
       handleRowChange(index, {
-        taxGroup: "",   
-        sgst: 0,        
-        cgst: 0,       
-        igst: 0,       
+        taxGroup: "",
+        sgst: 0,
+        cgst: 0,
+        igst: 0,
       });
     }
   };
@@ -121,8 +129,6 @@ const AddExpenseTable: React.FC<Props> = ({
     ]);
   };
 
-
-
   const handleRemoveRow = (index: number) => {
     setRows((prevRows) => {
       const updatedRows = prevRows.filter((_, rowIndex) => rowIndex !== index);
@@ -140,7 +146,7 @@ const AddExpenseTable: React.FC<Props> = ({
     }
   }, []);
 
-  console.log(rows,"rows")
+  console.log(rows, "rows");
 
   const calculateTotalTaxes = () => {
     const sgstPctg = rows.reduce((acc, row) => acc + row.sgst, 0);
@@ -226,25 +232,34 @@ const AddExpenseTable: React.FC<Props> = ({
                 </td>
                 <td className="p-2">
                   <div className="relative w-full">
-                  <select
-  disabled={expenseData.gstTreatment === "Registered Business - Composition" || expenseData.gstTreatment === "Unregistered Business" || expenseData.gstTreatment === "Overseas"}
-  name="taxGroup"
-  value={row.taxGroup || ""}  // Ensure value is an empty string if no taxGroup is selected
-  onChange={(e) => handleTaxGroupChange(index, e.target.value)} // Correct handler to update state
-  className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
->
-  <option value="">Select Tax Rate</option>
-  <option value="Non-Taxable">Non-Taxable</option>
-  <optgroup label="Tax">
-    {taxRate?.gstTaxRate?.map((account: any, index: number) => (
-      <option key={index} value={account.taxName}> {/* Using taxName as value */}
-        {account.taxName}
-      </option>
-    ))}
-  </optgroup>
-</select>
-
-
+                    <select
+                      disabled={
+                        expenseData.gstTreatment ===
+                          "Registered Business - Composition" ||
+                        expenseData.gstTreatment === "Unregistered Business" ||
+                        expenseData.gstTreatment === "Overseas"
+                      }
+                      name="taxGroup"
+                      value={row.taxGroup || ""} // Ensure value is an empty string if no taxGroup is selected
+                      onChange={(e) =>
+                        handleTaxGroupChange(index, e.target.value)
+                      } 
+                      className="appearance-none w-full h-9 text-zinc-700 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                    >
+                      <option value="">Select Tax Rate</option>
+                      <option value="Non-Taxable">Non-Taxable</option>
+                      <optgroup label="Tax">
+                        {taxRate?.gstTaxRate?.map(
+                          (account: any, index: number) => (
+                            <option key={account.taxName} value={account.taxName}>
+                              {" "}
+                              {/* Using taxName as value */}
+                              {account.taxName}
+                            </option>
+                          )
+                        )}
+                      </optgroup>
+                    </select>
 
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <CehvronDown color="gray" />
