@@ -742,7 +742,7 @@ function AddExpensePage({ page }: Props) {
               <CheveronLeftIcon />
             </div>
           </Link>
-          <h4 className="font-bold text-xl text-textColor">Add Expense</h4>
+          <h4 className="font-bold text-xl text-textColor">{page==="edit"?"Edit":"Add"} Expense</h4>
         </div>
         <div className="px-3 mb-4">
           <label className="block mb-1">
