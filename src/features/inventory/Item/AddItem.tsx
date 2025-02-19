@@ -204,7 +204,6 @@ const AddItem = ({ }: Props) => {
   const [allAccounts, setAllAccounts] = useState<any>([]);
   const { request: getAccounts } = useApi("get", 5001);
 
-
   useEffect(() => {
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
     fetchData(allAccountsUrl, setAllAccounts, getAccounts);

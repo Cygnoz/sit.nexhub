@@ -129,7 +129,7 @@ const ViewDetails = ({
                     {allAccounts
                       .filter(
                         (item: { accountSubhead: string }) =>
-                          item.accountSubhead === "Expense"
+                          item.accountSubhead === "Direct Expense"
                       )
                       .map((item: { _id: string; accountName: string }) => (
                         <option key={item._id} value={item._id}>

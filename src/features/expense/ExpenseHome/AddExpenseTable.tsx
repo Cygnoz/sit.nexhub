@@ -250,7 +250,7 @@ const AddExpenseTable: React.FC<Props> = ({
                       <option value="Non-Taxable">Non-Taxable</option>
                       <optgroup label="Tax">
                         {taxRate?.gstTaxRate?.map(
-                          (account: any, index: number) => (
+                          (account: any) => (
                             <option key={account.taxName} value={account.taxName}>
                               {" "}
                               {/* Using taxName as value */}

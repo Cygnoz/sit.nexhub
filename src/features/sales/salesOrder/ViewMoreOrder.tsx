@@ -107,7 +107,7 @@ const ViewMoreOrder = ({ salesOrderState, setSalesOrderState, page, allAccounts 
                   >
                     <option value="" selected hidden disabled>Select Account</option>
                     {allAccounts
-                      .filter((item: { accountSubhead: string }) => item.accountSubhead === "Expense")
+                      .filter((item: { accountSubhead: string }) => item.accountSubhead === "Direct Expense")
                       .map((item: { _id: string; accountName: string }) => (
                         <option key={item._id} value={item._id}>
                           {item.accountName}

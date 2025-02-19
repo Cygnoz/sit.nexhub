@@ -38,7 +38,7 @@ export const endponits = {
   GET_INVOICE_PREFIX: "sales-invoice-prefix",
   ADD_SALES_INVOICE: "sales-invoice",
   GET_ALL_SALES_INVOICE: "sales-invoice",
-  GET_ONE_INVOICE: "sales-order",
+  GET_ONE_INVOICE: "sales-invoice",
   GET_ONE_JOURNAL_INVOICE: "invoice-journal",
   //sales reciept
   ADD_SALES_RECIEPT: "sales-receipt",
@@ -102,7 +102,7 @@ export const endponits = {
   DELETE_CUSTOMER: "delete-customer",
   UPDATE_CUSTOMER_STATUS: `update-customer-status`,
   GET_CUSTOMER_HISTORY: `get-one-customer-history`,
-  GET_CUSTOMER_TRANSACTIONS: `get-Customer-Trandactions`,
+  GET_CUSTOMER_TRANSACTIONS: `get-customer-transaction`,
 
   // Supplier
   ADD_SUPPLIER: "add-suppliers",
