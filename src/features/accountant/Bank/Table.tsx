@@ -26,34 +26,34 @@ const Table = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [accountData, setAccountData] = useState<Account[]>([]);
   const { bankResponse } = useContext(BankResponseContext)!;
-  const navigate=useNavigate()
+  const navigate = useNavigate()
   // Loading state
-  const {loading,setLoading}=useContext(TableResponseContext)!;
+  const { loading, setLoading } = useContext(TableResponseContext)!;
 
   const tableHeaders = [
     "Sl.No",
     "Account Name",
     "Account Code",
     "Account Type",
-    "Documents",
-    "Parent Account Type",
+    // "Documents",
+    // "Parent Account Type",
     "Action",
   ];
 
   useEffect(() => {
     fetchAllAccounts();
   }, [bankResponse]);
-  
+
   const fetchAllAccounts = async () => {
     try {
       // Set loading skeleton state before API call
       setLoading({ ...loading, skeleton: true, noDataFound: false });
-  
+
       const url = `${endponits.Get_ALL_Acounts}`;
       const apiResponse = await AllAccounts(url);
-  
+
       const { response, error } = apiResponse;
-  
+
       if (!error && response) {
         // Successfully fetched data
         setAccountData(
@@ -61,7 +61,7 @@ const Table = () => {
             (account: Account) => account.accountSubhead === "Bank"
           )
         );
-      // Assuming response contains the data you want to set
+        // Assuming response contains the data you want to set
         setLoading({ ...loading, skeleton: false });
       } else {
         // If there's an error or no response, show "No Data Found"
@@ -69,14 +69,14 @@ const Table = () => {
       }
     } catch (error) {
       console.error("Error fetching accounts:", error);
-  
+
       // In case of error, hide the skeleton and show "No Data Found"
       setLoading({ ...loading, skeleton: false, noDataFound: true });
     }
   };
-  
-  
-  const handleDelete=async(id:string)=>{
+
+
+  const handleDelete = async (id: string) => {
     try {
       const url = `${endponits.DELETE_ACCONUT}/${id}`;
       const { response, error } = await deleteAccount(url);
@@ -92,7 +92,7 @@ const Table = () => {
       console.error("Error in fetching one item data", error);
     }
   }
-  
+
   const filteredAccounts = accountData.filter((account) => {
     const searchValueLower = searchValue.toLowerCase().trim();
     return (
@@ -130,7 +130,7 @@ const Table = () => {
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
             {loading.skeleton ? (
-              [...Array(filteredAccounts.length>0?filteredAccounts.length: 5)].map((_, idx) => (
+              [...Array(filteredAccounts.length > 0 ? filteredAccounts.length : 5)].map((_, idx) => (
                 <TableSkelton key={idx} columns={tableHeaders} />
               ))
             ) : filteredAccounts.length > 0 ? (
@@ -140,9 +140,9 @@ const Table = () => {
                     {index + 1}
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
-                   
-                      {item.accountName || '-'}
-                
+
+                    {item.accountName || '-'}
+
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {item.accountCode || '-'}
@@ -150,21 +150,21 @@ const Table = () => {
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {item.accountSubhead || '-'}
                   </td>
-                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                  {/* <td className="py-2.5 px-4 border-y border-tableBorder">
                     {item.description || '-'}
-                  </td>
-                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                  </td> */}
+                  {/* <td className="py-2.5 px-4 border-y border-tableBorder">
                     {item.accountHead || '-'}
-                  </td>
+                  </td> */}
                   <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
                     <div className="flex justify-center gap-3">
-                      <div onClick={()=>navigate(`/accountant/view/${item._id}?fromBank=true`)}><Eye color="#569FBC"/></div>
-                  <div ><NewBankModal id={item._id} page="edit"/> </div>
-                <button onClick={()=>handleDelete(item._id)}>   <Trash2 color="red" size={18}/></button>
+                      <div onClick={() => navigate(`/accountant/view/${item._id}?fromBank=true`)}><Eye color="#569FBC" /></div>
+                      <div ><NewBankModal id={item._id} page="edit" /> </div>
+                      <button onClick={() => handleDelete(item._id)}>   <Trash2 color="red" size={18} /></button>
                     </div>
                   </td>
                 </tr>
-              ))              
+              ))
             ) : (
               <NoDataFoundTable columns={tableHeaders} />
             )}
