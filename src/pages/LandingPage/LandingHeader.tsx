@@ -2,7 +2,6 @@ import logo from "../../../public/billbizzlogoLanding.png";
 import logoLight from "../../../public/bill-bizz-logo.png";
 import ArrowrightUp from "../../assets/icons/ArrowrightUp";
 import BellDot from "../../assets/icons/BellDot";
-import SearchIcon from "../../assets/icons/SearchIcon";
 import Sun from "../../assets/icons/Sun";
 import Moon from "../../assets/icons/Moon";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +9,7 @@ import { useEffect, useState } from "react";
 import Modal from "../../Components/model/Modal";
 import Button from "../../Components/Button";
 import SettingsIcons from "../../assets/icons/SettingsIcon";
+import ModuleSearch from "../../Components/ModuleSearch";
 
 type Props = {
   setMode?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -38,7 +38,6 @@ function LandingHeader({ mode, setMode }: Props) {
     }
   };
 
- 
   const handleLogout = () => {
     ["authToken", "savedIndex", "savedSelectedIndex"].forEach((item) =>
       localStorage.removeItem(item)
@@ -55,7 +54,7 @@ function LandingHeader({ mode, setMode }: Props) {
     <header
       className={`${
         mode ? "bg-[#EAEBEB]" : "bg-[#2C353B]"
-      } text-[#DFD1B4] flex items-center justify-between p-4 rounded-full mb-8 px-6`}
+      } text-[#DFD1B4] flex items-center justify-between p-4 rounded-full mb-8 px-6 w-full`}
     >
       <div
         onClick={() => navigate("/landing")}
@@ -74,22 +73,10 @@ function LandingHeader({ mode, setMode }: Props) {
           BILL BIZZ
         </h1>
       </div>
-
+      <div className=" z-9999 w-[45%]">
+        <ModuleSearch page="landing" />
+      </div>
       <div className="flex items-center space-x-4">
-        <div
-          className={`${
-            mode ? "bg-white" : "bg-[#404B52]"
-          } rounded-full relative items-center w-[372px] h-[38px] flex gap-1`}
-        >
-          <SearchIcon color={mode ? "#303F58" : "white"} />
-          <input
-            placeholder="Search"
-            type="text"
-            className={`ms-9 ${
-              mode ? "text-[#303F58]" : "text-white"
-            } bg-[#404B52] outline-none ${mode ? "bg-white" : "bg-[#404B52]"}`}
-          />
-        </div>
         <button
           className={`${
             mode ? "bg-white" : "bg-[#404B52]"
@@ -105,8 +92,6 @@ function LandingHeader({ mode, setMode }: Props) {
         >
           <SettingsIcons color={mode ? "#4B5C79" : "white"} />
         </button>
-
-     
 
         <button className="bg-[#FCFFED] text-[#585953] text-[12px] w-[138px] h-[38px] rounded-full font-semibold flex items-center justify-center gap-1 ">
           Let's Connect

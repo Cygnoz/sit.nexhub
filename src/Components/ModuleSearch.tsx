@@ -120,8 +120,11 @@ const tabsConfig: any = {
     navigatePath: "purchase/debit-note/view/",
   },
 };
+type Props = {
+  page?: string;
+};
 
-function ModuleSearch() {
+function ModuleSearch({page}:Props) {
   const [searchValue, setSearchValue] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedTab, setSelectedTab] = useState<string>("");
@@ -269,7 +272,8 @@ function ModuleSearch() {
       {/* Main SearchBar */}
       <div onClick={() => setIsOpen(true)}>
         <SearchBar
-          placeholder={`Search in ${selectedTab}`}
+        className={page==="landing"?"bg-[#404B52] rounded-[40px]":""}
+          placeholder={`Search ${selectedTab}`}
           searchValue={searchValue}
           onSearchChange={setSearchValue}
           inputRef={searchInputRef}
