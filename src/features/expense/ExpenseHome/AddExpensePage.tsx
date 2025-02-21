@@ -481,28 +481,58 @@ function AddExpensePage({ page }: Props) {
   }, [selectedSection, organization.state]);
 
   useEffect(() => {
+    const roundToTwoDecimals = (value:any) => Number(value.toFixed(2));
+
     if (expenseData?.expense?.length) {
       const { sourceOfSupply, destinationOfSupply, amountIs } = expenseData;
   
-      const updatedExpenses = expenseData.expense.map((expenseItem) => {
-        const { amount, sgst, cgst, igst } = expenseItem; // ✅ amount exists inside expenseItem
+      const updatedExpenses = expenseData.expense.map((expenseItem, index) => {
+        const { amount, sgst, cgst, igst } = expenseItem; 
   
         let sgstAmount = 0;
         let cgstAmount = 0;
         let igstAmount = 0;
         let total = 0;
-        let totalTax = 0;
   
         if (amountIs === "Tax Inclusive") {
           if (sourceOfSupply === destinationOfSupply) {
-            total = parseFloat(((amount / (100 + sgst + cgst)) * 100).toFixed(2));
-            totalTax = parseFloat(((total * (sgst + cgst)) / 100).toFixed(2));
-            sgstAmount = parseFloat((totalTax / 2).toFixed(2));
-            cgstAmount = parseFloat((totalTax / 2).toFixed(2));
+            const tt = roundToTwoDecimals((amount / (100 + igst)) * 100);
+            cgstAmount = roundToTwoDecimals((cgst / 100) * tt);
+            sgstAmount = roundToTwoDecimals((sgst / 100) * tt);
+  
+            let difference = 0;
+  
+            const amt = roundToTwoDecimals(tt + cgstAmount + sgstAmount);
+            if (amt < amount) {
+              difference = roundToTwoDecimals(amount - amt);
+              total = difference + tt;
+            } else if (amt > amount) {
+              difference = roundToTwoDecimals(amt - amount);
+              total = tt - difference;
+            } else {
+              total = tt;
+            }
+  
+            console.log(`Row 123..................... ${index + 1}:`);
+            console.log("tt", tt);
+            console.log("amount", amount);
+            console.log("amt", amt);
+            console.log("difference", difference);
+            console.log("total", total);
           } else {
-            total = parseFloat(((amount / (100 + igst)) * 100).toFixed(2));
-            totalTax = (total * igst) / 100;
-            igstAmount = parseFloat(totalTax.toFixed(2));
+            const tt = roundToTwoDecimals((amount / (100 + igst)) * 100);
+            igstAmount = roundToTwoDecimals((igst / 100) * tt);
+  
+            const amt = tt + cgstAmount + sgstAmount;
+            if (amt > amount) {
+              const difference = amount - amt;
+              total = difference + amt;
+            } else if (amount < amt) {
+              const difference = amt - amount;
+              total = amt - difference;
+            } else {
+              total = tt;
+            }
           }
         } else if (amountIs === "Tax Exclusive") {
           if (sourceOfSupply === destinationOfSupply) {
@@ -546,12 +576,11 @@ function AddExpensePage({ page }: Props) {
   
       let grandTotal = parseFloat((subTotal + totalSgst + totalCgst + totalIgst).toFixed(2));
   
-      // ✅ Rounding Fix: Ensure grandTotal matches expense total when Tax Inclusive
-      const totalExpenseAmount = updatedExpenses.reduce((sum, item) => sum + item.amount, 0); // Fix: sum from expense items
+      const totalExpenseAmount = updatedExpenses.reduce((sum, item) => sum + item.amount, 0); 
       if (amountIs === "Tax Inclusive") {
         const difference = parseFloat((totalExpenseAmount - grandTotal).toFixed(2));
         if (Math.abs(difference) <= 0.01) {
-          grandTotal = totalExpenseAmount; // Fix floating point errors
+          grandTotal = totalExpenseAmount; 
         }
       }
   
@@ -581,7 +610,7 @@ function AddExpensePage({ page }: Props) {
     expenseData?.destinationOfSupply,
     expenseData?.amountIs,
   ]);
-  
+
   console.log(expenseData, "expenseData");
 
   // useEffect(() => {

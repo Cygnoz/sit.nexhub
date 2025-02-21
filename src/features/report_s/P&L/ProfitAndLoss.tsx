@@ -195,17 +195,23 @@ const ProfitAndLoss = ({}: Props) => {
                   items: PLData?.debit[1]?.indirectExpenses,
                 },
                 {
-                  accountName: "Net Profit ",
+                  accountName: "Net Profit",
                   totalAmount: PLData.summary?.netProfit || 0,
                   link: "",
                   items: null,
                 },
-              ].map((item, index) =>
-                (item.accountName === "Gross Loss b/f" &&
-                  item.totalAmount === 0) ||
-                (item.accountName === "Net Profit " &&
-                  item.totalAmount === 0) ? null : (
-                    <tr
+              ]
+                .filter(
+                  (item) =>
+                    !(
+                      (item.accountName === "Gross Loss b/f" &&
+                        item.totalAmount === 0) ||
+                      (item.accountName === "Net Profit" &&
+                        item.totalAmount === 0)
+                    )
+                )
+                .map((item, index) => (
+                  <tr
                     key={index}
                     className={index === 2 ? "font-semibold bg-gray-50 " : ""}
                   >
@@ -228,9 +234,7 @@ const ProfitAndLoss = ({}: Props) => {
                       {item.totalAmount}
                     </td>
                   </tr>
-                  
-                )
-              )}
+                ))}
             </tbody>
           </div>
 
@@ -273,7 +277,7 @@ const ProfitAndLoss = ({}: Props) => {
                     item.totalAmount === 0) ||
                   (item.accountName === "Net Loss " &&
                     item.totalAmount === 0) ? null : (
-                      <tr
+                    <tr
                       key={index}
                       className={index === 2 ? "font-semibold bg-gray-50 " : ""}
                     >
