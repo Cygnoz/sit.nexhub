@@ -275,7 +275,7 @@ function ModuleSearch() {
                                     >
                                         {/* Name/Header */}
                                         <p className="text-[#0B1320] font-bold text-sm">
-                                            {item[tabsConfig[selectedTab].searchFields[0]] || "N/A"}
+                                            {item[tabsConfig[selectedTab].searchFields[0]] || ""}
                                         </p>
 
                                         {/* Additional Details */}
