@@ -1272,6 +1272,8 @@ function AddExpensePage({ page }: Props) {
                     <option value="Deemed Export">Deemed Export</option>
                     <option value="Tax Deductor">Tax Deductor</option>
                     <option value="SEZ Developer">SEZ Developer</option>
+                    <option value="Out Of Scope">Out Of Scope</option>
+
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                     <CehvronDown color="gray" />
@@ -1821,7 +1823,7 @@ function AddExpensePage({ page }: Props) {
                   <div className="cursor-pointer absolute inset-y-0 right-0.5 -mt-1 flex items-center px-2 text-gray-700">
                     <span
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevent dropdown toggle when clicking clear button
+                        e.stopPropagation(); 
                         setExpenseData({
                           ...expenseData,
                           supplierDisplayName: "",
