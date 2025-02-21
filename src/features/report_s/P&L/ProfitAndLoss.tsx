@@ -182,7 +182,7 @@ const ProfitAndLoss = ({}: Props) => {
               {[
                 {
                   accountName: "Gross Loss b/f",
-                  totalAmount: PLData.summary?.grossLoss || 0,
+                  totalAmount: PLData.debit[0]?.grossLossCd || 0,
                   link: "",
                   items: null,
                 },
@@ -205,13 +205,19 @@ const ProfitAndLoss = ({}: Props) => {
                   item.totalAmount === 0) ||
                 (item.accountName === "Net Profit " &&
                   item.totalAmount === 0) ? null : (
-                  <tr
+                    <tr
                     key={index}
                     className={index === 2 ? "font-semibold bg-gray-50 " : ""}
                   >
                     <td className="px-6 py-3 text-sm w-full text-[#4B5C79] font-medium border-b border-stone-200 ">
-                      {item.link ? (
-                        <Link to={item.link} state={{ data: item.items , accountName: item.accountName}} >
+                      {item.link && item.totalAmount !== 0 ? (
+                        <Link
+                          to={item.link}
+                          state={{
+                            data: item.items,
+                            accountName: item.accountName,
+                          }}
+                        >
                           {item.accountName}
                         </Link>
                       ) : (
@@ -222,9 +228,9 @@ const ProfitAndLoss = ({}: Props) => {
                       {item.totalAmount}
                     </td>
                   </tr>
+                  
                 )
               )}
-             
             </tbody>
           </div>
 
@@ -243,7 +249,7 @@ const ProfitAndLoss = ({}: Props) => {
                 {[
                   {
                     accountName: "Gross Profit b/f",
-                    totalAmount: PLData.credit[0]?.["Gross Profit (c/d)"] || 0,
+                    totalAmount: PLData.credit[0]?.grossProfitCd || 0,
                     link: "",
                     items: null,
                   },
@@ -266,7 +272,7 @@ const ProfitAndLoss = ({}: Props) => {
                   (item.accountName === "Gross Profit b/f" &&
                     item.totalAmount === 0) ||
                   (item.accountName === "Net Loss " &&
-                    item.totalAmount === 0) ? null : ( 
+                    item.totalAmount === 0) ? null : (
                     <tr
                       key={index}
                       className={index === 2 ? "font-semibold bg-gray-50" : ""}
@@ -292,32 +298,31 @@ const ProfitAndLoss = ({}: Props) => {
                     </tr>
                   )
                 )}
-              
               </tbody>
             </table>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-8">
-        <table className="min-w-full">
-      <tbody>
-        <tr className="font-bold">
-          <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
-          <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
-          {PLData.summary?.finalDebit || 0}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <table className="min-w-full">
-      <tbody>
-        <tr className="font-bold">
-          <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
-          <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
-          {PLData.summary?.finalCredit || 0}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          <table className="min-w-full">
+            <tbody>
+              <tr className="font-bold">
+                <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
+                <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
+                  {PLData.summary?.finalDebit || 0}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="min-w-full">
+            <tbody>
+              <tr className="font-bold">
+                <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
+                <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
+                  {PLData.summary?.finalCredit || 0}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
