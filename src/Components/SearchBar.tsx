@@ -5,9 +5,17 @@ type Props = {
   searchValue: string;
   onSearchChange: (value: string) => void;
   placeholder?: string;
+  inputRef?: any;
+  onFocus?: any;
 };
 
-const SearchBar = ({ searchValue, onSearchChange, placeholder = "search" }: Props) => {
+const SearchBar = ({
+  searchValue,
+  onSearchChange,
+  placeholder = "search",
+  inputRef,
+  onFocus,
+}: Props) => {
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     onSearchChange(e.target.value);
   };
@@ -16,6 +24,8 @@ const SearchBar = ({ searchValue, onSearchChange, placeholder = "search" }: Prop
     <div className="relative w-full flex items-center">
       <SearchIcon />
       <input
+        ref={inputRef}
+        onFocus={onFocus}
         className="pl-9 text-sm w-full rounded-md text-start text-gray-800 h-10 p-2 border-0 focus:ring-1 focus:ring-gray-400"
         style={{
           backgroundColor: "rgba(28, 28, 28, 0.04)",
