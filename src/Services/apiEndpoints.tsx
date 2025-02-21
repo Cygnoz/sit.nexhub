@@ -103,6 +103,8 @@ export const endponits = {
   UPDATE_CUSTOMER_STATUS: `update-customer-status`,
   GET_CUSTOMER_HISTORY: `get-one-customer-history`,
   GET_CUSTOMER_TRANSACTIONS: `get-customer-transaction`,
+  GET_ONE_CUSTOMER_DASHBOARD:`/get-one-customer-dashboard`,
+  GET_CUSTOMER_SALE_HISTORY:  `get-customer-sales-history`,
 
   // Supplier
   ADD_SUPPLIER: "add-suppliers",

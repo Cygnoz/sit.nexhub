@@ -25,7 +25,6 @@ const createInstance = (
     Accept: "application/json",
   };
 
-  console.log(contentType,"api");
 
 
   if (useAuth) {
@@ -34,7 +33,6 @@ const createInstance = (
       headers = { ...headers, Authorization: `${authToken}`};
     }
   }
-// console.log(headers,"headers");
 
   return axios.create({
     baseURL,

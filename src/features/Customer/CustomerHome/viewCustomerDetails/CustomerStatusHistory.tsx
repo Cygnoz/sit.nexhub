@@ -5,11 +5,14 @@ import { endponits } from "../../../../Services/apiEndpoints";
 type Props = {
     id: string | undefined;
 };
+
 function CustomerStatusHistory({ id }: Props) {
     const { request: GetAllHistory } = useApi("get", 5002);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [historyData, setHistoryData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
+    const [selectedDate, setSelectedDate] = useState("");
 
     const fetchAllAccounts = async () => {
         setIsLoading(true);
@@ -18,9 +21,8 @@ function CustomerStatusHistory({ id }: Props) {
             const url = `${endponits.GET_CUSTOMER_HISTORY}/${id}`;
             const { response, error } = await GetAllHistory(url);
             if (!error && response) {
-                console.log(response);
-
                 setHistoryData(response.data);
+                setFilteredData(response.data);
             } else {
                 setError("Failed to fetch customer history.");
             }
@@ -29,10 +31,30 @@ function CustomerStatusHistory({ id }: Props) {
             setIsLoading(false);
         }
     };
+
     useEffect(() => {
         fetchAllAccounts();
-
     }, []);
+
+    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const date = event.target.value;
+        setSelectedDate(date);
+    
+        if (date) {
+            const filtered = historyData.filter((item: any) => {
+                const parsedDate = new Date(item.createdDate);
+                const formattedDate = parsedDate.getFullYear() + '-' + 
+                                      String(parsedDate.getMonth() + 1).padStart(2, '0') + '-' + 
+                                      String(parsedDate.getDate()).padStart(2, '0');
+                return formattedDate === date;
+            });
+            setFilteredData(filtered);
+        } else {
+            setFilteredData(historyData);
+        }
+    };
+    
+
     const getCircleStyle = (title: string) => {
         switch (title) {
             case "Contact Added":
@@ -43,55 +65,32 @@ function CustomerStatusHistory({ id }: Props) {
                 return { bgColor: "bg-[#820000]", text: "" };
         }
     };
-    const formatDateTime = (dateString?: string) => {
-        if (!dateString || !dateString.includes(" ")) {
-            return { date: "Invalid Date", time: "Invalid Time" };
-        }
-        const [datePart, timePart] = dateString.split(" ");
-        if (!timePart || !timePart.includes(":")) {
-            return { date: datePart || "Invalid Date", time: "Invalid Time" };
-        }
-        const [hoursString, minutes] = timePart.split(":");
-        let period = "AM";
-        let hours = parseInt(hoursString, 10);
-        if (isNaN(hours) || isNaN(parseInt(minutes, 10))) {
-            return { date: datePart || "Invalid Date", time: "Invalid Time" };
-        }
-        if (hours >= 12) {
-            period = "PM";
-            hours = hours > 12 ? hours - 12 : hours;
-        } else if (hours === 0) {
-            hours = 12;
-        }
-        const formattedTime = `${hours}:${minutes} ${period}`;
-        return { date: datePart, time: formattedTime };
-    };
-    
+
     return (
         <div>
-            <div className=" ">
+            <div className="">
                 <div className="flex justify-between">
-                    <h3 className="text-[#303F58]  mt-1.5 text-xl font-bold">Customer Status History</h3>
+                    <h3 className="text-[#303F58] mt-1.5 text-xl font-bold">Customer Status History</h3>
                     <div>
                         <input
                             type="date"
                             className="text-sm mt-1 w-72 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
                             max={new Date().toISOString().split("T")[0]}
-                            value=""
+                            value={selectedDate}
+                            onChange={handleDateChange}
                         />
                     </div>
                 </div>
                 {isLoading && <p>Loading...</p>}
                 {error && <p className="text-red-500">{error}</p>}
-                {!isLoading && !error && historyData.length === 0 && (
+                {!isLoading && !error && filteredData.length === 0 && (
                     <p>No history available.</p>
                 )}
                 <div className="flex max-w-full px-2 overflow-x-auto hide-scrollbar mt-3">
-                    {historyData.map((item: any, index: number) => {
+                    {filteredData.map((item: any, index: number) => {
                         const circleStyle = getCircleStyle(item?.title);
-                        const { date, time } = formatDateTime(item?.date);
                         return (
-                            <div key={index} className="min-w-[250px] max-w-[250px] mx-2 flex-shrink-0 py-3">
+                            <div key={index} className="min-w-[250px] max-w-[250px] mx-2 flex-shrink-0 py-3 text-textColor">
                                 <div>
                                     <div className="flex items-center w-full">
                                         <div
@@ -103,11 +102,10 @@ function CustomerStatusHistory({ id }: Props) {
                                     </div>
                                 </div>
                                 <div className="space-y-2 text-start mt-2">
-                                    <div className="flex space-x-3 text-[14px]">
-                                        <p>{date}</p>
-                                        <p>{time}</p>
+                                    <div className="flex space-x-3 text-[12px] py-1">
+                                        <p>{item.createdDate}</p> <p>{item.createdTime}</p>
                                     </div>
-                                    <p className="font-bold text-[14px] py-1">{item.title}</p>
+                                    <p className="font-bold text-[14px]">{item.title}</p>
                                     <p className="text-[12px] px-1">{item.description}</p>
                                     <div className="flex space-x-4 font-bold text-[14px]">
                                         <p>{item.author}</p>
@@ -119,7 +117,7 @@ function CustomerStatusHistory({ id }: Props) {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default CustomerStatusHistory
+export default CustomerStatusHistory;

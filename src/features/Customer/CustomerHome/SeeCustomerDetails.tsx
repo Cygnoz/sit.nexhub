@@ -3,7 +3,10 @@ import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { CustomerDeatilsContext, CustomerEditResponseContext } from "../../../context/ContextShare";
+import {
+  CustomerDeatilsContext,
+  CustomerEditResponseContext,
+} from "../../../context/ContextShare";
 import toast from "react-hot-toast";
 import Overview from "./viewCustomerDetails/Overview";
 import SalesHistory from "./viewCustomerDetails/SalesHistory";
@@ -18,16 +21,11 @@ import Preview from "../../../assets/icons/Preview";
 // import HistoryIcon from "../../../assets/icons/HistoryIcon";
 import Button from "../../../Components/Button";
 import Trash2 from "../../../assets/icons/Trash2";
+import ArrowRightLeft from "../../../assets/icons/ArrowRightLeft";
 
 interface Status {
   status: string;
 }
-interface CardData {
-  icon: string;
-  title: string;
-  count: string;
-}
-
 
 function SeeCustomerDetails() {
   const { setCustomerDatials } = useContext(CustomerDeatilsContext)!;
@@ -35,8 +33,14 @@ function SeeCustomerDetails() {
   const param = useParams();
   const [selectedTab, setSelectedTab] = useState("Overview");
   const [customerData, setCustomerData] = useState<any | []>([]);
+  const [customerDashboardData, setCustomerDashboardData] = useState<any | []>(
+    []
+  );
+  const [Currency, setCurrency] = useState<any>([]);
+
   const { request: getOneCustomer } = useApi("get", 5002);
   const { request: updateCustomerStatus } = useApi("put", 5002);
+  const { request: getCurrencies } = useApi("get", 5004);
 
   const { customerEditResponse } = useContext(CustomerEditResponseContext)!;
   const [statusData, setStatusData] = useState<Status>({
@@ -44,27 +48,66 @@ function SeeCustomerDetails() {
   });
 
   const { id } = param;
-  const customerId = id ?? ""; // Ensure customerId is always a string
-
-
-  const getCustomer = async () => {
-    const url = `${endponits.GET_ONE_CUSTOMER}/${id}`;
+  const customerId = id ?? "";
+  const getCurrency = async () => {
     try {
-      const apiResponse = await getOneCustomer(url);
-      const { response, error } = apiResponse;
+      const url = `${endponits.GET_CURRENCIES}`;
+      const { response, error } = await getCurrencies(url);
+
       if (!error && response) {
-        setCustomerData(response.data);
-        setCustomerDatials(response.data)       
-        setStatusData((prevData) => ({
-          ...prevData,
-          status: response.data.status,
-        }));
+        const currencies = response.data;
+        const baseCurrency =
+          currencies.find((currency: any) => currency.baseCurrency) ||
+          currencies[0]; // Default to first if no base currency
+        setCurrency(baseCurrency);
       }
-    } catch (error) { }
+    } catch (error) {
+      console.log("Error in fetching currencies", error);
+    }
+  };
+  const getCustomer = async () => {
+    const urls = [
+      `${endponits.GET_ONE_CUSTOMER}/${id}`,
+      `${endponits.GET_ONE_CUSTOMER_DASHBOARD}/${id}`,
+    ];
+
+    try {
+      const [customerResponse, dashboardResponse] = await Promise.all(
+        urls.map((url) => getOneCustomer(url))
+      );
+
+      const customerData = customerResponse?.response?.data || {};
+      const dashboardData = dashboardResponse?.response?.data || {};
+
+      setCustomerData(customerData);
+      setCustomerDatials(customerData);
+      setCustomerDashboardData(dashboardData);
+
+      setCustomerDashboardData([
+        {
+          icon: walletCashImage,
+          title: "Total Payment",
+          count: dashboardData.totalPayment || 0,
+        },
+        {
+          icon: salesImage,
+          title: "Total Sales",
+          count: dashboardData.totalSales || 0,
+        },
+        {
+          icon: walletImage,
+          title: "Outstanding Balance",
+          count: dashboardData.outstandingBalance || 0,
+        },
+      ]);
+    } catch (error) {
+      console.error("Error fetching customer data:", error);
+    }
   };
 
   useEffect(() => {
     getCustomer();
+    getCurrency();
   }, [customerEditResponse]);
 
   const handleStatusSubmit = async (e: ChangeEvent<HTMLSelectElement>) => {
@@ -85,36 +128,24 @@ function SeeCustomerDetails() {
       } else {
         toast.error(error.response.data.message);
       }
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const sideBarHead = [
-    { icon: <Preview />, title: "Overview", onclick: () => setSelectedTab("Overview") },
-    // { icon: <HistoryIcon/>, title: "Sales History", onclick: () => setSelectedTab("Sales History") },
-    // { icon: <Payment />, title: "View Payment", onclick: () => setSelectedTab("View Payment") },
+    {
+      icon: <Preview />,
+      title: "Overview",
+      onclick: () => setSelectedTab("Overview"),
+    },
+    {
+      icon: <ArrowRightLeft size={18} color={"currentColor"} />,
+      title: "Invoice History",
+      onclick: () => setSelectedTab("Invoice History"),
+    },
+
+   
   ];
 
-  const cards: CardData[] = [
-    {
-      icon: walletCashImage,
-      title: "Total Payment",
-      count: "",
-    },
-    {
-      icon: salesImage,
-      title: "Total Sales",
-      count: "",
-    },
-    {
-      icon: walletImage,
-      title: "Outstanding Balance",
-      count: "",
-    },
-
-  ]
-
-
-  console.log(customerData);
 
   return (
     <div className="px-6">
@@ -127,26 +158,24 @@ function SeeCustomerDetails() {
                 className="w-[40px] h-[40px] flex items-center justify-center bg-backButton"
               >
                 <CheveronLeftIcon />
-
               </div>
             </Link>
-            <p className="text-textColor mx-2 mt-1.5 text-xl font-bold">Customer Overview</p>
-
+            <p className="text-textColor mx-2 mt-1.5 text-xl font-bold">
+              Customer Overview
+            </p>
           </div>
           <div className="flex mx-4 gap-2">
             <EditCustomerModal customerDataPorps={customerData} />
             <Button
-                  variant="secondary"
-                  size="sm"
-                  className="text-[10px] h-6 px-4 hidden"
-                >
-                  <Trash2 color="#585953" /> Delete
-                </Button>
-
+              variant="secondary"
+              size="sm"
+              className="text-[10px] h-6 px-4 hidden"
+            >
+              <Trash2 color="#585953" /> Delete
+            </Button>
           </div>
         </div>
         <div className="mt-2 flex mx-3">
-          {/* 1st card */}
           <div
             className="relative w-[27.9%] h-[146px] rounded-2xl p-4 bg-cover bg-center"
             style={{ backgroundImage: `url(${cardBg})` }}
@@ -158,7 +187,11 @@ function SeeCustomerDetails() {
               </p> */}
               <div className=" items-center mt-3">
                 <img
-                  src={customerData.customerProfile ? customerData.customerProfile : "https://i.postimg.cc/MHh2tQ41/avatar-3814049-1280.webp"}
+                  src={
+                    customerData.customerProfile
+                      ? customerData.customerProfile
+                      : "https://i.postimg.cc/MHh2tQ41/avatar-3814049-1280.webp"
+                  }
                   alt="Profile"
                   className="w-8 h-8 object-cover rounded-full mr-3"
                 />
@@ -167,31 +200,34 @@ function SeeCustomerDetails() {
                   <p className="text-white text-sm font-semibold mt-1">
                     {customerData?.customerDisplayName}
                   </p>
-                  <p className="text-membershipText text-xs mt-1">{customerData.mobile}</p>
+                  <p className="text-membershipText text-xs mt-1">
+                    {customerData.mobile}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* 2nd card */}
           <div className="flex  w-full  ">
-            {
-              cards.length > 0
-                ? cards.map((card) => (
+            {customerDashboardData.length > 0
+              ? customerDashboardData.map((card: any) => (
                   <div className=" p-5 w-[27.9%] h-[148px] ms-14 bg-cuscolumnbg rounded-lg ">
                     <img className="w-6 h-6" src={card.icon} alt="" />
-                    <h1 className="text-[#4B5C79] text-sm font-semibold my-2">{card.title}</h1>
-                    <h1>{card.count}</h1>
+                    <h1 className="text-[#4B5C79] text-sm font-semibold my-2">
+                      {card.title}
+                    </h1>
+                    <h1>
+                      {card.title !== "Total Sales"
+                        ? Currency.currencySymbol
+                        : ""}{" "}
+                      {card.count}
+                    </h1>
                   </div>
-
                 ))
-                :
-                Array.from({ length: 3 }).map((_, index) => (
+              : Array.from({ length: 3 }).map((_, index) => (
                   <CardSkeleton key={index} />
                 ))}
-
           </div>
-
         </div>
       </div>
 
@@ -200,13 +236,15 @@ function SeeCustomerDetails() {
           {sideBarHead.map((item, index) => (
             <div
               key={index}
-              className={`rounded-lg w-full text-center my-2 px-3 text-sm py-1.5 cursor-pointer ${selectedTab === item.title ? "bg-lightBeige" : "bg-white"
-                }`}
+              className={`rounded-lg w-full text-center my-2 px-3 text-sm py-1.5 cursor-pointer text-textColor font-semibold ${
+                selectedTab === item.title ? "bg-lightBeige" : "bg-white"
+              }`}
               onClick={item.onclick}
             >
-              <div className="flex items-center justify-center space-x-2 py-.05"> {/* Flexbox to align horizontally */}
-                {/* Render the icon */}
-                <span className="text-xl">{item.icon}</span> {/* Adjust icon size if needed */}
+              <div className="flex items-center justify-center space-x-2 py-.05">
+                {" "}
+               
+                <span className="text-xl">{item.icon}</span>{" "}
                 <p className="text-sm">{item.title}</p>
               </div>
             </div>
@@ -214,7 +252,6 @@ function SeeCustomerDetails() {
         </div>
 
         <div className="col-span-9">
-          {/* Pass the required props to the Overview component */}
           {selectedTab === "Overview" && (
             <Overview
               customerData={customerData}
@@ -223,14 +260,11 @@ function SeeCustomerDetails() {
               handleStatusSubmit={handleStatusSubmit}
             />
           )}
-          {selectedTab === "Sales History" && (
-            <SalesHistory
-              customerId={customerId}
-            />
+          {selectedTab === "Invoice History" && (
+        <SalesHistory customerId={customerId} />
           )}
         </div>
       </div>
-
     </div>
   );
 }

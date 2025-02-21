@@ -35,7 +35,7 @@ const Overview = ({
                     alt="Profile"
                     className="w-8 h-8 object-cover rounded-full mr-3"
                   />
-                  <p className="font-bold text-[#820000] mt-1 pe-5">
+                  <p className="font-bold whitespace-nowrap text-[#820000] mt-1 pe-5">
                     {customerData?.customerDisplayName}
                   </p>
                 </div>
