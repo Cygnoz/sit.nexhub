@@ -8,7 +8,7 @@ type Props = {};
 
 const Ledger = ({}: Props) => {
   const { accountSubHead } = useParams();
-      const {organization} = useOrganization()
+  const { organization } = useOrganization();
 
   const location = useLocation();
   const { item } = location.state || {};
@@ -28,12 +28,11 @@ const Ledger = ({}: Props) => {
       return "/reports/trialBalance";
     } else if (location.pathname.includes("trading-account")) {
       return "/reports/trading-account";
-    }else if (location.pathname.includes("balance-sheet")) {
-      return "/reports/balance-sheet";} 
-    
-    else if(location.pathname.includes("profitandloss")){
+    } else if (location.pathname.includes("balance-sheet")) {
+      return "/reports/balance-sheet";
+    } else if (location.pathname.includes("profitandloss")) {
       return "/reports/profitandloss";
-    }  else {
+    } else {
       return "/reports";
     }
   };
@@ -72,8 +71,7 @@ const Ledger = ({}: Props) => {
         <div className="flex items-center  justify-center gap-3 text-center py-2">
           <div>
             <p className="text-textColor font-bold whitespace-nowrap">
-            {organization?.organizationName}
-
+              {organization?.organizationName}
             </p>
             <p className="text-sm text-textColor whitespace-nowrap">
               {fromDate} To {toDate}
@@ -95,24 +93,29 @@ const Ledger = ({}: Props) => {
             </tr>
           </thead>
           <tbody className="text-xs">
-  {(location.pathname.includes("trialBalance") ? item?.data : item?.transactions)?.map((entry: any) => (
-    <tr key={entry.transactionId} className="border-b border-[#ebecf0]">
-      <td className="py-3 text-start">
-      {new Date(item.date).toLocaleDateString("en-GB")}
-      </td>
-      <td className="py-3 text-center min-w-[30px] max-w-[30px] px-1 truncate">
-        {entry.transactionId}
-      </td>
-      <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-        {entry.debitAmount}
-      </td>
-      <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-        {entry.creditAmount}
-      </td>
-    </tr>
-  ))}
-</tbody>
-
+            {(location.pathname.includes("trialBalance")
+              ? item?.data
+              : item?.transactions
+            )?.map((entry: any) => (
+              <tr
+                key={entry.transactionId}
+                className="border-b border-[#ebecf0]"
+              >
+                <td className="py-3 text-start">
+                  {(item.createDate)}
+                </td>
+                <td className="py-3 text-center min-w-[30px] max-w-[30px] px-1 truncate">
+                  {entry.transactionId}
+                </td>
+                <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
+                  {entry.debitAmount}
+                </td>
+                <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
+                  {entry.creditAmount}
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>

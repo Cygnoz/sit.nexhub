@@ -97,15 +97,12 @@ const ExpenseTable = () => {
   }, []);
 
   const renderColumnContent = (colId: string, item: any) => {
-    // Split colId to handle nested properties
     const keys = colId.split(".");
 
-    // Drill down through the object to fetch the value
     let columnValue = keys.reduce((current: any, key: string) => {
       return current ? current[key] : undefined;
     }, item);
 
-    // Handle expense array specifically
     if (keys[0] === "expense" && Array.isArray(item.expense)) {
       columnValue = item.expense.map((expense: any, index: number) => (
         <div key={index} className="flex flex-col">
@@ -185,7 +182,7 @@ const ExpenseTable = () => {
               ))
             ) : paginatedData && paginatedData.length > 0 ? (
               paginatedData.map((item: any, rowIndex: number) => (
-                <tr key={item.id} className="relative cursor-pointer">
+                <tr key={item.id} className="relative cursor-pointer  border-y border-tableBorder">
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {(currentPage - 1) * rowsPerPage + rowIndex + 1}
                   </td>
@@ -200,16 +197,18 @@ const ExpenseTable = () => {
                         </td>
                       )
                   )}
-                  <td className="py-3 px-4 border-b border-tableBorder gap-3 flex items-center justify-center">
-                    <div onClick={() => handleEditClick(item._id)}>
-                      <PencilEdit color={'#0B9C56'} className="cursor-pointer" />
-                    </div>
-                    <div onClick={() => navigate(`/expense/view/${item._id}`)}>
-                      <Eye color="#569FBC" className="cursor-pointer" />
-                    </div>
-                    <div onClick={() => confirmDelete(item._id)}>
-                      <TrashCan color="red" />
-                    </div>
+                  <td className=" py-2.5  ">
+                  <div className="flex items-center justify-center gap-2">
+                      <button onClick={() => handleEditClick(item._id)}>
+                        <PencilEdit color={'#0B9C56'} className="cursor-pointer" />
+                      </button>
+                      <button onClick={() => navigate(`/expense/view/${item._id}`)}>
+                        <Eye color="#569FBC" className="cursor-pointer" />
+                      </button>
+                      <button onClick={() => confirmDelete(item._id)}>
+                        <TrashCan color="red" />
+                      </button>
+                  </div>
                   </td>
 
                   <td className="py-3 px-4 border-b border-tableBorder"></td>

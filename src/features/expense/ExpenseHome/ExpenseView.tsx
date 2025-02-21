@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import Button from "../../../Components/Button";
 import Pen from "../../../assets/icons/Pen";
@@ -8,6 +8,9 @@ import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { useOrganization } from "../../../context/OrganizationContext";
 import Journal from "../../purchase/bills/ViewBill/Jornal";
+import ConfirmModal from "../../../Components/ConfirmModal";
+import toast from "react-hot-toast";
+import Trash2 from "../../../assets/icons/Trash2";
 
 type Props = {};
 
@@ -15,9 +18,18 @@ const ExpenseView = ({}: Props) => {
   const [expense, setExpense] = useState<any | []>([]);
   const [expensedata,setExpenseData]=useState<any |[]>([])
   const { request: getExpense } = useApi("get", 5008);
+  const [Currency,setCurrency]=useState<any>([])
   const {organization}=useOrganization()
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const { request: deleteExpense } = useApi("delete", 5008);
+  const { request: getCurrencies } = useApi("get", 5004);
 
+
+  const confirmDelete = () => {
+    setConfirmModalOpen(true);
+  };
 
   const getExpenses = async () => {
     try {
@@ -27,18 +39,58 @@ const ExpenseView = ({}: Props) => {
       if (!error && response) {
         setExpense(response.data);
         setExpenseData(response.data.expense)
-        console.log(response.data, "response");
       } else {
       }
     } catch (error) {
       console.log("Error in fetching expense", error);
     }
   };
+  const getCurrency = async () => {
+    try {
+      const url = `${endponits.GET_CURRENCIES}`;
+      const { response, error } = await getCurrencies(url);
+  
+      if (!error && response) {
+        const currencies = response.data;
+        const baseCurrency = currencies.find((currency:any) => currency.baseCurrency) || currencies[0]; // Default to first if no base currency
+        setCurrency(baseCurrency);
+        console.log(baseCurrency, "Base Currency Set");
+      }
+    } catch (error) {
+      console.log("Error in fetching currencies", error);
+    }
+  };
+  
 
-  console.log(expensedata,"ksjhdguyftgyhjjhgfdxxcfgvbh")
+  const handleEditClick = (id: any) => {
+    navigate(`/expense/edit-expense/${id}`)
+  }
+
+
+  const handleDelete = async () => {
+    if (!id) return;
+    try {
+      const url = `${endponits.DELETE_EXPENSE}/${id}`;
+      const { response, error } = await deleteExpense(url);
+      if (!error && response) {
+        toast.success(response.data.message);
+        setTimeout(() => {
+          navigate("/expense/home");
+        }, 2000);
+      } else {
+        toast.error(error.response.data.message);
+      }
+    } catch (error) {
+      toast.error("Error occurred while deleting.");
+    } finally {
+      setConfirmModalOpen(false);
+    }
+  };
+  
 
   useEffect(() => {
     getExpenses();
+    getCurrency()
   }, []);
 
   return (
@@ -58,19 +110,21 @@ const ExpenseView = ({}: Props) => {
       <div className="flex border-b py-3 border-slate-400">
         <div className="text-textColor text-lg font-semibold ">
           <p>
-            {expensedata[0]?.expenseAccount}<span className="font-light px-3"> |</span>{" "}
-            Materials
+          Expense <span className="font-light px-3"> |</span> {expense?.expenseNumber}{" "}
+            
           </p>
         </div>
         <div className="flex ml-auto gap-4">
-         <div className="hidden">
-            <Button variant="secondary" size="sm">
+            <Button variant="secondary" size="sm" onClick={() => handleEditClick(id)}>
               <Pen color="currentColor" />
               Edit
             </Button>
-         </div>
+            <Button variant="secondary" size="sm" onClick={() => confirmDelete()}>
+              <Trash2 color="currentColor" size={16} />
+              Delete
+            </Button>
           <Button variant="secondary" size="sm">
-            <PrinterIcon color="currentColor" height={20} width={20} />
+            <PrinterIcon color="currentColor" height={16} width={16} />
             Print
           </Button>
         </div>
@@ -79,18 +133,18 @@ const ExpenseView = ({}: Props) => {
         <span className="me-4">Expense Date:</span> {expense?.expenseDate}
       </p>
 
-      <div className=" text-textColor gap-4">
+      <div className=" text-textColor gap-4 px-5 pt-3">
         <div className="">
           <div className="bg-gradient-to-r from-[#E3E6D5] to-[#F7E7CE] h-[77px] flex items-center px-5">
             <p className="font-bold">
-              {expense.grandTotal}{" "}
+             {Currency?.currencySymbol} {expense.grandTotal}{" "}
               <span className="font-semibold ">| Expense Amount </span>{" "}
             </p>
           </div>
           <div className="grid grid-cols-2 mt-5 space-y-5 justify-beteween border-b border-gray-400 py-4 ">
             <div>
               <p className=" text-currentColor">Paid Through</p>
-              <p className="font-bold text-textColor">{expense.paidThrough}</p>
+              <p className="font-bold text-textColor">{expense.paidThroughAccountName}</p>
             </div>
 
             <div>
@@ -171,6 +225,12 @@ const ExpenseView = ({}: Props) => {
           </div>
         </div> */}
       </div>
+       <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete?"
+      />
     </div>
   );
 };
