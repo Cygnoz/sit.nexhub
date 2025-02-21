@@ -273,12 +273,12 @@ const ProfitAndLoss = ({}: Props) => {
                     item.totalAmount === 0) ||
                   (item.accountName === "Net Loss " &&
                     item.totalAmount === 0) ? null : (
-                    <tr
+                      <tr
                       key={index}
-                      className={index === 2 ? "font-semibold bg-gray-50" : ""}
+                      className={index === 2 ? "font-semibold bg-gray-50 " : ""}
                     >
-                      <td className="px-6 py-3 text-sm w-full text-[#4B5C79] font-medium border-b border-stone-200">
-                        {item.link ? (
+                      <td className="px-6 py-3 text-sm w-full text-[#4B5C79] font-medium border-b border-stone-200 ">
+                        {item.link && item.totalAmount !== 0 ? (
                           <Link
                             to={item.link}
                             state={{
@@ -292,7 +292,7 @@ const ProfitAndLoss = ({}: Props) => {
                           item.accountName
                         )}
                       </td>
-                      <td className="px-6 py-3 ml-auto text-right text-sm text-[#4B5C79] font-medium border-b border-stone-200">
+                      <td className="px-6 border-b border-stone-200 py-3 ml-auto text-right text-sm text-[#4B5C79] font-medium">
                         {item.totalAmount}
                       </td>
                     </tr>
