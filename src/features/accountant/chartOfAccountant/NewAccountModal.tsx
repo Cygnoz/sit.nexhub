@@ -44,8 +44,8 @@ function NewAccountModal({
   const [openingType, setOpeningType] = useState("Debit");
   const [formValues, setFormValues] = useState(initialFormValues);
   const [isSubAccount, setIsSubAccount] = useState(false);
-  const [showValidationError, setShowValidationError] = useState(false);
-  const [AllAccountz, setAllAccountz] = useState<any>([]);
+  // const [showValidationError, setShowValidationError] = useState(false);
+  // const [AllAccountz, setAllAccountz] = useState<any>([]);
 
   const { request: fetchAllAccountz } = useApi("get", 5001);
 
@@ -88,7 +88,7 @@ function NewAccountModal({
       const url = `${endponits.Get_ALL_Acounts}`;
       const { response, error } = await fetchAllAccountz(url);
       if (!error && response) {
-        setAllAccountz(response.data);
+        // setAllAccountz(response.data);
       } else {
         console.error("Failed to fetch account data.");
       }
@@ -106,8 +106,8 @@ function NewAccountModal({
             group === "Asset" || group === "Income" || group === "Equity"
               ? "Asset"
               : group === "Liability" || group === "Expenses"
-              ? "Liability"
-              : group;
+                ? "Liability"
+                : group;
           return { accountHead: head, accountGroup };
         }
       }
@@ -196,7 +196,7 @@ function NewAccountModal({
     setFormValues(initialFormValues);
     setIsSubAccount(false);
     setOpeningType("Debit");
-    setShowValidationError(false);
+    // setShowValidationError(false);
   };
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -208,7 +208,7 @@ function NewAccountModal({
     }
 
     if (isSubAccount && !formValues.parentAccountId) {
-      setShowValidationError(true);
+      // setShowValidationError(true);
       toast.error("Please select a parent account.");
       return;
     }
@@ -228,15 +228,15 @@ function NewAccountModal({
         closeModal();
         fetchAllAccounts();
       }
-      else{
+      else {
         toast.error(error.response.data.message);
 
       }
     } catch (error: any) {
       toast.error(
         error.response?.data?.message ||
-          error.message ||
-          "Failed to add account"
+        error.message ||
+        "Failed to add account"
       );
     }
   };
@@ -340,7 +340,7 @@ function NewAccountModal({
                 />
               </div>
 
-              {formValues.accountSubhead &&
+              {/* {formValues.accountSubhead &&
                 ![
                   "Other Asset",
                   "Bank",
@@ -433,7 +433,7 @@ function NewAccountModal({
                       </div>
                     )}
                   </>
-                )}
+                )} */}
 
               <div className="mb-4">
                 <label className="block mb-1 text-labelColor text-sm">

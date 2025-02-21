@@ -4,24 +4,24 @@ import { useNavigate } from "react-router-dom";
 import navlist from "../../assets/constants";
 import SettingsIcons from "../../assets/icons/SettingsIcon";
 import viewAppsIcon from "../../assets/Images/Frame 629925.png";
-import SearchBar from "../../Components/SearchBar";
 import { PreviousPathContext } from "../../context/ContextShare";
 import useApi from "../../Hooks/useApi";
 import { endponits } from "../../Services/apiEndpoints";
 import Notification from "./HeaderIcons/Notification";
 import Organization from "./HeaderIcons/Organization";
 import RefferEarn from "./HeaderIcons/RefferEarn";
+import ModuleSearch from "../../Components/ModuleSearch";
 type Props = {};
 
-const Header = ({}: Props) => {
+const Header = ({ }: Props) => {
   const navigate = useNavigate();
   const { setPreviousPath } = useContext(PreviousPathContext)!;
-  
+
   const handleNavigate = () => {
     navigate("/landing#appsSection");
   };
 
-  const [searchValue, setSearchValue] = useState<string>("");
+
   const [organizationData, setOrganizationData] = useState<any>(null);
   const { request: getOneOrganization } = useApi("get", 5004);
 
@@ -52,15 +52,15 @@ const Header = ({}: Props) => {
 
   const handleGoToSettings = () => {
     navigate("/settings");
-  
+
     // Retrieve values from localStorage and parse them as numbers
     const savedIndex = localStorage.getItem('savedIndex');
     const savedSelectedIndex = localStorage.getItem('savedSelectedIndex');
-  
+
     // Check if values are not null before parsing them as integers
     const index = savedIndex !== null ? parseInt(savedIndex, 10) : 0;
     const selectedIndex = savedSelectedIndex !== null ? parseInt(savedSelectedIndex, 10) : 0;
-  
+
     // Ensure navlist has the appropriate structure and check index bounds
     if (navlist[index]?.subhead?.[selectedIndex]?.subRoute) {
       setPreviousPath(navlist[index].subhead[selectedIndex].subRoute);
@@ -68,7 +68,7 @@ const Header = ({}: Props) => {
       console.warn("Invalid index or subhead in navlist.");
     }
   };
-  
+
 
 
   return (
@@ -77,12 +77,8 @@ const Header = ({}: Props) => {
       style={{ borderBottom: "1.5px solid rgba(28, 28, 28, 0.1)" }}
     >
       <Toaster reverseOrder={false} />
-      <div className="w-[68%]">
-        <SearchBar
-          placeholder="Search"
-          searchValue={searchValue}
-          onSearchChange={setSearchValue}
-        />
+      <div className="w-[55%]">
+        <ModuleSearch />
       </div>
       <div
         className="flex ms-14 justify-center items-center gap-2 cursor-pointer"
@@ -101,7 +97,7 @@ const Header = ({}: Props) => {
           <RefferEarn />
         </div>
         <p onClick={handleGoToSettings} className="tooltip" data-tooltip="Settings">
-          <SettingsIcons  color="#4B5C79" size="md" />
+          <SettingsIcons color="#4B5C79" size="md" />
         </p>
         <div className="tooltip" data-tooltip="Organization">
           <Organization organizationData={organizationData} />

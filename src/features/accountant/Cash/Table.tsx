@@ -64,11 +64,11 @@ const CashAccountsTable = () => {
       account.description.toLowerCase().includes(searchValueLower)
     );
   });
-  
+
   const { request: deleteAccount } = useApi("delete", 5001);
 
-   
-  const handleDelete=async(id:string)=>{
+
+  const handleDelete = async (id: string) => {
     try {
       const url = `${endponits.DELETE_ACCONUT}/${id}`;
       const { response, error } = await deleteAccount(url);
@@ -90,7 +90,7 @@ const CashAccountsTable = () => {
     "Account Name",
     "Account Code",
     "Account Type",
-    "Parent Account Type",
+    // "Parent Account Type",
     "Action",
   ];
 
@@ -120,7 +120,7 @@ const CashAccountsTable = () => {
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountName}</td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountCode}</td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountSubhead}</td>
-                  <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountHead}</td>
+                  {/* <td className="py-2.5 px-4 border-y border-tableBorder">{item.accountHead}</td> */}
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     <div className="flex justify-center items-center gap-2">
                       <button
@@ -132,7 +132,7 @@ const CashAccountsTable = () => {
                       <div ><CreateAccountModal page="edit" id={item._id} /></div>
 
                       {/* <div ><CreateAccountModal  id={item._id} page="edit"/></div> */}
-                      <button onClick={()=>handleDelete(item._id)}>   <Trash2 color="red" size={18}/></button>
+                      <button onClick={() => handleDelete(item._id)}>   <Trash2 color="red" size={18} /></button>
                     </div>
                   </td>
                 </tr>

@@ -25,7 +25,7 @@ interface TableProps {
   searchValue: string;
   setSearchValue: (value: string) => void;
   loading: any;
-  fetchAllAccounts:any
+  fetchAllAccounts: any
 }
 
 const Table = ({
@@ -81,7 +81,7 @@ const Table = ({
     }
   };
 
-  const handleDelete=async(id:string)=>{
+  const handleDelete = async (id: string) => {
     try {
       const url = `${endponits.DELETE_ACCONUT}/${id}`;
       const { response, error } = await deleteAccount(url);
@@ -107,7 +107,7 @@ const Table = ({
     "Account Name",
     "Account Code",
     "Account Type",
-    "Parent Account Type",
+    // "Parent Account Type",
     "Actions",
     "",
   ];
@@ -155,12 +155,12 @@ const Table = ({
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {item.accountSubhead}
                   </td>
-                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                  {/* <td className="py-2.5 px-4 border-y border-tableBorder">
                     {item.accountHead}
-                  </td>
+                  </td> */}
                   <td className="py-3 gap-3 px-4 border-b border-tableBorder flex justify-center items-center">
-                    <div onClick={()=>handleDelete(item._id)} >
-<TrashCan color={"red"}/>
+                    <div onClick={() => handleDelete(item._id)} >
+                      <TrashCan color={"red"} />
                     </div>
                     <div
                       onClick={() => {
@@ -169,7 +169,7 @@ const Table = ({
                     >
                       <NewAccountModal
                         page="Edit"
-                        fetchAllAccounts={() => {}}
+                        fetchAllAccounts={() => { }}
                         accountData={oneAccountData}
                       />
                     </div>
