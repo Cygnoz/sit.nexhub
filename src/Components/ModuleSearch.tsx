@@ -1,130 +1,15 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
-import { endponits } from "../Services/apiEndpoints";
 import useApi from "../Hooks/useApi";
+import { tabsConfig } from "../assets/constants/ModuleSearchTabs";
 
-const tabsConfig: any = {
-  Customer: {
-    endpoint: endponits.GET_ALL_CUSTOMER,
-    requestKey: "getCustomerRequest",
-    searchFields: [
-      "customerDisplayName",
-      "customerEmail",
-      "mobile",
-      "companyName",
-    ],
-    navigatePath: "customer/view/",
-  },
-  Inventory: {
-    endpoint: endponits.GET_ALL_ITEMS_TABLE,
-    requestKey: "getAllItems",
-    searchFields: ["itemName", "sku", "itemType"],
-    navigatePath: "inventory/Item",
-  },
-  "Sales Order": {
-    endpoint: endponits.GET_ALL_SALES_ORDER,
-    requestKey: "getAllSales",
-    searchFields: [
-      "salesOrder",
-      "customerDisplayName",
-      "deliveryMethod",
-      "salesOrderDate",
-    ],
-    navigatePath: "sales/viewsalesorder/",
-  },
-  Quote: {
-    endpoint: endponits.GET_ALL_QUOTES,
-    requestKey: "getAllSales",
-    searchFields: [
-      "salesQuotes",
-      "customerDisplayName",
-      "deliveryMethod",
-      "salesQuoteDate",
-    ],
-    navigatePath: "sales/viewsalesorder/",
-  },
-  Invoice: {
-    endpoint: endponits.GET_ALL_SALES_INVOICE,
-    requestKey: "getAllSales",
-    searchFields: [
-      "salesInvoice",
-      "customerDisplayName",
-      "deliveryMethod",
-      "salesInvoiceDate",
-    ],
-    navigatePath: "sales/viewsalesorder/",
-  },
-  Receipt: {
-    endpoint: endponits.GET_ALL_SALES_RECIEPT,
-    requestKey: "getAllSales",
-    searchFields: [
-      "receipt",
-      "customerDisplayName",
-      "paymentMode",
-      "createdDate",
-    ],
-    navigatePath: "sales/receipt/view/",
-  },
-  "Credit Note": {
-    endpoint: endponits.GET_ALL_CREDIT_NOTE,
-    requestKey: "getAllSales",
-    searchFields: [
-      "creditNote",
-      "customerDisplayName",
-      "invoiceType",
-      "createdDate",
-    ],
-    navigatePath: "sales/viewsalesorder/",
-  },
-  Accounts: {
-    endpoint: endponits.Get_ALL_Acounts,
-    requestKey: "getAllAccounts",
-    searchFields: ["accountName", "accountHead", "accountCode", "createdDate"],
-    navigatePath: "accountant/view/",
-  },
-  "Manual Journal": {
-    endpoint: endponits.GET_ALL_JOURNALS,
-    requestKey: "getAllAccounts",
-    searchFields: ["journalId", "reference", "date", "note"],
-    navigatePath: "accountant/manualjournal/view/",
-  },
-  Supplier: {
-    endpoint: endponits.GET_ALL_SUPPLIER,
-    requestKey: "getAllSuppliers",
-    searchFields: ["supplierDisplayName", "supplierEmail", "mobile"],
-    navigatePath: "supplier/view/",
-  },
-  "Purchase Order": {
-    endpoint: endponits.GET_ALL_PURCHASE_ORDER,
-    requestKey: "getAllPurchases",
-    searchFields: ["purchaseOrder", "supplierDisplayName", "purchaseOrderDate"],
-    navigatePath: "purchase/purchase-order/view/",
-  },
-  Bills: {
-    endpoint: endponits.GET_ALL_BILLS,
-    requestKey: "getAllPurchases",
-    searchFields: ["billNumber", "supplierDisplayName", "billDate"],
-    navigatePath: "purchase/bills/view/",
-  },
-  "Payment Made": {
-    endpoint: endponits.GET_PAYMENTMADE,
-    requestKey: "getAllPurchases",
-    searchFields: ["paymentMade", "supplierDisplayName", "paymentDate"],
-    navigatePath: "purchase/payment-made/view/",
-  },
-  "Debit Note": {
-    endpoint: endponits.GET_ALL_DEBIT_NOTE,
-    requestKey: "getAllPurchases",
-    searchFields: ["debitNote", "supplierDisplayName", "supplierDebitDate"],
-    navigatePath: "purchase/debit-note/view/",
-  },
-};
 type Props = {
   page?: string;
+  mode?: boolean;
 };
 
-function ModuleSearch({page}:Props) {
+function ModuleSearch({ page, mode }: Props) {
   const [searchValue, setSearchValue] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedTab, setSelectedTab] = useState<string>("");
@@ -272,7 +157,13 @@ function ModuleSearch({page}:Props) {
       {/* Main SearchBar */}
       <div onClick={() => setIsOpen(true)}>
         <SearchBar
-        className={page==="landing"?"bg-[#404B52] rounded-[40px]":""}
+          className={`${
+            page === "landing"
+              ? !mode
+                ? "bg-[#404B52] rounded-3xl text-[#F6F6F6]"
+                : "bg-white rounded-3xl text-[#303F58]"
+              : ""
+          }`}
           placeholder={`Search ${selectedTab}`}
           searchValue={searchValue}
           onSearchChange={setSearchValue}
@@ -282,18 +173,34 @@ function ModuleSearch({page}:Props) {
       </div>
 
       {isOpen && (
-        <div className="absolute top-full mt-2 bg-[#F9F7F5] w-[100%] rounded-2xl px-5 py-4 shadow-md z-20">
+        <div
+          className={`${
+            page === "landing"
+              ? !mode
+                ? "bg-[#0F1315]"
+                : "bg-[#F9F7F5]"
+              : "bg-[#F9F7F5]"
+          } absolute top-full mt-2  w-[100%] rounded-2xl px-5 py-4 shadow-md z-20`}
+        >
           {/* Tabs */}
           <div className="flex flex-wrap gap-2 mt-4">
             {Object.keys(tabsConfig).map((tab) => (
               <button
                 key={tab}
-                className={`py-[8px] px-[14px] text-xs font-medium text-[#2C3E50] rounded-lg 
-                                    ${
-                                      selectedTab === tab
-                                        ? "bg-[#FAF2E6] border border-[#C88000]"
-                                        : "bg-[#F1F1F1]"
-                                    }`}
+                className={`py-[8px] px-[14px] text-xs font-medium rounded-lg 
+                  ${
+                    page === "landing"
+                      ? !mode
+                        ? selectedTab === tab
+                          ? "bg-[#232A2F] border border-[#232A2F] text-white"
+                          : "bg-[#14181B] text-[#BEC0C2]"
+                        : selectedTab === tab
+                        ? "bg-[#FAF2E6] border border-[#C88000] text-[#2C3E50]"
+                        : "bg-[#F1F1F1] text-[#2C3E50]"
+                      : selectedTab === tab
+                      ? "bg-[#FAF2E6] border border-[#C88000] text-[#2C3E50]"
+                      : "bg-[#F1F1F1] text-[#2C3E50]"
+                  }`}
                 onClick={() => setSelectedTab(tab)}
               >
                 {tab}
@@ -314,7 +221,13 @@ function ModuleSearch({page}:Props) {
                 return (
                   <div
                     key={item._id}
-                    className="mt-2 bg-white p-3 rounded-lg cursor-pointer hover:shadow-md"
+                    className={`mt-2 ${
+                      page === "landing"
+                        ? !mode
+                          ? "bg-[#232A2F]"
+                          : "bg-white"
+                        : "bg-white"
+                    } p-3 rounded-lg cursor-pointer hover:shadow-md`}
                     onClick={() => {
                       const tabConfig = tabsConfig[selectedTab];
                       if (!tabConfig?.navigatePath) {
@@ -330,12 +243,31 @@ function ModuleSearch({page}:Props) {
                     }}
                   >
                     {/* Name/Header */}
-                    <p className="text-[#0B1320] font-bold text-sm">
+                    <p
+                      className={`
+                      ${
+                        page === "landing"
+                          ? !mode
+                            ? "text-white"
+                            : "text-[#0B1320]"
+                          : "text-[#0B1320]"
+                      } font-bold text-sm`}
+                    >
                       {item[tabsConfig[selectedTab].searchFields[0]] || ""}
                     </p>
 
                     {/* Additional Details */}
-                    <div className="mt-2 text-xs flex text-[#495160]">
+                    <div
+                      className={`
+                      ${
+                        page === "landing"
+                          ? !mode
+                            ? "text-[#bbbbbb]"
+                            : "text-[#495160]"
+                          : "text-[#495160]"
+                      }
+                      mt-2  text-xs flex `}
+                    >
                       {fieldsToShow.map((field: any, index: any) => (
                         <div key={index} className="flex items-center">
                           <p>{item[field]}</p>

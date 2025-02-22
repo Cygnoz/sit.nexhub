@@ -1,15 +1,18 @@
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../../../public/billbizzlogoLanding.png";
 import logoLight from "../../../public/bill-bizz-logo.png";
 import ArrowrightUp from "../../assets/icons/ArrowrightUp";
 import BellDot from "../../assets/icons/BellDot";
 import Sun from "../../assets/icons/Sun";
 import Moon from "../../assets/icons/Moon";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import Modal from "../../Components/model/Modal";
-import Button from "../../Components/Button";
 import SettingsIcons from "../../assets/icons/SettingsIcon";
 import ModuleSearch from "../../Components/ModuleSearch";
+import { useOrganization } from "../../context/OrganizationContext";
+import organizationIcon from "../../assets/Images/Ellipse 1.png";
+import User from "../../assets/icons/User";
+import SubscriptionIcon from "../../assets/icons/SubscriptionIcon";
+import LogOut from "../../assets/icons/LogOut";
 
 type Props = {
   setMode?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,16 +20,36 @@ type Props = {
 };
 
 function LandingHeader({ mode, setMode }: Props) {
-  const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false); // Dropdown state
+  const dropdownRef = useRef<HTMLDivElement>(null); // Ref for dropdown
   const navigate = useNavigate();
+  const { organization } = useOrganization();
 
   useEffect(() => {
-    // Retrieve mode from localStorage, if it exists
     const storedMode = localStorage.getItem("mode");
     if (storedMode !== null) {
       setMode?.(storedMode === "true");
     }
   }, [setMode]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   const toggleMode = () => {
     if (setMode) {
@@ -38,17 +61,15 @@ function LandingHeader({ mode, setMode }: Props) {
     }
   };
 
+
   const handleLogout = () => {
     ["authToken", "savedIndex", "savedSelectedIndex"].forEach((item) =>
       localStorage.removeItem(item)
     );
     navigate("/login");
-    setLogoutModalOpen(false);
   };
 
-  const closeModal = () => {
-    setLogoutModalOpen(false);
-  };
+
 
   return (
     <header
@@ -68,14 +89,16 @@ function LandingHeader({ mode, setMode }: Props) {
         <h1
           className={`text-lg font-medium ${
             mode ? "text-[#303F58]" : "text-[#F7E7CE]"
-          } `}
+          }`}
         >
           BILL BIZZ
         </h1>
       </div>
-      <div className=" z-9999 w-[45%]">
-        <ModuleSearch page="landing" />
+
+      <div className="z-9999 w-[45%]">
+        <ModuleSearch mode={mode} page="landing" />
       </div>
+
       <div className="flex items-center space-x-4">
         <button
           className={`${
@@ -93,12 +116,45 @@ function LandingHeader({ mode, setMode }: Props) {
           <SettingsIcons color={mode ? "#4B5C79" : "white"} />
         </button>
 
-        <button className="bg-[#FCFFED] text-[#585953] text-[12px] w-[138px] h-[38px] rounded-full font-semibold flex items-center justify-center gap-1 ">
+        {/* Profile dropdown */}
+        <div ref={dropdownRef} className="relative">
+          <img
+            src={organization?.organizationLogo || organizationIcon}
+            className="w-9 h-9 rounded-full object-cover cursor-pointer"
+            alt="Organization Logo"
+            onClick={() => setDropdownOpen(!isDropdownOpen)}
+          />
+
+          {isDropdownOpen && (
+            <div className={`absolute right-0  mt-3  rounded-xl px-7 py-4  text-sm space-y-4 shadow-lg z-9999 w-[610%]
+            ${!mode ? "bg-[#3C474D] text-[#DFE1E2]" : "bg-white text-[#4B5C79]"}
+            `}>
+              <div className="flex items-center gap-2 cursor-pointer"
+              onClick={()=> navigate("/settings/organization/profile")}
+              >
+                <User width={18} height={18} color={mode?"#4B5C79":"#DFE1E2"} />
+                <p>My Profile</p>
+              </div>
+              <div className="flex items-center gap-2 cursor-pointer">
+                <SubscriptionIcon color={mode?"#4B5C79":"#DFE1E2"} />
+                <p>Subscription</p>
+              </div>
+              <div
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={handleLogout}
+              >
+                <LogOut  color={mode?"#4B5C79":"#DFE1E2"} />
+                <p>Log out</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <button className="bg-[#FCFFED] text-[#585953] text-[12px] w-[138px] h-[38px] rounded-full font-semibold flex items-center justify-center gap-1">
           Let's Connect
-          <div>
-            <ArrowrightUp />
-          </div>
+          <ArrowrightUp />
         </button>
+
         {mode ? (
           <button
             className="bg-white border-white rounded-full border-4"
@@ -119,32 +175,6 @@ function LandingHeader({ mode, setMode }: Props) {
           </button>
         )}
       </div>
-
-      {isLogoutModalOpen && (
-        <Modal
-          open
-          onClose={closeModal}
-          className="rounded-lg p-8 w-[546px] h-[160px] text-[#303F58] space-y-8 relative"
-        >
-          <p className="text-sm">Are you sure you want to log out?</p>
-          <div className="flex justify-end gap-2 mb-3">
-            <Button
-              onClick={closeModal}
-              variant="secondary"
-              className="pl-8 pr-8 text-sm h-10"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleLogout}
-              variant="primary"
-              className="pl-8 pr-8 text-sm h-10"
-            >
-              Ok
-            </Button>
-          </div>
-        </Modal>
-      )}
     </header>
   );
 }
