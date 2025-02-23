@@ -11,8 +11,8 @@ import ModuleSearch from "../../Components/ModuleSearch";
 import { useOrganization } from "../../context/OrganizationContext";
 import organizationIcon from "../../assets/Images/Ellipse 1.png";
 import User from "../../assets/icons/User";
-import SubscriptionIcon from "../../assets/icons/SubscriptionIcon";
 import LogOut from "../../assets/icons/LogOut";
+import SubscriptionDrawer from "./SubscriptionDrawer";
 
 type Props = {
   setMode?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -135,10 +135,7 @@ function LandingHeader({ mode, setMode }: Props) {
                 <User width={18} height={18} color={mode?"#4B5C79":"#DFE1E2"} />
                 <p>My Profile</p>
               </div>
-              <div className="flex items-center gap-2 cursor-pointer">
-                <SubscriptionIcon color={mode?"#4B5C79":"#DFE1E2"} />
-                <p>Subscription</p>
-              </div>
+              <SubscriptionDrawer mode={mode}/>
               <div
                 className="flex items-center gap-2 cursor-pointer"
                 onClick={handleLogout}
