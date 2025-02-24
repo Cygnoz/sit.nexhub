@@ -666,13 +666,11 @@ const AddItem = ({ }: Props) => {
                           (unit: string, index: number) => (
                             <div
                               key={index}
-                              onClick={() => handleDropdownSelect("unit", unit)}
+                              onClick={() => handleDropdownSelect("unitName", unit)}
                               className="flex p-2 w-[100%] mb-4 hover:bg-gray-100 cursor-pointer border-b border-slate-300 text-sm  text-textColor"
                             >
                               {unit}
-                              <div className="ml-auto text-2xl cursor-pointer relative -mt-2 pe-2">
-                                &times;
-                              </div>
+                              
                             </div>
                           )
                         )}

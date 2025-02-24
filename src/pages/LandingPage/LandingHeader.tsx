@@ -1,21 +1,18 @@
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../../../public/billbizzlogoLanding.png";
 import logoLight from "../../../public/bill-bizz-logo.png";
-import ArrowrightUp from '../../assets/icons/ArrowrightUp';
-import BellDot from '../../assets/icons/BellDot';
-import BellRing from '../../assets/icons/BellRing';
-import LogOut from '../../assets/icons/LogOut';
-import SearchIcon from '../../assets/icons/SearchIcon';
-import Sun from '../../assets/icons/Sun';
-import UserRound from '../../assets/icons/UserRound';
-import UserRoundCog from '../../assets/icons/UserRoundCog';
-import MenuDropdown from '../../Components/menu/MenuDropdown';
+import ArrowrightUp from "../../assets/icons/ArrowrightUp";
+import BellDot from "../../assets/icons/BellDot";
+import Sun from "../../assets/icons/Sun";
 import Moon from "../../assets/icons/Moon";
-import { useNavigate } from "react-router-dom";
-import OrganizationIcon from "../../assets/icons/OrganizationIcon";
-import { useEffect, useState } from "react";
-import Modal from "../../Components/model/Modal";
-import Button from "../../Components/Button";
 import SettingsIcons from "../../assets/icons/SettingsIcon";
+import ModuleSearch from "../../Components/ModuleSearch";
+import { useOrganization } from "../../context/OrganizationContext";
+import organizationIcon from "../../assets/Images/Ellipse 1.png";
+import User from "../../assets/icons/User";
+import LogOut from "../../assets/icons/LogOut";
+import SubscriptionDrawer from "./SubscriptionDrawer";
 
 type Props = {
   setMode?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,107 +20,138 @@ type Props = {
 };
 
 function LandingHeader({ mode, setMode }: Props) {
-  const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false); // Dropdown state
+  const dropdownRef = useRef<HTMLDivElement>(null); // Ref for dropdown
   const navigate = useNavigate();
+  const { organization } = useOrganization();
 
   useEffect(() => {
-    // Retrieve mode from localStorage, if it exists
-    const storedMode = localStorage.getItem('mode');
+    const storedMode = localStorage.getItem("mode");
     if (storedMode !== null) {
-      setMode?.(storedMode === 'true');
+      setMode?.(storedMode === "true");
     }
   }, [setMode]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   const toggleMode = () => {
     if (setMode) {
       setMode((prev) => {
         const newMode = !prev;
-        localStorage.setItem('mode', newMode.toString());
+        localStorage.setItem("mode", newMode.toString());
         return newMode;
       });
     }
   };
 
-  const confirmLogout = () => {
-    setLogoutModalOpen(true);
-  };
 
   const handleLogout = () => {
-    ['authToken', 'savedIndex', 'savedSelectedIndex'].forEach(item => localStorage.removeItem(item));
+    ["authToken", "savedIndex", "savedSelectedIndex"].forEach((item) =>
+      localStorage.removeItem(item)
+    );
     navigate("/login");
-    setLogoutModalOpen(false);
-};
-
-const handleNavigate =()=>{
-  navigate("/settings")
-}
-
-
-  const closeModal = () => {
-    setLogoutModalOpen(false);
   };
 
+
+
   return (
-    <header className={`${mode ? 'bg-[#EAEBEB]' : 'bg-[#2C353B]'} text-[#DFD1B4] flex items-center justify-between p-4 rounded-full mb-8 px-6`}>
-      <div onClick={() => navigate('/landing')} className="flex items-center space-x-2 cursor-pointer">
+    <header
+      className={`${
+        mode ? "bg-[#EAEBEB]" : "bg-[#2C353B]"
+      } text-[#DFD1B4] flex items-center justify-between p-4 rounded-full mb-8 px-6 w-full`}
+    >
+      <div
+        onClick={() => navigate("/landing")}
+        className="flex items-center space-x-2 cursor-pointer"
+      >
         <img
           src={mode ? logo : logoLight}
           alt="Bill Bizz Logo"
           className="h-7 w-[22px]"
         />
-        <h1 className={`text-lg font-medium ${mode ? 'text-[#303F58]' : 'text-[#F7E7CE]'} `}>BILL BIZZ</h1>
+        <h1
+          className={`text-lg font-medium ${
+            mode ? "text-[#303F58]" : "text-[#F7E7CE]"
+          }`}
+        >
+          BILL BIZZ
+        </h1>
+      </div>
+
+      <div className="z-9999 w-[45%]">
+        <ModuleSearch mode={mode} page="landing" />
       </div>
 
       <div className="flex items-center space-x-4">
-        <div className={`${mode ? 'bg-white' : 'bg-[#404B52]'} rounded-full relative items-center w-[372px] h-[38px] flex gap-1`}>
-          <SearchIcon color={mode ? '#303F58' : 'white'} />
-          <input placeholder='Search' type="text" className={`ms-9 ${mode ? 'text-[#303F58]' : 'text-white'} bg-[#404B52] outline-none ${mode ? 'bg-white' : 'bg-[#404B52]'}`} />
-        </div>
-        <button className={`${mode ? 'bg-white' : 'bg-[#404B52]'} text-[#DFD1B4] w-[38px] h-[38px] flex justify-center items-center rounded-full`}>
-          <BellDot color={mode ? '#4B5C79' : 'white'} />
+        <button
+          className={`${
+            mode ? "bg-white" : "bg-[#404B52]"
+          } text-[#DFD1B4] w-[38px] h-[38px] flex justify-center items-center rounded-full`}
+        >
+          <BellDot color={mode ? "#4B5C79" : "white"} />
         </button>
-        <MenuDropdown
-          menuItems={[
-            {
-              label: 'My Profile',
-              icon: <UserRound color={mode ? '#4B5C79' : '#DFE1E2'} size="18" />,
-              onClick: () => {},
-            },
-            {
-              label: 'Support',
-              icon: <UserRoundCog color={mode ? '#4B5C79' : '#DFE1E2'} size={18} />,
-              onClick: () => {},
-            },
-            {
-              label: 'My Subscription',
-              icon: <BellRing color={mode ? '#4B5C79' : '#DFE1E2'} />,
-              onClick: () => {},
-            },
-            {
-              label: 'Log Out',
-              icon: <LogOut color={mode ? '#4B5C79' : '#DFE1E2'} />,
-              onClick: confirmLogout,
-            },
-            {
-              label: 'settings',
-              icon: <SettingsIcons  size="sm" color={mode ? '#4B5C79' : '#DFE1E2'} />,
-              onClick: handleNavigate,
-            },
-          ]}
-          backgroundColor={mode ? "bg-white" : "bg-[#3C474D]"}
-          trigger={<OrganizationIcon height="10" width="10" />}
-          position="center"
-          labelColor={mode ? "#4B5C79" : '#DFE1E2'}
-          underline
-          underlineColor='text-[#DFE1E2]'
-        />
+        <button
+          onClick={() => navigate("/settings")}
+          className={`${
+            mode ? "bg-white" : "bg-[#404B52]"
+          } text-[#DFD1B4] w-[38px] h-[38px] flex justify-center items-center rounded-full`}
+        >
+          <SettingsIcons color={mode ? "#4B5C79" : "white"} />
+        </button>
 
-        <button className="bg-[#FCFFED] text-[#585953] text-[12px] w-[138px] h-[38px] rounded-full font-semibold flex items-center justify-center gap-1 ">
+        {/* Profile dropdown */}
+        <div ref={dropdownRef} className="relative">
+          <img
+            src={organization?.organizationLogo || organizationIcon}
+            className="w-9 h-9 rounded-full object-cover cursor-pointer"
+            alt="Organization Logo"
+            onClick={() => setDropdownOpen(!isDropdownOpen)}
+          />
+
+          {isDropdownOpen && (
+            <div className={`absolute right-0  mt-3  rounded-xl px-7 py-4  text-sm space-y-4 shadow-lg z-9999 w-[610%]
+            ${!mode ? "bg-[#3C474D] text-[#DFE1E2]" : "bg-white text-[#4B5C79]"}
+            `}>
+              <div className="flex items-center gap-2 cursor-pointer"
+              onClick={()=> navigate("/settings/organization/profile")}
+              >
+                <User width={18} height={18} color={mode?"#4B5C79":"#DFE1E2"} />
+                <p>My Profile</p>
+              </div>
+              <SubscriptionDrawer mode={mode}/>
+              <div
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={handleLogout}
+              >
+                <LogOut  color={mode?"#4B5C79":"#DFE1E2"} />
+                <p>Log out</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <button className="bg-[#FCFFED] text-[#585953] text-[12px] w-[138px] h-[38px] rounded-full font-semibold flex items-center justify-center gap-1">
           Let's Connect
-          <div>
-            <ArrowrightUp />
-          </div>
+          <ArrowrightUp />
         </button>
+
         {mode ? (
           <button
             className="bg-white border-white rounded-full border-4"
@@ -144,32 +172,6 @@ const handleNavigate =()=>{
           </button>
         )}
       </div>
-
-      {isLogoutModalOpen && (
-        <Modal
-          open
-          onClose={closeModal}
-          className="rounded-lg p-8 w-[546px] h-[160px] text-[#303F58] space-y-8 relative"
-        >
-          <p className="text-sm">Are you sure you want to log out?</p>
-          <div className="flex justify-end gap-2 mb-3">
-            <Button
-              onClick={closeModal}
-              variant="secondary"
-              className="pl-8 pr-8 text-sm h-10"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleLogout}
-              variant="primary"
-              className="pl-8 pr-8 text-sm h-10"
-            >
-              Ok
-            </Button>
-          </div>
-        </Modal>
-      )}
     </header>
   );
 }

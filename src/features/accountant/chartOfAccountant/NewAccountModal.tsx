@@ -30,6 +30,7 @@ const initialFormValues: any = {
   debitOpeningBalance: "",
   creditOpeningBalance: "",
   parentAccountId: "",
+  createdDate: new Date().toISOString().split("T")[0],
 };
 
 function NewAccountModal({
@@ -106,8 +107,8 @@ function NewAccountModal({
             group === "Asset" || group === "Income" || group === "Equity"
               ? "Asset"
               : group === "Liability" || group === "Expenses"
-                ? "Liability"
-                : group;
+              ? "Liability"
+              : group;
           return { accountHead: head, accountGroup };
         }
       }
@@ -227,16 +228,14 @@ function NewAccountModal({
         toast.success(response.data.message);
         closeModal();
         fetchAllAccounts();
-      }
-      else {
+      } else {
         toast.error(error.response.data.message);
-
       }
     } catch (error: any) {
       toast.error(
         error.response?.data?.message ||
-        error.message ||
-        "Failed to add account"
+          error.message ||
+          "Failed to add account"
       );
     }
   };
@@ -338,6 +337,20 @@ function NewAccountModal({
                   }
                   className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
                 />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm mb-1 text-labelColor">
+                  Opening Date
+                </label>
+                <div className="relative w-full">
+                  <input
+                    type="date"
+                    onChange={handleChange}
+                    name="createdDate"
+                    className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
+                    value={formValues?.createdDate}
+                  />
+                </div>
               </div>
 
               {/* {formValues.accountSubhead &&
