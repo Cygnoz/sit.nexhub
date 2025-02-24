@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
@@ -22,6 +22,9 @@ import Preview from "../../../assets/icons/Preview";
 import Button from "../../../Components/Button";
 import Trash2 from "../../../assets/icons/Trash2";
 import ArrowRightLeft from "../../../assets/icons/ArrowRightLeft";
+import NewspaperIcon from "../../../assets/icons/NewspaperIcon";
+import PaymenttHistory from "./viewCustomerDetails/PaymentHistory";
+import ConfirmModal from "../../../Components/ConfirmModal";
 
 interface Status {
   status: string;
@@ -37,10 +40,16 @@ function SeeCustomerDetails() {
     []
   );
   const [Currency, setCurrency] = useState<any>([]);
+  const navigate = useNavigate();
 
   const { request: getOneCustomer } = useApi("get", 5002);
   const { request: updateCustomerStatus } = useApi("put", 5002);
   const { request: getCurrencies } = useApi("get", 5004);
+  const { request: deleteData } = useApi("delete", 5002);
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const confirmDelete = () => {
+    setConfirmModalOpen(true);
+  };
 
   const { customerEditResponse } = useContext(CustomerEditResponseContext)!;
   const [statusData, setStatusData] = useState<Status>({
@@ -58,7 +67,7 @@ function SeeCustomerDetails() {
         const currencies = response.data;
         const baseCurrency =
           currencies.find((currency: any) => currency.baseCurrency) ||
-          currencies[0]; // Default to first if no base currency
+          currencies[0];
         setCurrency(baseCurrency);
       }
     } catch (error) {
@@ -143,9 +152,38 @@ function SeeCustomerDetails() {
       onclick: () => setSelectedTab("Invoice History"),
     },
 
-   
+    {
+      icon: <NewspaperIcon  color={"currentColor"} />,
+      title: "View Payment",
+      onclick: () => setSelectedTab("View Payment"),
+    },
   ];
 
+  useEffect(() => {
+    if (customerData) {
+      setStatusData({ status: customerData.status });
+    }
+  }, [customerData]);
+
+  const handleDelete = async () => {
+    try {
+      let url = `${endponits.DELETE_CUSTOMER}/${id}`
+      if (!url) return;
+      const { response, error } = await deleteData(url);
+      if (!error && response) {
+        toast.success(response.data.message)
+        setConfirmModalOpen(false)
+          setTimeout(() => {
+            navigate("/customer/home");
+          }, 1000);   
+      
+      } else{
+        toast.error(error.response.data.message)
+      }
+    } catch (error) {
+      console.error("Error in deleting item:", error);
+    }
+  };
 
   return (
     <div className="px-6">
@@ -166,10 +204,10 @@ function SeeCustomerDetails() {
           </div>
           <div className="flex mx-4 gap-2">
             <EditCustomerModal customerDataPorps={customerData} />
-            <Button
+            <Button onClick={confirmDelete}
               variant="secondary"
               size="sm"
-              className="text-[10px] h-6 px-4 hidden"
+              className="text-[10px] h-6 px-4 "
             >
               <Trash2 color="#585953" /> Delete
             </Button>
@@ -180,7 +218,7 @@ function SeeCustomerDetails() {
             className="relative w-[27.9%] h-[146px] rounded-2xl p-4 bg-cover bg-center"
             style={{ backgroundImage: `url(${cardBg})` }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#820000] to-[#2C353B] opacity-75 rounded-2xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-[#820000] to-[#2C353B] opacity-90 rounded-2xl"></div>
             <div className="relative z-10">
               {/* <p className="text-membershipText text-sm mt-1">
                 Privilege Membership Card
@@ -263,8 +301,17 @@ function SeeCustomerDetails() {
           {selectedTab === "Invoice History" && (
         <SalesHistory customerId={customerId} />
           )}
+           {selectedTab === "View Payment" && (
+        <PaymenttHistory customerId={customerId} />
+          )}
         </div>
       </div>
+      <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete?"
+      />
     </div>
   );
 }

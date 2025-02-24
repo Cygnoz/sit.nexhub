@@ -5,13 +5,11 @@ import CustomerStatusHistory from "./CustomerStatusHistory";
 import OtherDetails from "./ViewMore/OtherDetails";
 import Factory from "../../../../assets/icons/Factory";
 
-
-
 const Overview = ({
   customerData,
   statusData,
   customerId,
-  handleStatusSubmit
+  handleStatusSubmit,
 }: {
   customerData: any;
   statusData: any;
@@ -19,11 +17,7 @@ const Overview = ({
   handleStatusSubmit: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) => {
   return (
-
-
     <div>
-
-
       <div className="rounded-md p-2 mt-2">
         <div className="grid grid-cols-4 gap-4 text-sm text-textColor">
           <div className="space-y-3  text-sm border-[1px] border-[#DADBDD]   bg-[#F9F9F9]  rounded-md p-4">
@@ -31,7 +25,11 @@ const Overview = ({
               <div className="flex justify-between w-full">
                 <div className="flex flex-1">
                   <img
-                    src={customerData.customerProfile ? customerData.customerProfile : "https://i.postimg.cc/MHh2tQ41/avatar-3814049-1280.webp"}
+                    src={
+                      customerData.customerProfile
+                        ? customerData.customerProfile
+                        : "https://i.postimg.cc/MHh2tQ41/avatar-3814049-1280.webp"
+                    }
                     alt="Profile"
                     className="w-8 h-8 object-cover rounded-full mr-3"
                   />
@@ -65,26 +63,29 @@ const Overview = ({
               <p> {customerData.mobile}</p>
             </div>
             <div className="flex ">
-              
               <p className="font-bold text-textColor">
-                Opening Balance {customerData.debitOpeningBalance ?
-                  `(Db) : ${customerData.debitOpeningBalance}` :
-                  customerData.creditOpeningBalance ?
-                    `(Cr) : ${customerData.creditOpeningBalance}` :
-                    "N/A"}
+                Opening Balance{" "}
+                {customerData.debitOpeningBalance
+                  ? `(Dr) : ${customerData.debitOpeningBalance}`
+                  : customerData.creditOpeningBalance
+                  ? `(Cr) : ${customerData.creditOpeningBalance}`
+                  : "N/A"}
               </p>
-
-            </div>
+            </div>  
 
             <div className="flex justify-between">
-              {customerData.companyName &&
+              {customerData.companyName && (
                 <p className="font-bold text-textColor  flex gap-1">
-                  <Factory color={"#303F58"} width={14}/>
+                  <Factory color={"#303F58"} width={14} />
                   {customerData.companyName}
-                </p>}
+                </p>
+              )}
               <div
-                className={`w-fit  flex justify-center rounded-md text-xs text-white py-0.5 px-1  ${statusData.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400"
-                  }`}
+                className={`w-fit  flex justify-center rounded-md text-xs text-white py-0.5 px-1  ${
+                  statusData.status === "Active"
+                    ? "bg-[#78AA86]"
+                    : "bg-zinc-400"
+                }`}
               >
                 {statusData.status}
               </div>
@@ -103,21 +104,42 @@ const Overview = ({
             </div>
             <div className="text-xs p-2">
               {customerData.billingAttention ||
-                customerData.billingAddressLine1 ||
-                customerData.billingAddressLine2 ||
-                customerData.billingCity ||
-                customerData.billingPinCode ||
-                customerData.billingCountry ||
-                customerData.billingPhone ? (
+              customerData.billingAddressLine1 ||
+              customerData.billingAddressLine2 ||
+              customerData.billingCity ||
+              customerData.billingPinCode ||
+              customerData.billingCountry ||
+              customerData.billingPhone ? (
                 <>
-                  {customerData.billingAttention && <p>{customerData.billingAttention}</p>}
-                  {customerData.billingAddressLine1 && (
-                    <p>{customerData.billingAddressLine1}, {customerData.billingAddressLine2}</p>
+                  {customerData.billingAttention && (
+                    <p>{customerData.billingAttention}</p>
                   )}
-                  {customerData.billingCity && <p>{customerData.billingCity}</p>}
-                  {customerData.billingPinCode && <p>Pin: {customerData.billingPinCode}</p>}
-                  {customerData.billingCountry && customerData.billingState && <p>{customerData.billingState},{customerData.billingCountry}</p>}
-                  {customerData.billingPhone && <p>Phone: {customerData.billingPhone}</p>}
+                  {customerData.billingAddressLine1 && (
+                    <p>
+                      {customerData.billingAddressLine1},{" "}
+                      {customerData.billingAddressLine2}
+                    </p>
+                  )}
+                  {customerData.billingCity && (
+                    <p>{customerData.billingCity}</p>
+                  )}
+                  {customerData.billingPinCode && (
+                    <p>Pin: {customerData.billingPinCode}</p>
+                  )}
+                  <div className="flex">
+                    {customerData.billingState && (
+                      <p>{customerData.billingState} </p>
+                    )}
+                    <p>
+                      {customerData.billingCountry
+                        ? `, ${customerData.billingCountry}`
+                        : ""}
+                    </p>
+                  </div>
+
+                  {customerData.billingPhone && (
+                    <p>Phone: {customerData.billingPhone}</p>
+                  )}
                 </>
               ) : (
                 <p>No billing address available.</p>
@@ -137,28 +159,46 @@ const Overview = ({
             </div>
             <div className="text-xs p-2">
               {customerData.shippingAttention ||
-                customerData.shippingAddress1 ||
-                customerData.shippingAddress2 ||
-                customerData.shippingCity ||
-                customerData.shippingPinCode ||
-                customerData.shippingCountry ||
-                customerData.shippingPhone ? (
+              customerData.shippingAddress1 ||
+              customerData.shippingAddress2 ||
+              customerData.shippingCity ||
+              customerData.shippingPinCode ||
+              customerData.shippingCountry ||
+              customerData.shippingPhone ? (
                 <>
-                  {customerData.shippingAttention && <p>{customerData.shippingAttention}</p>}
-                  {customerData.shippingAddress1 && (
-                    <p>{customerData.shippingAddress1}{customerData.shippingAddress2 ? `, ${customerData.shippingAddress2}` : ''}</p>
+                  {customerData.shippingAttention && (
+                    <p>{customerData.shippingAttention}</p>
                   )}
-                  {customerData.shippingCity && <p>{customerData.shippingCity}</p>}
-                  {customerData.shippingPinCode && <p>Pin: {customerData.shippingPinCode}</p>}
-                  {customerData.shippingCountry && customerData.shippingState && <p>{customerData.shippingState}, {customerData.shippingCountry}</p>}
-                  {customerData.shippingPhone && <p>Phone: {customerData.shippingPhone}</p>}
+                  {customerData.shippingAddress1 && (
+                    <p>
+                      {customerData.shippingAddress1}
+                      {customerData.shippingAddress2
+                        ? `, ${customerData.shippingAddress2}`
+                        : ""}
+                    </p>
+                  )}
+                  {customerData.shippingCity && (
+                    <p>{customerData.shippingCity}</p>
+                  )}
+                  {customerData.shippingPinCode && (
+                    <p>Pin: {customerData.shippingPinCode}</p>
+                  )}
+                  {customerData.shippingCountry &&
+                    customerData.shippingState && (
+                      <p>
+                        {customerData.shippingState},{" "}
+                        {customerData.shippingCountry}
+                      </p>
+                    )}
+                  {customerData.shippingPhone && (
+                    <p>Phone: {customerData.shippingPhone}</p>
+                  )}
                 </>
               ) : (
                 <p>No shipping address available.</p>
               )}
             </div>
           </div>
-
 
           <div className="pe-8 p-2 bg-[#F6F6F6] rounded-lg border-[1px] border-[#DADBDD] ">
             <p className="font-bold m-2">Other Details</p>

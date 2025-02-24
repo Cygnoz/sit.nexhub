@@ -99,8 +99,6 @@ function SalesView({ data, page }: SalesOrderViewProps) {
     }
   };
 
-
-
   const fetchOneCustomer = async () => {
     try {
       if (data?.customerId) {
@@ -115,20 +113,15 @@ function SalesView({ data, page }: SalesOrderViewProps) {
     }
   };
 
+
   useEffect(() => {
     fetchOneCustomer();
     fetchOneInvoice()
     fetchOneCreditNote()
   }, [data?.customerId, id]);
 
-
-
- 
-
-
   return (
     <div className="mt-4">
-      {/* Order Date & Expected Shipment */}
       <div className="flex items-center justify-start mb-4">
         <p className="text-textColor border-r-[1px] border-borderRight pr-4 text-sm font-normal">
           {page === "credit-Note" ? "Credit Date:" : "Order Date:"}
@@ -158,7 +151,6 @@ function SalesView({ data, page }: SalesOrderViewProps) {
 
       </div>
 
-      {/* Send Sales Order */}
       <div className="mt-4 bg-cuscolumnbg p-4 rounded-lg flex justify-between items-center">
         <div>
           <p className="text-base font-bold text-textColor">{

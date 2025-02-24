@@ -55,12 +55,13 @@ const SupplierTable = ({
     { id: "companyName", label: "Company Name", visible: true },
     { id: "mobile", label: "Mobile", visible: true },
     { id: "supplierEmail", label: "Email", visible: true },
-    { id: "supplierDetails", label: "Supplier details", visible: true },
     { id: "billingPhone", label: "Billing Phone", visible: true },
     { id: "billingCity", label: "Billing City", visible: true },
     { id: "status", label: "Status", visible: true },
     { id: "payables", label: "Payables(BCY)", visible: false },
     { id: "unused", label: "Unused Credit(BCY)", visible: false },
+    { id: "supplierDetails", label: "Supplier details", visible: true },
+
   ];
 
   const [columns, setColumns] = useState<Column[]>(initialColumns);

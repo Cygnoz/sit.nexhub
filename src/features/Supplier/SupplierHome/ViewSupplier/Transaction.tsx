@@ -1,162 +1,101 @@
-import { useState } from "react";
-import BookopenCheck from "../../../../assets/icons/BookopenCheck";
-import Booktext from "../../../../assets/icons/Booktext";
-import BookX from "../../../../assets/icons/BookX";
-import newspapper from "../../../../assets/icons/newspaper";
-import PlusCircle from "../../../../assets/icons/PlusCircle";
-import SearchBar from "../../../../Components/SearchBar";
-import Button from "../../../../Components/Button";
-import ListFilter from "../../../../assets/icons/ListFilter";
-type Props = {};
+import { useEffect, useState } from "react";
+import Calender from "../../../../assets/icons/Calender";
+import { endponits } from "../../../../Services/apiEndpoints";
+import useApi from "../../../../Hooks/useApi";
+import DotIcon from "../../../../assets/icons/DotIcon";
+import Line from "../../../../assets/icons/Line";
+type Props = {supplierId?:string};
 
-function Transaction({}: Props) {
-  const [selectedTab, setSelectedTab] = useState<string>("Purchase Order");
-  const [searchValue, setSearchValue] = useState<string>("");
+function Transaction({supplierId}: Props) {
+  const { request: getCustomerTransaction } = useApi("get", 5002);
+  const [history, setHistory] = useState<any>([]);
 
-  const filterList = [
-    { title: "Purchase Order", icon: Booktext },
-    { title: "Expense", icon: BookopenCheck },
-    { title: "Purchase Received", icon: BookX },
-    { title: "Bills", icon: newspapper },
-    { title: "Bill Payment", icon: newspapper },
-    { title: "Vendor Credits", icon: newspapper },
-  ];
+  const getCustomerTransactionResponse = async () => {
+    const url = `${endponits.GET_CUSTOMER_SALE_HISTORY}/${supplierId}`;
+    try {
+      const apiResponse = await getCustomerTransaction(url);
+      const { response, error } = apiResponse;
+      if (!error && response) {
+        console.log("API Response:", response);
+        setHistory(response.data);
+      } else {
+        console.error("API Error:", error);
+      }
+    } catch (error) {
+      console.error("Catch Error:", error);
+    }
+  };
 
-  const tableHead = [
-    "Order Number",
-    "Order Date",
-    "Purchase Order#",
-    "Vendor Name",
-    "Status",
-    "Amount",
-  ];
-
-  const data = [
-    {
-      orderNo: "P00001",
-      orderDate: "2022-01-01",
-      purchaseOrder: "PO-0001",
-      vendorName: "Vendor 1",
-      status: "Purchase Order",
-      amount: "0.00",
-    },
-    {
-      orderNo: "P00002",
-      orderDate: "2022-01-02",
-      purchaseOrder: "PO-0002",
-      vendorName: "Vendor 2",
-      status: "Purchase Order",
-      amount: "0.00",
-      },
-
-  ];
+  useEffect(() => {
+    getCustomerTransactionResponse();
+  }, []);
   return (
-    <div className="">
-      <h1 className="text-md text-xl">Transaction</h1>
-      <div className=" gap-3 mt-4 text-xs  grid-flow-col grid">
-        {filterList.map((item) => (
-          <button
-            key={item.title}
-            onClick={() => setSelectedTab(item.title)}
-            className={` flex border-2 rounded-md justify-center h-9 w-48 items-center gap-2
-                  ${
-                    selectedTab === item.title
-                      ? "bg-[#E3E6D5] text-[#585953] border-[#E3E6D5]"
-                      : "border-zinc-300 bg-transparent text-textColor"
-                  }`}
-          >
-            {item.icon && (
-              <item.icon
-                color={selectedTab === item.title ? "#585953" : "#4B5C79"}
-                height={15}
-                width={15}
-              />
-            )}
-            <span
-              className={`font-semibold ${
-                selectedTab === item.title ? "#4B5C79" : "text-[#4B5C79]"
-              }`}
-            >
-              {item.title}
-            </span>
-          </button>
-        ))}
-       
-      </div>
-
-      <div className="flex w-full gap-4 py-4">
-        <div className="w-full">
-          <SearchBar
-            searchValue={searchValue}
-            onSearchChange={setSearchValue}
-            placeholder="Search Payments"
-          />
+    <div>
+      {history.length > 0 ? (
+        <div className="grid grid-cols-3  items-center">
+         {history.slice().reverse().map((item: any, index: number) => (
+  <div key={index} className="flex items-center my-4 w-full">
+    <div className="flex items-center w-full gap-7">
+      <div className="bg-[#f5f8fd] px-6 py-4 w-full rounded-lg shadow-md h-40">
+        <div className="flex">
+          <p className="bg-white px-1 py-0.5 ml-auto rounded-md flex gap-2 text-[12px] text-[#A9A2A2]">
+            <span className="mt-0.5">
+              <Calender color={"#A9A2A2"} width={12} height={12} />
+            </span>{" "}
+            {item.createdDate}
+          </p>
         </div>
 
-        <Button variant="secondary" size="sm" className="min-w-fit text-sm">
-          <ListFilter classname="h-5" color={"currentColor"} />
-          All
-        </Button>
-        <Button variant="secondary" size="sm" className="min-w-fit text-sm">
-          <PlusCircle color={"currentColor"} />
-          Add new
-        </Button>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white mb-5">
-          <thead className="text-[12px] text-center text-dropdownText">
-            <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">
-                <input type="checkbox" className="form-checkbox w-4 h-4" />
-              </th>
-              {tableHead.map((item) => (
-                <th className="py-2 px-4 font-medium border-b border-tableBorder">
-                  {item}
-                </th>
-              ))}
-              <th className="py-3 px-4 font-medium border-b border-tableBorder">
-                <ListFilter classname="h-5" color={"CurrentColor"} />
-              </th>
-            </tr>
-          </thead>
-          <tbody className="text-dropdownText text-center text-[13px]">
-            {data.map((item) => (
-              <tr className="relative cursor-pointer">
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  <input type="checkbox" className="form-checkbox w-4 h-4" />
-                </td>
-              <td  className="py-2.5 px-4 border-y border-tableBorder">
-                {item.orderNo}
+        <div className="flex gap-2">
+          <div className="w-3 h-3 mt-1 bg-[#9747FF] rounded-full"></div>
+          <p className="text-[#303F58] text-[14px] font-bold">Invoice:</p>
+          <p className="text-[#303F58] text-[14px] font-bold">{item.salesInvoice}</p>
+        </div>
 
-              </td>
-              <td  className="py-2.5 px-4 border-y border-tableBorder">
-                {item.orderDate}
-                
-              </td>
-              <td  className="py-2.5 px-4 border-y border-tableBorder">
-                {item.purchaseOrder}
-                
-              </td>
-              <td  className="py-2.5 px-4 border-y border-tableBorder">
-                {item.vendorName}
-                
-              </td>
-              <td  className="py-2.5 px-4 border-y border-tableBorder flex  justify-center">
-               <div className="bg-[#E3E6D5] flex items-center justify-center gap-2 rounded-xl py-1 px-2 w-fit text-xs font-semibold"> <div className="h-1.5 w-1.5 bg-slate-800 rounded-full"></div> {item.status}</div>
-                
-              </td>
-              <td  className="py-2.5 px-4 border-y border-tableBorder">
-                {item.amount}
-                
-              </td>
-              <td  className="py-2.5 px-4 border-y border-tableBorder">
-                
-              </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="grid grid-cols-2 mt-2 h-16">
+          <div>
+            {item.salesOrderNumber && (
+              <p className="text-[#4B5C79] text-[13px]">Order No.</p>
+            )}
+            <p className="text-[#4B5C79] text-[13px]">Amount</p>
+            <p className="text-[#4B5C79] text-[13px]">Balance Due</p>
+          </div>
+          <div>
+            <p className="text-[#4B5C79] text-[13px]">{item.salesOrderNumber}</p>
+            <p className="text-[#4B5C79] text-[13px]">&#8377; {item.saleAmount}</p>
+            <p className="text-[#4B5C79] text-[13px]">&#8377; {item.balanceAmount}</p>
+          </div>
+        </div>
+
+        <div className="ml-auto flex justify-end">
+          <div
+            className={`${
+              item.paidStatus === "Pending"
+                ? "bg-zinc-200"
+                : item.paidStatus === "Completed"
+                ? "bg-[#94dca9]"
+                : "bg-[#dcd894]"
+            } text-[13px] rounded-lg text-center items-center text-textColor h-[18px] px-2 max-w-fit gap-2 py-2 w-full flex justify-end`}
+          >
+            <DotIcon color="#495160" />
+            {item.paidStatus}
+          </div>
+        </div>
       </div>
+
+      <div className="w-10 flex justify-center">
+        {index % 3 !== 2 && index !== history.length - 1 && <Line />}
+      </div>
+    </div>
+  </div>
+))}
+
+        </div>
+      ) : (
+        <div className="flex items-center  justify-center ">
+          <p className="text-[red] my-5">No Recordes Available !</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -40,6 +40,10 @@ function AddExpenseCategory({}: Props) {
 
   const closeModal = (main:boolean,add:boolean,edit:boolean) => {
     setIsOpen({main:main,edit:edit,add:add})
+    setCategories({
+      expenseCategory:"",
+      description:""
+    })
   };
   const openModal=(main:boolean,add:boolean,edit:boolean)=>{
     setIsOpen({main:main,edit:edit,add:add})
