@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
-import Print from "../../sales/salesOrder/Print";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
 import Eye from "../../../assets/icons/Eye";
@@ -12,6 +11,8 @@ import useApi from "../../../Hooks/useApi";
 import TrashCan from "../../../assets/icons/TrashCan";
 import ConfirmModal from "../../../Components/ConfirmModal";
 import toast from "react-hot-toast";
+import Button from "../../../Components/Button";
+import { PrinterIcon } from "@heroicons/react/20/solid";
 
 interface Column {
   id: string;
@@ -38,7 +39,7 @@ interface CustomerTableProps {
   searchValue: string;
   loading: any;
   setSearchValue: (value: string) => void;
-  refreshCustomers: () => void; 
+  refreshCustomers: () => void;
 }
 
 
@@ -169,7 +170,10 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
           />
         </div>
         <div className="flex gap-4">
-          <Print />
+          <Button variant="secondary" className="text-sm font-medium h-9">
+            <PrinterIcon color="#565148" height={16} width={16} />
+            Print
+          </Button>
         </div>
       </div>
       <div className="mt-3 overflow-y-scroll max-h-[25rem]">
