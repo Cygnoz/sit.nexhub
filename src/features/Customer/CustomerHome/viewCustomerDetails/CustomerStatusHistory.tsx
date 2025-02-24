@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
+import Calender from "../../../../assets/icons/Calender";
+import CehvronDown from "../../../../assets/icons/CehvronDown";
 
 type Props = {
     id: string | undefined;
@@ -13,7 +15,7 @@ function CustomerStatusHistory({ id }: Props) {
     const [historyData, setHistoryData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [selectedDate, setSelectedDate] = useState("");
-
+    const dateInputRef = useRef<HTMLInputElement>(null);
     const fetchAllAccounts = async () => {
         setIsLoading(true);
         setError(null);
@@ -36,23 +38,22 @@ function CustomerStatusHistory({ id }: Props) {
         fetchAllAccounts();
     }, []);
 
-    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const date = event.target.value;
-        setSelectedDate(date);
-    
-        if (date) {
-            const filtered = historyData.filter((item: any) => {
-                const parsedDate = new Date(item.createdDate);
-                const formattedDate = parsedDate.getFullYear() + '-' + 
-                                      String(parsedDate.getMonth() + 1).padStart(2, '0') + '-' + 
-                                      String(parsedDate.getDate()).padStart(2, '0');
-                return formattedDate === date;
-            });
-            setFilteredData(filtered);
-        } else {
-            setFilteredData(historyData);
-        }
-    };
+   
+      
+      const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+          const date = event.target.value;
+          setSelectedDate(date);
+      
+          if (date) {
+              const filtered = historyData.filter((item: any) => {
+                  const formattedDate = new Date(item.createdDate).toISOString().split("T")[0]; 
+                  return formattedDate === date;
+              });
+              setFilteredData(filtered);
+          } else {
+              setFilteredData(historyData);
+          }
+      };
     
 
     const getCircleStyle = (title: string) => {
@@ -71,20 +72,41 @@ function CustomerStatusHistory({ id }: Props) {
             <div className="">
                 <div className="flex justify-between">
                     <h3 className="text-[#303F58] mt-1.5 text-xl font-bold">Customer Status History</h3>
-                    <div>
-                        <input
-                            type="date"
-                            className="text-sm mt-1 w-72 rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                            max={new Date().toISOString().split("T")[0]}
-                            value={selectedDate}
-                            onChange={handleDateChange}
-                        />
-                    </div>
+                    <div
+      className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer bg-white"
+      onClick={() => dateInputRef.current?.showPicker()} 
+    >
+      <div className="pointer-events-none flex items-center px-2 text-gray-700">
+        <Calender color="gray" height={18} width={18} />
+      </div>
+
+      <span className={`${selectedDate ? "text-textColor" : "text-textColor"}`}>
+        {selectedDate ? selectedDate : "Select Date"}
+      </span>
+
+      <div className="pointer-events-none flex items-center px-2 text-gray-700">
+        <CehvronDown color="gray" />
+      </div>
+
+      {/* Hidden but accessible input */}
+      <input
+        ref={dateInputRef}
+        type="date"
+        className="absolute inset-0 opacity-0 cursor-pointer"
+        max={new Date().toISOString().split("T")[0]}
+        value={selectedDate}
+        onChange={handleDateChange}
+      />
+    </div>
+</div>
+
+
+
                 </div>
                 {isLoading && <p>Loading...</p>}
                 {error && <p className="text-red-500">{error}</p>}
                 {!isLoading && !error && filteredData.length === 0 && (
-                    <p>No history available.</p>
+                   <div className="flex items-center justify-center my-10 text-[red]"> <p>No History available.</p></div>
                 )}
                 <div className="flex max-w-full px-2 overflow-x-auto hide-scrollbar mt-3">
                     {filteredData.map((item: any, index: number) => {
@@ -116,7 +138,6 @@ function CustomerStatusHistory({ id }: Props) {
                     })}
                 </div>
             </div>
-        </div>
     );
 }
 

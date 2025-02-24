@@ -10,6 +10,9 @@ import { useOrganization } from '../../../../context/OrganizationContext';
 import SideBar from './SideBar';
 import PrinterIcon from '../../../../assets/icons/PrinterIcon';
 import Jornal from '../../bills/ViewBill/Jornal';
+import toast from 'react-hot-toast';
+import ConfirmModal from '../../../../Components/ConfirmModal';
+import Trash2 from '../../../../assets/icons/Trash2';
 
 type Props = {};
 
@@ -17,7 +20,11 @@ function PaymentView({}: Props) {
   const[paymentData,setPaymentData]=useState<[]|any>([])
   const {request:getPayment}=useApi("get",5005)
   const { organization } = useOrganization()
-
+  const { request: deleteData } = useApi("delete", 5005);
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const confirmDelete = () => {
+    setConfirmModalOpen(true);
+  };
 
   const {id}=useParams()
 
@@ -33,6 +40,29 @@ function PaymentView({}: Props) {
       }
     } catch (error) {
       console.error('Failed to fetch settings:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      let url = `${endponits.DELETE_PAYMENT_MADE}/${id}`
+
+      if (!url) return;
+
+      const { response, error } = await deleteData(url);
+      if (!error && response) {
+        console.log("Deleted successfully:", response);
+        toast.success(response.data.message)
+        setConfirmModalOpen(false)
+          setTimeout(() => {
+            navigate("/purchase/payment-made");
+          }, 1000);   
+      
+      } else{
+        toast.error(error.response.data.message)
+      }
+    } catch (error) {
+      console.error("Error in deleting item:", error);
     }
   };
 
@@ -70,23 +100,16 @@ function PaymentView({}: Props) {
           <Button className="h-[38px] w-[100px] flex justify-center items-center" variant="secondary" onClick={handleEdit}>
             <PencilEdit color="black" />
             Edit
-          </Button>
+          </Button> <Button variant="secondary" size="sm" className="px-2" onClick={confirmDelete}>
+                    <Trash2 color="#565148"  />
+                    Delete
+                  </Button>
 
           <Button variant="secondary" size="sm" className="px-2">
                     <PrinterIcon color="#565148" height={16} width={16} />
                     Print
                   </Button>
-          {/* <Button className="h-[38px] w-[100px] flex justify-center items-center" variant="secondary">
-            <PencilEdit color="black" />
-            Email
-          </Button>
-          <select
-            className="border border-[#565148] h-[38px] w-auto pl-3 pr-4 rounded-md bg-[#FEFDFA] font-semibold text-gray-800"
-            style={{ color: "#585953" }}
-          >
-            <option>More Actions</option>
-            <option>Delete</option>
-          </select> */}
+                 
         </div>
       </div>
       <hr className="mb-5 border-loremcolor" />
@@ -99,6 +122,13 @@ function PaymentView({}: Props) {
         </div>
       </div>
       <Jornal page={"DebitNote"} />
+
+      <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete?"
+      />
     </div>
   );
 }

@@ -7,6 +7,9 @@ import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import SalesPdfView from "../commonComponents/SalesPdfView";
 import SalesView from "../commonComponents/SalesView";
+import toast from "react-hot-toast";
+import ConfirmModal from "../../../Components/ConfirmModal";
+import TrashCan from "../../../assets/icons/TrashCan";
 
 interface SalesOrderData {
   salesInvoiceDate?: string;
@@ -52,7 +55,12 @@ function ViewSales() {
   const { page } = location.state || {};
   const { request: getOneSalesOrder } = useApi("get", 5007);
   const [data, setData] = useState<SalesOrderData | null>(null);
+  const { request: deleteData } = useApi("delete", 5007);
 
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const confirmDelete = () => {
+    setConfirmModalOpen(true);
+  };
   const fetchOneSalesOrder = async () => {
     try {
       const url =
@@ -74,6 +82,56 @@ function ViewSales() {
       }
     } catch (error) {
       console.error("Error fetching sales order:", error);
+    }
+  };
+
+  
+  const handleDelete = async () => {
+    try {
+      let url = "";
+      if (page === "invoice") {
+        url = `${endponits.DELETE_SALES_INVOICE}/${id}`;
+      } else if (page === "salesOrder") {
+        url = `${endponits.DELETE_SALES_ORDER}/${id}`;
+      } else if (page === "quote") {
+        url = `${endponits.DELETE_SALES_QUOTE}/${id}`;
+      }else if (page === "reciept") {
+        url = `${endponits.DELETE_SALES_RECIEPT}/${id}`;
+      }else if (page === "credit-Note") {
+        url = `${endponits.DELETE_CREDIT_NOTE}/${id}`;
+      }
+
+      if (!url) return;
+
+      const { response, error } = await deleteData(url);
+      if (!error && response) {
+        console.log("Deleted successfully:", response);
+        toast.success(response.data.message)
+        setConfirmModalOpen(false)
+        const path =
+        page === "salesOrder"
+          ? "/sales/salesorder"
+          : page === "invoice"
+          ? "/sales/invoice"
+          : page === "quote"
+          ? "/sales/quote"
+          : page === "reciept"
+          ? "/sales/receipt"
+           : page === "credit-Note"
+          ? "/sales/credit-note"
+          :"/"
+      
+          setTimeout(() => {
+            navigate(path);
+          }, 1000);
+          
+          
+      }
+      else{
+        toast.error(error.response.data.message)
+      }
+    } catch (error) {
+      console.error("Error in deleting item:", error);
     }
   };
 
@@ -155,14 +213,12 @@ function ViewSales() {
               <Pen color="#565148" />
               <p className="text-sm font-medium">Edit</p>
             </Button>
+            <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={confirmDelete}>
+              <TrashCan color="#565148" />
+              <p className="text-sm font-medium">Delete</p>
+            </Button>
            
-            <select
-              name=""
-              id=""
-              className="border-outlineButton border rounded-md px-[0.625rem] py-2 text-sm font-medium text-outlineButton "
-            >
-              <option value="">More Action</option>
-            </select>
+          
             {/* Toggle PDF view */}
             <label className="flex items-center cursor-pointer">
               <div className="relative">
@@ -199,6 +255,12 @@ function ViewSales() {
           </div>
         )}
       </div>
+      <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete?"
+      />
     </div>
   );
 }

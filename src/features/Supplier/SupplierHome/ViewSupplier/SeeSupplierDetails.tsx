@@ -1,9 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 // import ArrowRightLeft from "../../../../assets/icons/ArrowRightLeft";
 import CheveronLeftIcon from "../../../../assets/icons/CheveronLeftIcon";
 // import Info from "../../../../assets/icons/Info";
-import { SupplierDetailsContext, SupplierResponseContext } from "../../../../context/ContextShare";
+import {
+  SupplierDetailsContext,
+  SupplierResponseContext,
+} from "../../../../context/ContextShare";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 import { SupplierData } from "../../../../Types/Supplier";
@@ -12,6 +15,11 @@ import Transaction from "./Transaction";
 import EditSupplier from "../EditSupplier";
 import Button from "../../../../Components/Button";
 import Pen from "../../../../assets/icons/Pen";
+import toast from "react-hot-toast";
+import ConfirmModal from "../../../../Components/ConfirmModal";
+import TrashCan from "../../../../assets/icons/TrashCan";
+import Info from "../../../../assets/icons/Info";
+import ArrowRightLeft from "../../../../assets/icons/ArrowRightLeft";
 
 type Props = {};
 
@@ -19,16 +27,21 @@ interface Status {
   status: string;
 }
 
-function SeeSupplierDetails({ }: Props) {
-  
-  const {setSupplierDetails} = useContext(SupplierDetailsContext)!;
+function SeeSupplierDetails({}: Props) {
+  const { setSupplierDetails } = useContext(SupplierDetailsContext)!;
 
   const { request: getOneSupplier } = useApi("get", 5009);
   const { id } = useParams<{ id: string }>();
   const [supplier, setSupplier] = useState<SupplierData | null>(null);
-  const [tabSwitch] = useState<string>("overview");
+  const [tabSwitch,setTabSwitch] = useState<string>("overview");
   const { supplierResponse } = useContext(SupplierResponseContext)!;
   const [statusData, setStatusData] = useState<Status>({ status: "" });
+  const { request: deleteData } = useApi("delete", 5009);
+  const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
+  const confirmDelete = () => {
+    setConfirmModalOpen(true);
+  };
+  const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false); // Define modal state
 
@@ -43,7 +56,7 @@ function SeeSupplierDetails({ }: Props) {
       const { response, error } = await getOneSupplier(url, body);
       if (!error && response) {
         setSupplier(response.data);
-        setSupplierDetails(response.data)
+        setSupplierDetails(response.data);
         // setStatusData((prevData) => ({
         //   ...prevData,
         //   status: response.data.status,
@@ -66,10 +79,28 @@ function SeeSupplierDetails({ }: Props) {
     }
   }, [supplier]);
 
-  // const handleTabSwitch = (tabName: string) => {
-  //   setTabSwitch(tabName);
-  // };
+  const handleTabSwitch = (tabName: string) => {
+    setTabSwitch(tabName);
+  };
 
+  const handleDelete = async () => {
+    try {
+      let url = `${endponits.DELETE_SUPPLIER}/${id}`;
+      if (!url) return;
+      const { response, error } = await deleteData(url);
+      if (!error && response) {
+        toast.success(response.data.message);
+        setConfirmModalOpen(false);
+        setTimeout(() => {
+          navigate("/supplier/home");
+        }, 1000);
+      } else {
+        toast.error(error.response.data.message);
+      }
+    } catch (error) {
+      console.error("Error in deleting item:", error);
+    }
+  };
 
   return (
     <div className="px-6">
@@ -94,7 +125,8 @@ function SeeSupplierDetails({ }: Props) {
             variant="secondary"
             className="h-[26px] w-[68px] text-[12px] flex items-center justify-center"
           >
-            <Pen size={14} color="#565148" /> <p className="text-sm font-medium">Edit</p>
+            <Pen size={14} color="#565148" />{" "}
+            <p className="text-sm font-medium">Edit</p>
           </Button>
           <EditSupplier
             isModalOpen={isModalOpen}
@@ -102,11 +134,18 @@ function SeeSupplierDetails({ }: Props) {
             closeModal={closeModal}
             supplier={supplier}
           />
+          <Button
+            onClick={confirmDelete}
+            variant="secondary"
+            className="h-[26px] w-[68px] text-[12px] flex items-center justify-center"
+          >
+            <TrashCan color="#565148" />{" "}
+            <p className="text-sm font-medium">Delete</p>
+          </Button>
         </div>
       </div>
 
-
-      {/* <div className=" bg-white h-auto rounded-md text-textColor  px-2 mt-5 p-2">
+      <div className=" bg-white h-auto rounded-md text-textColor  px-2 mt-5 p-2">
         <div className="flex items-center w-full gap-2">
           <div
             onClick={() => handleTabSwitch("overview")}
@@ -122,14 +161,24 @@ function SeeSupplierDetails({ }: Props) {
             <ArrowRightLeft size={20} color="#303F58" /> Transaction
           </div>
         </div>
-      </div> */}
+      </div>
 
       <div className="flex flex-col bg-white h-auto rounded-md text-textColor p-5 space-y-4 mt-5">
         {tabSwitch === "overview" && (
-          <Overview supplier={supplier} statusData={statusData} setStatusData={setStatusData} />
+          <Overview
+            supplier={supplier}
+            statusData={statusData}
+            setStatusData={setStatusData}
+          />
         )}
-        {tabSwitch === "transaction" && <Transaction />}
+        {tabSwitch === "transaction" && <Transaction supplierId={id}  />}
       </div>
+      <ConfirmModal
+        open={isConfirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete?"
+      />
     </div>
   );
 }

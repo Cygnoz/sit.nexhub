@@ -105,6 +105,7 @@ export const endponits = {
   GET_CUSTOMER_TRANSACTIONS: `get-customer-transaction`,
   GET_ONE_CUSTOMER_DASHBOARD:`/get-one-customer-dashboard`,
   GET_CUSTOMER_SALE_HISTORY:  `get-customer-sales-history`,
+  GET_CUSTOMER_PAYMENT:`/get-customer-sales-receipt`,
 
   // Supplier
   ADD_SUPPLIER: "add-suppliers",

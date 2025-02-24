@@ -76,7 +76,7 @@ const ExpenseView = ({}: Props) => {
         toast.success(response.data.message);
         setTimeout(() => {
           navigate("/expense/home");
-        }, 2000);
+        }, 1000);
       } else {
         toast.error(error.response.data.message);
       }
