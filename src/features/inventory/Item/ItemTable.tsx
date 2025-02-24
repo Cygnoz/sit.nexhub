@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import CustomiseColmn from "../../../Components/CustomiseColum";
@@ -24,6 +24,7 @@ import PencilEdit from "../../../assets/icons/PencilEdit";
 import Eye from "../../../assets/icons/Eye";
 import TrashCan from "../../../assets/icons/TrashCan";
 import ConfirmModal from "../../../Components/ConfirmModal";
+import { useReactToPrint } from "react-to-print";
 
 interface Column {
   id: string;
@@ -117,10 +118,10 @@ const ItemTable = ({ hsnsac }: Props) => {
       if (!error && response) {
         const updatedItem = {
           ...item,
-          itemImage: response.data.itemImage, 
+          itemImage: response.data.itemImage,
         };
         setOneItem(updatedItem);
-        return updatedItem; 
+        return updatedItem;
       } else {
         console.error("Failed to fetch one item data.");
         return item;
@@ -131,7 +132,7 @@ const ItemTable = ({ hsnsac }: Props) => {
       return item;
     }
   };
-  
+
 
   useEffect(() => {
     loadCategories();
@@ -150,16 +151,16 @@ const ItemTable = ({ hsnsac }: Props) => {
   };
 
   const handleEditOnTable = async (item: any) => {
-    const fullItemData = await getOneItem(item); 
-  
-      navigate("/inventory/Item/new", {
-        state: {
-          item: fullItemData || item, 
-          hsnSac: hsnsac || false,
-        },
-      });
+    const fullItemData = await getOneItem(item);
+
+    navigate("/inventory/Item/new", {
+      state: {
+        item: fullItemData || item,
+        hsnSac: hsnsac || false,
+      },
+    });
   };
-  
+
 
 
   const handleDeleteImage = async (itemId: string) => {
@@ -278,7 +279,8 @@ const ItemTable = ({ hsnsac }: Props) => {
       return matchesSearch && item.categories === selected;
     }
   });
-
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
 
 
@@ -319,12 +321,13 @@ const ItemTable = ({ hsnsac }: Props) => {
             onSearchChange={setSearchValue}
           />
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-4" onClick={() => reactToPrintFn()}>
           {/* <ItemSort/> */}
           <Print />
         </div>
       </div>
       <div
+        ref={contentRef}
         className="mt-3 max-h-[25rem] overflow-y-auto"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
@@ -338,15 +341,15 @@ const ItemTable = ({ hsnsac }: Props) => {
                 (col) =>
                   col.visible && (
                     <th
-                      className="py-2 px-4 font-medium border-b border-tableBorder"
                       key={col.id}
+                      className={`py-2 px-4 font-medium border-b border-tableBorder ${col.id === "itemsDetails" ? "hide-print" : ""}`}
                     >
                       {col.label}
                     </th>
                   )
               )}
               <th className="py-2.5 px-4 font-medium border-b border-tableBorder"></th>
-              <th className="py-2 px-4 font-medium border-b border-tableBorder">
+              <th className="py-2 px-4 font-medium border-b border-tableBorder hide-print">
                 <CustomiseColmn columns={columns} setColumns={setColumns} tableId={"item"} />
               </th>
               {/* "See Details" Header */}
@@ -365,7 +368,7 @@ const ItemTable = ({ hsnsac }: Props) => {
                       col.visible && (
                         <td
                           key={col.id}
-                          className="py-2.5 px-4 border-y border-tableBorder"
+                          className={`py-2.5 px-4 border-y border-tableBorder ${col.id === "itemsDetails" ? "hide-print" : ""}`}
                         >
                           {renderColumnContent(col.id, item)}
                         </td>
@@ -373,7 +376,7 @@ const ItemTable = ({ hsnsac }: Props) => {
                   )}
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                   </td>
-                  <td className="py-2.5 px-4 border-y border-tableBorder"></td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder hide-print"></td>
                 </tr>
               ))
             ) : (
@@ -803,7 +806,7 @@ const ItemTable = ({ hsnsac }: Props) => {
           </div>
         </Modal>
       )}
-        <ConfirmModal
+      <ConfirmModal
         open={isConfirmModalOpen}
         onClose={() => setConfirmModalOpen(false)}
         onConfirm={handleDelete}

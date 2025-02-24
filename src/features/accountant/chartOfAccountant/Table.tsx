@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
 import Pagination from "../../../Components/Pagination/Pagination";
@@ -10,6 +10,8 @@ import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
 import TrashCan from "../../../assets/icons/TrashCan";
+import Print from "../../sales/salesOrder/Print";
+import { useReactToPrint } from "react-to-print";
 
 interface Account {
   _id: string;
@@ -112,20 +114,29 @@ const Table = ({
     "",
   ];
 
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
   return (
     <div>
-      <SearchBar
-        placeholder="Search"
-        searchValue={searchValue}
-        onSearchChange={setSearchValue}
-      />
-      <div className="min-h-[25rem] overflow-y-auto mt-1">
+      <div className="flex items-center justify-between gap-4">
+        <div className="w-full">
+          <SearchBar
+            placeholder="Search"
+            searchValue={searchValue}
+            onSearchChange={setSearchValue}
+          />
+        </div>
+        <div className="flex gap-4" onClick={() => reactToPrintFn()}>
+          <Print />
+        </div>
+      </div>
+      <div ref={contentRef} className="min-h-[25rem] overflow-y-auto mt-1">
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText sticky top-0 z-10">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
               {tableHeaders.map((heading, index) => (
                 <th
-                  className="py-3 px-4 font-medium border-b border-tableBorder"
+                  className={`py-3 px-4 font-medium border-b border-tableBorder ${heading === "Actions" ? "hide-print" : ""}`}
                   key={index}
                 >
                   {heading}
@@ -158,7 +169,7 @@ const Table = ({
                   {/* <td className="py-2.5 px-4 border-y border-tableBorder">
                     {item.accountHead}
                   </td> */}
-                  <td className="py-3 gap-3 px-4 border-b border-tableBorder flex justify-center items-center">
+                  <td className="py-3 gap-3 px-4 border-b border-tableBorder flex justify-center items-center hide-print">
                     <div onClick={() => handleDelete(item._id)} >
                       <TrashCan color={"red"} />
                     </div>

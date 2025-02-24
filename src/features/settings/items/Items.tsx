@@ -14,6 +14,7 @@ interface item {
   itemDimensions: string;
   itemWeights: string;
   barcodeScan: string;
+  openingStockDate: any;
 
   itemDuplicateName: boolean;
   hsnSac: boolean;
@@ -29,15 +30,16 @@ interface item {
   trackCostOnItems: boolean;
 }
 
-function Items({}: Props) {
+function Items({ }: Props) {
   const [selectedRadio, setSelectedRadio] = useState<string>("");
-  const {settingsResponse, getSettingsData } = useContext(settingsdataResponseContext)!;
+  const { settingsResponse, getSettingsData } = useContext(settingsdataResponseContext)!;
   const { request: addItem } = useApi("put", 5003);
   const [inputData, setInputData] = useState<item>({
     itemDecimal: "",
     itemDimensions: "",
     itemWeights: "",
     barcodeScan: "",
+    openingStockDate: new Date().toISOString().split("T")[0],
 
     itemDuplicateName: false,
     hsnSac: false,
@@ -59,8 +61,8 @@ function Items({}: Props) {
 
   useEffect(() => {
     getSettingsData();
-  }, []); 
-  
+  }, []);
+
   useEffect(() => {
     if (settingsResponse) {
       setInputData((prevData) => ({
@@ -68,16 +70,16 @@ function Items({}: Props) {
         ...settingsResponse?.data?.itemSettings,
       }));
     }
-  }, [settingsResponse]); 
-  
+  }, [settingsResponse]);
+
   useEffect(() => {
     if (inputData.hsnSac) {
       setSelectedRadio(inputData.hsnDigits || "4");
     } else {
       setSelectedRadio("");
     }
-  }, [inputData.hsnSac, inputData.hsnDigits]); 
-  
+  }, [inputData.hsnSac, inputData.hsnDigits]);
+
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -116,7 +118,7 @@ function Items({}: Props) {
       if (!error && response) {
         toast.success(response?.data);
       }
-      else{
+      else {
         toast.error(error?.response?.data?.message)
       }
     } catch (error) {
@@ -130,7 +132,17 @@ function Items({}: Props) {
       <Banner />
 
       <p className="text-[20px] font-bold mt-3">Item</p>
-      <div className="space-y-4 mt-2">
+      <div className="mt-2 bg-white p-6 flex justify-between items-center">
+        <p className="text-[#303F58] text-sm font-semibold">Opening Date: <span className="ms-4">01/01/2025</span></p>
+        <input
+          name="openingStockDate"
+          type="date"
+          value={inputData.openingStockDate}
+          onChange={handleInputChange}
+          className="block appearance-none w-[20%] h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
+        />
+      </div>
+      <div className="space-y-4 mt-4">
         {/* Quantity */}
         <div className="bg-white w-full p-6 rounded-lg">
           <div className="space-y-4">
@@ -270,20 +282,18 @@ function Items({}: Props) {
                     type="radio"
                     name="hsnDigits"
                     value="4"
-                    className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border  ${
-                      selectedRadio === "4"
-                        ? "border-8 border-neutral-400"
-                        : "border-1 border-neutral-400"
-                    }`}
+                    className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border  ${selectedRadio === "4"
+                      ? "border-8 border-neutral-400"
+                      : "border-1 border-neutral-400"
+                      }`}
                     checked={selectedRadio === "4"}
                     onChange={() => handleRadioChange("4")}
                   />
                   <div
-                    className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                      selectedRadio === "4"
-                        ? "bg-neutral-100"
-                        : "bg-transparent"
-                    }`}
+                    className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${selectedRadio === "4"
+                      ? "bg-neutral-100"
+                      : "bg-transparent"
+                      }`}
                   />
                 </div>
                 <label htmlFor="4" className="text-slate-600">
@@ -303,20 +313,18 @@ function Items({}: Props) {
                     type="radio"
                     name="hsnDigits"
                     value="6"
-                    className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border  ${
-                      selectedRadio === "6"
-                        ? "border-8 border-neutral-400"
-                        : "border-1 border-neutral-400"
-                    }`}
+                    className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border  ${selectedRadio === "6"
+                      ? "border-8 border-neutral-400"
+                      : "border-1 border-neutral-400"
+                      }`}
                     checked={selectedRadio === "6"}
                     onChange={() => handleRadioChange("6")}
                   />
                   <div
-                    className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                      selectedRadio === "6"
-                        ? "bg-neutral-100"
-                        : "bg-transparent"
-                    }`}
+                    className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${selectedRadio === "6"
+                      ? "bg-neutral-100"
+                      : "bg-transparent"
+                      }`}
                   />
                 </div>
                 <label htmlFor="6" className="text-slate-600">
@@ -404,7 +412,7 @@ function Items({}: Props) {
             />
             <label>
               Show an Out of Stock warning when an item's stock drops below
-              zero 
+              zero
             </label>
           </div>
           {/* <div className="flex items-center space-x-2 mt-3">

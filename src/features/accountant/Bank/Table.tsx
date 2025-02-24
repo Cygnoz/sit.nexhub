@@ -1,8 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import SearchBar from "../../../Components/SearchBar";
-import { BankResponseContext, TableResponseContext } from "../../../context/ContextShare";
+import {
+  BankResponseContext,
+  TableResponseContext,
+} from "../../../context/ContextShare";
 import { useNavigate } from "react-router-dom";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
@@ -10,6 +13,8 @@ import Trash2 from "../../../assets/icons/Trash2";
 import NewBankModal from "./NewBankModal";
 import Eye from "../../../assets/icons/Eye";
 import toast from "react-hot-toast";
+import Print from "../../sales/salesOrder/Print";
+import { useReactToPrint } from "react-to-print";
 
 interface Account {
   _id: string;
@@ -26,7 +31,7 @@ const Table = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [accountData, setAccountData] = useState<Account[]>([]);
   const { bankResponse } = useContext(BankResponseContext)!;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   // Loading state
   const { loading, setLoading } = useContext(TableResponseContext)!;
 
@@ -75,14 +80,13 @@ const Table = () => {
     }
   };
 
-
   const handleDelete = async (id: string) => {
     try {
       const url = `${endponits.DELETE_ACCONUT}/${id}`;
       const { response, error } = await deleteAccount(url);
       if (!error && response) {
         toast.success(response.data.message);
-        fetchAllAccounts()
+        fetchAllAccounts();
         console.log(response.data);
       } else {
         toast.error(error.response.data.message);
@@ -91,36 +95,51 @@ const Table = () => {
       toast.error("Error in fetching one item data.");
       console.error("Error in fetching one item data", error);
     }
-  }
+  };
 
   const filteredAccounts = accountData.filter((account) => {
     const searchValueLower = searchValue.toLowerCase().trim();
     return (
       account.accountName.toLowerCase().trim().startsWith(searchValueLower) ||
       account.accountCode.toLowerCase().trim().startsWith(searchValueLower) ||
-      account.accountSubhead.toLowerCase().trim().startsWith(searchValueLower) ||
+      account.accountSubhead
+        .toLowerCase()
+        .trim()
+        .startsWith(searchValueLower) ||
       account.accountHead.toLowerCase().trim().startsWith(searchValueLower) ||
       account.description.toLowerCase().trim().startsWith(searchValueLower)
     );
   });
 
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
   return (
     <div className="overflow-x-auto my-3 mx-5">
-      <div className="mt-6">
-        <SearchBar
-          placeholder="Search"
-          searchValue={searchValue}
-          onSearchChange={setSearchValue}
-        />
+      <div className="mt-6 flex items-center justify-between gap-4">
+        <div className="w-full">
+          <SearchBar
+            placeholder="Search"
+            searchValue={searchValue}
+            onSearchChange={setSearchValue}
+          />
+        </div>
+        <div className="flex gap-4" onClick={() => reactToPrintFn()}>
+          <Print />
+        </div>
       </div>
-      <div className="overflow-y-scroll max-h-[25rem]">
+      <div
+        ref={contentRef}
+        className="overflow-y-scroll max-h-[25rem] hide-scrollbar"
+      >
         <table className="min-w-full bg-white my-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
               {tableHeaders.map((heading, index) => (
                 <th
-                  className="py-2 px-4 font-medium border-b border-tableBorder"
+                  className={`py-2 px-4 font-medium border-b border-tableBorder ${
+                    heading === "Action" ? "hide-print" : ""
+                  }`}
                   key={index}
                 >
                   {heading}
@@ -130,25 +149,27 @@ const Table = () => {
           </thead>
           <tbody className="text-dropdownText text-center text-[13px]">
             {loading.skeleton ? (
-              [...Array(filteredAccounts.length > 0 ? filteredAccounts.length : 5)].map((_, idx) => (
+              [
+                ...Array(
+                  filteredAccounts.length > 0 ? filteredAccounts.length : 5
+                ),
+              ].map((_, idx) => (
                 <TableSkelton key={idx} columns={tableHeaders} />
               ))
             ) : filteredAccounts.length > 0 ? (
               filteredAccounts.reverse().map((item, index) => (
-                <tr key={item._id} className="relative cursor-pointer" >
+                <tr key={item._id} className="relative cursor-pointer">
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {index + 1}
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
-
-                    {item.accountName || '-'}
-
+                    {item.accountName || "-"}
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
-                    {item.accountCode || '-'}
+                    {item.accountCode || "-"}
                   </td>
                   <td className="py-2.5 px-4 border-y border-tableBorder">
-                    {item.accountSubhead || '-'}
+                    {item.accountSubhead || "-"}
                   </td>
                   {/* <td className="py-2.5 px-4 border-y border-tableBorder">
                     {item.description || '-'}
@@ -156,11 +177,22 @@ const Table = () => {
                   {/* <td className="py-2.5 px-4 border-y border-tableBorder">
                     {item.accountHead || '-'}
                   </td> */}
-                  <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder">
+                  <td className="cursor-pointer py-2.5 px-4 border-y border-tableBorder hide-print">
                     <div className="flex justify-center gap-3">
-                      <div onClick={() => navigate(`/accountant/view/${item._id}?fromBank=true`)}><Eye color="#569FBC" /></div>
-                      <div ><NewBankModal id={item._id} page="edit" /> </div>
-                      <button onClick={() => handleDelete(item._id)}>   <Trash2 color="red" size={18} /></button>
+                      <div
+                        onClick={() =>
+                          navigate(`/accountant/view/${item._id}?fromBank=true`)
+                        }
+                      >
+                        <Eye color="#569FBC" />
+                      </div>
+                      <div>
+                        <NewBankModal id={item._id} page="edit" />{" "}
+                      </div>
+                      <button onClick={() => handleDelete(item._id)}>
+                        {" "}
+                        <Trash2 color="red" size={18} />
+                      </button>
                     </div>
                   </td>
                 </tr>

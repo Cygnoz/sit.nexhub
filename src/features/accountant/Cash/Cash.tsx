@@ -27,7 +27,7 @@ function Cash({}: Props) {
         </div>
 
         <div className="mt-5 p-6 bg-white px-4 rounded">
-          <div className="mt-2">
+          <div>
             <Table />
           </div>
         </div>

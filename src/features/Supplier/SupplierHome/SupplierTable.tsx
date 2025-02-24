@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import SearchBar from "../../../Components/SearchBar";
@@ -14,6 +14,7 @@ import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
 import ConfirmModal from "../../../Components/ConfirmModal";
+import { useReactToPrint } from "react-to-print";
 
 interface Column {
   id: string;
@@ -161,6 +162,9 @@ const SupplierTable = ({
     );
   };
 
+    const contentRef = useRef<HTMLDivElement>(null);
+    const reactToPrintFn = useReactToPrint({ contentRef });
+
   return (
     <div>
       <div className="flex items-center justify-between gap-4">
@@ -171,11 +175,11 @@ const SupplierTable = ({
             onSearchChange={setSearchValue}
           />
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-4" onClick={() => reactToPrintFn()}>
           <Print />
         </div>
       </div>
-      <div className="mt-3 overflow-y-scroll max-h-[25rem]">
+      <div ref={contentRef} className="mt-3 overflow-y-scroll max-h-[25rem] hide-scrollbar">
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
@@ -184,14 +188,14 @@ const SupplierTable = ({
                 (col) =>
                   col.visible && (
                     <th
-                      key={col.id}
-                      className="py-2 px-4 font-medium border-b border-tableBorder"
-                    >
+                    key={col.id}
+                    className={`py-2 px-4 font-medium border-b border-tableBorder ${col.id === "supplierDetails" ? "hide-print" : ""}`}
+                  >
                       {col.label}
                     </th>
                   )
               )}
-              <th className="py-2 px-4 font-medium border-b border-tableBorder relative">
+              <th className="py-2 px-4 font-medium border-b border-tableBorder relative hide-print">
                 <CustomiseColmn
                   columns={columns}
                   setColumns={setColumns}
@@ -215,14 +219,14 @@ const SupplierTable = ({
                     (col) =>
                       col.visible && (
                         <td
-                          key={col.id}
-                          className="py-2.5 px-4 border-y border-tableBorder"
-                        >
+                        key={col.id}
+                        className={`py-2.5 px-4 border-y border-tableBorder ${col.id === "supplierDetails" ? "hide-print" : ""}`}
+                      >
                           {renderColumnContent(col.id, item as any)}
                         </td>
                       )
                   )}
-                  <td className="py-2.5 px-4 border-y border-tableBorder"></td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder hide-print"></td>
                 </tr>
               ))
             ) : (
