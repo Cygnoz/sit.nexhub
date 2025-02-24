@@ -1112,7 +1112,7 @@ const AddSupplierModal = ({ page }: Props) => {
                           </div>
                         </div>
                         
-                        <div>
+                        <div className="relative">
                           <label className="block mb-1">Payment Terms</label>
                           <select
                             className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder 
@@ -1137,7 +1137,7 @@ const AddSupplierModal = ({ page }: Props) => {
                               ))}
 
                           </select>
-                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                          <div className="pointer-events-none absolute inset-y-0 top-6 right-0 flex items-center px-2 text-gray-700">
                             <CehvronDown color="grey" />
                           </div>
                         </div>
