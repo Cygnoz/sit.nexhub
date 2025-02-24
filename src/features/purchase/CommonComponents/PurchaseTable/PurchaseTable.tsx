@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import TableSkelton from "../../../../Components/skeleton/Table/TableSkelton";
 import SearchBar from "../../../../Components/SearchBar";
 import NoDataFoundTable from "../../../../Components/skeleton/Table/NoDataFoundTable";
@@ -11,6 +11,8 @@ import useApi from "../../../../Hooks/useApi";
 import toast from "react-hot-toast";
 import { PurchaseContext } from "../../../../context/ContextShare";
 import ConfirmModal from "../../../../Components/ConfirmModal";
+import Print from "../../../sales/salesOrder/Print";
+import { useReactToPrint } from "react-to-print";
 
 interface Column {
   id: string;
@@ -31,7 +33,7 @@ interface TableProps {
   page?: any;
   onEditClick?: (id: string) => void;
   deleteUrl?: string;
-  fetchUrl?:string;
+  fetchUrl?: string;
   fetchData?: any;
 }
 
@@ -52,7 +54,7 @@ const PurchaseTable: React.FC<TableProps> = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { request: deleteData } = useApi("delete", 5005);
   const { request: ocrDelete } = useApi("delete", 5000);
-const {setPurchaseResponse}=useContext(PurchaseContext)!;
+  const { setPurchaseResponse } = useContext(PurchaseContext)!;
   const rowsPerPage = 10;
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -92,18 +94,18 @@ const {setPurchaseResponse}=useContext(PurchaseContext)!;
       const apiFunction = page === "OCR" ? ocrDelete : deleteData;
       const { response, error } = await apiFunction(url);
       if (!error && response) {
-        console.log(response)
-        if(page==="OCR"){
+        console.log(response);
+        if (page === "OCR") {
           toast.success(response?.data[0]?.message);
           setConfirmModalOpen(false);
-
-        }else{
+        } else {
           toast.success(response?.data?.message);
           setConfirmModalOpen(false);
-
         }
-          setPurchaseResponse((prevData: any) => {
-          const updatedData = prevData?.data?.filter((item: any) => item._id !== deleteId);
+        setPurchaseResponse((prevData: any) => {
+          const updatedData = prevData?.data?.filter(
+            (item: any) => item._id !== deleteId
+          );
           return {
             ...prevData,
             data: updatedData,
@@ -111,18 +113,19 @@ const {setPurchaseResponse}=useContext(PurchaseContext)!;
         });
       } else {
         console.log(error.response);
-        if(page==="OCR"){
+        if (page === "OCR") {
           toast.error(error?.response?.data?.message);
-
-        }else{
+        } else {
           toast.error(error?.response?.data?.message);
-
         }
       }
     } catch (error) {
       console.error("Error in deleting item:", error);
     }
   };
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
   return (
     <div>
@@ -135,9 +138,15 @@ const {setPurchaseResponse}=useContext(PurchaseContext)!;
             setCurrentPage(1);
           }}
         />
+        <div onClick={() => reactToPrintFn()}>
+          <Print />
+        </div>
       </div>
 
-      <div className="overflow-x-auto mt-3 hide-scrollbar overflow-y-scroll max-h-[25rem]">
+      <div
+        ref={contentRef}
+        className="overflow-x-auto mt-3 hide-scrollbar overflow-y-scroll max-h-[25rem]"
+      >
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
@@ -153,10 +162,10 @@ const {setPurchaseResponse}=useContext(PurchaseContext)!;
                     </th>
                   )
               )}
-              <th className="py-3 px-2 font-medium border-b border-tableBorder">
+              <th className="py-3 px-2 font-medium border-b border-tableBorder hide-print">
                 Action
               </th>
-              <th className="py-3 px-2 font-medium border-b border-tableBorder">
+              <th className="py-3 px-2 font-medium border-b border-tableBorder hide-print">
                 <CustomiseColmn
                   columns={columns}
                   setColumns={setColumns}
@@ -192,7 +201,7 @@ const {setPurchaseResponse}=useContext(PurchaseContext)!;
                         </td>
                       )
                   )}
-                  <td className="py-3 px-4 border-b border-tableBorder flex items-center justify-center gap-2">
+                  <td className="py-3 px-4 border-b border-tableBorder flex items-center justify-center gap-2 hide-print">
                     <button
                       onClick={() => onEditClick && onEditClick(item._id)}
                     >
@@ -206,7 +215,7 @@ const {setPurchaseResponse}=useContext(PurchaseContext)!;
                     </button>
                   </td>
 
-                  <td className="py-3 px-4 border-b border-tableBorder"></td>
+                  <td className="py-3 px-4 border-b border-tableBorder hide-print"></td>
                 </tr>
               ))
             ) : (

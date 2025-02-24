@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import TableSkelton from "../../../Components/skeleton/Table/TableSkelton";
 import SearchBar from "../../../Components/SearchBar";
 import NoDataFoundTable from "../../../Components/skeleton/Table/NoDataFoundTable";
@@ -16,8 +16,7 @@ import PencilEdit from "../../../assets/icons/PencilEdit";
 import TrashCan from "../../../assets/icons/TrashCan";
 import ConfirmModal from "../../../Components/ConfirmModal";
 import toast from "react-hot-toast";
-
-
+import { useReactToPrint } from "react-to-print";
 
 const ExpenseTable = () => {
   const [searchValue, setSearchValue] = useState<string>("");
@@ -42,19 +41,29 @@ const ExpenseTable = () => {
     { id: "expenseNumber", label: "Expense", visible: true },
     { id: "expenseCategory", label: "Category", visible: true },
     { id: "supplierDisplayName", label: "Vendor Name", visible: true },
-    { id:"paidThroughAccountName", label: "Paid Through", visible: true },
+    { id: "paidThroughAccountName", label: "Paid Through", visible: true },
     { id: "grandTotal", label: "Amount", visible: true },
-
   ]);
 
   const filteredData = allExpense.reverse()?.filter((account) => {
     const searchValueLower = searchValue.toLowerCase().trim();
     return (
-      account?.expenseAccount?.toLowerCase()?.trim()?.startsWith(searchValueLower) ||
-      account?.expenseCategory?.toLowerCase()?.trim()?.startsWith(searchValueLower) ||
-      account?.expenseDate?.toLowerCase()?.trim()?.startsWith(searchValueLower) ||
-      account?.supplierDisplayName?.toLowerCase()?.trim()?.startsWith(searchValueLower)
-
+      account?.expenseAccount
+        ?.toLowerCase()
+        ?.trim()
+        ?.startsWith(searchValueLower) ||
+      account?.expenseCategory
+        ?.toLowerCase()
+        ?.trim()
+        ?.startsWith(searchValueLower) ||
+      account?.expenseDate
+        ?.toLowerCase()
+        ?.trim()
+        ?.startsWith(searchValueLower) ||
+      account?.supplierDisplayName
+        ?.toLowerCase()
+        ?.trim()
+        ?.startsWith(searchValueLower)
     );
   });
 
@@ -115,8 +124,8 @@ const ExpenseTable = () => {
   };
 
   const handleEditClick = (id: any) => {
-    navigate(`/expense/edit-expense/${id}`)
-  }
+    navigate(`/expense/edit-expense/${id}`);
+  };
   const { request: deleteExpense } = useApi("delete", 5008);
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -137,6 +146,9 @@ const ExpenseTable = () => {
     }
   };
 
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
+
   return (
     <div>
       <div className="flex items-center gap-4 justify-between">
@@ -148,10 +160,15 @@ const ExpenseTable = () => {
             setCurrentPage(1);
           }}
         />
-        <PrintButton />
+        <div onClick={() => reactToPrintFn()}>
+          <PrintButton />
+        </div>
       </div>
 
-      <div className="overflow-x-auto mt-3 hide-scrollbar overflow-y-scroll max-h-[25rem]">
+      <div
+        ref={contentRef}
+        className="overflow-x-auto mt-3 hide-scrollbar overflow-y-scroll max-h-[25rem]"
+      >
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
@@ -167,11 +184,15 @@ const ExpenseTable = () => {
                     </th>
                   )
               )}
-              <th className="py-3 px-2 font-medium border-b border-tableBorder">
+              <th className="py-3 px-2 font-medium border-b border-tableBorder hide-print">
                 Action
               </th>
-              <th className="py-3 px-2 font-medium border-b border-tableBorder">
-                <CustomiseColumn columns={columns} setColumns={setColumns} tableId={"expense"} />
+              <th className="py-3 px-2 font-medium border-b border-tableBorder hide-print">
+                <CustomiseColumn
+                  columns={columns}
+                  setColumns={setColumns}
+                  tableId={"expense"}
+                />
               </th>
             </tr>
           </thead>
@@ -182,7 +203,10 @@ const ExpenseTable = () => {
               ))
             ) : paginatedData && paginatedData.length > 0 ? (
               paginatedData.map((item: any, rowIndex: number) => (
-                <tr key={item.id} className="relative cursor-pointer  border-y border-tableBorder">
+                <tr
+                  key={item.id}
+                  className="relative cursor-pointer  border-y border-tableBorder"
+                >
                   <td className="py-2.5 px-4 border-y border-tableBorder">
                     {(currentPage - 1) * rowsPerPage + rowIndex + 1}
                   </td>
@@ -197,18 +221,23 @@ const ExpenseTable = () => {
                         </td>
                       )
                   )}
-                  <td className=" py-2.5  ">
-                  <div className="flex items-center justify-center gap-2">
+                  <td className=" py-2.5 hide-print ">
+                    <div className="flex items-center justify-center gap-2">
                       <button onClick={() => handleEditClick(item._id)}>
-                        <PencilEdit color={'#0B9C56'} className="cursor-pointer" />
+                        <PencilEdit
+                          color={"#0B9C56"}
+                          className="cursor-pointer"
+                        />
                       </button>
-                      <button onClick={() => navigate(`/expense/view/${item._id}`)}>
+                      <button
+                        onClick={() => navigate(`/expense/view/${item._id}`)}
+                      >
                         <Eye color="#569FBC" className="cursor-pointer" />
                       </button>
                       <button onClick={() => confirmDelete(item._id)}>
                         <TrashCan color="red" />
                       </button>
-                  </div>
+                    </div>
                   </td>
 
                   <td className="py-3 px-4 border-b border-tableBorder"></td>
@@ -226,7 +255,7 @@ const ExpenseTable = () => {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-       <ConfirmModal
+      <ConfirmModal
         open={isConfirmModalOpen}
         onClose={() => setConfirmModalOpen(false)}
         onConfirm={handleDelete}
