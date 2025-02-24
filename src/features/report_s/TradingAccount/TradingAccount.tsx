@@ -191,7 +191,8 @@ const TradingAccount = () => {
                       totalAmount = item.directExpenses.overallNetDebit -  item.directExpenses.overallNetCredit;
                       items = item;
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
-                    } else if (item.grossProfit) {
+                    }
+                    else if (item.grossProfit) {
                       accountName = "Gross Profit";
                       totalAmount = item.grossProfit;
                     }
@@ -225,7 +226,6 @@ const TradingAccount = () => {
             </div>
           </div>
 
-          {/* Credit Table */}
           <div>
             <div className="">
       
@@ -261,7 +261,8 @@ const TradingAccount = () => {
                       totalAmount = item.closingStock.total;
                       items = item.closingStock;
                       link = `/reports/trading-account/${accountName}`;
-                    } else if (item.grossLoss) {
+                    }
+                     else if (item.grossLoss) {
                       accountName = "Gross Loss";
                       totalAmount = item.grossLoss;
                     }

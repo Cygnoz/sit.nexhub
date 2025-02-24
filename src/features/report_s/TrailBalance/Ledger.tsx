@@ -102,7 +102,7 @@ const Ledger = ({}: Props) => {
                 className="border-b border-[#ebecf0]"
               >
                 <td className="py-3 text-start">
-                  {(item.createDate)}
+                  {entry.createdDate}
                 </td>
                 <td className="py-3 text-center min-w-[30px] max-w-[30px] px-1 truncate">
                   {entry.transactionId}
