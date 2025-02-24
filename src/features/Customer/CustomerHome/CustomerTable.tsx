@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../../../Components/SearchBar";
@@ -13,6 +13,7 @@ import ConfirmModal from "../../../Components/ConfirmModal";
 import toast from "react-hot-toast";
 import Button from "../../../Components/Button";
 import { PrinterIcon } from "@heroicons/react/20/solid";
+import { useReactToPrint } from "react-to-print";
 
 interface Column {
   id: string;
@@ -159,6 +160,9 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
 
   };
 
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
+
   return (
     <div>
       <div className="flex items-center justify-between gap-4">
@@ -170,13 +174,13 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
           />
         </div>
         <div className="flex gap-4">
-          <Button variant="secondary" className="text-sm font-medium h-9">
+          <Button onClick={() => reactToPrintFn()} variant="secondary" className="text-sm font-medium h-9">
             <PrinterIcon color="#565148" height={16} width={16} />
             Print
           </Button>
         </div>
       </div>
-      <div className="mt-3 overflow-y-scroll max-h-[25rem]">
+      <div ref={contentRef} className="mt-3 overflow-y-scroll hide-scrollbar max-h-[25rem]">
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
@@ -186,15 +190,18 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                   col.visible && (
                     <th
                       key={col.id}
-                      className="py-2 px-4 font-medium border-b border-tableBorder"
+                      className={`py-2 px-4 font-medium border-b border-tableBorder ${col.id === "supplierDetails" ? "hide-print" : ""}`}
                     >
                       {col.label}
                     </th>
                   )
               )}
-              <th><CustomiseColmn columns={columns} setColumns={setColumns} tableId={"customer"} /></th>
+              <th className="py-2 px-4 border-b border-tableBorder hide-print">
+                <CustomiseColmn columns={columns} setColumns={setColumns} tableId={"customer"} />
+              </th>
             </tr>
           </thead>
+
           <tbody className="text-dropdownText text-center text-[13px]">
             {/* Show skeleton loader if loading */}
             {loading.skeleton ? (
@@ -213,13 +220,13 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
                       col.visible && (
                         <td
                           key={col.id}
-                          className="py-2.5 px-4 border-y border-tableBorder"
+                          className={`py-2.5 px-4 border-y border-tableBorder ${col.id === "supplierDetails" ? "hide-print" : ""}`}
                         >
                           {renderColumnContent(col.id, item)}
                         </td>
                       )
                   )}
-                  <td className="py-2.5 px-4 border-y border-tableBorder"></td>
+                  <td className={`py-2.5 px-4 border-y border-tableBorder hide-print`}></td>
                 </tr>
               ))
             ) : (

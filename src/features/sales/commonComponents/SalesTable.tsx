@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import CustomiseColmn from "../../../Components/CustomiseColum";
 import { useNavigate } from "react-router-dom";
 import DotIcon from "../../../assets/icons/DotIcon";
@@ -15,6 +15,7 @@ import TrashCan from "../../../assets/icons/TrashCan";
 import { getInitialColumns } from "./InitialColumns";
 import toast from "react-hot-toast";
 import ConfirmModal from "../../../Components/ConfirmModal";
+import { useReactToPrint } from "react-to-print";
 
 
 interface Column {
@@ -184,18 +185,18 @@ const SalesTable = ({ page }: Props) => {
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      const url = 
-      page === "salesOrder"?
-      `${endponits.DELETE_SALES_ORDER}/${deleteId}`
-      : page === "quote" ?
-      `${endponits.DELETE_SALES_QUOTE}/${deleteId}`
-      : page === "invoice" ?
-      `${endponits.DELETE_SALES_INVOICE}/${deleteId}`
-      : page === "reciept" ?
-      `${endponits.DELETE_SALES_RECIEPT}/${deleteId}`
-      : page === "credit-Note" ?
-       `${endponits.DELETE_CREDIT_NOTE}/${deleteId}`
-       :""
+      const url =
+        page === "salesOrder" ?
+          `${endponits.DELETE_SALES_ORDER}/${deleteId}`
+          : page === "quote" ?
+            `${endponits.DELETE_SALES_QUOTE}/${deleteId}`
+            : page === "invoice" ?
+              `${endponits.DELETE_SALES_INVOICE}/${deleteId}`
+              : page === "reciept" ?
+                `${endponits.DELETE_SALES_RECIEPT}/${deleteId}`
+                : page === "credit-Note" ?
+                  `${endponits.DELETE_CREDIT_NOTE}/${deleteId}`
+                  : ""
       const { response, error } = await deleteSales(url);
       if (!error && response) {
         toast.success(response.data.message);
@@ -210,6 +211,8 @@ const SalesTable = ({ page }: Props) => {
       setDeleteId(null);
     }
   };
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
 
   return (
@@ -235,10 +238,14 @@ const SalesTable = ({ page }: Props) => {
           />
 
         </div>
-        <Print />
+
+        <div onClick={() => reactToPrintFn()}>
+          <Print />
+        </div>
+
         {/* <SortBy/> */}
       </div>
-      <div className="mt-3 max-h-[25rem] overflow-y-auto" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+      <div ref={contentRef} className="mt-3 max-h-[25rem] overflow-y-auto" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr style={{ backgroundColor: "#F9F7F0" }} className="sticky top-0 z-10">
@@ -252,8 +259,8 @@ const SalesTable = ({ page }: Props) => {
                     </th>
                   )
               )}
-              <th className="py-3 px-4 font-medium border-b border-tableBorder">Actions </th>
-              <th className="py-3 px-4 font-medium border-b border-tableBorder">
+              <th className="py-3 px-4 font-medium border-b border-tableBorder hide-print">Actions </th>
+              <th className="py-3 px-4 font-medium border-b border-tableBorder hide-print">
                 <CustomiseColmn columns={columns} setColumns={setColumns} tableId={`${page}`} />
               </th>
             </tr>
@@ -277,7 +284,7 @@ const SalesTable = ({ page }: Props) => {
                         </td>
                       )
                   )}
-                  <td className="py-3 px-4 border-b gap-3 border-tableBorder flex justify-center items-center">
+                  <td className="py-3 px-4 border-b gap-3 border-tableBorder flex justify-center items-center hide-print">
                     <div onClick={() => handleEditClick(item._id)}>
                       <PencilEdit color={'#0B9C56'} className="cursor-pointer" />
                     </div>
@@ -288,7 +295,7 @@ const SalesTable = ({ page }: Props) => {
                       <TrashCan color="red" />
                     </div>
                   </td>
-                  <td className="py-3 px-4 border-b border-tableBorder"></td>
+                  <td className="py-3 px-4 border-b border-tableBorder hide-print"></td>
                 </tr>
               ))
             ) : (

@@ -16,6 +16,12 @@ const navlist = [
     nav: "Home",
     icon: VectorDashboard,
     route: "/dashboard",
+    subhead: [
+      {
+        headName: "Dashboard",
+        subRoute: "/dashboard",
+      },
+    ],
   },
   {
     nav: "Inventory",
@@ -237,9 +243,8 @@ export const paymentTermsList = [
 export const organizationList = [
   { title: "Profile", route: "/settings/organization/profile" },
   { title: "Currencies", route: "/settings/currencies" },
-  {title:"Accounts",route:"/settings/accounts"},
+  { title: "Accounts", route: "/settings/accounts" },
   { title: "Additional Details", route: "/settings/invoice" },
-  
 ];
 
 export const taxList = [{ title: "Taxes", route: "/settings/taxes" }];
@@ -319,7 +324,6 @@ export const newDebitTableHead = [
   "Amount",
   "Actions",
 ];
-
 
 export const PaymentMadeUnpaidBillTable = [
   "Sl.No.",

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../../../../Components/SearchBar";
 import NoDataFoundTable from "../../../../Components/skeleton/Table/NoDataFoundTable";
@@ -11,6 +11,8 @@ import Eye from "../../../../assets/icons/Eye";
 import TrashCan from "../../../../assets/icons/TrashCan";
 import ConfirmModal from "../../../../Components/ConfirmModal";
 import toast from "react-hot-toast";
+import Print from "../../../sales/salesOrder/Print";
+import { useReactToPrint } from "react-to-print";
 
 interface Journal {
   _id: string;
@@ -24,7 +26,7 @@ interface Journal {
 
 type Props = {};
 
-function Table({}: Props) {
+function Table({ }: Props) {
   const navigate = useNavigate();
   const { loading, setLoading } = useContext(TableResponseContext)!;
   const [journalData, setJournalData] = useState<Journal[]>([]);
@@ -97,7 +99,7 @@ function Table({}: Props) {
         toast.success(response.data.message);
         if (journalData.length === 1) {
           setJournalData([]);
-          setLoading({ ...loading, skeleton: false, noDataFound: true }); 
+          setLoading({ ...loading, skeleton: false, noDataFound: true });
         } else {
           setJournalData((prevData) =>
             prevData.filter((journal) => journal._id !== deleteId)
@@ -115,81 +117,91 @@ function Table({}: Props) {
     }
   };
 
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
+
   return (
     <div className="overflow-x-auto my-1">
-      <div className="mb-3">
-        <SearchBar
-          onSearchChange={setSearchValue}
-          searchValue={searchValue}
-          placeholder="Search Journals"
-        />
+      <div className="flex items-center justify-between gap-4 mb-3">
+        <div className="w-full">
+          <SearchBar
+            placeholder="Search"
+            searchValue={searchValue}
+            onSearchChange={setSearchValue}
+          />
+        </div>
+        <div className="flex gap-4" onClick={() => reactToPrintFn()}>
+          <Print />
+        </div>
       </div>
-      <table className="min-w-full bg-white mb-5">
-        <thead className="text-[12px] text-center text-dropdownText">
-          <tr style={{ backgroundColor: "#F9F7F0" }}>
-            <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
-            {tableHeaders.map((heading, index) => (
-              <th
-                className="py-2 px-4 font-medium border-b border-tableBorder"
-                key={index}
-              >
-                {heading}
-              </th>
-            ))}
-          </tr>
-        </thead>
+      <div ref={contentRef} className="min-h-[25rem] overflow-y-auto mt-1">
+        <table className="min-w-full bg-white mb-5">
+          <thead className="text-[12px] text-center text-dropdownText">
+            <tr style={{ backgroundColor: "#F9F7F0" }}>
+              <th className="py-3 px-4 border-b border-tableBorder">Sl No</th>
+              {tableHeaders.map((heading, index) => (
+                <th
+                  className={`py-2 px-4 font-medium border-b border-tableBorder ${heading === "Actions" ? "hide-print" : ""}`}
+                  key={index}
+                >
+                  {heading}
+                </th>
+              ))}
+            </tr>
+          </thead>
 
-        <tbody className="text-dropdownText text-center text-[13px]">
-          {loading.skeleton ? (
-            [
-              ...Array(filteredJournals.length ? filteredJournals.length : 5),
-            ].map((_, idx) => (
-              <TableSkelton key={idx} columns={[...tableHeaders, "rr"]} />
-            ))
-          ) : filteredJournals.length > 0 ? (
-            filteredJournals.reverse().map((item, index) => (
-              // Render actual data rows here
-              <tr key={item._id} className="relative">
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {index + 1}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.date}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.journalId ? item.journalId : "-"}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.reference ? item.reference : "-"}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.note ? item.note : "-"}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder">
-                  {item.totalDebitAmount ? item.totalDebitAmount : "-"}
-                </td>
-                <td className="py-2.5 px-4 border-y border-tableBorder gap-3 flex justify-center items-center">
-                  <div onClick={() => handleEditClick(item._id)}>
-                    <PencilEdit color={"#0B9C56"} className="cursor-pointer" />
-                  </div>
-                  <div
-                    onClick={() =>
-                      navigate(`/accountant/manualjournal/view/${item._id}`)
-                    }
-                  >
-                    <Eye color="#569FBC" className="cursor-pointer" />
-                  </div>
-                  <div onClick={() => confirmDelete(item._id)}>
-                    <TrashCan color="red" />
-                  </div>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <NoDataFoundTable columns={[...tableHeaders, "rr"]} />
-          )}
-        </tbody>
-      </table>
+          <tbody className="text-dropdownText text-center text-[13px]">
+            {loading.skeleton ? (
+              [
+                ...Array(filteredJournals.length ? filteredJournals.length : 5),
+              ].map((_, idx) => (
+                <TableSkelton key={idx} columns={[...tableHeaders, "rr"]} />
+              ))
+            ) : filteredJournals.length > 0 ? (
+              filteredJournals.reverse().map((item, index) => (
+                // Render actual data rows here
+                <tr key={item._id} className="relative">
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    {index + 1}
+                  </td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    {item.date}
+                  </td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    {item.journalId ? item.journalId : "-"}
+                  </td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    {item.reference ? item.reference : "-"}
+                  </td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    {item.note ? item.note : "-"}
+                  </td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder">
+                    {item.totalDebitAmount ? item.totalDebitAmount : "-"}
+                  </td>
+                  <td className="py-2.5 px-4 border-y border-tableBorder gap-3 flex justify-center items-center hide-print">
+                    <div onClick={() => handleEditClick(item._id)}>
+                      <PencilEdit color={"#0B9C56"} className="cursor-pointer" />
+                    </div>
+                    <div
+                      onClick={() =>
+                        navigate(`/accountant/manualjournal/view/${item._id}`)
+                      }
+                    >
+                      <Eye color="#569FBC" className="cursor-pointer" />
+                    </div>
+                    <div onClick={() => confirmDelete(item._id)}>
+                      <TrashCan color="red" />
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <NoDataFoundTable columns={[...tableHeaders, "rr"]} />
+            )}
+          </tbody>
+        </table>
+      </div>
       <ConfirmModal
         open={isConfirmModalOpen}
         onClose={() => setConfirmModalOpen(false)}
