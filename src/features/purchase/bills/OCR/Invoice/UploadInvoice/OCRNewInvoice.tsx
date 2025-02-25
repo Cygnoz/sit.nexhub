@@ -94,8 +94,8 @@ const OCRNewInvoice = () => {
           payload,
         }));
       } else {
-        toast.error(error.response.data.error);
-        console.log(error.response.data.error);
+        toast.error(error.response.data.message);
+        console.log(error.response.data.message);
       }
     } catch (error) {
       console.error("Error occurred during upload:", error);
