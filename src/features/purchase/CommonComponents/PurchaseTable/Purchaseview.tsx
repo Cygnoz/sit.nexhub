@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Link,
   useNavigate,
@@ -17,11 +17,12 @@ import PrinterIcon from "../../../../assets/icons/PrinterIcon";
 import Trash2 from "../../../../assets/icons/Trash2";
 import ConfirmModal from "../../../../Components/ConfirmModal";
 import toast from "react-hot-toast";
+import MailIcon from "../../../../assets/icons/MailIcon";
 
 type Props = { page: string };
 
 function Purchaseview({ page }: Props) {
-  const [data, setData] = useState<[] | any>([]);
+  const [data, setData] = useState<any>({});
   const { request: getPurchaseOrder } = useApi("get", 5005);
   const { request: getBills } = useApi("get", 5005);
   const { request: getDebitN } = useApi("get", 5005);
@@ -30,21 +31,25 @@ function Purchaseview({ page }: Props) {
   const [searchParams] = useSearchParams();
   const param = useParams();
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
-  const confirmDelete = () => {
-    setConfirmModalOpen(true);
-  };
+  const confirmDelete = () => setConfirmModalOpen(true);
   const isPdfViewDefault = searchParams.get("pdfView") === "true";
-  const [isPdfView, setIsPdfView] = useState(
-    page === "Bills" ? isPdfViewDefault : false
-  );
-  const handleToggle = () => {
-    setIsPdfView(!isPdfView);
-  };
-  console.log(page, "page");
-
+  const [isPdfView, setIsPdfView] = useState(page === "Bills" ? isPdfViewDefault : false);
+  const handleToggle = () => setIsPdfView(!isPdfView);
   const POid = param.id;
+  const navigate = useNavigate();
+  const pdfRef = useRef<HTMLDivElement | null>(null); 
+  useEffect(() => {
+    if (!POid) return;
+    if (page === "PurchaseOrder") {
+      fetchData(endponits.GET_ONE_PURCHASE_ORDER, getPurchaseOrder, "Purchase Order");
+    } else if (page === "Bills") {
+      fetchData(endponits.GET_A_BILL, getBills, "Bill");
+    } else if (page === "DebitNote") {
+      fetchData(endponits.GET_DEBIT_NOTE, getDebitN, "Debit Note");
+    }
+  }, [page, POid]);
 
-  const fetchData = async (endpoint: any, apiCall: any, logLabel: any) => {
+  const fetchData = async (endpoint: string, apiCall: any, logLabel: string) => {
     try {
       const url = `${endpoint}/${POid}`;
       const { response, error } = await apiCall(url);
@@ -58,73 +63,41 @@ function Purchaseview({ page }: Props) {
     }
   };
 
-  useEffect(() => {
-    if (!POid) return;
-    if (page === "PurchaseOrder") {
-      fetchData(
-        endponits.GET_ONE_PURCHASE_ORDER,
-        getPurchaseOrder,
-        "Purchase Order"
-      );
-    } else if (page === "Bills") {
-      fetchData(endponits.GET_A_BILL, getBills, "Bill");
-    } else if (page === "DebitNote") {
-      fetchData(endponits.GET_DEBIT_NOTE, getDebitN, "Debit Note");
-    }
-  }, [page, POid]);
-
-  const navigate = useNavigate();
-
   const handleEdit = () => {
-    if (page === "PurchaseOrder") {
-      navigate(`/purchase/purchase-order/edit/${POid}`);
-    } else if (page === "Bills") {
-      navigate(`/purchase/bills/edit/${POid}`);
-    } else if (page === "DebitNote") {
-      navigate(`/purchase/debit-note/edit/${POid}`);
-    }
+    navigate(
+      page === "PurchaseOrder"
+        ? `/purchase/purchase-order/edit/${POid}`
+        : page === "Bills"
+        ? `/purchase/bills/edit/${POid}`
+        : `/purchase/debit-note/edit/${POid}`
+    );
   };
 
   const handleDelete = async () => {
     try {
-      let url = "";
-      if (page === "PurchaseOrder") {
-        url = `${endponits.DELETE_PURCHASE_ORDER}/${POid}`;
-      } else if (page === "Bills") {
-        url = `${endponits.DELETE_BILL}/${POid}`;
-      } else if (page === "DebitNote") {
-        url = `${endponits.DELETE_DEBIT_NOTE}/${POid}`;
-      }
+      let url = page === "PurchaseOrder"
+        ? `${endponits.DELETE_PURCHASE_ORDER}/${POid}`
+        : page === "Bills"
+        ? `${endponits.DELETE_BILL}/${POid}`
+        : `${endponits.DELETE_DEBIT_NOTE}/${POid}`;
 
       if (!url) return;
-
       const { response, error } = await deleteData(url);
       if (!error && response) {
-        console.log("Deleted successfully:", response);
-        toast.success(response.data.message)
-        setConfirmModalOpen(false)
-        const path =
-        page === "PurchaseOrder"
-          ? "/purchase/purchase-order"
-          : page === "Bills"
-          ? "/purchase/bills"
-          : page === "DebitNote"
-          ? "/purchase/debitnote"
-          : "/";
-      
-          setTimeout(() => {
-            navigate(path);
-          }, 1000);
-          
-          
-      
-      }  else{
-        toast.error(error.response.data.message)
+        toast.success(response.data.message);
+        setConfirmModalOpen(false);
+        navigate(page === "PurchaseOrder" ? "/purchase/purchase-order" : page === "Bills" ? "/purchase/bills" : "/purchase/debitnote");
+      } else {
+        toast.error(error.response.data.message);
       }
     } catch (error) {
-      console.error("Error in deleting item:", error);
+      console.error("Error deleting item:", error);
     }
   };
+
+ 
+  
+    
 
   return (
     <div className="mt-4">
@@ -203,6 +176,14 @@ function Purchaseview({ page }: Props) {
                   <Trash2 color="#565148" />
                   <p className="text-sm font-medium">Delete</p>
                 </Button>
+                <Button
+                  variant="secondary"
+                  className="pl-5 pr-5"
+                  size="sm"
+                >
+                  <MailIcon color="#565148" />
+                  <p className="text-sm font-medium">Mail</p>
+                </Button>
               </>
 
               <Button variant="secondary" size="sm" className="px-2">
@@ -237,9 +218,10 @@ function Purchaseview({ page }: Props) {
           </div>
           <hr className="border-t border-inputBorder mt-4" />
           {isPdfView ? (
-            <div className="pdf-view-component">
-              <PDFView data={data} page={page} organization={organization} />
-            </div>
+          <div ref={pdfRef} style={{ visibility: "visible", left: "-9999px" }}>
+          <PDFView ref={pdfRef} data={data} page={page} organization={organization} />
+        </div>
+         
           ) : (
             <div className="other-component">
               <OrderView data={data} page={page} organization={organization} />

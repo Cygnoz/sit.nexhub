@@ -14,11 +14,11 @@ const MonthlySummery = ({}: Props) => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const { organization } = useOrganization();
+  const [isClosingStock, setIsClosingStock] = useState(false);
 
   useEffect(() => {
     const storedFromDate = localStorage.getItem("fromDate");
     const storedToDate = localStorage.getItem("toDate");
-
     if (storedFromDate) setFromDate(storedFromDate);
     if (storedToDate) setToDate(storedToDate);
   }, []);
@@ -36,7 +36,15 @@ const MonthlySummery = ({}: Props) => {
     }
   };
 
-  console.log(items, "items");
+  useEffect(() => {
+    if (items.accountName === "Closing Stock") {
+      setIsClosingStock(true);
+    } else {
+      setIsClosingStock(false);
+    }
+  }, []);
+
+  console.log(items);
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -49,7 +57,7 @@ const MonthlySummery = ({}: Props) => {
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
             {" "}
-            Monthly Summery{" "} - {items.accountName}
+            Monthly Summery - {items.accountName}
           </h4>
         </div>
 
@@ -79,46 +87,63 @@ const MonthlySummery = ({}: Props) => {
         <table className="w-full text-[#495060]">
           <thead>
             <tr className="bg-lightPink text-left border-b font-bold text-sm  border-[#ebecf0]">
-              <th className="p-2">Particulars</th>
+              <th className="p-2">
+                {isClosingStock ? "Item Name" : "Particulars"}
+              </th>
+              {isClosingStock && (
+                <th className="p-2 text-center min-w-[30px] max-w-[30px] px-1 truncate">
+                  Cost Price
+                </th>
+              )}
               <th className="p-2 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                Debit
+                {isClosingStock ? "Quantity" : "Debit"}
               </th>
               <th className="p-2 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                Credit
+                {isClosingStock ? "Value" : " Credit"}
               </th>
             </tr>
           </thead>
           <tbody className="text-xs ">
             {items?.entries?.map((item: any) => (
               <tr className="border-b border-[#ebecf0]">
-                {item.date !== "Opening Balance" ||
-                item.transactions.length > 0 ? (
-                  <Link
-                    to={`${reportPath()}/${
-                      items.accountName
-                    }/monthly-summery/ledger`}
-                    state={{ item, fromDate, toDate }}
-                  >
-                    <td className="py-3">{item.date}</td>
-                  </Link>
-                ) : (
-                  <td className="py-3">{item.date}</td>
-                )}
+               {items.accountName !== "Closing Stock" && item.date !== "Opening Balance" && 
+ item.transactions.length > 0 ? (
+  <Link
+    to={`${reportPath()}/${items.accountName}/monthly-summery/ledger`}
+    state={{ item, fromDate, toDate }}
+  >
+    <td className="py-3">{item.date}</td>
+  </Link>
+) : (
+  <td className="py-3">
+    {items.accountName === "Closing Stock" ? item.itemName : item.date}
+  </td>
+)}
 
+                {isClosingStock && (
+                  <td className="py-3 text-center">{item.lastCostPrice}</td>
+                )}
                 <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                  {item.overAllNetDebit}
+                  {isClosingStock
+                    ? item.totalDebit - item.totalCredit
+                    : item.overAllNetDebit}
                 </td>
                 <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
-                  {item.overAllNetCredit}
+                  {isClosingStock
+                    ? (item.totalDebit - item.totalCredit) * item.lastCostPrice
+                    : item.overAllNetCredit}
                 </td>
               </tr>
             ))}
             <td className="py-3 font-bold">Total</td>
+            {isClosingStock && <td className="py-3 text-right font-bold"></td>}
             <td className="py-3 text-right font-bold">
-              {items.overallNetDebit}
+              {!isClosingStock && items.overallNetDebit}
             </td>
             <td className="py-3 text-right font-bold">
-              {items.overallNetCredit}
+              {isClosingStock
+                ? items.overallNetDebit - items.overallNetCredit
+                : items.overallNetCredit}
             </td>
           </tbody>
         </table>

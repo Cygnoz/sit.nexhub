@@ -355,7 +355,7 @@ function OrderView({ data, page, organization }: Props) {
                         >
                           <option value="percentage">%</option>
                           <option value="currency">
-                            {organization.baseCurrency}
+                            {organization?.baseCurrency}
                           </option>
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center  text-gray-700 ms-1">

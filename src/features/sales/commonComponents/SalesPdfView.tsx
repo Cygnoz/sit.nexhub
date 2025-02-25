@@ -12,6 +12,7 @@ interface OrderItem {
   itemAmount: number;
   sgstAmount: number;
   cgstAmount: number;
+  igstAmount:number;
 }
 
 interface SalesOrderData {
@@ -210,7 +211,7 @@ function SalesPdfView({ data, page }: SalesOrderViewProps) {
                   <td className="py-2 px-4">{item.itemName}</td>
                   <td className="py-2 px-4 pl-16">{item.quantity}</td>
                   <td className="py-2 px-4">{item.sellingPrice.toFixed(2)}</td>
-                  <td className="py-2 px-4">{item.cgstAmount + item.sgstAmount}</td>
+                  <td className="py-2 px-4">{item.cgstAmount + item.sgstAmount+item.igstAmount}</td>
                   <td className="py-2 px-4">{item.itemAmount.toFixed(2)}</td>
                 </tr>
               ))}

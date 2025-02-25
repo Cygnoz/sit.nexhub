@@ -88,7 +88,7 @@ const BalanceSheet = ({}: Props) => {
     window.print();
   };
 
-  console.log(BSData.summary, "dert");
+  console.log(BSData.credit, "dert");
 
   return (
     <div className="p-5">
@@ -216,11 +216,11 @@ const BalanceSheet = ({}: Props) => {
       link = `/reports/balance-sheet/accounts/${accountSubhead}`;
     } else if (item.netProfitCd) {
       accountName = "Profit & Loss A/C";
-      totalAmount = item.netProfitCd;
+      totalAmount = item?.netProfitCd;
     }
 
     if (!accountName) {
-      return null; // Account name illenkil row skip cheyyum
+      return null;
     }
 
     if (totalAmount === 0) {
@@ -297,8 +297,11 @@ const BalanceSheet = ({}: Props) => {
                     } else if (item.netLossCd) {
                       accountName = " Profit & Loss A/C ";
                       totalAmount = item.netLossCd;
+                      console.log(item.netLossCd,"lossss")
                     }
-
+                    if (!accountName) {
+                      return null;
+                    }
                     if (totalAmount === 0) {
                       link = "";
                     }

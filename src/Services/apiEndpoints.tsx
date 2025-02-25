@@ -116,6 +116,7 @@ export const endponits = {
   GET_TAX_SUPPLIER: `supplier-additional-data`,
   UPDATE_SUPPLIER_STATUS: `update-supplier-status`,
   GET_ONE_SUPPLIER_HISTORY: `get-one-supplier-history`,
+  GET_SUPPLIER_PURCHASE_HISTORY:`get-supplier-bill`,
 
   //Currency
   GET_CURRENCIES: "get-currency",
