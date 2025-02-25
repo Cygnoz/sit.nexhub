@@ -224,7 +224,7 @@ function SalesPdfView({ data, page }: SalesOrderViewProps) {
                   Sub total (excl. GST)
                 </h4>
                 <p className="text-pdftext text-xs font-normal">
-                  {organization?.baseCurrency} {data?.subTotal.toFixed(2)}
+                  {organization?.baseCurrency} {(Number(data?.totalAmount)-Number(data?.totalTax)).toFixed(2)}
                 </p>
               </div>
               <div className="px-4 mt-3 mb-5 bg-gray-100 rounded-lg flex justify-between">

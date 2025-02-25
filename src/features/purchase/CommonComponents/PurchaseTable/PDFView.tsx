@@ -188,13 +188,13 @@ const PDFView = ({ data, page , organization}: Props) => {
                   Sub total (excl. GST)
                 </h4>
                 <p className="text-pdftext text-xs font-normal">
-                  {data.subTotal - data.totalTaxAmount || 0.00}
+                  {(Number(data.grandTotal) - Number(data.totalTaxAmount)).toFixed(2) || 0.00}
                 </p>
               </div>
               <div className="px-4 mt-3 mb-5 bg-gray-100 rounded-lg flex justify-between">
                 <h4 className="text-pdftext text-xs font-normal">Total</h4>
                 <p className="text-pdftext text-xs font-normal">
-                  {data.grandTotal}
+                  {(data.grandTotal).toFixed(2)}
                 </p>
               </div>
             </div>

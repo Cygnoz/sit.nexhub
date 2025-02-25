@@ -79,7 +79,7 @@ function PdfView({ data, organization }: Props) {
               Supplier Payment
             </h2>
             <p className="text-sm font-bold text-dropdownText mt-[5px]">
-              {data?.paymentId}
+              {data?.paymentMade}
             </p>
             <h3 className="font-normal text-xs mt-[14px] text-pdftext">
               {data?.supplierDisplayName}
@@ -94,10 +94,10 @@ function PdfView({ data, organization }: Props) {
         <div className="grid grid-cols-2 gap-4 mb-2">
           <div className="grid grid-cols-2 items-center space-y-3">
             <p className="font-normal text-xs text-pdftext">Payment ID</p>
-            <p className="text-xs  text-pdftext text-end">{data?.paymentId}</p>
+            <p className="text-xs  text-pdftext text-end">{data?.paymentMade}</p>
             <p className="font-normal text-xs text-pdftext">Payment Date</p>
             <p className="text-xs  text-pdftext text-end">
-              {data?.paymentdate ? data?.paymentDate : "-"}
+              {data?.paymentDate ? data?.paymentDate : "-"}
             </p>
             <p className="font-normal text-xs text-pdftext">Reference Number</p>
             <p className="text-xs  text-pdftext text-end">
