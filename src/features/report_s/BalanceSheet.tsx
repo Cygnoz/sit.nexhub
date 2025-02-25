@@ -178,7 +178,7 @@ const BalanceSheet = ({}: Props) => {
                 <thead>
                   <tr>
                     <th className="flex items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9] me-5 ">
-                      Particulars
+                    Liabilities
                     </th>
                     <th className="items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9]">
                       Amount
@@ -186,71 +186,71 @@ const BalanceSheet = ({}: Props) => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#EAECF0]">
-                  {BSData?.credit?.map((item: any, index: number) => {
-                    let accountName = "";
-                    let totalAmount = 0;
-                    let items = [];
-                    let link = "";
-                    let accountSubhead = "";
+  {BSData?.credit?.map((item: any, index: number) => {
+    let accountName = "";
+    let totalAmount = 0;
+    let items = [];
+    let link = "";
+    let accountSubhead = "";
 
-                    if (item.equity) {
-                      accountName = "Equity";
-                      accountSubhead = "equity";
-                      totalAmount =
-                        item.equity.overallNetCredit -
-                        item.equity.overallNetDebit;
-                      items = item;
-                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
-                      console.log(item.equity);
-                    } else if (item.currentLiabilities) {
-                      const accountSubhead = "currentLiabilities";
-                      accountName = "Current Liabilities";
-                      totalAmount =
-                        item.currentLiabilities.overallNetCredit -
-                        item.currentLiabilities.overallNetDebit;
-                      items = item;
-                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
-                      console.log(item, "purchase");
-                    } else if (item.nonCurrentLiabilities) {
-                      const accountSubhead = "nonCurrentLiabilities";
-                      accountName = "Non-Current Liabilities";
-                      totalAmount =
-                        item.nonCurrentLiabilities.overallNetCredit -
-                        item.nonCurrentLiabilities.overallNetDebit;
-                      items = item;
-                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
-                    } else if (item.netLossCd) {
-                      accountName = " Profit & Loss A/C ";
-                      totalAmount = item.netLossCd;
-                    }
-                    if (totalAmount === 0) {
-                      link = "";
-                    }
+    if (item.equity) {
+      accountName = "Equity";
+      accountSubhead = "equity";
+      totalAmount =
+        item.equity.overallNetCredit - item.equity.overallNetDebit;
+      items = item;
+      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+    } else if (item.currentLiabilities) {
+      accountName = "Current Liabilities";
+      accountSubhead = "currentLiabilities";
+      totalAmount =
+        item.currentLiabilities.overallNetCredit - item.currentLiabilities.overallNetDebit;
+      items = item;
+      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+    } else if (item.nonCurrentLiabilities) {
+      accountName = "Non-Current Liabilities";
+      accountSubhead = "nonCurrentLiabilities";
+      totalAmount =
+        item.nonCurrentLiabilities.overallNetCredit - item.nonCurrentLiabilities.overallNetDebit;
+      items = item;
+      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+    } else if (item.netProfitCd) {
+      accountName = "Profit & Loss A/C";
+      totalAmount = item.netProfitCd;
+    }
 
-                    return (
-                      <tr
-                        key={index}
-                        className={
-                          index === BSData?.debit.length - 1
-                            ? "font-semibold bg-gray-50"
-                            : ""
-                        }
-                      >
-                        <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
-                          <Link
-                            to={link}
-                            state={{ items, accountName: accountName }}
-                          >
-                            {accountName}
-                          </Link>
-                        </td>
-                        <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">
-                          {totalAmount}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
+    if (!accountName) {
+      return null; // Account name illenkil row skip cheyyum
+    }
+
+    if (totalAmount === 0) {
+      link = "";
+    }
+
+    return (
+      <tr
+        key={index}
+        className={
+          index === BSData?.debit.length - 1 ? "font-semibold bg-gray-50" : ""
+        }
+      >
+        <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
+          {link ? (
+            <Link to={link} state={{ items, accountName }}>
+              {accountName}
+            </Link>
+          ) : (
+            accountName
+          )}
+        </td>
+        <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">
+          {totalAmount}
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+
               </table>
             </div>
           </div>
@@ -264,7 +264,7 @@ const BalanceSheet = ({}: Props) => {
                 <thead>
                   <tr>
                     <th className="flex items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9] mx-5">
-                      Particulars
+                    Assets
                     </th>
                     <th className="items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9]">
                       Amount
