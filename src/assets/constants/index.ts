@@ -380,10 +380,10 @@ export const settingsList = [
     icon: box,
     subhead: [
       { headName: "Item", subRoute: "/settings/items/item" },
-      {
-        headName: "Inventory Adjustment",
-        subRoute: "/settings/inventory-adjustment",
-      },
+      // {
+      //   headName: "Inventory Adjustment",
+      //   subRoute: "/settings/inventory-adjustment",
+      // },
     ],
   },
   {
@@ -394,18 +394,18 @@ export const settingsList = [
       { headName: "MSME Settings", subRoute: "/settings/taxes/msme" },
     ],
   },
-  {
-    nav: "Rewards Settings",
-    icon: Wallet,
-    subhead: [
-      { headName: "Rewards", subRoute: "/settings/rewards" },
-      { headName: "Refer & Earn", subRoute: "/settings/rewards/refferandearn" },
-      {
-        headName: "Membership Card",
-        subRoute: "/settings/rewards/membershipcard",
-      },
-    ],
-  },
+  // {
+  //   nav: "Rewards Settings",
+  //   icon: Wallet,
+  //   subhead: [
+  //     { headName: "Rewards", subRoute: "/settings/rewards" },
+  //     { headName: "Refer & Earn", subRoute: "/settings/rewards/refferandearn" },
+  //     {
+  //       headName: "Membership Card",
+  //       subRoute: "/settings/rewards/membershipcard",
+  //     },
+  //   ],
+  // },
   {
     nav: "Sales",
     icon: shoppingCart,
@@ -449,15 +449,15 @@ export const settingsList = [
       { headName: "PDF Templates", subRoute: "/settings/pdf-templates" },
     ],
   },
-  {
-    nav: "Users & Roles",
-    icon: usersRound,
-    subhead: [
-      { headName: "Users", subRoute: "/settings/users" },
-      { headName: "Roles", subRoute: "/settings/roles" },
-      { headName: "User Preferences", subRoute: "/settings/user-preferences" },
-    ],
-  },
+  // {
+  //   nav: "Users & Roles",
+  //   icon: usersRound,
+  //   subhead: [
+  //     { headName: "Users", subRoute: "/settings/users" },
+  //     { headName: "Roles", subRoute: "/settings/roles" },
+  //     { headName: "User Preferences", subRoute: "/settings/user-preferences" },
+  //   ],
+  // },
   {
     nav: "Preferences",
     icon: newspapper,

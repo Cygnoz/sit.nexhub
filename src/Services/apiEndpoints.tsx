@@ -29,7 +29,7 @@ export const endponits = {
   DELETE_SALES_ORDER: "delete-sales-order",
   DELETE_SALES_QUOTE: "delete-sales-quotes",
   DELETE_SALES_INVOICE: "delete-sales-invoice",
-  DELETE_SALES_RECIEPT: "delete-sales-",
+  DELETE_SALES_RECIEPT: "delete-sales-receipt",
 
   //sales order
   GET_LAST_SALES_ORDER_PREFIX: "get-last-sales-order-prefix",

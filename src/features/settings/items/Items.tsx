@@ -133,7 +133,7 @@ function Items({ }: Props) {
 
       <p className="text-[20px] font-bold mt-3">Item</p>
       <div className="mt-2 bg-white p-6 flex justify-between items-center">
-        <p className="text-[#303F58] text-sm font-semibold">Opening Date: <span className="ms-4">01/01/2025</span></p>
+        <p className="text-[#303F58] text-sm font-semibold">Opening Date: <span className="ms-4">{inputData.openingStockDate ? inputData.openingStockDate : ""}</span></p>
         <input
           name="openingStockDate"
           type="date"
