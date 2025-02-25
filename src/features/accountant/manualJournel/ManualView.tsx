@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import Pen from "../../../assets/icons/Pen";
 import PrinterIcon from "../../../assets/icons/PrinterIcon";
@@ -7,11 +7,13 @@ import Button from "../../../Components/Button";
 import useApi from "../../../Hooks/useApi";
 import { useEffect, useState } from "react";
 import { endponits } from "../../../Services/apiEndpoints";
+import toast from "react-hot-toast";
 
 type Props = {};
 
 function ManualView({ }: Props) {
   const { request: getOneJournal } = useApi("get", 5001);
+  const { request: deleteJournal } = useApi("delete", 5001);
   const { id } = useParams<{ id: string }>();
   const [oneJournal, setOneJournal] = useState<any>(null);
 
@@ -27,6 +29,27 @@ function ManualView({ }: Props) {
       console.error("Error fetching journal:", error);
     }
   };
+  const Navigate = useNavigate();
+
+  const handleEditClick = () => {
+    Navigate(`/accountant/editjournal/${id}`);
+  };
+
+  const handleDelete = async () => {
+    try {
+      const url = `${endponits.DELET_JOURNAL}/${id}`;
+      const { response, error } = await deleteJournal(url);
+      if (!error && response) {
+        toast.success(response.data.message);
+        Navigate("/accountant/manualjournal")
+      } else {
+        toast.error(error.response.data.message);
+      }
+    } catch (error) {
+      toast.error("Error occurred while deleting.");
+    }
+  };
+
 
   useEffect(() => {
     if (id) {
@@ -60,7 +83,7 @@ function ManualView({ }: Props) {
               </p>
             </div>
             <div className="flex gap-3 items-center">
-              <Button variant="secondary" className="pl-6 pr-6" size="sm">
+              <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={handleEditClick}>
                 <Pen color="#565148" />{" "}
                 <p className="text-sm font-medium">Edit</p>
               </Button>
@@ -68,7 +91,7 @@ function ManualView({ }: Props) {
                 <PrinterIcon color="#565148" height={0} width={0} />{" "}
                 <p className="text-sm font-medium">Print</p>
               </Button>
-              <Button variant="secondary" className="pl-5 pr-5" size="sm">
+              <Button variant="secondary" className="pl-5 pr-5" size="sm" onClick={handleDelete}>
                 <Trash2 color="#565148" />{" "}
                 <p className="text-sm font-medium">Delete</p>
               </Button>

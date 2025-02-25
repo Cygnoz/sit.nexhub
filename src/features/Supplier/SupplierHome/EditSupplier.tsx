@@ -533,7 +533,7 @@ const EditSupplier: React.FC<Props> = ({
       } else {
         console.log(taxError, "tax");
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const getOneOrganization = async () => {
     try {
@@ -1029,7 +1029,7 @@ const EditSupplier: React.FC<Props> = ({
                           </div>
                         </div>
 
-                        <div>
+                        <div className="relative">
                           <label className="block mb-1">Payment Terms</label>
                           <select
                             className="block appearance-none w-full h-9 text-[#818894] bg-white border border-inputBorder 
@@ -1052,7 +1052,11 @@ const EditSupplier: React.FC<Props> = ({
                                   {item.name}
                                 </option>
                               ))}
+
                           </select>
+                          <div className="pointer-events-none absolute inset-y-0 top-6 right-0 flex items-center px-2 text-gray-700">
+                            <CehvronDown color="grey" />
+                          </div>
                         </div>
                         <div className="">
                           <label htmlFor="" className="block mb-1">
@@ -1135,7 +1139,7 @@ const EditSupplier: React.FC<Props> = ({
                           className="hidden"
                           // value={supplierdata.documents}
                           name="documents"
-                          // onChange={(e)=>handleFileChange(e)}
+                        // onChange={(e)=>handleFileChange(e)}
                         />
                       </div>
                       <div className="">
@@ -1259,42 +1263,42 @@ const EditSupplier: React.FC<Props> = ({
 
                             {supplierdata.gstTreatment !==
                               "Unregistered Business" && (
-                              <div>
                                 <div>
-                                  <label className="block mb-1">
-                                    GSTIN/UIN
-                                  </label>
-                                  <input
-                                    type="text"
-                                    name="gstinUin"
-                                    className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
-                                    placeholder="Enter GSTIN/UIN"
-                                    value={supplierdata.gstinUin}
-                                    onChange={handleChange}
-                                    onBlur={() => {
-                                      if (
-                                        supplierdata.gstTreatment !==
+                                  <div>
+                                    <label className="block mb-1">
+                                      GSTIN/UIN
+                                    </label>
+                                    <input
+                                      type="text"
+                                      name="gstinUin"
+                                      className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-9 p-2 text-[#818894]"
+                                      placeholder="Enter GSTIN/UIN"
+                                      value={supplierdata.gstinUin}
+                                      onChange={handleChange}
+                                      onBlur={() => {
+                                        if (
+                                          supplierdata.gstTreatment !==
                                           "Overseas" &&
-                                        supplierdata.gstTreatment !==
+                                          supplierdata.gstTreatment !==
                                           "Unregistered Business" &&
-                                        supplierdata.gstTreatment !== "" &&
-                                        supplierdata.gstinUin === ""
-                                      ) {
-                                        setErrors((prevErrors) => ({
-                                          ...prevErrors,
-                                          gstinUin: true,
-                                        }));
-                                      } else {
-                                        setErrors((prevErrors) => ({
-                                          ...prevErrors,
-                                          gstinUin: false,
-                                        }));
-                                      }
-                                    }}
-                                  />
+                                          supplierdata.gstTreatment !== "" &&
+                                          supplierdata.gstinUin === ""
+                                        ) {
+                                          setErrors((prevErrors) => ({
+                                            ...prevErrors,
+                                            gstinUin: true,
+                                          }));
+                                        } else {
+                                          setErrors((prevErrors) => ({
+                                            ...prevErrors,
+                                            gstinUin: false,
+                                          }));
+                                        }
+                                      }}
+                                    />
+                                  </div>
                                 </div>
-                              </div>
-                            )}
+                              )}
                           </div>
                         )}
 

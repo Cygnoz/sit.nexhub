@@ -53,6 +53,7 @@ function NewJournal({ page }: Props) {
   });
   const [newJournalDatas, setNewJournelDatas] = useState({
     journel: "",
+    journalId: "",
     date: new Date().toISOString().split("T")[0],
     reference: "",
     note: "",
@@ -150,13 +151,15 @@ function NewJournal({ page }: Props) {
     { value: "NOK", display: "NOK - Norwegian Krone" },
   ];
 
+  const [prefix, setPrifix] = useState("");
   const getLastJournelsPrefix = async () => {
     try {
       const url = `${endponits.Get_LAST_Journel_Prefix}`;
       const { response, error } = await GetLastJournelPrefix(url);
       if (!error && response) {
-        console.log("response", response);
-        setNewJournelDatas({ ...newJournalDatas, journel: response?.data });
+        setPrifix(response.data);
+      } else {
+        console.log(error);
       }
     } catch (error) {
       console.error("Error fetching accounts:", error);
@@ -281,6 +284,7 @@ function NewJournal({ page }: Props) {
           toast.success(response.data.message);
           setNewJournelDatas({
             journel: "",
+            journalId: "",
             date: "",
             reference: "",
             note: "",
@@ -457,12 +461,10 @@ function NewJournal({ page }: Props) {
                 type="text"
                 className="mt-1 w-full border border-inputBorder rounded-md text-sm p-2"
                 placeholder="001"
-                value={newJournalDatas.journel}
-                onChange={(e) =>
-                  setNewJournelDatas({
-                    ...newJournalDatas,
-                    journel: e.target.value,
-                  })
+                value={
+                  newJournalDatas.journalId
+                    ? newJournalDatas.journalId
+                    : prefix
                 }
               />
             </div>
