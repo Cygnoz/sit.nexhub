@@ -6,9 +6,10 @@ import toast from "react-hot-toast";
 import { endponits } from "../../Services/apiEndpoints";
 import Calender from "../../assets/icons/Calender";
 import CehvronDown from "../../assets/icons/CehvronDown";
-import { PrinterIcon } from "@heroicons/react/20/solid";
 import { useOrganization } from "../../context/OrganizationContext";
 import Button from "../../Components/Button";
+import PrintButton from "../../Components/PrintButton";
+import { useReactToPrint } from "react-to-print";
 
 type Props = {};
 
@@ -31,7 +32,7 @@ function getLastDayOfMonth() {
     .split("T")[0];
 }
 
-const BalanceSheet = ({}: Props) => {
+const BalanceSheet = ({ }: Props) => {
   const [BSData, setBSData] = useState<any | []>([]);
   const { organization } = useOrganization();
 
@@ -84,11 +85,8 @@ const BalanceSheet = ({}: Props) => {
   //   }
   // };
 
-  const handlePrint = () => {
-    window.print();
-  };
-
-  console.log(BSData.summary, "dert");
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
   return (
     <div className="p-5">
@@ -147,17 +145,14 @@ const BalanceSheet = ({}: Props) => {
               Run
             </Button>
 
-            <div className="ml-auto flex items-center">
-              <button  onClick={handlePrint}  className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">
-                <PrinterIcon color="gray" height={18} width={20} />
-                <span className="text-sm text-neutral-500">Print</span>
-              </button>
+            <div className="ml-auto flex items-center" onClick={() => reactToPrintFn()}>
+              <PrintButton />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm p-6 mt-2" id="">
+      <div className="bg-white rounded-xl shadow-sm p-6 mt-2" id="" ref={contentRef}>
         <div className="flex justify-center items-center mb-2">
           <div className="text-center">
             <p className="font-bold text-textColor">
@@ -178,7 +173,7 @@ const BalanceSheet = ({}: Props) => {
                 <thead>
                   <tr>
                     <th className="flex items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9] me-5 ">
-                    Liabilities
+                      Liabilities
                     </th>
                     <th className="items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9]">
                       Amount
@@ -186,70 +181,70 @@ const BalanceSheet = ({}: Props) => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#EAECF0]">
-  {BSData?.credit?.map((item: any, index: number) => {
-    let accountName = "";
-    let totalAmount = 0;
-    let items = [];
-    let link = "";
-    let accountSubhead = "";
+                  {BSData?.credit?.map((item: any, index: number) => {
+                    let accountName = "";
+                    let totalAmount = 0;
+                    let items = [];
+                    let link = "";
+                    let accountSubhead = "";
 
-    if (item.equity) {
-      accountName = "Equity";
-      accountSubhead = "equity";
-      totalAmount =
-        item.equity.overallNetCredit - item.equity.overallNetDebit;
-      items = item;
-      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
-    } else if (item.currentLiabilities) {
-      accountName = "Current Liabilities";
-      accountSubhead = "currentLiabilities";
-      totalAmount =
-        item.currentLiabilities.overallNetCredit - item.currentLiabilities.overallNetDebit;
-      items = item;
-      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
-    } else if (item.nonCurrentLiabilities) {
-      accountName = "Non-Current Liabilities";
-      accountSubhead = "nonCurrentLiabilities";
-      totalAmount =
-        item.nonCurrentLiabilities.overallNetCredit - item.nonCurrentLiabilities.overallNetDebit;
-      items = item;
-      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
-    } else if (item.netProfitCd) {
-      accountName = "Profit & Loss A/C";
-      totalAmount = item.netProfitCd;
-    }
+                    if (item.equity) {
+                      accountName = "Equity";
+                      accountSubhead = "equity";
+                      totalAmount =
+                        item.equity.overallNetCredit - item.equity.overallNetDebit;
+                      items = item;
+                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+                    } else if (item.currentLiabilities) {
+                      accountName = "Current Liabilities";
+                      accountSubhead = "currentLiabilities";
+                      totalAmount =
+                        item.currentLiabilities.overallNetCredit - item.currentLiabilities.overallNetDebit;
+                      items = item;
+                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+                    } else if (item.nonCurrentLiabilities) {
+                      accountName = "Non-Current Liabilities";
+                      accountSubhead = "nonCurrentLiabilities";
+                      totalAmount =
+                        item.nonCurrentLiabilities.overallNetCredit - item.nonCurrentLiabilities.overallNetDebit;
+                      items = item;
+                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+                    } else if (item.netProfitCd) {
+                      accountName = "Profit & Loss A/C";
+                      totalAmount = item.netProfitCd;
+                    }
 
-    if (!accountName) {
-      return null; // Account name illenkil row skip cheyyum
-    }
+                    if (!accountName) {
+                      return null; // Account name illenkil row skip cheyyum
+                    }
 
-    if (totalAmount === 0) {
-      link = "";
-    }
+                    if (totalAmount === 0) {
+                      link = "";
+                    }
 
-    return (
-      <tr
-        key={index}
-        className={
-          index === BSData?.debit.length - 1 ? "font-semibold bg-gray-50" : ""
-        }
-      >
-        <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
-          {link ? (
-            <Link to={link} state={{ items, accountName }}>
-              {accountName}
-            </Link>
-          ) : (
-            accountName
-          )}
-        </td>
-        <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">
-          {totalAmount}
-        </td>
-      </tr>
-    );
-  })}
-</tbody>
+                    return (
+                      <tr
+                        key={index}
+                        className={
+                          index === BSData?.debit.length - 1 ? "font-semibold bg-gray-50" : ""
+                        }
+                      >
+                        <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
+                          {link ? (
+                            <Link to={link} state={{ items, accountName }}>
+                              {accountName}
+                            </Link>
+                          ) : (
+                            accountName
+                          )}
+                        </td>
+                        <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">
+                          {totalAmount}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
 
               </table>
             </div>
@@ -264,7 +259,7 @@ const BalanceSheet = ({}: Props) => {
                 <thead>
                   <tr>
                     <th className="flex items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9] mx-5">
-                    Assets
+                      Assets
                     </th>
                     <th className="items-center text-[#585953] font-semibold justify-center rounded-md py-2 bg-[#F7ECD9]">
                       Amount

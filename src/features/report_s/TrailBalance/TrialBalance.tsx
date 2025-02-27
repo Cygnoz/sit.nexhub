@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Calender from "../../../assets/icons/Calender";
 import CehvronDown from "../../../assets/icons/CehvronDown";
-import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import { useOrganization } from "../../../context/OrganizationContext";
 import Button from "../../../Components/Button";
+import PrintButton from "../../../Components/PrintButton";
+import { useReactToPrint } from "react-to-print";
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
@@ -37,7 +38,7 @@ function TrialBalance() {
   const [tbData, setTbData] = useState<[] | any>([]);
   const fromDateRef = useRef<HTMLInputElement>(null);
   const toDateRef = useRef<HTMLInputElement>(null);
-      const {organization} = useOrganization()
+  const { organization } = useOrganization()
 
   const handleFromDateClick = () => {
     fromDateRef.current?.showPicker();
@@ -77,6 +78,9 @@ function TrialBalance() {
   useEffect(() => {
     getDayBook();
   }, []);
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -132,25 +136,22 @@ function TrialBalance() {
               />
             </div>
 
-              <Button className="text-xs pl-5 pr-5" size="sm" onClick={getDayBook}>
-                                      Run
-                                    </Button>
+            <Button className="text-xs pl-5 pr-5" size="sm" onClick={getDayBook}>
+              Run
+            </Button>
 
-            <div className="ml-auto flex items-center">
-              <button className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">
-                <PrinterIcon color="gray" height={18} width={20} />
-                <span className="text-sm text-neutral-500">Print</span>
-              </button>
+            <div className="ml-auto flex items-center" onClick={() => reactToPrintFn()}>
+              <PrintButton />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white p-5 rounded-xl">
+      <div className="bg-white p-5 rounded-xl" ref={contentRef}>
         <div className="flex items-center justify-center gap-3 text-center py-2">
           <div>
             <p className="text-textColor font-bold whitespace-nowrap">
-            {organization?.organizationName}
+              {organization?.organizationName}
 
             </p>
             <p className="text-sm text-textColor whitespace-nowrap">

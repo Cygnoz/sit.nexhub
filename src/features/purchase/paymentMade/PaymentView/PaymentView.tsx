@@ -3,22 +3,23 @@ import Button from '../../../../Components/Button';
 import CheveronLeftIcon from '../../../../assets/icons/CheveronLeftIcon';
 import PencilEdit from '../../../../assets/icons/PencilEdit';
 import PdfView from './PdfView';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useApi from '../../../../Hooks/useApi';
 import { endponits } from '../../../../Services/apiEndpoints';
 import { useOrganization } from '../../../../context/OrganizationContext';
 import SideBar from './SideBar';
-import PrinterIcon from '../../../../assets/icons/PrinterIcon';
 import Jornal from '../../bills/ViewBill/Jornal';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../../../../Components/ConfirmModal';
 import Trash2 from '../../../../assets/icons/Trash2';
+import Print from '../../../sales/salesOrder/Print';
+import { useReactToPrint } from 'react-to-print';
 
 type Props = {};
 
-function PaymentView({}: Props) {
-  const[paymentData,setPaymentData]=useState<[]|any>([])
-  const {request:getPayment}=useApi("get",5005)
+function PaymentView({ }: Props) {
+  const [paymentData, setPaymentData] = useState<[] | any>([])
+  const { request: getPayment } = useApi("get", 5005)
   const { organization } = useOrganization()
   const { request: deleteData } = useApi("delete", 5005);
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -26,7 +27,7 @@ function PaymentView({}: Props) {
     setConfirmModalOpen(true);
   };
 
-  const {id}=useParams()
+  const { id } = useParams()
 
   const getPayments = async () => {
     try {
@@ -54,11 +55,11 @@ function PaymentView({}: Props) {
         console.log("Deleted successfully:", response);
         toast.success(response.data.message)
         setConfirmModalOpen(false)
-          setTimeout(() => {
-            navigate("/purchase/payment-made");
-          }, 1000);   
-      
-      } else{
+        setTimeout(() => {
+          navigate("/purchase/payment-made");
+        }, 1000);
+
+      } else {
         toast.error(error.response.data.message)
       }
     } catch (error) {
@@ -66,15 +67,17 @@ function PaymentView({}: Props) {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getPayments()
-  },[])
+  }, [])
 
   const navigate = useNavigate();
 
   const handleEdit = () => {
     navigate(`/purchase/payment-made/edit/${id}`);
   }
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
   return (
     <div className="p-6 text-pdftext bg-white rounded-lg mx-7">
@@ -101,24 +104,23 @@ function PaymentView({}: Props) {
             <PencilEdit color="black" />
             Edit
           </Button> <Button variant="secondary" size="sm" className="px-2" onClick={confirmDelete}>
-                    <Trash2 color="#565148"  />
-                    Delete
-                  </Button>
+            <Trash2 color="#565148" />
+            Delete
+          </Button>
 
-          <Button variant="secondary" size="sm" className="px-2">
-                    <PrinterIcon color="#565148" height={16} width={16} />
-                    Print
-                  </Button>
-                 
+          <div onClick={() => reactToPrintFn()}>
+            <Print />
+          </div>
+
         </div>
       </div>
       <hr className="mb-5 border-loremcolor" />
       <div className="grid grid-cols-3 space-x-4">
         {/* Sidebar */}
-       <SideBar data={paymentData}/>
+        <SideBar data={paymentData} />
         {/* Main content */}
-        <div className='col-span-2'>
-        <PdfView data={paymentData} organization={organization}/>
+        <div className='col-span-2'   ref={contentRef}>
+          <PdfView data={paymentData} organization={organization} />
         </div>
       </div>
       <Jornal page={"DebitNote"} />

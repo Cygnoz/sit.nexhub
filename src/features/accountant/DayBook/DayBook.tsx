@@ -12,6 +12,8 @@ import toast from "react-hot-toast";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import DayBookTable from "./DayBookTable";
+import PrintButton from "../../../Components/PrintButton";
+import { useReactToPrint } from "react-to-print";
 
 type Props = {};
 
@@ -219,11 +221,10 @@ function DayBook({ }: Props) {
       text: "XLSX",
       onClick: exportToExcel,
     },
-    {
-      text: "Print",
-      onClick: () => console.log("Print clicked"),
-    },
   ];
+
+    const contentRef = useRef<HTMLDivElement>(null);
+    const reactToPrintFn = useReactToPrint({ contentRef });
 
   return (
     <>
@@ -280,6 +281,9 @@ function DayBook({ }: Props) {
             <div>
               <Button className="text-xs pl-5 pr-5" size="sm" onClick={handleRun}>Run</Button>
             </div>
+            <div onClick={() => reactToPrintFn()}>
+              <PrintButton/>
+            </div>
 
             <div className="relative ml-auto flex items-center">
               <Button className="text-xs pl-5 pr-5" size="sm" onClick={toggleDropdown}>
@@ -309,7 +313,7 @@ function DayBook({ }: Props) {
         </div>
       </div>
       <div className="mx-5 my-4 bg-slate-50 h-[100vh]">
-        <div className="mt-5 bg-white p-5 rounded-xl">
+        <div ref={contentRef} className="mt-5 bg-white p-5 rounded-xl">
           <DayBookTable total={total} dayBookData={dayBookData} loading={loading} />
         </div>
       </div>

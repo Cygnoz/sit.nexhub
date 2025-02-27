@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import Button from "../../../Components/Button";
@@ -10,6 +10,8 @@ import SalesView from "../commonComponents/SalesView";
 import toast from "react-hot-toast";
 import ConfirmModal from "../../../Components/ConfirmModal";
 import TrashCan from "../../../assets/icons/TrashCan";
+import Print from "../salesOrder/Print";
+import { useReactToPrint } from "react-to-print";
 
 interface SalesOrderData {
   salesInvoiceDate?: string;
@@ -85,7 +87,7 @@ function ViewSales() {
     }
   };
 
-  
+
   const handleDelete = async () => {
     try {
       let url = "";
@@ -95,9 +97,9 @@ function ViewSales() {
         url = `${endponits.DELETE_SALES_ORDER}/${id}`;
       } else if (page === "quote") {
         url = `${endponits.DELETE_SALES_QUOTE}/${id}`;
-      }else if (page === "reciept") {
+      } else if (page === "reciept") {
         url = `${endponits.DELETE_SALES_RECIEPT}/${id}`;
-      }else if (page === "credit-Note") {
+      } else if (page === "credit-Note") {
         url = `${endponits.DELETE_CREDIT_NOTE}/${id}`;
       }
 
@@ -109,25 +111,25 @@ function ViewSales() {
         toast.success(response.data.message)
         setConfirmModalOpen(false)
         const path =
-        page === "salesOrder"
-          ? "/sales/salesorder"
-          : page === "invoice"
-          ? "/sales/invoice"
-          : page === "quote"
-          ? "/sales/quote"
-          : page === "reciept"
-          ? "/sales/receipt"
-           : page === "credit-Note"
-          ? "/sales/credit-note"
-          :"/"
-      
-          setTimeout(() => {
-            navigate(path);
-          }, 1000);
-          
-          
+          page === "salesOrder"
+            ? "/sales/salesorder"
+            : page === "invoice"
+              ? "/sales/invoice"
+              : page === "quote"
+                ? "/sales/quote"
+                : page === "reciept"
+                  ? "/sales/receipt"
+                  : page === "credit-Note"
+                    ? "/sales/credit-note"
+                    : "/"
+
+        setTimeout(() => {
+          navigate(path);
+        }, 1000);
+
+
       }
-      else{
+      else {
         toast.error(error.response.data.message)
       }
     } catch (error) {
@@ -157,6 +159,10 @@ function ViewSales() {
       navigate(`/sales/credit-note/edit/${id}`);
     }
   }
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
+
   return (
     <div className="px-6">
       <div className="bg-white rounded-md p-5 mb-32">
@@ -164,8 +170,8 @@ function ViewSales() {
           <div
             onClick={handleGoBack}
             style={{ borderRadius: "50%" }}
-            className="w-[40px] h-[40px] flex items-center justify-center bg-backButton cursor-pointer" 
-            
+            className="w-[40px] h-[40px] flex items-center justify-center bg-backButton cursor-pointer"
+
           >
             <CheveronLeftIcon />
           </div>
@@ -209,7 +215,7 @@ function ViewSales() {
 
           </div>
           <div className="flex gap-3 items-center">
-            <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={haneleEdit}>
+          <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={haneleEdit}>
               <Pen color="#565148" />
               <p className="text-sm font-medium">Edit</p>
             </Button>
@@ -217,8 +223,14 @@ function ViewSales() {
               <TrashCan color="#565148" />
               <p className="text-sm font-medium">Delete</p>
             </Button>
-           
-          
+            {
+              isPdfView &&
+              <div onClick={() => reactToPrintFn()}>
+                <Print />
+              </div>
+            }
+
+
             {/* Toggle PDF view */}
             <label className="flex items-center cursor-pointer">
               <div className="relative">
@@ -246,7 +258,7 @@ function ViewSales() {
         <hr className="border-t border-inputBorder mt-4" />
         {/* Conditional rendering based on isPdfView */}
         {isPdfView ? (
-          <div className="pdf-view-component">
+          <div className="pdf-view-component"  ref={contentRef}>
             <SalesPdfView data={data} page={page} />
           </div>
         ) : (

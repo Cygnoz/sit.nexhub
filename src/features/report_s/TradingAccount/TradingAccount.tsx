@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import useApi from "../../../Hooks/useApi";
 import toast from "react-hot-toast";
-import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import Calender from "../../../assets/icons/Calender";
 import { endponits } from "../../../Services/apiEndpoints";
 import { useOrganization } from "../../../context/OrganizationContext";
 import Button from "../../../Components/Button";
+import PrintButton from "../../../Components/PrintButton";
+import { useReactToPrint } from "react-to-print";
 
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
@@ -36,7 +37,7 @@ const TradingAccount = () => {
   const [toDate, setToDate] = useState(getLastDayOfMonth());
   const fromDateRef = useRef<HTMLInputElement>(null);
   const toDateRef = useRef<HTMLInputElement>(null);
-      const {organization} = useOrganization()
+  const { organization } = useOrganization()
 
   const handleFromDateClick = () => {
     fromDateRef.current?.showPicker();
@@ -49,7 +50,7 @@ const TradingAccount = () => {
   const formattedToDate = formatDate(toDate);
   const getTradingData = async () => {
     try {
-  
+
       const url = `${endponits.GET_TRADING_ACCONUT}/${formattedFromDate}/${formattedToDate}`;
       const { response, error } = await fetchOneItem(url);
       if (!error && response) {
@@ -65,12 +66,17 @@ const TradingAccount = () => {
     localStorage.setItem("fromDate", formattedFromDate);
     localStorage.setItem("toDate", formattedToDate);
   }, [fromDate, toDate]);
-  
+
 
 
   useEffect(() => {
     getTradingData();
   }, []);
+
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
+
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -126,22 +132,19 @@ const TradingAccount = () => {
               />
             </div>
 
-              <Button className="text-xs pl-5 pr-5" size="sm" onClick={getTradingData}>
-                          Run
-                        </Button>
+            <Button className="text-xs pl-5 pr-5" size="sm" onClick={getTradingData}>
+              Run
+            </Button>
 
-            <div className="ml-auto flex items-center">
-              <button className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">
-                <PrinterIcon color="gray" height={18} width={20} />
-                <span className="text-sm text-neutral-500">Print</span>
-              </button>
+            <div className="ml-auto flex items-center" onClick={() => reactToPrintFn()}>
+              <PrintButton />
             </div>
           </div>
         </div>
       </div>
 
       {/* Trading Account Tables */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
+      <div className="bg-white rounded-xl shadow-sm p-6" ref={contentRef}>
         <div className="flex justify-center items-center mb-2">
           <div className="text-center">
             <p className="font-bold text-textColor">            {organization?.organizationName}
@@ -152,7 +155,7 @@ const TradingAccount = () => {
         <div className="grid grid-cols-2 gap-8">
           {/* Debit Table */}
           <div>
-          
+
             <div className="overflow-hidden ">
               {/* Table Header */}
               <table className="min-w-full">
@@ -184,11 +187,11 @@ const TradingAccount = () => {
                       totalAmount = item.purchases.overallNetDebit - item.purchases.overallNetCredit;
                       items = item;
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
-                      console.log(item,'purchase')
+                      console.log(item, 'purchase')
                     } else if (item.directExpenses) {
                       const accountSubhead = "directExpenses";
                       accountName = "Direct Expenses";
-                      totalAmount = item.directExpenses.overallNetDebit -  item.directExpenses.overallNetCredit;
+                      totalAmount = item.directExpenses.overallNetDebit - item.directExpenses.overallNetCredit;
                       items = item;
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
                     }
@@ -210,7 +213,7 @@ const TradingAccount = () => {
                         }
                       >
                         <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
-                          <Link to={link} state={{ items ,accountName:accountName}}> 
+                          <Link to={link} state={{ items, accountName: accountName }}>
                             {accountName}
                           </Link>
                         </td>
@@ -220,7 +223,7 @@ const TradingAccount = () => {
                       </tr>
                     );
                   })}
-                 
+
                 </tbody>
               </table>
             </div>
@@ -228,7 +231,7 @@ const TradingAccount = () => {
 
           <div>
             <div className="">
-      
+
             </div>{" "}
             <div className="overflow-hidden ">
               {/* Table Header */}
@@ -252,7 +255,7 @@ const TradingAccount = () => {
                     if (item.sales) {
                       const accountSubhead = "sales";
                       accountName = "Sales";
-                      totalAmount = item.sales.overallNetCredit-item.sales.overallNetDebit;
+                      totalAmount = item.sales.overallNetCredit - item.sales.overallNetDebit;
                       items = item;
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
 
@@ -262,12 +265,12 @@ const TradingAccount = () => {
                       items = item.closingStock;
                       link = `/reports/trading-account/${accountName}`;
                     }
-                     else if (item.grossLoss) {
+                    else if (item.grossLoss) {
                       accountName = "Gross Loss";
                       totalAmount = item.grossLoss;
                     }
 
-                    
+
                     if (totalAmount === 0) {
                       link = "";
                     }
@@ -292,33 +295,33 @@ const TradingAccount = () => {
                       </tr>
                     );
                   })}
-                 
+
                 </tbody>
               </table>
             </div>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-8 border-t border-stone-200">
-        <table className="min-w-full">
-      <tbody>
-        <tr className="font-bold">
-          <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
-          <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
-          {tradingData.finalDebit}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <table className="min-w-full">
-      <tbody>
-        <tr className="font-bold">
-          <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
-          <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
-          {tradingData.finalCredit}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          <table className="min-w-full">
+            <tbody>
+              <tr className="font-bold">
+                <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
+                <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
+                  {tradingData.finalDebit}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="min-w-full">
+            <tbody>
+              <tr className="font-bold">
+                <td className="px-6 py-3 text-sm text-[#4B5C79]">Total</td>
+                <td className="px-6 py-3 text-right text-sm text-[#4B5C79]">
+                  {tradingData.finalCredit}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

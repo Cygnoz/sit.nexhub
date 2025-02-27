@@ -27,7 +27,7 @@ const PDFView = ({ data, page , organization}: Props) => {
   // console.log(supplier);
   return (
     <div className="mt-4">
-      <div className="flex items-center justify-center mb-4">
+      <div className="flex items-center justify-center mb-4 hide-print">
         <p className="text-textColor border-r-[1px] border-borderRight pr-4 text-sm font-medium">
           {page === "PurchaseOrder" ? (
             <>

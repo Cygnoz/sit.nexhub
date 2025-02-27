@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Link,
   useNavigate,
@@ -13,10 +13,11 @@ import { endponits } from "../../../../Services/apiEndpoints";
 import useApi from "../../../../Hooks/useApi";
 import PDFView from "./PDFView";
 import { useOrganization } from "../../../../context/OrganizationContext";
-import PrinterIcon from "../../../../assets/icons/PrinterIcon";
 import Trash2 from "../../../../assets/icons/Trash2";
 import ConfirmModal from "../../../../Components/ConfirmModal";
 import toast from "react-hot-toast";
+import Print from "../../../sales/salesOrder/Print";
+import { useReactToPrint } from "react-to-print";
 
 type Props = { page: string };
 
@@ -104,21 +105,21 @@ function Purchaseview({ page }: Props) {
         toast.success(response.data.message)
         setConfirmModalOpen(false)
         const path =
-        page === "PurchaseOrder"
-          ? "/purchase/purchase-order"
-          : page === "Bills"
-          ? "/purchase/bills"
-          : page === "DebitNote"
-          ? "/purchase/debitnote"
-          : "/";
-      
-          setTimeout(() => {
-            navigate(path);
-          }, 1000);
-          
-          
-      
-      }  else{
+          page === "PurchaseOrder"
+            ? "/purchase/purchase-order"
+            : page === "Bills"
+              ? "/purchase/bills"
+              : page === "DebitNote"
+                ? "/purchase/debitnote"
+                : "/";
+
+        setTimeout(() => {
+          navigate(path);
+        }, 1000);
+
+
+
+      } else {
         toast.error(error.response.data.message)
       }
     } catch (error) {
@@ -126,6 +127,9 @@ function Purchaseview({ page }: Props) {
     }
   };
 
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
   return (
     <div className="mt-4">
       <div className="px-6">
@@ -136,10 +140,10 @@ function Purchaseview({ page }: Props) {
                 page === "PurchaseOrder"
                   ? "/purchase/purchase-order"
                   : page === "Bills"
-                  ? "/purchase/bills"
-                  : page === "DebitNote"
-                  ? "/purchase/debitnote"
-                  : "/"
+                    ? "/purchase/bills"
+                    : page === "DebitNote"
+                      ? "/purchase/debitnote"
+                      : "/"
               }
             >
               <div
@@ -154,8 +158,8 @@ function Purchaseview({ page }: Props) {
               {page === "PurchaseOrder"
                 ? "Purchase Order"
                 : page === "Bills"
-                ? "View Bill"
-                : "Debit Note"}
+                  ? "View Bill"
+                  : "Debit Note"}
             </p>
           </div>
           <br />
@@ -170,11 +174,11 @@ function Purchaseview({ page }: Props) {
                 {page === "PurchaseOrder"
                   ? `Purchase Order ${data?.purchaseOrder}`
                   : page == "Bills"
-                  ? `Bill ${data?.billNumber || ""}`
-                  : `Debit Note ${data?.debitNote}`}
+                    ? `Bill ${data?.billNumber || ""}`
+                    : `Debit Note ${data?.debitNote}`}
               </p>
-            { page==="Bills" &&  <p className="text-sm font-semibold text-textColor bg-cuscolumnbg p-1 text-center rounded-sm">
-              {data.paidStatus}
+              {page === "Bills" && <p className="text-sm font-semibold text-textColor bg-cuscolumnbg p-1 text-center rounded-sm">
+                {data.paidStatus}
               </p>}
             </div>
             <div className="flex gap-3 items-center">
@@ -205,10 +209,12 @@ function Purchaseview({ page }: Props) {
                 </Button>
               </>
 
-              <Button variant="secondary" size="sm" className="px-2">
-                <PrinterIcon color="#565148" height={16} width={16} />
-                Print
-              </Button>
+              {
+                isPdfView &&
+                <div onClick={() => reactToPrintFn()}>
+                  <Print />
+                </div>
+              }
 
               <label className="flex items-center cursor-pointer">
                 <div className="relative">
@@ -219,14 +225,12 @@ function Purchaseview({ page }: Props) {
                     onChange={handleToggle}
                   />
                   <div
-                    className={`w-11 h-6 rounded-full shadow-inner transition-colors ${
-                      isPdfView ? "bg-checkBox" : "bg-dropdownBorder"
-                    }`}
+                    className={`w-11 h-6 rounded-full shadow-inner transition-colors ${isPdfView ? "bg-checkBox" : "bg-dropdownBorder"
+                      }`}
                   ></div>
                   <div
-                    className={`dot absolute w-4 h-4 bg-white rounded-full top-1 transition-transform ${
-                      isPdfView ? "transform translate-x-full left-2" : "left-1"
-                    }`}
+                    className={`dot absolute w-4 h-4 bg-white rounded-full top-1 transition-transform ${isPdfView ? "transform translate-x-full left-2" : "left-1"
+                      }`}
                   ></div>
                 </div>
                 <div className="ml-3 text-textColor font-semibold text-base">
@@ -237,7 +241,7 @@ function Purchaseview({ page }: Props) {
           </div>
           <hr className="border-t border-inputBorder mt-4" />
           {isPdfView ? (
-            <div className="pdf-view-component">
+            <div className="pdf-view-component"  ref={contentRef}>
               <PDFView data={data} page={page} organization={organization} />
             </div>
           ) : (
