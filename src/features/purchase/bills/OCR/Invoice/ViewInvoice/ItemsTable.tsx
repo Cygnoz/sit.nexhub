@@ -83,35 +83,36 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
     if (!allItems || allItems.length === 0) {
       console.error("No item data available.");
       return;
-    }   
-
-    const invoiceItem = invoiceSelectedItem.itemName?.toLowerCase().trim();
-    if (!invoiceItem) {
+    }
+  
+    const invoiceItemName = invoiceSelectedItem.itemName;
+    if (!invoiceItemName) {
+      console.error("No item name found in the invoice.");
       return;
     }
-
-    const normalizedInvoiceItem = invoiceItem.replace(/\s+/g, "").toLowerCase();
-
-    const matchingItem = allItems.filter((items: any) => {
-      const normalizedItemName = items.itemName
-        .replace(/\s+/g, "")
-        .toLowerCase();
-
-      const isSubstringMatch = normalizedItemName.includes(normalizedInvoiceItem);
-
-      const itemSubstring = normalizedItemName.substring(0, 2);
-      const invoiceitemSubstring = normalizedInvoiceItem.substring(0, 2);
-
-      return isSubstringMatch || itemSubstring === invoiceitemSubstring;
+  
+    const normalizedInvoiceItem = invoiceItemName.replace(/\s+/g, "").toLowerCase();
+  
+    const exactMatches = allItems.filter(
+      (item: any) => item.itemName === invoiceItemName
+    );
+  
+    const similarMatches = allItems.filter((item: any) => {
+      const normalizedItemName = item.itemName.replace(/\s+/g, "").toLowerCase();
+  
+      return (
+        normalizedItemName.includes(normalizedInvoiceItem) ||
+        normalizedInvoiceItem.includes(normalizedItemName)
+      );
     });
-
-    if (matchingItem.length === 0) {
-      console.log(`No matching Item found for '${invoiceItem}'.`);
-    } else {
-      setMatchingItem(matchingItem);
-    }
+  
+    const combinedMatches = Array.from(
+      new Map([...exactMatches, ...similarMatches].map((item) => [item._id, item])).values()
+    );
+  
+    setMatchingItem(combinedMatches);
   };
-
+  
 
 
   const handleConfirmSelection = (selectedIndex: number) => {
@@ -119,12 +120,13 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
       console.error("No item selected.");
       return;
     }
-  
+  console.log(selectedIndex)
     const updatedInvoiceItems = invoice.invoice.items.map((item: any, index: number) => {
       if (index === selectedIndex) {
         return {
           ...item,
           itemName: finalItem.itemName,
+          itemId:finalItem._id
         };
       }
       return item;
@@ -164,7 +166,7 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
     };
   }, []);
 
-
+console.log(finalItem,"invoice")
 
   return ( 
     <div className="overflow-x-auto hide-scrollbar h-[300px]">
@@ -249,6 +251,14 @@ function ItemsTable({ items = [], invoice, setInvoice ,allItems}: Props) {
                             )):(<div  className="flex items-center px-3 text-loremcolor  h-9 bg-[#f2f2f2]"><p className="text-darkRed">No Matching Items in the Inventory..!</p></div>)}
                         </div>
                       )}
+                      {
+                        finalItem && <div className="grid grid-cols-2 gap-2">
+                          <div className="border border-slate-300 py-2 ">Purchase Rate</div>
+                          <div className="border border-slate-300 py-2 ">Sales Rate</div>
+                          <div className="border border-slate-300 py-2 ">MRP</div>
+                          <div className="border border-slate-300 py-2 ">HSN</div>
+                        </div>
+                      }
                       <div className="flex justify-end py-3 gap-2">
                         <Button variant="secondary" size="sm">
                           Cancel
