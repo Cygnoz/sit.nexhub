@@ -83,7 +83,7 @@ const OCRNewInvoice = () => {
     try {
       setIsLoading(true);
       const url = `${endponits.UPLOAD_INVOICE}`;
-      const payload = { file: selectedFile }; // Send Base64 string
+      const payload = { file: selectedFile }; 
 
       const { response, error } = await upload(url, payload);
       if (response && !error) {
@@ -94,7 +94,7 @@ const OCRNewInvoice = () => {
           payload,
         }));
       } else {
-        toast.error(error.response.data.message);
+        toast.error(error.response.data.message ||error.response.data.error );
         console.log(error.response.data.message);
       }
     } catch (error) {

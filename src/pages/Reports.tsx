@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import SearchBar from "../Components/SearchBar";
 import ArrowrightUp from "../assets/icons/ArrowrightUp";
-import dayBook from "../assets/Images/DayBook.png"
-import profitAndLoss from "../assets/Images/ProfitAndLoss.png"
-import balanceSheet from "../assets/Images/BalanceSheet.png"
-import tradingAccBgImage from "../assets/Images/tradingAccBg.png"
-import trialBalanceBgIMage from "../assets/Images/trialBalanceBg.png"
+import dayBook from "../assets/Images/Frame 629611.png"
+import profitAndLoss from "../assets/Images/Frame 629612.png"
+import balanceSheet from "../assets/Images/Frame 629607.png"
+import tradingAccBgImage from "../assets/Images/Frame 629612.png"
+import trialBalanceBgIMage from "../assets/Images/Frame 629614.png"
 import Button from "../Components/Button";
 
 interface reports {
@@ -61,7 +61,7 @@ const ReportsCard: React.FC<reports> = ({
     <img
       src={imageUrl}
       alt={title}
-      className="w-full h-24 object-  rounded-t-[4px]"
+      className="w-full h-32 object-  rounded-t-[4px]"
     />
     <div className="my-5 mx-8 items-center text-sm text-textColor h-28 flex flex-col justify-between">
       <div>

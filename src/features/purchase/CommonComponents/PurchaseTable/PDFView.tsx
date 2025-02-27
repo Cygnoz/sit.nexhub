@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import useApi from "../../../../Hooks/useApi";
 import { endponits } from "../../../../Services/apiEndpoints";
 
 type Props = { data?: any; page?: string; organization?:any };
 
-const PDFView = ({ data, page , organization}: Props) => {
+const PDFView = forwardRef<HTMLDivElement, Props>(({ data, page, organization }, ref) => { 
   const [supplier, setSupplier] = useState<[] | any>([]);
   const { request: getSupplier } = useApi("get", 5009);
 
@@ -24,7 +24,6 @@ const PDFView = ({ data, page , organization}: Props) => {
   useEffect(() => {
     getSupplierAddress();
   }, [data]);
-  // console.log(supplier);
   return (
     <div className="mt-4">
       <div className="flex items-center justify-center mb-4 hide-print">
@@ -66,10 +65,17 @@ const PDFView = ({ data, page , organization}: Props) => {
         <div className="bg-white drop-shadow-2xl w-[595px]  p-8 pl-[24px] pr-[24px]">
           <div className="flex justify-between items-center mb-8 mt-1">
             <div>
-              <img
-                src={organization.organizationLogo}
-                alt="Company Logo"
-                className="h-[49px] w-[71px]"
+            <img
+                src={
+                  organization?.organizationLogo ||
+                  "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"
+                }
+                alt="Organization image"
+                className="w-28"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src =
+                    "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png";
+                }}
               />
             </div>
             <div className="text-right">
@@ -94,24 +100,24 @@ const PDFView = ({ data, page , organization}: Props) => {
             </div>
           </div>
 
-          <div className="mb-8 mt-8 gap-4 flex items-center justify-between">
+          <div className="mb-8 mt-8 space-y-2 gap-4 flex items-center justify-between">
             <div>
               <h3 className="font-normal text-xs text-pdftext">Bill to</h3>
-              <p className="text-pdftext text-sm font-bold mt-2">
+              <p className="text-pdftext text-sm font-bold ">
                 {supplier?.supplierDisplayName}
               </p>
-              {(supplier?.supplierEmail || supplier?.mobile) && (
-                <p className="font-normal text-xs text-pdftext mt-2">
+              {supplier?.supplierEmail || supplier?.mobile && (
+                <p className="font-normal text-xs text-pdftext ">
                   {supplier.supplierEmail && supplier.supplierEmail}
                   {supplier.supplierEmail && supplier.mobile && " | "}
                   {supplier.mobile && supplier.mobile}
                 </p>
               )}
 
-              <p className="font-normal text-xs text-pdftext mt-2">
+              <p className="font-normal text-xs text-pdftext ">
                 {supplier?.billingAddressStreet1}{supplier?.billingAddressStreet1 && <p>|</p>} 
-                {supplier?.billingAddressStreet2}{supplier?.billingAddressStreet2 &&<p>, </p>}<br />
-                {supplier.billingState}  {supplier.billingCountry} {supplier.billingPinCode}
+                {supplier?.billingAddressStreet2}{supplier?.billingAddressStreet2 && <p>, </p>}<br />
+                {supplier.billingState} , {supplier.billingCountry} {supplier.billingPinCode}
               </p>
             </div>
             {page == "PurchaseOrder" ? (
@@ -221,7 +227,7 @@ const PDFView = ({ data, page , organization}: Props) => {
         </div>
       </div>
     </div>
-  );
-};
-
+);
+});
+PDFView.displayName = "PDFView"
 export default PDFView;

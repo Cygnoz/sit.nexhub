@@ -210,6 +210,8 @@ const OCRInvoiceView = () => {
       console.error("Error fetching data:", error);
     }
   };
+
+
   const handleSupplierMatch = () => {
     if (!invoice || invoice.length === 0) {
       console.error("No invoice data available.");
@@ -219,58 +221,35 @@ const OCRInvoiceView = () => {
       console.error("No suppliers data available.");
       return;
     }
-
+  
     const invoiceSupplierName = invoice?.invoice?.header?.supplierDisplayName;
     if (!invoiceSupplierName) {
       console.error("No supplier name found in the invoice.");
       return;
     }
-
-    // Find exact matches
+  
+    const normalizedInvoiceSupplier = invoiceSupplierName.replace(/\s+/g, "").toLowerCase();
+  
     const exactMatches = supplier.filter(
-      (supplier: any) => supplier.supplierDisplayName === invoiceSupplierName
+      (s: any) => s.supplierDisplayName === invoiceSupplierName
     );
-
-    // Normalize invoice supplier name for similar matches
-    const normalizedInvoiceSupplier = invoiceSupplierName
-      .replace(/\s+/g, "")
-      .toLowerCase();
-
-    // Find similar matches
-    const similarMatches = supplier.filter((supplier: any) => {
-      const normalizedSupplierName = supplier.supplierDisplayName
-        .replace(/\s+/g, "")
-        .toLowerCase();
-
-      const isSubstringMatch = normalizedSupplierName.includes(
-        normalizedInvoiceSupplier
+  
+    const similarMatches = supplier.filter((s: any) => {
+      const normalizedSupplierName = s.supplierDisplayName.replace(/\s+/g, "").toLowerCase();
+  
+      return (
+        normalizedSupplierName.includes(normalizedInvoiceSupplier) || 
+        normalizedInvoiceSupplier.includes(normalizedSupplierName) 
       );
-
-      const supplierSubstring = normalizedSupplierName.substring(0, 5);
-      const invoiceSupplierSubstring = normalizedInvoiceSupplier.substring(
-        0,
-        5
-      );
-
-      return isSubstringMatch || supplierSubstring === invoiceSupplierSubstring;
     });
-
-    // Combine exact and similar matches, ensuring no duplicates
+  
     const combinedMatches = Array.from(
-      new Map(
-        [...exactMatches, ...similarMatches].map((item) => [item._id, item])
-      ).values()
+      new Map([...exactMatches, ...similarMatches].map((item) => [item._id, item])).values()
     );
-
-    if (combinedMatches.length > 0) {
-      setSameSupplier(exactMatches.length > 0); // Check if there's at least one exact match
-      setSimilarSuppliers(combinedMatches);
-    } else {
-      setSameSupplier(false);
-      setSimilarSuppliers([]);
-    }
-
-    // Update supplier_id in the invoice header for exact match
+  
+    setSameSupplier(exactMatches.length > 0);
+    setSimilarSuppliers(combinedMatches);
+  
     if (exactMatches.length > 0) {
       setInvoice((prevData: any) => ({
         ...prevData,
@@ -278,12 +257,13 @@ const OCRInvoiceView = () => {
           ...prevData.invoice,
           header: {
             ...prevData.invoice.header,
-            supplierId: exactMatches[0]?._id,
+            supplierId: exactMatches[0]._id,
           },
         },
       }));
     }
   };
+  
 
   const handleItemMatch = () => {
     const matches = currentItems.map((item: any) => {
@@ -291,7 +271,7 @@ const OCRInvoiceView = () => {
         (innerItem: any) => innerItem.itemName === item.itemName
       );
       return {
-        item_id: item.item_id,
+        itemId: item.itemId,
         isMatch,
       };
     });
@@ -387,13 +367,22 @@ const OCRInvoiceView = () => {
   }, [allItems, currentItems]);
 
   useEffect(() => {
-    const allItemUrl = `${endponits.GET_ALL_ITEM}`;
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     fetchData(supplierUrl, setsupplier, getSupplier);
 
-    fetchData(allItemUrl, setAllItems, getItems);
+   
+  }, [supplierResponse]);
+
+  useEffect(()=>{
     getAInvoice();
-  }, [supplierResponse, ocrAddItem]);
+  },[])
+
+  useEffect(()=>{
+    const allItemUrl = `${endponits.GET_ALL_ITEM}`;
+
+    fetchData(allItemUrl, setAllItems, getItems);
+
+  },[ocrAddItem])
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -407,7 +396,6 @@ const OCRInvoiceView = () => {
     };
   }, [openDropdownIndex]);
 
-  console.log(invoice, "invoice");
   const isPDF = invoice?.image?.file?.startsWith("data:application/pdf");
   return (
     <>
@@ -699,15 +687,15 @@ const OCRInvoiceView = () => {
                   <div className="space-y-2">
                     {currentItems?.slice(0, 5).map((item: any) => {
                       const matchedItem = currentItemsMatch.find(
-                        (match: any) => match.item_id === item.item_id
+                        (match: any) => match.itemId === item.itemId
                       );
                       const isMatched = matchedItem?.isMatch ?? false;
 
                       return (
                         <div
                           onClick={() => toggleDropdown("items")}
-                          key={item.item_id}
-                          className="flex items-center gap-4 font-semibold p-2 max-w-full"
+                          key={item.itemId}
+                          className="flex items-center gap-4 font-semibold p-2 max-w-full cursor-pointer"
                         >
                           <DotIcon
                             color={isMatched ? "#32A370" : "#DD2020"}
@@ -742,7 +730,7 @@ const OCRInvoiceView = () => {
                         <div
                           onClick={() => toggleDropdown("items")}
                           key={item.item_id}
-                          className="flex items-center gap-4 font-semibold p-2 max-w-full"
+                          className="flex items-center gap-4 font-semibold p-2 max-w-full cursor-pointer"
                         >
                           <DotIcon
                             color={isMatched ? "#32A370" : "#DD2020"}

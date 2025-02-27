@@ -85,8 +85,16 @@ const BalanceSheet = ({ }: Props) => {
   //   }
   // };
 
+<<<<<<< HEAD
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
+=======
+  const handlePrint = () => {
+    window.print();
+  };
+
+  console.log(BSData.credit, "dert");
+>>>>>>> 7094805c9dd6b6b1f3230fc2feb4fda4645f4b21
 
   return (
     <div className="p-5">
@@ -188,6 +196,7 @@ const BalanceSheet = ({ }: Props) => {
                     let link = "";
                     let accountSubhead = "";
 
+<<<<<<< HEAD
                     if (item.equity) {
                       accountName = "Equity";
                       accountSubhead = "equity";
@@ -217,6 +226,37 @@ const BalanceSheet = ({ }: Props) => {
                     if (!accountName) {
                       return null; // Account name illenkil row skip cheyyum
                     }
+=======
+    if (item.equity) {
+      accountName = "Equity";
+      accountSubhead = "equity";
+      totalAmount =
+        item.equity.overallNetCredit - item.equity.overallNetDebit;
+      items = item;
+      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+    } else if (item.currentLiabilities) {
+      accountName = "Current Liabilities";
+      accountSubhead = "currentLiabilities";
+      totalAmount =
+        item.currentLiabilities.overallNetCredit - item.currentLiabilities.overallNetDebit;
+      items = item;
+      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+    } else if (item.nonCurrentLiabilities) {
+      accountName = "Non-Current Liabilities";
+      accountSubhead = "nonCurrentLiabilities";
+      totalAmount =
+        item.nonCurrentLiabilities.overallNetCredit - item.nonCurrentLiabilities.overallNetDebit;
+      items = item;
+      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+    } else if (item.netProfitCd) {
+      accountName = "Profit & Loss A/C";
+      totalAmount = item?.netProfitCd;
+    }
+
+    if (!accountName) {
+      return null;
+    }
+>>>>>>> 7094805c9dd6b6b1f3230fc2feb4fda4645f4b21
 
                     if (totalAmount === 0) {
                       link = "";
@@ -292,8 +332,11 @@ const BalanceSheet = ({ }: Props) => {
                     } else if (item.netLossCd) {
                       accountName = " Profit & Loss A/C ";
                       totalAmount = item.netLossCd;
+                      console.log(item.netLossCd,"lossss")
                     }
-
+                    if (!accountName) {
+                      return null;
+                    }
                     if (totalAmount === 0) {
                       link = "";
                     }

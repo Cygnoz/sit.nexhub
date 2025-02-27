@@ -3,7 +3,6 @@ import PlusCircle from "../../../assets/icons/PlusCircle"
 import Button from "../../../Components/Button"
 import DebitDropdown from "./DebitDropdown"
 import DebitTable from "./DebitTable"
-import TypesOfDebits from "./TypesOfDebits"
 
 type Props = {}
 
@@ -34,11 +33,11 @@ function DebitNote({}: Props) {
 
       <div className="px-6 mt-3">
         <div className="bg-white p-5">
-          <div className="w-[100%] p-3 bg-gray-100">
+          {/* <div className="w-[100%] p-3 bg-gray-100">
           <TypesOfDebits/>
-          </div>
+          </div> */}
          
-          <div className="p-5">
+          <div className="">
             {/* table */}
             <DebitTable/>
           </div>

@@ -68,11 +68,18 @@ function PdfView({ data, organization }: Props) {
       <div className="bg-white drop-shadow-2xl w-[595px] p-8 pl-[24px] pr-[24px]">
         <div className="flex justify-between items-center mb-8 mt-1">
           <div>
-            <img
-                src={organization?.organizationLogo}
-                alt="Company Logo"
-              className="h-[49px] w-[71px]"
-            />
+          <img
+                src={
+                  organization?.organizationLogo ||
+                  "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png"
+                }
+                alt="Organization image"
+                className="w-28"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src =
+                    "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-6.png";
+                }}
+              />
           </div>
           <div className="text-right">
             <h2 className="text-xl font-bold text-textColor">
@@ -93,7 +100,7 @@ function PdfView({ data, organization }: Props) {
 
         <div className="grid grid-cols-2 gap-4 mb-2">
           <div className="grid grid-cols-2 items-center space-y-3">
-            <p className="font-normal text-xs text-pdftext">Payment ID</p>
+            <p className="font-normal text-xs text-pdftext pt-3">Payment ID</p>
             <p className="text-xs  text-pdftext text-end">{data?.paymentMade}</p>
             <p className="font-normal text-xs text-pdftext">Payment Date</p>
             <p className="text-xs  text-pdftext text-end">

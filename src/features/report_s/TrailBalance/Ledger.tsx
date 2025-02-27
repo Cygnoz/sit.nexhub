@@ -14,6 +14,7 @@ const Ledger = ({}: Props) => {
   const { item } = location.state || {};
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [isTrialBalance, setIsTrialBalance] = useState(false);
 
   useEffect(() => {
     const storedFromDate = localStorage.getItem("fromDate");
@@ -37,6 +38,14 @@ const Ledger = ({}: Props) => {
     }
   };
 
+  useEffect(() => {
+    if (accountSubHead==="Opening Stock") {
+      setIsTrialBalance(true);
+    } else {
+      setIsTrialBalance(false);
+    }
+  }, [accountSubHead]);
+
   console.log(item, "item");
 
   return (
@@ -51,7 +60,7 @@ const Ledger = ({}: Props) => {
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor ">
             {" "}
-            {accountSubHead} - {item.date}
+            {accountSubHead} - {item.date || item.itemName}
           </h4>
         </div>
 
@@ -82,8 +91,19 @@ const Ledger = ({}: Props) => {
           <thead>
             <tr className="bg-lightPink text-left border-b font-bold text-sm  border-[#ebecf0]">
               <th className="p-2  min-w-[30px] max-w-[30px]  truncate">Date</th>
-              <th className="p-2 text-center">Transaction Id</th>
-
+              <th className="p-2 text-center">
+                {isTrialBalance ? "Item Name" : "Transaction Id"}
+              </th>
+              {isTrialBalance && (
+                <th className="p-2 text-center min-w-[30px] max-w-[30px] px-1 truncate">
+                  Quantity
+                </th>
+              )}
+              {isTrialBalance && (
+                <th className="p-2 text-center min-w-[30px] max-w-[30px] px-1 truncate">
+                  Cost Price
+                </th>
+              )}
               <th className="p-2 text-right min-w-[30px] max-w-[30px] px-1 truncate">
                 Debit
               </th>
@@ -93,20 +113,28 @@ const Ledger = ({}: Props) => {
             </tr>
           </thead>
           <tbody className="text-xs">
-            {(location.pathname.includes("trialBalance")
-              ? item?.data
+            {(location.pathname.includes("trialBalance") 
+              ? item?.data :accountSubHead==="Closing Stock"?item.entries
               : item?.transactions
             )?.map((entry: any) => (
               <tr
                 key={entry.transactionId}
                 className="border-b border-[#ebecf0]"
               >
-                <td className="py-3 text-start">
-                  {entry.createdDate}
-                </td>
+                <td className="py-3 text-start">{entry.createdDate}</td>
                 <td className="py-3 text-center min-w-[30px] max-w-[30px] px-1 truncate">
                   {entry.transactionId}
                 </td>
+                {isTrialBalance && (
+                  <td className="p-2 text-center min-w-[30px] max-w-[30px] px-1 truncate">
+                    {entry.lastCostPrice}
+                  </td>
+                )}
+                {isTrialBalance && (
+                  <td className="p-2 text-center min-w-[30px] max-w-[30px] px-1 truncate">
+                    {entry.itemQuantity}
+                  </td>
+                )}
                 <td className="py-3 text-right min-w-[30px] max-w-[30px] px-1 truncate">
                   {entry.debitAmount}
                 </td>

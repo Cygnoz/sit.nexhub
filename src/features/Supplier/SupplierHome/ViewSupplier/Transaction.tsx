@@ -7,11 +7,11 @@ import Line from "../../../../assets/icons/Line";
 type Props = {supplierId?:string};
 
 function Transaction({supplierId}: Props) {
-  const { request: getCustomerTransaction } = useApi("get", 5002);
+  const { request: getCustomerTransaction } = useApi("get", 5009);
   const [history, setHistory] = useState<any>([]);
 
   const getCustomerTransactionResponse = async () => {
-    const url = `${endponits.GET_CUSTOMER_SALE_HISTORY}/${supplierId}`;
+    const url = `${endponits.GET_SUPPLIER_PURCHASE_HISTORY}/${supplierId}`;
     try {
       const apiResponse = await getCustomerTransaction(url);
       const { response, error } = apiResponse;
