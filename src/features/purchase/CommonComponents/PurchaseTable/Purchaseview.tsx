@@ -17,6 +17,8 @@ import Trash2 from "../../../../assets/icons/Trash2";
 import ConfirmModal from "../../../../Components/ConfirmModal";
 import toast from "react-hot-toast";
 import MailIcon from "../../../../assets/icons/MailIcon";
+import Print from "../../../sales/salesOrder/Print";
+import { useReactToPrint } from "react-to-print";
 
 type Props = { page: string };
 
@@ -36,7 +38,7 @@ function Purchaseview({ page }: Props) {
   const handleToggle = () => setIsPdfView(!isPdfView);
   const POid = param.id;
   const navigate = useNavigate();
-  const pdfRef = useRef<HTMLDivElement | null>(null); 
+  const pdfRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!POid) return;
     if (page === "PurchaseOrder") {
@@ -67,8 +69,8 @@ function Purchaseview({ page }: Props) {
       page === "PurchaseOrder"
         ? `/purchase/purchase-order/edit/${POid}`
         : page === "Bills"
-        ? `/purchase/bills/edit/${POid}`
-        : `/purchase/debit-note/edit/${POid}`
+          ? `/purchase/bills/edit/${POid}`
+          : `/purchase/debit-note/edit/${POid}`
     );
   };
 
@@ -77,8 +79,8 @@ function Purchaseview({ page }: Props) {
       let url = page === "PurchaseOrder"
         ? `${endponits.DELETE_PURCHASE_ORDER}/${POid}`
         : page === "Bills"
-        ? `${endponits.DELETE_BILL}/${POid}`
-        : `${endponits.DELETE_DEBIT_NOTE}/${POid}`;
+          ? `${endponits.DELETE_BILL}/${POid}`
+          : `${endponits.DELETE_DEBIT_NOTE}/${POid}`;
 
       if (!url) return;
       const { response, error } = await deleteData(url);
@@ -94,9 +96,10 @@ function Purchaseview({ page }: Props) {
     }
   };
 
- 
-  
-    
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
+
 
   return (
     <div className="mt-4">
@@ -185,12 +188,12 @@ function Purchaseview({ page }: Props) {
                 </Button>
               </>
 
-              {/* {
+              {
                 isPdfView &&
                 <div onClick={() => reactToPrintFn()}>
                   <Print />
                 </div>
-              } */}
+              }
 
               <label className="flex items-center cursor-pointer">
                 <div className="relative">
@@ -217,10 +220,12 @@ function Purchaseview({ page }: Props) {
           </div>
           <hr className="border-t border-inputBorder mt-4" />
           {isPdfView ? (
-          <div ref={pdfRef} style={{ visibility: "visible", left: "-9999px" }}>
-          <PDFView ref={pdfRef} data={data} page={page} organization={organization} />
-        </div>
-         
+            <div ref={pdfRef} style={{ visibility: "visible", left: "-9999px" }}>
+              <div ref={contentRef}>
+                <PDFView ref={pdfRef} data={data} page={page} organization={organization} />
+              </div>
+            </div>
+
           ) : (
             <div className="other-component">
               <OrderView data={data} page={page} organization={organization} />
