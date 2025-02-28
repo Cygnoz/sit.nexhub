@@ -240,6 +240,7 @@ export const endponits = {
   GET_A_OCR_INVOICE: `api/view_invoice`,
   UPDATE_OCR_DATA: `api/update_status`,
   DELETE_OCR_INVOICE: `api/delete_invoice`,
+  GET_OCR_FULL_INVOICE: `api/view_full_invoice`,
 
   //Report
   GET_DAYBOOK: "dayBook",

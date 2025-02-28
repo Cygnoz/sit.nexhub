@@ -17,12 +17,17 @@ const initialItemDataState = {
   unit: "",
   taxPreference: "",
   taxExemptReason: "",
-  sellingPrice: "",
+  costPrice: "",
   taxRate: "",
   purchaseDescription: "",
+  purchaseAccountId:""
 };
 
-const AddNewItem = () => {
+type Props ={
+  selectedItem?:any
+}
+
+const AddNewItem = ({selectedItem}:Props) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [itemsData, setItemsData] = useState<[] | any>(initialItemDataState);
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
@@ -31,8 +36,11 @@ const AddNewItem = () => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [unitList, setUnitList] = useState<[] | any>([]);
   const [taxRate, setTaxRate] = useState<[] | any>([]);
+  const [allAccounts,setAllAccounts]=useState([])
   const { request: getUnit } = useApi("get", 5003);
   const { request: getTaxRate } = useApi("get", 5004);
+  const { request: getAccounts } = useApi("get", 5002);
+
   const { request: addItem } = useApi("post", 5003);
   const { organization } = useOrganization();
   const { setOcrAddItem } = useContext(octAddItemContext)!;
@@ -79,8 +87,6 @@ const AddNewItem = () => {
         [key]: updatedValue,
     }));
 
-    console.log(updatedValue, "updatedValue");
-    console.log(key, "key");
     setOpenDropdownIndex(null);
 };
 
@@ -133,9 +139,11 @@ const AddNewItem = () => {
   useEffect(() => {
     const unitURl = `${endponits.GET_ALL_UNIT}`;
     const taxUrl = `${endponits.GET_ALL_TAX}`;
+    const accountsUrl=`${endponits.Get_ALL_Acounts}`
 
     fetchData(taxUrl, setTaxRate, getTaxRate);
     fetchData(unitURl, setUnitList, getUnit);
+    fetchData(accountsUrl, setAllAccounts, getAccounts);
   }, []);
 
   useEffect(() => {
@@ -165,8 +173,44 @@ const AddNewItem = () => {
     };
   }, [openDropdownIndex]);
 
-  console.log(itemsData, "itemsdata");
-
+  useEffect(() => {
+    if (!selectedItem) return;
+  
+    const matchingAccount = allAccounts.find(
+      (account: { _id: string; accountSubhead: string }) =>
+        account.accountSubhead === "Cost of Goods Sold"
+    );
+  
+    const taxPreference = selectedItem.itemTax !== 0 ? "Taxable" : "Non-Taxable";
+  
+    let matchingTax: { taxName: string } | undefined;
+    if (taxRate?.gstTaxRate) {
+      if (selectedItem.itemCgst && selectedItem.itemSgst) {
+        matchingTax = taxRate.gstTaxRate.find(
+          (rate: { cgst: number; sgst: number; taxName: string }) =>
+            rate.cgst === Number(selectedItem.itemCgst) &&
+            rate.sgst === Number(selectedItem.itemSgst)
+        );
+      }
+  
+      if (!matchingTax && selectedItem.itemIgst) {
+        matchingTax = taxRate.gstTaxRate.find(
+          (rate: { igst: number; taxName: string }) =>
+            rate.igst === Number(selectedItem.itemIgst)
+        );
+      }
+    }
+  
+    setItemsData((prevData: any) => ({
+      ...prevData,
+      ...selectedItem,
+      costPrice: selectedItem.itemCostPrice,
+      purchaseAccountId: matchingAccount?._id || "", 
+      taxPreference,
+      taxRate: matchingTax?.taxName || "",
+    }));
+  }, [selectedItem, taxRate, allAccounts]);
+  
   return (
     <div>
       <div className="flex items-center justify-center">
@@ -181,7 +225,7 @@ const AddNewItem = () => {
         </Button>
       </div>
 
-      <Modal open={isModalOpen} onClose={closeModal} className="w-[40%] ">
+      <Modal open={isModalOpen} onClose={closeModal} className="w-[50%]">
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative  ">
             <div className="absolute top-0 -right-8 w-[178px] h-[89px]"></div>
@@ -196,7 +240,7 @@ const AddNewItem = () => {
             </div>
           </div>
 
-          <form className="text-start space-y-3 overflow-y-scroll hide-scrollbar">
+          <form className="text-start space-y-3 overflow-y-scroll hide-scrollbar h-[450px]">
           <div className="flex justify-start items-center">
               <div>
                 <label
@@ -225,7 +269,7 @@ const AddNewItem = () => {
                           ? "border-8 border-[#97998E]"
                           : "border-1 border-[#97998E]"
                           }`}
-                        checked={itemsData.itemType === "goods"} // "Goods" will be checked by default
+                        checked={itemsData.itemType === "goods"}
                         onChange={handleInputChange}
                       />
                       <div
@@ -345,6 +389,35 @@ const AddNewItem = () => {
               )}
             </div>
 
+
+         { itemsData.itemType=="goods" ? <div>
+              <label
+                className="block text-slate-600 text-sm mb-0.5"
+                htmlFor="hsnCode"
+              >
+                HSN
+              </label>
+              <input
+                className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                placeholder="Enter HSN Code"
+                name="hsnCode"
+                value={itemsData.hsnCode}
+                onChange={handleInputChange}
+              />
+            </div> :<div> <label
+                className="block text-slate-600 text-sm mb-0.5"
+                htmlFor="sac"
+              >
+                SAC
+              </label>
+              <input
+                className="pl-3 text-sm w-[100%] mt-0.5 rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+                placeholder="Enter SAC"
+                name="sac"
+                value={itemsData.sac}
+                onChange={handleInputChange}
+              />
+            </div> }
             <div className="relative">
               <label
                 htmlFor="taxPreference"
@@ -434,9 +507,9 @@ const AddNewItem = () => {
             <div className="relative  mt-0.5">
               <label
                 className="text-slate-600 flex text-sm gap-2"
-                htmlFor="sellingPrice"
+                htmlFor="costPrice"
               >
-                Selling Price
+                Cost Price
               </label>
               <div className="flex">
                 <div className="w-16 text-sm mt-0.5 rounded-l-md text-start bg-white text-zinc-400 border border-inputBorder h-10 items-center justify-center flex">
@@ -447,8 +520,8 @@ const AddNewItem = () => {
                   min={0}
                   className="pl-3 text-sm w-[100%] mt-0.5   rounded-r-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
                   placeholder="Enter Price"
-                  name="sellingPrice"
-                  value={itemsData.sellingPrice}
+                  name="costPrice"
+                  value={itemsData.costPrice}
                   onChange={handleInputChange}
                 />
               </div>
