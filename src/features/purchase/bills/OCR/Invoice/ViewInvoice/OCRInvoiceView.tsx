@@ -178,7 +178,7 @@ const OCRInvoiceView = () => {
   const getAInvoice = async () => {
     setLoading(true);
     try {
-      const url = `${endponits.GET_A_OCR_INVOICE}/${id}`;
+      const url = `${endponits.GET_OCR_FULL_INVOICE}/${id}`;
       const { response, error } = await getInvoice(url);
 
       if (!error && response) {
@@ -267,16 +267,36 @@ const OCRInvoiceView = () => {
 
   const handleItemMatch = () => {
     const matches = currentItems.map((item: any) => {
-      const isMatch = allItems.some(
+      const matchingItem = allItems.find(
         (innerItem: any) => innerItem.itemName === item.itemName
       );
+  
+      if (matchingItem) {
+        const updatedItems = invoice.invoice.items.map((invoiceItem: any) => 
+          invoiceItem.itemName === item.itemName
+            ? { ...invoiceItem, ...matchingItem }
+            : invoiceItem
+        );
+  
+        setInvoice((prevInvoice: any) => ({
+          ...prevInvoice,
+          invoice: {
+            ...prevInvoice.invoice,
+            items: updatedItems,
+          },
+        }));
+      }
+  
       return {
-        itemId: item.itemId,
-        isMatch,
+        itemId: item._id,
+        isMatch: !!matchingItem,
       };
     });
+  
     setCurrentItemsMatch(matches);
   };
+  
+
 
   const handleChange = (
     section: "bankDetails" | "header" | "footer",
@@ -313,7 +333,7 @@ const OCRInvoiceView = () => {
       const { response, error } = await updateOcr(url, invoice);
       if (!error && response) {
         toast.success(response.data.message);
-        navigate("/purchase/bills/invoice");
+        navigate(`/purchase/bills/new-ocr/${id}`);
       } else {
         toast.error(error.response.data.error);
       }
@@ -397,6 +417,11 @@ const OCRInvoiceView = () => {
   }, [openDropdownIndex]);
 
   const isPDF = invoice?.image?.file?.startsWith("data:application/pdf");
+
+
+
+  console.log(invoice,"INVOICE")
+
   return (
     <>
       <div className="mx-5 my-4 flex items-center  gap-x-4">
@@ -690,7 +715,7 @@ const OCRInvoiceView = () => {
                         (match: any) => match.itemId === item.itemId
                       );
                       const isMatched = matchedItem?.isMatch ?? false;
-
+console.log(matchedItem,"matchingItem")
                       return (
                         <div
                           onClick={() => toggleDropdown("items")}

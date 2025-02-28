@@ -38,8 +38,7 @@ const PurchaseRoutes: RouteObject[] = [
   { path: "/purchase/bills/edit/:id", element: <NewBills page="edit" /> },
   { path: "/purchase/payment-made/edit/:id", element: <AddPaymentMade page="edit" /> },
   { path: "/purchase/debit-note/edit/:id", element: <NewDebitNote page="edit" /> },
-
-
+  { path: "/purchase/bills/new-ocr/:id", element: <NewBills page="newOcr" /> },
 
 
 

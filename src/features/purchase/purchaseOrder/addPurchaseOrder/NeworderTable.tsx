@@ -368,37 +368,43 @@ const NewOrderTable = ({
   };
 
   const calculateTotalSGST = () => {
-    return rows.reduce((total, row) => {
-      const sgst = !isInterState ? Number(row.itemSgstAmount) || 0 : 0;
-      return total + sgst;
-    }, 0);
+    return parseFloat(
+      rows?.reduce((total, row) => {
+        const sgst = !isInterState ? Number(row.itemSgstAmount) || 0 : 0;
+        return total + sgst;
+      }, 0).toFixed(2)
+    );
   };
-
+  
   // Function to calculate total CGST
   const calculateTotalCGST = () => {
-    return rows.reduce((total, row) => {
-      const cgst = !isInterState ? Number(row.itemCgstAmount) || 0 : 0;
-      return total + cgst;
-    }, 0);
+    return parseFloat(
+      rows?.reduce((total, row) => {
+        const cgst = !isInterState ? Number(row.itemCgstAmount) || 0 : 0;
+        return total + cgst;
+      }, 0).toFixed(2)
+    );
   };
-
+  
   // Function to calculate total IGST
   const calculateTotalIGST = () => {
-    return rows.reduce((total, row) => {
-      const igst = isInterState ? Number(row.itemIgstAmount) || 0 : 0;
-      return total + igst;
-    }, 0);
+    return parseFloat(
+      rows?.reduce((total, row) => {
+        const igst = isInterState ? Number(row.itemIgstAmount) || 0 : 0;
+        return total + igst;
+      }, 0).toFixed(2)
+    );
   };
-
+  
   const calculateTotalQuantity = () => {
-    return rows.reduce((total, row) => {
+    return rows?.reduce((total, row) => {
       const quantity = parseFloat(row.itemQuantity.toString() || "0");
       return total + quantity;
     }, 0);
   };
 
   const calculateDiscount = () => {
-    const totalDiscount = rows.reduce((total, row) => {
+    const totalDiscount = rows?.reduce((total, row) => {
       const discount = Number(row.itemDiscount) || 0;
       const quantity = Number(row.itemQuantity) || 0;
       const costPrice = Number(row.itemCostPrice) || 0;
@@ -418,7 +424,7 @@ const NewOrderTable = ({
   };
 
   const calculateTotalSubtotal = () => {
-    return rows.reduce((total, row) => {
+    return rows?.reduce((total, row) => {
       const itemQuantity = Number(row.itemQuantity) || 0;
       const itemPrice = Number(row.itemCostPrice) || 0;
       const subtotal = itemQuantity * itemPrice;
@@ -523,12 +529,12 @@ const NewOrderTable = ({
     setPurchaseOrderState?.((prevData: PurchaseOrder) => ({
       ...prevData,
       totalItem: totalQuantity,
-      sgst: isInterState ? "" : totalSGST,
-      cgst: isInterState ? "" : totalCGST,
-      igst: isInterState ? totalIGST : "",
+      sgst: isInterState ? "" : Number(totalSGST).toFixed(2),
+      cgst: isInterState ? "" :Number( totalCGST).toFixed(2),
+      igst: isInterState ? Number(totalIGST).toFixed(2) : "",
       subTotal: totalSellingPrice,
       itemTotalDiscount: totalDiscount <= 0 ? "" : totalDiscount,
-      totalTaxAmount: isInterState ? totalIGST : totalSGST + totalCGST,
+      totalTaxAmount: isInterState ? Number(totalIGST).toFixed(2) : Number(totalSGST + totalCGST).toFixed(2),
     }));
   }, [rows]);
 

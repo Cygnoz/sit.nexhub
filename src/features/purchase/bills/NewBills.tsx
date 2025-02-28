@@ -49,6 +49,7 @@ const NewBills = ({ page }: Props) => {
   const { request: getPrefix } = useApi("get", 5005);
   const { request: getEditBill } = useApi("get", 5005);
   const { request: updateBill } = useApi("put", 5005);
+  const { request: getOcr } = useApi("get", 5000);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ const NewBills = ({ page }: Props) => {
         itemSgstAmount: "",
         itemCgstAmount: "",
         taxPreference: "",
-        purchaseAccountId: ""
+        purchaseAccountId: "",
       },
     ],
     otherExpenseAccountId: "",
@@ -120,6 +121,8 @@ const NewBills = ({ page }: Props) => {
     purchaseOrderId: "",
   });
 
+  console.log(bill, "bill");
+
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
@@ -144,9 +147,9 @@ const NewBills = ({ page }: Props) => {
 
       if (!error && response) {
         if (url.includes(endponits.GET_ONE_SALES_ORDER)) {
-          // Correct the typo and ensure proper parsing
           const grandTotal = parseFloat(response.data.grandTotal) || 0;
-          const transactionDiscountAmount = parseFloat(response.data.transactionDiscountAmount) || 0; // Fixed the typo here
+          const transactionDiscountAmount =
+            parseFloat(response.data.transactionDiscountAmount) || 0; // Fixed the typo here
 
           setBill((prevData) => ({
             ...prevData,
@@ -154,6 +157,9 @@ const NewBills = ({ page }: Props) => {
             grandTotal: grandTotal,
             transactionDiscountAmount: transactionDiscountAmount,
           }));
+        } else if (url.includes(endponits.GET_A_OCR_INVOICE)) {
+          setData(response.data[0]);
+          
         } else {
           setData(response.data);
         }
@@ -164,7 +170,6 @@ const NewBills = ({ page }: Props) => {
       console.error("Error fetching data:", err);
     }
   };
-
 
   const handleplaceofSupply = () => {
     if (oneOrganization.organizationCountry) {
@@ -275,7 +280,6 @@ const NewBills = ({ page }: Props) => {
         }
         paidAmount = grandTotal;
       } else {
-        // Reset the flag when the value is within the valid range
         toastShown.current = false;
       }
 
@@ -407,7 +411,6 @@ const NewBills = ({ page }: Props) => {
     return totalAmount.toFixed(2);
   };
 
-
   useEffect(() => {
     const { grandTotal, paidAmount } = bill;
 
@@ -429,8 +432,7 @@ const NewBills = ({ page }: Props) => {
     }));
   }, [bill.grandTotal, bill.paidAmount, bill.paymentTerms]);
 
-
-  console.log(bill)
+  console.log(bill);
 
   const handleSave = async () => {
     const newErrors = { ...errors };
@@ -485,7 +487,7 @@ const NewBills = ({ page }: Props) => {
         api = updateBill;
       } else {
         url = `${endponits.ADD_BILL}`;
-        api = newBillApi
+        api = newBillApi;
       }
       const { response, error } = await api(url, bill);
       if (!error && response) {
@@ -541,7 +543,6 @@ const NewBills = ({ page }: Props) => {
     bill.itemTotalDiscount,
     bill.roundOffAmount,
   ]);
-
 
   useEffect(() => {
     if (bill?.destinationOfSupply == "") {
@@ -614,11 +615,15 @@ const NewBills = ({ page }: Props) => {
     const fetchInitialData = async () => {
       const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
       const oneBillUrl = `${endponits.GET_A_BILL}/${id}`;
+      const getOcrInvoice = `${endponits.GET_A_OCR_INVOICE}/${id}`;
 
       await fetchData(supplierUrl, setSupplierData, AllSuppliers);
 
       if (page === "edit") {
         await fetchData(oneBillUrl, setBill, getEditBill);
+      }
+      if (page === "newOcr") {
+        await fetchData(getOcrInvoice, setBill, getOcr);
       }
     };
 
@@ -741,10 +746,11 @@ const NewBills = ({ page }: Props) => {
                           }}
                         >
                           <div
-                            className={` items-center space-y-1 ${supplier.mobile
-                              ? "justify-start"
-                              : "flex justify-center"
-                              }`}
+                            className={` items-center space-y-1 ${
+                              supplier.mobile
+                                ? "justify-start"
+                                : "flex justify-center"
+                            }`}
                           >
                             <p className="font-bold text-sm">
                               {supplier.supplierDisplayName}
@@ -1091,7 +1097,7 @@ const NewBills = ({ page }: Props) => {
                   className="hidden"
                   value=""
                   name="documents"
-                // onChange={(e)=>handleFileChange(e)}
+                  // onChange={(e)=>handleFileChange(e)}
                 />
               </label>
             </div>
@@ -1302,7 +1308,7 @@ const NewBills = ({ page }: Props) => {
               </div>
             </div>
 
-            {bill.paymentMode === "Cash" &&
+            {bill.paymentMode === "Cash" && (
               <>
                 <div className="flex gap-4 items-center justify-center mb-2">
                   <label className=" text-sm mb-1 text-labelColor min-w-fit left-0">
@@ -1380,7 +1386,7 @@ const NewBills = ({ page }: Props) => {
                   </div>
                 </div>
               </>
-            }
+            )}
             <div className="flex gap-4 m-5 justify-end">
               {" "}
               <Button variant="secondary" size="sm">
