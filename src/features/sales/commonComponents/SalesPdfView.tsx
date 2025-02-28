@@ -89,7 +89,7 @@ function SalesPdfView({ data, page }: SalesOrderViewProps) {
 
   return (
     <div className="mt-4">
-      <div className="flex items-center justify-center mb-4">
+      <div className="flex items-center justify-center mb-4 hide-print">
         <p className="text-textColor border-r-[1px] border-borderRight pr-4 text-sm font-medium">
           {
             page === "quote" ? "Quote Date :" :

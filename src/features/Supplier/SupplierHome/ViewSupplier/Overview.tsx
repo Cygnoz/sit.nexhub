@@ -68,7 +68,8 @@ const Overview: React.FC<OverviewProps> = ({
       const apiResponse = await getSupplierHistory(url);
       const { response, error } = apiResponse;
       if (!error && response) {
-        setSupplierHis(response.data);
+        const reversedData = response.data.slice().reverse();
+        setSupplierHis(reversedData);
         console.log(response);
       } else {
         console.error(
@@ -125,6 +126,8 @@ const Overview: React.FC<OverviewProps> = ({
     if (!dateString) {
       return { date: "", time: "" };
     }
+    console.log(formatDateTime);
+    
 
     const [datePart, timePart] = dateString.split(" ");
     const [hoursString, minutes] = timePart.split(":");
@@ -400,6 +403,7 @@ const Overview: React.FC<OverviewProps> = ({
           <h3 className="font-bold text-[14px] mb-4">
             Supplier Status History
           </h3>
+          
           <div className="flex flex-col relative pb-8">
             <div
               className="w-[2px] absolute left-4 top-0 bg-WhiteIce"
@@ -407,8 +411,6 @@ const Overview: React.FC<OverviewProps> = ({
             ></div>
             {supplierHis?.map((item: any, index: number) => {
               const circleStyle = getCircleStyle(item.title);
-              const { date, time } = formatDateTime(item.date);
-
               return (
                 <div key={index} className="space-y-4 pb-8">
                   {/* First item */}
@@ -421,12 +423,12 @@ const Overview: React.FC<OverviewProps> = ({
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <div className="flex space-x-3 text-[14px]">
-                        <p>{date}</p>
-                        <p>{time}</p>
+                      <div className="flex space-x-3 text-[14px] text-[#4B5C79] ">
+                        <p>{item?.createdDate}</p>
+                        <p>{item?.createdTime}</p>
                       </div>
-                      <p className="font-bold">{item.title}</p>
-                      <p>{item.description}</p>
+                      <p className="font-bold text-[#303F58] text-sm">{item.title}</p>
+                      <p className="text-[#4B5C79] text-xs">{item.description}</p>
                       <div className="flex space-x-4 font-bold text-[14px]">
                         <p>{item.author}</p>
                         {/* <p><u>View Details</u></p> */}

@@ -1,26 +1,33 @@
-import {  useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 // import Button from '../../../../Components/Button';
 import CheveronLeftIcon from '../../../../assets/icons/CheveronLeftIcon';
 // import PencilEdit from '../../../../assets/icons/PencilEdit';
 import PdfView from './PdfView';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useApi from '../../../../Hooks/useApi';
 import { endponits } from '../../../../Services/apiEndpoints';
 import { useOrganization } from '../../../../context/OrganizationContext';
 import SideBar from './SideBar';
+import Button from '../../../../Components/Button';
+import Pen from '../../../../assets/icons/Pen';
+import TrashCan from '../../../../assets/icons/TrashCan';
+import toast from 'react-hot-toast';
+import Print from '../../salesOrder/Print';
+import { useReactToPrint } from 'react-to-print';
 
 type Props = {};
 
-function RecieptView({}: Props) {
-  const[RecieptData,setRecieptData]=useState<[]|any>([])
+function RecieptView({ }: Props) {
+  const [RecieptData, setRecieptData] = useState<[] | any>([])
   const [invoiceJournal, setInvoiceJournal] = useState<any>([])
-  const {request:getReciept}=useApi("get",5007)
+  const { request: getReciept } = useApi("get", 5007)
+  const { request: deleteSales } = useApi("delete", 5007);
   const { organization } = useOrganization()
 
 
-  const {id}=useParams()
+  const { id } = useParams()
   const navigate = useNavigate()
-  const handleGoBack =()=>{
+  const handleGoBack = () => {
     navigate(-1)
   }
 
@@ -31,8 +38,8 @@ function RecieptView({}: Props) {
       const { response, error } = apiResponse;
       if (!error && response) {
         setRecieptData(response.data);
-        console.log(response.data,"as");
-        
+        console.log(response.data, "as");
+
       } else {
         console.error('API Error:', error?.response?.data?.message || 'Unknown error');
       }
@@ -47,28 +54,56 @@ function RecieptView({}: Props) {
       const { response, error } = await getOneRecieptJournal(url);
       if (!error && response) {
         setInvoiceJournal(response.data);
-        console.log(response.data,"journla");
+        console.log(response.data, "journla");
       }
     } catch (error) {
       console.error("Error fetching sales order:", error);
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getReciepts()
     fetchOneInvoice()
-  },[])
+  }, [])
+
+  const handleDelete = async () => {
+    try {
+      let url = `${endponits.DELETE_SALES_RECIEPT}/${id}`
+
+      if (!url) return;
+
+      const { response, error } = await deleteSales(url);
+      if (!error && response) {
+        console.log("Deleted successfully:", response);
+        toast.success(response.data.message)
+        setTimeout(() => {
+          navigate("/sales/receipt");
+        }, 1000);
+
+      } else {
+        toast.error(error.response.data.message)
+      }
+    } catch (error) {
+      console.error("Error in deleting item:", error);
+    }
+  };
+
+  const handleEditClick = () => {
+    navigate(`/sales/receipt/edit/${id}`);
+  };
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
   return (
     <div className="p-6 text-pdftext bg-white rounded-lg mx-7">
       <div className="flex items-center space-x-2 mb-4">
-          <div
-            onClick={handleGoBack}
-            style={{ borderRadius: "50%" }}
-            className="w-[40px] h-[40px] flex items-center justify-center bg-[#F6F6F6]"
-          >
-            <CheveronLeftIcon />
-          </div>
+        <div
+          onClick={handleGoBack}
+          style={{ borderRadius: "50%" }}
+          className="w-[40px] h-[40px] flex items-center justify-center bg-[#F6F6F6]"
+        >
+          <CheveronLeftIcon />
+        </div>
         <h1 className="text-[20px] font-bold text-[#303F58]">View Reciept</h1>
       </div>
       <div className="flex justify-between items-center">
@@ -78,35 +113,33 @@ function RecieptView({}: Props) {
           <h3>{RecieptData?.payment}</h3>
           <p className="w-[47px] h-[25px] bg-[#F3F3F3] rounded-lg flex items-center justify-center">Draft</p>
         </div>
-        {/* <div className="flex space-x-3 mb-4">
-          <Button className="h-[38px] w-[100px] flex justify-center items-center" variant="secondary">
-            <PencilEdit color="black" />
-            Edit
+        <div className="flex space-x-3 mb-4">
+          <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={handleEditClick}>
+            <Pen color="#565148" />
+            <p className="text-sm font-medium">Edit</p>
           </Button>
-          <Button className="h-[38px] w-[100px] flex justify-center items-center" variant="secondary">
-            <PencilEdit color="black" />
-            Email
+          <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={handleDelete}>
+            <TrashCan color="#565148" />
+            <p className="text-sm font-medium">Delete</p>
           </Button>
-          <select
-            className="border border-[#565148] h-[38px] w-auto pl-3 pr-4 rounded-md bg-[#FEFDFA] font-semibold text-gray-800"
-            style={{ color: "#585953" }}
-          >
-            <option>More Actions</option>
-            <option>Delete</option>
-          </select>
-        </div> */}
+
+          <div onClick={() => reactToPrintFn()}>
+            <Print />
+          </div>
+
+        </div>
       </div>
       <hr className="mb-5 border-loremcolor" />
       <div className="grid grid-cols-3 space-x-4">
         {/* Sidebar */}
-       <SideBar data={RecieptData}/>
+        <SideBar data={RecieptData} />
         {/* Main content */}
-        <div className='col-span-2'>
-        <PdfView data={RecieptData} organization={organization}/>
+        <div className='col-span-2' ref={contentRef}>
+          <PdfView data={RecieptData} organization={organization} />
         </div>
       </div>
       <div>
-      <>
+        <>
           {/* Invoice Details */}
           <div className="p-4 rounded-lg bg-[#F6F6F6] mt-6">
             <h2 className="font-semibold text-base mb-4 text-textColor">Invoice</h2>

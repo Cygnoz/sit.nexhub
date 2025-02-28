@@ -5,9 +5,10 @@ import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import Trash2 from "../../../assets/icons/Trash2";
 import Button from "../../../Components/Button";
 import useApi from "../../../Hooks/useApi";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { endponits } from "../../../Services/apiEndpoints";
 import toast from "react-hot-toast";
+import { useReactToPrint } from "react-to-print";
 
 type Props = {};
 
@@ -57,6 +58,9 @@ function ManualView({ }: Props) {
     }
   }, [id]);
 
+    const contentRef = useRef<HTMLDivElement>(null);
+    const reactToPrintFn = useReactToPrint({ contentRef });
+
   return (
     <>
       <div className="px-6">
@@ -87,7 +91,7 @@ function ManualView({ }: Props) {
                 <Pen color="#565148" />{" "}
                 <p className="text-sm font-medium">Edit</p>
               </Button>
-              <Button variant="secondary" className="pl-5 pr-5" size="sm">
+              <Button onClick={() => reactToPrintFn()}  variant="secondary" className="pl-5 pr-5" size="sm">
                 <PrinterIcon color="#565148" height={0} width={0} />{" "}
                 <p className="text-sm font-medium">Print</p>
               </Button>
@@ -100,7 +104,7 @@ function ManualView({ }: Props) {
           <hr className="border-t border-inputBorder mt-4" />
 
           {/* pdf view */}
-          <div className="flex items-center justify-center text-sm text-textColor p-5">
+          <div ref={contentRef} className="flex items-center justify-center text-sm text-textColor p-5">
             <div
               className="p-5"
               style={{ width: "595px", boxShadow: "-1px 1px 15px -8px black" }}

@@ -605,7 +605,9 @@ const NewSalesOrder = ({ page }: Props) => {
                       </div>
                     </div>
                   )}
-                  <CustomerModal selectedCustomer={selectedCustomer} />
+                  {
+                    selectedCustomer &&
+                    <CustomerModal selectedCustomer={selectedCustomer} />}
                 </div>
 
                 {isPlaceOfSupplyVisible && (

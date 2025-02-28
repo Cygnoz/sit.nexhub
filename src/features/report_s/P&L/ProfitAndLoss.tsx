@@ -4,11 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import useApi from "../../../Hooks/useApi";
 import toast from "react-hot-toast";
 import { endponits } from "../../../Services/apiEndpoints";
-import { PrinterIcon } from "@heroicons/react/20/solid";
 import Calender from "../../../assets/icons/Calender";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import { useOrganization } from "../../../context/OrganizationContext";
 import Button from "../../../Components/Button";
+import PrintButton from "../../../Components/PrintButton";
+import { useReactToPrint } from "react-to-print";
 
 type Props = {};
 
@@ -31,7 +32,7 @@ function getLastDayOfMonth() {
     .split("T")[0];
 }
 
-const ProfitAndLoss = ({}: Props) => {
+const ProfitAndLoss = ({ }: Props) => {
   const { organization } = useOrganization();
   const [fromDate, setFromDate] = useState(getFirstDayOfMonth());
   const [toDate, setToDate] = useState(getLastDayOfMonth());
@@ -88,7 +89,9 @@ const ProfitAndLoss = ({}: Props) => {
     getPL();
   }, []);
 
-  console.log(PLData.debit, "pl");
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
+
 
   return (
     <div className="p-5">
@@ -147,17 +150,14 @@ const ProfitAndLoss = ({}: Props) => {
               Run
             </Button>
 
-            <div className="ml-auto flex items-center">
-              <button className="flex border px-2 py-1 border-gray-300 rounded-lg bg-secondary_active">
-                <PrinterIcon color="gray" height={18} width={20} />
-                <span className="text-sm text-neutral-500">Print</span>
-              </button>
+            <div className="ml-auto flex items-center" onClick={() => reactToPrintFn()}>
+              <PrintButton />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg my-4 p-5">
+      <div className="bg-white rounded-lg my-4 p-5" ref={contentRef}>
         <div className="text-center py-4">
           <p className="text-lg font-bold text-textColor">
             {organization?.organizationName}
@@ -275,8 +275,8 @@ const ProfitAndLoss = ({}: Props) => {
                 ].map((item, index) =>
                   (item.accountName === "Gross Profit b/f" &&
                     item.totalAmount === 0) ||
-                  (item.accountName === "Net Loss " &&
-                    item.totalAmount === 0) ? null : (
+                    (item.accountName === "Net Loss " &&
+                      item.totalAmount === 0) ? null : (
                     <tr
                       key={index}
                       className={index === 2 ? "font-semibold bg-gray-50 " : ""}
