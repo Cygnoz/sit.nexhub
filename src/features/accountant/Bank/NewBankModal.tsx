@@ -29,6 +29,7 @@ const initialBankAccount = {
   bankCurrency: "",
   debitOpeningBalance: "",
   creditOpeningBalance: "",
+  createdDate: new Date().toISOString().split("T")[0],
 };
 
 const NewBankModal = ({page,id }: Props) => {
@@ -212,6 +213,20 @@ const NewBankModal = ({page,id }: Props) => {
                   placeholder="Value"
                   className="border-inputBorder w-full text-sm border rounded p-1.5 pl-2"
                 />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm mb-1 text-labelColor">
+                  Opening Date
+                </label>
+                <div className="relative w-full">
+                  <input
+                    type="date"
+                    onChange={handleChange}
+                    name="createdDate"
+                    className="block appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
+                    value={bankAccount?.createdDate}
+                  />
+                </div>
               </div>
               <div className="mb-4">
                 <label className="block mb-1 text-labelColor text-sm">Opening Balance</label>
