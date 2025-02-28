@@ -111,20 +111,15 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
       );
     });
 
-    // **Function to Calculate Similarity Score**
     const calculateSimilarity = (name: string) => {
       name = name.toLowerCase();
 
-      // Priority 1: Exact match
       if (name === invoiceItemName) return 100;
 
-      // Priority 2: Starts with invoice item name
       if (name.startsWith(invoiceItemName)) return 90;
 
-      // Priority 3: Contains the full invoice name
       if (name.includes(invoiceItemName)) return 80;
 
-      // Priority 4: Count number of matching words
       const matchingWords = invoiceWords.filter((word) =>
         name.includes(word)
       ).length;
@@ -143,6 +138,7 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
       console.error("No item selected or invoice is missing.");
       return;
     }
+    console.log(finalItem, "final item");
 
     const updatedInvoiceItems = invoice.invoice?.items?.map(
       (item: Item, index: number) =>
@@ -155,10 +151,10 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
               itemCgst: finalItem.cgst,
               itemIgst: finalItem.igst,
               itemTax: finalItem.igst,
+              hsn_sac:finalItem.hsnCode
             }
           : item
     );
-    console.log(finalItem, "finaldfghjk");
     setInvoice?.((prevInvoice: any) => ({
       ...prevInvoice,
       invoice: {
@@ -171,7 +167,6 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
     setExpandDropDown(null);
   };
 
-  console.log(invoice.invoice.items, "qwertyui");
   useEffect(() => {
     handleItemsMatch();
   }, [allItems, items, openDropdownIndex]);

@@ -39,7 +39,7 @@ const AddNewItem = ({selectedItem}:Props) => {
   const [allAccounts,setAllAccounts]=useState([])
   const { request: getUnit } = useApi("get", 5003);
   const { request: getTaxRate } = useApi("get", 5004);
-  const { request: getAccounts } = useApi("get", 5002);
+  const { request: getAccounts } = useApi("get", 5001);
 
   const { request: addItem } = useApi("post", 5003);
   const { organization } = useOrganization();
@@ -179,7 +179,8 @@ const AddNewItem = ({selectedItem}:Props) => {
     const matchingAccount = allAccounts.find(
       (account: { _id: string; accountSubhead: string }) =>
         account.accountSubhead === "Cost of Goods Sold"
-    );
+    ) || { _id: "", accountSubhead: "" };
+
   
     const taxPreference = selectedItem.itemTax !== 0 ? "Taxable" : "Non-Taxable";
   
@@ -205,7 +206,7 @@ const AddNewItem = ({selectedItem}:Props) => {
       ...prevData,
       ...selectedItem,
       costPrice: selectedItem.itemCostPrice,
-      purchaseAccountId: matchingAccount?._id || "", 
+      purchaseAccountId: matchingAccount?._id ||  "", 
       taxPreference,
       taxRate: matchingTax?.taxName || "",
     }));

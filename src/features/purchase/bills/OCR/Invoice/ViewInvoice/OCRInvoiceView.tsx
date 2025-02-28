@@ -296,7 +296,7 @@ const OCRInvoiceView = () => {
     setCurrentItemsMatch(matches);
   };
   
-  console.log(invoice?.invoice?.items,"items in all")
+
 
   const handleChange = (
     section: "bankDetails" | "header" | "footer",
@@ -417,6 +417,11 @@ const OCRInvoiceView = () => {
   }, [openDropdownIndex]);
 
   const isPDF = invoice?.image?.file?.startsWith("data:application/pdf");
+
+
+
+  console.log(invoice,"INVOICE")
+
   return (
     <>
       <div className="mx-5 my-4 flex items-center  gap-x-4">
