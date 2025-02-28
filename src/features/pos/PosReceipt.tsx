@@ -2,8 +2,9 @@ import ShoppingCart from "../../assets/Images/shopping-cart_6054136 1.png";
 import leftImage from "../../assets/Images/7182239_3582344 1.png";
 import Button from "../../Components/Button";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { PosResponseContext } from "../../context/ContextShare";
+import { useReactToPrint } from "react-to-print";
 
 type Props = {};
 
@@ -15,13 +16,16 @@ function PosReceipt({ }: Props) {
     navigate("/pos");
   };
 
+    const contentRef = useRef<HTMLDivElement>(null);
+    const reactToPrintFn = useReactToPrint({ contentRef });
+
   return (
     <div className="h-screen flex justify-center items-center bg-gray-100">
       <div className="flex w-[80%] bg-white rounded-lg overflow-hidden">
         {/* Left Section */}
         <div className="flex-1 flex flex-col items-center justify-center bg-gray-50 p-10">
           <img src={leftImage} className="w-80 mb-8" alt="Left Illustration" />
-          <Button className="text-sm pl-36 pr-36">Print Receipt</Button>
+          <Button onClick={() => reactToPrintFn()}  className="text-sm pl-36 pr-36">Print Receipt</Button>
           <Button
             className="text-sm pl-[150px] pr-[150px] mt-4"
             variant="secondary"
@@ -32,7 +36,7 @@ function PosReceipt({ }: Props) {
         </div>
 
         {/* Right Section */}
-        <div className="flex-1 p-10">
+        <div className="flex-1 p-10"  ref={contentRef}>
           {posResponse ? (
             <>
               <div className="flex items-center justify-center">
