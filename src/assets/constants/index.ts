@@ -8,8 +8,8 @@ import shoppingCart from "../icons/ShoppingCart";
 import squreUserRound from "../icons/squre-user-round";
 import truck from "../icons/truck";
 import userRound from "../icons/user-round";
-import usersRound from "../icons/users-round";
-import Wallet from "../icons/Wallet";
+// import usersRound from "../icons/users-round";
+// import Wallet from "../icons/Wallet";
 import VectorDashboard from "../icons/VectorBashboard";
 const navlist = [
   {
