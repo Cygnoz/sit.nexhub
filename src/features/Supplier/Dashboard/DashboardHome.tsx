@@ -66,8 +66,8 @@ function DashboardHome({}: Props) {
   return (
     <div className="px-6 space-y-8 text-[#303F58]">
       <div className="flex items-center relative">
-        <div>
-          <h3 className="font-bold text-2xl text-textColor">Supplier</h3>
+      <div>
+          <h3 className="font-bold text-xl text-textColor ">Supplier</h3>
           <p className="text-sm text-gray mt-1">
           Effectively manage and track supplier information to enhance procurement processes and ensure reliable partnerships
           </p>

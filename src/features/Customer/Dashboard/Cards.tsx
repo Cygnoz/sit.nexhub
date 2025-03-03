@@ -1,39 +1,40 @@
-import { useState } from "react";
+import ActiveCustomerIcon from "../../../assets/icons/ActiveCustomerIcon";
+import CustomerRentationIcon from "../../../assets/icons/CustomerRentationIcon";
+import NewCustomerIcon from "../../../assets/icons/NewCustomerIcon";
+import TopCustomerIcon from "../../../assets/icons/TopCustomerIcon";
+import TotalSalesIcon from "../../../assets/icons/TotalSalesIcon";
 import OrderCards from "./OrderCards"
 type Props = {}
 
 const Cards = ({}: Props) => {
-    const [activeCard, setActiveCard] = useState<number | null>(0);
-    const handleCardClick = (index: number) => {
-        setActiveCard(index);
-      };
+
   const cards = [
     {
-      icon: <i className="fa-solid fa-cart-shopping text-xl text-black"></i>,
+      icon: <TopCustomerIcon/>,
       title: "Total Customers",
       count: "1500",
       rating: "12,95",
     },
     {
-      icon: <i className="fa-solid fa-cogs text-xl text-black"></i>,
+      icon: <NewCustomerIcon/>,
       title: "New Customers",
       count: "120",
       rating: "18,95",
     },
     {
-        icon: <i className="fa-solid fa-cogs text-xl text-black"></i>,
+        icon: <ActiveCustomerIcon/>,
         title: "Active Customers",
         count: "800",
         rating: "12,95",
     },
     {
-        icon: <i className="fa-solid fa-cogs text-xl text-black"></i>,
+        icon:<CustomerRentationIcon/> ,
         title: "Customer Rentation Rate",
         count: "85%",
         rating: "18",
     },
     {
-        icon: <i className="fa-solid fa-cogs text-xl text-black"></i>,
+        icon: <TotalSalesIcon/>,
         title: "Customers Churn Rate",
         count: "15%",
         rating: "10",
@@ -41,7 +42,7 @@ const Cards = ({}: Props) => {
   ];
   return (
     <div>
-        <div className="flex justify-between  w-full space-x-4">
+        <div className="flex justify-between">
       {cards.map((card, index) => (
         <OrderCards
           key={index}
@@ -49,8 +50,6 @@ const Cards = ({}: Props) => {
           title={card.title}
           count={card.count}
           rating={card.rating}
-          active={activeCard === index}
-          onClick={() => handleCardClick(index)}
         />
       ))}
     </div>
