@@ -40,11 +40,11 @@ const renderCustomTooltip = ({ payload }: any) => {
   return null;
 };
 
-const CustomersRetentionRate: React.FC = () => {
+const NumberofOrdersbySupplier: React.FC = () => {
   return (
     <div className="bg-white  rounded-lg w-full py-8">
       <h3 className="ms-10 mb-6 text-[16px] font-bold">
-        Customers Retention Rate Over Time
+      Number of Orders by Supplier
       </h3>
       <ResponsiveContainer width="100%" height={340}>
         <LineChart width={300} data={data}>
@@ -81,4 +81,4 @@ const CustomersRetentionRate: React.FC = () => {
   );
 };
 
-export default CustomersRetentionRate;
+export default NumberofOrdersbySupplier;
