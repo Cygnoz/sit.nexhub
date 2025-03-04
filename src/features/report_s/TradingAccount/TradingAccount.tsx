@@ -25,9 +25,7 @@ function getFirstDayOfMonth() {
 
 function getLastDayOfMonth() {
   const date = new Date();
-  return new Date(date.getFullYear(), date.getMonth() + 1, 0)
-    .toISOString()
-    .split("T")[0];
+  return date.toISOString().split("T")[0];
 }
 
 const TradingAccount = () => {
@@ -37,7 +35,7 @@ const TradingAccount = () => {
   const [toDate, setToDate] = useState(getLastDayOfMonth());
   const fromDateRef = useRef<HTMLInputElement>(null);
   const toDateRef = useRef<HTMLInputElement>(null);
-  const { organization } = useOrganization()
+  const { organization } = useOrganization();
 
   const handleFromDateClick = () => {
     fromDateRef.current?.showPicker();
@@ -50,7 +48,6 @@ const TradingAccount = () => {
   const formattedToDate = formatDate(toDate);
   const getTradingData = async () => {
     try {
-
       const url = `${endponits.GET_TRADING_ACCONUT}/${formattedFromDate}/${formattedToDate}`;
       const { response, error } = await fetchOneItem(url);
       if (!error && response) {
@@ -67,16 +64,12 @@ const TradingAccount = () => {
     localStorage.setItem("toDate", formattedToDate);
   }, [fromDate, toDate]);
 
-
-
   useEffect(() => {
     getTradingData();
   }, []);
 
-
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
-
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -132,30 +125,39 @@ const TradingAccount = () => {
               />
             </div>
 
-            <Button className="text-xs pl-5 pr-5" size="sm" onClick={getTradingData}>
+            <Button
+              className="text-xs pl-5 pr-5"
+              size="sm"
+              onClick={getTradingData}
+            >
               Run
             </Button>
 
-            <div className="ml-auto flex items-center" onClick={() => reactToPrintFn()}>
+            <div
+              className="ml-auto flex items-center"
+              onClick={() => reactToPrintFn()}
+            >
               <PrintButton />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Trading Account Tables */}
       <div className="bg-white rounded-xl shadow-sm p-6" ref={contentRef}>
         <div className="flex justify-center items-center mb-2">
           <div className="text-center">
-            <p className="font-bold text-textColor">            {organization?.organizationName}
+            <p className="font-bold text-textColor">
+              {" "}
+              {organization?.organizationName}
             </p>
-            <p className="text-sm text-textColor">{formattedFromDate} To {formattedToDate}</p>
+            <p className="text-sm text-textColor">
+              {formattedFromDate} To {formattedToDate}
+            </p>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-8">
           {/* Debit Table */}
           <div>
-
             <div className="overflow-hidden ">
               {/* Table Header */}
               <table className="min-w-full">
@@ -184,23 +186,31 @@ const TradingAccount = () => {
                     } else if (item.purchases) {
                       const accountSubhead = "purchases";
                       accountName = "Purchases";
-                      totalAmount = item.purchases.overallNetDebit - item.purchases.overallNetCredit;
+                      totalAmount =
+                        item.purchases.overallNetDebit -
+                        item.purchases.overallNetCredit;
                       items = item;
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
-                      console.log(item, 'purchase')
+                      console.log(item, "purchase");
                     } else if (item.directExpenses) {
                       const accountSubhead = "directExpenses";
                       accountName = "Direct Expenses";
-                      totalAmount = item.directExpenses.overallNetDebit - item.directExpenses.overallNetCredit;
+                      totalAmount =
+                        item.directExpenses.overallNetDebit -
+                        item.directExpenses.overallNetCredit;
                       items = item;
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
-                    }
-                    else if (item.grossProfit) {
+                    } else if (item.grossProfit) {
                       accountName = "Gross Profit";
                       totalAmount = item.grossProfit;
                     }
+
                     if (totalAmount === 0) {
                       link = "";
+                    }
+
+                    if (accountName === "Gross Profit" && totalAmount === 0) {
+                      return null;
                     }
 
                     return (
@@ -213,9 +223,16 @@ const TradingAccount = () => {
                         }
                       >
                         <td className="px-6 py-3 text-sm text-[#4B5C79] font-medium">
-                          <Link to={link} state={{ items, accountName: accountName }}>
-                            {accountName}
-                          </Link>
+                          {link ? (
+                            <Link
+                              to={link}
+                              state={{ items, accountName: accountName }}
+                            >
+                              {accountName}
+                            </Link>
+                          ) : (
+                            accountName
+                          )}
                         </td>
                         <td className="px-6 py-3 text-right text-sm text-[#4B5C79] font-medium">
                           {totalAmount}
@@ -223,16 +240,13 @@ const TradingAccount = () => {
                       </tr>
                     );
                   })}
-
                 </tbody>
               </table>
             </div>
           </div>
 
           <div>
-            <div className="">
-
-            </div>{" "}
+            <div className=""></div>{" "}
             <div className="overflow-hidden ">
               {/* Table Header */}
               <table className="min-w-full">
@@ -255,21 +269,23 @@ const TradingAccount = () => {
                     if (item.sales) {
                       const accountSubhead = "sales";
                       accountName = "Sales";
-                      totalAmount = item.sales.overallNetCredit - item.sales.overallNetDebit;
+                      totalAmount =
+                        item.sales.overallNetCredit -
+                        item.sales.overallNetDebit;
                       items = item;
                       link = `/reports/trading-account/accounts/${accountSubhead}`;
-
                     } else if (item.closingStock) {
                       accountName = "Closing Stock";
                       totalAmount = item.closingStock.total;
                       items = item.closingStock;
                       link = `/reports/trading-account/${accountName}`;
-                    }
-                    else if (item.grossLoss) {
+                    } else if (item.grossLoss) {
                       accountName = "Gross Loss";
                       totalAmount = item.grossLoss;
                     }
-
+                    if (accountName === "Gross Loss" && totalAmount === 0) {
+                      return null;
+                    }
 
                     if (totalAmount === 0) {
                       link = "";
@@ -295,7 +311,6 @@ const TradingAccount = () => {
                       </tr>
                     );
                   })}
-
                 </tbody>
               </table>
             </div>

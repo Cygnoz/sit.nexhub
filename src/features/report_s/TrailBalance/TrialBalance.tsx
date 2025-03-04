@@ -24,9 +24,7 @@ function getFirstDayOfMonth() {
 
 function getLastDayOfMonth() {
   const date = new Date();
-  return new Date(date.getFullYear(), date.getMonth() + 1, 0)
-    .toISOString()
-    .split("T")[0];
+  return date.toISOString().split("T")[0]; 
 }
 
 

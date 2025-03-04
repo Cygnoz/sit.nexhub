@@ -113,7 +113,7 @@ const PurchaseOrder = ({}: Props) => {
       <div className="w-[100%] p-3 bg-gray-100">
         {/* <PurchaseFilterCards/> */}
       </div>
-      <div className="pl-5 pr-5 mt-2">
+      <div className=" ">
             <PurchaseOrderTable/>
             </div>
         </div>
