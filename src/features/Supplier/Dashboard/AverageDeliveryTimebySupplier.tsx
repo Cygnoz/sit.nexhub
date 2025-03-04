@@ -88,7 +88,7 @@ const CustomBar = (props: any) => {
   );
 };
 
-const TopCustomers = () => {
+const AverageDeliveryTimebySupplier = () => {
   return (
     <div className="bg-white rounded-lg w-full py-8">
       <h3 className="ms-10 text-[16px] font-bold">
@@ -129,4 +129,4 @@ const TopCustomers = () => {
   );
 };
 
-export default TopCustomers;
+export default AverageDeliveryTimebySupplier;

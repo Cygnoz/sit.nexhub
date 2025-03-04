@@ -3,15 +3,15 @@ import ArrowDownIcon from '../../../assets/icons/ArrowDownIcon';
 import ArrowUpIcon from '../../../assets/icons/ArrowUpIcon';
 import Ellipsis from '../../../assets/icons/Ellipsis';
 import RefreshIcon from '../../../assets/icons/RefreshIcon';
-import AvaragePurchase from './AvaragePurchase';
-import CustomersRetentionRate from './CustomersRetentionRate';
 import RepeatPurchaseRate from './TopProducts';
-import TopCustomers from './TopCustomers';
 import Cards from './Cards';
+import AverageDeliveryTimebySupplier from './AverageDeliveryTimebySupplier';
+import TopSupplierBySpend from './TopSupplierBySpend';
+import NumberofOrdersbySupplier from './NumberofOrdersbySupplier';
 
 type Props = {};
 
-function DashboardHome({}: Props) {
+function DashboardHome({ }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -66,10 +66,10 @@ function DashboardHome({}: Props) {
   return (
     <div className="px-6 space-y-8 text-[#303F58]">
       <div className="flex items-center relative">
-      <div>
+        <div>
           <h3 className="font-bold text-xl text-textColor ">Supplier</h3>
           <p className="text-sm text-gray mt-1">
-          Effectively manage and track supplier information to enhance procurement processes and ensure reliable partnerships
+            Effectively manage and track supplier information to enhance procurement processes and ensure reliable partnerships
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">
@@ -99,19 +99,18 @@ function DashboardHome({}: Props) {
       </div>
       {/* Cards */}
       <Cards />
-      {/* Top suppliers and supplier retention rate over time */}
-      <div className="grid grid-cols-3 gap-5">
-        <div className="col-span-2 flex justify-center">
+      <div className="grid grid-cols-10 gap-5">
+        <div className="col-span-6 flex justify-center">
           <RepeatPurchaseRate />
         </div>
-        <div className="flex justify-center">
-          <TopCustomers />
+        <div className="col-span-4 flex justify-center">
+          <AverageDeliveryTimebySupplier />
         </div>
-        <div className="flex justify-center">
-          <AvaragePurchase />
+        <div className="col-span-5 flex justify-center items-center">
+          <TopSupplierBySpend/>
         </div>
-        <div className="col-span-2 flex justify-center">
-          <CustomersRetentionRate />
+        <div className="col-span-5 flex justify-center">
+          <NumberofOrdersbySupplier/>
         </div>
       </div>
     </div>
