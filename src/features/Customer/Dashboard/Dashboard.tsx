@@ -6,7 +6,6 @@ import RefreshIcon from '../../../assets/icons/RefreshIcon'
 import AvaragePurchase from './AvaragePurchase'
 import Cards from './Cards'
 import CustomersRetentionRate from './CustomersRetentionRate'
-import RepeatPurchaseRate from './RepeatPurchaseRate'
 import TopCustomers from './TopCustomers'
 type Props = {}
 
@@ -70,7 +69,7 @@ function Dashboard({}: Props) {
     <div className='mx-5 space-y-8 text-[#303F58]'>
     <div className=" flex  items-center relative">
         <div>
-          <h3 className="font-bold text-2xl text-textColor ">Customer Overview</h3>
+          <h3 className="font-bold text-xl text-textColor ">Customer Overview</h3>
           <p className="text-sm text-gray mt-1">
           A customer overview is a high level description that provides key insights into business customer base.
           </p>
@@ -108,17 +107,14 @@ function Dashboard({}: Props) {
         
         {/* Top suppliers and supplier rentaion rate overtime */}
         <div className="grid grid-cols-3 gap-5">
-          <div className="flex justify-center ">
+          <div className="flex col-span-2 justify-center ">
             <TopCustomers />
           </div>
-          <div className="col-span-2 flex justify-center">
-            <CustomersRetentionRate />
-          </div>
-          <div className="col-span-2 flex justify-center ">
-            <RepeatPurchaseRate />
-          </div>
           <div className=" flex justify-center">
-            <AvaragePurchase />
+          <AvaragePurchase />
+          </div>
+          <div className="col-span-3 flex justify-center ">
+          <CustomersRetentionRate />
           </div>
         </div>
       </div>

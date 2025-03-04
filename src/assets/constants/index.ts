@@ -51,10 +51,10 @@ const navlist = [
     icon: userRound,
     route: "/customer/home",
     subhead: [
-      // {
-      //   headName: "Dashboard",
-      //   subRoute: "/customer",
-      // },
+      {
+        headName: "Dashboard",
+        subRoute: "/customer",
+      },
       {
         headName: "Customer",
         subRoute: "/customer/home",
@@ -66,10 +66,10 @@ const navlist = [
     icon: shoppingCart,
     route: "/sales/salesorder",
     subhead: [
-      // {
-      //   headName: "Dashboard",
-      //   subRoute: "/sales",
-      // },
+      {
+        headName: "Dashboard",
+        subRoute: "/sales",
+      },
       {
         headName: "Sales Order",
         subRoute: "/sales/salesorder",
@@ -105,10 +105,10 @@ const navlist = [
     icon: squreUserRound,
     route: "/accountant/chart-OF-accountant",
     subhead: [
-      // {
-      //   headName: "Dashboard",
-      //   subRoute: "/accountant",
-      // },
+      {
+        headName: "Dashboard",
+        subRoute: "/accountant",
+      },
       {
         headName: "Chart Of Account",
         subRoute: "/accountant/chart-OF-accountant",
@@ -132,10 +132,10 @@ const navlist = [
     icon: truck,
     route: "/supplier/home",
     subhead: [
-      // {
-      //   headName: "Dashboard",
-      //   subRoute: "/supplier",
-      // },
+      {
+        headName: "Dashboard",
+        subRoute: "/supplier",
+      },
       {
         headName: "Supplier",
         subRoute: "/supplier/home",
@@ -147,7 +147,7 @@ const navlist = [
     icon: circleDollar,
     route: "/expense/home",
     subhead: [
-      // { headName: "Dashboard", subRoute: "/expense" },
+      { headName: "Dashboard", subRoute: "/expense" },
       { headName: "Expense", subRoute: "/expense/home" },
     ],
   },
@@ -171,10 +171,10 @@ const navlist = [
     icon: shoppingBag,
     route: "/purchase/purchase-order",
     subhead: [
-      // {
-      //   headName: "Dashboard",
-      //   subRoute: "/purchase",
-      // },
+      {
+        headName: "Dashboard",
+        subRoute: "/purchase",
+      },
       {
         headName: "Purchase Order",
         subRoute: "/purchase/purchase-order",

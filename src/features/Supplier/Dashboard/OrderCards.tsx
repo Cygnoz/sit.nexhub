@@ -1,17 +1,14 @@
 import React from "react";
 import { cva } from "class-variance-authority";
-import ArrowIconNoUnderline from "../../../assets/icons/ArrowIconNoUnderline";
 
 type CardProps = {
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   count: string;
   rating: string;
-  active?: boolean;
-  onClick?: () => void;
 };
 
-const cardVariants = cva(" rounded-xl px-4  cursor-pointer", {
+const cardVariants = cva("rounded-xl px-4", {
   variants: {
     active: {
       true: "bg-cardBg border-cardBorder border-2",
@@ -23,22 +20,16 @@ const cardVariants = cva(" rounded-xl px-4  cursor-pointer", {
   },
 });
 
-const OrderCards: React.FC<CardProps> = ({ icon, title, count, rating, active = false, onClick }) => {
+const OrderCards: React.FC<CardProps> = ({ icon, title, count }) => {
   return (
-    <div className={`${cardVariants({ active })} py-4 px-5  w-[100%]`} onClick={onClick}>
-      <div className="rounded-full w-8 h-8 mb-2">
-        <img src={icon} alt={`${title} icon`} />
-      </div>
-      <div>
-        <h2 className="text-[14px] font-bold text-[#303F58]">{title}</h2>
-        <p className="text-[#303F58] font-extrabold text-2xl" style={{ color: active ? "#820000" : "" }}>{count}</p>
-        <div className="flex justify-between items-center">
-          <div className="text-[12px] p-[4px] font-bold flex items-center text-[#32A38E] rounded-md bg-[#D8F2EE]">
-            {rating}%<ArrowIconNoUnderline size={16} color="#32A38E" />
-          </div>
-          <div className="flex items-center justify-center w-full">
-            <p className="text-xs text-end">Compared to last month</p>
-          </div>
+    <div className={`${cardVariants({ active: false })} py-4 px-2`}>
+      <div className="flex gap-4 justify-between items-center">
+        <div className="">
+          {icon}
+        </div>
+        <div>
+          <p className="text-[#303F58] font-extrabold text-2xl">{count}</p>
+          <h2 className="text-sm font-semibold text-[#4B5C79]">{title}</h2>
         </div>
       </div>
     </div>

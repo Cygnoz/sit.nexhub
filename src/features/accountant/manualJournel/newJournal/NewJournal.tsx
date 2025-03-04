@@ -57,7 +57,7 @@ function NewJournal({ page }: Props) {
     date: new Date().toISOString().split("T")[0],
     reference: "",
     note: "",
-    cashBasedJournal: false,
+    // cashBasedJournal: false,
     currency: "INR",
     transaction: initialTransactions,
     totalDebitAmount: 0,
@@ -236,7 +236,7 @@ function NewJournal({ page }: Props) {
 
   const handleAddNewJournel = async () => {
     const {
-      journel,
+      // journel,
       date,
       currency,
       transaction,
@@ -248,7 +248,7 @@ function NewJournal({ page }: Props) {
     let errors = [];
 
     // Validate required fields
-    if (!journel) errors.push("Journal");
+    // if (!journel) errors.push("Journal");
     if (!date) errors.push("Date");
     if (!currency) errors.push("Currency");
     if (totalDebitAmount === undefined || totalCreditAmount === undefined) {
@@ -273,7 +273,8 @@ function NewJournal({ page }: Props) {
     // Show detailed toast message if there are errors
     if (errors.length > 0) {
       toast.error(`Please fill the following fields: ${errors.join(", ")}`);
-    } else {
+    }
+     else {
       try {
         const url = page === "edit" ? `${endponits.EDIT_JOURNAL}/${id}` : `${endponits.Add_NEW_Journel}`;
         const apiRequest = page === "edit" ? EditJournal : NewJournalAdd
@@ -288,7 +289,7 @@ function NewJournal({ page }: Props) {
             date: "",
             reference: "",
             note: "",
-            cashBasedJournal: false,
+            // cashBasedJournal: false,
             currency: "INR",
             transaction: initialTransactions,
             totalDebitAmount: 0,
@@ -501,7 +502,7 @@ function NewJournal({ page }: Props) {
                 }
               />
             </div>
-            <div className="w-[26%] hidden">
+            {/* <div className="w-[26%]">
               <label className="block text-sm text-textColor">
                 Journal Type
               </label>
@@ -521,7 +522,7 @@ function NewJournal({ page }: Props) {
                   Cash based journal ?
                 </label>
               </div>
-            </div>
+            </div> */}
             <div className="w-[50%]">
               <label className="block text-sm text-textColor">Currency</label>
               <select
@@ -712,11 +713,8 @@ function NewJournal({ page }: Props) {
         <hr className="mt-3 border-t border-hr" />
         <br />
         <div className="flex items-center justify-end gap-3">
-          <Button variant="secondary" size="sm">
+          <Button onClick={()=>navigate("/accountant/manualjournal")} variant="secondary" size="sm">
             Cancel
-          </Button>
-          <Button variant="secondary" size="sm">
-            Save as Draft
           </Button>
           <Button onClick={handleAddNewJournel} variant="primary" size="sm">
             Save & Publish
