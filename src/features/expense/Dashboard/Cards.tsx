@@ -1,12 +1,7 @@
 import { useState } from "react";
-
-import packing from "../../../assets/Images/packing_4536852 1.png";
-import group0 from "../../../assets/Images/Group.png";
-import group from "../../../assets/Images/one.png";
-import group2 from "../../../assets/Images/two.png";
-import group4 from "../../../assets/Images/third.png";
-
-import OrderCards from "./OrderCards"; // Ensure the correct path to OrderCards component
+import OrderCards from "./OrderCards";
+import UserRounded from "../../../assets/icons/UserRounded";
+import DollerSign from "../../../assets/icons/DollerSign";
 
 const Cards = () => {
   const [activeCard, setActiveCard] = useState<number | null>(0);
@@ -16,34 +11,14 @@ const Cards = () => {
 
   const cards = [
     {
-      icon: packing,
+      icon: UserRounded,
       title: "Total Expenses",
       count: "1500",
-      rating: "12,95",
     },
     {
-      icon: group0,
+      icon: DollerSign,
       title: "Expense Reports Submitted",
       count: "120",
-      rating: "18,95",
-    },
-    {
-      icon: group,
-      title: "Average Expense Amoutnt",
-      count: "800",
-      rating: "12,95",
-    },
-    {
-      icon: group2,
-      title: "Pending Expenses",
-      count: "85%",
-      rating: "18",
-    },
-    {
-      icon: group4,
-      title: "Rejected Expenses",
-      count: "15%",
-      rating: "10",
     },
   ];
 
@@ -53,10 +28,9 @@ const Cards = () => {
         {cards.map((card, index) => (
           <OrderCards
             key={index}
-            icon={card.icon}
+            icon={card.icon} 
             title={card.title}
             count={card.count}
-            rating={card.rating}
             active={activeCard === index}
             onClick={() => handleCardClick(index)}
           />

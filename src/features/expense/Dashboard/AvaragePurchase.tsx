@@ -1,83 +1,77 @@
-import { PieChart, Pie, Cell } from "recharts";
+import { Cell, Pie, PieChart, Tooltip } from "recharts";
 
-const data = [
-  { name: "Value", value: 280, color: "#2C353B" },
-  { name: "Remaining", value: 220, color: "#E6E9EE" },
+const invoiceData = [
+  { name: "Travel", value: 40, color: "#F7E7CD" },
+  { name: "Marketing", value: 16, color: "#EDDADA" },
+  { name: "Office Supplies", value: 12, color: "#2C353B" },
+  { name: "Equipment", value: 12, color: "#D1D5DB" },
+  { name: "Meals ", value: 10, color: "#E5E7EB" },
+  { name: "Miscellaneous", value: 10, color: "#A8B5A1" },
 ];
-const cx = 200; // Center x-coordinate for a 400px wide chart
-const cy = 280;
-const iR = 80; // Increased inner radius
-const oR = 160; // Increased outer radius
-const value = 280; // The value to be displayed
+
+// Custom Label Styling
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+  const RADIAN = Math.PI / 180;
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.7;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="#303F58" 
+      textAnchor="middle"
+      dominantBaseline="central"
+      fontSize="14px"
+      fontWeight="bold" 
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+
+// Custom Tooltip
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white shadow-md rounded-lg px-3 py-2 text-xs">
+        <p className="text-[#303F58] font-semibold">{payload[0].name}</p>
+        <p className="text-gray-600">{`${payload[0].value}%`}</p>
+      </div>
+    );
+  }
+  return null;
+};
 
 const AveragePurchase = () => {
   return (
-    <div className="bg-white rounded-lg w-full px-8">
-      <div className="flex justify-between mt-5 items-center">
-        <h3 className=" text-[16px] font-bold ">Avarage Purchase Value</h3>
-        <select
-          className="border border-[#565148] h-8 pl-3 pr-4 rounded-md bg-[#FEFDFA]  text-xs font-semibold text-gray-800"
-          style={{ color: "#585953" }}
-        >
-          <option>Month</option>
-          <option>Other</option>
-          <option>Other</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <PieChart width={400} height={400}>
-        <Pie
-          dataKey="value"
-          startAngle={180}
-          endAngle={0}
-          data={data}
-          cx={cx}
-          cy={cy}
-          innerRadius={iR}
-          outerRadius={oR}
-          fill="#8884d8"
-          stroke="none"
-        >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.color} />
-          ))}
-        </Pie>
-        <text
-          x={200}
-          y={250}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontSize="35"
-          fill="#303F58"
-          fontWeight="bold"
-        >
-          ${value}
-        </text>
-        <text
-          x={80} // Positioning $0 at the start of the pie bottom
-          y={300}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontSize="16"
-          fontWeight="bold"
-          fill="#303F58"
-        >
-          $0
-        </text>
-        <text
-          x={330} // Positioning $0 at the start of the pie bottom
-          y={300}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontSize="16"
-          fontWeight="bold"
-          fill="#303F58"
-        >
-          $500
-        </text>
-      </PieChart>
-    </div>
-  );
+     <div className="bg-white rounded-lg w-full p-8">
+       <p className="text-[#303F58] font-semibold text-base">Expense Breakdown By Category</p>
+ 
+       <div className="flex items-center justify-center mt-5">
+     
+ 
+         <PieChart width={280} height={250}>
+           <Pie
+             data={invoiceData}
+             dataKey="value"
+             label={renderCustomizedLabel}
+             labelLine={false}
+             innerRadius={50} 
+             outerRadius={110} 
+             paddingAngle={5}
+             cornerRadius={10}
+           >
+             {invoiceData.map((entry, index) => (
+               <Cell key={`cell-${index}`} fill={entry.color} />
+             ))}
+           </Pie>
+           <Tooltip content={<CustomTooltip />} />
+         </PieChart>
+       </div>
+     </div>
+   );
 };
 
 export default AveragePurchase;

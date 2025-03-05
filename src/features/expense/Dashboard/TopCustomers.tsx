@@ -92,8 +92,8 @@ const TopCustomers = () => {
   return (
     <div className="bg-white rounded-lg w-full py-8">
       <h3 className="ms-10 text-[16px] font-bold">
-        Top Customers by Sales Volume
-      </h3>
+      Top Expense By Categories 
+           </h3>
       <h4 className="ms-10 py-4 text-[10px] text-[#4A5568]">Sales Volume</h4>
       <BarChart width={450} height={280} data={data}>
         <XAxis
@@ -122,7 +122,7 @@ const TopCustomers = () => {
       </BarChart>
       <div className="flex justify-center">
         <h3 className="text-center text-[10px] text-[#4A5568] pt-3">
-          Customers
+          Categories
         </h3>
       </div>
     </div>

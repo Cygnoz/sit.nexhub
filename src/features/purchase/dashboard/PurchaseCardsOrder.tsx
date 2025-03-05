@@ -1,15 +1,16 @@
 import React from "react";
 import { cva } from "class-variance-authority";
-import ArrowIconNoUnderline from "../../../assets/icons/ArrowIconNoUnderline";
 
 type CardProps = {
-  icon: string;
+  icon: any;
   item?: string;
   title: string;
   count: string;
   rating: string;
   active?: boolean;
   onClick?: () => void;
+  iconBg?:any
+
 };
 
 const cardVariants = cva("rounded-xl px-4 cursor-pointer", {
@@ -24,27 +25,17 @@ const cardVariants = cva("rounded-xl px-4 cursor-pointer", {
   },
 });
 
-const Card: React.FC<CardProps> = ({ icon, title, count, item, rating, active = false, onClick }) => {
+const Card: React.FC<CardProps> = ({ icon: Icon, title, iconBg, count, active = false, onClick }) => {
   return (
-    <div className={`${cardVariants({ active })} p-2.5 rounded-lg w-[100%]`} onClick={onClick}>
-      <div className="rounded-full w-[40px] h-[40px]">
-        <img src={icon} alt={`${title} icon`} />
+    <div className={`${cardVariants({ active })} p-2.5 rounded-lg w-[100%] flex items-center gap-2`} onClick={onClick}>
+      <div className={`rounded-full w-[52px] h-[52px] flex items-center justify-center ${iconBg}`}>
+      <Icon />
       </div>
-      <div>
-        <h2 className="text-sm font-bold text-textColor">{title}</h2>
-        <div className="flex items-center mt-1">
-        <p className="text-[#303F58] font-extrabold text-2xl" style={{ color: active ? "#820000" : "" }}>{count}</p>
-        {item && <p className="text-[12px] text-gray-600">{item}</p>}
-        </div>
-        <div className="flex gap-2 mt-1 items-center">
-          <div className="text-[12px] p-[4px] font-bold flex items-center text-[#32A38E] rounded-md bg-[#D8F2EE]">
-            {rating}%<ArrowIconNoUnderline size={16} color="#32A38E" />
-          </div>
-          <div className="flex items-center justify-center">
-            <p className="text-[11px]">Compared to last month</p>
-          </div>
-        </div>
+      <div >
+      <p className="font-bold text-xl ">  {count}</p>
+      <p className="text-sm font-semibold whitespace-nowrap">{title}</p>
       </div>
+     
     </div>
   );
 };

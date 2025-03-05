@@ -1,9 +1,9 @@
 import  { useState } from "react";
-import toatalInvImage from "../../../assets/Images/Group 2513.png";
-import totalSalesImage from "../../../assets/Images/Group 2517.png";
-import pendingImage from "../../../assets/Images/Group 2514.png";
-import pendingSalesImage from "../../../assets/Images/Group 2518.png";
 import PurchaseCardsOrder from "./PurchaseCardsOrder";
+import UserRounded from "../../../assets/icons/UserRounded";
+import IndianRupeeBadge from "../../../assets/icons/IndianRupeeBadge";
+import BoxIcon from "../../../assets/icons/BoxIcon";
+import DollerSign from "../../../assets/icons/DollerSign";
 
 type Props = {};
 
@@ -16,36 +16,45 @@ const PurchaseCards = ({}: Props) => {
 
   const cards = [
     {
-      icon: toatalInvImage,
-      title: "Total Purchase",
+      icon: UserRounded,
+      title: "Total Purchase Value",
       count: "2780",
       rating: "12,95%",
+      iconBg:"bg-[#f8e9dd]"
     },
     {
-      icon: totalSalesImage,
-      title: "Active Suppliers",
+      icon: IndianRupeeBadge,
+      title: "Total Purchase Orders",
       count: "45",
       rating: "8%",
+      iconBg:"bg-[#f6e7cf]"
+
     },
     {
-      icon: pendingImage,
-      title: "Frequently Ordered Item",
+      icon: BoxIcon,
+      title: "Total Items Purchased  ",
       count: "60",
       item: "| Asus Laptops",
       rating: "12,95%",
+      iconBg:"bg-[#eadadb]"
+
     },
     {
-      icon: pendingSalesImage,
-      title: "Average Order Value",
+      icon: DollerSign,
+      title: "Total No: of Payment Made",
       count: "₹50,0000",
       rating: "18,95%",
+      iconBg:"bg-[#eaeceb]"
+
     },
     {
-      icon: totalSalesImage,
-      title: "Top Supplier Spend",
+      icon: DollerSign,
+      title: "Total Shipments",
       count: "20,000",
       item: "| Supplier A",
       rating: "10%",
+      iconBg:"bg-[#eaeceb]"
+
     },
   ];
 
@@ -61,6 +70,7 @@ const PurchaseCards = ({}: Props) => {
             item={card.item}
             rating={card.rating}
             active={activeCard === index}
+            iconBg={card.iconBg}
             onClick={() => handleCardClick(index)}
           />
         ))}

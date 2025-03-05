@@ -42,7 +42,7 @@ interface SalesOrderData {
 }
 
 interface SalesOrderViewProps {
-  data: SalesOrderData | null;
+  data: SalesOrderData | any;
   page: string;
 }
 
