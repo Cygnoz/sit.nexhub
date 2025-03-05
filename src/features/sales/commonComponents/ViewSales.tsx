@@ -13,50 +13,13 @@ import TrashCan from "../../../assets/icons/TrashCan";
 import Print from "../salesOrder/Print";
 import { useReactToPrint } from "react-to-print";
 
-interface SalesOrderData {
-  salesInvoiceDate?: string;
-  salesInvoice?: string;
-  salesQuotes?: string;
-  invoiceNumber?: string;
-  salesOrderDate: string;
-  salesOrder: string;
-  expectedShipmentDate: string;
-  customerCreditDate: string;
-  customerName: string;
-  items: OrderItem[];
-  totalAmount: number;
-  status: string;
-  customerId: number;
-  subTotal: number;
-  totalTax: number;
-  totalDiscount: number;
-  cgst: number;
-  sgst: number;
-  createdDate: string;
-  discountTransactionAmount: number;
-  expiryDate: string;
-  placeOfSupply: string;
-  salesQuoteDate: string;
-  totalItem: number;
-}
-interface OrderItem {
-  itemId: string;
-  itemName: string;
-  quantity: number;
-  sellingPrice: number;
-  amount: number;
-  itemAmount: number;
-  sgstAmount: number;
-  cgstAmount: number;
-}
-
 function ViewSales() {
   const [isPdfView, setIsPdfView] = useState(false);
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const { page } = location.state || {};
   const { request: getOneSalesOrder } = useApi("get", 5007);
-  const [data, setData] = useState<SalesOrderData | null>(null);
+  const [data, setData] = useState<any>(null);
   const { request: deleteData } = useApi("delete", 5007);
 
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
