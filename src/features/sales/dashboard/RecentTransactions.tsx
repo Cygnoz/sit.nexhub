@@ -1,98 +1,198 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { endponits } from "../../../Services/apiEndpoints";
+import useApi from "../../../Hooks/useApi";
 
-type Props = {};
+interface Customer {
+  _id: string;
+  "Invoice No"?: string;
+  date?: string;
+  supplier?: string;
+  status?: string;
+  Amount?: number;
+  "Purchase Order"?: string;
+  orderdate?: string;
+  supplierdisplyName?: string;
+  grandTotal?: number;
+}
 
-const tabs = ["Invoices", "Sales Orders", "Quotes", "Sales Return"];
+interface Column {
+  id: string;
+  label: string;
+  visible: boolean;
+}
 
-const transactionsData: any = {
-    Invoices: [
-        { id: "INV-00001", date: "01/11/24", customer: "Ashwathy MT", status: "Paid", amount: "₹10,000.00" },
-        { id: "INV-00002", date: "04/11/24", customer: "Athira P", status: "Draft", amount: "₹5,000.00" },
-        { id: "INV-00003", date: "02/11/24", customer: "Sourav K", status: "Draft", amount: "₹6,000.00" },
-        { id: "INV-00004", date: "04/11/24", customer: "Athul KP", status: "Paid", amount: "₹5,000.00" },
-        { id: "INV-00005", date: "05/11/24", customer: "Ashwathy MT", status: "Draft", amount: "₹10,000.00" },
-        { id: "INV-00006", date: "05/11/24", customer: "Ashwathy MT", status: "Paid", amount: "₹10,000.00" },
+const tabs = [
+  {
+    label: "Invoice",
+    value: "invoice",
+    endpoint: endponits.GET_ALL_SALES_INVOICE,
+  },
+  { label: "Sales Order", value: "sales-order", endpoint: endponits.GET_ALL_SALES_ORDER },
+  {
+    label: "Quotes",
+    value: "qoutes",
+    endpoint: endponits.GET_ALL_QUOTES,
+  },
+  {
+    label: "Credot Note",
+    value: "credit-note",
+    endpoint: endponits.GET_ALL_CREDIT_NOTE,
+  },
+];
+
+function RecentTransactions() {
+
+    const [selectedTab, setSelectedTab] = useState(tabs[0]);
+  const contentRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<Customer[]>([]);
+  const { request: getData } = useApi("get", 5007);
+
+  const columns: Record<string, Column[]> = {
+    "invoice": [
+      { id: "salesInvoice", label: "Invoice", visible: true },
+      { id: "createdDate", label: "Date", visible: true },
+      { id: "supplierDisplayName", label: "Customer", visible: true },
+      { id: "paidStatus", label: "Status", visible: true },
+      { id: "totalAmount", label: "Amount", visible: true },
     ],
-    "Sales Orders": [
-        { id: "SO-00001", date: "01/11/24", customer: "John Doe", status: "Completed", amount: "₹15,000.00" },
-        { id: "SO-00002", date: "03/11/24", customer: "Jane Smith", status: "Pending", amount: "₹7,500.00" },
+    "sales-order": [
+      { id: "salesOrder", label: "Sales Order", visible: true },
+      { id: "createdDate", label: "Date", visible: true },
+      { id: "customerDisplayName", label: "Customer", visible: true },
+      { id: "status", label: "Status", visible: true },
+      { id: "totalAmount", label: "Amount", visible: true },
     ],
-    Quotes: [
-        { id: "Q-00001", date: "02/11/24", customer: "Alice Brown", status: "Accepted", amount: "₹8,000.00" },
-        { id: "Q-00002", date: "05/11/24", customer: "Bob Martin", status: "Rejected", amount: "₹12,000.00" },
+    "qoutes": [
+      { id: "createdDate", label: "Date", visible: true },
+      { id: "salesQuotes", label: "Sales Quotes", visible: true },
+
+      { id: "customerDisplayName", label: "Customer", visible: true },
+      { id: "status", label: "Status", visible: true },
+
+      { id: "totalAmount", label: "Amount", visible: true },
     ],
-    "Sales Return": [
-        { id: "SR-00001", date: "04/11/24", customer: "Charlie Adams", status: "Processed", amount: "₹3,000.00" },
+    "credit-note": [
+      { id: "createdDate", label: "Date", visible: true },
+      { id: "creditNote", label: "Credit Note", visible: true },
+
+      { id: "customerDisplayName", label: "Customer", visible: true },
+      { id: "totalAmount", label: "Amount", visible: true },
     ],
-};
+  };
 
-function RecentTransactions({ }: Props) {
-    const [activeTab, setActiveTab] = useState("Invoices");
+  const getPurchaseData = async (url: string) => {
+    setLoading(true);
+    try {
+      const { response, error } = await getData(url);
+      if (!error && response) {
+        setData(
+          response.data.allPurchaseOrder ||
+          response.data.allBills ||
+          response.data.allPayments ||
+          response.data.allDebitNotes ||
+          response.data
+        );
+      } else {
+        setData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const tableHeaders = [
-        "Date",
-        "Customer",
-        "Status",
-        "Amount"
-    ];
+  useEffect(() => {
+    getPurchaseData(selectedTab.endpoint);
+  }, [selectedTab]);
+
+  const renderColumnContent = (colId: string, item: Customer) => {
+    if (colId === "status") {
+      return (
+        <p
+          className={`py-1 text-[13px] rounded items-center ms-auto text-white h-[18px] flex justify-center ${
+            item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400"
+          }`}
+        >
+          {item.status}
+        </p>
+      );
+    }
+    return <span>{item[colId as keyof Customer] || <span className="text-gray-500 italic">-</span>}</span>;
+  };
 
 
-    return (
-        <div className="bg-white w-full rounded-lg py-4 px-6">
-            <p className="text-[#303F58] font-bold text-base">Recent Transactions</p>
+  return (
+    <div className="bg-white p-5 rounded-md">
+      <h3 className="mb-6 text-[16px] font-bold">Recent Transactions</h3>
 
-            {/* Tabs */}
-            <div className="flex gap-3 mt-4">
-                {tabs.map((tab) => (
-                    <button
-                        key={tab}
-                        className={` py-1.5 px-4 rounded-full text-[#585953] text-xs font-semibold ${activeTab === tab ? "bg-[#DADCCD] " : "bg-[#FCFFED]"
-                            }`}
-                        onClick={() => setActiveTab(tab)}
-                    >
-                        {tab}
-                    </button>
-                ))}
-            </div>
+      {/* Tabs */}
+      <div className="flex gap-3">
+        {tabs.map((item, index) => (
+          <div
+            key={index}
+            onClick={() => setSelectedTab(item)}
+            className={`h-34 rounded-3xl text-textColor text-sm px-4 py-3 cursor-pointer font-semibold ${
+              selectedTab.value === item.value ? "bg-[#dadcce]" : "bg-[#fcffee]"
+            }`}
+          >
+            {item.label}
+          </div>
+        ))}
+      </div>
 
-            {/* Table */}
-            <div className="mt-5">
-                <table className="w-full border-collapse">
-                    <thead>
-                        <tr className="bg-[#F9F7F0] text-left text-xs">
-                            <th className="py-3 px-4 text-[#303F58] font-semibold border-b border-tableBorder">
-                                {activeTab === "Invoices" ? "Invoice No." : activeTab === "Sales Orders" ? "Sales Order No." : activeTab === "Quotes" ? "Quote No." : "Sales Return No."}
-                            </th>
-                            {tableHeaders.map((heading, index) => (
-                                <th
-                                    className={`py-3 px-4 font-medium border-b border-tableBorder text-start`}
-                                    key={index}
-                                >
-                                    {heading}
-                                </th>
-                            ))}
+      {/* Table */}
+      <div ref={contentRef} className="mt-3 overflow-y-scroll hide-scrollbar max-h-[25rem]">
+        <table className="min-w-full bg-white mb-5">
+          <thead className="text-[12px] text-center text-dropdownText">
+            <tr style={{ backgroundColor: "#F9F7F0" }}>
+              <th className="py-3 px-4 border-b border-tableBorder">Sl.No</th>
+              {columns[selectedTab.value]?.map(
+                (col) =>
+                  col.visible && (
+                    <th key={col.id} className="py-2 px-4 font-medium border-b border-tableBorder">
+                      {col.label}
+                    </th>
+                  )
+              )}
+            </tr>
+          </thead>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {transactionsData[activeTab].map((item: any, index: any) => (
-                            <tr key={index} className="border-b border-tableBorder text-xs text-[#4B5C79]">
-                                <td className="py-3 px-4 ">{item.id}</td>
-                                <td className="py-3 px-4 text-[#4B5C79]">{item.date}</td>
-                                <td className="py-3 px-4 text-[#4B5C79]">{item.customer}</td>
-                                <td className="py-3 px-4">
-                                    <span className={`px-2 py-1 text-xs font-semibold rounded-md ${item.status === "Paid" || item.status === "Completed" || item.status === "Accepted" ? "bg-green-100 text-green-700" : "bg-gray-200 text-gray-600"}`}>
-                                        {item.status}
-                                    </span>
-                                </td>
-                                <td className="py-3 px-4 font-bold text-[#4B5C79]">{item.amount}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
+          <tbody className="text-dropdownText text-center text-[13px]">
+            {loading ? (
+              [...Array(5)].map((_, idx) => (
+                <tr key={idx}>
+                  <td colSpan={columns[selectedTab.value]?.length + 1} className="py-3">Loading...</td>
+                </tr>
+              ))
+            ) : data.length > 0 ? (
+              data?.map((item, index) => (
+                <tr key={item._id} className="relative">
+                  <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
+                  {columns[selectedTab.value]?.map(
+                    (col) =>
+                      col.visible && (
+                        <td key={col.id} className="py-2.5 px-4 border-y border-tableBorder">
+                          {renderColumnContent(col.id, item)}
+                        </td>
+                      )
+                  )}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={columns[selectedTab.value]?.length + 1} className="py-3 text-gray-500 italic">
+                  No transaction data found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
 
 export default RecentTransactions;
