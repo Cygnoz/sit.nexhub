@@ -243,42 +243,42 @@ console.log(errors)
     const newErrors = { ...errors };
     const missingFields: string[] = [];
     
-    if (debitNoteState.supplierId.trim() === "") {
+    if (debitNoteState.supplierId?.trim() === "") {
       newErrors.supplierId = true;
       missingFields.push("Supplier");
     } else {
       newErrors.supplierId = false;
     }
     
-    if (debitNoteState.destinationOfSupply.trim() === "") {
+    if (debitNoteState.destinationOfSupply?.trim() === "") {
       newErrors.destinationOfSupply = true;
       missingFields.push("Destination of Supply");
     } else {
       newErrors.destinationOfSupply = false;
     }
     
-    if (debitNoteState.sourceOfSupply.trim() === "") {
+    if (debitNoteState.sourceOfSupply?.trim() === "") {
       newErrors.sourceOfSupply = true;
       missingFields.push("Source of Supply");
     } else {
       newErrors.sourceOfSupply = false;
     }
     
-    if (debitNoteState.supplierDebitDate.trim() === "") {
+    if (debitNoteState.supplierDebitDate?.trim() === "") {
       newErrors.debitDate = true;
       missingFields.push("Debit Date");
     } else {
       newErrors.debitDate = false;
     }
     
-    if (debitNoteState.paymentMode.trim() === "") {
+    if (debitNoteState.paymentMode?.trim() === "") {
       newErrors.paymentMode = true;
       missingFields.push("Payment Mode");
     } else {
       newErrors.paymentMode = false;
     }
     
-    if (debitNoteState.depositAccountId.trim() === "" && debitNoteState.paymentMode === "Cash") {
+    if (debitNoteState.depositAccountId?.trim() === "" && debitNoteState.paymentMode === "Cash") {
       newErrors.depositTo = true;
       missingFields.push("Deposit To");
     } else {
