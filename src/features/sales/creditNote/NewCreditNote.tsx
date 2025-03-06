@@ -308,11 +308,11 @@ const NewCreditNote = ({ page }: props) => {
 
     newErrors.invoiceNumber =
       typeof creditNoteState.invoiceNumber === "string"
-        ? creditNoteState.invoiceNumber.trim() === ""
+        ? creditNoteState.invoiceNumber?.trim() === ""
         : false;
 
 
-    if (creditNoteState.customerId.trim() === "") {
+    if (creditNoteState.customerId?.trim() === "") {
       newErrors.customerId = true;
       missingFields.push("Customer")
     } else {
@@ -321,25 +321,25 @@ const NewCreditNote = ({ page }: props) => {
 
 
 
-    if (creditNoteState.placeOfSupply.trim() === "") {
+    if (creditNoteState.placeOfSupply?.trim() === "") {
       newErrors.placeOfSupply = true;
       missingFields.push("Place of Supply")
     } else {
       newErrors.placeOfSupply = false;
     }
-    if (creditNoteState.customerCreditDate.trim() === "") {
+    if (creditNoteState.customerCreditDate?.trim() === "") {
       newErrors.customerCreditDate = true;
       missingFields.push("Credit Date");
     } else {
       newErrors.customerCreditDate = false;
     }
-    if (creditNoteState.paymentMode.trim() === "") {
+    if (creditNoteState.paymentMode?.trim() === "") {
       newErrors.paymentMode = true;
       missingFields.push("Payment Mode");
     } else {
       newErrors.paymentMode = false;
     }
-    if (creditNoteState.paidThroughAccountId.trim() === "" && creditNoteState.paymentMode === "Cash") {
+    if (creditNoteState.paidThroughAccountId?.trim() === "" && creditNoteState.paymentMode === "Cash") {
       newErrors.paidThroughAccountId = true;
       missingFields.push("Paid Through Account")
     } else {
