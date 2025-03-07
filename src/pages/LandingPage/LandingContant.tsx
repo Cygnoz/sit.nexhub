@@ -16,7 +16,8 @@ import salesVector from "../../assets/Images/salesVector.png";
 import supplierVector from "../../assets/Images/supplierVector.png";
 import droidBilly from "../../assets/Images/droidBilly.png";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Frame from "../Cygnoboat/Frame";
 
 type Props = {
   setMode?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,7 +26,10 @@ type Props = {
 
 const LandingContant = ({ mode, setMode }: Props) => {
   const navigate = useNavigate();
-
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const handleModalToggle=()=>{
+    setIsPopupOpen((prev)=>!prev)
+  }
   const handleNavigation = (route: string, index: number) => {
     localStorage.setItem("savedIndex", index.toString());
     localStorage.setItem("savedSelectedIndex", "0");
@@ -425,7 +429,7 @@ const LandingContant = ({ mode, setMode }: Props) => {
             <span className="font-bold text-[24px]">Droid Billie</span>
           </p>
           <button
-            onClick={() => handleNavigation("/chatboat", 0)}
+            onClick={handleModalToggle}
             className="bg-[#F6F6F6] absolute right-3 top-4 text-white h-[49px] w-[49px] flex items-center justify-center rounded-full"
           >
             <ArrowIconNoUnderline
@@ -458,6 +462,13 @@ const LandingContant = ({ mode, setMode }: Props) => {
           More Apps <CehvronDown color={mode ? "#C2A270" : "white"} />
         </button>
       </div>
+      {isPopupOpen&& 
+    <Frame
+isOpen={isPopupOpen}
+onClose={handleModalToggle}
+url={`http://snapstext.com/main?projectName=Billie`}
+/>
+}
     </div>
   );
 };
