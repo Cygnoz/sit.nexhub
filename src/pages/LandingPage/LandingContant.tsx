@@ -466,7 +466,7 @@ const LandingContant = ({ mode, setMode }: Props) => {
     <Frame
 isOpen={isPopupOpen}
 onClose={handleModalToggle}
-url={`https://snapstext.com/main?projectName=Billie`}
+url={`http://snapstext.com/main?projectName=Billie`}
 />
 }
     </div>
