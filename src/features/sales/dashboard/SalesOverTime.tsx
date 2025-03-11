@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -9,48 +9,86 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import Tooltips from "../../../Components/tooltip/Tooltip";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
+import NoData from "../../../Components/charts/Nodata";
 
-const data = [
-  { name: "Jan", value: 40 },
-  { name: "Feb", value: 20 },
-  { name: "Mar", value: 45 },
-  { name: "Apr", value: 35 },
-  { name: "May", value: 50 },
-  { name: "Jun", value: 65 },
-  { name: "Jul", value: 60 },
-  { name: "Aug", value: 78 },
-  { name: "Sep", value: 72 },
-  { name: "Oct", value: 68 },
-  { name: "Nov", value: 80 },
-  { name: "Dec", value: 85 },
-];
+interface SalesData {
+  date: string;
+  totalSales: number;
+}
 
-const renderCustomTooltip = ({ payload }: any) => {
-  if (payload && payload.length) {
-    return (
-      <Tooltips
-        content={`${payload[0].value}%`}
-        textColor="#ffffff"
-        bgColor="#4A5568"
-        arrowColor="#4A5568"
-        width="50px"
-      />
-    );
-  }
-  return null;
-};
+interface TransformedData {
+  name: string;
+  value: number;
+}
 
-const SalesOverTime: React.FC = () => {
+interface ApiResponse {
+  data: {
+    dailySales: SalesData[];
+  };
+}
+
+interface SalesOverTimeProps {
+  date: string;
+}
+
+const SalesOverTime: React.FC<SalesOverTimeProps> = ({ date }) => {
+  const { request: getSalesOvertime } = useApi("get", 5004);
+  const [salesData, setSalesData] = useState<TransformedData[]>([]);
+  const [totalSales,setTotalSales] = useState<number>(0); 
+  const transformData = (dailySales: SalesData[]): TransformedData[] => {
+    const groupedData: TransformedData[] = [
+      { name: "0-5", value: 0 },
+      { name: "5-10", value: 0 },
+      { name: "10-15", value: 0 },
+      { name: "15-20", value: 0 },
+      { name: "20-25", value: 0 },
+      { name: "25-31", value: 0 },
+    ];
+
+    dailySales.forEach(({ date, totalSales }) => {
+      const day = parseInt(date.split("-")[2], 10);
+      if (day <= 5) groupedData[0].value += totalSales;
+      else if (day <= 10) groupedData[1].value += totalSales;
+      else if (day <= 15) groupedData[2].value += totalSales;
+      else if (day <= 20) groupedData[3].value += totalSales;
+      else if (day <= 25) groupedData[4].value += totalSales;
+      else groupedData[5].value += totalSales;
+    });
+    return groupedData;
+  };
+
+  const fetchSalesData = async () => {
+    try {
+      const { response, error } = await getSalesOvertime(
+        `${endponits.MAIN_DASH_SALES_OVER_TIME}?date=${date}`
+      );
+      if (response && !error) {
+        setSalesData(transformData(response.data.dailySales));
+        setTotalSales(response.data.totalSales)
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (date) fetchSalesData();
+  }, [date]);
+
   return (
-    <div className="bg-white  rounded-lg w-full py-8">
-      <h3 className="ms-10 mb-6 text-[#303F58] text-[16px] font-bold">
-      Sales Over Time
+    <div className="bg-white rounded-lg w-full py-8">
+     <h3 className="ms-10 mb-6 text-[#303F58] text-[16px] font-bold">
+        Sales Over Time
       </h3>
-      <ResponsiveContainer width="100%" height={340}>
-        <LineChart width={300} data={data}>
+
+
+     {salesData?.some((item:any) => item.value> 0) ? <ResponsiveContainer width="100%" height={340}>
+        <LineChart data={salesData}>
           <XAxis
             dataKey="name"
-            stroke="#4A5568" // Set X-axis stroke color to match grid line color
+            stroke="#4A5568"
             fontSize={10}
             axisLine={false}
             tickLine={false}
@@ -64,10 +102,21 @@ const SalesOverTime: React.FC = () => {
             tick={{ fontSize: 12 }}
             interval={0}
           />
-          <CartesianGrid vertical={false} stroke="#E2E8F0" />{" "}
-          {/* Display only Y-axis grid lines */}
-          <RechartsTooltip content={renderCustomTooltip} cursor={false} />{" "}
-          {/* Disable cursor line */}
+          <CartesianGrid vertical={false} stroke="#E2E8F0" />
+          <RechartsTooltip
+            content={({ payload }) =>
+              payload && payload.length ? (
+                <Tooltips
+                  content={`${payload[0].value}`}
+                  textColor="#ffffff"
+                  bgColor="#4A5568"
+                  arrowColor="#4A5568"
+                  width="50px"
+                />
+              ) : null
+            }
+            cursor={false}
+          />
           <Line
             type="monotone"
             dataKey="value"
@@ -76,7 +125,9 @@ const SalesOverTime: React.FC = () => {
             dot={{ r: 4 }}
           />
         </LineChart>
-      </ResponsiveContainer>
+      </ResponsiveContainer>:
+       <NoData parentHeight="400px"/>
+      }
     </div>
   );
 };

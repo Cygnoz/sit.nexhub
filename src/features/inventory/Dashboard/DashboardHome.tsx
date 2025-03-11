@@ -8,7 +8,7 @@ import TopDataTable from "../../../Components/charts/TopDataTable";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 import InventoryCards from "./InventoryCards";
-import MonthYearDropdown from "../../../Components/dropdown/MonthYearDropdown"; 
+// import MonthYearDropdown from "../../../Components/dropdown/MonthYearDropdown"; 
 import Brchart from "../../../Components/charts/BarChart";
 
 type DropdownItem = {
@@ -70,9 +70,9 @@ function DashboardHome({}: Props) {
     }
   };
 
-  const handleDateChange = (month: number, year: number) => {
-    getDashboards(month, year);
-  };
+  // const handleDateChange = (month: number, year: number) => {
+  //   getDashboards(month, year);
+  // };
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -130,7 +130,7 @@ function DashboardHome({}: Props) {
           </h3>
         </div>
         <div className="ml-auto gap-3 flex items-center">
-          <MonthYearDropdown onDateChange={handleDateChange} />
+          {/* <MonthYearDropdown onDateChange={handleDateChange} /> */}
           <div onClick={toggleDropdown} className="cursor-pointer">
             {/* Add your ellipsis icon here if needed */}
           </div>
