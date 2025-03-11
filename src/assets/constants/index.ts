@@ -49,7 +49,7 @@ const navlist = [
   {
     nav: "Customer",
     icon: userRound,
-    route: "/customer/home",
+    route: "/customer",
     subhead: [
       {
         headName: "Dashboard",
@@ -64,7 +64,7 @@ const navlist = [
   {
     nav: "Sales",
     icon: shoppingCart,
-    route: "/sales/salesorder",
+    route: "/sales",
     subhead: [
       {
         headName: "Dashboard",

@@ -1,25 +1,50 @@
-type Props = {};
+import { useEffect, useState } from "react";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
+import NoData from "../../../Components/charts/Nodata";
 
-const salesData = [
-  { customer: "Ashwathy MT", salesPerson: "John Bhaskar", revenue: "₹10,000.00" },
-  { customer: "Athira P", salesPerson: "Kevin Nash", revenue: "₹5,000.00" },
-  { customer: "Sourav K", salesPerson: "Kiran Roa", revenue: "₹6,000.00" },
-  { customer: "Athul KP", salesPerson: "John Bhaskar", revenue: "₹5,000.00" },
-  { customer: "Dilna K", salesPerson: "John Bhaskar", revenue: "₹10,000.00" },
-  { customer: "Fathima Fasna", salesPerson: "John Bhaskar", revenue: "₹10,000.00" },
-];
+type Props = {
+  date:any
+};
+
 
 const tableHeaders = [
   "Customer",
-  "Sales Person",
+  "Items",
   "Revenue"
 ];
 
-function TopSalesOrder({ }: Props) {
+function TopSalesOrder({date }: Props) {
+  const { request: getTopSalesOrder } = useApi("get", 5007);
+  const [topSalesOrder, setTopSalesOrder] = useState<any>([]);
+
+  const getTop= async () => {
+    try {
+      const { response, error } = await getTopSalesOrder(
+        `${endponits.SALES_DASH_TOP_SALES_ORDER}?date=${date}`
+      );
+      if (response && !error) {
+        console.log("API Response:", response?.data);
+        
+        // Transform API response
+        setTopSalesOrder(response?.data?.topOrders);
+      } else {
+        console.log("Error:", error);
+      }
+    } catch (error) {
+      console.log("Fetch Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (date) {
+      getTop();
+    }
+  }, [date]);
   return (
     <div className="bg-white w-full rounded-lg py-4 px-6">
       <p className="text-[#303F58] font-bold text-base">Top Sales Order</p>
-      <div className="mt-5">
+     {topSalesOrder?.length>0? <div className="mt-5">
       <table className="min-w-full text-start bg-white my-5">
           <thead className="text-[12px] text-dropdownTex">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
@@ -34,16 +59,18 @@ function TopSalesOrder({ }: Props) {
             </tr>
           </thead>
           <tbody>
-            {salesData.map((item, index) => (
+            {topSalesOrder?.map((item:any, index:any) => (
               <tr key={index} className="border-b border-[#EAECF0] text-[#4B5C79]">
-                <td className="py-3 px-4  text-xs">{item.customer}</td>
-                <td className="py-3 px-4  text-xs">{item.salesPerson}</td>
-                <td className="py-3 px-4 font-bold text-xs">{item.revenue}</td>
+                <td className="py-3 px-4  text-xs">{item.customerName}</td>
+                <td className="py-3 px-4  text-xs">{item.itemName}</td>
+                <td className="py-3 px-4 font-bold text-xs">{item.totalAmount}</td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+      </div>:
+      <NoData parentHeight="400px"/>
+      }
     </div>
   );
 }

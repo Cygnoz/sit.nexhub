@@ -1,66 +1,110 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import CehvronDown from "../../assets/icons/CehvronDown";
 
 interface MonthYearDropdownProps {
-  onDateChange: (month: number, year: number) => void;
+  setMonth: (month: string) => void;
+  month: string;
+  setYear: (year: number) => void;
+  year: number;
 }
 
 const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "January", "February", "March", "April", "May", "June", 
+  "July", "August", "September", "October", "November", "December"
 ];
 
-const MonthYearDropdown: React.FC<MonthYearDropdownProps> = ({ onDateChange }) => {
-  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
-  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+const MonthYearDropdown: React.FC<MonthYearDropdownProps> = ({ setMonth, month, setYear, year }) => {
+  const [isMonthOpen, setIsMonthOpen] = useState(false);
+  const [isYearOpen, setIsYearOpen] = useState(false);
+  const monthDropdownRef = useRef<HTMLDivElement>(null);
+  const yearDropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const month = Number(event.target.value);
-    setSelectedMonth(month);
-    onDateChange(month, selectedYear);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (monthDropdownRef.current && !monthDropdownRef.current.contains(event.target as Node)) {
+        setIsMonthOpen(false);
+      }
+      if (yearDropdownRef.current && !yearDropdownRef.current.contains(event.target as Node)) {
+        setIsYearOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleMonthChange = (selectedMonth: number) => {
+    const formattedMonth = (selectedMonth + 1).toString().padStart(2, "0");
+    setMonth(formattedMonth);
+    setIsMonthOpen(false);
   };
 
-  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const year = Number(event.target.value);
-    setSelectedYear(year);
-    onDateChange(selectedMonth, year);
+  const handleYearChange = (selectedYear: number) => {
+    setYear(selectedYear);
+    setIsYearOpen(false);
   };
+
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1; // 1-based index
+
+  const availableMonths = year === currentYear ? months.slice(0, currentMonth) : months;
 
   return (
-    <div className="flex gap-3">
-      <select
-        value={selectedMonth}
-        onChange={handleMonthChange}
-        className="mr-2 p-2 border rounded"
-      >
-        {months.map((month, index) => (
-          <option key={index} value={index}>
-            {month}
-          </option>
-        ))}
-      </select>
-      <select
-        value={selectedYear}
-        onChange={handleYearChange}
-        className="p-2 border rounded"
-      >
-        {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map(
-          year => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          )
+    <div className="flex space-x-4">
+      {/* Month Dropdown */}
+      <div className="relative" ref={monthDropdownRef}>
+        <button
+          className="flex items-center px-4 py-2 border rounded-xl bg-[#FEFDFA] w-40"
+          onClick={() => setIsMonthOpen((prev) => !prev)}
+        >
+          {months[parseInt(month) - 1]}
+          <div className="ms-auto">
+            <CehvronDown color="#818894"/>
+          </div>
+        </button>
+        {isMonthOpen && (
+          <div className="absolute mt-2 bg-white border rounded-md shadow-lg max-h-72 overflow-y-auto z-10 w-40">
+            {availableMonths.map((m, index) => (
+              <div
+                key={index}
+                className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
+                  month === (index + 1).toString().padStart(2, "0") ? "bg-gray-100 font-bold" : ""
+                }`}
+                onClick={() => handleMonthChange(index)}
+              >
+                {m}
+              </div>
+            ))}
+          </div>
         )}
-      </select>
+      </div>
+      
+      {/* Year Dropdown */}
+      <div className="relative" ref={yearDropdownRef}>
+        <button
+          className="flex items-center px-4 py-2 border rounded-xl bg-[#FEFDFA] w-40"
+          onClick={() => setIsYearOpen((prev) => !prev)}
+        >
+          {year}
+          <div className="ms-auto">
+            <CehvronDown color="#818894"/>
+          </div>
+        </button>
+        {isYearOpen && (
+          <div className="absolute mt-2 bg-white border rounded-md shadow-lg max-h-72 overflow-y-auto z-10 w-40">
+            {Array.from({ length: 10 }, (_, i) => currentYear - i).map((y) => (
+              <div
+                key={y}
+                className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${year === y ? "bg-gray-100 font-bold" : ""}`}
+                onClick={() => handleYearChange(y)}
+              >
+                {y}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

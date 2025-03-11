@@ -1,41 +1,70 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
+import NoData from "../../../Components/charts/Nodata";
 
-type Props = {};
-
-const tabs = ["Invoices", "Sales Orders", "Quotes", "Sales Return"];
-
-const transactionsData: any = {
-    Invoices: [
-        { id: "INV-00001", date: "01/11/24", customer: "Ashwathy MT", status: "Paid", amount: "₹10,000.00" },
-        { id: "INV-00002", date: "04/11/24", customer: "Athira P", status: "Draft", amount: "₹5,000.00" },
-        { id: "INV-00003", date: "02/11/24", customer: "Sourav K", status: "Draft", amount: "₹6,000.00" },
-        { id: "INV-00004", date: "04/11/24", customer: "Athul KP", status: "Paid", amount: "₹5,000.00" },
-        { id: "INV-00005", date: "05/11/24", customer: "Ashwathy MT", status: "Draft", amount: "₹10,000.00" },
-        { id: "INV-00006", date: "05/11/24", customer: "Ashwathy MT", status: "Paid", amount: "₹10,000.00" },
-    ],
-    "Sales Orders": [
-        { id: "SO-00001", date: "01/11/24", customer: "John Doe", status: "Completed", amount: "₹15,000.00" },
-        { id: "SO-00002", date: "03/11/24", customer: "Jane Smith", status: "Pending", amount: "₹7,500.00" },
-    ],
-    Quotes: [
-        { id: "Q-00001", date: "02/11/24", customer: "Alice Brown", status: "Accepted", amount: "₹8,000.00" },
-        { id: "Q-00002", date: "05/11/24", customer: "Bob Martin", status: "Rejected", amount: "₹12,000.00" },
-    ],
-    "Sales Return": [
-        { id: "SR-00001", date: "04/11/24", customer: "Charlie Adams", status: "Processed", amount: "₹3,000.00" },
-    ],
+type Props = {
+    date: any;
 };
 
-function RecentTransactions({ }: Props) {
+const tabs = ["Invoices", "Sales Orders", "Quotes", "Credit Notes"];
+
+function RecentTransactions({ date }: Props) {
     const [activeTab, setActiveTab] = useState("Invoices");
 
-    const tableHeaders = [
-        "Date",
-        "Customer",
-        "Status",
-        "Amount"
-    ];
+    const { request: recentTransaction } = useApi('get', 5007);
+    const [recentTrans, setRecentTrans] = useState<any>({
+        recentCreditNotes: { tab: 'Credit Notes', data: [] },
+        recentInvoices: { tab: 'Invoices', data: [] },
+        recentOrders: { tab: 'Sales Orders', data: [] },
+        recentQuotes: { tab: 'Quotes', data: [] },
+    });
 
+    const getRecentTrans = async () => {
+        try {
+            const { response, error } = await recentTransaction(`${endponits.SALES_DASH_RECENT_TRANSACTIONS}?date=${date}`);
+            if (response && !error) {
+                console.log('recent', response.data);
+                setRecentTrans(response.data);
+            } else {
+                console.log('Error fetching recent transactions:', error);
+            }
+        } catch (error) {
+            console.log('Error:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (date) {
+            getRecentTrans();
+        }
+    }, [date]);
+
+    const tabDataMapping: any = {
+        "Invoices": {
+            key: "recentInvoices",
+            columns: ["salesInvoice", "salesInvoiceDate", "customerName", "paidStatus", "totalAmount"],
+            label: "Invoice No.",
+        },
+        "Credit Notes": {
+            key: "recentCreditNotes",
+            columns: ["creditNote", "customerCreditDate", "customerName", "totalAmount"],
+            label: "Credit Note No.",
+        },
+        "Sales Orders": {
+            key: "recentOrders",
+            columns: ["salesOrder", "salesOrderDate", "customerName", "status", "totalAmount"],
+            label: "Order No.",
+        },
+        "Quotes": {
+            key: "recentQuotes",
+            columns: ["salesQuotes", "salesQuoteDate", "customerName", "status", "totalAmount"],
+            label: "Quote No.",
+        },
+    };
+
+    // Get data for the active tab
+    const activeTabData = recentTrans[tabDataMapping[activeTab].key] || { data: [] };
 
     return (
         <div className="bg-white w-full rounded-lg py-4 px-6">
@@ -43,11 +72,12 @@ function RecentTransactions({ }: Props) {
 
             {/* Tabs */}
             <div className="flex gap-3 mt-4">
-                {tabs.map((tab) => (
+                {Object.keys(tabDataMapping).map((tab) => (
                     <button
                         key={tab}
-                        className={` py-1.5 px-4 rounded-full text-[#585953] text-xs font-semibold ${activeTab === tab ? "bg-[#DADCCD] " : "bg-[#FCFFED]"
-                            }`}
+                        className={`py-1.5 px-4 rounded-full text-[#585953] text-xs font-semibold ${
+                            activeTab === tab ? "bg-[#DADCCD]" : "bg-[#FCFFED]"
+                        }`}
                         onClick={() => setActiveTab(tab)}
                     >
                         {tab}
@@ -57,39 +87,58 @@ function RecentTransactions({ }: Props) {
 
             {/* Table */}
             <div className="mt-5">
-                <table className="w-full border-collapse">
-                    <thead>
-                        <tr className="bg-[#F9F7F0] text-left text-xs">
-                            <th className="py-3 px-4 text-[#303F58] font-semibold border-b border-tableBorder">
-                                {activeTab === "Invoices" ? "Invoice No." : activeTab === "Sales Orders" ? "Sales Order No." : activeTab === "Quotes" ? "Quote No." : "Sales Return No."}
-                            </th>
-                            {tableHeaders.map((heading, index) => (
-                                <th
-                                    className={`py-3 px-4 font-medium border-b border-tableBorder text-start`}
-                                    key={index}
-                                >
-                                    {heading}
+                {activeTabData?.length > 0 ? (
+                    <table className="w-full border-collapse">
+                        <thead>
+                            <tr className="bg-[#F9F7F0] text-left text-xs">
+                                <th className="py-3 px-4 text-[#303F58] font-semibold border-b border-tableBorder">
+                                    {tabDataMapping[activeTab].label}
                                 </th>
-                            ))}
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {transactionsData[activeTab].map((item: any, index: any) => (
-                            <tr key={index} className="border-b border-tableBorder text-xs text-[#4B5C79]">
-                                <td className="py-3 px-4 ">{item.id}</td>
-                                <td className="py-3 px-4 text-[#4B5C79]">{item.date}</td>
-                                <td className="py-3 px-4 text-[#4B5C79]">{item.customer}</td>
-                                <td className="py-3 px-4">
-                                    <span className={`px-2 py-1 text-xs font-semibold rounded-md ${item.status === "Paid" || item.status === "Completed" || item.status === "Accepted" ? "bg-green-100 text-green-700" : "bg-gray-200 text-gray-600"}`}>
-                                        {item.status}
-                                    </span>
-                                </td>
-                                <td className="py-3 px-4 font-bold text-[#4B5C79]">{item.amount}</td>
+                                {tabDataMapping[activeTab].columns.slice(1).map((heading: any, index: number) => (
+                                    <th
+                                        className="py-3 px-4 font-medium border-b border-tableBorder text-start"
+                                        key={index}
+                                    >
+                                        {heading.replace(/([A-Z])/g, " $1").trim()}
+                                    </th>
+                                ))}
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {activeTabData?.map((item: any, index: number) => (
+                                <tr key={index} className="border-b border-tableBorder text-xs text-[#4B5C79]">
+                                    {tabDataMapping[activeTab].columns.map((col: any, idx: number) => (
+                                        <td key={idx} className="py-3 px-4">
+                                            {col === "paidStatus" || col === "status" ? (
+                                                <span
+                                                className={`px-2 py-1 text-xs font-semibold rounded-md ${
+                                                    item[col] === "Paid" || 
+                                                    item[col] === "Completed" || 
+                                                    item[col] === "Accepted" || 
+                                                    item[col] === "Confirmed"
+                                                        ? "bg-green-100 text-green-700"
+                                                    : item[col] === "Sent"
+                                                        ? "bg-blue-100 text-blue-700"
+                                                    : item[col] === "Overdue"
+                                                        ? "bg-red-100 text-red-700"
+                                                    : "bg-gray-200 text-gray-600"
+                                                }`}
+                                            >
+                                                {item[col]}
+                                            </span>
+                                            
+                                            ) : (
+                                                item[col]
+                                            )}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <NoData parentHeight="300px"/>
+                )}
             </div>
         </div>
     );

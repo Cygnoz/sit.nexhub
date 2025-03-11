@@ -1,12 +1,13 @@
+import CustomerDashboard from "../features/Customer/Dashboard/CustomerDashboard";
 
-import Dashboard from "../features/Customer/Dashboard/Dashboard";
+
 
 type Props = {};
 
 function Customer({}: Props) {
   return (
     <>
-     <Dashboard/>
+     <CustomerDashboard/>
     </>
   );
 }
