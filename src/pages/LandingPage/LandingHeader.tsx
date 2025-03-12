@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../../../public/billbizzlogoLanding.png";
-import logoLight from "../../../public/bill-bizz-logo.png";
+import logo from "../../../public/nexHuLogo.png";
 import ArrowrightUp from "../../assets/icons/ArrowrightUp";
 import BellDot from "../../assets/icons/BellDot";
 import Sun from "../../assets/icons/Sun";
@@ -73,25 +72,23 @@ function LandingHeader({ mode, setMode }: Props) {
 
   return (
     <header
-      className={`${
-        mode ? "bg-[#EAEBEB]" : "bg-[#2C353B]"
-      } text-[#DFD1B4] flex items-center justify-between p-4 rounded-full mb-8 px-6 w-full`}
+      className={`${mode ? "bg-[#EAEBEB]" : "bg-[#2C353B]"
+        } text-[#DFD1B4] flex items-center justify-between p-4 rounded-full mb-8 px-6 w-full`}
     >
       <div
         onClick={() => navigate("/landing")}
         className="flex items-center space-x-2 cursor-pointer"
       >
         <img
-          src={mode ? logo : logoLight}
-          alt="Bill Bizz Logo"
-          className="h-7 w-[22px]"
+          src={logo}
+          alt=""
+          className="w-7 h-7"
         />
         <h1
-          className={`text-lg font-medium ${
-            mode ? "text-[#303F58]" : "text-[#F7E7CE]"
-          }`}
+          className={`text-lg font-medium ${mode ? "text-[#303F58]" : "text-[#F7E7CE]"
+            }`}
         >
-          BILL BIZZ
+          NEX HUB
         </h1>
       </div>
 
@@ -101,17 +98,15 @@ function LandingHeader({ mode, setMode }: Props) {
 
       <div className="flex items-center space-x-4">
         <button
-          className={`${
-            mode ? "bg-white" : "bg-[#404B52]"
-          } text-[#DFD1B4] w-[38px] h-[38px] flex justify-center items-center rounded-full`}
+          className={`${mode ? "bg-white" : "bg-[#404B52]"
+            } text-[#DFD1B4] w-[38px] h-[38px] flex justify-center items-center rounded-full`}
         >
           <BellDot color={mode ? "#4B5C79" : "white"} />
         </button>
         <button
           onClick={() => navigate("/settings")}
-          className={`${
-            mode ? "bg-white" : "bg-[#404B52]"
-          } text-[#DFD1B4] w-[38px] h-[38px] flex justify-center items-center rounded-full`}
+          className={`${mode ? "bg-white" : "bg-[#404B52]"
+            } text-[#DFD1B4] w-[38px] h-[38px] flex justify-center items-center rounded-full`}
         >
           <SettingsIcons color={mode ? "#4B5C79" : "white"} />
         </button>
@@ -130,17 +125,17 @@ function LandingHeader({ mode, setMode }: Props) {
             ${!mode ? "bg-[#3C474D] text-[#DFE1E2]" : "bg-white text-[#4B5C79]"}
             `}>
               <div className="flex items-center gap-2 cursor-pointer"
-              onClick={()=> navigate("/settings/organization/profile")}
+                onClick={() => navigate("/settings/organization/profile")}
               >
-                <User width={18} height={18} color={mode?"#4B5C79":"#DFE1E2"} />
+                <User width={18} height={18} color={mode ? "#4B5C79" : "#DFE1E2"} />
                 <p>My Profile</p>
               </div>
-              <SubscriptionDrawer mode={mode}/>
+              <SubscriptionDrawer mode={mode} />
               <div
                 className="flex items-center gap-2 cursor-pointer"
                 onClick={handleLogout}
               >
-                <LogOut  color={mode?"#4B5C79":"#DFE1E2"} />
+                <LogOut color={mode ? "#4B5C79" : "#DFE1E2"} />
                 <p>Log out</p>
               </div>
             </div>
