@@ -23,11 +23,7 @@ interface TransformedData {
   value: number;
 }
 
-interface ApiResponse {
-  data: {
-    dailySales: SalesData[];
-  };
-}
+
 
 interface SalesOverTimeProps {
   date: string;
@@ -36,7 +32,7 @@ interface SalesOverTimeProps {
 const SalesOverTime: React.FC<SalesOverTimeProps> = ({ date }) => {
   const { request: getSalesOvertime } = useApi("get", 5004);
   const [salesData, setSalesData] = useState<TransformedData[]>([]);
-  const [totalSales,setTotalSales] = useState<number>(0); 
+
   const transformData = (dailySales: SalesData[]): TransformedData[] => {
     const groupedData: TransformedData[] = [
       { name: "0-5", value: 0 },
@@ -66,7 +62,6 @@ const SalesOverTime: React.FC<SalesOverTimeProps> = ({ date }) => {
       );
       if (response && !error) {
         setSalesData(transformData(response.data.dailySales));
-        setTotalSales(response.data.totalSales)
       }
     } catch (error) {
       console.error("Fetch Error:", error);

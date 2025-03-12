@@ -288,5 +288,13 @@ EXPENSE_DASH_EXPENSE_OVER_TIME: 'get-expenseDashboard-expenseOverTime',
 EXPENSE_DASH_TOP_EXPENSE_BY_CATEGORY: 'get-expenseDashboard-topExpenseByCategory',
 EXPENSE_DASH_EXPENSE_BREAKDOWN_BY_SUPPLIER: 'get-expenseDashboard-expenseBreakdownBySupplier',
 
+// Accounts Dashboard
+ACCOUNT_DASH_OVERVIEW: 'get-accountDashboard-overview',
+ACCOUNT_DASH_TOTAL_REVENUE_OVER_TIME: 'get-accountDashboard-totalRevenueOverTime',
+ACCOUNT_DASH_RECEIVABLE_AGING: 'get-accountDashboard-accountReceivableAging',
+ACCOUNT_DASH_PAYABLE_AGING: 'get-accountDashboard-accountPayableAging',
+ACCOUNT_DASH_INVOICE_STATUS: 'get-accountDashboard-invoiceStatus',
+
+
 
 };

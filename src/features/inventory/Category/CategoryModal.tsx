@@ -54,6 +54,8 @@ function Category({ isOpen, onClose, page }: Props) {
       const body = { type: "category" };
       const { response, error } = await fetchAllCategories(url, body);
       if (!error && response) {
+        console.log("res",response.data);
+        
         setAllcategoryData(response.data);
       } else {
         console.error("Failed to fetch Category data.");

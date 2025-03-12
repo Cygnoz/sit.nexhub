@@ -103,7 +103,7 @@ const navlist = [
   {
     nav: "Accounts",
     icon: squreUserRound,
-    route: "/accountant/chart-OF-accountant",
+    route: "/accountant",
     subhead: [
       {
         headName: "Dashboard",
@@ -130,7 +130,7 @@ const navlist = [
   {
     nav: "Supplier",
     icon: truck,
-    route: "/supplier/home",
+    route: "/supplier",
     subhead: [
       {
         headName: "Dashboard",
@@ -145,7 +145,7 @@ const navlist = [
   {
     nav: "Expense",
     icon: circleDollar,
-    route: "/expense/home",
+    route: "/expense",
     subhead: [
       { headName: "Dashboard", subRoute: "/expense" },
       { headName: "Expense", subRoute: "/expense/home" },
@@ -169,7 +169,7 @@ const navlist = [
   {
     nav: "Purchase",
     icon: shoppingBag,
-    route: "/purchase/purchase-order",
+    route: "/purchase",
     subhead: [
       {
         headName: "Dashboard",
