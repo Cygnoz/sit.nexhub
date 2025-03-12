@@ -26,8 +26,8 @@ const renderCustomTooltip = ({ payload }: any) => {
       <Tooltips
         content={`${payload[0].value}`}
         textColor="#ffffff"
-        bgColor="#4A5568"
-        arrowColor="#4A5568"
+        bgColor="#0099F8"
+        arrowColor="#0099F8"
         width="50px"
       />
     );
@@ -62,15 +62,15 @@ const NumberOfOrdersBySupplier: React.FC = () => {
             iconType="circle"
             verticalAlign="bottom"
             align="center"
-            wrapperStyle={{ marginTop: 2, paddingTop: 30}}
+            wrapperStyle={{ marginTop: 2, paddingTop: 30 }}
           />
 
 
           {/* Lines for each supplier */}
-          <Line type="monotone" dataKey="Supplier1" stroke="#D9B4AF" strokeWidth={2} dot={false} />
-          <Line type="monotone" dataKey="Supplier2" stroke="#BDBDB5" strokeWidth={2} dot={false} />
-          <Line type="monotone" dataKey="Supplier3" stroke="#4A5568" strokeWidth={2} dot={false} />
-          <Line type="monotone" dataKey="Supplier4" stroke="#F4E0C0" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="Supplier1" stroke="#75CAFF" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="Supplier2" stroke="#EEEEEE" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="Supplier3" stroke="#0099F8" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="Supplier4" stroke="#B9F0DB" strokeWidth={2} dot={false} />
         </LineChart>
       </ResponsiveContainer>
     </div>

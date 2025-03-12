@@ -175,7 +175,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
         </div>
         <div className="flex gap-4">
           <Button onClick={() => reactToPrintFn()} variant="secondary" className="text-sm font-medium h-9">
-            <PrinterIcon color="#565148" height={16} width={16} />
+            <PrinterIcon color="#0099F8" height={16} width={16} />
             Print
           </Button>
         </div>
@@ -183,7 +183,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
       <div ref={contentRef} className="mt-3 overflow-y-scroll hide-scrollbar max-h-[25rem]">
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
-            <tr style={{ backgroundColor: "#F9F7F0" }}>
+            <tr style={{ backgroundColor: "#E1F0F9" }}>
               <th className="py-3 px-4 border-b border-tableBorder">Sl.No</th>
               {columns.map(
                 (col) =>

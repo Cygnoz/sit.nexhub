@@ -1,9 +1,9 @@
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
 
 const invoiceData = [
-  { name: "Paid", value: 40, color: "#F7E7CD" },
+  { name: "Paid", value: 40, color: "#0099F8" },
   { name: "Draft", value: 16, color: "#EDDADA" },
-  { name: "Over Due", value: 12, color: "#2C353B" },
+  { name: "Over Due", value: 12, color: "#75CAFF" },
   { name: "Send", value: 12, color: "#D1D5DB" },
   { name: "Partially Paid", value: 10, color: "#E5E7EB" },
   { name: "Canceled", value: 10, color: "#A8B5A1" },

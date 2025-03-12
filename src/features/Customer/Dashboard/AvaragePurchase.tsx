@@ -1,7 +1,7 @@
 import { PieChart, Pie, Cell } from "recharts";
 
 const data = [
-  { name: "Value", value: 280, color: "#2C353B" },
+  { name: "Value", value: 280, color: "#0099F8" },
   { name: "Remaining", value: 220, color: "#E6E9EE" },
 ];
 const cx = 200; // Center x-coordinate for a 400px wide chart
@@ -16,8 +16,8 @@ const AveragePurchase = () => {
       <div className="flex justify-between mt-5 items-center">
         <h3 className=" text-[16px] font-bold ">Avarage Purchase Value</h3>
         <select
-          className="border border-[#565148] h-8 pl-3 pr-4 rounded-md bg-[#FEFDFA]  text-xs font-semibold text-gray-800"
-          style={{ color: "#585953" }}
+          className="border border-[#0099F8] h-8 pl-3 pr-4 rounded-md bg-[#FEFDFA]  text-xs font-semibold text-[#0099F8]"
+          style={{ color: "#0099F8" }}
         >
           <option>Month</option>
           <option>Other</option>

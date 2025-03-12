@@ -133,7 +133,7 @@ const Table = ({
       <div ref={contentRef} className="min-h-[25rem] overflow-y-auto mt-1">
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText sticky top-0 z-10">
-            <tr style={{ backgroundColor: "#F9F7F0" }}>
+            <tr style={{ backgroundColor: "#E1F0F9" }}>
               {tableHeaders.map((heading, index) => (
                 <th
                   className={`py-3 px-4 font-medium border-b border-tableBorder ${heading === "Actions" ? "hide-print" : ""}`}

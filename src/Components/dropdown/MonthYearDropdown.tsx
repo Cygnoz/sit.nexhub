@@ -40,10 +40,10 @@ const MonthYearDropdown: React.FC<MonthYearDropdownProps> = ({ onDateChange }) =
       <select
         value={selectedMonth}
         onChange={handleMonthChange}
-        className="mr-2 p-2 border rounded"
+        className="mr-2 p-2 border rounded text-[#0099F8]"
       >
         {months.map((month, index) => (
-          <option key={index} value={index}>
+          <option key={index} value={index} className="text-[#0099F8]">
             {month}
           </option>
         ))}
@@ -51,11 +51,11 @@ const MonthYearDropdown: React.FC<MonthYearDropdownProps> = ({ onDateChange }) =
       <select
         value={selectedYear}
         onChange={handleYearChange}
-        className="p-2 border rounded"
+        className="p-2 border rounded border-[#0099F8] text-[#0099F8]"
       >
         {Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i).map(
           year => (
-            <option key={year} value={year}>
+            <option key={year} value={year} className="text-[#0099F8]">
               {year}
             </option>
           )

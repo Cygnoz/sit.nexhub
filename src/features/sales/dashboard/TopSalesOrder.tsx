@@ -22,7 +22,7 @@ function TopSalesOrder({ }: Props) {
       <div className="mt-5">
       <table className="min-w-full text-start bg-white my-5">
           <thead className="text-[12px] text-dropdownTex">
-            <tr style={{ backgroundColor: "#F9F7F0" }}>
+            <tr style={{ backgroundColor: "#E1F0F9" }}>
               {tableHeaders.map((heading, index) => (
                 <th
                   className={`py-2 px-4 font-medium border-b border-tableBorder text-start`}

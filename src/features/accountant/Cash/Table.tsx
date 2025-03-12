@@ -117,7 +117,7 @@ const CashAccountsTable = () => {
       <div ref={contentRef} className="max-h-[25rem] overflow-y-auto mt-3">
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText sticky top-0 z-10">
-            <tr style={{ backgroundColor: "#F9F7F0" }}>
+            <tr style={{ backgroundColor: "#E1F0F9" }}>
               {tableHeaders.map((heading, index) => (
                 <th
                   key={index}

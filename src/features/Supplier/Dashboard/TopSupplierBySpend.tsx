@@ -1,10 +1,10 @@
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
 const data = [
-  { name: "Supplier A with a very long name", value: 48.8, color: "#D9B4AF" }, // Light Red
-  { name: "Supplier B", value: 24.3, color: "#F4E0C0" }, // Light Beige
-  { name: "Supplier C", value: 14.6, color: "#BDBDB5" }, // Grey
-  { name: "Supplier D with a big name", value: 12.3, color: "#FEFEEB" }, // Light Yellow
+  { name: "Supplier A with a very long name", value: 48.8, color: "#0099F8" }, 
+  { name: "Supplier B", value: 24.3, color: "#EDDADA" }, 
+  { name: "Supplier C", value: 14.6, color: "#75CAFF" },
+  { name: "Supplier D with a big name", value: 12.3, color: "#A8B5A1" }, 
 ];
 
 const COLORS = data.map((entry) => entry.color);

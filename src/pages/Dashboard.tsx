@@ -1,5 +1,5 @@
 import Button from "../Components/Button"
-import bannerBg from "../assets/Images/Banner-bg.png"
+import bannerBg from "../assets/Images/Banner-bg1.png"
 import happyWoman from "../assets/Images/Businesswoman happy about profit growth.png"
 import Cards from "../features/dashboard/Cards"
 import ExpenseByCategory from "../features/dashboard/ExpenseByCategory"

@@ -250,17 +250,17 @@ const ItemTable = ({ hsnsac }: Props) => {
 
   const Items = [
     {
-      icon: <BookIcon color="#585953" />,
+      icon: <BookIcon color="#0099F8" />,
       title: "All",
       onClick: () => setSelected("All"),
     },
     {
-      icon: <BookXIcon color="#585953" />,
+      icon: <BookXIcon color="#0099F8" />,
       title: "Low Stock",
       onClick: () => setSelected("Low Stock"),
     },
     ...allCategoryData.map((category) => ({
-      icon: <NewspaperIcon color="#585953" />,
+      icon: <NewspaperIcon color="#0099F8" />,
       title: category.categoriesName,
       onClick: () => setSelected(category.categoriesName), // Sets the selected category
     })),
@@ -295,16 +295,16 @@ const ItemTable = ({ hsnsac }: Props) => {
             <button
               key={customer.title}
               onClick={() => setSelected(customer.title)}
-              className={`flex w-[15%] items-center gap-2 p-2 justify-center rounded ${selected === customer.title ? "bg-WhiteIce" : "bg-white"
+              className={`flex w-[15%] items-center gap-2 p-2 justify-center rounded ${selected === customer.title ? "bg-[#EEEEEE]" : "bg-white"
                 }`}
               style={{
-                border: "1px solid #DADBDD",
+                border: "1px solid #0099F8",
                 flexShrink: 0, // Prevent the button from shrinking
               }}
             >
               {customer.icon}
               <span
-                style={{ color: "#4B5C79", fontSize: "12px", fontWeight: "600" }}
+                style={{ color: "#0099F8", fontSize: "12px", fontWeight: "600" }}
               >
                 {customer.title}
               </span>
@@ -333,7 +333,7 @@ const ItemTable = ({ hsnsac }: Props) => {
       >
         <table className="min-w-full bg-white mb-5">
           <thead className="text-[12px] text-center text-dropdownText">
-            <tr style={{ backgroundColor: "#F9F7F0" }} className="sticky top-0 z-10">
+            <tr style={{ backgroundColor: "#E1F0F9" }} className="sticky top-0 z-10">
               {/* Serial Number Header */}
               <th className="py-2.5 px-4 font-medium border-b border-tableBorder">Sl.No</th>
 

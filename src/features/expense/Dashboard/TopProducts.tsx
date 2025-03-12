@@ -38,7 +38,7 @@ const ProductsDashTable: React.FC = () => {
       </div>
       <div className="overflow-x-auto pt-3">
         <table className="min-w-full table-auto text-left">
-          <thead className="border-b border-tableBorder bg-[#FDF8F0] p-4">
+          <thead className="border-b border-tableBorder bg-[#E1F0F9] p-4">
             <tr className="bg-gray-50">
               <th className="px-4 py-4 text-xs font-semibold text-[#495160]">Supplier</th>
               <th className="px-4 py-4 text-xs font-semibold text-[#495160]">Total Expense</th>

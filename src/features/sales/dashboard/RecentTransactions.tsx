@@ -46,7 +46,7 @@ function RecentTransactions({ }: Props) {
                 {tabs.map((tab) => (
                     <button
                         key={tab}
-                        className={` py-1.5 px-4 rounded-full text-[#585953] text-xs font-semibold ${activeTab === tab ? "bg-[#DADCCD] " : "bg-[#FCFFED]"
+                        className={` py-1.5 px-4 rounded-full text-[#303F58] text-xs font-semibold ${activeTab === tab ? "bg-[#DADCCD] " : "bg-[#FCFFED]"
                             }`}
                         onClick={() => setActiveTab(tab)}
                     >

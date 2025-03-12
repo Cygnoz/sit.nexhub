@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../../public/bill-bizz-logo.png";
+import logo from "../../../public/nexHuLogo.png";
 import navlist from "../../assets/constants";
 import { useEffect } from "react";
 
@@ -23,11 +23,13 @@ const SideBar = ({ activeIndex, setActiveIndex }: Props) => {
   };
   const navigate=useNavigate()
   return (
-    <aside className="bg-primary_main h-[100vh] overflow-y-scroll hide-scrollbar w-[72px]">
-      <nav>
-        <div onClick={()=>navigate('/landing')} className="flex justify-between items-center px-6 pt-7 pb-5 cursor-pointer">
-        <img src={logo} alt="logo" style={{ boxShadow: '0 4px 15px rgba(0, 0, 0, 0.5)' }} className="shadow-xl" />
+    <aside className="bg-[#FFFFFF] h-[100vh] overflow-y-scroll hide-scrollbar w-[72px]">
+      <nav className="pb-5">
+        <div onClick={()=>navigate('/landing')} className="flex justify-between items-center px-6 pt-7 pb-1 cursor-pointer">
+        <img src={logo} alt="logo" />
+        
         </div>
+        <p className="text-[#0099F8] text-[12px] font-semibold px-4">NHub</p>
       </nav>
       <ul className="flex-col">
         {navlist.map((item, index) => (
@@ -36,13 +38,13 @@ const SideBar = ({ activeIndex, setActiveIndex }: Props) => {
               <Link to={item.route}>
                 <li className={`pb-3`} onClick={() => handleClick(index)}>
                   <div
-                    className={`px-2 py-2 rounded-lg hover:bg-iconhover flex justify-center ${
-                      activeIndex === index ? "bg-iconhover" : ""
+                    className={`px-2 py-2 rounded-lg  flex justify-center ${
+                      activeIndex === index ? "bg-[#D6EFFF]" : ""
                     }`}
                   >
-                    {item.icon && <item.icon color="#F7E7CE" />}
+                    {item.icon && <item.icon   color={activeIndex === index ? "#0099F8" : "#8D9BA2"}/>}
                   </div>
-                  <p className="text-[8px] text-center text-lightBeige">
+                  <p className="text-[8px] text-center text-[#8D9BA2]">
                     {item.nav}
                   </p>
                 </li>

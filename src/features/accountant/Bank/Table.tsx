@@ -134,7 +134,7 @@ const Table = () => {
       >
         <table className="min-w-full bg-white my-5">
           <thead className="text-[12px] text-center text-dropdownText">
-            <tr style={{ backgroundColor: "#F9F7F0" }}>
+            <tr style={{ backgroundColor: "#E1F0F9" }}>
               {tableHeaders.map((heading, index) => (
                 <th
                   className={`py-2 px-4 font-medium border-b border-tableBorder ${

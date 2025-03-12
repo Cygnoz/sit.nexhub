@@ -1,10 +1,10 @@
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
 
 const invoiceData = [
-  { name: "Travel", value: 40, color: "#F7E7CD" },
+  { name: "Travel", value: 40, color: "#0099F8" },
   { name: "Marketing", value: 16, color: "#EDDADA" },
-  { name: "Office Supplies", value: 12, color: "#2C353B" },
-  { name: "Equipment", value: 12, color: "#D1D5DB" },
+  { name: "Office Supplies", value: 12, color: "#75CAFF" },
+  { name: "Equipment", value: 12, color: "#E5E7EB" },
   { name: "Meals ", value: 10, color: "#E5E7EB" },
   { name: "Miscellaneous", value: 10, color: "#A8B5A1" },
 ];

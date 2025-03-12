@@ -114,7 +114,7 @@ const handleDelete = async (item: any) => {
       <div className="rounded-lg border-2 border-tableBorder">
       <table className="min-w-full bg-white relative pb-4">
   <thead className="text-[12px] text-center text-dropdownText">
-    <tr className="bg-lightPink">
+    <tr className="bg-[#E1F0F9]">
       {unitTableHead.map((item, index) => (
         <th
           className="py-2 px-4 font-medium border-b border-tableBorder relative"
