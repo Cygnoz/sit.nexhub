@@ -7,7 +7,7 @@ type Props = {
     date: any;
 };
 
-const tabs = ["Invoices", "Sales Orders", "Quotes", "Credit Notes"];
+
 
 function RecentTransactions({ date }: Props) {
     const [activeTab, setActiveTab] = useState("Invoices");

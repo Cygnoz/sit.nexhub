@@ -60,8 +60,8 @@ function ExpenseByCategory({ date }: Props) {
         // Transform API response
         const transformedData = response?.data?.category?.map((item: any, index: number) => ({
           name: item.category,
-          value: parseFloat(item.total), // Ensure numerical values
-          color: COLORS[index % COLORS.length], // Assign colors cyclically
+          value: parseFloat(item.total),
+          color: COLORS[index % COLORS.length],
         }));
 
         setExpenseByCategory(transformedData);
@@ -81,31 +81,48 @@ function ExpenseByCategory({ date }: Props) {
 
   return (
     <div className="bg-white rounded-lg w-full p-8">
-      <p className="text-[#303F58] font-semibold text-base">Expense By Category</p>
+      <p className="text-[#303F58] font-semibold text-base">Expenses by Category</p>
 
-      {expenseByCategory?.length>0?<div className="flex items-center justify-center mt-5">
-        {/* Pie Chart */}
-        <PieChart width={280} height={250}>
-          <Pie
-            data={expenseByCategory}
-            dataKey="value"
-            nameKey="name"
-            label={renderCustomizedLabel}
-            labelLine={false}
-            innerRadius={50}
-            outerRadius={110}
-            paddingAngle={5}
-            cornerRadius={10}
-          >
-            {expenseByCategory.map((entry:any, index:any) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
+      {expenseByCategory.length > 0 ? (
+        <div className="flex flex-col items-center mt-5">
+          {/* Legend */}
+          <div className="flex flex-col items-start w-full">
+            {expenseByCategory.map((item: any, index: number) => (
+              <div key={index} className="flex items-center mb-2">
+                <span
+                  className="w-3 h-3 rounded-full mr-2"
+                  style={{ backgroundColor: item.color }}
+                ></span>
+                <p className="text-[#3f4856] ">
+                  {item.name} <span className="text-[#303F58] ms-5">{item.value}</span>
+                </p>
+              </div>
             ))}
-          </Pie>
-          <Tooltip content={<CustomTooltip />} />
-        </PieChart>
-      </div>:
-      <NoData parentHeight="400px"/>
-      }
+          </div>
+
+          {/* Pie Chart */}
+          <PieChart width={280} height={250}>
+            <Pie
+              data={expenseByCategory}
+              dataKey="value"
+              nameKey="name"
+              label={renderCustomizedLabel}
+              labelLine={false}
+              innerRadius={50}
+              outerRadius={110}
+              paddingAngle={5}
+              cornerRadius={10}
+            >
+              {expenseByCategory.map((entry: any, index: number) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+            <Tooltip content={<CustomTooltip />} />
+          </PieChart>
+        </div>
+      ) : (
+        <NoData parentHeight="400px" />
+      )}
     </div>
   );
 }
