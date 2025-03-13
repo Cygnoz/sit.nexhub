@@ -122,14 +122,14 @@ exports.getOverviewData = async (req, res) => {
         console.log("prevMonthActiveCustomers:",prevMonthActiveCustomers);
 
         // Customer retention rate
-        const customerRetentionRate = prevMonthActiveCustomers > 0
+        const customerRetentionRate = Math.abs(prevMonthActiveCustomers > 0
             ? ((prevMonthActiveCustomers - newCustomerCount) / prevMonthActiveCustomers) * 100
-            : 0;
+            : 0);
 
         // Customer churn rate
-        const customerChurnRate = prevMonthActiveCustomers > 0
+        const customerChurnRate = Math.abs(prevMonthActiveCustomers > 0
             ? ((prevMonthActiveCustomers - activeCustomers) / prevMonthActiveCustomers) * 100
-            : 0;
+            : 0);
 
         console.log("Final Calculations:", { totalCustomers, newCustomerCount, activeCustomers, customerRetentionRate, customerChurnRate });
 
