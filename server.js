@@ -27,7 +27,7 @@ server.options('*', (req, res) => {
 server.use(helmet()); 
 server.use(purchaseRouter);
 
-const PORT = 5005;
+const PORT = 7005;
 
 server.get('/',(req,res)=>{
     res.status(200).json("Dev Bill BIZZ server started - Purchase v1.6")
