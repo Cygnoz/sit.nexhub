@@ -71,16 +71,6 @@ router.get('/get-one-customer-history/:customerId',verifyToken,checkPermission('
 //Customer
 router.post('/add-customer-nexportal',nexVerifyToken,customerController.addCustomer)
 
-router.get('/get-all-customer-nexportal',nexVerifyToken,customerController.getAllCustomer)
-
-router.get('/get-one-customer-nexportal/:customerId',nexVerifyToken,customerController.getOneCustomer)
-
-router.put('/edit-customer-nexportal/:customerId', nexVerifyToken,customerController.editCustomer);
-
-router.put('/update-customer-status-nexportal/:customerId', nexVerifyToken,customerController.updateCustomerStatus);
-
-router.delete('/delete-customer-nexportal/:customerId',nexVerifyToken,customerController.deleteCustomer);
-
 
 
 
