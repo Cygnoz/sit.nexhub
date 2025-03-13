@@ -265,9 +265,12 @@ MAIN_DASH_SALES_OVER_TIME: 'get-mainDashboard-salesOverTime',
 MAIN_DASH_EXPENSE_BY_CATEGORY: 'get-mainDashboard-expenseByCategory',
 MAIN_DASH_TOP_PRODUCT_CUSTOMER: 'get-mainDashboard-topProductCustomer',
 
-// Inventory Dashboard
-INVENTORY_DASH_OVERVIEW: 'get-inventoryDashboard-overview',
-INVENTORY_DASH_TOP_SELLING_PRODUCTS: 'get-inventoryDashboard-topSellingProducts',
+// Inventory
+INVENTORY_DASH_OVERVIEW: "get-inventoryDashboard-overview",
+INVENTORY_DASH_TOP_SELLING_PRODUCTS: "get-inventoryDashboard-topSellingProducts",
+INVENTORY_DASH_TOP_SELLING_PRODUCTS_BY_CATEGORIES: "get-inventoryDashboard-topSellingProductsByCategories",
+INVENTORY_DASH_STOCK_LEVEL_OVER_CATEGORY: "get-inventoryDashboard-stockLevelOverCategory",
+INVENTORY_DASH_MOST_FREQUENTLY_REORDERED_ITEMS: "get-inventoryDashboard-mostFrequentlyReorderedItems",
 
 // Supplier Dashboard
 SUPPLIER_DASH_OVERVIEW: 'get-supplierDashboard-overview',

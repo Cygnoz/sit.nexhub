@@ -12,10 +12,6 @@ type Props = {
 
 const colors = ['#f2c6b8', '#a72522', '#fbe6c3', '#eef1d6', '#e3e7e5', '#8fd3f4', '#ffcc00'];
 
-interface DataItem {
-  name: string;
-  value: number;
-}
 
 const renderCustomTooltip: React.FC<any> = ({ payload }) => {
   if (payload && payload.length) {
@@ -59,29 +55,25 @@ const CustomBar: React.FC<CustomBarProps> = ({ x = 0, y = 0, width = 0, height =
 };
 
 function StockLevelOvertime({ date }: Props) {
-  const { request: getTopCustomers } = useApi('get', 5002);
-  const [topCustomerData, setTopCustomerData] = useState<DataItem[]>([]);
+  const { request: getStockLevelOver } = useApi('get', 5003);
+  const [stockLevel, setStockLevel] = useState<[]>([]);
   const { request: fetchAllCategories } = useApi("put", 5003);
-  const [allCategoryData, setAllcategoryData] = useState<[]>([]);
-  const options = [
-    { id: 1, name: "Option 1" },
-    { id: 2, name: "Option 2" },
-    { id: 3, name: "Option 3" },
-  ];
-  const [selectedOption, setSelectedOption] = useState<typeof options[0] | null>(null);
-  const getTopCus = async () => {
+  const [allCategoryData, setAllcategoryData] = useState<any[]>([]);
+  const [selectedOption, setSelectedOption] = useState<typeof allCategoryData[0] | null>(null);
+  
+  const getStockLevel = async () => {
     try {
-      const { response, error } = await getTopCustomers(`${endponits.CUST_DASH_TOP_CUSTOMERS}?date=${date}`);
+      const { response, error } = await getStockLevelOver(`${endponits.INVENTORY_DASH_STOCK_LEVEL_OVER_CATEGORY}?date=${date}&category=${selectedOption?.id}`);
       if (response && !error) {
-        console.log('top', response.data);
+        console.log('stocke', response.data);
 
         // Transform API response into required format
-        const formattedData = response?.data?.topCustomers?.map((customer: any) => ({
-          name: customer.customerName.split(' ')[0],
-          value: customer.totalSpent,
+        const formattedData = response?.data?.topItems?.map((item: any) => ({
+          name: item.itemName.split(' ')[0],
+          value: item.currentStock,
         }));
 
-        setTopCustomerData(formattedData);
+        setStockLevel(formattedData);
       } else {
         console.log('err', error);
       }
@@ -105,6 +97,7 @@ function StockLevelOvertime({ date }: Props) {
         }));
   
         setAllcategoryData(formattedCategories);
+        setSelectedOption(formattedCategories[0])
       } else {
         console.error("Failed to fetch Category data.");
       }
@@ -117,17 +110,21 @@ function StockLevelOvertime({ date }: Props) {
 
   useEffect(() => {
     loadCategories();
-    if (date) {
-      getTopCus();
-    }
+  }, [])
 
-  }, [date]);
+  useEffect(()=>{
+    if (date && selectedOption) {
+      getStockLevel();
+    }
+  },[date,selectedOption])
+
+  
 
   // Get the max value to dynamically adjust domain
-  const maxSpent = Math.max(...topCustomerData.map((item) => item.value), 100000);
+  const maxSpent = Math.max(...stockLevel.map((item:any) => item.value), 100000);
 
   return (
-    <div className="bg-white rounded-lg w-full px-8">
+    <div className="bg-white rounded-lg w-full px-8 h-full">
       <div className='flex justify-between items-center'>
       <h3 className="text-[16px] mt-6 font-bold">Stock Level Over Category</h3>
       <div className='mt-3'>
@@ -140,8 +137,8 @@ function StockLevelOvertime({ date }: Props) {
     />
       </div>
       </div>
-     {topCustomerData?.length>0? <ResponsiveContainer width="100%" height={400}>
-        <BarChart layout="vertical" data={topCustomerData} margin={{ left: -40, right: 100, bottom: -25 }}>
+     {stockLevel?.length>0? <ResponsiveContainer width="100%" height={400}>
+        <BarChart layout="vertical" data={stockLevel} margin={{ left: -70, right: 100 }}>
           <XAxis
             type="number"
             stroke="#4A5568"
@@ -152,7 +149,7 @@ function StockLevelOvertime({ date }: Props) {
           />
           <YAxis
             type="category"
-            dataKey="name"
+            dataKey="value"
             stroke="#4A5568"
             axisLine={false}
             tickLine={false}
@@ -162,8 +159,8 @@ function StockLevelOvertime({ date }: Props) {
           />
           <Tooltip content={renderCustomTooltip} cursor={{ fill: 'transparent' }} />
           <Bar shape={<CustomBar />} barSize={30} dataKey="value" fill="#8884d8">
-            <LabelList dataKey="value" position="right" fontSize={10} />
-            {topCustomerData.map((_, index) => (
+            <LabelList dataKey="name" position="right" fontSize={10} />
+            {stockLevel.map((_, index) => (
               <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
             ))}
           </Bar>

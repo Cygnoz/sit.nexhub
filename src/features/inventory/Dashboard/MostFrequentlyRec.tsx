@@ -46,25 +46,25 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 function MostFrequentlyRec({ date }: Props) {
-  const { request: getExpByCategory } = useApi("get", 5004);
-  const [expenseByCategory, setExpenseByCategory] = useState<any>([]);
+  const { request:getMostFrequently } = useApi("get", 5003);
+  const [mostFrequently, setMostFrequently] = useState<any>([]);
 
   const getExpCat = async () => {
     try {
-      const { response, error } = await getExpByCategory(
-        `${endponits.MAIN_DASH_EXPENSE_BY_CATEGORY}?date=${date}`
+      const { response, error } = await getMostFrequently(
+        `${endponits.INVENTORY_DASH_MOST_FREQUENTLY_REORDERED_ITEMS}?date=${date}`
       );
       if (response && !error) {
-        console.log("API Response:", response?.data?.category);
+        console.log("API Response:", response?.data);
 
         // Transform API response
-        const transformedData = response?.data?.category?.map((item: any, index: number) => ({
-          name: item.category,
-          value: parseFloat(item.total),
+        const transformedData = response?.data?.frequentlyReorderedItems?.map((item: any, index: number) => ({
+          name: item.itemName,
+          value: parseFloat(item.reorderCount),
           color: COLORS[index % COLORS.length],
         }));
 
-        setExpenseByCategory(transformedData);
+        setMostFrequently(transformedData);
       } else {
         console.log("Error:", error);
       }
@@ -83,11 +83,11 @@ function MostFrequentlyRec({ date }: Props) {
     <div className="bg-white rounded-lg w-full p-8">
       <p className="text-[#303F58] font-semibold text-base">Most Frequently Reordered Items</p>
 
-      {expenseByCategory.length > 0 ? (
+      {mostFrequently.length > 0 ? (
         <div className="flex flex-col items-center mt-5">
           {/* Legend */}
           <div className="flex flex-col items-start w-full">
-            {expenseByCategory.map((item: any, index: number) => (
+            {mostFrequently.map((item: any, index: number) => (
               <div key={index} className="flex items-center mb-2">
                 <span
                   className="w-3 h-3 rounded-full mr-2"
@@ -103,7 +103,7 @@ function MostFrequentlyRec({ date }: Props) {
           {/* Pie Chart */}
           <PieChart width={280} height={250}>
             <Pie
-              data={expenseByCategory}
+              data={mostFrequently}
               dataKey="value"
               nameKey="name"
               label={renderCustomizedLabel}
@@ -113,7 +113,7 @@ function MostFrequentlyRec({ date }: Props) {
               paddingAngle={5}
               cornerRadius={10}
             >
-              {expenseByCategory.map((entry: any, index: number) => (
+              {mostFrequently.map((entry: any, index: number) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>

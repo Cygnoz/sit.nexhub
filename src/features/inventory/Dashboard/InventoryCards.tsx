@@ -1,6 +1,5 @@
 import ActiveCustomerIcon from "../../../assets/icons/ActiveCustomerIcon";
 import CustomerRentationIcon from "../../../assets/icons/CustomerRentationIcon";
-import NewCustomerIcon from "../../../assets/icons/NewCustomerIcon";
 import TopCustomerIcon from "../../../assets/icons/TopCustomerIcon";
 import TotalSalesIcon from "../../../assets/icons/TotalSalesIcon";
 import OrderCards from "./OrderCards";

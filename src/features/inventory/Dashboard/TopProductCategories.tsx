@@ -81,25 +81,25 @@ const CustomBar = (props: any) => {
 };
 
 const TopProductCategories: React.FC<TopCustomersProps> = ({ date }) => {
-  const { request: getTopCustomers } = useApi("get", 5002);
-  const [topCustomerData, setTopCustomerData] = useState<any>([]);
+  const { request: getTopProductByCategory } = useApi("get", 5003);
+  const [topProduct, setTopProduct] = useState<any>([]);
 
-  const getTopCus = async () => {
+  const getTopProduct = async () => {
     try {
-      const { response, error } = await getTopCustomers(
-        `${endponits}?date=${date}`
+      const { response, error } = await getTopProductByCategory(
+        `${endponits.INVENTORY_DASH_TOP_SELLING_PRODUCTS_BY_CATEGORIES}?date=${date}`
       );
       if (response && !error) {
         console.log("top", response.data);
         
         // Transform API response into required format
-        const formattedData = response?.data?.topCustomers?.map((customer: any) => ({
-          name: customer.customerName,
-          value: customer.totalSpent,
+        const formattedData = response?.data?.topSellingProductsByCategories?.map((cat: any) => ({
+          name: cat.category,
+          value: cat.totalAmount,
           // img:BackgroundImage
         }));
 
-        setTopCustomerData(formattedData);
+        setTopProduct(formattedData);
       } else {
         console.log("err", error);
       }
@@ -110,20 +110,20 @@ const TopProductCategories: React.FC<TopCustomersProps> = ({ date }) => {
 
   useEffect(() => {
     if (date) {
-      getTopCus();
+      getTopProduct();
     }
   }, [date]);
 
   return (
     <div className="bg-white rounded-lg w-full py-8">
       <h3 className="ms-10 text-[16px] font-bold">
-        Top Customers by Sales Volume
+        Top Products By Category
       </h3>
-      {topCustomerData.length>0?<>
+      {topProduct.length>0?<>
       
       <h4 className="ms-10 py-4 text-[10px] text-[#4A5568]">Sales Volume</h4>
       <ResponsiveContainer width="100%" height={280}>
-        <BarChart data={topCustomerData}>
+        <BarChart data={topProduct}>
           <XAxis
             stroke="#4A5568"
             fontSize={10}
@@ -135,7 +135,7 @@ const TopProductCategories: React.FC<TopCustomersProps> = ({ date }) => {
           <Tooltip content={renderCustomTooltip} cursor={{ fill: "transparent" }} />
           <Bar shape={<CustomBar />} barSize={40} dataKey="value" fill="#8884d8">
             {/* <LabelList dataKey="img" content={renderCustomizedLabel} /> */}
-            {topCustomerData.map((_:any, index:any) => (
+            {topProduct.map((_:any, index:any) => (
               <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
             ))}
           </Bar>
@@ -143,7 +143,7 @@ const TopProductCategories: React.FC<TopCustomersProps> = ({ date }) => {
       </ResponsiveContainer>
 
       <div className="flex justify-center">
-        <h3 className="text-center text-[10px] text-[#4A5568] pt-3">Customers</h3>
+        <h3 className="text-center text-[10px] text-[#4A5568] pt-3">Categories</h3>
       </div>
       </>:
       <NoData parentHeight="350px"/>

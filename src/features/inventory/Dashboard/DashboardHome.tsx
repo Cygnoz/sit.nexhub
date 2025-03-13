@@ -109,7 +109,7 @@ function DashboardHome({}: Props) {
   },[month,year])
 
   return (
-    <div className="mx-5  space-y-8 text-[#303F58]">
+    <div className="mx-5 mb-2 space-y-8 text-[#303F58]">
       <div className="flex items-center relative">
         <div>
           <h3 className="font-bold text-2xl text-textColor">

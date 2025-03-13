@@ -29,7 +29,7 @@ const RecentTransaction = ({ date }: Props) => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const { response, error } = await getTransaction(
+      const { response } = await getTransaction(
         `${endponits.PURCHASE_DASH_RECENT_TRANSACTIONS}?date=${date}`
       );
       if (response?.data) {

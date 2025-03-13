@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import NoData from '../../../Components/charts/Nodata';
-import NoProductImg from '../../../Components/noImage/NoProductImg';
 import useApi from '../../../Hooks/useApi';
 import { endponits } from '../../../Services/apiEndpoints';
 type Props = {
