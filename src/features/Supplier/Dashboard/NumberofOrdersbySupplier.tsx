@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
   CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
-  Legend,
+  XAxis,
+  YAxis,
 } from "recharts";
+import NoData from "../../../Components/charts/Nodata";
 import Tooltips from "../../../Components/tooltip/Tooltip";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import NoData from "../../../Components/charts/Nodata";
 
 type Props = {
   date?: any;

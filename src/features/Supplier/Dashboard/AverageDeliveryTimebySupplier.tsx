@@ -1,46 +1,24 @@
+import { useEffect, useState } from "react";
 import {
-  BarChart,
   Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  LabelList,
+  BarChart,
   Cell,
   ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
 } from "recharts";
-import Tooltips from "../../../Components/tooltip/Tooltip";
-import BackgroundImage from "../../../assets/Images/Active clients.png";
-import useApi from "../../../Hooks/useApi";
-import { useEffect, useState } from "react";
-import { endponits } from "../../../Services/apiEndpoints";
+// import BackgroundImage from "../../../assets/Images/Active clients.png";
 import NoData from "../../../Components/charts/Nodata";
+import Tooltips from "../../../Components/tooltip/Tooltip";
+import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
 
 const colors = ["#f2c6b8", "#a72522", "#fbe6c3", "#eef1d6", "#e3e7e5"];
 interface AvgDeliProps {
   date?:any
 }
-const data = [
-  {
-    name: "Electronics",
-    value: 250,
-  },
-  {
-    name: "Apparel",
-    value: 200,
-  },
-  {
-    name: "Home Goods",
-    value: 434,
-  },
-  {
-    name: "Toys",
-    value: 300,
-  },
-  {
-    name: "Sports",
-    value: 420,
-  },
-];
+
 
 const renderCustomTooltip = ({ payload }: any) => {
   if (payload && payload.length) {
@@ -57,23 +35,23 @@ const renderCustomTooltip = ({ payload }: any) => {
   return null;
 };
 
-const renderCustomizedLabel = (props: any) => {
-  const { x, y, width } = props;
-  const radius = 10;
-  const spacing = -10;
-  return (
-    <g transform={`translate(${x + width / 2}, ${y + spacing})`}>
-      <circle cx={0} cy={-radius} r={radius} fill="none" strokeWidth={0} />
-      <image
-        href={BackgroundImage}
-        x={-radius}
-        y={-radius * 2}
-        width={radius * 2}
-        height={radius * 2}
-      />
-    </g>
-  );
-};
+// const renderCustomizedLabel = (props: any) => {
+//   const { x, y, width } = props;
+//   const radius = 10;
+//   const spacing = -10;
+//   return (
+//     <g transform={`translate(${x + width / 2}, ${y + spacing})`}>
+//       <circle cx={0} cy={-radius} r={radius} fill="none" strokeWidth={0} />
+//       <image
+//         href={BackgroundImage}
+//         x={-radius}
+//         y={-radius * 2}
+//         width={radius * 2}
+//         height={radius * 2}
+//       />
+//     </g>
+//   );
+// };
 
 const CustomBar = (props: any) => {
   const { x, y, width, height, fill } = props;
