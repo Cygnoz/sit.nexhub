@@ -62,8 +62,9 @@ const TopSellingProduct = ({date}:Props) => {
       </div>
       <div className="overflow-x-auto pt-3">
       {topSellingProducts?.length>0?
-        <table className="min-w-full table-auto text-left">
-          <thead className="border-b text-xs border-tableBorder bg-[#FDF8F0] p-4">
+        <div className="w-full max-h-[400px] overflow-auto border border-tableBorder rounded-md">
+        <table className="w-full border-collapse relative">
+            <thead className="sticky top-0 bg-[#F9F7F0] z-10 text-sm">
           <tr style={{ backgroundColor: "#F9F7F0" }}>
               {tableHeaders.map((heading, index) => (
                 <th
@@ -94,6 +95,7 @@ const TopSellingProduct = ({date}:Props) => {
             ))}
           </tbody>
         </table>
+        </div>
         :
         <NoData parentHeight="350px"/>
         }

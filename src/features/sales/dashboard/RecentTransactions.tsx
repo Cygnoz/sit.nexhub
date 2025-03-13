@@ -88,8 +88,9 @@ function RecentTransactions({ date }: Props) {
             {/* Table */}
             <div className="mt-5">
                 {activeTabData?.length > 0 ? (
-                    <table className="w-full border-collapse">
-                        <thead>
+                       <div className="w-full max-h-80 overflow-auto border border-tableBorder rounded-md">
+                       <table className="w-full border-collapse relative">
+                           <thead className="sticky top-0 bg-[#F9F7F0] z-10">
                             <tr className="bg-[#F9F7F0] text-left text-xs">
                                 <th className="py-3 px-4 text-[#303F58] font-semibold border-b border-tableBorder">
                                     {tabDataMapping[activeTab].label}
@@ -121,11 +122,14 @@ function RecentTransactions({ date }: Props) {
                                                         ? "bg-blue-100 text-blue-700"
                                                     : item[col] === "Overdue"
                                                         ? "bg-red-100 text-red-700"
+                                                    : item[col] === "Pending"
+                                                        ? "bg-yellow-100 text-yellow-700"
                                                     : "bg-gray-200 text-gray-600"
                                                 }`}
                                             >
                                                 {item[col]}
                                             </span>
+                                            
                                             
                                             ) : (
                                                 item[col]
@@ -136,6 +140,7 @@ function RecentTransactions({ date }: Props) {
                             ))}
                         </tbody>
                     </table>
+                    </div>
                 ) : (
                     <NoData parentHeight="300px"/>
                 )}

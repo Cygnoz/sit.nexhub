@@ -108,8 +108,9 @@ const RecentTransaction = ({ date }: Props) => {
       </div>
 
       <div ref={contentRef} className="mt-3 overflow-y-scroll hide-scrollbar max-h-[25rem]">
-        <table className="min-w-full bg-white mb-5">
-          <thead className="text-[12px] text-center text-dropdownText">
+      <div className="w-full max-h-80 overflow-auto border border-tableBorder rounded-md">
+                       <table className="w-full border-collapse relative">
+                           <thead className="sticky top-0 bg-[#F9F7F0] z-10 text-dropdownText text-md">
             <tr style={{ backgroundColor: "#F9F7F0" }}>
               <th className="py-3 px-4 border-b border-tableBorder">Sl.No</th>
               {columns[selectedTab].map(
@@ -162,6 +163,7 @@ const RecentTransaction = ({ date }: Props) => {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );
