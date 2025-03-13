@@ -10,6 +10,7 @@ const dashboardCont = require("../controller/dashboardCont")
 
 const checkPermission = require('../controller/permission');
 const { verifyToken } = require('../controller/middleware');
+const { nexVerifyToken } = require('../controller/nexMiddleware');
 
 
 
@@ -63,11 +64,22 @@ router.put('/update-customer-settings',verifyToken,checkPermission('Added a new 
 //Customer History
 router.get('/get-one-customer-history/:customerId',verifyToken,checkPermission('Viewed Customer details'),customerController.getOneCustomerHistory)
 
-module.exports = router
 
 
 
+//nexPortal
+//Customer
+router.post('/add-customer-nexportal',nexVerifyToken,customerController.addCustomer)
 
+router.get('/get-all-customer-nexportal',nexVerifyToken,customerController.getAllCustomer)
+
+router.get('/get-one-customer-nexportal/:customerId',nexVerifyToken,customerController.getOneCustomer)
+
+router.put('/edit-customer-nexportal/:customerId', nexVerifyToken,customerController.editCustomer);
+
+router.put('/update-customer-status-nexportal/:customerId', nexVerifyToken,customerController.updateCustomerStatus);
+
+router.delete('/delete-customer-nexportal/:customerId',nexVerifyToken,customerController.deleteCustomer);
 
 
 

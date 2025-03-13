@@ -18,7 +18,7 @@ const { cleanData } = require("../services/cleanData");
 // Fetch existing data
 const dataExist = async ( organizationId, customerId) => {
     const [organizationExists, taxExists, currencyExists, settings, allCustomer, existingCustomer, accountExist, trialBalance, customersHistory ] = await Promise.all([
-      Organization.findOne({ organizationId },{ timeZoneExp: 1, dateFormatExp: 1, dateSplit: 1, organizationCountry: 1 }).lean(),
+      Organization.findOne({ organizationId },{ timeZoneExp: 1, dateFormatExp: 1, dateSplit: 1, organizationCountry: 1, state: 1 }).lean(),
       Tax.findOne({ organizationId },{ taxType: 1 }).lean(),
       Currency.find({ organizationId },{ currencyCode: 1, _id: 1 }).lean(),
       Settings.find({ organizationId },{ duplicateCustomerDisplayName: 1, duplicateCustomerEmail: 1, duplicateCustomerMobile: 1 }).lean(),
@@ -54,6 +54,11 @@ exports.addCustomer = async (req, res) => {
       const { customerEmail, debitOpeningBalance, creditOpeningBalance, customerDisplayName, mobile } = cleanedData;
   
       const { organizationExists, taxExists, currencyExists, allCustomer , settings } = await dataExist( organizationId, null );
+
+      cleanedData.billingCountry = organizationExists.organizationCountry;
+      cleanedData.billingState = organizationExists.state;
+      cleanedData.shippingCountry = organizationExists.organizationCountry;
+      cleanedData.shippingState = organizationExists.state;
       
       // checking values from Customer settings
       const { duplicateCustomerDisplayName , duplicateCustomerEmail , duplicateCustomerMobile } = settings[0]
