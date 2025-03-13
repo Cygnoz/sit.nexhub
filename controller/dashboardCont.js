@@ -372,6 +372,9 @@ exports.getAverageOrderValue = async (req, res) => {
 
         console.log("Requested Date Range:", startDate.format(), endDate.format());
 
+        // Utility function to round values to two decimal places
+        const roundToTwoDecimals = (value) => Number(value.toFixed(2)); 
+
         // Filter invoices within the date range
         const filteredInvoices = allInvoice.filter(inv => {
             const invoiceDate = moment.tz(inv.createdDateTime, orgTimeZone);
@@ -388,7 +391,7 @@ exports.getAverageOrderValue = async (req, res) => {
         // 𝐴𝑂𝑉 = Total Revenue in Period/Total Number of Orders in Period
 
         // Calculate Average Order Value
-        const averageOrderValue = totalOrders > 0 ? totalSales / totalOrders : 0;
+        const averageOrderValue = roundToTwoDecimals(totalOrders > 0 ? totalSales / totalOrders : 0);
 
         console.log("Total Sales:", totalSales);
         console.log("Total Orders:", totalOrders);
