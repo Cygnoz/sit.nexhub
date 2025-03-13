@@ -73,7 +73,9 @@ router.get('/get-item-transaction/:id',verifyToken,checkPermission('Viewed Item 
 
 //nexPortal
 // Item
-router.post('/add-item-nexportal', nexVerifyToken, itemController.addItem);
+router.get('/get-all-item-nexportal', nexVerifyToken, itemController.getAllItem);
+
+
 
 
 
