@@ -25,7 +25,7 @@ server.use(helmet());
 server.use(express.json())
 server.use(reportRouter)
 
-const PORT = 5006;
+const PORT = 7006;
 
 server.get('/',(req,res)=>{
     res.status(200).json("Dev Bill BIZZ server started - Report v1.6")
