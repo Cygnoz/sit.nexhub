@@ -111,11 +111,6 @@ const customerSchema = new Schema({
     instagram: {type:String},  
     snapchat: {type:String}, 
     facebook: {type:String}, 
-    
-    //Additional variables
-    startDate: {type:String},  
-    endDate: {type:String},  
-    plan: {type:String},  
 
 });
 
