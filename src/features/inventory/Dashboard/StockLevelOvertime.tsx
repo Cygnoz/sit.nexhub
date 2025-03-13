@@ -138,7 +138,7 @@ function StockLevelOvertime({ date }: Props) {
       </div>
       </div>
      {stockLevel?.length>0? <ResponsiveContainer width="100%" height={400}>
-        <BarChart layout="vertical" data={stockLevel} margin={{ left: -70, right: 100 }}>
+        <BarChart layout="vertical" data={stockLevel} margin={{ left: -50, right: 100 }}>
           <XAxis
             type="number"
             stroke="#4A5568"
