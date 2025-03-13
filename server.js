@@ -27,7 +27,7 @@ server.options('*', (req, res) => {
 server.use(helmet()); 
 server.use(inventoryRouter); 
 
-const PORT = 5003
+const PORT = 7003
 
 server.get('/',(req,res)=>{
     res.status(200).json("Dev Bill BIZZ server started - Inventory v2.0")

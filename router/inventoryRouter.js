@@ -12,6 +12,8 @@ const dashboardController = require("../controller/dashboardController")
 
 const checkPermission = require('../controller/permission');
 const { verifyToken } = require('../controller/middleware');
+const { nexVerifyToken } = require('../controller/nexMiddleware');
+
 
 //item Drop Down
 router.get('/get-itemDropdown',verifyToken, itemDropdownController.getItemDropDown);
@@ -55,19 +57,39 @@ router.get('/get-a-bmcr/:id',verifyToken,checkPermission('Created a New Item'), 
 router.put('/update-bmcr',verifyToken,checkPermission('Created a New Item'), bmcrController.updateBmcr);
 router.delete('/delete-bmcr/:id',verifyToken,checkPermission('Created a New Item'), bmcrController.deleteBmcr)
 
-
-
  
 //items settings
 router.put('/add-item-settings',verifyToken,checkPermission('Added a new Setting'), itemSettingsController.addItemSettings);
 
 
 
-
-
 //Item Track
 router.get('/get-all-item-track',verifyToken,checkPermission('Viewed Item Information'), itemSettingsController.getAllItemTrack);
 router.get('/get-item-transaction/:id',verifyToken,checkPermission('Viewed Item Information'), itemSettingsController.itemTransaction);
+
+
+
+
+
+//nexPortal
+// Item
+router.post('/add-item-nexportal', nexVerifyToken, itemController.addItem);
+router.get('/get-all-item-nexportal', nexVerifyToken, itemController.getAllItem);
+router.get('/get-all-item-xs-nexportal', nexVerifyToken, itemController.getAllItemXS);
+router.get('/get-all-item-m-nexportal', nexVerifyToken, itemController.getAllItemM);
+
+router.get('/get-one-item-nexportal/:itemId', nexVerifyToken, itemController.getAItem)
+router.put('/edit-item-nexportal/:itemId', nexVerifyToken, itemController.updateItem)
+router.delete('/delete-item-nexportal/:itemId', nexVerifyToken, itemController.deleteItem)
+
+
+// Unit
+router.post('/add-unit-nexportal', nexVerifyToken, unitController.addUnit);
+router.get('/get-all-unit-nexportal', nexVerifyToken, unitController.getAllUnit);
+router.get('/get-one-unit-nexportal/:_id', nexVerifyToken, unitController.getOneUnit);
+router.put('/edit-unit-nexportal/:_id', nexVerifyToken, unitController.updateUnit);
+router.delete('/delete-unit-nexportal/:id', nexVerifyToken, unitController.deleteUnit);
+
 
 
 

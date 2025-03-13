@@ -70,7 +70,11 @@ const itemSchema = new Schema({
     createdDateTime: { type: Date, default: () => new Date() },
     lastModifiedDateTime: { type: Date, default: () => new Date() },
 
-    
+
+    // Additional variables
+    products:{type:String},
+    duration:{type:String},
+
     // Sewnex additional variables
     barCode: { type: String },
     internalManufacturingItem: { type: Boolean },
