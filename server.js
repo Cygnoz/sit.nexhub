@@ -32,7 +32,7 @@ server.use(helmet());
 server.use(express.json());
 server.use(organizationRouter);
 
-const PORT = process.env.PORT || 5004;
+const PORT = process.env.PORT || 7004;
 
 server.get('/', (req, res) => {
     res.status(200).json("Dev Bill BIZZ server started - Organization v2");
