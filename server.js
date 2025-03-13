@@ -25,7 +25,7 @@ server.use(helmet());
 server.use(express.json())
 server.use(supplierRouter)
 
-const PORT = 5009
+const PORT = 7009
 
 server.get('/',(req,res)=>{
     res.status(200).json("Dev Bill BIZZ server started - Supplier v1.6")
