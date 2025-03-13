@@ -26,7 +26,7 @@ server.use(helmet());
 server.use(express.json());
 server.use(salesRouter);
 
-const PORT = 5007
+const PORT = 7007
 
 server.get('/',(req,res)=>{
     res.status(200).json("Dev Bill BIZZ server started - Sales v1.6")

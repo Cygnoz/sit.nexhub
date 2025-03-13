@@ -23,6 +23,8 @@ const dashboardCont = require('../controller/dashboardCont')
 
 const checkPermission = require('../controller/permission');
 const { verifyToken } = require('../controller/middleware');
+const { nexVerifyToken } = require('../controller/nexMiddleware');
+
 
 
 
@@ -131,6 +133,12 @@ router.put('/update-creditNote/:creditId',verifyToken,checkPermission("Edited Cr
 router.get('/creditNote-journal/:creditId',verifyToken,checkPermission("Viewed Credit Note Details"),creditNote.creditNoteJournal);
 
 router.delete('/delete-creditNote/:creditId',verifyToken,checkPermission("Deleted Credit Note Information"),updateCreditNote.deleteCreditNote);
+
+
+
+
+//nexPortal
+router.post('/sales-invoice-nexPortal',nexVerifyToken,salesInvoice.addInvoice)
 
 
 
