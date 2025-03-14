@@ -18,9 +18,12 @@ const { nexVerifyToken } = require('../controller/nexMiddleware');
 //item Drop Down
 router.get('/get-itemDropdown',verifyToken, itemDropdownController.getItemDropDown);
 
+// Dashboard
 router.get('/get-inventoryDashboard-overview',verifyToken, dashboardController.getOverviewData);
 router.get('/get-inventoryDashboard-topSellingProducts',verifyToken, dashboardController.getTopSellingProducts);
-
+router.get('/get-inventoryDashboard-topSellingProductsByCategories',verifyToken, dashboardController.getTopSellingProductsByCategories);
+router.get('/get-inventoryDashboard-stockLevelOverCategory',verifyToken, dashboardController.getStockLevelOverCategory);
+router.get('/get-inventoryDashboard-mostFrequentlyReorderedItems',verifyToken, dashboardController.getFrequentlyReorderedItems);
 
 
 // Item
@@ -74,9 +77,6 @@ router.get('/get-item-transaction/:id',verifyToken,checkPermission('Viewed Item 
 //nexPortal
 // Item
 router.get('/get-all-item-nexportal', nexVerifyToken, itemController.getAllItem);
-
-
-
 
 
 
