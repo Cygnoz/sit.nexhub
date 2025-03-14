@@ -28,10 +28,10 @@ server.use(supplierRouter)
 const PORT = 7009
 
 server.get('/',(req,res)=>{
-    res.status(200).json("Dev Bill BIZZ server started - Supplier v1.6")
+    res.status(200).json("Dev NexHub server started - Supplier v1.6")
 })
 
 server.listen(PORT,()=>{
-    console.log(`BillBIZZ server Supplier started at port : ${PORT}`);
+    console.log(`NexHub server Supplier started at port : ${PORT}`);
 })
 
