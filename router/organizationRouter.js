@@ -127,7 +127,6 @@ router.get('/get-mainDashboard-topProductCustomer', verifyToken, dashboardContro
 
 
 
-
 //Internal
 
 router.get('/get-all-organization',nexVerifyToken,organizationController.getAllOrganization)
@@ -144,7 +143,7 @@ router.delete('/delete-all',nexVerifyToken,billBizzClientCont.deleteAll)
 //Nex Portal
 router.get('/get-one-organization-nex/:organizationId',nexVerifyToken,billBizzClientCont.getOneOrganizationNex)
 
-router.post('/create-billbizz-client',billBizzClientCont.createOrganizationAndClient)
+router.post('/create-nexhub-client',billBizzClientCont.createOrganizationAndClient)
 
 router.post('/create-sewnex-client',sewnexClientCont.createOrganizationAndClient)
 
