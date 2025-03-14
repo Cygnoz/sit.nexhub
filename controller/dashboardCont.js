@@ -36,47 +36,15 @@ const dataExist = async ( organizationId ) => {
 
 
 
-// get date range
-const getDateRange = (filterType, date, timeZone) => {
-    
-    // Ensure the date format is YYYY-MM-DD to avoid Moment.js deprecation warning
-    const formattedDate = date.replace(/\//g, "-"); // Ensure YYYY-MM-DD format
-    const utcDate = new Date(formattedDate); // Convert to Date object
-    const momentDate = moment.tz(utcDate, timeZone); // Use time zone
-
-    switch (filterType) {
-        case "month":
-            return {
-                startDate: momentDate.clone().startOf("month"),
-                endDate: momentDate.clone().endOf("month"),
-            };
-        case "year":
-            return {
-                startDate: momentDate.clone().startOf("year"),
-                endDate: momentDate.clone().endOf("year"),
-            };
-        case "day":
-            return {
-                startDate: momentDate.clone().startOf("day"),
-                endDate: momentDate.clone().endOf("day"),
-            };
-        default:
-            throw new Error("Invalid filter type. Use 'month', 'year', or 'day'.");
-    }
-};
-
-
-
-
 // Dashboard overview function
 exports.getOverviewData = async (req, res) => {
     try {
         const organizationId = req.user.organizationId;
-        const { date, filterType } = req.query; // Get date & filter type (month, year, day)
+        const { date } = req.query; // Get date in YYYY/MM or YYYY-MM format
 
-        // Validate date input (YYYY-MM-DD or YYYY/MM/DD format)
-        if (!date || !/^\d{4}[-/]\d{2}[-/]\d{2}$/.test(date)) {
-            return res.status(400).json({ message: "Invalid date format. Use YYYY-MM-DD or YYYY/MM/DD." });
+        // Validate date format (YYYY/MM or YYYY-MM)
+        if (!date || !/^\d{4}[-/]\d{2}$/.test(date)) {
+            return res.status(400).json({ message: "Invalid date format. Use YYYY/MM or YYYY-MM." });
         }
 
         // Fetch Organization Data
@@ -85,15 +53,19 @@ exports.getOverviewData = async (req, res) => {
 
         // Get organization's time zone
         const orgTimeZone = organizationExists.timeZoneExp || "UTC";
-        console.log("orgTimeZone",orgTimeZone)
 
-        // Get the date range based on filterType
-        let startDate, endDate;
-        try {
-            ({ startDate, endDate } = getDateRange(filterType, date, orgTimeZone));
-        } catch (error) {
-            return res.status(400).json({ message: error.message });
+        // Extract Year and Month
+        let [year, month] = date.split(/[-/]/).map(Number); // Split date on "-" or "/"
+        month = String(month).padStart(2, '0'); // Ensure month is always two digits
+
+        // Ensure valid year and month
+        if (!year || !month || month < 1 || month > 12) {
+            return res.status(400).json({ message: "Invalid year or month in date." });
         }
+
+        // Set start and end date for the month
+        const startDate = moment.tz(`${year}-${month}-01`, orgTimeZone).startOf("month");
+        const endDate = moment(startDate).endOf("month");
 
         console.log("Requested Date Range:", startDate.format(), endDate.format());
 
@@ -162,7 +134,7 @@ exports.getOverviewData = async (req, res) => {
 
 
 
-// Sales over time - already used organization dashboard 
+// Sales over time - already used main dashboard 
 
 
 
@@ -170,11 +142,11 @@ exports.getOverviewData = async (req, res) => {
 exports.getTopSalesOrder = async (req, res) => {
     try {
         const organizationId = req.user.organizationId;
-        const { date, filterType } = req.query; // Get date & filter type (month, year, day)
+        const { date } = req.query; // Get date in YYYY/MM or YYYY-MM format
 
-        // Validate date input (YYYY-MM-DD or YYYY/MM/DD format)
-        if (!date || !/^\d{4}[-/]\d{2}[-/]\d{2}$/.test(date)) {
-            return res.status(400).json({ message: "Invalid date format. Use YYYY-MM-DD or YYYY/MM/DD." });
+        // Validate date format (YYYY/MM or YYYY-MM)
+        if (!date || !/^\d{4}[-/]\d{2}$/.test(date)) {
+            return res.status(400).json({ message: "Invalid date format. Use YYYY/MM or YYYY-MM." });
         }
 
         // Fetch Organization Data
@@ -183,15 +155,19 @@ exports.getTopSalesOrder = async (req, res) => {
 
         // Get organization's time zone
         const orgTimeZone = organizationExists.timeZoneExp || "UTC";
-        console.log("orgTimeZone:", orgTimeZone);
 
-        // Get the date range based on filterType
-        let startDate, endDate;
-        try {
-            ({ startDate, endDate } = getDateRange(filterType, date, orgTimeZone));
-        } catch (error) {
-            return res.status(400).json({ message: error.message });
+        // Extract Year and Month
+        let [year, month] = date.split(/[-/]/).map(Number); // Split date on "-" or "/"
+        month = String(month).padStart(2, '0'); // Ensure month is always two digits
+
+        // Ensure valid year and month
+        if (!year || !month || month < 1 || month > 12) {
+            return res.status(400).json({ message: "Invalid year or month in date." });
         }
+
+        // Set start and end date for the month
+        const startDate = moment.tz(`${year}-${month}-01`, orgTimeZone).startOf("month");
+        const endDate = moment(startDate).endOf("month");
 
         console.log("Requested Date Range:", startDate.format(), endDate.format());
 
@@ -250,11 +226,11 @@ exports.getTopSalesOrder = async (req, res) => {
 exports.getRecentTransactions = async (req, res) => {
     try {
         const organizationId = req.user.organizationId;
-        const { date, filterType } = req.query; // Get date & filter type (month, year, day)
+        const { date } = req.query; // Get date in YYYY/MM or YYYY-MM format
 
-        // Validate date input (YYYY-MM-DD or YYYY/MM/DD format)
-        if (!date || !/^\d{4}[-/]\d{2}[-/]\d{2}$/.test(date)) {
-            return res.status(400).json({ message: "Invalid date format. Use YYYY-MM-DD or YYYY/MM/DD." });
+        // Validate date format (YYYY/MM or YYYY-MM)
+        if (!date || !/^\d{4}[-/]\d{2}$/.test(date)) {
+            return res.status(400).json({ message: "Invalid date format. Use YYYY/MM or YYYY-MM." });
         }
 
         // Fetch Organization Data
@@ -263,15 +239,19 @@ exports.getRecentTransactions = async (req, res) => {
 
         // Get organization's time zone
         const orgTimeZone = organizationExists.timeZoneExp || "UTC";
-        console.log("orgTimeZone",orgTimeZone)
 
-        // Get the date range based on filterType
-        let startDate, endDate;
-        try {
-            ({ startDate, endDate } = getDateRange(filterType, date, orgTimeZone));
-        } catch (error) {
-            return res.status(400).json({ message: error.message });
+        // Extract Year and Month
+        let [year, month] = date.split(/[-/]/).map(Number); // Split date on "-" or "/"
+        month = String(month).padStart(2, '0'); // Ensure month is always two digits
+
+        // Ensure valid year and month
+        if (!year || !month || month < 1 || month > 12) {
+            return res.status(400).json({ message: "Invalid year or month in date." });
         }
+
+        // Set start and end date for the month
+        const startDate = moment.tz(`${year}-${month}-01`, orgTimeZone).startOf("month");
+        const endDate = moment(startDate).endOf("month");
 
         console.log("Requested Date Range:", startDate.format(), endDate.format());
 
@@ -313,7 +293,7 @@ exports.getRecentTransactions = async (req, res) => {
                 salesQuoteDate: data.salesQuoteDate,
                 customerName: data.customerId?.customerDisplayName || "Unknown",
                 status: data.status,
-                totalAmount: (order.totalAmount - order.totalTax) || 0,
+                totalAmount: (data.totalAmount - data.totalTax) || 0,
             });
         });
 
@@ -326,7 +306,7 @@ exports.getRecentTransactions = async (req, res) => {
                 salesOrderDate: data.salesOrderDate,
                 customerName: data.customerId?.customerDisplayName || "Unknown",
                 status: data.status,
-                totalAmount: (order.totalAmount - order.totalTax) || 0,
+                totalAmount: (data.totalAmount - data.totalTax) || 0,
             });
         });
 
@@ -351,7 +331,7 @@ exports.getRecentTransactions = async (req, res) => {
                 creditNote: data.creditNote,
                 customerCreditDate: data.customerCreditDate,
                 customerName: data.customerId?.customerDisplayName || "Unknown",
-                totalAmount: (order.totalAmount - order.totalTax) || 0,
+                totalAmount: (data.totalAmount - data.totalTax) || 0,
             });
         });
         
