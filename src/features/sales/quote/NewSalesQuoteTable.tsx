@@ -271,14 +271,6 @@ const NewSalesQuoteTable = ({
 
   const handleRowChange = (index: number, field: keyof Row, value: string) => {
     const newRows = [...rows];
-    // const currentStock = parseFloat(newRows[index].itemStock) || 0;
-    // const enteredQuantity = parseFloat(value) || 0;
-
-    // if (field === "quantity" && enteredQuantity > currentStock) {
-    //   toast.error("Quantity exceeds available stock!");
-    //   return;
-    // }
-
     newRows[index] = { ...newRows[index], [field]: value };
 
     const quantity = parseFloat(newRows[index].quantity) || 0;
@@ -333,7 +325,7 @@ const NewSalesQuoteTable = ({
         const sellingPrice = parseFloat(row.sellingPrice) || 0;
         const qty = parseFloat(row.quantity) || 1;
         const discountedPrice = calculateDiscountPrice(
-          sellingPrice,
+          sellingPrice * qty,
           row.discountAmount,
           row.discountType
         );
@@ -345,17 +337,17 @@ const NewSalesQuoteTable = ({
         );
 
         const finalItemAmount = !isPlaceOfSupplyVisible
-          ? (parseFloat(itemAmount) * qty).toFixed(2)
+          ? parseFloat(itemAmount).toFixed(2)
           : !isIntraState
-            ? ((parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)) * qty).toFixed(2)
-            : ((parseFloat(itemAmount) + parseFloat(igstAmount)) * qty).toFixed(2);
+            ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+            : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
 
         return {
           ...row,
-          amount: (parseFloat(itemAmount) * qty).toFixed(2),
-          cgstAmount: isPlaceOfSupplyVisible ? (parseFloat(cgstAmount) * qty).toFixed(2) : "0",
-          sgstAmount: isPlaceOfSupplyVisible ? (parseFloat(sgstAmount) * qty).toFixed(2) : "0",
-          igstAmount: isPlaceOfSupplyVisible ? (parseFloat(igstAmount) * qty).toFixed(2) : igstAmount,
+          amount: parseFloat(itemAmount).toFixed(2),
+          cgstAmount: isPlaceOfSupplyVisible ? parseFloat(cgstAmount).toFixed(2) : "0",
+          sgstAmount: isPlaceOfSupplyVisible ? parseFloat(sgstAmount).toFixed(2) : "0",
+          igstAmount: isPlaceOfSupplyVisible ? parseFloat(igstAmount).toFixed(2) : igstAmount,
           itemAmount: finalItemAmount,
         };
       });
