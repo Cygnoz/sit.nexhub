@@ -55,10 +55,8 @@ exports.addCustomer = async (req, res) => {
   
       const { organizationExists, taxExists, currencyExists, allCustomer , settings } = await dataExist( organizationId, null );
 
-      // cleanedData.billingCountry = organizationExists.organizationCountry;
-      // cleanedData.billingState = organizationExists.state;
-      // cleanedData.shippingCountry = organizationExists.organizationCountry;
-      // cleanedData.shippingState = organizationExists.state;
+      cleanedData.taxType = taxExists.taxType;
+      cleanedData.taxPreference = "Taxable";
       
       // checking values from Customer settings
       const { duplicateCustomerDisplayName , duplicateCustomerEmail , duplicateCustomerMobile } = settings[0]
