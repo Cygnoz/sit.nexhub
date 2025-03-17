@@ -150,15 +150,15 @@ exports.getOverviewData = async (req, res) => {
 
         // Response JSON
         res.json({
-            totalRevenue,
-            accountsPayable,
-            accountsReceivable,
-            pendingBills,
+            totalRevenue:totalRevenue.toFixed(2),
+            accountsPayable:totalRevenue.toFixed(2),
+            accountsReceivable:totalRevenue.toFixed(2),
+            pendingBills:totalRevenue.toFixed(2),
         });
 
     } catch (error) {
-        console.error("Error fetching overview data:", error);
-        res.status(500).json({ message: "Internal server error." });
+        console.log("Error fetching overview data:", error);
+        res.status(500).json({ message: "Internal server error.", error });
     }
 };
 
@@ -242,8 +242,8 @@ exports.getTotalRevenueOverTime = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error fetching total revenue over time:", error);
-        res.status(500).json({ message: "Internal server error." });
+        console.log("Error fetching total revenue over time:", error);
+        res.status(500).json({ message: "Internal server error.", error });
     }
 };
 
@@ -326,8 +326,8 @@ exports.getAccountReceivableAging = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error fetching account receivable aging:", error);
-        res.status(500).json({ message: "Internal server error." });
+        console.log("Error fetching account receivable aging:", error);
+        res.status(500).json({ message: "Internal server error.", error });
     }
 };
 
@@ -423,8 +423,8 @@ exports.getAccountPayableAging = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error fetching account payable aging:", error);
-        res.status(500).json({ message: "Internal server error." });
+        console.log("Error fetching account payable aging:", error);
+        res.status(500).json({ message: "Internal server error.", error });
     }
 };
 
@@ -501,8 +501,8 @@ exports.getInvoiceStatus = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error fetching invoice status data:", error);
-        res.status(500).json({ message: "Internal server error." });
+        console.log("Error fetching invoice status data:", error);
+        res.status(500).json({ message: "Internal server error.", error });
     }
 };
 
@@ -702,7 +702,7 @@ async function getReportAccount(organizationExists,organizationId, startDate, en
                 entry.transactions = entry.transactions.map(transaction => {
                     const { dateFormatExp, timeZoneExp, dateSplit } = organizationExists;
                     
-                    const formattedData = singleCustomDateTime( transaction.createdDateTime, dateFormatExp, timeZoneExp, dateSplit );
+                    const formattedData = singleCustomDateTime( transaction, dateFormatExp, timeZoneExp, dateSplit );
         
                     return {
                         ...transaction,

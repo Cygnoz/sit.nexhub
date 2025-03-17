@@ -37,6 +37,9 @@ const dataExist = async ( organizationId, id ) => {
     return { existingOrganization, allJournal, journal, existingPrefix };
   };
 
+
+
+
 // Add Journal Entry
 exports.addJournalEntry = async (req, res) => {
     console.log("Add journal Entry:", req.body);
@@ -107,8 +110,8 @@ exports.addJournalEntry = async (req, res) => {
         res.status(201).json({ message: "Journal entry created successfully." });
         console.log("Journal entry created successfully:", savedJournal);
     } catch (error) {
-        console.error("Error creating journal entry:", error);
-        res.status(500).json({ message: "Internal server error." });
+        console.log("Error creating journal entry:", error);
+        res.status(500).json({ message: "Internal server error.", error });
     }
 };
 
@@ -216,8 +219,8 @@ exports.updateJournalEntry = async (req, res) => {
       res.status(200).json({ message: "Journal entry updated successfully", savedJournal });
       // console.log("Journal entry updated successfully:", savedJournal);
     } catch (error) {
-      console.error("Error updating journal entry:", error);
-      res.status(500).json({ message: "Internal server error" });
+      console.log("Error updating journal entry:", error);
+      res.status(500).json({ message: "Internal server error", error });
     }
 }
 
@@ -250,8 +253,8 @@ exports.getAllJournal = async (req, res) => {
 
         res.status(200).json(formattedObjects);
     } catch (error) {
-        console.error("Error fetching journals:", error);
-        res.status(500).json({ message: "Internal server error." });
+        console.log("Error fetching journals:", error);
+        res.status(500).json({ message: "Internal server error.", error });
     }
 };
 
@@ -282,8 +285,8 @@ exports.getOneJournal = async (req, res) => {
         res.status(200).json(formattedObjects);
 
     } catch (error) {
-        console.error("Error fetching journal:", error);
-        res.status(500).json({ message: "Internal server error." });
+        console.log("Error fetching journal:", error);
+        res.status(500).json({ message: "Internal server error.", error });
     }
 };
 
@@ -333,8 +336,8 @@ exports.deleteJournalEntry  = async (req, res) => {
         console.log("Journal entry deleted successfully with ID:", id);
 
     } catch (error) {
-        console.error("Error deleting journal entry:", error);
-        res.status(500).json({ message: "Internal server error!" });
+        console.log("Error deleting journal entry:", error);
+        res.status(500).json({ message: "Internal server error!", error });
     }
   };
 
@@ -396,7 +399,7 @@ exports.getLastJournalPrefix = async (req, res) => {
 
         res.status(200).json(lastPrefix);
     } catch (error) {
-        console.error("Error fetching accounts:", error);
+        console.log("Error fetching accounts:", error);
         res.status(500).json({ message: "Internal server error." });
     }
 };

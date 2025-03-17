@@ -91,8 +91,8 @@ exports.addAccount = async (req, res) => {
       res.status(201).json({ message: "Account created successfully." });
       console.log("Account created successfully",newAccount,trialEntry);
     } catch (error) {
-      console.error("Error creating Account:", error);
-      res.status(500).json({ message: "Internal server error." });
+      console.log("Error creating Account:", error);
+      res.status(500).json({ message: "Internal server error.", error });
     } 
 };
 
@@ -186,8 +186,8 @@ exports.editAccount = async (req, res) => {
     res.status(200).json({ message: "Account updated successfully." });
     console.log("Account updated successfully:");
   } catch (error) {
-    console.error("Error updating Account:", error);
-    res.status(500).json({ message: "Internal server error." });
+    console.log("Error updating Account:", error);
+    res.status(500).json({ message: "Internal server error.", error });
   }
 };
 
@@ -246,8 +246,8 @@ exports.deleteAccount = async (req, res) => {
       console.log("Account deleted successfully with ID:", accountId);
 
   } catch (error) {
-      console.error("Error deleting customer:", error);
-      res.status(500).json({ message: "Internal server error" });
+      console.log("Error deleting customer:", error);
+      res.status(500).json({ message: "Internal server error", error });
   }
 };
 
@@ -275,8 +275,8 @@ exports.getAllAccount = async (req, res) => {
       
     res.status(200).json(formattedObjects);
   } catch (error) {
-    console.error("Error fetching accounts111:", error);
-    res.status(500).json({ message: "Internal server error.", error: error });
+    console.log("Error fetching accounts111:", error);
+    res.status(500).json({ message: "Internal server error.", error });
   }
 };
 
@@ -323,8 +323,8 @@ exports.getOneAccount = async (req, res) => {
     
     res.status(200).json(formattedObjects);
   } catch (error) {
-    console.error("Error fetching account1122:", error);
-    res.status(500).json({ message: "Internal server error." });
+    console.log("Error fetching account1122:", error);
+    res.status(500).json({ message: "Internal server error.", error });
   }
 };
 
@@ -361,8 +361,8 @@ exports.getOneTrailBalance = async (req, res) => {
 
       res.status(200).json(trialBalanceWithCumulativeSum);
   } catch (error) {
-      console.error("Error fetching account:", error);
-      res.status(500).json({ message: "Internal server error.", error: error });
+      console.log("Error fetching account:", error);
+      res.status(500).json({ message: "Internal server error.", error });
   }
 };
 
