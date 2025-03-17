@@ -118,9 +118,9 @@ exports.getOneCustomerStats = async (req, res) => {
 
     // Send response
     res.status(200).json({
-      totalPayment,
-      outstandingBalance,
-      totalSales,
+      totalPayment:totalPayment.toFixed(2),
+      outstandingBalance:outstandingBalance.toFixed(2),
+      totalSales:totalSales.toFixed(2),
     });
   } catch (error) {
     res.status(500).json({ message: "Error fetching customer stats", error });
