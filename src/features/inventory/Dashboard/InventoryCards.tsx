@@ -39,7 +39,7 @@ const InventoryCards = ({data}: Props) => {
   ];
   return (
     <div>
-        <div className="flex justify-between gap-4">
+        <div className="flex-row sm:flex justify-between gap-4">
       {cards.map((card:any, index) => (
         <OrderCards
           key={index}

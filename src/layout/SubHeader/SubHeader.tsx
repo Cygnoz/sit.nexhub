@@ -24,13 +24,18 @@ const SubHeader = ({ activeIndex }: Props) => {
   };
 
   return (
-    <div className="bg-BgSubhead flex mx-7 justify-between px-5 py-3 my-4 items-center rounded-full ">
-      <div className="flex items-center gap-4">
-        <Link to={"/landing"}>
-          <div className="bg-white px-3 py-2 rounded-full text-sm">
-            <HomeIcon color="#585953" size={24} />
-          </div>
-        </Link>
+    <div className="bg-BgSubhead flex mx-7 justify-between px-5 py-3 my-4 items-center rounded-full 
+    sm:overflow-visible overflow-x-auto whitespace-nowrap">
+    
+    <div className="flex items-center gap-4">
+      <Link to={"/landing"}>
+        <div className="bg-white px-3 py-2 rounded-full text-sm">
+          <HomeIcon color="#585953" size={24} />
+        </div>
+      </Link>
+      
+      {/* Horizontal Scroll for Mobile */}
+      <div className="flex gap-4 overflow-x-auto scrollbar-hide">
         {activeIndex !== null &&
           navlist[activeIndex] &&
           navlist[activeIndex].subhead &&
@@ -47,8 +52,11 @@ const SubHeader = ({ activeIndex }: Props) => {
             </Link>
           ))}
       </div>
-      <div>{activeIndex === 1 && <ItemEllipsis />}</div>
     </div>
+  
+    <div>{activeIndex === 1 && <ItemEllipsis />}</div>
+  </div>
+  
   );
 };
 

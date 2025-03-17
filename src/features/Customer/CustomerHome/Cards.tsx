@@ -53,19 +53,20 @@ function CustomerCards({ all, active, inactive, duplicate, onCardClick }: CardsP
   };
 
   return (
-    <div className="flex space-x-4 justify-center px-6 mt-2">
-      {customerCardsData.map((card, index) => (
-        <CustomerCard
-          key={index}
-          icon={card.icon}
-          title={card.title}
-          description={card.description}
-          number={card.number}
-          active={activeCard === index}
-          onClick={() => handleCardClick(index, card.filter)}
-        />
-      ))}
-    </div>
+    <div className="flex flex-wrap lg:flex-nowrap justify-center gap-4 px-6 mt-2">
+    {customerCardsData.map((card, index) => (
+      <CustomerCard
+        key={index}
+        icon={card.icon}
+        title={card.title}
+        description={card.description}
+        number={card.number}
+        active={activeCard === index}
+        onClick={() => handleCardClick(index, card.filter)}
+      />
+    ))}
+  </div>
+  
   );
 }
 

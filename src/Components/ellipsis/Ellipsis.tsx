@@ -101,7 +101,7 @@ const ItemEllipsis = () => {
         {isDropdownOpen && (
           <div
             ref={dropdownRef}
-            className="absolute top-44 right-16 mt-2 w-[15.8%] bg-white shadow-xl z-10"
+            className="absolute top-44 right-16 mt-2 w-[50%] sm:w-[15.8%] bg-white shadow-xl z-10"
             style={{ borderRadius: "4px", padding: "8px" }}
             role="menu"
           >

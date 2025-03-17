@@ -22,14 +22,14 @@ type DropdownItem = {
 
 type Props = {};
 
-function DashboardHome({}: Props) {
+function DashboardHome({ }: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const currentDate = new Date();
   const [month, setMonth] = useState(String(currentDate.getMonth() + 1).padStart(2, "0")); // Current month (zero-based index)
   const [year, setYear] = useState(currentDate.getFullYear()); // Current year
-    const [cardData,setCardData] = useState<any>()
-    const {request:getOverView}=useApi('get',5003)
+  const [cardData, setCardData] = useState<any>()
+  const { request: getOverView } = useApi('get', 5003)
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -87,37 +87,37 @@ function DashboardHome({}: Props) {
     },
   ];
 
-  const getInventoryOverView=async()=>{
-    try{
-        const {response,error}=await getOverView(`${endponits.INVENTORY_DASH_OVERVIEW}?date=${year}/${month}`)
-        if(response&&!error){
-          console.log("res",response.data);
-          
-            setCardData(response.data)
-        }else{
-            console.log("err",error);
-        }
-    }catch(error){
-        console.log("er",error);
+  const getInventoryOverView = async () => {
+    try {
+      const { response, error } = await getOverView(`${endponits.INVENTORY_DASH_OVERVIEW}?date=${year}/${month}`)
+      if (response && !error) {
+        console.log("res", response.data);
+
+        setCardData(response.data)
+      } else {
+        console.log("err", error);
+      }
+    } catch (error) {
+      console.log("er", error);
     }
   }
 
-  useEffect(()=>{
-    if(month||year){
-        getInventoryOverView()
+  useEffect(() => {
+    if (month || year) {
+      getInventoryOverView()
     }
-  },[month,year])
+  }, [month, year])
 
   return (
     <div className="mx-5 mb-2 space-y-8 text-[#303F58]">
-      <div className="flex items-center relative">
+      <div className="flex-row sm:flex items-center relative">
         <div>
           <h3 className="font-bold text-2xl text-textColor">
             Inventory Overview
           </h3>
         </div>
-        <div className="ml-auto gap-3 flex items-center">
-        <MonthYearDropdown month={month} setMonth={setMonth} year={year} setYear={setYear}/>
+        <div className="ml-auto gap-3 mt-2 flex items-center">
+          <MonthYearDropdown month={month} setMonth={setMonth} year={year} setYear={setYear} />
           <div onClick={toggleDropdown} className="cursor-pointer">
             {/* Add your ellipsis icon here if needed */}
           </div>
@@ -147,20 +147,21 @@ function DashboardHome({}: Props) {
       <InventoryCards data={cardData} />
 
       {/* Top suppliers and supplier retention rate over time */}
-      <div className="grid grid-cols-10 gap-5">
-        <div className="col-span-6 flex justify-center">
-          <TopSellingProduct date={`${year}/${month}`}/>
+      <div className="grid grid-cols-1 sm:grid-cols-10 gap-5">
+        <div className="col-span-1 sm:col-span-6 flex justify-center">
+          <TopSellingProduct date={`${year}/${month}`} />
         </div>
-        <div className="col-span-4 flex justify-center">
-          <TopProductCategories date={`${year}/${month}`}/>
+        <div className="col-span-1 sm:col-span-4 flex justify-center">
+          <TopProductCategories date={`${year}/${month}`} />
         </div>
-        <div className="col-span-6 flex justify-center items-center">
-          <StockLevelOvertime date={`${year}/${month}`}/>
+        <div className="col-span-1 sm:col-span-6 flex justify-center items-center">
+          <StockLevelOvertime date={`${year}/${month}`} />
         </div>
-        <div className="col-span-4 flex justify-center">
-          <MostFrequentlyRec date={`${year}/${month}`}/>
+        <div className="col-span-1 sm:col-span-4 flex justify-center">
+          <MostFrequentlyRec date={`${year}/${month}`} />
         </div>
       </div>
+
     </div>
   );
 }

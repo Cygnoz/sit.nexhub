@@ -23,7 +23,7 @@ import report from "../../assets/AppsIcons/Report.png";
 import salesOrder from "../../assets/AppsIcons/sales order.png"
 import item from "../../assets/AppsIcons/Items.png"
 import customer from "../../assets/AppsIcons/customer_5939790.png"
-import supplier from  "../../assets/AppsIcons/supplier_12112191.png"
+import supplier from "../../assets/AppsIcons/supplier_12112191.png"
 import expense from "../../assets/AppsIcons/expense_12139704.png"
 import organization from "../../assets/AppsIcons/organization_12966863.png"
 import tax from "../../assets/AppsIcons/tax_2863333.png"
@@ -48,7 +48,7 @@ const iconDataMap: any = {
     { icon: creditNote, label: "Credit Note", route: "/sales/credit-note", index: 3, subIndex: 5 },
     { icon: salesReturn, label: "Sales Return", route: "/item-tracking", index: 5, subIndex: 2 },
     { icon: purchasOrder, label: "Purchase Order", route: "/purchase/purchase-order", index: 8, subIndex: 0 },
-    { icon: posIcon, label: "POS", route: "/pos", state: { from: "/landing" }, index: 0, subIndex: 0,},
+    { icon: posIcon, label: "POS", route: "/pos", state: { from: "/landing" }, index: 0, subIndex: 0, },
     { icon: bills, label: "Bills", route: "/purchase/bills", index: 8, subIndex: 1 },
     { icon: PaymentMade, label: "Payment Made", route: "/purchase/payment-made", index: 8, subIndex: 2 },
     { icon: debitNote, label: "Debit Note", route: "/purchase/debitnote", index: 8, subIndex: 3 },
@@ -71,7 +71,7 @@ const iconDataMap: any = {
     { icon: quotes, label: "Quotes", route: "/sales/quote", index: 3, subIndex: 1 },
     { icon: invoice, label: "Invoice", route: "/sales/invoice", index: 3, subIndex: 2 },
     { icon: reciept, label: "Receipt", route: "/sales/receipt", index: 3, subIndex: 3 },
-    { icon: posIcon, label: "POS", route: "/pos", state: { from: "/sales" }, index: 3, subIndex:2,},
+    { icon: posIcon, label: "POS", route: "/pos", state: { from: "/sales" }, index: 3, subIndex: 2, },
     { icon: creditNote, label: "Credit Note", route: "/sales/credit-note", index: 3, subIndex: 5 },
   ],
   Purchase: [
@@ -122,31 +122,36 @@ const ViewApps: React.FC<Props> = ({ mode }) => {
       <div className="flex items-center justify-center mt-16">
         <img
           src={mode ? exploreTextDark : exploreTextLight}
-          className="w-[45%]"
+          className="w-[100%] sm:w-[45%]"
           alt="App Title"
         />
       </div>
       <div className="mt-9 flex justify-center items-center">
-        <div className={`flex items-center w-[80%] justify-center gap-4 px-6 py-4 rounded-full 
-        shadow-md overflow-x-auto border 
-        ${mode ? "bg-[#F3F3F3] border-0" : "bg-[#FFFFFF1A] border-[#73796f]"}`}>
+        <div className={`flex items-center w-[100%] sm:w-[80%] justify-start sm:justify-center gap-2 sm:gap-4 px-3 sm:px-6 py-4 rounded-full 
+  shadow-md overflow-x-auto scrollbar-hide border 
+  ${mode ? "bg-[#F3F3F3] border-0" : "bg-[#FFFFFF1A] border-[#73796f]"}`}
+          style={{
+            scrollbarWidth: 'none',  /* Firefox */
+            msOverflowStyle: 'none',  /* IE and Edge */
+          }}>
 
           {["All", "Sales", "Purchase", "Inventory", "Accounts", "Settings"].map(tab => (
             <button
               key={tab}
               onClick={() => setSelectedTab(tab)}
-              className={`flex items-center gap-2 px-10 py-2 rounded-full text-base
-        ${mode ? (selectedTab === tab ? "bg-white font-semibold" : "") : (selectedTab === tab ? "bg-white font-semibold" : "")}
-        ${mode ? (selectedTab === tab ? "text-[#303F58]" : "text-[#303F58]") : (selectedTab === tab ? "text-textColor" : "text-[#F6F6F6]")}
-      `}
+              className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 whitespace-nowrap rounded-full text-sm sm:text-base transition-colors duration-200 ease-in-out
+  ${mode ? (selectedTab === tab ? "bg-white font-semibold" : "") : (selectedTab === tab ? "bg-white font-semibold" : "")}
+  ${mode ? (selectedTab === tab ? "text-[#303F58]" : "text-[#303F58]") : (selectedTab === tab ? "text-textColor" : "text-[#F6F6F6]")}
+`}
             >
               <span>{tab}</span>
             </button>
           ))}
         </div>
-
       </div>
-      <div className="mt-9 px-44 h-[100vh]">
+
+
+      <div className="mt-9 px-0 sm:px-44 h-[100%]">
         {iconDataMap[selectedTab] ? (
           <IconGrid
             key={selectedTab} // Key added to reset on tab change

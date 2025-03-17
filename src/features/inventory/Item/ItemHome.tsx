@@ -48,7 +48,7 @@ function ItemHome({}: Props) {
           }}>
           <Button variant="primary" size="xl">
             <PlusCircle color="white" />
-            <p className="text-sm font-medium">Add Item</p>
+            <p className="text-sm w-16 font-medium">Add Item</p>
           </Button>
         </Link>
       </div>

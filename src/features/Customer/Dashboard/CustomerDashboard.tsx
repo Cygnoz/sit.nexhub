@@ -12,24 +12,24 @@ import useApi from '../../../Hooks/useApi'
 import { endponits } from '../../../Services/apiEndpoints'
 type Props = {}
 
-function CustomerDashboard({}: Props) {
-//   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+function CustomerDashboard({ }: Props) {
+  //   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const currentDate = new Date();
-const [month, setMonth] = useState(String(currentDate.getMonth() + 1).padStart(2, "0")); // Current month (zero-based index)
-const [year, setYear] = useState(currentDate.getFullYear()); // Current year
-  const [cardData,setCardData] = useState<any>()
-  const {request:getOverView}=useApi('get',5002)
-//   const toggleDropdown = () => {
-//     setIsDropdownOpen(!isDropdownOpen);
-//   };
+  const [month, setMonth] = useState(String(currentDate.getMonth() + 1).padStart(2, "0")); // Current month (zero-based index)
+  const [year, setYear] = useState(currentDate.getFullYear()); // Current year
+  const [cardData, setCardData] = useState<any>()
+  const { request: getOverView } = useApi('get', 5002)
+  //   const toggleDropdown = () => {
+  //     setIsDropdownOpen(!isDropdownOpen);
+  //   };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target as Node)
     ) {
-    //   setIsDropdownOpen(false);
+      //   setIsDropdownOpen(false);
     }
   };
 
@@ -40,73 +40,73 @@ const [year, setYear] = useState(currentDate.getFullYear()); // Current year
     };
   }, []);
 
-//   const dropdownItems = [
-//     {
-//       icon: <ArrowDownIcon />,
-//       text: "Import Supplier",
-//       onClick: () => {
-//         console.log("Import Sales Order clicked");
-//       },
-//     },
-//     {
-//       icon: <ArrowUpIcon />,
-//       text: "Export Supplier",
-//       onClick: () => {
-//         console.log("Export Sales Order clicked");
-//       },
-//     },
-//     {
-//       icon: <ArrowUpIcon />,
-//       text: "Export Current View",
-//       onClick: () => {
-//         console.log("Export Current View clicked");
-//       },
-//     },
-//     {
-//       icon: <RefreshIcon color="#4B5C79" />,
-//       text: "Refresh List",
-//       onClick: () => {
-//         console.log("Refresh List clicked");
-//       },
-//     },
-//   ];
-  const getCustomerOverView=async()=>{
-    try{
-        const {response,error}=await getOverView(`${endponits.CUST_DASH_OVERVIEW}?date=${year}/${month}`)
-        if(response&&!error){
-            setCardData(response.data)
-        }else{
-            console.log("err",error);
-        }
-    }catch(error){
-        console.log("er",error);
+  //   const dropdownItems = [
+  //     {
+  //       icon: <ArrowDownIcon />,
+  //       text: "Import Supplier",
+  //       onClick: () => {
+  //         console.log("Import Sales Order clicked");
+  //       },
+  //     },
+  //     {
+  //       icon: <ArrowUpIcon />,
+  //       text: "Export Supplier",
+  //       onClick: () => {
+  //         console.log("Export Sales Order clicked");
+  //       },
+  //     },
+  //     {
+  //       icon: <ArrowUpIcon />,
+  //       text: "Export Current View",
+  //       onClick: () => {
+  //         console.log("Export Current View clicked");
+  //       },
+  //     },
+  //     {
+  //       icon: <RefreshIcon color="#4B5C79" />,
+  //       text: "Refresh List",
+  //       onClick: () => {
+  //         console.log("Refresh List clicked");
+  //       },
+  //     },
+  //   ];
+  const getCustomerOverView = async () => {
+    try {
+      const { response, error } = await getOverView(`${endponits.CUST_DASH_OVERVIEW}?date=${year}/${month}`)
+      if (response && !error) {
+        setCardData(response.data)
+      } else {
+        console.log("err", error);
+      }
+    } catch (error) {
+      console.log("er", error);
     }
   }
 
-  useEffect(()=>{
-    if(month||year){
-        getCustomerOverView()
+  useEffect(() => {
+    if (month || year) {
+      getCustomerOverView()
     }
-  },[month,year])
-  
+  }, [month, year])
+
   return (
 
     <>
-    <div className='mx-5 my-3 space-y-8 text-[#303F58]'>
-    <div className=" flex justify-between  items-center relative">
-        <div>
-          <h3 className="font-bold text-xl text-textColor ">Customer Overview</h3>
-          <p className="text-sm text-gray mt-1">
-          A customer overview is a high level description that provides key insights into business customer base.
-          </p>
-        </div>
-        <MonthYearDropdown month={month} setMonth={setMonth} year={year} setYear={setYear}/>
-        {/* <div className="ml-auto gap-3 flex items-center">
+      <div className='mx-5 my-3 space-y-8 text-[#303F58]'>
+        <div className=" flex-row sm:flex sm:justify-between  items-center relative">
+          <div>
+            <h3 className="font-bold text-xl text-textColor ">Customer Overview</h3>
+            <p className="text-sm text-gray mt-1">
+              A customer overview is a high level description that provides key insights into business customer base.
+            </p>
+          </div>
+          <MonthYearDropdown month={month} setMonth={setMonth} year={year} setYear={setYear} />
+          {/* <div className="ml-auto gap-3 flex items-center">
             <div onClick={toggleDropdown} className="cursor-pointer">
               {/* <Ellipsis /> */}
-            {/* </div> */} 
+          {/* </div> */}
 
-            {/* {isDropdownOpen && (
+          {/* {isDropdownOpen && (
               <div
                 ref={dropdownRef}
                 className="absolute top-16 right-4 mt-2 w-48 bg-white shadow-xl z-10"
@@ -128,25 +128,26 @@ const [year, setYear] = useState(currentDate.getFullYear()); // Current year
           </div> */}
         </div>
         {/* Cards */}
-        
-        <Cards data={cardData}/>
-       
-        
+
+        <Cards data={cardData} />
+
+
         {/* Top suppliers and supplier rentaion rate overtime */}
-        <div className="grid grid-cols-3 gap-5">
-          <div className="flex col-span-2 justify-center ">
-            <TopCustomers date={`${year}/${month}`}/>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <div className="flex sm:col-span-2 justify-center">
+            <TopCustomers date={`${year}/${month}`} />
           </div>
-          <div className=" flex justify-center">
-          <AvaragePurchase date={`${year}/${month}`}/>
+          <div className="flex justify-center">
+            <AvaragePurchase date={`${year}/${month}`} />
           </div>
-          <div className="col-span-3 flex justify-center ">
-          <CustomersRetentionRate date={`${year}/${month}`}/>
+          <div className="col-span-1 sm:col-span-3 flex justify-center">
+            <CustomersRetentionRate date={`${year}/${month}`} />
           </div>
         </div>
+
       </div>
 
-      </>
+    </>
   );
 }
 
