@@ -76,7 +76,7 @@ router.get('/get-item-transaction/:id',verifyToken,checkPermission('Viewed Item 
 
 //nexPortal
 // Item
-router.get('/get-all-item-nexportal', nexVerifyToken, itemController.getAllItem);
+router.get('/getallitemnexportal', nexVerifyToken, itemController.getAllItem);
 
 
 

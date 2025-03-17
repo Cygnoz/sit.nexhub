@@ -279,6 +279,8 @@ exports.getAllItem = async (req, res) => {
   try {
     const organizationId = req.user.organizationId;
 
+    // const organizationId = "BB-ORG0003";
+
     const { organizationExists, allItem } = await itemDataExist( organizationId, null );
     
     if (!organizationExists) return res.status(404).json({ message: "No Organization Found." });
