@@ -42,7 +42,7 @@ jobs:
             echo 'CMD ["node", "server.js"]' >> Dockerfile
 
             # Build and run the container
-            docker build -t dev-sewnex-sales .
+            docker build -t dev-nexhub-sales .
             docker run -d --name dev-nexhub-sales -p 8007:7007 dev-nexhub-sales
 
             # Cleanup Dockerfile
