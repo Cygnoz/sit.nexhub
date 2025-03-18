@@ -717,8 +717,8 @@ function capitalize(word) {
         action: "Debit Note",
         date: savedDebitNote.supplierDebitDate,
         itemId: matchingItem._id,
-        sellingPrice: matchingItem.itemSellingPrice || 0,
-        costPrice: matchingItem.itemCostPrice || 0, 
+        sellingPrice: matchingItem.sellingPrice || 0,
+        costPrice: item.itemCostPrice || 0, 
         creditQuantity: item.itemQuantity, 
         createdDateTime: savedDebitNote.createdDateTime 
       });  

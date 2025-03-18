@@ -1170,8 +1170,8 @@ function validateSourceOfSupply(sourceOfSupply, organization, errors) {
         transactionId: savedBills.bill,
         action: "Bills",
         itemId: matchingItem._id,
-        sellingPrice: matchingItem.itemSellingPrice,
-        costPrice: matchingItem.itemCostPrice || 0, 
+        sellingPrice: matchingItem.sellingPrice || 0,
+        costPrice: item.itemCostPrice || 0, 
         debitQuantity: item.itemQuantity,
         createdDateTime: savedBills.createdDateTime  
       });

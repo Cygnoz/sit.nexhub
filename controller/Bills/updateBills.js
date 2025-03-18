@@ -313,13 +313,12 @@ exports.updateBill = async (req, res) => {
           transactionId: savedBill.bill,
           action: "Bills",
           itemId: matchingItem._id,
-          sellingPrice: matchingItem.itemSellingPrice,
-          costPrice: matchingItem.itemCostPrice || 0, 
+          sellingPrice: matchingItem.sellingPrice || 0,
+          costPrice: item.itemCostPrice || 0, 
           debitQuantity: item.itemQuantity, 
           createdDateTime: savedBill.createdDateTime 
         });
     
-        // Save the tracking entry and update the item's stock in the item table
         await newTrialEntry.save();
 
         
