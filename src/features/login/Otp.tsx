@@ -114,19 +114,19 @@ function Otp({}: Props) {
   };
 
   return (
-    <div className="h-[100vh] flex">
+    <div className="h-[100vh]  flex flex-col-reverse md:flex-row">
       {/* Left Side */}
-      <div className="w-[50%] flex justify-center items-center bg-white">
-        <div className="w-[60%] ">
-          <p className="text-textColor font-bold text-4xl">Get Started now</p>
-          <p className="text-dropdownText mt-2 text-sm font-normal">Enter your OTP to access your account</p>
+      <div className="w-full md:w-1/2 flex justify-center items-center bg-white p-6 md:p-0">
+      <div className="w-full max-w-md">
+      <p className="text-textColor font-bold text-3xl md:text-4xl">Get Started now</p>
+      <p className="text-dropdownText mt-2 text-sm font-normal">Enter your OTP to access your account</p>
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             {/* OTP Input Section */}
             <div className="mt-4 space-y-2">
               <label htmlFor="otp" className="text-dropdownText text-sm block">
                 Enter OTP
               </label>
-              <div className="flex justify-between w-full ">
+              <div className="flex justify-between w-full  overflow-x-scroll sm:overflow-x-hidden">
                 {otp.map((value, index) => (
                   <input
                     key={index}
@@ -149,7 +149,7 @@ function Otp({}: Props) {
               {error && <p className="text-red-500 text-sm">{error}</p>}
               {/* Submit Button */}
               <div className="flex justify-center">
-                <Button type="submit" className="px-[45%] mt-7">
+                <Button type="submit" className="w-full flex justify-center px-6 mt-7">
                   {isLoading ? 'Verifying...' : 'Submit'}
                 </Button>
               </div>
@@ -158,12 +158,16 @@ function Otp({}: Props) {
         </div>
       </div>
 
-      {/* Right Side with Background Image */}
-      <div className="w-[50%] flex justify-center items-center bg-[#CACCBE]">
-        <div className="flex flex-col items-start justify-center w-[82%] h-full p-8">
-          <div className='ms-[14%]'>
-            <h2 className="text-textColor font-semibold text-3xl leading-tight mt-6">Transform Your Financial <br /> Management</h2>
-            <p className="text-textColor mt-3 text-sm">Unlock powerful tools to keep your finances on track</p>
+       {/* Right Side */}
+       <div className="w-full md:w-1/2 flex justify-center items-center bg-[#CACCBE] p-6 md:p-0">
+        <div className="flex flex-col items-start justify-center w-full max-w-lg h-full p-4 md:p-8">
+          <div className="text-center md:text-left md:ms-[14%]">
+            <h2 className="text-textColor font-semibold text-2xl md:text-3xl leading-tight mt-6">
+              Transform Your Financial <br className="hidden md:block" /> Management
+            </h2>
+            <p className="text-textColor mt-3 text-sm">
+              Unlock powerful tools to keep your finances on track
+            </p>
           </div>
           <img src={bgImage} alt="Dashboard preview" className="w-full" />
         </div>

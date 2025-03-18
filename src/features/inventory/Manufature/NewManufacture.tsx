@@ -70,7 +70,7 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
       console.error("Error fetching manufacturers data", error);
     }
   };
-  
+
   useEffect(() => {
     loadManufacturers();
   }, []);
@@ -104,12 +104,12 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
     try {
       const url = `${endponits.DELETE_BRMC}/${item.id}`;
       const { response, error } = await deleteManufacturerRequest(url);
-      
+
       if (!error && response) {
         toast.success("Manufacturer deleted successfully!");
         loadManufacturers();
-        if(allManufactures.length==1){
-          setAllManufatures((prevData) => prevData.filter((m:any) => m._id !== item._id));
+        if (allManufactures.length == 1) {
+          setAllManufatures((prevData) => prevData.filter((m: any) => m._id !== item._id));
         }
       } else {
         toast.error(error.response.data.message);
@@ -118,7 +118,7 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
       toast.error("Error occurred while deleting Manufacturer.");
     }
   };
-  
+
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -132,28 +132,29 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
 
   return (
     <div ref={ref}>
-      <Modal open={true} onClose={onClose} className="">
+      <Modal open={true} onClose={onClose} className="w-[90%] sm:w-[50%]">
         <div className="p-5 mt-3">
-          <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden h-24">
+          <div className="mb-5 flex flex-col sm:flex-row p-4 rounded-xl bg-CreamBg relative overflow-hidden h-auto sm:h-24">
             <div
-              className="absolute top-0 right-12 h-24 w-[200px] bg-cover bg-no-repeat"
+              className="absolute top-0 right-12 h-24 w-[150px] sm:w-[200px] bg-cover bg-no-repeat"
               style={{ backgroundImage: `url(${bgImage})` }}
             ></div>
-            <div className="relative z-10">
-              <h3 className="text-xl font-bold text-textColor">
+            <div className="relative z-10 overflow-x-auto">
+              <h3 className="text-lg sm:text-xl font-bold text-textColor">
                 Manage Manufacturer
               </h3>
-              <p className="text-dropdownText font-semibold text-sm mt-2">
-              Have an insight on the profit or loss incurred due to the change in exchange rates
+              <p className="text-dropdownText  font-semibold text-sm mt-2 sm:mt-0">
+                Have an insight on the profit or loss incurred due to the change in exchange rates
               </p>
             </div>
             <div
-              className="ms-auto text-3xl cursor-pointer relative z-10"
+              className="ms-auto text-2xl sm:text-3xl cursor-pointer relative z-10 mt-2 sm:mt-0"
               onClick={onClose}
             >
               &times;
             </div>
           </div>
+
 
           <div className="flex justify-end me-2 my-4">
             <Button
@@ -167,7 +168,7 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {allManufactures?.length > 0 ? (
               allManufactures.map((item: any) => (
                 <div key={item._id} className="flex p-2">
@@ -190,7 +191,7 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
                   </div>
                 </div>
               ))
-            ) :(
+            ) : (
               <p className="text-center col-span-3 text-red-500 font-semibold">No manufacturers found !</p>
             )}
           </div>
@@ -203,7 +204,7 @@ const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
         </div>
       </Modal>
 
-      <Modal open={isModalOpen} onClose={closeModal} style={{ width: "35%" }}>
+      <Modal open={isModalOpen} onClose={closeModal}  className="w-[90%] sm:w-[40%]">
         <div className="p-5 mt-3">
           <div className="flex p-4 rounded-xl relative overflow-hidden">
             <h3 className="text-xl font-bold text-textColor">

@@ -119,7 +119,7 @@ const NewUnit = ({ page }: Props) => {
               <p className="text-md">New Unit</p>
             </Button>}
 
-        <Modal open={isModalOpen} onClose={closeModal} style={{ width: "39%" }}>
+        <Modal open={isModalOpen} onClose={closeModal}  className="w-[90%] sm:w-[35%]">
           <div className="p-5 mt-3">
             <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
               <div

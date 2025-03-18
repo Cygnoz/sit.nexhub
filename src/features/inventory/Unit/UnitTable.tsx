@@ -110,7 +110,7 @@ const handleDelete = async (item: any) => {
   }, [unitResponse,unitEditResponse]);
 
   return (
-    <div className="bg-white p-5 mt-7 rounded-lg relative">
+    <div className="bg-white p-5 mt-7 rounded-lg relative overflow-x-auto">
       <div className="rounded-lg border-2 border-tableBorder">
       <table className="min-w-full bg-white relative pb-4">
   <thead className="text-[12px] text-center text-dropdownText">

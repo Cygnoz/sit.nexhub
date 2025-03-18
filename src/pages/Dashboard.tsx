@@ -15,100 +15,114 @@ type Props = {}
 
 function Dashboard({ }: Props) {
 
-const currentDate = new Date();
+  const currentDate = new Date();
   const [month, setMonth] = useState(String(currentDate.getMonth() + 1).padStart(2, "0")); // Current month (zero-based index)
   const [year, setYear] = useState(currentDate.getFullYear()); // Current year
-    const [cardData,setCardData] = useState<any>()
-    const {request:getOverView}=useApi('get',5004)
-    const { request: getTopCustomers } = useApi("get", 5004);
-        const [customerData, setCustomerData] = useState<any>();
-     const getMainOverView=async()=>{
-        try{
-            const {response,error}=await getOverView(`${endponits.MAIN_DASH_OVERVIEW}?date=${year}/${month}`)
-            if(response&&!error){
-                setCardData(response.data)
-                console.log("res",response.data);
-                
-            }else{
-                console.log("err",error);
-            }
-        }catch(error){
-            console.log("er",error);
-        }
+  const [cardData, setCardData] = useState<any>()
+  const { request: getOverView } = useApi('get', 5004)
+  const { request: getTopCustomers } = useApi("get", 5004);
+  const [customerData, setCustomerData] = useState<any>();
+  const getMainOverView = async () => {
+    try {
+      const { response, error } = await getOverView(`${endponits.MAIN_DASH_OVERVIEW}?date=${year}/${month}`)
+      if (response && !error) {
+        setCardData(response.data)
+        console.log("res", response.data);
+
+      } else {
+        console.log("err", error);
       }
-    
-      useEffect(()=>{
-        if(month||year){
-            getMainOverView()
-            getTopCus();
-        }
-      },[month,year])
-      
-      
-        const getTopCus = async () => {
-          try {
-            const { response, error } = await getTopCustomers(
-              `${endponits.MAIN_DASH_TOP_PRODUCT_CUSTOMER}?date=${year}/${month}`
-            );
-            if (response && !error) {
-              console.log("top", response.data);
-              
-              // Transform API response into required forma
-      
-              setCustomerData(response.data);
-            } else {
-              console.log("err", error);
-            }
-          } catch (error) {
-            console.log("er", error);
-          }
-        };
-      
-       
+    } catch (error) {
+      console.log("er", error);
+    }
+  }
+
+  useEffect(() => {
+    if (month || year) {
+      getMainOverView()
+      getTopCus();
+    }
+  }, [month, year])
+
+
+  const getTopCus = async () => {
+    try {
+      const { response, error } = await getTopCustomers(
+        `${endponits.MAIN_DASH_TOP_PRODUCT_CUSTOMER}?date=${year}/${month}`
+      );
+      if (response && !error) {
+        console.log("top", response.data);
+
+        // Transform API response into required forma
+
+        setCustomerData(response.data);
+      } else {
+        console.log("err", error);
+      }
+    } catch (error) {
+      console.log("er", error);
+    }
+  };
+
+
   return (
-    <div className="mx-6 my-4 h-[100vh]">
+    <div className="mx-4 sm:mx-6 my-4 min-h-screen">
+      {/* Banner Section */}
       <div
-        className="relative rounded-lg p-9 flex justify-between items-center bg-cover bg-center"
+        className="relative rounded-lg p-6 sm:p-9 flex flex-col sm:flex-row justify-between items-center bg-cover bg-center"
         style={{ backgroundImage: `url(${bannerBg})` }}
       >
-        <div className="absolute top-2 right-5 text-3xl font-light">
+        <div className="absolute top-2 right-5 text-3xl font-light cursor-pointer">
           &times;
         </div>
-        <div>
-          <p className="text-[#263238] font-bold text-xl">Get Ready to Unlock Predictive Maintenance Insights!</p>
-          <p className="mt-1 text-[#272727] w-[70%] text-base">Anticipate maintenance needs before issues arise,
-            optimizing uptime and reducing unexpected costs</p>
-        </div>
-        <Button className="h-9 pl-4 pr-4 me-[20%]">
-          Explore Now
-        </Button>
-        <img src={happyWoman} className="w-48 right-16 object-cover absolute" alt="" />
-        <div>
 
-        </div>
-      </div>
-      <div className="flex items-center mb-4 justify-between relative mt-4">
-        <p className=" text-[#454545] font-bold text-xl">Overview</p>
-        <MonthYearDropdown setMonth={setMonth} year={year} setYear={setYear} month={month}/>
-      </div>
-      <Cards data={cardData}/>
-<br />
-      <div className="grid grid-cols-10 gap-5">
-          <div className="col-span-6 flex justify-center">
-            <SalesOverTime  date={`${year}/${month}`}/>
-          </div>
-          <div className="col-span-4 flex justify-center">
-            <ExpenseByCategory date={`${year}/${month}`}/>
-          </div>
-          <div className="col-span-5 flex justify-center">
-            <TopSellingProducts topSellingData={customerData?.topProducts} />
-          </div>
-          <div className="col-span-5 flex justify-center">
-            <TopCustomers topCustomerData={customerData?.topCustomers}/>
-          </div>
+        {/* Text Section */}
+        <div className="text-center sm:text-left">
+          <p className="text-[#263238] font-bold text-lg sm:text-xl">
+            Get Ready to Unlock Predictive Maintenance Insights!
+          </p>
+          <p className="mt-1 text-[#272727] text-sm sm:text-base w-full sm:w-[70%]">
+            Anticipate maintenance needs before issues arise, optimizing uptime and reducing unexpected costs.
+          </p>
         </div>
 
+        {/* Button & Image */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5">
+          <Button className="h-9 px-4 w-full sm:w-auto flex justify-center">
+            Explore Now
+          </Button>
+          <img src={happyWoman} className="w-32 sm:w-48 object-cover" alt="" />
+        </div>
+      </div>
+
+      {/* Overview & Dropdown */}
+      <div className="flex flex-col sm:flex-row items-center sm:justify-between my-4 relative">
+        <p className="text-[#454545] font-bold text-lg sm:text-xl">Overview</p>
+        <MonthYearDropdown setMonth={setMonth} year={year} setYear={setYear} month={month} />
+      </div>
+
+      {/* Cards Section */}
+      <Cards data={cardData} />
+
+      <br />
+
+      {/* Charts & Data Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-10 gap-5">
+        <div className="col-span-1 sm:col-span-6 flex justify-center">
+          <SalesOverTime date={`${year}/${month}`} />
+        </div>
+        <div className="col-span-1 sm:col-span-4 flex justify-center">
+          <ExpenseByCategory date={`${year}/${month}`} />
+        </div>
+        <div className="col-span-1 sm:col-span-5 flex justify-center">
+          <TopSellingProducts topSellingData={customerData?.topProducts} />
+        </div>
+        <div className="col-span-1 sm:col-span-5 flex justify-center">
+          <TopCustomers topCustomerData={customerData?.topCustomers} />
+        </div>
+      </div>
     </div>
+
   )
 }
 

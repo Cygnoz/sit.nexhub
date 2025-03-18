@@ -530,22 +530,22 @@ const NewCustomerModal = ({ page }: Props) => {
   //   }
   // }, [taxPreference]);
 
-  useEffect(()=>{
-    if(gstOrVat){
-      if(gstOrVat.taxType === "GST"){
-      setCustomerData((prevData: any) => ({
-        ...prevData,
-        gstTreatment: "Consumer",
-      }));
+  useEffect(() => {
+    if (gstOrVat) {
+      if (gstOrVat.taxType === "GST") {
+        setCustomerData((prevData: any) => ({
+          ...prevData,
+          gstTreatment: "Consumer",
+        }));
+      }
+      if (gstOrVat) {
+        setCustomerData((prevData: any) => ({
+          ...prevData,
+          taxType: gstOrVat.taxType,
+        }));
+      }
     }
-    if(gstOrVat){
-      setCustomerData((prevData: any) => ({
-        ...prevData,
-        taxType: gstOrVat.taxType,
-      }));
-    }
-    }
-  },[gstOrVat,isModalOpen])
+  }, [gstOrVat, isModalOpen])
 
   useEffect(() => {
     if (customerdata.billingCountry) {
@@ -574,7 +574,7 @@ const NewCustomerModal = ({ page }: Props) => {
 
   useEffect(() => {
     handleplaceofSupply();
-  }, [getOneOrganization,isModalOpen]);
+  }, [getOneOrganization, isModalOpen]);
 
   return (
     <div>
@@ -637,8 +637,8 @@ const NewCustomerModal = ({ page }: Props) => {
               className="text-slate-600 text-sm overflow-scroll hide-scrollbar   p-2"
               style={{ height: "480px" }}
             >
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-2 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-4">
+                <div className="col-span-12 sm:col-span-2  border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
                   <label htmlFor="image">
                     <div className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ">
                       {customerdata.customerProfile ? (
@@ -747,7 +747,7 @@ const NewCustomerModal = ({ page }: Props) => {
                   </div>
 
                   <div className="grid grid-cols-12 gap-4 mt-2">
-                    <div className="col-span-2">
+                    <div className="col-span-2 ">
                       <label htmlFor="salutation">Salutation</label>
                       <div className="relative w-full">
                         <select
@@ -768,7 +768,7 @@ const NewCustomerModal = ({ page }: Props) => {
                         </div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 col-span-10 gap-4 ">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 col-span-10 gap-4 ">
                       <div>
                         <label htmlFor="firstName" className="text-slate-600">
                           First Name

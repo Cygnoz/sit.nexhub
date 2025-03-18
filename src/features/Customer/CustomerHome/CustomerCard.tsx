@@ -25,9 +25,9 @@ const customerCardVariants = cva("rounded-xl cursor-pointer", {
 
 const CustomerCard: React.FC<CustomerCardProps> = ({ icon, title, description, number, active = false, onClick }) => {
   return (
-    <div className={`${customerCardVariants({ active })} w-[50%] h-[70px] pl-4 pr-4 text-textColor`} onClick={onClick}>
+    <div className={`${customerCardVariants({ active })} w-full sm:w-[50%] h-[70px] my-2 sm:my-0  px-4 text-textColor`} onClick={onClick}>
       <div className="flex items-center justify-between w-full h-full">
-        <div className="flex items-center">
+        <div className="flex items-center md:p-2">
           <img src={icon} alt="" />
           <div className="ml-4">
             <h2 className="text-base font-semibold">{title}</h2>

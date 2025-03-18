@@ -302,8 +302,8 @@ const AddItem = ({ }: Props) => {
     purchaseAccountId: false,
     salesAccountId: false,
     costPrice: false,
-    sellingPrice:false,
-    
+    sellingPrice: false,
+
 
   });
 
@@ -337,7 +337,7 @@ const AddItem = ({ }: Props) => {
         return;
       }
     }
-   
+
     try {
       const url = selectedItem
         ? `${endponits.UPDATE_ITEM}/${selectedItem._id}`
@@ -451,9 +451,10 @@ const AddItem = ({ }: Props) => {
                 "New Item"}</h4>
           </div>
         </div>
-        <div className="grid grid-cols-12 gap-4 my-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-12 gap-4 my-2">
+
           {/* Add Image */}
-          <div className="col-span-2">
+          <div className="col-span-12 sm:col-span-2">
             <div className="   h-36 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center">
               <label htmlFor="image">
                 <div
@@ -496,7 +497,7 @@ const AddItem = ({ }: Props) => {
           </div>
 
           <div className="col-span-10 -mt-4">
-            <div className="flex justify-start items-center">
+            <div className="flex-row sm:flex justify-start items-center">
               <div>
                 <label
                   className="block text-sm text-labelColor"
@@ -583,8 +584,9 @@ const AddItem = ({ }: Props) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-4 ms-5">
-                <div className="grid grid-cols-2 gap-4 mt-3 col-span-9">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-4 ms-0 sm:ms-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 md:col-span-6 lg:col-span-9">
+
                   <div>
                     <label
                       className="text-slate-600 text-sm"
@@ -634,7 +636,7 @@ const AddItem = ({ }: Props) => {
                     />
                   </div>
                 </div>
-                <div className="relative col-span-1 w-[300%] mt-3">
+                <div className="relative col-span-1 w-full sm:w-[300%] mt-3">
                   <label
                     htmlFor="unit-input"
                     className="text-slate-600 flex items-center gap-2"
@@ -670,7 +672,7 @@ const AddItem = ({ }: Props) => {
                               className="flex p-2 w-[100%] mb-4 hover:bg-gray-100 cursor-pointer border-b border-slate-300 text-sm  text-textColor"
                             >
                               {unit}
-                              
+
                             </div>
                           )
                         )}
@@ -681,7 +683,7 @@ const AddItem = ({ }: Props) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 mt-4 ">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 ">
               {hsnSac &&
                 (isService ? (
                   <div>
@@ -877,7 +879,7 @@ const AddItem = ({ }: Props) => {
           </div>
         </div>
 
-        {!isService && <div className="grid grid-cols-2 gap-x-4 ">
+        {!isService && <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 ">
           <div>
             <p className="text-textColor text-base font-semibold my-2">
               Storage Information
@@ -931,7 +933,7 @@ const AddItem = ({ }: Props) => {
             </div>
 
             <div className="grid grid-cols-12 gap-4">
-              <div className="col-span-4">
+              <div className="col-span-6 sm:col-span-4">
                 <label className="text-slate-600 text-sm" htmlFor="weight">
                   Weight
                 </label>
@@ -962,7 +964,7 @@ const AddItem = ({ }: Props) => {
                 </div>
               </div>
 
-              <div className="col-span-8">
+              <div className="col-span-6 sm:col-span-8">
                 <label
                   className="text-slate-600 mt-1.5 flex text-sm items-center "
                   htmlFor="warranty"
@@ -1439,7 +1441,7 @@ const AddItem = ({ }: Props) => {
             <p className="text-textColor text-base font-semibold mt-2">
               Purchase Information
             </p>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Cost Price Section */}
               <div className="relative mt-1.5">
                 <label className="text-slate-600 flex text-sm items-center gap-2" htmlFor="costPrice">
@@ -1613,9 +1615,9 @@ const AddItem = ({ }: Props) => {
           <div className="w-1/2">
             <p className="text-textColor text-base font-semibold mt-2">Sales Information</p>
 
-            <div className="flex gap-4 my-1">
+            <div className="flex-row sm:flex gap-4 my-1">
               {/* Selling Price Section */}
-              <div className="relative w-1/2 mt-0.5">
+              <div className="relative  w-full sm:w-1/2 mt-0.5">
                 <label className="text-slate-600 flex text-sm gap-2" htmlFor="sellingPrice">
                   Selling Price
                 </label>
@@ -1655,7 +1657,7 @@ const AddItem = ({ }: Props) => {
 
 
               {/* MRP Section */}
-              <div className="w-1/2">
+              <div className="w-full sm:w-1/2">
                 <label className="text-slate-600 flex text-sm items-center gap-2" htmlFor="saleMrp">
                   MRP
                 </label>
@@ -1677,7 +1679,7 @@ const AddItem = ({ }: Props) => {
             </div>
 
             {/* Sales Account Dropdown */}
-            <div className="relative mt-4">
+            <div className="relative -mt-1 sm:mt-4">
               <label
                 htmlFor="salesAccountDropdown"
                 className="text-slate-600 text-sm flex items-center gap-2"
