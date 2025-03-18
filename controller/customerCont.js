@@ -62,6 +62,9 @@ exports.addCustomer = async (req, res) => {
       cleanedData.taxType = taxExists.taxType;
       cleanedData.taxPreference = "Taxable";
       cleanedData.gstTreatment = "Consumer";
+      cleanedData.placeOfSupply = organizationExists.organizationCountry;
+
+      
       
       // checking values from Customer settings
       const { duplicateCustomerDisplayName , duplicateCustomerEmail , duplicateCustomerMobile } = settings[0]
