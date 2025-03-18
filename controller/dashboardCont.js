@@ -169,7 +169,6 @@ exports.getOverviewData = async (req, res) => {
         const startDate = moment.tz(`${year}-${month}-01`, orgTimeZone).startOf("month");
         const endDate = moment(startDate).endOf("month");
 
-        console.log("Requested Date Range:", startDate.format(), endDate.format());
 
         const { enrichedItems } = await xsItemDataExists(organizationId);
 
@@ -190,12 +189,10 @@ exports.getOverviewData = async (req, res) => {
         const start = parseDate(orgTimeZone, startDate.format("DD-MM-YYYY"));
         const end = parseDate(orgTimeZone, endDate.format("DD-MM-YYYY"), true);
 
-        console.log("start and end",start,end)
 
         const sales = await getReportAccount( organizationExists, organizationId, start, end,'Sales'); 
         const indirectIncome = await getReportAccount( organizationExists, organizationId, start, end,'Indirect Income');   
 
-        console.log("sales and indirectIncome",sales,indirectIncome)
 
         // Total Revenue
         const totalRevenue = sales.overallNetCredit + indirectIncome.overallNetCredit;  
@@ -235,7 +232,6 @@ exports.getOverviewData = async (req, res) => {
             0
         );
 
-        console.log("Final Calculations:", { totalRevenue, totalInventoryValue, totalExpenses, newCustomerCount, totalSales });
 
         // Response JSON
         res.json({
@@ -286,7 +282,6 @@ exports.getSalesOverTime = async (req, res) => {
         const startDate = moment.tz(`${year}-${month}-01`, orgTimeZone).startOf("month");
         const endDate = moment(startDate).endOf("month");
 
-        console.log("Requested Date Range:", startDate.format(), endDate.format());
 
         // Initialize an object to store sales per day
         let dailySales = {};
@@ -306,7 +301,6 @@ exports.getSalesOverTime = async (req, res) => {
             }
         });
 
-        console.log("Daily Sales Breakdown:", dailySales);
 
         // Convert daily sales object to an array for better response format
         const dailySalesArray = Object.keys(dailySales).map(date => ({
@@ -365,19 +359,16 @@ exports.getExpenseByCategory = async (req, res) => {
         const startDate = moment.tz(`${year}-${month}-01`, orgTimeZone).startOf("month");
         const endDate = moment(startDate).endOf("month");
 
-        console.log("Requested Date Range:", startDate.format(), endDate.format());
 
         // Filter expenses based on date range
         const filteredExpenses = allExpense.filter(exp =>
             moment.tz(exp.createdDateTime, orgTimeZone).isBetween(startDate, endDate, null, "[]")
         );
 
-        console.log("Filtered Expenses (before category check):", filteredExpenses);
 
         // Remove expenses without a valid category
         const validExpenses = filteredExpenses.filter(exp => exp.expenseCategory && exp.expenseCategory.trim() !== "");
 
-        console.log("Valid Expenses (With Category):", validExpenses);
 
         // If no valid expenses are found, return an empty response
         if (validExpenses.length === 0) {
@@ -447,7 +438,6 @@ exports.getTopProductCustomer = async (req, res) => {
         const startDate = moment.tz(`${year}-${month}-01`, orgTimeZone).startOf("month");
         const endDate = moment(startDate).endOf("month");
 
-        console.log("Requested Date Range:", startDate.format(), endDate.format());
 
         // Filter invoices within the date range (using organization time zone)
         const filteredInvoices = allInvoice.filter(inv => {
@@ -455,14 +445,12 @@ exports.getTopProductCustomer = async (req, res) => {
             return invoiceDate.isBetween(startDate, endDate, null, "[]");
         });
 
-        console.log("Filtered Invoices:", filteredInvoices);
 
         // Sort invoices by saleAmount in descending order & take top 5
         const topInvoices = filteredInvoices
             .sort((a, b) => b.saleAmount - a.saleAmount) // Sort in descending order
             .slice(0, 5); // Get top 5
 
-        console.log("Top 5 Invoices:", topInvoices);
 
         // Extract unique product IDs & their names
         let topProducts = {};
@@ -489,7 +477,6 @@ exports.getTopProductCustomer = async (req, res) => {
             .sort((a, b) => b.totalSold - a.totalSold) // Sort descending by totalSold count
             .slice(0, 5); // Get top 5 products
 
-        console.log("Top 5 Products:", sortedTopProducts);
 
         // 🔹 NEW: Find top 7 customers by total purchase amount
         let customerSales = {};
@@ -515,7 +502,6 @@ exports.getTopProductCustomer = async (req, res) => {
             .sort((a, b) => b.totalSpent - a.totalSpent) // Sort by total spent
             .slice(0, 7); // Get top 7 customers
 
-        console.log("Top 7 Customers:", topCustomers);
 
         // Response JSON
         res.json({
