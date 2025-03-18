@@ -6,8 +6,7 @@ const router = new express.Router()
 const customerController = require("../controller/customerCont")
 const customerSettings = require('../controller/customerSettings')
 const dashboardController = require("../controller/dashboardController")
-
-
+const dashboardCont = require("../controller/dashboardCont")
 
 const checkPermission = require('../controller/permission');
 const { verifyToken } = require('../controller/middleware');
@@ -18,6 +17,12 @@ const { verifyToken } = require('../controller/middleware');
 //Basic
 router.get('/customer-additional-data', verifyToken,customerController.getCustomerAdditionalData);
 
+
+// Dashboard
+router.get('/get-customerDashboard-overview', verifyToken, dashboardCont.getOverviewData);
+router.get('/get-customerDashboard-topCustomers', verifyToken, dashboardCont.getTopCustomers);
+router.get('/get-customerDashboard-retentionRateOverTime', verifyToken, dashboardCont.getCustomerRetentionOverTime);
+router.get('/get-customerDashboard-averageOrderValue', verifyToken, dashboardCont.getAverageOrderValue);
 
 
 

@@ -83,9 +83,9 @@ exports.addCustomer = async (req, res) => {
       console.log("Customer & Account created successfully");
       res.status(201).json({ message: "Customer created successfully." });
     } catch (error) {
-      console.error("Error creating customer:", error);
-      res.status(500).json({ message: "Internal server error." });
-    }
+      console.log("Error creating customer:", error);
+      res.status(500).json({ message: "Internal server error.", error });
+    } 
 };
 
 
@@ -171,8 +171,8 @@ exports.editCustomer = async (req, res) => {
       });
       console.log("Customer updated successfully:", savedCustomer);
     } catch (error) {
-      console.error("Error updating customer:", error);
-      res.status(500).json({ message: "Internal server error." });
+      console.log("Error updating customer:", error);
+      res.status(500).json({ message: "Internal server error.", error  });
     }
 };
 
@@ -196,8 +196,8 @@ exports.getAllCustomer = async (req, res) => {
     
     res.status(200).json(formattedObjects);
   } catch (error) {
-    console.error("Error fetching customer:", error);
-    res.status(500).json({ message: "Internal server error." });
+    console.log("Error fetching customer:", error);
+    res.status(500).json({ message: "Internal server error.", error  });
   }
 };
 
@@ -230,8 +230,8 @@ exports.getOneCustomer = async (req, res) => {
     res.status(200).json(formattedObjects);
 
   } catch (error) {
-    console.error("Error fetching customer:", error);
-    res.status(500).json({ message: "Internal server error." });
+    console.log("Error fetching customer:", error);
+    res.status(500).json({ message: "Internal server error.", error  });
   }
 };
 
@@ -267,8 +267,8 @@ exports.getCustomerTransactions = async (req, res) => {
     return res.status(200).json({ data: formattedData });
 
   } catch (error) {
-      console.error("Error fetching customer transactions:", error);
-      return res.status(500).json({ message: "Internal server error" });
+      console.log("Error fetching customer transactions:", error);
+      return res.status(500).json({ message: "Internal server error", error  });
   }
 };
 
@@ -321,8 +321,8 @@ exports.updateCustomerStatus = async (req, res) => {
       status: existingCustomer.status,
     });
   } catch (error) {
-    console.error("Error updating customer status:", error);
-    res.status(500).json({ message: "Internal server error." });
+    console.log("Error updating customer status:", error);
+    res.status(500).json({ message: "Internal server error.", error  });
   }
 };
 
@@ -375,8 +375,8 @@ exports.getCustomerAdditionalData = async (req, res) => {
     // Return the combined response data
     return res.status(200).json(response);
   } catch (error) {
-    console.error("Error fetching customer additional data:", error);
-    res.status(500).json({ message: "Internal server error." });
+    console.log("Error fetching customer additional data:", error);
+    res.status(500).json({ message: "Internal server error.", error  });
   }
 };
 
@@ -415,8 +415,8 @@ exports.getOneCustomerHistory = async (req, res) => {
     
     res.status(200).json(formattedObjects);
   } catch (error) {
-    console.error("Error fetching customer:", error);
-    res.status(500).json({ message: "Internal server error." });
+    console.log("Error fetching customer:", error);
+    res.status(500).json({ message: "Internal server error.", error  });
   }
 };
 
@@ -493,8 +493,8 @@ exports.deleteCustomer = async (req, res) => {
       console.log("Customer deleted successfully with ID:", customerId);
 
   } catch (error) {
-      console.error("Error deleting customer:", error);
-      res.status(500).json({ message: "Internal server error" });
+      console.log("Error deleting customer:", error);
+      res.status(500).json({ message: "Internal server error", error  });
   }
 };
 
