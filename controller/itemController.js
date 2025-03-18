@@ -896,7 +896,7 @@ function isAlphanumeric(value) {
 
 const validItemTypes = [ "goods", "service" ];
 const validTaxPreference = [ "Non-taxable", "Taxable" ]; 
-const validProducts = [ "BillBizz", "Sewnex", "Salonex", "6nexd" ];
+const validProducts = [ "BillBizz", "SewNex", "SaloNex", "6NexD" ];
 const validDuration = [ 
   "1 Month", 
   "2 Month",
