@@ -62,7 +62,7 @@ exports.addCustomer = async (req, res) => {
       cleanedData.taxType = taxExists.taxType;
       cleanedData.taxPreference = "Taxable";
       cleanedData.gstTreatment = "Consumer";
-      cleanedData.placeOfSupply = organizationExists.organizationCountry;
+      cleanedData.placeOfSupply = organizationExists.state;
 
       
       
