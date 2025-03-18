@@ -99,8 +99,6 @@ const customerSchema = new Schema({
     // *Sewnex variables
     customerAddress: {type:String},  
 
-    companyAddress: {type:String},  
-
     membershipCardNumber: {type:String}, 
     referenceCustomerId: {type: mongoose.Schema.Types.ObjectId, ref: 'Customer'},    
 

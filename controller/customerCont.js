@@ -55,17 +55,15 @@ exports.addCustomer = async (req, res) => {
   
       const { organizationExists, taxExists, currencyExists, allCustomer , settings } = await dataExist( organizationId, null );
 
-      cleanedData.billingCountry = organizationExists.organizationCountry;
-      cleanedData.billingState = organizationExists.state;
-      cleanedData.shippingCountry = organizationExists.organizationCountry;
-      cleanedData.shippingState = organizationExists.state;
-      cleanedData.taxType = taxExists.taxType;
-      cleanedData.taxPreference = "Taxable";
-      cleanedData.gstTreatment = "Consumer";
-      cleanedData.placeOfSupply = organizationExists.state;
+      // cleanedData.billingCountry = organizationExists.organizationCountry;
+      // cleanedData.billingState = organizationExists.state;
+      // cleanedData.shippingCountry = organizationExists.organizationCountry;
+      // cleanedData.shippingState = organizationExists.state;
+      // cleanedData.taxType = taxExists.taxType;
+      // cleanedData.taxPreference = "Taxable";
+      // cleanedData.gstTreatment = "Consumer";
+      // cleanedData.placeOfSupply = organizationExists.state;
 
-      
-      
       // checking values from Customer settings
       const { duplicateCustomerDisplayName , duplicateCustomerEmail , duplicateCustomerMobile } = settings[0]
         
@@ -128,7 +126,7 @@ exports.editCustomer = async (req, res) => {
         console.log("Customer not found with ID:", customerId);
         return res.status(404).json({ message: "Customer not found" });
       }
-  
+
       
       if (!validateInputs(cleanedData, currencyExists, taxExists, organizationExists, res)) return;
       const errors = [];
@@ -1003,7 +1001,7 @@ function validateField(condition, errorMsg, errors) {
 }
 //Valid Req Fields
 function validateReqFields( data, taxType, organization, errors ) {
-  validateField( typeof data.customerDisplayName === 'undefined', `Customer Display Name required`, errors );  
+  // validateField( typeof data.customerDisplayName === 'undefined', `Customer Display Name required`, errors );  
 
   validateField( typeof taxType === 'undefined' || taxType === '' , `Please setup tax`, errors );
   validateField( typeof data.taxType === 'undefined' || data.taxType === '' , `Select tax type`, errors );
