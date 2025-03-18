@@ -1526,7 +1526,7 @@ async function itemTrack(savedInvoice, itemTable) {
       transactionId: savedInvoice.salesInvoice,
       action: "Sale",
       itemId: matchingItem._id,
-      sellingPrice: matchingItem.sellingPrice || 0,
+      sellingPrice: item.sellingPrice || 0,
       costPrice: matchingItem.costPrice || 0, 
       creditQuantity: item.quantity, 
       createdDateTime: savedInvoice.createdDateTime 

@@ -714,7 +714,7 @@ function capitalize(word) {
         transactionId: savedCreditNote.creditNote,
         action: "Credit Note",
         itemId: matchingItem._id,
-        sellingPrice: matchingItem.sellingPrice || 0,
+        sellingPrice: item.sellingPrice || 0,
         costPrice: matchingItem.costPrice || 0, 
         debitQuantity: item.quantity, 
         createdDateTime: savedCreditNote.createdDateTime 
