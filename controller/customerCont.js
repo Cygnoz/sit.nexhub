@@ -90,7 +90,7 @@ exports.addCustomer = async (req, res) => {
       await saveTrialBalanceAndHistory(savedCustomer, savedAccount, debitOpeningBalance, creditOpeningBalance, userId, userName,firstDayOfMonth);
   
       console.log("Customer & Account created successfully");
-      res.status(201).json({ message: "Customer created successfully.", customerId: savedCustomer._id });
+      res.status(201).json({ message: "Customer created successfully.", clientId: savedCustomer._id });
     } catch (error) {
       console.error("Error creating customer:", error);
       res.status(500).json({ message: "Internal server error." });
