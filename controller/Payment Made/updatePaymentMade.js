@@ -32,10 +32,13 @@ exports.updatePaymentMade = async (req, res) => {
 
       const billIds = unpaidBills.map(unpaidBill => unpaidBill.billId);
 
+      
+      
       // Fetch the latest payment made for the given supplierId and organizationId
-      const latestPaymentMade = await getLatestPaymentMade(paymentId, organizationId, supplierId, billIds, res);
-      if (latestPaymentMade) {
-        return; 
+      const result = await getLatestPaymentMade(paymentId, organizationId, supplierId, billIds);
+      
+      if (result.error) {
+        return res.status(400).json({ message: result.error });
       }
     
       // Validate _id's
@@ -106,7 +109,7 @@ exports.updatePaymentMade = async (req, res) => {
       // console.log("Payment made updated successfully:", savedPaymentMade);
   
     } catch (error) {
-      console.error("Error updating payment made:", error);
+      console.log("Error updating payment made:", error);
       res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -225,7 +228,7 @@ async function getExistingPaymentMade(paymentId, organizationId, res) {
 
 
 // Get Latest Payment Made
-async function getLatestPaymentMade(paymentId, organizationId, supplierId, billIds, res) {
+async function getLatestPaymentMade(paymentId, organizationId, supplierId, billIds) {
   const latestPayment = await PaymentMade.findOne({ 
       organizationId, 
       supplierId,
@@ -233,15 +236,13 @@ async function getLatestPaymentMade(paymentId, organizationId, supplierId, billI
   }).sort({ createdDateTime: -1 }); // Sort by createdDateTime in descending order
 
   if (!latestPayment) {
-      console.log("No payment made found for this supplier.");
-      return res.status(404).json({ message: "No payment made found for this supplier." });
+    console.log("No payment made found for this supplier.");
+    return { error: "No payment made found for this supplier." };
   }
 
   // Check if the provided paymentId matches the latest one
   if (latestPayment._id.toString() !== paymentId) {
-    return res.status(400).json({
-      message: "Only the latest payment made can be edited."
-    });
+      return { error: "Only the latest payment made can be edited." };
   }
 
   return latestPayment;
