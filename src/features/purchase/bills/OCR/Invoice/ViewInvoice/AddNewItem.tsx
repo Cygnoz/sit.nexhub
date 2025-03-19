@@ -37,11 +37,11 @@ const AddNewItem = ({selectedItem}:Props) => {
   const [unitList, setUnitList] = useState<[] | any>([]);
   const [taxRate, setTaxRate] = useState<[] | any>([]);
   const [allAccounts,setAllAccounts]=useState([])
-  const { request: getUnit } = useApi("get", 5003);
-  const { request: getTaxRate } = useApi("get", 5004);
-  const { request: getAccounts } = useApi("get", 5001);
+  const { request: getUnit } = useApi("get", 7003);
+  const { request: getTaxRate } = useApi("get", 7004);
+  const { request: getAccounts } = useApi("get", 7001);
 
-  const { request: addItem } = useApi("post", 5003);
+  const { request: addItem } = useApi("post", 7003);
   const { organization } = useOrganization();
   const { setOcrAddItem } = useContext(octAddItemContext)!;
 

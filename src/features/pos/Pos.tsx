@@ -23,8 +23,8 @@ function Pos({}: Props) {
   const [searchValue, setSearchValue] = useState<string>("");
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
 
-  const { request: GetAllItems } = useApi("get", 5003);
-  const { request: fetchAllCategories } = useApi("put", 5003);
+  const { request: GetAllItems } = useApi("get", 7003);
+  const { request: fetchAllCategories } = useApi("put", 7003);
 
   useEffect(() => {
     const fetchAllItems = async () => {

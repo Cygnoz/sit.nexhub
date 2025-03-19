@@ -21,7 +21,7 @@ const CustomerAndSupplier = () => {
   const { settingsResponse, getSettingsData } = useContext(
     settingsdataResponseContext
   )!;
-  const { request: saveSettings } = useApi("put", 5009);
+  const { request: saveSettings } = useApi("put", 7009);
   const [inputData, setInputData] = useState<CustomerSupplierSettings>({
     duplicateSupplierDisplayName: false,
     duplicateSupplierEmail: false,

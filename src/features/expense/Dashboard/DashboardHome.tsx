@@ -3,11 +3,14 @@ import ArrowDownIcon from '../../../assets/icons/ArrowDownIcon';
 import ArrowUpIcon from '../../../assets/icons/ArrowUpIcon';
 import Ellipsis from '../../../assets/icons/Ellipsis';
 import RefreshIcon from '../../../assets/icons/RefreshIcon';
-import AvaragePurchase from './AvaragePurchase';
-import CustomersRetentionRate from './CustomersRetentionRate';
-import RepeatPurchaseRate from './TopProducts';
-import TopCustomers from './TopCustomers';
+import MonthYearDropdown from '../../../Components/dropdown/MonthYearDropdown';
+import useApi from '../../../Hooks/useApi';
+import { endponits } from '../../../Services/apiEndpoints';
 import Cards from './Cards';
+import CustomersRetentionRate from './CustomersRetentionRate';
+import ExpBreakdownCategory from './ExpBreakdownCategory';
+import ExpBreakdownSupplier from './ExpBreakdownSupplier';
+import TopCategories from './TopCategories';
 
 
 type Props = {};
@@ -15,7 +18,11 @@ type Props = {};
 function DashboardHome({}: Props) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const currentDate = new Date();
+  const [month, setMonth] = useState(String(currentDate.getMonth() + 1).padStart(2, "0")); // Current month (zero-based index)
+  const [year, setYear] = useState(currentDate.getFullYear()); // Current year
+    const [cardData,setCardData] = useState<any>()
+    const {request:getOverView}=useApi('get',5008)
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -64,8 +71,27 @@ function DashboardHome({}: Props) {
     },
   ];
 
+  const getExpenseOverView=async()=>{
+        try{
+            const {response,error}=await getOverView(`${endponits.EXPENSE_DASH_OVERVIEW}?date=${year}/${month}`)
+            if(response&&!error){
+                setCardData(response.data)
+            }else{
+                console.log("err",error);
+            }
+        }catch(error){
+            console.log("er",error);
+        }
+    }
+   
+      useEffect(()=>{
+        if(month||year){
+            getExpenseOverView()
+        }
+      },[month,year])
+
   return (
-    <div className="px-6 space-y-8 text-[#303F58]">
+    <div className="px-6 mb-3 space-y-8 text-[#303F58]">
       <div className="flex items-center relative">
         <div>
           <h3 className="font-bold text-2xl text-textColor">Expense Overview</h3>
@@ -74,9 +100,7 @@ function DashboardHome({}: Props) {
           </p>
         </div>
         <div className="ml-auto gap-3 flex items-center">
-          <select name="" id="" className="border border-outlineButton rounded-lg p-2 text-outlineButton text-sm font-medium">
-            <option value="">Select Month</option>
-          </select>
+        <MonthYearDropdown setMonth={setMonth} year={year} setYear={setYear} month={month}/>
           <div onClick={toggleDropdown} className="cursor-pointer">
             <Ellipsis />
           </div>
@@ -103,23 +127,23 @@ function DashboardHome({}: Props) {
       {/* Cards */}
 
 
-      <Cards />
+      <Cards data={cardData}/>
 
 
       {/* Top suppliers and supplier retention rate over time */}
       <div className="grid grid-cols-3 gap-5">
       <div className="col-span-2 flex justify-center">
-          <CustomersRetentionRate />
+          <CustomersRetentionRate date={`${year}/${month}`}/>
         </div>
       
         <div className="flex justify-center">
-          <TopCustomers />
+          <TopCategories date={`${year}/${month}`}/>
         </div>
         <div className="flex justify-center">
-          <AvaragePurchase />
+          <ExpBreakdownCategory date={`${year}/${month}`}/>
         </div>
         <div className="col-span-2 flex justify-center">
-          <RepeatPurchaseRate />
+          <ExpBreakdownSupplier date={`${year}/${month}`}/>
         </div>
 
 

@@ -37,8 +37,8 @@ const Overview: React.FC<OverviewProps> = ({
   setStatusData,
 }) => {
   const { id } = useParams<{ id: string }>();
-  const { request: updateSupplierStatus } = useApi("put", 5009);
-  const { request: getSupplierHistory } = useApi("get", 5009);
+  const { request: updateSupplierStatus } = useApi("put", 7009);
+  const { request: getSupplierHistory } = useApi("get", 7009);
   const [addressEdit, setAddressEdit] = useState<string>();
   const [supplierHis, setSupplierHis] = useState<any>();
   const [isModalOpen, setModalOpen] = useState(false);

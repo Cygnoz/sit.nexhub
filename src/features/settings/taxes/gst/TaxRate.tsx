@@ -58,8 +58,8 @@ function TaxRate({ }: Props) {
   };
 
   const [taxGst, setTaxGst] = useState<TaxGst>(initialTaxGst);
-  const { request: createTaxGst } = useApi("post", 5004);
-  const { request: updateTaxGst } = useApi("put", 5004);
+  const { request: createTaxGst } = useApi("post", 7004);
+  const { request: updateTaxGst } = useApi("put", 7004);
   const { setGstResponse, gstResponse } = useContext(GstResponseContext)!;
 
  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -164,7 +164,7 @@ function TaxRate({ }: Props) {
   const [selectedTaxRate, setSelectedTaxRate] = useState<TaxGst | null>(null);
   const [search, setSearch] = useState<string>("");
 
-  const { request: AllTaxGst } = useApi("get", 5004);
+  const { request: AllTaxGst } = useApi("get", 7004);
 
   const fetchAllTaxGst = async () => {
     try {

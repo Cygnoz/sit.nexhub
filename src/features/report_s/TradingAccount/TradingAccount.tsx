@@ -30,7 +30,7 @@ function getLastDayOfMonth() {
 
 const TradingAccount = () => {
   const [tradingData, setTradingData] = useState<[] | any>([]);
-  const { request: fetchOneItem } = useApi("get", 5006);
+  const { request: fetchOneItem } = useApi("get", 7006);
   const [fromDate, setFromDate] = useState(getFirstDayOfMonth());
   const [toDate, setToDate] = useState(getLastDayOfMonth());
   const fromDateRef = useRef<HTMLInputElement>(null);

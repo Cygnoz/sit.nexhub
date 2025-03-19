@@ -21,7 +21,7 @@ function RecieptView({ }: Props) {
   const [RecieptData, setRecieptData] = useState<[] | any>([])
   const [invoiceJournal, setInvoiceJournal] = useState<any>([])
   const { request: getReciept } = useApi("get", 5007)
-  const { request: deleteSales } = useApi("delete", 5007);
+  const { request: deleteSales } = useApi("delete", 7007);
   const { organization } = useOrganization()
 
 
@@ -47,7 +47,7 @@ function RecieptView({ }: Props) {
       console.error('Failed to fetch settings:', error);
     }
   };
-  const { request: getOneRecieptJournal } = useApi("get", 5007);
+  const { request: getOneRecieptJournal } = useApi("get", 7007);
   const fetchOneInvoice = async () => {
     try {
       const url = `${endponits.GET_SALES_RECIEPT_JOURNAL}/${id}`;

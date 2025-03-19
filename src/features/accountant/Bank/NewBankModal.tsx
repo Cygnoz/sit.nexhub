@@ -37,8 +37,8 @@ const NewBankModal = ({page,id }: Props) => {
   const [bankAccount, setBankAccount] = useState(initialBankAccount);
   const [openingType, setOpeningType] = useState("Debit");
   const { setBankResponse } = useContext(BankResponseContext)!;
-  const { request: CreateAccount } = useApi("post", 5001);
-  const { request:editAccount } = useApi("put", 5001);
+  const { request: CreateAccount } = useApi("post", 7001);
+  const { request:editAccount } = useApi("put", 7001);
 
   // const {organization}=nization()
   const openModal = () => {
@@ -46,8 +46,8 @@ const NewBankModal = ({page,id }: Props) => {
     getcurrencyData()
   };
   const [currencyData, setcurrencyData] = useState<any | []>([]);
-  const { request: getCurrencyData } = useApi("get", 5004);
-  const { request: fetchOneItem } = useApi("get", 5001);
+  const { request: getCurrencyData } = useApi("get", 7004);
+  const { request: fetchOneItem } = useApi("get", 7001);
 
   const getcurrencyData = async () => {
     try {

@@ -12,7 +12,7 @@ import { settingsdataResponseContext } from "../../../../context/ContextShare";
 type Props = {};
 
 function Invoices({}: Props) {
-  const { request: AddSalesInvoiceSettings } = useApi("put", 5007);
+  const { request: AddSalesInvoiceSettings } = useApi("put", 7007);
   const [invoiceURLDropdown, setInvoiceURLDropdown] = useState(false);
   const { settingsResponse, getSettingsData } = useContext(
     settingsdataResponseContext

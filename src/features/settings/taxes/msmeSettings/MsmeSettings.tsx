@@ -17,8 +17,8 @@ function MsmeSettings({}: Props) {
   const [msmeSettings, setMsmeSettings] = useState(initialMsmeSettings);
   const [isGstRegistered, setIsGstRegistered] = useState(false);
 
-  const { request: fetchMsmeSettings } = useApi("get", 5004); 
-  const { request: saveMsmeSettings } = useApi("post", 5004); 
+  const { request: fetchMsmeSettings } = useApi("get", 7004); 
+  const { request: saveMsmeSettings } = useApi("post", 7004); 
 
   useEffect(() => {
     const fetchAllMsmeSettings = async () => {

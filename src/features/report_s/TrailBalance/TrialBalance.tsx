@@ -29,7 +29,7 @@ function getLastDayOfMonth() {
 
 
 function TrialBalance() {
-  const { request: trailBalance } = useApi("get", 5006);
+  const { request: trailBalance } = useApi("get", 7006);
 
   const [fromDate, setFromDate] = useState(getFirstDayOfMonth());
   const [toDate, setToDate] = useState(getLastDayOfMonth());

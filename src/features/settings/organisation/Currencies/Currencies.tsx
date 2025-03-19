@@ -39,7 +39,7 @@ const Currencies: React.FC<Props> = () => {
     format: "",
   });
   const { setCurrencyResponse } = useContext(CurrencyResponseContext)!;
-  const { request: CreateNewCurrency } = useApi("post", 5004);
+  const { request: CreateNewCurrency } = useApi("post", 7004);
 
   const openModal = (
     enableExchangeRateModal = false,

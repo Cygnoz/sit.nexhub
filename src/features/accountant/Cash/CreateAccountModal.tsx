@@ -32,8 +32,8 @@ const CreateAccountModal = ({page,id}: Props) => {
 
   const [accounts, setAccounts] = useState(initialAccounts);
   const [openingType, setOpeningType] = useState("Debit");
-  const { request: CreateAccount } = useApi("post", 5001);
-  const { request:editAccount } = useApi("put", 5001);
+  const { request: CreateAccount } = useApi("post", 7001);
+  const { request:editAccount } = useApi("put", 7001);
   const { setCashResponse } = useContext(cashResponseContext)!;
 
   const openModal = () => {
@@ -82,7 +82,7 @@ const CreateAccountModal = ({page,id}: Props) => {
     }
   };
 
-    const { request: fetchOneItem } = useApi("get", 5001);
+    const { request: fetchOneItem } = useApi("get", 7001);
 
   const getOneItem = async () => {
     try {

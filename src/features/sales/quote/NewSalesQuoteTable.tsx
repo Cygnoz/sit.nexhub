@@ -54,8 +54,8 @@ const NewSalesQuoteTable = ({
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<any>([]);
   const [qouteisTaxable, setQouteIsTaxable] = useState<boolean>(false)
-  // const { request: getAllItemsRequest } = useApi("get", 5003);
-  const { request: getallItemSales } = useApi("get", 5003);
+  // const { request: getAllItemsRequest } = useApi("get", 7003);
+  const { request: getallItemSales } = useApi("get", 7003);
   const previousItemsRef = useRef([]);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);

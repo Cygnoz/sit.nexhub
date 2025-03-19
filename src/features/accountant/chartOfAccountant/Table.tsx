@@ -65,8 +65,8 @@ const Table = ({
   const [oneAccountData, setOneAccountData] = useState<any>({});
   console.log(oneAccountData, "oneAccountData");
 
-  const { request: fetchOneItem } = useApi("get", 5001);
-  const { request: deleteAccount } = useApi("delete", 5001);
+  const { request: fetchOneItem } = useApi("get", 7001);
+  const { request: deleteAccount } = useApi("delete", 7001);
   const getOneItem = async (item: Account) => {
     try {
       const url = `${endponits.GET_ONE_ACCOUNT}/${item._id}`;

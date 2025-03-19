@@ -21,7 +21,7 @@ function PaymentView({ }: Props) {
   const [paymentData, setPaymentData] = useState<[] | any>([])
   const { request: getPayment } = useApi("get", 5005)
   const { organization } = useOrganization()
-  const { request: deleteData } = useApi("delete", 5005);
+  const { request: deleteData } = useApi("delete", 7005);
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const confirmDelete = () => {
     setConfirmModalOpen(true);

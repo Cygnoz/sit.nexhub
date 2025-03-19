@@ -88,13 +88,13 @@ const NewPaymentMade = ({ page }: Props) => {
     initialSupplierPayment
   );
 
-  const { request: AllSuppliers } = useApi("get", 5009);
-  const { request: getAllBills } = useApi("get", 5005);
-  const { request: getAccounts } = useApi("get", 5001);
-  const { request: addPayment } = useApi("post", 5005);
-  const { request: getPrefix } = useApi("get", 5005);
-  const { request: getOnepayment } = useApi("get", 5005);
-  const { request: editPayment } = useApi("put", 5005);
+  const { request: AllSuppliers } = useApi("get", 7009);
+  const { request: getAllBills } = useApi("get", 7005);
+  const { request: getAccounts } = useApi("get", 7001);
+  const { request: addPayment } = useApi("post", 7005);
+  const { request: getPrefix } = useApi("get", 7005);
+  const { request: getOnepayment } = useApi("get", 7005);
+  const { request: editPayment } = useApi("put", 7005);
 
   const { id } = useParams();
 

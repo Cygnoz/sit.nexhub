@@ -22,7 +22,7 @@ const ExchangeRates = ({}: Props) => {
 
   const [addExchangeRateModal, setAddExchangeRateModal] = useState(false);
   const [CurrencyDetails, setCurrenyDetails] = useState<currency | any>();
-  const { request: getOneCurr } = useApi("get", 5004);
+  const { request: getOneCurr } = useApi("get", 7004);
 
   const getOne = async () => {
     try {

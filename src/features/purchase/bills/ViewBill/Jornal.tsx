@@ -16,8 +16,8 @@ interface BillJournal {
 
 const Journal = ({ page }: Props) => {
   const [billJournal, setBillJournal] = useState<BillJournal[]>([]);
-  const { request: getOneInvoiceDetails } = useApi("get", 5005);
-  const { request: getExpense } = useApi("get", 5008);
+  const { request: getOneInvoiceDetails } = useApi("get", 7005);
+  const { request: getExpense } = useApi("get", 7008);
 
   const { id } = useParams<{ id: string }>();
 

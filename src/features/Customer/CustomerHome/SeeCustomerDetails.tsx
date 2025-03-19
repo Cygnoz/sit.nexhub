@@ -42,10 +42,10 @@ function SeeCustomerDetails() {
   const [Currency, setCurrency] = useState<any>([]);
   const navigate = useNavigate();
 
-  const { request: getOneCustomer } = useApi("get", 5002);
-  const { request: updateCustomerStatus } = useApi("put", 5002);
-  const { request: getCurrencies } = useApi("get", 5004);
-  const { request: deleteData } = useApi("delete", 5002);
+  const { request: getOneCustomer } = useApi("get", 7002);
+  const { request: updateCustomerStatus } = useApi("put", 7002);
+  const { request: getCurrencies } = useApi("get", 7004);
+  const { request: deleteData } = useApi("delete", 7002);
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const confirmDelete = () => {
     setConfirmModalOpen(true);

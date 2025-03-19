@@ -44,8 +44,8 @@ interface QuoteData {
 const SalesTable = ({ page }: Props) => {
   const navigate = useNavigate();
   const { loading, setLoading } = useContext(TableResponseContext)!;
-  const { request: getAllQuotes } = useApi("get", 5007);
-  const { request: deleteSales } = useApi("delete", 5007);
+  const { request: getAllQuotes } = useApi("get", 7007);
+  const { request: deleteSales } = useApi("delete", 7007);
   const [searchValue, setSearchValue] = useState<string>("");
   const [data, setData] = useState<any | []>([]);
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);

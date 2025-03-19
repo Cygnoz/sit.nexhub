@@ -35,10 +35,10 @@ type SeriesModalData = {
 };
 
 function TransactionNumber() {
-  const { request: GetPrefix } = useApi("get", 5004);
-  const { request: AddPrefix } = useApi("post", 5004);
-  const { request: EditPrefix } = useApi("put", 5004);
-  const { request: StatusPrefix } = useApi("put", 5004);
+  const { request: GetPrefix } = useApi("get", 7004);
+  const { request: AddPrefix } = useApi("post", 7004);
+  const { request: EditPrefix } = useApi("put", 7004);
+  const { request: StatusPrefix } = useApi("put", 7004);
   const { request: DeletePrefix } = useApi('delete', 5004)
   const modules = [
     "journal",

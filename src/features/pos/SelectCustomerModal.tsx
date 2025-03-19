@@ -12,7 +12,7 @@ type Props = { onButtonClick: (data: string) => void; };
 function SelectCustomerModal({ onButtonClick }: Props) {
   const [customerData, setCustomerData] = useState<any>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
-  const { request: AllCustomers } = useApi("get", 5002);
+  const { request: AllCustomers } = useApi("get", 7002);
   const [isModalOpen, setModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
 

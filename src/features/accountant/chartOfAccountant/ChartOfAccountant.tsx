@@ -15,7 +15,7 @@ const ChartOfAccountant = ({}: Props) => {
     skelton:false,
     noDataFound:false
   })
-  const { request: AllAccounts } = useApi("get", 5001);
+  const { request: AllAccounts } = useApi("get", 7001);
 
   useEffect(() => {
     fetchAllAccounts();

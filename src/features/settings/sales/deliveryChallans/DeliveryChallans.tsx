@@ -14,7 +14,7 @@ interface DeliveryChallan {
 }
 
 function DeliveryChallans({}: Props) {
-  const { request: addDeliveryChallan } = useApi("put", 5007);
+  const { request: addDeliveryChallan } = useApi("put", 7007);
   const {settingsResponse, getSettingsData } = useContext(settingsdataResponseContext)!;
   const [inputData, setInputData] = useState<DeliveryChallan>({
     deliveryChellanTC: "",

@@ -17,14 +17,14 @@ type Props = {};
 const ExpenseView = ({}: Props) => {
   const [expense, setExpense] = useState<any | []>([]);
   const [expensedata,setExpenseData]=useState<any |[]>([])
-  const { request: getExpense } = useApi("get", 5008);
+  const { request: getExpense } = useApi("get", 7008);
   const [Currency,setCurrency]=useState<any>([])
   const {organization}=useOrganization()
   const { id } = useParams();
   const navigate = useNavigate();
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
-  const { request: deleteExpense } = useApi("delete", 5008);
-  const { request: getCurrencies } = useApi("get", 5004);
+  const { request: deleteExpense } = useApi("delete", 7008);
+  const { request: getCurrencies } = useApi("get", 7004);
 
 
   const confirmDelete = () => {

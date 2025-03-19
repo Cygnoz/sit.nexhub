@@ -24,8 +24,8 @@ const renderCustomTooltip: React.FC<TooltipProps<number, string>> = ({ payload }
       <Tooltips
         content={`${payload[0].value}%`}
         textColor="#ffffff"
-        bgColor="#0099F8"
-        arrowColor="#0099F8"
+        bgColor="#000000"
+        arrowColor="#000000"
         width="60px"
       />
     );
@@ -65,7 +65,7 @@ const RepeatPurchaseRate: React.FC = () => {
     <div className="bg-white rounded-lg w-full px-8">
       <h3 className="text-[16px] mt-6 font-bold">Repeat Purchase Rate</h3>
       <ResponsiveContainer width="100%" height={400}>
-        <BarChart layout="vertical" data={data} margin={{ left: -70, right: 100, bottom: -25 }}>
+        <BarChart layout="vertical" data={data} margin={{ left: -70, right: 100 }}>
           <XAxis
             type="number"
             stroke="#4A5568"

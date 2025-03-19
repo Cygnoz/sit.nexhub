@@ -18,7 +18,7 @@ const Dropdown = <T,>({
   onSelect,
   getDisplayValue,
   getFilterValue,
-  placeholder = "Select an option",
+  placeholder,
   disabled = false,
 }: DropdownProps<T>) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -68,12 +68,20 @@ const Dropdown = <T,>({
         onClick={handleDropdownToggle}
       >
         <input
-          type="text"
-          placeholder={placeholder}
-          value={getDisplayValue(value) || ""}
-          readOnly
-          className="rounded-md text-sm p-2 w-full focus:outline-none cursor-pointer"
-        />
+  type="text"
+  placeholder={placeholder}
+  value={
+    value
+      ? getDisplayValue(value)
+      : placeholder
+      ? placeholder
+      : options.length > 0
+      ? getDisplayValue(options[0])
+      : ""
+  }
+  readOnly
+  className="rounded-md text-sm p-2 w-full focus:outline-none cursor-pointer"
+/>
         <div className="-ms-8">
           <CehvronDown color="#818894" />
         </div>

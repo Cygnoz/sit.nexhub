@@ -22,7 +22,7 @@ const ExpenseTable = () => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [allExpense, setAllExpense] = useState<any[]>([]);
-  const { request: getExpense } = useApi("get", 5008);
+  const { request: getExpense } = useApi("get", 7008);
   const { loading, setLoading } = useContext(TableResponseContext)!;
   const navigate = useNavigate();
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -126,7 +126,7 @@ const ExpenseTable = () => {
   const handleEditClick = (id: any) => {
     navigate(`/expense/edit-expense/${id}`);
   };
-  const { request: deleteExpense } = useApi("delete", 5008);
+  const { request: deleteExpense } = useApi("delete", 7008);
   const handleDelete = async () => {
     if (!deleteId) return;
     try {

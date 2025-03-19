@@ -19,7 +19,7 @@ import { settingsdataResponseContext } from "../../../../context/ContextShare";
 type Props = {};
 
 function InvoiceSettings({}: Props) {
-  const { request: AddInvoiceSettings } = useApi("put", 5004);
+  const { request: AddInvoiceSettings } = useApi("put", 7004);
   const [isAddPlaceHolderOpen, setAddPlaceHolderOpen] = useState(false);
   const [isSeePreviewOpen, setSeePreviewOpen] = useState(false);
   const [showQROpenLocation, setShowQROpenLocation] = useState(false);

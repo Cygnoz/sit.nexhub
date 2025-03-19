@@ -7,8 +7,8 @@ import { CurrencyResponseContext } from "../../../../context/ContextShare";
 import EditCurrencyModal from "./EditCurrencyModal";
 
 const CurrencyTable = () => {
-  const { request: get_currencies } = useApi("get", 5004);
-  const { request: deleteCurrencyRequest } = useApi("delete", 5004);
+  const { request: get_currencies } = useApi("get", 7004);
+  const { request: deleteCurrencyRequest } = useApi("delete", 7004);
   const { currencyResponse } = useContext(CurrencyResponseContext)!;
 
   const [currenciesData, setCurrenciesData] = useState<any[]>([]);

@@ -18,9 +18,9 @@ function ViewSales() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const { page } = location.state || {};
-  const { request: getOneSalesOrder } = useApi("get", 5007);
+  const { request: getOneSalesOrder } = useApi("get", 7007);
   const [data, setData] = useState<any>(null);
-  const { request: deleteData } = useApi("delete", 5007);
+  const { request: deleteData } = useApi("delete", 7007);
 
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const confirmDelete = () => {

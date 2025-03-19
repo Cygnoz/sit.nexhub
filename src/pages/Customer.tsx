@@ -1,5 +1,5 @@
 
-import Dashboard from "../features/Customer/Dashboard/Dashboard";
+import Dashboard from "../features/Customer/Dashboard/CustomerDashboard";
 
 type Props = {};
 

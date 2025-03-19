@@ -55,7 +55,7 @@ const ProfitAndLoss = ({ }: Props) => {
     toDateRef.current?.showPicker();
   };
 
-  const { request: fetchOneItem } = useApi("get", 5006);
+  const { request: fetchOneItem } = useApi("get", 7006);
 
   console.log(PLData, "PLData");
 

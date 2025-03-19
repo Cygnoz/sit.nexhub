@@ -43,8 +43,8 @@ const ItemTable = ({ hsnsac }: Props) => {
 
   console.log(selectedItem, "selectedItem");
 
-  const { request: UpdateItem } = useApi("put", 5003);
-  const { request: deleteItem } = useApi("delete", 5003);
+  const { request: UpdateItem } = useApi("put", 7003);
+  const { request: deleteItem } = useApi("delete", 7003);
   const { organization: orgData } = useOrganization();
 
   const openModal = (item: any) => {
@@ -74,14 +74,14 @@ const ItemTable = ({ hsnsac }: Props) => {
   const [itemsData, setItemsData] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
 
-  const { request: GetAllItems } = useApi("get", 5003);
+  const { request: GetAllItems } = useApi("get", 7003);
   const fetchAllItems = async () => {
     try {
       const url = `${endponits.GET_ALL_ITEMS_TABLE}`;
       const { response, error } = await GetAllItems(url);
 
       if (!error && response) {
-        setItemsData(response.data);
+        setItemsData(response.data.reverse());
         console.log(response.data);
 
       } else {
@@ -93,7 +93,7 @@ const ItemTable = ({ hsnsac }: Props) => {
   };
 
   const [allCategoryData, setAllcategoryData] = useState<any[]>([]);
-  const { request: fetchAllCategories } = useApi("put", 5003);
+  const { request: fetchAllCategories } = useApi("put", 7003);
   const loadCategories = async () => {
     try {
       const url = `${endponits.GET_ALL_BRMC}`;
@@ -110,7 +110,7 @@ const ItemTable = ({ hsnsac }: Props) => {
     }
   };
 
-  const { request: fetchOneItem } = useApi("get", 5003);
+  const { request: fetchOneItem } = useApi("get", 7003);
   const getOneItem = async (item: any) => {
     try {
       const url = `${endponits.GET_ONE_ITEM}/${item._id}`;
