@@ -732,7 +732,7 @@ function validateReqFields( data, customerExist, errors ) {
   validateField( typeof data.items === 'undefined', "Select an item", errors  );
   validateField( Array.isArray(data.items) && data.items.length === 0, "Select an item", errors );
   
-  validateField( data.invoiceNumber === 'undefined', "Select an invoice number", errors  );
+  // validateField( data.invoiceNumber === 'undefined', "Select an invoice number", errors  );
   validateField( typeof data.paymentMode === 'undefined', "Select payment mode", errors  );
   validateField( data.paymentMode === 'Cash' && typeof data.totalAmount === 'undefined', "Enter the amount paid", errors  );
   validateField( data.paymentMode === 'Cash' && typeof data.paidThroughAccountId === 'undefined', "Select an paid through account", errors  );  
