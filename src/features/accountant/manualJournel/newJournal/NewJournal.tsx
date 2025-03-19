@@ -439,8 +439,8 @@ function NewJournal({ page }: Props) {
 
       <div className="mt-5 p-3 pb-5 rounded-md bg-white">
         <div className="grid gap-5 p-4">
-          <div className="flex items-center justify-between w-full gap-9">
-            <div className="w-[40%]">
+          <div className="flex-row sm:flex items-center justify-between w-full gap-9">
+            <div className="w-full sm:w-[40%]">
               <label className="block text-sm text-textColor">Date</label>
               <input
                 type="date"
@@ -455,7 +455,7 @@ function NewJournal({ page }: Props) {
                 }
               />
             </div>
-            <div className="w-[26%]">
+            <div className="w-full sm:w-[26%]">
               <label className="block text-sm text-textColor">Journal#</label>
               <input
                 disabled
@@ -469,7 +469,7 @@ function NewJournal({ page }: Props) {
                 }
               />
             </div>
-            <div className="w-[40%]">
+            <div className="w-full sm:w-[40%]">
               <label className="block text-sm text-textColor">Reference#</label>
               <input
                 type="text"
@@ -486,8 +486,8 @@ function NewJournal({ page }: Props) {
             </div>
           </div>
 
-          <div className="flex items-center justify-between w-full gap-9">
-            <div className="w-[72%]">
+          <div className="flex-row sm:flex items-center justify-between w-full gap-9">
+            <div className="w-full sm:w-[72%]">
               <label className="block text-sm text-textColor">Notes</label>
               <input
                 type="text"
@@ -523,7 +523,7 @@ function NewJournal({ page }: Props) {
                 </label>
               </div>
             </div> */}
-            <div className="w-[50%]">
+            <div className="w-full sm:w-[50%]">
               <label className="block text-sm text-textColor">Currency</label>
               <select
                 className="mt-1 w-full border border-inputBorder bg-white rounded-md text-sm p-2"
@@ -543,7 +543,7 @@ function NewJournal({ page }: Props) {
           </div>
         </div>
         <div className="-mt-2 p-4">
-          <div className="border rounded-md border-tableBorder">
+          <div className="border rounded-md border-tableBorder overflow-x-auto h-[250px]">
             <table className="min-w-full bg-white rounded-md">
               <thead className="text-[12px] text-center text-dropdownText">
                 <tr style={{ backgroundColor: "#F9F7F0" }}>
@@ -676,9 +676,9 @@ function NewJournal({ page }: Props) {
         </div>
       </div>
 
-      <div className="mt-3 p-5 rounded-md bg-white w-[55%] ms-auto">
-        <div className="grid grid-cols-12">
-          <div className="col-span-4 flex flex-col gap-3">
+      <div className="mt-3 p-5 rounded-md bg-white w-full sm:w-[55%] ms-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-12 overflow-x-auto">
+          <div className="col-span-7 sm:col-span-4 flex flex-col gap-3">
             <p className="text-[14px] text-[#4B5C79]">Sub Total</p>
             <span className="text-xl font-bold text-textColor">Total</span>
           </div>
@@ -699,7 +699,7 @@ function NewJournal({ page }: Props) {
               {organization?.baseCurrency} {totalResult.totalCredit.toFixed(2)}
             </span>
           </div>
-          <div className="col-span-2 flex flex-col gap-1 bg-[#FEF7F7] py-[4px] px-[14px]">
+          <div className="col-span-7 sm:col-span-2 flex flex-col gap-1 bg-[#FEF7F7] py-[4px] px-[14px]">
             <h4 className="text-[12px] text-[#820000]">Difference</h4>
             <h2 className="text-[#820000] font-bold text-[18px]">
               {Math.abs(totalResult.difference).toFixed(2)}

@@ -93,12 +93,12 @@ const RecentTransaction = ({ date }: Props) => {
     <div className="bg-white p-5 rounded-md">
       <h3 className="mb-6 text-[16px] font-bold">Recent Transactions</h3>
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 overflow-x-auto">
         {tabs.map((item, index) => (
           <div
             key={index}
             onClick={() => setSelectedTab(item)}
-            className={`h-10 rounded-3xl text-textColor text-sm px-4 py-3 cursor-pointer font-semibold ${
+            className={`h-auto sm:h-10 rounded-3xl text-textColor text-sm px-4 py-3 cursor-pointer font-semibold ${
               selectedTab === item ? "bg-[#dadcce]" : "bg-[#fcffee]"
             }`}
           >

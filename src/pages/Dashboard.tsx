@@ -69,7 +69,7 @@ function Dashboard({ }: Props) {
     <div className="mx-4 sm:mx-6 my-4 min-h-screen">
       {/* Banner Section */}
       <div
-        className="relative rounded-lg p-6 sm:p-9 flex flex-col sm:flex-row justify-between items-center bg-cover bg-center"
+        className="relative rounded-lg p-6 sm:px-9 flex flex-col sm:flex-row justify-between items-center bg-cover bg-center"
         style={{ backgroundImage: `url(${bannerBg})` }}
       >
         <div className="absolute top-2 right-5 text-3xl font-light cursor-pointer">

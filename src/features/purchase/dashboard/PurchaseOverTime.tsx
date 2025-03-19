@@ -78,7 +78,7 @@ function PurchaseOverTime({ date }: Props) {
   };
 
   return (
-    <div className="bg-white rounded-lg w-full py-8">
+    <div className="bg-white rounded-lg w-full py-8 overflow-x-auto">
       <h3 className="ms-10 mb-6 text-[16px] font-bold">Purchase Over Time</h3>
       {overTime?.some((item:any) => item.value> 0) ?
       <ResponsiveContainer width="100%" height={340}>

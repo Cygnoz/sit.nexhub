@@ -106,7 +106,7 @@ const LandingContant = ({ mode, setMode }: Props) => {
               <img
                 src={manageSalesImg}
                 alt=""
-                className="absolute -right-12 -bottom-7 w-[326px] h-[177px]"
+                className="absolute -right-16 sm:-right-12 -bottom-7 w-[250px] sm:w-[326px] h-[140px] sm:h-[177px]"
               />
             </div>
           </div>
@@ -124,7 +124,7 @@ const LandingContant = ({ mode, setMode }: Props) => {
               <img
                 src={inventoryImg}
                 alt="Manage Sales"
-                className="absolute z-90 bottom-[-40px] right-[-130px]  w-[520px] h-auto object-cover"
+                className="absolute z-90 bottom-[-40px] right-[-90px]  sm:right-[-130px]  w-[520px] h-auto object-cover"
                 style={{ clipPath: "inset(0 0 0 0)" }}
               />
               {/* Arrow icon in the top right corner inside a circle   */}
@@ -392,8 +392,8 @@ const LandingContant = ({ mode, setMode }: Props) => {
             className="-z-10 absolute right-0 bottom-0"
             alt=""
           />
-          <p
-            className={`w-[140px] text-[16px]  absolute right-14 bottom-5 ${mode ? "text-[#303F58]" : "text-white"
+         <p
+            className={`w-[140px] text-[16px]  absolute right-5 sm:right-14 bottom-5 ${mode ? "text-[#303F58]" : "text-white"
               }`}
           >
             Chat With <br />
@@ -434,7 +434,7 @@ const LandingContant = ({ mode, setMode }: Props) => {
         <Frame
           isOpen={isPopupOpen}
           onClose={handleModalToggle}
-          url={`https://dev.solytics.online/main?projectName=Billie`}
+          url= {`https://dev.solytics.online/main?projectName=Billie`}
         />
       }
     </div>

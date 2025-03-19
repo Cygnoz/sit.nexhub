@@ -86,9 +86,9 @@ const TopProductBySpend = ({ date }: Props) => {
   }, [date]);
 
   return (
-    <div className="bg-white rounded-lg w-full px-5 py-2 space-y-4">
+    <div className="bg-white rounded-lg w-full px-5 py-2 space-y-4 overflow-x-auto">
       <h3 className="text-[16px] font-bold">Top Products By Supplier</h3>
-      <ResponsiveContainer width="100%" height={395}>
+      <ResponsiveContainer width="100%" height={450} >
         <BarChart layout="vertical" data={topProduct} margin={{ left: -50, right: 100, bottom: -25 }}>
           <XAxis
             type="number"

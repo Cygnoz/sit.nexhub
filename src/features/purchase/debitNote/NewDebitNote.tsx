@@ -95,7 +95,7 @@ const NewDebitNote = ({ page }: Props) => {
     itemTable: false,
   });
 
-  
+
   const { request: AllSuppliers } = useApi("get", 5009);
   const { request: getCountries } = useApi("get", 5004);
   const { request: getOneOrganization } = useApi("get", 5004);
@@ -235,61 +235,61 @@ const NewDebitNote = ({ page }: Props) => {
     "supplierDisplayName",
     searchValue
   );
-console.log(errors)
+  console.log(errors)
 
 
   const handleSave = async () => {
     const newErrors = { ...errors };
     const missingFields: string[] = [];
-    
+
     if (debitNoteState.supplierId?.trim() === "") {
       newErrors.supplierId = true;
       missingFields.push("Supplier");
     } else {
       newErrors.supplierId = false;
     }
-    
+
     if (debitNoteState.destinationOfSupply?.trim() === "") {
       newErrors.destinationOfSupply = true;
       missingFields.push("Destination of Supply");
     } else {
       newErrors.destinationOfSupply = false;
     }
-    
+
     if (debitNoteState.sourceOfSupply?.trim() === "") {
       newErrors.sourceOfSupply = true;
       missingFields.push("Source of Supply");
     } else {
       newErrors.sourceOfSupply = false;
     }
-    
+
     if (debitNoteState.supplierDebitDate?.trim() === "") {
       newErrors.debitDate = true;
       missingFields.push("Debit Date");
     } else {
       newErrors.debitDate = false;
     }
-    
+
     if (debitNoteState.paymentMode?.trim() === "") {
       newErrors.paymentMode = true;
       missingFields.push("Payment Mode");
     } else {
       newErrors.paymentMode = false;
     }
-    
+
     if (debitNoteState.depositAccountId?.trim() === "" && debitNoteState.paymentMode === "Cash") {
       newErrors.depositTo = true;
       missingFields.push("Deposit To");
     } else {
       newErrors.depositTo = false;
     }
-    
+
     if (missingFields.length > 0) {
       setErrors(newErrors);
       toast.error(`Fill the required fields: ${missingFields.join(", ")}`);
       return;
     }
-    
+
     try {
       let url;
       let api;
@@ -392,11 +392,11 @@ console.log(errors)
     if (debitNoteState.paymentMode === "Credit") {
       setDebitNoteState((prevData) => ({
         ...prevData,
-        depositAccountId: "", 
+        depositAccountId: "",
       }));
     }
   }, [debitNoteState.paymentMode]);
-  
+
 
   useEffect(() => {
     supplierResponse;
@@ -430,9 +430,9 @@ console.log(errors)
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-4  h-[85vh] overflow-y-scroll hide-scrollbar ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-12 gap-4  h-full sm:h-[85vh] overflow-y-scroll hide-scrollbar ">
         <div className="bg-secondary_main p-5 min-h-max rounded-xl relative col-span-8">
-          <div className="grid grid-cols-2 gap-4 mt-5 space-y-">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 space-y-">
             <div>
               <label className="block text-sm mb-1 text-labelColor">
                 Supplier Name<span className="text-[#bd2e2e] ">*</span>
@@ -494,11 +494,10 @@ console.log(errors)
                           }}
                         >
                           <div
-                            className={` items-center space-y-1 ${
-                              supplier.mobile
+                            className={` items-center space-y-1 ${supplier.mobile
                                 ? "justify-start"
                                 : "flex justify-center"
-                            }`}
+                              }`}
                           >
                             <p className="font-bold text-sm">
                               {supplier.supplierDisplayName}
@@ -636,7 +635,7 @@ console.log(errors)
                     placeholder="Search Bill"
                   />
                   {selecteSupplier &&
-                  Object.keys(selecteSupplier).length > 0 ? (
+                    Object.keys(selecteSupplier).length > 0 ? (
                     allBills?.allBills?.length > 0 ? (
                       allBills?.allBills?.filter(
                         (bill: any) => bill.supplierId === selecteSupplier?._id
@@ -788,7 +787,7 @@ console.log(errors)
               </div>
             </div>
 
-         { debitNoteState.paymentMode==="Cash" &&  <div>
+            {debitNoteState.paymentMode === "Cash" && <div>
               <label className="block text-sm mb-1 text-labelColor">
                 Deposit To<span className="text-[#bd2e2e] ">*</span>
               </label>
@@ -832,7 +831,7 @@ console.log(errors)
               </label>
             </div>
           </div>
-          <div className="mt-9">
+          <div className="mt-9 overflow-x-auto  sm:overflow-x-hidden hide-scrollbar h-[250px]">
             <p className="font-bold text-base">Add Item</p>
             <DebitNoteTable
               purchaseOrderState={debitNoteState}
@@ -858,7 +857,7 @@ console.log(errors)
             </label>
           </div>
         </div>
-        <div className="col-span-4">
+        <div className="col-span-7 sm:col-span-4">
           <div className="mt-0">
             <label htmlFor="" className="block text-sm mb-1 text-labelColor">
               Terms & Conditions
@@ -886,7 +885,7 @@ console.log(errors)
                 className="hidden"
                 value=""
                 name="documents"
-                // onChange={(e)=>handleFileChange(e)}
+              // onChange={(e)=>handleFileChange(e)}
               />
             </label>
           </div>
@@ -1011,7 +1010,7 @@ console.log(errors)
               >
                 Cancel
               </Button>
-            
+
               <Button variant="primary" size="sm" onClick={handleSave}>
                 Save & send
               </Button>{" "}

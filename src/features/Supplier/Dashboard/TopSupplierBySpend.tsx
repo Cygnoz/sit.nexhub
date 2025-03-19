@@ -107,7 +107,7 @@ const TopSupplierBySpend = ({ date }: Props) => {
   const COLORS = generateColors(topSupplierSpend.length);
 
   return (
-    <div className="bg-white rounded-lg flex justify-center items-center w-full px-8 py-6">
+    <div className="bg-white rounded-lg flex justify-center items-center w-full px-8 py-6 overflow-x-auto">
       <div className="w-full ">
         <h3 className="text-[18px] font-bold text-[#303F58] text-start mb-4">
           Top Suppliers by Spend

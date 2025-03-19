@@ -17,7 +17,7 @@ const ExpenseHome = ({}: Props) => {
   
   return (
     <div className="mx-6 my-4 text-textColor space-y-5">
-      <div className="flex">
+      <div className="sm:flex">
         <div>
         <h3 className="font-bold text-2xl text-textColor">Expense</h3>
         <p className="text-sm text-gray mt-1">

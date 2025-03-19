@@ -103,7 +103,7 @@ const NumberOfOrdersBySupplier = ({ date }: Props) => {
   
 
   return (
-    <div className="bg-white rounded-lg w-full py-6">
+    <div className="bg-white rounded-lg w-full py-6 overflow-x-auto">
       <h3 className="ms-10 mb-6 text-[16px] font-bold">
         Number of Orders by Supplier
       </h3>

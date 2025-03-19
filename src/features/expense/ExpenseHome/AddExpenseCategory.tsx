@@ -145,7 +145,7 @@ function AddExpenseCategory({}: Props) {
             <CirclePlus color="currentColor" size="14" />{" "}
             <p className="text-md">Add Category</p>
           </Button>
-    <Modal open={isOpen.main} onClose={()=>closeModal(false,false,false)} className="w-[65%]">
+    <Modal open={isOpen.main} onClose={()=>closeModal(false,false,false)} className="w-[90%]  h-[90%] sm:w-[65%] overflow-x-auto"  >
       <div className="p-5 mt-3">
         <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden h-24">
           <div
@@ -169,9 +169,9 @@ function AddExpenseCategory({}: Props) {
           </div>
         </div>
 
-        <div className="flex">
+        <div className="sm:flex">
             <div className="grid grid-flow-col items-center gap-3 ">
-              <div className="w-96">
+              <div className="sm:w-96">
                 <SearchBar
                   placeholder="Search Name or Description"
                   searchValue={searchValue}
@@ -199,15 +199,15 @@ function AddExpenseCategory({}: Props) {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {allCategory.length === 0 ? (
             <p className="text-center col-span-3 text-red-500 font-semibold">
               No categories found !
             </p> 
           ) : ( 
             filteredCategories?.map((category: any) => (
-              <div key={category._id} className="flex p-2">
-                <div className="border border-slate-200 text-textColor rounded-xl w-96 h-auto p-3 flex justify-between">
+              <div key={category._id} className="flex-row sm:flex p-2">
+                <div className="border border-slate-200 text-textColor rounded-xl w-full  sm:w-96 h-auto p-3 flex justify-between">
                   <div>
                     <h3 className="text-sm font-bold">{category.expenseCategory}</h3>
                     <p className="text-xs text-textColor">{category.description}</p>
@@ -241,7 +241,7 @@ function AddExpenseCategory({}: Props) {
 
 
 
-        <Modal open={isOpen.edit?isOpen.edit:isOpen.add} onClose={()=>closeModal(true,false,false)} style={{ width: "35%" }}>
+        <Modal open={isOpen.edit?isOpen.edit:isOpen.add} onClose={()=>closeModal(true,false,false)}  className="w-[90%] sm:w-[35%]">
           <div className="p-5">
             <div className="flex p-4 rounded-xlrelative overflow-hidden h-24">
               <div className="relative z-10">

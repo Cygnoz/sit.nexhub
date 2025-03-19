@@ -27,7 +27,7 @@ const Cards = ({data}:CardProps) => {
 
   return (
     <div>
-      <div className="flex justify-between w-full space-x-4">
+      <div className="sm:flex justify-between w-full space-x-0 sm:space-x-4">
         {cards.map((card, index) => (
           <OrderCards
             key={index}

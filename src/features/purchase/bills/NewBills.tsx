@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import CehvronDown from "../../../assets/icons/CehvronDown";
 import SearchBar from "../../../Components/SearchBar";
 import Button from "../../../Components/Button";
-import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import AddSupplierModal from "../../Supplier/SupplierHome/AddSupplierModal";
 import NeworderTable from "../purchaseOrder/addPurchaseOrder/NeworderTable";
 import Upload from "../../../assets/icons/Upload";
@@ -159,7 +158,7 @@ const NewBills = ({ page }: Props) => {
           }));
         } else if (url.includes(endponits.GET_A_OCR_INVOICE)) {
           setData(response.data[0]);
-          
+
         } else {
           setData(response.data);
         }
@@ -688,9 +687,9 @@ const NewBills = ({ page }: Props) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-4 py-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-12 gap-4 py-5 rounded-lg">
         <div className="bg-secondary_main p-5 min-h-max rounded-xl relative col-span-8">
-          <div className="grid grid-cols-2 gap-4 mt-5 space-y-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 space-y-1">
             <div>
               <label className="block text-sm mb-1 text-labelColor">
                 Supplier Name<span className="text-[#bd2e2e] ">*</span>
@@ -746,11 +745,10 @@ const NewBills = ({ page }: Props) => {
                           }}
                         >
                           <div
-                            className={` items-center space-y-1 ${
-                              supplier.mobile
-                                ? "justify-start"
-                                : "flex justify-center"
-                            }`}
+                            className={` items-center space-y-1 ${supplier.mobile
+                              ? "justify-start"
+                              : "flex justify-center"
+                              }`}
                           >
                             <p className="font-bold text-sm">
                               {supplier.supplierDisplayName}
@@ -778,7 +776,7 @@ const NewBills = ({ page }: Props) => {
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <div className="relative w-full">
                 <label className="block text-sm mb-1 text-labelColor">
                   Supplier Invoice Number{" "}
@@ -1034,7 +1032,7 @@ const NewBills = ({ page }: Props) => {
             </div>
           </div>
 
-          <div className="mt-9">
+          <div className="mt-9 overflow-x-auto  sm:overflow-x-hidden hide-scrollbar h-[240px]">
             <p className="font-bold text-base">Add Item</p>
             <NeworderTable
               purchaseOrderState={bill}
@@ -1053,7 +1051,7 @@ const NewBills = ({ page }: Props) => {
 
           <br />
         </div>
-        <div className="col-span-4">
+        <div className="col-span-7 sm:col-span-4 h-full sm:h-[100vh] overflow-scroll hide-scrollbar">
           <div className="bg-secondary_main p-5 min-h-max rounded-xl relative  mt-0">
             <div className="mt-5">
               <label className="block text-sm mb-1 text-labelColor">
@@ -1097,7 +1095,7 @@ const NewBills = ({ page }: Props) => {
                   className="hidden"
                   value=""
                   name="documents"
-                  // onChange={(e)=>handleFileChange(e)}
+                // onChange={(e)=>handleFileChange(e)}
                 />
               </label>
             </div>
@@ -1310,11 +1308,11 @@ const NewBills = ({ page }: Props) => {
 
             {bill.paymentMode === "Cash" && (
               <>
-                <div className="flex gap-4 items-center justify-center mb-2">
+                <div className="flex-row sm:flex gap-4 items-center justify-center mb-2">
                   <label className=" text-sm mb-1 text-labelColor min-w-fit left-0">
                     Paid Through Account
                   </label>
-                  <div className="relative w-full  ml-auto  ps-5">
+                  <div className="relative w-full  ml-auto ps-0  sm:ps-5">
                     <select
                       onChange={handleChange}
                       value={bill.paidAccountId}
@@ -1341,7 +1339,7 @@ const NewBills = ({ page }: Props) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-4 items-center justify-center">
+                <div className="flex-row sm:flex gap-4 items-center justify-center">
                   <label
                     className="block text-sm mb-1 text-labelColor max-w-fit"
                     htmlFor="paidAmount"
@@ -1366,7 +1364,7 @@ const NewBills = ({ page }: Props) => {
                   </div>
                 </div>
 
-                <div className=" flex gap-4 items-center justify-center">
+                <div className=" flex-row sm:flex gap-4 items-center justify-center">
                   <label
                     htmlFor="balanceAmount"
                     className="block text-sm mb-1 text-labelColor max-w-fit"
@@ -1381,7 +1379,7 @@ const NewBills = ({ page }: Props) => {
                       value={bill.balanceAmount}
                       onChange={handleChange}
                       placeholder="Balance Amount"
-                      className="border-inputBorder bg-white  text-sm border rounded-lg text-dropdownText  p-2 h-9 mt-2 "
+                      className="border-inputBorder bg-white  text-sm border rounded-lg text-dropdownText w-full  p-2 h-9 mt-2 "
                     />
                   </div>
                 </div>
@@ -1389,13 +1387,12 @@ const NewBills = ({ page }: Props) => {
             )}
             <div className="flex gap-4 m-5 justify-end">
               {" "}
+              <Link to={"/purchase/bills"}>
               <Button variant="secondary" size="sm">
                 Cancel
               </Button>
-              <Button variant="secondary" size="sm">
-                <PrinterIcon height={18} width={18} color="currentColor" />
-                Print
-              </Button>
+              </Link>
+            
               <Button variant="primary" size="sm" onClick={handleSave}>
                 Save & send
               </Button>{" "}

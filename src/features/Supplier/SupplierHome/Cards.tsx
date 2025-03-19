@@ -52,7 +52,7 @@ function Cards({ all, active, inactive, duplicate, onCardClick }: CardsProps) {
   };
 
   return (
-    <div className="flex space-x-4 justify-center px-6 mt-2">
+    <div className="flex-row sm:flex overflow-x-auto px-5 ">
       {supplierCardsData.map((card, index) => (
         <SupplierCard
           key={index}

@@ -55,7 +55,8 @@ function OrderView({ data, page, organization }: Props) {
     const currency = organization?.baseCurrency || "";
 
     return (
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        
         {items.map(
           (item: {
             itemId: string;
@@ -80,7 +81,7 @@ function OrderView({ data, page, organization }: Props) {
                   className="w-full flex items-center justify-between cursor-pointer "
                   onClick={() => toggleDropdown(item.itemId)}
                 >
-                  <div className="flex items-center">
+                  <div className="flex-row sm:flex items-center">
                     <img
                       src={item.itemImage || ""}
                       alt="Item"
@@ -104,7 +105,7 @@ function OrderView({ data, page, organization }: Props) {
               </div>
               {/* Expandable Section */}
               {isExpanded === item.itemId && (
-                <div className=" w-full grid grid-cols-5 text-center rounded-b-lg border-borderRight py-3 bg-gradient-to-r from-[#E3E6D5] to-[#F7E7CE] ">
+                <div className=" w-full grid  grid-cols-1 sm:grid-cols-5 text-center rounded-b-lg border-borderRight py-3 bg-gradient-to-r from-[#E3E6D5] to-[#F7E7CE] ">
                   {/* Ordered */}
                   <div className="flex items-center border-r border-borderRight p-4">
                     <div>
@@ -169,7 +170,7 @@ function OrderView({ data, page, organization }: Props) {
 
   return (
     <div className="mt-4">
-      <div className="flex items-center justify-start mb-4">
+      <div className="sm:flex items-center justify-start mb-4">
         <p className="text-textColor border-r-[1px] border-borderRight pr-4 text-sm font-normal">
           Order Date:{" "}
           <span className="ms-3 text-dropdownText text-sm font-semibold">
@@ -213,8 +214,8 @@ function OrderView({ data, page, organization }: Props) {
 
 
       <hr className="mt-6 border-t border-inputBorder" />
-      <div className="flex justify-between gap-6 mt-4 ">
-        <div className="p-6 rounded-lg border border-billingBorder w-[50%] h-fit">
+      <div className="flex-row sm:flex justify-between gap-6 mt-4 ">
+        <div className="p-6 rounded-lg border border-billingBorder w-full sm:w-[50%] h-fit">
           <p className="text-base font-bold text-textColor">Billing Address</p>
           <div className="text-base text-dropdownText mt-2 space-y-2">
             {supplier?.supplierDisplayName && (
@@ -244,7 +245,7 @@ function OrderView({ data, page, organization }: Props) {
 
 
 
-        <div className="p-6 rounded-lg border border-billingBorder w-[50%]">
+        <div className="p-6 rounded-lg border border-billingBorder w-full sm:w-[50%]">
           {page !== "PurchaseOrder" && page!=="DebitNote" ? (
             <>
               <p className="text-base font-bold text-textColor">

@@ -47,7 +47,7 @@ const TotalProduct = ({date}:Props) => {
   ];
 
   return (
-    <div className="bg-white rounded-lg w-full px-8 py-6">
+    <div className="bg-white rounded-lg w-full px-8 py-6 overflow-x-auto">
       <div className="flex justify-between items-center">
         <h3 className="text-[16px] font-bold">Total Products by Supplier</h3>
         {/* <select

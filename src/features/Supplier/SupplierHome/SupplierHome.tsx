@@ -109,12 +109,12 @@ const SupplierHome = () => {
             Organize supplier details to enhance purchasing and collaboration.
           </p>
         </div>
-        <div className="ml-auto gap-3 flex items-center">
+        <div className="ml-auto gap-3 flex items-center ">
           <NewSupplierModal />
           <div>{/* <Dropdown /> */}</div>
         </div>
       </div>
-      <div>
+      <div className="">
         <Cards
           all={supplierData.length}
           active={activeSuppliers}

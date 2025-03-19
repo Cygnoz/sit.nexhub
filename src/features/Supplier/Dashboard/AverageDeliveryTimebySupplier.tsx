@@ -107,7 +107,7 @@ const AverageDeliveryTimebySupplier: React.FC<AvgDeliProps> = ({ date }) => {
   }, [date,]);
 
   return (
-    <div className="bg-white rounded-lg w-full py-8">
+    <div className="bg-white rounded-lg w-full py-8 overflow-x-auto">
       <h3 className="ms-10 text-[16px] font-bold">Average Delivery Time by Supplier</h3>
       {avgDelivery.length>0?<>
       

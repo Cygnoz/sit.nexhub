@@ -154,7 +154,7 @@ function AccountantView() {
 
   return (
     <div className="px-6">
-      <div className="flex justify-between items-center gap-5 mb-2">
+      <div className="flex-row sm:flex justify-between items-center gap-5 mb-2">
         <div className="flex items-center gap-2">
 
           <Link to={fromCash ? "/accountant/cash" : fromBank ? "/accountant/bank" : "/accountant/chart-OF-accountant"}>

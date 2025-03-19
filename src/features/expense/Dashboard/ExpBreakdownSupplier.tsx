@@ -45,7 +45,7 @@ const ExpBreakdownSupplier = ({date}:Props) => {
   ];
 
   return (
-    <div className="bg-white rounded-lg w-full px-8 py-6">
+    <div className="bg-white rounded-lg w-full px-8 py-6 overflow-x-auto">
       <div className="flex justify-between items-center">
         <h3 className="text-[16px] font-bold">Expense Breakdown By Supplier</h3>
         {/* <select

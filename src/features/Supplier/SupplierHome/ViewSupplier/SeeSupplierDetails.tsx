@@ -104,7 +104,7 @@ function SeeSupplierDetails({}: Props) {
 
   return (
     <div className="px-6">
-      <div className="bg-white shadow-md rounded-lg p-6 flex items-center justify-between">
+      <div className="bg-white shadow-md rounded-lg p-6 flex-row sm:flex items-center justify-between">
         {/* Left Section */}
         <div className="flex gap-5 items-center">
           <Link to="/supplier/home">

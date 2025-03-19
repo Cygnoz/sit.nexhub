@@ -38,7 +38,7 @@ const Cards = ({data}: Props) => {
   ];
   return (
     <div>
-        <div className="flex justify-between">
+        <div className="flex-row sm:flex justify-between overflow-x-auto">
       {cards.map((card, index) => (
         <OrderCards
           key={index}

@@ -351,7 +351,7 @@ function AddExpensePage({ page }: Props) {
       }));
     }
   };
-console.log("data",countryData, selecteSupplier);
+  console.log("data", countryData, selecteSupplier);
 
   // const handleDestination = (data = null) => {
   //   const supplierData = data || selecteSupplier;
@@ -375,7 +375,7 @@ console.log("data",countryData, selecteSupplier);
           c.name.toLowerCase() === selecteSupplier.billingCountry.toLowerCase()
       );
       console.log("Country", country);
-      
+
       if (selecteSupplier) {
         setExpenseData((preData) => ({
           ...preData,
@@ -818,7 +818,7 @@ console.log("data",countryData, selecteSupplier);
         </div>
         <div className="px-3 mb-4">
           <label className="block mb-1">
-            <div className="w-3/4 mx-2 border-dashed border-2 border-neutral-700 p-4 rounded gap-2 text-center mt-2">
+            <div className="sm:w-3/4 mx-2 border-dashed border-2 border-neutral-700 p-4 rounded gap-2 text-center mt-2">
               {expenseData.uploadFiles ? (
                 <div className="flex justify-center ">
                   <img
@@ -858,7 +858,7 @@ console.log("data",countryData, selecteSupplier);
 
         {selectedSection === "expense" && (
           <>
-            <div className="grid grid-cols-3 gap-4 mt-5 mx-4">
+            <div className="grid grid-cols-1 gap-4 mt-5 mx-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
               <div className="col-span-1 space-y-2">
                 <label className="text-sm mb-1 text-labelColor">
                   Date<span className="text-[#bd2e2e] ">*</span>
@@ -1115,16 +1115,16 @@ console.log("data",countryData, selecteSupplier);
                             name="expenseType"
                             value="Goods"
                             className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${expenseData.expenseType === "Goods"
-                                ? "border-8 border-[#97998E]"
-                                : "border-1 border-[#97998E]"
+                              ? "border-8 border-[#97998E]"
+                              : "border-1 border-[#97998E]"
                               }`}
                             checked={expenseData.expenseType === "Goods"}
                             readOnly
                           />
                           <div
                             className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${expenseData.expenseType === "Goods"
-                                ? "bg-neutral-50"
-                                : "bg-transparent"
+                              ? "bg-neutral-50"
+                              : "bg-transparent"
                               }`}
                           />
                         </div>
@@ -1153,16 +1153,16 @@ console.log("data",countryData, selecteSupplier);
                             name="expenseType"
                             value="Service"
                             className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${expenseData.expenseType === "Service"
-                                ? "border-8 border-[#97998E]"
-                                : "border-1 border-[#97998E]"
+                              ? "border-8 border-[#97998E]"
+                              : "border-1 border-[#97998E]"
                               }`}
                             checked={expenseData.expenseType === "Service"}
                             readOnly // Avoid unnecessary onChange handling
                           />
                           <div
                             className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${expenseData.expenseType === "Service"
-                                ? "bg-neutral-50" // Correct color for checked state
-                                : "bg-transparent"
+                              ? "bg-neutral-50" // Correct color for checked state
+                              : "bg-transparent"
                               }`}
                           />
                         </div>
@@ -1598,8 +1598,8 @@ console.log("data",countryData, selecteSupplier);
                             name="amountIs"
                             value="Tax Inclusive"
                             className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${expenseData.amountIs === "Tax Inclusive"
-                                ? "border-8 border-[#97998E]"
-                                : "border-1 border-[#97998E]"
+                              ? "border-8 border-[#97998E]"
+                              : "border-1 border-[#97998E]"
                               }`}
                             checked={expenseData.amountIs === "Tax Inclusive"}
                             onChange={() =>
@@ -1611,8 +1611,8 @@ console.log("data",countryData, selecteSupplier);
                           />
                           <div
                             className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${expenseData.amountIs === "Tax Inclusive"
-                                ? "bg-neutral-50"
-                                : "bg-transparent"
+                              ? "bg-neutral-50"
+                              : "bg-transparent"
                               }`}
                           />
                         </div>
@@ -1647,8 +1647,8 @@ console.log("data",countryData, selecteSupplier);
                             name="amountIs"
                             value="Tax Exclusive"
                             className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border ${expenseData.amountIs === "Tax Exclusive"
-                                ? "border-8 border-[#97998E]"
-                                : "border-1 border-[#97998E]"
+                              ? "border-8 border-[#97998E]"
+                              : "border-1 border-[#97998E]"
                               }`}
                             checked={expenseData.amountIs === "Tax Exclusive"}
                             onChange={() =>
@@ -1660,8 +1660,8 @@ console.log("data",countryData, selecteSupplier);
                           />
                           <div
                             className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${expenseData.amountIs === "Tax Exclusive"
-                                ? "bg-neutral-50"
-                                : "bg-transparent"
+                              ? "bg-neutral-50"
+                              : "bg-transparent"
                               }`}
                           />
                         </div>
@@ -1705,7 +1705,7 @@ console.log("data",countryData, selecteSupplier);
           </>
         )}
         {selectedSection === "mileage" && (
-          <div className="grid grid-cols-3 gap-4 mt-5 mx-4">
+          <div className="grid grid-cols-1 gap-4 mt-5 mx-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
             <div className="col-span-1 space-y-2">
               <label className="text-sm mb-1 text-labelColor">
                 Date<span className="text-[#bd2e2e] ">*</span>

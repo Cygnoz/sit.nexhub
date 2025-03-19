@@ -107,7 +107,7 @@ const ExpenseView = ({}: Props) => {
         <p className="text-textColor text-xl font-bold">View Expense</p>
       </div>
 
-      <div className="flex border-b py-3 border-slate-400">
+      <div className="flex-row sm:flex border-b py-3 border-slate-400 overflow-x-auto">
         <div className="text-textColor text-lg font-semibold ">
           <p>
           Expense <span className="font-light px-3"> |</span> {expense?.expenseNumber}{" "}

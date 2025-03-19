@@ -68,7 +68,7 @@ function BillsHomes({}: Props) {
   ];
   return (
     <>
-      <div className="px-6 flex   items-center relative">
+      <div className="px-6 sm:flex   items-center relative">
         <div>
           <h3 className="font-bold text-2xl text-textColor">Bills</h3>
           <p className="text-sm text-gray mt-1">

@@ -80,13 +80,15 @@ function ManualView({ }: Props) {
 
         <div className="bg-white rounded-xl px-5 mb-32 mt-5">
           <br />
-          <div className="flex justify-between">
+          <div className="sm:flex justify-between">
             <div className="flex gap-3 items-center">
               <p className="text-xl text-textColor font-bold pr-4 border-borderRight">
                 {oneJournal ? `#${oneJournal?.journalId}` : "#001"}
               </p>
             </div>
-            <div className="flex gap-3 items-center">
+            <div className="flex-row sm:flex gap-3 items-center">
+              <div className="flex gap-2 mb-2 sm:mb-0">
+
               <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={handleEditClick}>
                 <Pen color="#565148" />{" "}
                 <p className="text-sm font-medium">Edit</p>
@@ -95,7 +97,8 @@ function ManualView({ }: Props) {
                 <PrinterIcon color="#565148" height={0} width={0} />{" "}
                 <p className="text-sm font-medium">Print</p>
               </Button>
-              <Button variant="secondary" className="pl-5 pr-5" size="sm" onClick={handleDelete}>
+              </div>
+              <Button variant="secondary" className="pl-5 pr-5 " size="sm" onClick={handleDelete}>
                 <Trash2 color="#565148" />{" "}
                 <p className="text-sm font-medium">Delete</p>
               </Button>
@@ -187,7 +190,7 @@ function ManualView({ }: Props) {
               </table>
 
 
-              <div className="bg-[#F3E6E6] ms-auto flex gap-5 rounded-lg p-3 text-end w-[55%] text-xs">
+              <div className="bg-[#F3E6E6] ms-auto flex gap-5 rounded-lg p-3 overflow-x-auto text-end w-[55%] text-xs">
                 <b>Total</b>
                 <br />
                 <b>

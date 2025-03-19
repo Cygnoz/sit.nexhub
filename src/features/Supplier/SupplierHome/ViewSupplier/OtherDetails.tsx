@@ -114,17 +114,16 @@ const OtherDetails = ({}: Props) => {
             <Modal
                 open={isModalOpen}
                 onClose={() => setModalOpen(false)}
-                className=""
-                style={{ width: "50%" }}
+                className="w-[90%] sm:w-[50%]"
             >
-                <div className="gap-6 bg-white px-5 h-[450px] rounded-lg">
+                <div className="gap-6 bg-white px-5 sm:h-[450px] rounded-lg">
                     <div
                         className="ms-auto text-end text-3xl cursor-pointer relative z-10"
                         onClick={closeModal}
                     >
                         &times;
                     </div>
-                    <div className="flex max-w-full">
+                    <div className="flex max-w-full overflow-x-auto">
 
                         {Header.map((item, index) => (
                             <div
@@ -147,7 +146,7 @@ const OtherDetails = ({}: Props) => {
                         {selectedTab === "Other Details" && (
                             <div>
                                 <div >  <img className="w-[100%]  h-[0.5%]" src={line} alt="" /></div>
-                                <div className="text-start grid grid-cols-4 bg-[#F6F6F6] my-3">
+                                <div className="text-start grid grid-cols-4 bg-[#F6F6F6] my-3 overflow-x-auto">
                                     {
                                         OtherDetails.map((Details) => (
                                             <div className="py-5 px-5 rounded border-b-2 border-[#E0E0E0]">

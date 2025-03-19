@@ -134,7 +134,7 @@ function Purchaseview({ page }: Props) {
             </p>
           </div>
           <br />
-          <div className="flex justify-between">
+          <div className="sm:flex justify-between">
             <div className="flex gap-3 items-center">
               {page == "Bills" && (
                 <p className="text-lg text-textColor font-bold pr-4 border-r-[1px] border-borderRight">
@@ -152,7 +152,7 @@ function Purchaseview({ page }: Props) {
                 {data.paidStatus}
               </p>}
             </div>
-            <div className="flex gap-3 items-center">
+            <div className="flex-row sm:flex gap-3 items-center">
               <div className="hidden">
                 <Button variant="secondary" className="pl-6 pr-6" size="sm">
                   <Pen color="#565148" />
@@ -160,40 +160,45 @@ function Purchaseview({ page }: Props) {
                 </Button>
               </div>
               <>
-                <Button
-                  variant="secondary"
-                  className="pl-5 pr-5"
-                  size="sm"
-                  onClick={handleEdit}
-                >
-                  <Pen color="#565148" />
-                  <p className="text-sm font-medium">Edit</p>
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="pl-5 pr-5"
-                  size="sm"
-                  onClick={confirmDelete}
-                >
-                  <Trash2 color="#565148" />
-                  <p className="text-sm font-medium">Delete</p>
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="pl-5 pr-5"
-                  size="sm"
-                >
-                  <MailIcon color="#565148" />
-                  <p className="text-sm font-medium">Mail</p>
-                </Button>
+                <div className="flex gap-2">
+
+                  <Button
+                    variant="secondary"
+                    className="pl-5 pr-5"
+                    size="sm"
+                    onClick={handleEdit}
+                  >
+                    <Pen color="#565148" />
+                    <p className="text-sm font-medium">Edit</p>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    className="pl-5 pr-5"
+                    size="sm"
+                    onClick={confirmDelete}
+                  >
+                    <Trash2 color="#565148" />
+                    <p className="text-sm font-medium">Delete</p>
+                  </Button>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="secondary"
+                    className="pl-5 pr-5"
+                    size="sm"
+                  >
+                    <MailIcon color="#565148" />
+                    <p className="text-sm font-medium">Mail</p>
+                  </Button>
+                  {
+                    isPdfView &&
+                    <div onClick={() => reactToPrintFn()}>
+                      <Print />
+                    </div>
+                  }
+                </div>
               </>
 
-              {
-                isPdfView &&
-                <div onClick={() => reactToPrintFn()}>
-                  <Print />
-                </div>
-              }
 
               <label className="flex items-center cursor-pointer">
                 <div className="relative">

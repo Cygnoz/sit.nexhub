@@ -616,7 +616,7 @@ const NewCustomerModal = ({ page }: Props) => {
         open={isModalOpen}
         onClose={() => setModalOpen(false)}
         className="w-[95%] sm:w-[80%]"
-        
+
       >
         <>
           <div className="p-5 mt-3">

@@ -257,7 +257,7 @@ function NewAccountModal({
       <Modal
         open={isModalOpen}
         onClose={closeModal}
-        className="w-[68%] text-start"
+        className="w-[90%] sm:w-[68%] text-start overflow-y-auto"
       >
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
@@ -281,11 +281,11 @@ function NewAccountModal({
             </div>
           </div>
 
-          <form className="flex justify-between" onSubmit={onSubmit}>
+          <form className="flex-row sm:flex justify-between" onSubmit={onSubmit}>
             <div>
-              <img src={CashImage} alt="Cash" />
+              <img src={CashImage} className="hidden sm:block" alt="Cash" />
             </div>
-            <div className="w-[65%]">
+            <div className="w-full sm:w-[65%]">
               <div className="mb-4">
                 <label className="block text-sm text-labelColor mb-1">
                   Account Type

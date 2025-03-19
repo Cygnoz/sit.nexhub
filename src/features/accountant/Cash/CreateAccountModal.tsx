@@ -152,7 +152,7 @@ const CreateAccountModal = ({page,id}: Props) => {
           <PlusCircle color="" /> &nbsp;&nbsp;<p className="text-sm">Create Account</p>
         </span>
       </Button>}
-      <Modal open={isModalOpen} onClose={closeModal} className="text-start w-[60%]">
+      <Modal open={isModalOpen} onClose={closeModal} className="text-start w-[90%] sm:w-[60%]">
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
             <div
@@ -180,9 +180,9 @@ const CreateAccountModal = ({page,id}: Props) => {
 
           <form className="flex justify-between" onSubmit={onSubmit}>
             <div className="mt-16 ms-3 ">
-              <img width={250} height={130} src={CashImage} alt="Cash" />
+              <img width={250} height={130} className="hidden sm:block" src={CashImage} alt="Cash" />
             </div>
-            <div className="w-[65%]">
+            <div className="w-full sm:w-[65%]">
               <div className="mb-4">
                 <label className="block text-sm mb-1 text-labelColor">
                   Account Name

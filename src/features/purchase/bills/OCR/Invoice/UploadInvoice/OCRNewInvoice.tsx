@@ -114,7 +114,7 @@ const OCRNewInvoice = () => {
       <Modal
         open={isModalOpen}
         onClose={closeModal}
-        className="w-[45%]"
+        className="w-[89%] sm:w-[45%]"
         aria-labelledby="upload-invoice-title"
       >
         <div className="p-5 mt-3">
