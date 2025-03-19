@@ -29,10 +29,10 @@ server.use(salesRouter);
 const PORT = 7007
 
 server.get('/',(req,res)=>{
-    res.status(200).json("Dev NexHub server started - Sales v1.6")
+    res.status(200).json("Sit NexHub server started - Sales v1")
 })
 
 server.listen(PORT,()=>{
-    console.log(`NexHub server Sales started at port : ${PORT}`);
+    console.log(`Sit NexHub server Sales started at port : ${PORT}`);
 })
 
