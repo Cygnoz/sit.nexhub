@@ -42,7 +42,7 @@ function TopSalesOrder({date }: Props) {
     }
   }, [date]);
   return (
-    <div className="bg-white w-full rounded-lg py-4 px-6">
+    <div className="bg-white w-full rounded-lg py-4 px-6 overflow-x-auto">
       <p className="text-[#303F58] font-bold text-base">Top Sales Order</p>
      {topSalesOrder?.length>0? <div className="mt-5">
       <div className="w-full max-h-[400px] overflow-auto border border-tableBorder rounded-md">

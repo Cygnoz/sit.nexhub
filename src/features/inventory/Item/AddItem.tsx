@@ -886,7 +886,7 @@ const AddItem = ({ }: Props) => {
             </p>
             <label className="block text-sm text-labelColor mb-0.5">Dimensions</label>
 
-            <div className="grid grid-cols-4 gap-4 items-center ">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center ">
               <input
                 type="number"
                 className="text-sm rounded-md pl-3  bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
@@ -932,7 +932,7 @@ const AddItem = ({ }: Props) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-12 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
               <div className="col-span-6 sm:col-span-4">
                 <label className="text-slate-600 text-sm" htmlFor="weight">
                   Weight
@@ -1348,7 +1348,7 @@ const AddItem = ({ }: Props) => {
             <p className="text-textColor text-base font-semibold mt-2 mb-2">
               Item Codes and Standards
             </p>
-            <div className="grid grid-cols-2 gap-x-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
               <div>
                 <label
                   className="text-slate-600 flex text-sm items-center gap-2"
@@ -1401,7 +1401,7 @@ const AddItem = ({ }: Props) => {
             </select>
 
           </div>}
-          <div className={`grid grid-cols-2  gap-4 ${isService ? 'mt-0' : 'mt-10'}`}>
+          <div className={`grid grid-cols-1 sm:grid-cols-2  gap-4 ${isService ? 'mt-0' : 'mt-10'}`}>
             <div>
               <label
                 className="text-slate-600 flex text-sm items-center gap-2"

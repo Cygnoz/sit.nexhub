@@ -322,7 +322,7 @@ function TaxRate({ }: Props) {
       <Modal
         open={isModalOpen}
         onClose={closeModal}
-        className="w-[59.4%] px-8 py-6"
+        className="w-[90%] sm:w-[59.4%] px-8 py-6"
       >
         <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
           <div

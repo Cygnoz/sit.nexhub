@@ -15,7 +15,7 @@ const ExpensesHome = ({}: Props) => {
       <Banner />
       <p className="text-textColor font-semibold text-lg my-3">Expenses</p>
       <div>
-        <div className="bg-white rounded-lg w-full h-[52px] flex py-2 px-4">
+        <div className="bg-white rounded-lg w-full h-[52px] flex py-2 px-4 overflow-x-auto gap-2">
           <div
             className={`flex items-center w-full rounded-md text-textColor gap-2 justify-center cursor-pointer font-bold ${
               selectedTab === "Preference" ? "bg-[#E3E6D5]" : ""

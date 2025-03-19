@@ -132,14 +132,14 @@ function Items({ }: Props) {
       <Banner />
 
       <p className="text-[20px] font-bold mt-3">Item</p>
-      <div className="mt-2 bg-white p-6 flex justify-between items-center">
+      <div className="mt-2 bg-white p-6 flex-row sm:flex justify-between items-center">
         <p className="text-[#303F58] text-sm font-semibold">Opening Date: <span className="ms-4">{inputData.openingStockDate ? inputData.openingStockDate : ""}</span></p>
         <input
           name="openingStockDate"
           type="date"
           value={inputData.openingStockDate}
           onChange={handleInputChange}
-          className="block appearance-none w-[20%] h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
+          className="block appearance-none  sm:w-[20%] h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 px-2"
         />
       </div>
       <div className="space-y-4 mt-4">

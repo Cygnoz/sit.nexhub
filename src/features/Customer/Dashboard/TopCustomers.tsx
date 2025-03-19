@@ -115,7 +115,7 @@ const TopCustomers: React.FC<TopCustomersProps> = ({ date }) => {
   }, [date]);
 
   return (
-    <div className="bg-white rounded-lg w-full py-8">
+    <div className="bg-white rounded-lg w-full py-8  overflow-x-auto">
       <h3 className="ms-10 text-[16px] font-bold">
         Top Customers by Sales Volume
       </h3>

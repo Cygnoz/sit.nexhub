@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ArrowDownIcon from "../../../assets/icons/ArrowDownIcon";
 import ArrowUpIcon from "../../../assets/icons/ArrowUpIcon";
-import Ellipsis from "../../../assets/icons/Ellipsis";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import RefreshIcon from "../../../assets/icons/RefreshIcon";
 import Button from "../../../Components/Button";
@@ -14,9 +13,9 @@ const PaymentMade = ({}: Props) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  // const toggleDropdown = () => {
+  //   setIsDropdownOpen(!isDropdownOpen);
+  // };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -80,9 +79,9 @@ const PaymentMade = ({}: Props) => {
             <p className="text-sm font-medium">New Payment</p>
           </Button></Link>
 
-          <div onClick={toggleDropdown} className="cursor-pointer">
+          {/* <div onClick={toggleDropdown} className="cursor-pointer">
             <Ellipsis />
-          </div>
+          </div> */}
 
           {isDropdownOpen && (
             <div

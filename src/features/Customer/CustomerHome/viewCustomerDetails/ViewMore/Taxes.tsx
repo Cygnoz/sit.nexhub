@@ -44,7 +44,7 @@ function Taxes({ }: Props) {
             <div className="text-start grid grid-cols-3 bg-[#F6F6F6] my-3">
                 {
                     OtherDetails.map((Details) => (
-                        <div className="py-5 px-5 rounded border-b-2  border-[#E0E0E0]">
+                        <div className="py-5 px-5 rounded border-b-2  border-[#E0E0E0] overflow-x-auto">
                             <p>{Details.icon}</p>
                             <p className="text-[#4B5C79] font-400 text-[12px] py-1">{Details.title}</p>
                             <p className="text-[#303F58]  font-bold text-[14px]">{Details.item}</p>

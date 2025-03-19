@@ -25,7 +25,7 @@ const SubHeader = ({ activeIndex }: Props) => {
 
   return (
     <div className="bg-BgSubhead flex mx-7 justify-between px-5 py-3 my-4 items-center rounded-full 
-    sm:overflow-visible overflow-x-auto whitespace-nowrap">
+     overflow-x-auto whitespace-nowrap">
     
     <div className="flex items-center gap-4">
       <Link to={"/landing"}>

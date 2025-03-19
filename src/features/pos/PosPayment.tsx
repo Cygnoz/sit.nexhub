@@ -205,7 +205,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
   };
 
   const { request: newSalesInvoiceApi } = useApi("post", 5007);
-    const { setPosResponse } = useContext(PosResponseContext)!;
+  const { setPosResponse } = useContext(PosResponseContext)!;
 
   const handleSave = async () => {
     try {
@@ -229,7 +229,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
   return (
     <>
       <Button
-        className={`text-sm pl-16 h-10 pr-16 ${selectedItems.length === 0 ? "cursor-not-allowed" : "cursor-pointer"
+        className={`text-sm w-full pl-16 h-12 flex justify-center pr-16 ${selectedItems.length === 0 ? "cursor-not-allowed" : "cursor-pointer"
           }`}
         onClick={selectedItems.length === 0 ? undefined : openModal}
       >
@@ -237,7 +237,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
       </Button>
 
       <Modal
-        className="w-[40%] overflow-y-auto max-h-[95%] hide-scrollbar px-8 py-4 rounded-2xl"
+        className="w-[90%] sm:w-[40%] overflow-y-auto max-h-[95%] hide-scrollbar px-8 py-4 rounded-2xl"
         open={isModalOpen}
         onClose={closeModal}
       >
@@ -293,7 +293,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
 
         {/* Predefined Amount Buttons */}
         <div className="rounded-md mt-4">
-          <div className="flex gap-2 mb-4">
+          <div className="flex gap-2 mb-4 overflow-x-auto">
             {["₹ 100", "₹ 500", "₹ 1000", "₹ 2000", "₹ 5000", "₹ 10000"].map(
               (amount) => (
                 <button
@@ -308,11 +308,11 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
           </div>
 
           {/* Keypad */}
-          <div className="grid grid-cols-3 gap-3 bg-[#F4EFE8] px-20 py-6 rounded-lg">
+          <div className="grid grid-cols-3 gap-3 bg-[#F4EFE8] px-4 md:px-10 lg:px-20 py-6 rounded-lg w-full max-w-[500px] mx-auto">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0].map((num) => (
               <button
                 key={num}
-                className="bg-white text-lg font-bold text-[#37393A] py-[10px] px-10 rounded-[10px]"
+                className="bg-white text-lg font-bold text-[#37393A] py-[10px] px-6 md:px-8 lg:px-10 rounded-[10px] w-full"
                 onClick={() => handleKeypadClick(num.toString())}
               >
                 {num}
@@ -320,12 +320,13 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
             ))}
 
             <button
-              className="bg-white text-lg font-bold text-[#37393A] py-[10px] px-10 rounded-[10px]"
+              className="bg-white text-lg font-bold text-[#37393A] py-[10px] px-6 md:px-8 lg:px-10 rounded-[10px] w-full"
               onClick={() => handleKeypadClick("delete")}
             >
               ⌫
             </button>
           </div>
+
         </div>
 
         <div className="mt-3 flex items-center justify-between">
@@ -334,15 +335,15 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
             ₹ {(paidAmount ? (paidAmount - total).toFixed(2) : "0.00")}
           </p>
         </div>
-        <div className="flex justify-between mt-5 gap-4">
+        <div className="flex-row sm:flex justify-between mt-5 gap-4">
           <Button
-            className="text-sm pl-20 h-10 pr-20"
+            className="text-sm pl-20 h-10 flex justify-center pr-20 w-full mb-2"
             variant="secondary"
             onClick={closeModal}
           >
             Cancel
           </Button>
-          <Button className="text-sm pl-28 h-10 pr-28" onClick={handleSave}>
+          <Button className="text-sm pl-28 h-10 w-full flex justify-center  pr-28" onClick={handleSave}>
             Submit
           </Button>
         </div>

@@ -5,7 +5,6 @@ import NeworderTable from "./NeworderTable";
 import Button from "../../../../Components/Button";
 import { useContext, useEffect, useRef, useState } from "react";
 import SearchBar from "../../../../Components/SearchBar";
-import PrinterIcon from "../../../../assets/icons/PrinterIcon";
 import AddSupplierModal from "../../../Supplier/SupplierHome/AddSupplierModal";
 import Upload from "../../../../assets/icons/Upload";
 import ViewDetails from "./ViewDetails";
@@ -1280,10 +1279,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
         <Button variant="secondary" size="sm" onClick={handleColse}>
           Cancel
         </Button>
-        <Button variant="secondary" size="sm">
-          <PrinterIcon height={18} width={18} color="currentColor" />
-          Print
-        </Button>
+       
         <Button
           variant="primary"
           size="sm"

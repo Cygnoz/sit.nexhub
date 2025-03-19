@@ -129,8 +129,8 @@ function AddItemsPos({ selectedItems, onRemoveItem, selectedCustomer }: Props) {
   const total = subtotal + tax - discountValue;
 
   return (
-    <div className="bg-white p-6 mt-3 rounded-lg h-auto">
-      <div>
+    <div className="bg-white p-6 mt-3 rounded-lg h-auto overflow-x-auto">
+      <div >
         <div className="flex justify-between items-center">
           <p className="text-textColor text-sm font-bold">Selected Item</p>
           <p className="text-dropdownText text-sm font-semibold">Invoice No: {prefix}</p>
@@ -140,8 +140,8 @@ function AddItemsPos({ selectedItems, onRemoveItem, selectedCustomer }: Props) {
         <div className="overflow-y-scroll max-h-[300px] hide-scrollbar">
           {selectedItems.map((item) => (
             <div key={item._id} className="mt-3 bg-[#F6F6F6] p-[10px] rounded-xl">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center w-[60%]">
+              <div className="flex-row sm:flex justify-between items-center">
+                <div className="flex-row sm:flex items-center w-full sm:w-[60%]">
                   <img
                     src={item.itemImage || "defaultImageURL"}
                     className="w-20 h-11 object-cover rounded-lg"
@@ -216,11 +216,11 @@ function AddItemsPos({ selectedItems, onRemoveItem, selectedCustomer }: Props) {
         {/* Payment Methods */}
         <div className="w-full mt-8">
           <p className="text-[#495160] text-sm font-semibold">Payment Method</p>
-          <div className="flex items-center justify-between mt-3">
+          <div className="flex-row sm:flex items-center justify-between mt-3">
             {paymentMethods.map((method) => (
               <div key={method.id} onClick={() => handleMethodSelect(method)}>
                 <div
-                  className={`border w-32 px-[10px] py-2 rounded-lg flex justify-center items-center 
+                  className={`border w-full sm:w-32 px-[10px] py-2 rounded-lg flex justify-center items-center 
               cursor-pointer border-[#C7CACF] ${selectedMethod === method.id ? "bg-[#DADCCD]" : "bg-[#FFFFFF]"
                     }`}
                 >
@@ -262,8 +262,8 @@ function AddItemsPos({ selectedItems, onRemoveItem, selectedCustomer }: Props) {
               </div>
             </div>
           </div>
-          <div className="flex justify-between mt-7">
-            <Button className="text-sm pl-14 h-10 pr-14" variant="secondary">
+          <div className="sm:flex justify-between  gap-2 mt-7">
+            <Button className="text-sm w-full flex justify-center pl-14 h-12 pr-14 mb-2" variant="secondary">
               Cancel
             </Button>
             <PosPayment selectedItems={selectedItems} total={total} selectedMethodLabel={selectedMethodLabel} selectedCustomer={selectedCustomer}

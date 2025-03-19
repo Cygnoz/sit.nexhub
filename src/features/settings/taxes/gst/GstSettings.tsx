@@ -115,8 +115,8 @@ function GstSettings({ }: GstSettingsProps) {
       <div>
         {isGstRegistered && (
           <div className="p-6 rounded-lg bg-white mt-4">
-            <form onSubmit={onSubmit} className="flex justify-between gap-4">
-              <div className="text-[#495160] text-sm w-[50%]">
+            <form onSubmit={onSubmit} className="flex-row sm:flex justify-between gap-4">
+              <div className="text-[#495160] text-sm w-full sm:w-[50%]">
                 <div>
                   <label htmlFor="gstIn">GSTIN <span className="text-xs">(Maximum 15 Digits)</span></label>
                   <input
@@ -183,7 +183,7 @@ function GstSettings({ }: GstSettingsProps) {
                   </div>
                 </div>
               </div>
-              <div className="text-[#495160] text-sm w-[50%]">
+              <div className="text-[#495160] text-sm w-full sm:w-[50%]">
                 <div>
                   <label htmlFor="gstBusinessLegalName">Business Legal Name</label>
                   <input

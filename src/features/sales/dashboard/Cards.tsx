@@ -44,7 +44,7 @@ const Cards = ({data}: Props) => {
   ];
   return (
     <div>
-        <div className="flex justify-between gap-4">
+        <div className="sm:flex justify-between  gap-4 overflow-x-auto">
       {cards.map((card, index) => (
         <OrderCards
           key={index}

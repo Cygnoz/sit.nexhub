@@ -1,5 +1,4 @@
 import { useState } from "react";
-import PaymentViewTypes from "../../debitNote/viewDebitNote/PaymentViewTypes";
 import { useNavigate } from "react-router-dom";
 
 
@@ -20,9 +19,9 @@ function SideBar({ data }: Props) {
 
   return (
     <div className="bg-[#F6F6F6] rounded-md px-3 py-6 space-y-4">
-      <div>
+      {/* <div>
         <PaymentViewTypes />
-      </div>
+      </div> */}
       {data?.unpaidBills?.map((item: any, index: number) => (
         <div
           key={index}

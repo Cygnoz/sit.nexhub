@@ -198,7 +198,7 @@ function InvoiceSettings({}: Props) {
               }`}
               style={{ minHeight: isOrganisationAddressOpen ? "225px" : "0" }}
             >
-              <div className="m-4 space-y-3">
+              <div className="m-4 space-y-3 overflow-x-auto">
                 <div
                   onClick={() => openModal(true, false)}
                   className="text-[#820000] flex items-center space-x-1 font-bold text-sm cursor-pointer"
@@ -211,7 +211,7 @@ function InvoiceSettings({}: Props) {
                   onClose={() => closeModal()}
                   style={{ width: "497px", padding: "12px" }}
                 >
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-2 ">
                     {organisationAddress.map((address) => (
                       <div className="p-2  rounded hover:bg-[#F3E6E6] cursor-pointer">
                         {address}
@@ -280,7 +280,7 @@ function InvoiceSettings({}: Props) {
                       <Button
                         onClick={() => openModal(false, false, true)}
                         variant="secondary"
-                        className="h-[26px] w-[68px] flex justify-center"
+                        className="h-auto sm:h-[26px] w-[68px] flex justify-center"
                         size="sm"
                       >
                         <p className="text-[10px] font-medium">Show QR</p>
@@ -384,7 +384,7 @@ function InvoiceSettings({}: Props) {
                           openModal(false, false, false, false, true)
                         }
                         variant="secondary"
-                        className="h-[26px] w-[68px] flex justify-center"
+                        className="h-auto sm:h-[26px] w-[68px] flex justify-center"
                         size="sm"
                       >
                         <p className="text-[10px] font-medium">Show QR</p>
@@ -491,7 +491,7 @@ function InvoiceSettings({}: Props) {
                       <Button
                         onClick={() => openModal(false, false, false, true)}
                         variant="secondary"
-                        className="h-[26px] w-[74px] flex justify-center"
+                        className="h-auto sm:h-[26px] w-[74px] flex justify-center"
                         size="sm"
                       >
                         <p className="text-[10px] font-medium">Show Sign</p>

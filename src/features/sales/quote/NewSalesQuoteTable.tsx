@@ -633,8 +633,8 @@ const NewSalesQuoteTable = ({
 
   return (
     <div>
-      <div className="rounded-lg border-2 border-tableBorder mt-5">
-        <table className="min-w-full bg-white rounded-lg relative pb-4 border-dropdownText">
+      <div className="rounded-lg border-2 border-tableBorder ">
+        <table className="w-full bg-white rounded-lg relative pb-4 border-dropdownText">
           <thead className="text-[12px] text-center text-dropdownText">
             <tr className="bg-lightPink">
               {newPurchaseOrderTableHead.map((item, index) => (

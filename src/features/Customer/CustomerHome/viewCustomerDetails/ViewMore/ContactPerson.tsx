@@ -27,7 +27,7 @@ function ContactPerson({ }: Props) {
         <div>
             <div >  <img className="w-[100%]  h-[0.5%]" src={line} alt="" /></div>
 
-            <div className="text-start grid grid-cols-3  my-3">
+            <div className="text-start grid grid-cols-1 sm:grid-cols-3  my-3">
                 {
                     OtherDetails.map((Details:any) => (
                         <div className="py-5 px-5 rounded m-3 bg-[#F6F6F6]  space-y-2">

@@ -92,9 +92,8 @@ const CustomiseColumn = ({ tableId, columns, setColumns }: Props) => {
 
       <Modal
         open={isModalOpen}
-        style={{ width: "30%" }}
         onClose={closeModal}
-        className=""
+        className="w-[90%] sm:w-[30%]"
       >
         <div className="p-5">
           <div className="flex justify-between items-center mb-3">

@@ -65,7 +65,7 @@ const TopCustomers = ({ topCustomerData }: Props) => {
   }, [topCustomerData]);
 
   return (
-    <div className="bg-white rounded-lg w-full py-8">
+    <div className="bg-white rounded-lg w-full py-8  overflow-x-auto">
       <h3 className="ms-10 text-base text-[#454545] font-semibold">Top Customers</h3>
 
       {topCustomerData?.length>0?<>

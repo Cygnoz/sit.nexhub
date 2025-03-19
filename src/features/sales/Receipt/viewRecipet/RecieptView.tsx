@@ -106,31 +106,34 @@ function RecieptView({ }: Props) {
         </div>
         <h1 className="text-[20px] font-bold text-[#303F58]">View Reciept</h1>
       </div>
-      <div className="flex justify-between items-center">
+      <div className="flex-row sm:flex justify-between items-center">
         <div className="space-x-3 items-center flex text-[#303F58] font-bold text-[16px] mb-4">
           <h3>Reciept</h3>
           <h3 className="font-normal">|</h3>
           <h3>{RecieptData?.payment}</h3>
           <p className="w-[47px] h-[25px] bg-[#F3F3F3] rounded-lg flex items-center justify-center">Draft</p>
         </div>
-        <div className="flex space-x-3 mb-4">
-          <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={handleEditClick}>
-            <Pen color="#565148" />
-            <p className="text-sm font-medium">Edit</p>
-          </Button>
-          <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={handleDelete}>
-            <TrashCan color="#565148" />
-            <p className="text-sm font-medium">Delete</p>
-          </Button>
+        <div className="flex-row sm:flex space-x-3 mb-4">
+          <div className="flex gap-2">
 
-          <div onClick={() => reactToPrintFn()}>
+            <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={handleEditClick}>
+              <Pen color="#565148" />
+              <p className="text-sm font-medium">Edit</p>
+            </Button>
+            <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={handleDelete}>
+              <TrashCan color="#565148" />
+              <p className="text-sm font-medium">Delete</p>
+            </Button>
+          </div>
+
+          <div className='mt-1' onClick={() => reactToPrintFn()}>
             <Print />
           </div>
 
         </div>
       </div>
       <hr className="mb-5 border-loremcolor" />
-      <div className="grid grid-cols-3 space-x-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 space-x-4">
         {/* Sidebar */}
         <SideBar data={RecieptData} />
         {/* Main content */}

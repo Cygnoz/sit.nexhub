@@ -51,7 +51,7 @@ const AvaragePurchase: React.FC<AvaragePurchaseProps> = ({ date }) => {
   ];
 
   return (
-    <div className="bg-white rounded-lg w-full px-8">
+    <div className="bg-white rounded-lg w-full px-8  overflow-x-auto">
               <h3 className="text-[16px] font-bold mt-5">Average Order  Value</h3>
       {averagePurchase>0?<>
     

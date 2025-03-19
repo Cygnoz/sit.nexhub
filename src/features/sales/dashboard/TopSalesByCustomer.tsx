@@ -92,7 +92,7 @@ function TopSalesByCustomer({ date }: Props) {
   const maxSpent = Math.max(...topCustomerData.map((item) => item.value), 100000);
 
   return (
-    <div className="bg-white rounded-lg w-full px-8">
+    <div className="bg-white rounded-lg w-full px-8 overflow-x-auto">
       <h3 className="text-[16px] mt-6 font-bold">Top Sales By Customer</h3>
      {topCustomerData?.length>0? <ResponsiveContainer width="100%" height={400}>
         <BarChart layout="vertical" data={topCustomerData} margin={{ left: -40, right: 100, bottom: -25 }}>

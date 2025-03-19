@@ -130,17 +130,17 @@ const NewCreditNote = ({ page }: props) => {
   ) => {
     try {
       const { response, error } = await fetchFunction(url);
- 
+
       if (!error && response) {
         let filteredData = response.data;
- 
+
         // Filter out inactive customers if fetching all customers
         if (url.includes(endponits.GET_ALL_CUSTOMER)) {
           filteredData = response.data.filter(
             (customer: { status?: string }) => customer.status !== "Inactive"
           );
         }
- 
+
         setData(filteredData);
       }
     } catch (error) {
@@ -354,7 +354,7 @@ const NewCreditNote = ({ page }: props) => {
     try {
       let url;
       let api;
-      
+
       if (page === "edit") {
         url = `${endponits.EDIT_CREDIT_NOTE}/${id}`;
         api = editCreditNoteApi; // ✅ Assign correct API function (PUT)
@@ -363,9 +363,9 @@ const NewCreditNote = ({ page }: props) => {
         url = `${endponits.ADD_CREDIT_NOTE}`;
         api = newCreditNoteApi; // ✅ Assign correct API function (POST)
       }
-    
+
       const { response, error } = await api(url, creditNoteState); // ✅ Uses the correct function dynamically
-    
+
       if (!error && response) {
         toast.success(response.data.message);
         setTimeout(() => {
@@ -377,7 +377,7 @@ const NewCreditNote = ({ page }: props) => {
     } catch (error) {
       console.log(error);
     }
-      };
+  };
 
   const toggleDropdown = (key: string | null) => {
     setOpenDropdownIndex(key === openDropdownIndex ? null : key);
@@ -456,11 +456,11 @@ const NewCreditNote = ({ page }: props) => {
 
       </div>
 
-      <div className="grid grid-cols-12 gap-4 py-5 rounded-lg">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-12 gap-4 py-5 rounded-lg">
         <div className="col-span-8">
           <div className="bg-[#FFFFFF] p-5 min-h-max rounded-xl relative ">
             <div className=" mt-5 space-y-4">
-              <div className="grid grid-cols-12 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                 <div className="col-span-6">
                   <label className="text-sm mb-1 text-labelColor">
                     Customer Name <span className="text-[#bd2e2e]">*</span>
@@ -754,7 +754,7 @@ const NewCreditNote = ({ page }: props) => {
                   </div>
                 </div>
 
-             { creditNoteState.paymentMode ==="Cash" &&   <div className="col-span-6">
+                {creditNoteState.paymentMode === "Cash" && <div className="col-span-6">
                   <label className="block text-sm mb-1 text-labelColor">
                     Paid Through Account <span className="text-[#bd2e2e] ">*</span>
                   </label>
@@ -797,6 +797,8 @@ const NewCreditNote = ({ page }: props) => {
 
               <p className="font-bold">Add Item</p>
               {/* table */}
+              <div className="mt-9 overflow-x-auto  sm:overflow-x-hidden hide-scrollbar h-[220px]">
+
               <CreditNoteTable
                 SalesOrderState={creditNoteState}
                 setSalesOrderState={setCreditNoteState}
@@ -804,6 +806,7 @@ const NewCreditNote = ({ page }: props) => {
                 oneOrganization={oneOrganization}
                 selectedInvoice={selectedInvoice}
               />{""}
+              </div>
               <br />
               <div className="mt-2">
                 <label htmlFor="" className="block text-sm mb-1 text-labelColor">
@@ -822,7 +825,7 @@ const NewCreditNote = ({ page }: props) => {
             </div>
           </div>
         </div>
-        <div className="col-span-4 text-sm">
+        <div className="col-span-7 sm:col-span-4">
           <div className="mt-0">
             <label htmlFor="" className="block text-sm mb-1 text-labelColor">
               Terms & Conditions

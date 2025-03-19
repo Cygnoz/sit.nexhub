@@ -73,7 +73,7 @@ const SalesOverTime: React.FC<SalesOverTimeProps> = ({ date }) => {
   }, [date]);
 
   return (
-    <div className="bg-white rounded-lg w-full py-8">
+    <div className="bg-white rounded-lg w-full py-8 overflow-x-auto">
      <h3 className="ms-10 mb-6 text-[#303F58] text-[16px] font-bold">
         Sales Over Time
       </h3>

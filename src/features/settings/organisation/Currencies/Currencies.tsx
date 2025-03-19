@@ -216,7 +216,7 @@ const Currencies: React.FC<Props> = () => {
           <CurrencyTable />
         </div>
 
-        <Modal open={newCurrencyModal} onClose={closeModal} className="w-[68%] h-auto">
+        <Modal open={newCurrencyModal} onClose={closeModal} className="w-[90%] sm:w-[68%] h-auto">
   <div className="p-5 mt-3">
     <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
       <div
@@ -340,7 +340,7 @@ const Currencies: React.FC<Props> = () => {
                   )}
         </div>
 
-        <div className="grid grid-cols-2  gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2  gap-2">
           <div className="col-span-1">
             <div className="relative w-full ">
               <label className="block text-sm mb-1 text-labelColor">

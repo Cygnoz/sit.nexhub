@@ -48,7 +48,7 @@ function Transaction({supplierId}: Props) {
 
         <div className="flex gap-2">
           <div className="w-3 h-3 mt-1 bg-[#9747FF] rounded-full"></div>
-          <p className="text-[#303F58] text-[14px] font-bold">Invoice:</p>
+          <p className="text-[#303F58] text-[14px] font-bold">Bill No: {item.billNumber}</p>
           <p className="text-[#303F58] text-[14px] font-bold">{item.salesInvoice}</p>
         </div>
 
@@ -62,7 +62,7 @@ function Transaction({supplierId}: Props) {
           </div>
           <div>
             <p className="text-[#4B5C79] text-[13px]">{item.salesOrderNumber}</p>
-            <p className="text-[#4B5C79] text-[13px]">&#8377; {item.saleAmount}</p>
+            <p className="text-[#4B5C79] text-[13px]">&#8377; {item.grandTotal}</p>
             <p className="text-[#4B5C79] text-[13px]">&#8377; {item.balanceAmount}</p>
           </div>
         </div>

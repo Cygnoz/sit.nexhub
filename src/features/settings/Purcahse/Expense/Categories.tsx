@@ -104,7 +104,7 @@ const Categories = ({}: Props) => {
           Sort By
         </Button>
       </div>
-      <div>
+      <div className="overflow-x-auto">
         <table className="min-w-full bg-white relative pb-4  ">
           <thead className="text-[12px] text-center text-dropdownText ">
             <tr className="bg-lightPink ">

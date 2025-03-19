@@ -80,7 +80,7 @@ function ExpenseByCategory({ date }: Props) {
   }, [date]);
 
   return (
-    <div className="bg-white rounded-lg w-full p-8">
+    <div className="bg-white rounded-lg w-full p-8  overflow-x-auto">
       <p className="text-[#303F58] font-semibold text-base">Expenses by Category</p>
 
       {expenseByCategory.length > 0 ? (

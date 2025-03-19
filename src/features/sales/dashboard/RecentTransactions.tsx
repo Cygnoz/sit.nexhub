@@ -71,7 +71,7 @@ function RecentTransactions({ date }: Props) {
             <p className="text-[#303F58] font-bold text-base">Recent Transactions</p>
 
             {/* Tabs */}
-            <div className="flex gap-3 mt-4">
+            <div className="flex gap-3 mt-4 overflow-x-auto">
                 {Object.keys(tabDataMapping).map((tab) => (
                     <button
                         key={tab}
@@ -88,7 +88,7 @@ function RecentTransactions({ date }: Props) {
             {/* Table */}
             <div className="mt-5">
                 {activeTabData?.length > 0 ? (
-                       <div className="w-full max-h-80 overflow-auto border border-tableBorder rounded-md">
+                       <div className="w-full max-h-80 overflow-auto border border-tableBorder rounded-md overflow-x-auto">
                        <table className="w-full border-collapse relative">
                            <thead className="sticky top-0 bg-[#F9F7F0] z-10">
                             <tr className="bg-[#F9F7F0] text-left text-xs">

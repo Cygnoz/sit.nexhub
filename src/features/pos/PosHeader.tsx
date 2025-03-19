@@ -38,7 +38,7 @@ function PosHeader({ onSelectCustomer }: Props) {
     }
   };
   return (
-    <div className="px-5 py-3 flex items-center justify-between mt-2">
+    <div className="px-5 py-3 flex-row sm:flex items-center justify-between mt-2">
       <div className="flex items-center">
         <div className="rounded-[22px] px-2 py-1 gap-1 flex justify-center items-center cursor-pointer bg-white w-28" onClick={handleGoBack}>
           <img src={backHomeIcon} className="w-6" alt="Back to Home Icon" />
@@ -49,8 +49,8 @@ function PosHeader({ onSelectCustomer }: Props) {
         <p className="text-[#2C3E50] text-lg font-bold ms-3">POS</p>
       </div>
 
-      <div className="flex justify-center items-center gap-5">
-        <div className="bg-white rounded px-4 py-2 flex items-center gap-2.5">
+      <div className="sm:flex justify-center items-center gap-5">
+        <div className="bg-white rounded px-4  py-2 flex items-center gap-2.5 my-1">
           <img src={timeIcon} className="w-6" alt="Time Icon" />
           <span className="text-dropdownText text-[10px] font-bold">{formattedDate}</span>
         </div>
@@ -58,8 +58,11 @@ function PosHeader({ onSelectCustomer }: Props) {
           <img src={calenderIcon} className="w-6" alt="Calendar Icon" />
           <span className="text-dropdownText text-[10px] font-bold">{formattedTime}</span>
         </div>
+        <div className="flex gap-2">
+
         <SelectCustomerModal onButtonClick={handleSelectedCustomer} />
         <NewCustomerModal page="pos" />
+        </div>
       </div>
       <Toaster reverseOrder={false} />
     </div>

@@ -46,7 +46,7 @@ const SideBar = ({ activeIndex, setActiveIndex }: Props) => {
           } transition-transform duration-300 ease-in-out sm:relative sm:translate-x-0`}
       >
         <nav>
-          <div onClick={() => navigate("/landing")} className="flex justify-between items-center px-6 pt-7 pb-5 cursor-pointer">
+          <div onClick={() => navigate("/landing")} className="flex justify-between items-center px-6 pt-16 sm:pt-7 pb-5 cursor-pointer">
             <img src={logo} alt="logo" style={{ boxShadow: "0 4px 15px rgba(0, 0, 0, 0.5)" }} className="shadow-xl" />
           </div>
         </nav>

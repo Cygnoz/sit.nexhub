@@ -74,7 +74,7 @@ function LandingHeader({ mode, setMode }: Props) {
   return (
     <header
       className={`${mode ? "bg-[#EAEBEB]" : "bg-[#2C353B]"
-        } text-[#DFD1B4] flex items-center justify-between p-4 rounded-full mb-8 px-6 w-full max-w-full overflow-hidden`}
+        } text-[#DFD1B4] flex items-center justify-between p-4 rounded-full mb-8 px-3 sm:px-6 w-full max-w-full overflow-hidden`}
     >
       <div
         onClick={() => navigate("/landing")}
@@ -86,7 +86,7 @@ function LandingHeader({ mode, setMode }: Props) {
           className="h-7 w-[22px]"
         />
         <h1
-          className={`text-lg font-medium ${mode ? "text-[#303F58]" : "text-[#F7E7CE]"
+          className={`text-base sm:text-lg font-medium ${mode ? "text-[#303F58]" : "text-[#F7E7CE]"
             }`}
         >
           BILL BIZZ
@@ -97,17 +97,17 @@ function LandingHeader({ mode, setMode }: Props) {
         <ModuleSearch mode={mode} page="landing" />
       </div>
 
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-1 sm:space-x-4">
         <button
           className={`${mode ? "bg-white" : "bg-[#404B52]"
-            } text-[#DFD1B4] w-[38px] h-[38px] flex justify-center items-center rounded-full`}
+            } text-[#DFD1B4] w-[60px] sm:w-[38px] h-[38px] flex justify-center items-center rounded-full`}
         >
           <BellDot color={mode ? "#4B5C79" : "white"} />
         </button>
         <button
           onClick={() => navigate("/settings")}
           className={`${mode ? "bg-white" : "bg-[#404B52]"
-            } text-[#DFD1B4] w-[38px] h-[38px] flex justify-center items-center rounded-full`}
+            } text-[#DFD1B4] w-[60px] sm:w-[38px] h-[38px] flex justify-center items-center rounded-full`}
         >
           <SettingsIcons color={mode ? "#4B5C79" : "white"} />
         </button>
@@ -116,7 +116,7 @@ function LandingHeader({ mode, setMode }: Props) {
         <div ref={dropdownRef} className="relative">
           <img
             src={organization?.organizationLogo || organizationIcon}
-            className="w-9 h-9 rounded-full object-cover cursor-pointer"
+            className="w-[55px] sm:w-9 h-9 rounded-full object-cover cursor-pointer"
             alt="Organization Logo"
             onClick={() => setDropdownOpen(!isDropdownOpen)}
           />

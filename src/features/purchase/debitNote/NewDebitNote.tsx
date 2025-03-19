@@ -1,7 +1,6 @@
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import CehvronDown from "../../../assets/icons/CehvronDown";
-import PrinterIcon from "../../../assets/icons/PrinterIcon";
 import Button from "../../../Components/Button";
 import SearchBar from "../../../Components/SearchBar";
 import AddSupplierModal from "../../Supplier/SupplierHome/AddSupplierModal";
@@ -1012,10 +1011,7 @@ console.log(errors)
               >
                 Cancel
               </Button>
-              <Button variant="secondary" size="sm">
-                <PrinterIcon height={18} width={18} color="currentColor" />
-                Print
-              </Button>
+            
               <Button variant="primary" size="sm" onClick={handleSave}>
                 Save & send
               </Button>{" "}

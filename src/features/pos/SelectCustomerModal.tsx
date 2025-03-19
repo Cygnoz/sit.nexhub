@@ -79,7 +79,7 @@ function SelectCustomerModal({ onButtonClick }: Props) {
       </div>
 
       <Modal
-        className="p-6 rounded-2xl w-[65%]"
+        className="p-6 rounded-2xl w-[90%] sm:w-[65%]"
         open={isModalOpen}
         onClose={closeModal}
       >
@@ -98,8 +98,8 @@ function SelectCustomerModal({ onButtonClick }: Props) {
           placeholder="Search Customer by Name, Phone"
         />
 
-        <div className="flex justify-between mt-4">
-          <div className="w-[40%]  pr-4 overflow-y-scroll max-h-[500px] hide-scrollbar grid grid-cols-2 gap-4">
+        <div className="flex-row sm:flex justify-between mt-4">
+          <div className="w-full sm:w-[40%]  pr-4 overflow-y-scroll max-h-[500px] hide-scrollbar grid grid-cols-2 gap-4">
             {filteredCustomers.map((customer: any) => (
               <div
                 key={customer.id}
@@ -123,7 +123,7 @@ function SelectCustomerModal({ onButtonClick }: Props) {
           </div>
 
           {/* Right section - Selected customer details */}
-          <div className="w-[60%] bg-[#FAFAFA] rounded-lg">
+          <div className="w-full sm:w-[60%] bg-[#FAFAFA] rounded-lg">
             {selectedCustomer && (
               <>
                 <div className="bg-[#F3F3F3] rounded-[10px] p-5">

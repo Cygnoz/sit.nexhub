@@ -108,7 +108,7 @@ const Preferences = ({}: Props) => {
       </div>
 
       <div className="bg-white p-5 mt-5 rounded-lg">
-      <div className="border rounded-md border-tableBorder pb-4">
+      <div className="border rounded-md border-tableBorder pb-4 overflow-x-auto">
             <table className="min-w-full bg-white rounded-md">
               <thead className="text-[12px] text-center text-dropdownText">
                 <tr style={{ backgroundColor: "#F9F7F0" }}>

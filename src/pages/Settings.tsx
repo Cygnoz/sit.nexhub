@@ -149,8 +149,8 @@ const Settings: React.FC = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6 ">
         <h1 className="text-2xl font-bold min-w-fit">All Settings</h1>
-        <div className="ml-auto flex gap-4 w-full">
-          <div className="w-[50%] ml-auto">
+        <div className="ml-auto flex gap-4 w-full ">
+          <div className="w-[50%] ml-auto hidden sm:block">
             <SearchBar
               placeholder="Search"
               searchValue={searchValue}
@@ -159,7 +159,7 @@ const Settings: React.FC = () => {
           </div>
           <button
             onClick={handleGoBack}
-            className="bg-white   px-4 py-1 rounded-lg border-textColor border text-sm flex justify-center"
+            className="bg-white ms-[50%] sm:ms-[0%]   px-4 py-1 rounded-lg border-textColor border text-sm flex justify-center"
           >
             <p>Close <span className="text-lg ms-1"> &times;</span></p>
           </button>
