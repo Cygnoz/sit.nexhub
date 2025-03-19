@@ -28,10 +28,10 @@ server.use(reportRouter)
 const PORT = 7006;
 
 server.get('/',(req,res)=>{
-    res.status(200).json("Dev NexHub server started - Report v1.6")
+    res.status(200).json("Sit NexHub server started - Report v1")
 })
 
 server.listen(PORT,()=>{
-    console.log(`NexHub server Report started at port : ${PORT}`);
+    console.log(`Sit NexHub server Report started at port : ${PORT}`);
 
 })
