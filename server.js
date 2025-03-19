@@ -32,10 +32,10 @@ server.use(customerRouter)
 const PORT = 7002
 
 server.get('/',(req,res)=>{
-    res.status(200).json("Dev NexHub server started - Customer v1.6")
+    res.status(200).json("Sit NexHub server started - Customer v1")
 })
 
 const app = server.listen(PORT, () => {
-    console.log(`NexHub server Customer started at port : ${PORT}`);
+    console.log(`Sit NexHub server Customer started at port : ${PORT}`);
 });
 
