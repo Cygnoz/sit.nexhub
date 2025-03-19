@@ -719,22 +719,22 @@ items.forEach((item) => {
   if (!fetchedItem) return; 
 
   // Validate item name
-  validateField( item.itemName !== fetchedItem.itemName, `Item Name Mismatch : ${item.itemName}`, errors );
+  // validateField( item.itemName !== fetchedItem.itemName, `Item Name Mismatch : ${item.itemName}`, errors );
 
   // Validate selling price
   // validateField( item.sellingPrice !== fetchedItem.sellingPrice, `Selling price Mismatch for ${item.itemName}:  ${item.sellingPrice}`, errors );
 
   // Validate CGST
-  validateField( item.cgst !== fetchedItem.cgst, `CGST Mismatch for ${item.itemName}: ${item.cgst}`, errors );
+  validateField( item.cgst !== fetchedItem.cgst, `CGST Mismatch for ${item.itemId}: ${item.cgst}`, errors );
 
   // Validate SGST
-  validateField( item.sgst !== fetchedItem.sgst, `SGST Mismatch for ${item.itemName}: ${item.sgst}`, errors );
+  validateField( item.sgst !== fetchedItem.sgst, `SGST Mismatch for ${item.itemId}: ${item.sgst}`, errors );
 
   // Validate IGST
-  validateField( item.igst !== fetchedItem.igst, `IGST Mismatch for ${item.itemName}: ${item.igst}`, errors );
+  validateField( item.igst !== fetchedItem.igst, `IGST Mismatch for ${item.itemId}: ${item.igst}`, errors );
 
   // Validate tax group
-  validateField( item.taxGroup !== fetchedItem.taxRate, `Tax Group mismatch for ${item.itemName}: ${item.taxGroup}`, errors );
+  validateField( item.taxGroup !== fetchedItem.taxRate, `Tax Group mismatch for ${item.itemId}: ${item.taxGroup}`, errors );
 
   // Validate discount type
   validateDiscountTransactionType(item.discountType, errors);
@@ -743,7 +743,7 @@ items.forEach((item) => {
   validateIntegerFields(['quantity'], item, errors);
 
   // Validate Stock Count 
-  validateField( settings.stockBelowZero === true && item.quantity > fetchedItem.currentStock, `Insufficient Stock for ${item.itemName}: Requested quantity ${item.quantity}, Available stock ${fetchedItem.currentStock}`, errors );
+  validateField( settings.stockBelowZero === true && item.quantity > fetchedItem.currentStock, `Insufficient Stock for ${item.itemId}: Requested quantity ${item.quantity}, Available stock ${fetchedItem.currentStock}`, errors );
 
   // Validate float fields
   validateFloatFields(['sellingPrice', 'itemTotalTax', 'discountAmount', 'itemAmount'], item, errors);
@@ -911,28 +911,28 @@ function calculateSalesOrder(cleanedData, res) {
       
       
       // Check tax amounts
-      checkAmount(calculatedCgstAmount, item.cgstAmount, item.itemName, 'CGST',errors);
-      checkAmount(calculatedSgstAmount, item.sgstAmount, item.itemName, 'SGST',errors);
-      checkAmount(calculatedIgstAmount, item.igstAmount, item.itemName, 'IGST',errors);
-      checkAmount(calculatedVatAmount, item.vatAmount, item.itemName, 'VAT',errors);
-      checkAmount(calculatedTaxAmount, item.itemTotalTax, item.itemName, 'Total tax',errors);
+      checkAmount(calculatedCgstAmount, item.cgstAmount, item.itemId, 'CGST',errors);
+      checkAmount(calculatedSgstAmount, item.sgstAmount, item.itemId, 'SGST',errors);
+      checkAmount(calculatedIgstAmount, item.igstAmount, item.itemId, 'IGST',errors);
+      checkAmount(calculatedVatAmount, item.vatAmount, item.itemId, 'VAT',errors);
+      checkAmount(calculatedTaxAmount, item.itemTotalTax, item.itemId, 'Total tax',errors);
 
       totalTax += calculatedCgstAmount + calculatedSgstAmount + calculatedIgstAmount + calculatedVatAmount || 0 ;
 
 
     } else {
-      console.log(`Skipping Tax for Non-Taxable item: ${item.itemName}`);
-      console.log(`Item: ${item.itemName}, Calculated Discount: ${totalDiscount}`);
+      console.log(`Skipping Tax for Non-Taxable item: ${item.itemId}`);
+      console.log(`Item: ${item.itemId}, Calculated Discount: ${totalDiscount}`);
 
     }
 
     // Update total values
     subTotal += parseFloat(itemTotal);
 
-    checkAmount(itemTotal, item.itemAmount, item.itemName, 'Item Total',errors);
+    checkAmount(itemTotal, item.itemAmount, item.itemId, 'Item Total',errors);
 
-    console.log(`${item.itemName} Item Total: ${itemTotal} , Provided ${item.itemAmount}`);
-    console.log(`${item.itemName} Total Tax: ${calculatedTaxAmount} , Provided ${item.itemTotalTax || 0 }`);
+    console.log(`${item.itemId} Item Total: ${itemTotal} , Provided ${item.itemAmount}`);
+    console.log(`${item.itemId} Total Tax: ${calculatedTaxAmount} , Provided ${item.itemTotalTax || 0 }`);
     console.log("");
   });
   
@@ -994,14 +994,14 @@ function calculateDiscount(item) {
 
 
 //Mismatch Check
-function checkAmount(calculatedAmount, providedAmount, itemName, taxType,errors) {
+function checkAmount(calculatedAmount, providedAmount, itemId, taxType,errors) {
   const roundToTwoDecimals = (value) => Number(value.toFixed(2)); // Round to two decimal places
   const roundedAmount = roundToTwoDecimals(calculatedAmount);
-  console.log(`Item: ${itemName}, Calculated ${taxType}: ${roundedAmount}, Provided data: ${providedAmount}`);
+  console.log(`Item: ${itemId}, Calculated ${taxType}: ${roundedAmount}, Provided data: ${providedAmount}`);
 
   
   if (Math.abs(roundedAmount - providedAmount) > 0.01) {
-    const errorMessage = `Mismatch in ${taxType} for item ${itemName}: Calculated ${calculatedAmount}, Provided ${providedAmount}`;
+    const errorMessage = `Mismatch in ${taxType} for item ${itemId}: Calculated ${calculatedAmount}, Provided ${providedAmount}`;
     errors.push(errorMessage);
     console.log(errorMessage);
   }
@@ -1080,7 +1080,7 @@ function salesJournal(cleanedData, res) {
           if (!accountId) {
 
             errors.push({
-              message: `Sales Account not found for item ${item.itemName}`,
+              message: `Sales Account not found for item ${item.itemId}`,
             });
             return; 
           }
