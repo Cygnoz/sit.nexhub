@@ -907,7 +907,7 @@ function validateInputs( data, supplierExist, items, itemExists, organizationExi
     validateField( data.taxType === 'Inter' && item.itemIgst !== fetchedItem.igst, `IGST Mismatch for ${item.itemName}: ${item.itemIgst}`, errors );
 
     // Validate tax preference
-    validateField( item.taxPreference !== fetchedItem.taxPreference, `Tax Preference mismatch for ${item.itemName}: ${item.taxPreference}`, errors );
+    // validateField( item.taxPreference !== fetchedItem.taxPreference, `Tax Preference mismatch for ${item.itemName}: ${item.taxPreference}`, errors );
   
     // Validate discount type
     validateItemDiscountType(item.itemDiscountType, errors);
