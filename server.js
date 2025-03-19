@@ -30,10 +30,10 @@ server.use(inventoryRouter);
 const PORT = 7003
 
 server.get('/',(req,res)=>{
-    res.status(200).json("Dev NexHub server started - Inventory v2.0")
+    res.status(200).json("Sit NexHub server started - Inventory v1")
 });
 
 server.listen(PORT,()=>{
-    console.log(`NexHub server Inventory started at port : ${PORT}`);
+    console.log(`Sit NexHub server Inventory started at port : ${PORT}`);
 });
 
