@@ -35,9 +35,9 @@ server.use(organizationRouter);
 const PORT = process.env.PORT || 7004;
 
 server.get('/', (req, res) => {
-    res.status(200).json("Dev NexHub server started - Organization v2");
+    res.status(200).json("Sit NexHub server started - Organization v1");
 });
 
 server.listen(PORT, () => {
-    console.log(`NexHub server Organization started at port : ${PORT}`);
+    console.log(`Sit NexHub server Organization started at port : ${PORT}`);
 });
