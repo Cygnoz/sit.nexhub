@@ -819,8 +819,8 @@ function validateInputs( data, supplierExist, items, itemExists, organizationExi
     // console.log("billExist Data:", billExist.billNumber, billExist.billDate, billExist.orderNumber)
   
     //OtherDetails
-    validateIntegerFields(['totalItem'], data, errors);
-    validateFloatFields(['transactionDiscountAmount','subTotal','cgst','sgst','igst','vat','totalTaxAmount','grandTotal'], data, errors);
+    // validateIntegerFields([''], data, errors);
+    validateFloatFields(['totalItem','transactionDiscountAmount','subTotal','cgst','sgst','igst','vat','totalTaxAmount','grandTotal'], data, errors);
     //validateAlphabetsFields(['department', 'designation'], data, errors);
   
     //Tax Details
