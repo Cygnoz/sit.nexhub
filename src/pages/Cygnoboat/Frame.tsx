@@ -14,23 +14,23 @@ const Frame: React.FC<ExternalPopupProps> = ({ isOpen, onClose, url }) => {
 
   useEffect(() => {
     if (!organization || !iframeRef.current) return;
-  
+
     const data = {
       email: organization.primaryContactEmail || "",
       image: organization.organizationLogo || "",
       name: "John",
     };
-  
+
     const handleIframeLoad = () => {
       iframeRef.current?.contentWindow?.postMessage(
         { type: "ORG_DATA", data },
         "*"
       );
     };
-  
+
     const iframe = iframeRef.current;
     iframe.addEventListener("load", handleIframeLoad);
-  
+
     return () => {
       iframe.removeEventListener("load", handleIframeLoad);
     };
@@ -56,8 +56,9 @@ const Frame: React.FC<ExternalPopupProps> = ({ isOpen, onClose, url }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="bg-opacity-50 z-[9999] bg-black fixed inset-0 flex justify-end items-center me-2  h-full pt-2">
-      <div ref={popupRef} className="w-[28%]  h-full ">
+    <div className="bg-opacity-50 z-[9999] bg-black fixed inset-0 flex max-md:justify-center justify-end items-center mx-2  h-full pt-2">
+      <p onClick={onClose} className="absolute text-3xl text-[#177BDA] top-3 right-2 cursor-pointer">&times;</p>
+      <div ref={popupRef} className="w-[28%] max-lg:w-[50%] max-md:w-[60%] max-sm:w-full h-full ">
         <iframe
           ref={iframeRef}
           src={url}
@@ -70,3 +71,4 @@ const Frame: React.FC<ExternalPopupProps> = ({ isOpen, onClose, url }) => {
 };
 
 export default Frame;
+ 

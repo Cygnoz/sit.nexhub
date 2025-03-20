@@ -434,7 +434,7 @@ const LandingContant = ({ mode, setMode }: Props) => {
         <Frame
           isOpen={isPopupOpen}
           onClose={handleModalToggle}
-          url= {`https://dev.solytics.online/main?projectName=Billie`}
+          url= {`https://dev.solytics.online/main?projectName=BillBizz`}
         />
       }
     </div>
