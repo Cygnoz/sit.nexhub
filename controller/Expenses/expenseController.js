@@ -258,7 +258,11 @@ exports.addCategory = async (req, res) => {
 
         // Check if any category in categoryExists has the same expenseCategory
         const duplicateCategory = categoryExists.some(
-            (category) => category.expenseCategory.toLowerCase().replace(/\s+/g, "") === expenseCategory.toLowerCase().replace(/\s+/g, "")
+          (category) => 
+              category.expenseCategory &&
+              expenseCategory &&
+              category.expenseCategory.toLowerCase().replace(/\s+/g, "") === 
+              expenseCategory.toLowerCase().replace(/\s+/g, "")
         );
 
         if (duplicateCategory) {
