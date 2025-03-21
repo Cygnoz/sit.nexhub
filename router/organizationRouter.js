@@ -136,8 +136,6 @@ router.get('/get-all-client',nexVerifyToken,billBizzClientCont.getAllClient)
 
 router.delete('/delete-organization/:organizationId',nexVerifyToken,organizationController.deleteOrganization)
 
-router.delete('/delete-all',nexVerifyToken,billBizzClientCont.deleteAll)
-
 
 
 

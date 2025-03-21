@@ -150,7 +150,7 @@ exports.getOverviewData = async (req, res) => {
         }
 
         // Fetch Organization Data
-        const { organizationExists, allInvoice, allCustomer, allItem, allExpense } = await dataExist(organizationId);
+        const { organizationExists, allInvoice, allCustomer, allExpense } = await dataExist(organizationId);
         if (!organizationExists) return res.status(404).json({ message: "Organization not found!" });
 
         // Get organization's time zone
@@ -243,8 +243,8 @@ exports.getOverviewData = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error fetching overview data:", error);
-        res.status(500).json({ message: "Internal server error." });
+        console.log("Error fetching overview data:", error);
+        res.status(500).json({ message: "Internal server error.", error });
     }
 };
 
@@ -318,8 +318,8 @@ exports.getSalesOverTime = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error fetching sales over time data:", error);
-        res.status(500).json({ message: "Internal server error." });
+        console.log("Error fetching sales over time data:", error);
+        res.status(500).json({ message: "Internal server error.", error });
     }
 };
 
@@ -399,8 +399,8 @@ exports.getExpenseByCategory = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error fetching expense by category:", error);
-        res.status(500).json({ message: "Internal server error." });
+        console.log("Error fetching expense by category:", error);
+        res.status(500).json({ message: "Internal server error.", error });
     }
 };
 
@@ -510,8 +510,8 @@ exports.getTopProductCustomer = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error fetching top selling product and customers:", error);
-        res.status(500).json({ message: "Internal server error." });
+        console.log("Error fetching top selling product and customers:", error);
+        res.status(500).json({ message: "Internal server error.", error });
     }
 };
 
