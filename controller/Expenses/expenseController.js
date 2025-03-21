@@ -192,7 +192,7 @@ exports.getAllExpense = async (req, res) => {
       res.status(200).json(formattedObjects);
     } catch (error) {
       console.error("Error fetching Expense:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: "Internal server error.", error: error.message, stack: error.stack });
     }
   };
 
@@ -228,7 +228,7 @@ exports.getOneExpense = async (req, res) => {
       res.status(200).json(formattedObjects);
     } catch (error) {
       console.error("Error fetching expense:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: "Internal server error.", error: error.message, stack: error.stack });
     }
   };
 
@@ -274,7 +274,7 @@ exports.addCategory = async (req, res) => {
         res.status(201).json({ message: "Category created successfully", newCategory});
     } catch (error) {
         console.error("Error adding category:", error);
-        res.status(500).json({ message: "Server error", error: error.message });
+        res.status(500).json({ message: "Server error", error: error.message, stack: error.stack });
     }
 };
 
@@ -306,7 +306,7 @@ exports.getAllCategory = async (req, res) => {
         res.status(200).json(AllCategories);
     } catch (error) {
         console.error("Error fetching category:", error);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ message: "Internal server error.", error: error.message, stack: error.stack });
     }
 };
 
@@ -341,7 +341,7 @@ exports.getACategory = async (req, res) => {
       res.status(200).json(category);
     } catch (error) {
       console.error("Error fetching category:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: "Internal server error.", error: error.message, stack: error.stack });
     }
   };
 
@@ -395,7 +395,7 @@ exports.updateCategory = async (req, res) => {
         console.log("Category updated successfully:", updatedCategory);
     } catch (error) {
         console.error("Error updating category:", error);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ message: "Internal server error", error: error.message, stack: error.stack });
     }
 };
 
@@ -428,7 +428,7 @@ exports.deleteCategory = async (req, res) => {
         console.log("Category deleted successfully:", categoryId);
     } catch (error) {
         console.error("Error deleting category:", error);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ message: "Internal server error.", error: error.message, stack: error.stack });
     }
 };
 
@@ -460,7 +460,7 @@ exports.expenseJournal = async (req, res) => {
       res.status(200).json(transformedJournal);
   } catch (error) {
       console.error("Error fetching journal:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: "Internal server error.", error: error.message, stack: error.stack });
   }
 };
 
@@ -506,7 +506,7 @@ exports.getLastExpensePrefix = async (req, res) => {
       res.status(200).json(lastPrefix);
   } catch (error) {
       console.error("Error fetching accounts:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: "Internal server error.", error: error.message, stack: error.stack });
   }
 };
 
