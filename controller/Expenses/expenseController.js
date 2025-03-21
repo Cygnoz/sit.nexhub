@@ -151,8 +151,8 @@ exports.addExpense = async (req, res) => {
 
     res.status(201).json({ message: "Expense created successfully." });
   } catch (error) {
-      console.error("Error adding expense:", error);
-      res.status(400).json({ error: error.message });
+      console.error("Error adding expense:", error.message, error.stack);
+      res.status(400).json({ message:"Error adding expense", error: error.message, stack: error.stack });
   }
 };
 

@@ -29,6 +29,15 @@ server.options('*', (req, res) => {
 server.use(helmet()); 
 server.use(staffRouter,expenseRouter);
 
+// General error handling middleware
+server.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(err.status || 500).json({
+        success: false,
+        message: err.message || "Internal Server Error",
+    });
+});
+
 const PORT = 5008;
 
 server.get('/',(req,res)=>{
