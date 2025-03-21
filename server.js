@@ -29,6 +29,17 @@ server.options('*', (req, res) => {
 server.use(helmet()); 
 server.use(staffRouter,expenseRouter);
 
+// Catch unhandled promise rejections
+process.on("unhandledRejection", (reason, promise) => {
+    console.error("Unhandled Promise Rejection:", reason);
+});
+
+// Catch uncaught exceptions
+process.on("uncaughtException", (error) => {
+    console.error("Uncaught Exception:", error);
+    process.exit(1); // Optionally restart the server
+});
+
 // General error handling middleware
 server.use((err, req, res, next) => {
     console.error(err.stack);
