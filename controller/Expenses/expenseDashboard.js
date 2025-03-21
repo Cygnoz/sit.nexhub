@@ -114,7 +114,7 @@ exports.getOverviewData = async (req, res) => {
 
     } catch (error) {
         console.error("Error fetching overview data:", error);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
     }
 };
 
@@ -193,7 +193,7 @@ exports.getExpenseOverTime = async (req, res) => {
 
     } catch (error) {
         console.error("Error fetching expense over time data:", error);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
     }
 };
 
@@ -269,7 +269,7 @@ exports.getTopExpenseByCategory = async (req, res) => {
 
     } catch (error) {
         console.error("Error fetching top 5 expense by category:", error);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
     }
 };
 
@@ -355,7 +355,7 @@ exports.getExpenseBreakdownBySupplier = async (req, res) => {
 
     } catch (error) {
         console.error("Error fetching expense breakdown by supplier:", error);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
     }
 };
 

@@ -152,8 +152,8 @@ exports.addExpense = async (req, res) => {
     res.status(201).json({ message: "Expense created successfully." });
   } catch (error) {
       console.error("Error adding expense:", error.message, error.stack);
-      res.status(400).json({ message:"Error adding expense", error: error.message, stack: error.stack });
-  }
+      res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
+    }
 };
 
 //get all expense
@@ -192,7 +192,7 @@ exports.getAllExpense = async (req, res) => {
       res.status(200).json(formattedObjects);
     } catch (error) {
       console.error("Error fetching Expense:", error);
-      res.status(500).json({ message: "Internal server error.", error: error.message, stack: error.stack });
+      res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
     }
   };
 
@@ -228,7 +228,7 @@ exports.getOneExpense = async (req, res) => {
       res.status(200).json(formattedObjects);
     } catch (error) {
       console.error("Error fetching expense:", error);
-      res.status(500).json({ message: "Internal server error.", error: error.message, stack: error.stack });
+      res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
     }
   };
 
@@ -278,7 +278,7 @@ exports.addCategory = async (req, res) => {
         res.status(201).json({ message: "Category created successfully", newCategory});
     } catch (error) {
         console.error("Error adding category:", error);
-        res.status(500).json({ message: "Server error", error: error.message, stack: error.stack });
+        res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
     }
 };
 
@@ -469,6 +469,36 @@ exports.expenseJournal = async (req, res) => {
 };
 
 
+
+
+// Get last expense prefix
+exports.getLastExpensePrefix = async (req, res) => {
+  try {
+    const organizationId = req.user.organizationId;
+
+      // Find all accounts where organizationId matches
+      const prefix = await Prefix.findOne({ organizationId:organizationId,'series.status': true });
+
+      if (!prefix) {
+          return res.status(404).json({
+              message: "No Prefix found for the provided organization ID.",
+          });
+      }
+      
+      const series = prefix.series[0];     
+      const lastPrefix = series.expense + series.expenseNum;
+      
+      lastPrefix.organizationId = undefined;
+
+      res.status(200).json(lastPrefix);
+  } catch (error) {
+      console.error("Error fetching accounts:", error);
+      res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
+    }
+};
+
+
+
 function removeSpaces(body) {
     const cleanedBody = {};
 
@@ -488,31 +518,6 @@ function removeSpaces(body) {
 
 
 
-// Get last expense prefix
-exports.getLastExpensePrefix = async (req, res) => {
-  try {
-    const organizationId = req.user.organizationId;
-
-      // Find all accounts where organizationId matches
-      const prefix = await Prefix.findOne({ organizationId:organizationId,'series.status': true });
-
-      if (!prefix) {
-          return res.status(404).json({
-              message: "No Prefix found for the provided organization ID.",
-          });
-      }
-      
-      const series = prefix.series[0];     
-      const lastPrefix = series.expense + series.expenseNum;
-
-      lastPrefix.organizationId = undefined;
-
-      res.status(200).json(lastPrefix);
-  } catch (error) {
-      console.error("Error fetching accounts:", error);
-      res.status(500).json({ message: "Internal server error.", error: error.message, stack: error.stack });
-  }
-};
 
 // Expense Prefix
 function expensePrefix( cleanData, existingPrefix ) {

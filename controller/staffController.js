@@ -58,8 +58,8 @@ exports.addStaff = async (req, res) => {
         res.status(201).json({ message: 'Staff added successfully', staff });
     } catch (error) {
         console.error("Error in addStaff:", error);
-        res.status(500).json({ message: 'Server Error', error: error.message });
-    }
+        res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
+      }
 };
 
 // Edit Staff
@@ -99,7 +99,7 @@ exports.editStaff = async (req, res) => {
         res.status(200).json({ message: 'Staff updated successfully', staff });
     } catch (error) {
       console.error("Error in editStaff:", error);
-        res.status(500).json({ message: 'Server Error', error: error.message });
+      res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
     }
 };
 
@@ -109,7 +109,8 @@ exports.getAllStaff = async (req, res) => {
         const staffList = await Staff.find();
         res.status(200).json(staffList);
     } catch (error) {
-        res.status(500).json({ message: 'Server Error', error: error.message });
+      console.error("Error in editStaff:", error);
+      res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
     }
 };
 
@@ -121,7 +122,8 @@ exports.getStaffById = async (req, res) => {
         if (!staff) return res.status(404).json({ message: 'Staff not found' });
         res.status(200).json(staff);
     } catch (error) {
-        res.status(500).json({ message: 'Server Error', error: error.message });
+      console.error("Error in editStaff:", error);
+      res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
     }
 };
 
@@ -134,7 +136,8 @@ exports.deleteStaff = async (req, res) => {
         
         res.status(200).json({ message: 'Staff deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Server Error', error: error.message });
+      console.error("Error in editStaff:", error);
+      res.status(500).json({ message: "Internal Server error", error: error.message, stack: error.stack });
     }
 };
 
