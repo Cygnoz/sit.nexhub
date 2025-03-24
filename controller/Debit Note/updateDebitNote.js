@@ -348,7 +348,7 @@ const deleteUpdateBillBalance = async ( billId, oldGrandTotal) => {
     await Bill.findOneAndUpdate({ _id: billId }, { $set: { balanceAmount: newBalance } });
   } catch (error) {
     console.error("Error updating purchase bill balance:", error);
-    throw new Error("Failed to update purchase bill balance.");
+    throw new Error("Failed to update purchase bill balance.", error.message, error.stack);
   }
 };
 
