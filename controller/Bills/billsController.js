@@ -264,29 +264,33 @@ exports.addBills = async (req, res) => {
         // Get current date for comparison
         const currentDate = new Date();
 
+
+
+
+        const updatedData = await Promise.all(transformedBill.map(async (bill) => {
+         const { organizationId, balanceAmount, dueDate, paidStatus: currentStatus, ...rest } = bill;
+         
+         let newStatus;
+         if (balanceAmount === 0) {
+           newStatus = 'Completed';
+         } else if (dueDate && new Date(dueDate) < currentDate) {
+           newStatus = 'Overdue';
+         } else {
+           newStatus = 'Pending';
+         }
+     
+         if (newStatus !== currentStatus) {
+           await Bills.updateOne({ _id: bill._id }, { paidStatus: newStatus });
+         }
+     
+         return { ...rest, balanceAmount, dueDate, paidStatus: newStatus };
+       }));   
+
       
 
-        // Map through purchase bills and update paidStatus if needed
-        for (const bill of allBills) {
-        const { balanceAmount, dueDate, paidStatus: currentStatus } = bill;
-        
-        // Determine the correct paidStatus based on balanceAmount and dueDate
-        let newStatus;
-        if (balanceAmount === 0) {
-            newStatus = 'Completed';
-        } else if (dueDate && new Date(dueDate) < currentDate) {
-            newStatus = 'Overdue';
-        } else {
-            newStatus = 'Pending';
-        }
 
-        // Update the bill's status only if it differs from the current status in the database
-        if (newStatus !== currentStatus) {
-            await Bills.updateOne({ _id: bill._id }, { paidStatus: newStatus });
-        }
-        }
 
-        const formattedObjects = multiCustomDateTime(transformedBill, organizationExists.dateFormatExp, organizationExists.timeZoneExp, organizationExists.dateSplit );    
+        const formattedObjects = multiCustomDateTime(updatedData, organizationExists.dateFormatExp, organizationExists.timeZoneExp, organizationExists.dateSplit );    
 
   
       res.status(200).json({allBills: formattedObjects});
