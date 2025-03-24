@@ -6,9 +6,7 @@ const helmet = require('helmet');
 
 const passport = require("passport");
 
-// const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",");
-const allowedOrigins = "*";
-
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",");
 
 const server = express();
 const organizationRouter = require('./router/organizationRouter');
@@ -23,7 +21,7 @@ server.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 server.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin || process.env.ALLOWED_ORIGINS === "*") {
             callback(null, true);
         } else {
             callback(new Error("CORS not allowed from this origin"));
