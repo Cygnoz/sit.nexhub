@@ -2,6 +2,7 @@
 
 const User = require('../database/model/user');
 const Organization = require('../database/model/organization');
+const Role = require('../database/model/role');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
@@ -68,8 +69,8 @@ exports.login = async (req, res) => {
       message: 'OTP sent to email',
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: 'Internal Server Error', error:error });
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
 
@@ -113,7 +114,14 @@ exports.verifyOtp = async (req, res) => {
       const requestUserAgent = req.headers['user-agent']; // Get User-Agent (browser/device info)
 
       console.log("Request IP :",requestIP);
-      console.log("Request User Agent :",requestUserAgent);      
+      console.log("Request User Agent :",requestUserAgent);
+
+      const isMobile = /mobile|tablet|android|iphone|ipad|ipod/i.test(requestUserAgent);
+      const deviceType = isMobile ? "Mobile" : "Desktop";
+
+      console.log("Device Type:", deviceType);  
+      
+      const role = await Role.findOne({ organizationId: user.organizationId ,roleName: user.role }).lean();      
 
       
       // Create JWT token with user ID and organizationId
@@ -145,6 +153,8 @@ exports.verifyOtp = async (req, res) => {
           userName: user.userName,
           role: user.role,
           organizationName: organization.organizationName,
+          permission: role?.permissions,
+          deviceType
         },
       });
 
@@ -155,7 +165,7 @@ exports.verifyOtp = async (req, res) => {
     }
   } catch (error) {
     console.error('Error in verifyOtp:', error);
-    res.status(500).json({ success: false, message: 'Internal Server Error', error:error });
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
 
@@ -212,6 +222,7 @@ BillBizz`,
     return false;
   }
 };
+
 
 
 
