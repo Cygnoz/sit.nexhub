@@ -335,10 +335,14 @@ const editUpdateBillBalance = async (savedDebitNote, billId, oldGrandTotal) => {
 const deleteUpdateBillBalance = async ( billId, oldGrandTotal) => {
   try {
     const bill = await Bill.findOne({ _id: billId });
-    let newBalance = bill.balanceAmount + oldGrandTotal; 
-    if (newBalance < 0) {
-      newBalance = 0;
+
+    if (!bill) {
+      throw new Error(`Bill with ID ${billId} not found.`);
     }
+
+    let newBalance = bill.balanceAmount + oldGrandTotal; 
+    newBalance = Math.max(newBalance, 0);
+    
     console.log(`Updating purchase bill balance: ${newBalance}, Old Balance: ${bill.balanceAmount}`);
     
     await Bill.findOneAndUpdate({ _id: billId }, { $set: { balanceAmount: newBalance } });
