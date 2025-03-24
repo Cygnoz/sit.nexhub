@@ -226,9 +226,9 @@ exports.addBills = async (req, res) => {
       console.log( "Bills created successfully:", savedBills );
     } catch (error) {
       console.error("Error Creating Bills:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: "Internal server error.",error:error.message , stack: error.stack });
     }
-  }
+}
   
   
   
@@ -296,7 +296,7 @@ exports.addBills = async (req, res) => {
       res.status(200).json({allBills: formattedObjects});
     } catch (error) {
       console.error("Error fetching bills:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: "Internal server error.",error:error.message , stack: error.stack });
     }
   };
   
@@ -330,7 +330,7 @@ exports.addBills = async (req, res) => {
     res.status(200).json(formattedObjects);
   } catch (error) {
     console.error("Error fetching bill:", error);
-    res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error.",error:error.message , stack: error.stack });
   }
   };
 
@@ -364,7 +364,7 @@ exports.billJournal = async (req, res) => {
       res.status(200).json(transformedJournal);
   } catch (error) {
       console.error("Error fetching journal:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: "Internal server error.",error:error.message , stack: error.stack });
   }
 };
 
