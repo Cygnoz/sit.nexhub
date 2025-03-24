@@ -35,7 +35,10 @@ process.on("unhandledRejection", (reason, promise) => {
 // Catch uncaught exceptions
 process.on("uncaughtException", (error) => {
     console.error("Uncaught Exception:", error);
-    process.exit(1); // Optionally restart the server
+    setTimeout(() => {
+        console.log("Restarting server...");
+        process.exit(1);
+    }, 3000);
 });
 
 // General error handling middleware
