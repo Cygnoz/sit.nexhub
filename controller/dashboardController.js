@@ -163,9 +163,11 @@ exports.getOverviewData = async (req, res) => {
       ));
 
       // Corrected Total Item Count Calculation
-      const totalItemCount = Math.abs(filteredInventoryValue.reduce(
-          (sum, item) => sum + (parseFloat(item.currentStock) || 0), 0
-      ));
+    //   const totalItemCount = Math.abs(filteredInventoryValue.reduce(
+    //       (sum, item) => sum + (parseFloat(item.currentStock) || 0), 0
+    //   ));
+
+      const totalItemCount = await Item.count({ organizationId });
 
       // Corrected Out-of-Stock Count Calculation
       const totalOutOfStock = filteredInventoryValue.filter(item => item.currentStock < 1).length;
