@@ -105,7 +105,7 @@ exports.getOneCustomerStats = async (req, res) => {
 
 
     // Fetch Trial Balance records for the customer
-    const trialBalances = await TrialBalance.find({ organizationId, accountId : customerAccount._id });
+    const trialBalances = await TrialBalance.find({ organizationId, accountId : customerAccount._id, action: "Receipt" });
 
     // Calculate Total Payment (Sum of creditAmount)
     const totalPayment = trialBalances.reduce((sum, entry) => sum + (entry.creditAmount || 0), 0);
