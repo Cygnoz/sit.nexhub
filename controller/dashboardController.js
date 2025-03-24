@@ -17,7 +17,7 @@ const dataExist = async ( organizationId, customerId ) => {
     .populate('items.itemId', 'itemName') 
     .populate('customerId', 'customerDisplayName')    
     .lean(),
-    SalesReceipt.find({ organizationId, customerId },{ customerId:1, paymentDate:1, paymentMode:1, amountReceived:1, receipt:1, createdDateTime:1})
+    SalesReceipt.find({ organizationId, customerId })
     .populate('customerId', 'customerDisplayName')    
     .lean(),
   ]);
