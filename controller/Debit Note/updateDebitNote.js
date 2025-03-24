@@ -823,7 +823,7 @@ function capitalize(word) {
         operationId: savedDebitNote._id,
         transactionId: savedDebitNote.debitNote,
         date: savedDebitNote.createdDate,
-        accountId: depositAccount._id || undefined,
+        accountId: depositAccount?._id || undefined,
         action: "Debit Note",
         debitAmount: savedDebitNote.grandTotal || 0,
         creditAmount: 0,
