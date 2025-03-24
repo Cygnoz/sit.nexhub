@@ -167,7 +167,7 @@ exports.getOverviewData = async (req, res) => {
     //       (sum, item) => sum + (parseFloat(item.currentStock) || 0), 0
     //   ));
 
-      const totalItemCount = await Item.count({ organizationId });
+      const totalItemCount = await Item.countDocuments({ organizationId });
 
       // Corrected Out-of-Stock Count Calculation
       const totalOutOfStock = filteredInventoryValue.filter(item => item.currentStock < 1).length;
