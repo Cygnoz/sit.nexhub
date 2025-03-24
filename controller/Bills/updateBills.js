@@ -139,7 +139,7 @@ exports.updateBill = async (req, res) => {
   
     } catch (error) {
       console.error("Error updating bill:", error);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
     }
   };
 
@@ -226,7 +226,7 @@ exports.updateBill = async (req, res) => {
 
     } catch (error) {
         console.error("Error deleting purchase bill:", error);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
     }
   };
 

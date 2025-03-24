@@ -120,7 +120,7 @@ exports.updateDebitNote = async (req, res) => {
       // console.log("Debit Note updated successfully:", savedDebitNote);  
     } catch (error) {
       console.error("Error updating debit note:", error);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
     }
   };
 
@@ -224,7 +224,7 @@ exports.updateDebitNote = async (req, res) => {
 
     } catch (error) {
         console.error("Error deleting debit note:", error);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
     }
   };
 

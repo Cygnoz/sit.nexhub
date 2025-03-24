@@ -110,7 +110,7 @@ exports.updatePaymentMade = async (req, res) => {
   
     } catch (error) {
       console.log("Error updating payment made:", error);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
     }
 };
 
@@ -201,8 +201,8 @@ exports.deletePaymentMade = async (req, res) => {
 
   } catch (error) {
       console.error("Error deleting payment made:", error);
-      res.status(500).json({ message: "Internal server error" });
-  }
+      res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
+    }
 };
 
 

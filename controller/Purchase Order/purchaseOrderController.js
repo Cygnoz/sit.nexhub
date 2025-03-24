@@ -116,7 +116,7 @@ exports.addPurchaseOrder = async (req, res) => {
       console.log( "Purchase order created successfully:", savedPurchaseOrder );
     } catch (error) {
       console.error("Error Creating Purchase Order:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
     }
   }
   
@@ -148,7 +148,7 @@ exports.getAllPurchaseOrder = async (req, res) => {
     res.status(200).json( {allPurchaseOrder: formattedObjects });
     } catch (error) {
     console.error("Error fetching purchase order:", error);
-    res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
   }
 };
   
@@ -191,7 +191,7 @@ exports.getOnePurchaseOrder = async (req, res) => {
     
     } catch (error) {
       console.error("Error fetching purchase order:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
     }
   };
 
@@ -219,7 +219,7 @@ exports. getLastPurchaseOrderPrefix = async (req, res) => {
         res.status(200).json(lastPrefix);
     } catch (error) {
         console.error("Error fetching accounts:", error);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
     }
   };
   
