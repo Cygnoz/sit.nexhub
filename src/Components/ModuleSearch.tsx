@@ -180,7 +180,7 @@ function ModuleSearch({ page, mode }: Props) {
                 ? "bg-[#0F1315]"
                 : "bg-[#F9F7F5]"
               : "bg-[#F9F7F5]"
-          } absolute top-full mt-2  w-[100%] rounded-2xl px-5 py-4 shadow-md z-20`}
+          } absolute top-full mt-2 w-[100%] rounded-2xl px-5 py-4 shadow-md z-[9999]`}
         >
           {/* Tabs */}
           <div className="flex flex-wrap gap-2 mt-4">

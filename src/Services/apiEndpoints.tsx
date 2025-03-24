@@ -209,7 +209,7 @@ export const endponits = {
 
 
   // Login
-  LOGIN: "/login",
+  LOGIN: "/login-otp",
   GET_OTP: "/verify-otp",
 
   //  Expense

@@ -16,7 +16,7 @@ export interface CustomerData {
     currency: string;
     paymentTerms: string;
     creditDays: string;
-    creditLimit: string;
+    creditLimits: string;
     interestPercentage: string;
     debitOpeningBalance?: string;  
     creditOpeningBalance?: string;

@@ -37,7 +37,7 @@ const initialCustomerData: CustomerData = {
   paymentTerms: "",
   enablePortal: false,
   creditDays: "",
-  creditLimit: "",
+  creditLimits: "",
   interestPercentage: "",
   documents: "",
   department: "",
@@ -112,7 +112,7 @@ const NewCustomerModal = ({ page }: Props) => {
     customerEmail: false,
     websiteURL: false,
     pan: false,
-    creditLimit: false,
+    creditLimits: false,
     creditDays: false,
     gstin_uin: false,
     businessLegalName: false,
@@ -763,7 +763,7 @@ const NewCustomerModal = ({ page }: Props) => {
                           <option value="Ms.">Ms.</option>
                           <option value="Dr.">Dr.</option>
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 left-1 sm:left-0 flex items-center px-2 text-gray-700">
+                        <div className="pointer-events-none absolute inset-y-0 right-0 left-5 sm:left-24 flex items-center px-2 text-gray-700">
                           <CehvronDown color="gray" />
                         </div>
                       </div>
@@ -1013,31 +1013,31 @@ const NewCustomerModal = ({ page }: Props) => {
                     <li
                       className={`${getTabClassName(
                         "otherDetails"
-                      )} border-b-2 sm:border-r-4 p-2 whitespace-nowrap`}
+                      )}  sm:border-r-4 p-2 whitespace-nowrap`}
                       onClick={() => setActiveTab("otherDetails")}
                     >
                       Other Details
                     </li>
                     <li
-                      className={`${getTabClassName("taxes")} border-b-2 sm:border-r-4 p-2 whitespace-nowrap`}
+                      className={`${getTabClassName("taxes")}  sm:border-r-4 p-2 whitespace-nowrap`}
                       onClick={() => setActiveTab("taxes")}
                     >
                       Taxes
                     </li>
                     <li
-                      className={`${getTabClassName("address")} border-b-2 sm:border-r-4 p-2 whitespace-nowrap`}
+                      className={`${getTabClassName("address")}  sm:border-r-4 p-2 whitespace-nowrap`}
                       onClick={() => setActiveTab("address")}
                     >
                       Address
                     </li>
                     <li
-                      className={`${getTabClassName("contactPersons")} border-b-2 sm:border-r-4 p-2 whitespace-nowrap`}
+                      className={`${getTabClassName("contactPersons")}  sm:border-r-4 p-2 whitespace-nowrap`}
                       onClick={() => setActiveTab("contactPersons")}
                     >
                       Contact Persons
                     </li>
                     <li
-                      className={`${getTabClassName("remarks")} border-b-2 sm:border-r-4 p-2 whitespace-nowrap`}
+                      className={`${getTabClassName("remarks")}  sm:border-r-4 p-2 whitespace-nowrap`}
                       onClick={() => setActiveTab("remarks")}
                     >
                       Remarks
@@ -1247,8 +1247,8 @@ const NewCustomerModal = ({ page }: Props) => {
                             type="text"
                             className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-p p-2 text-[#818894]"
                             placeholder="Enter Credit Limit"
-                            name="creditLimit"
-                            value={customerdata.creditLimit}
+                            name="creditLimits"
+                            value={customerdata.creditLimits}
                             onChange={(e) => {
                               const value = e.target.value;
 
@@ -1256,18 +1256,18 @@ const NewCustomerModal = ({ page }: Props) => {
                                 handleChange(e);
                                 setErrors((prevErrors) => ({
                                   ...prevErrors,
-                                  creditLimit: false,
+                                  creditLimits: false,
                                 }));
                               } else {
                                 setErrors((prevErrors) => ({
                                   ...prevErrors,
-                                  creditLimit: true,
+                                  creditLimits: true,
                                 }));
                               }
                             }}
                           />
-                          {errors.creditLimit &&
-                            customerdata.creditLimit !== "" && (
+                          {errors.creditLimits &&
+                            customerdata.creditLimits !== "" && (
                               <div className="text-red-800 text-xs mt-1">
                                 Please enter a valid number for Credit Limit.
                               </div>
@@ -2410,7 +2410,8 @@ const NewCustomerModal = ({ page }: Props) => {
                               <tr key={index}>
                                 <td className="py-2.5 flex items-center border-y border-tableBorder">
                                   <select
-                                    className="block  w-full h-9  text-zinc-400 bg-white  text-sm  pl-2  rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                    className="block  w-full h-9  text-zinc-400 bg-white  
+                                text-sm  pl-2  rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     value={row.salutation}
                                     onChange={(e) =>
                                       handleRowChange(
