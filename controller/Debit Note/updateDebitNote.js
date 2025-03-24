@@ -27,6 +27,12 @@ exports.updateDebitNote = async (req, res) => {
 
       // Clean input data
       const cleanedData = cleanData(req.body);
+      
+      cleanedData.items = cleanedData.items?.map(data => cleanData(data)) || [];
+      
+      cleanedData.items = cleanedData.items
+      ?.map(data => cleanData(data))
+      .filter(item => item.itemId !== undefined && item.itemId !== '') || [];
 
       // cleanedData.depositAccountId = cleanedData.depositTo || undefined;
 
