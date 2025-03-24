@@ -200,10 +200,8 @@ exports.updateDebitNote = async (req, res) => {
         // Update returnQuantity after deletion
         await updateReturnQuantity( existingDebitNoteItems, billId );
 
-        //Update purchase bill Balance
-        if(existingDebitNoteItems.grandTotal){
-          await deleteUpdateBillBalance( billId, existingDebitNoteItems.grandTotal );
-        }      
+        //Update purchase bill Balance      
+        await deleteUpdateBillBalance( billId, existingDebitNote.grandTotal );
 
         // Fetch existing itemTrack entries
         const existingItemTracks = await ItemTrack.find({ organizationId, operationId: debitId });
