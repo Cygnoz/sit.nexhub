@@ -362,7 +362,7 @@ const deleteUpdateBillBalance = async (billId, oldGrandTotal) => {
     console.log(`Purchase bill balance updated successfully: ${result.balanceAmount}`);
   } catch (error) {
     console.error("Error updating purchase bill balance:", error);
-    throw new Error(`Failed to update purchase bill balance: ${error.message} ${oldGrandTotal}`);
+    throw new Error(`Failed to update purchase bill balance: ${error.message}  oldGrandTotal: ${oldGrandTotal}`);
   }
 };
 
