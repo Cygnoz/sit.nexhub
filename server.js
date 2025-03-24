@@ -73,7 +73,7 @@ server.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5004;
 
 server.get('/', (req, res) => {
-    res.status(200).json("Dev Bill BIZZ server started - Organization v2");
+    res.status(200).json("Dev Bill BIZZ server started - Organization v9.0");
 });
 
 server.listen(PORT, () => {
