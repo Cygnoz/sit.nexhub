@@ -332,8 +332,12 @@ const editUpdateBillBalance = async (savedDebitNote, billId, oldGrandTotal) => {
 
 
 // Function to update purchase bill balance
-const deleteUpdateBillBalance = async ( billId, oldGrandTotal) => {
+const deleteUpdateBillBalance = async (billId, oldGrandTotal) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(billId)) {
+      throw new Error(`Invalid billId: ${billId}`);
+    }
+
     const bill = await Bill.findOne({ _id: billId });
 
     if (!bill) {
@@ -342,16 +346,25 @@ const deleteUpdateBillBalance = async ( billId, oldGrandTotal) => {
 
     let newBalance = bill.balanceAmount + oldGrandTotal; 
     newBalance = Math.max(newBalance, 0);
-    
+
     console.log(`Updating purchase bill balance: ${newBalance}, Old Balance: ${bill.balanceAmount}`);
-    
-    await Bill.findOneAndUpdate({ _id: billId }, { $set: { balanceAmount: newBalance } });
+
+    const result = await Bill.findOneAndUpdate(
+      { _id: billId },
+      { $set: { balanceAmount: newBalance } },
+      { new: true } // Return the updated document
+    );
+
+    if (!result) {
+      throw new Error(`Failed to update balance for Bill ID: ${billId}`);
+    }
+
+    console.log(`Purchase bill balance updated successfully: ${result.balanceAmount}`);
   } catch (error) {
     console.error("Error updating purchase bill balance:", error);
-    throw new Error("Failed to update purchase bill balance.", error.message, error.stack);
+    throw new Error(`Failed to update purchase bill balance: ${error.message}`);
   }
 };
-
 
 
 
