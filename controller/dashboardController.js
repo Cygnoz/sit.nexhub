@@ -194,8 +194,8 @@ exports.getOverviewData = async (req, res) => {
       });
 
   } catch (error) {
-      console.error("Error fetching overview data:", error);
-      res.status(500).json({ message: "Internal server error." });
+      console.error("Error fetching overview data:");
+      res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
   }
 };
 
@@ -436,7 +436,7 @@ exports.getTopSellingProducts = async (req, res) => {
 
   } catch (error) {
       console.error("Error fetching top-selling products:", error);
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
   }
 };
 
@@ -509,7 +509,7 @@ exports.getTopSellingProductsByCategories = async (req, res) => {
 
     } catch (error) {
         console.error("Error fetching top selling products by category:", error);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
     }
 };
 
@@ -579,7 +579,7 @@ exports.getStockLevelOverCategory = async (req, res) => {
 
     } catch (error) {
         console.error("Error fetching stock level over category:", error);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
     }
 };
 
@@ -661,7 +661,7 @@ exports.getFrequentlyReorderedItems = async (req, res) => {
 
     } catch (error) {
         console.error("Error fetching most frequently reordered items:", error);
-        res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ message: "Internal server error.", error : error.message, stack: error.stack });
     }
 };
 
