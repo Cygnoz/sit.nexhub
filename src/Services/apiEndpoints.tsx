@@ -182,7 +182,7 @@ export const endponits = {
   ADD_PAYMET_MADE: `add-payment`,
   GET_PAYMENTMADE: `getAllPayments`,
   GET_PAYMENT: `getPayment`,
-  PAYMENT_LAST_PREFIX: `get-last-debit-note-prefix`,
+  PAYMENT_LAST_PREFIX: `/get-last-payment-made-prefix`,
   EDIT_PAYMENT_MADE: `update-paymentMade`,
   DELETE_PAYMENT_MADE: `delete-paymentMade`,
   GET_PAYMENT_JOURNAL: `payment-journal`,

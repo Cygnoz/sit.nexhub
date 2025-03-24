@@ -21,10 +21,10 @@ import ZoomOut from "../../../../../../assets/icons/ZoomOut";
 import ZoomIn from "../../../../../../assets/icons/ZoomIn";
 
 interface BankDetails {
-  account_no: string;
-  bank_name: string;
-  branch_name: string;
-  ifsc_code: string;
+  accountNo: string;
+  bankName: string;
+  branchName: string;
+  ifscCode: string;
 }
 
 interface Header {
@@ -38,8 +38,8 @@ interface Header {
 }
 
 interface Footer {
-  additional_notes: string;
-  grand_total: string;
+  termsAndConditions: string;
+  grandTotal: string;
   sgst: string;
   cgst: string;
   payment_terms: string;
@@ -75,10 +75,10 @@ const OCRInvoiceView = () => {
   const { ocrAddItem } = useContext(octAddItemContext)!;
 
   const [bankDetails, setBankDetails] = useState<BankDetails>({
-    account_no: "",
-    bank_name: "",
-    branch_name: "",
-    ifsc_code: "",
+    accountNo: "",
+    bankName: "",
+    branchName: "",
+    ifscCode: "",
   });
 
   const [header, setHeader] = useState<Header>({
@@ -92,8 +92,8 @@ const OCRInvoiceView = () => {
   });
 
   const [footer, setFooter] = useState<Footer>({
-    additional_notes: "",
-    grand_total: "",
+    termsAndConditions: "",
+    grandTotal: "",
     sgst: "",
     cgst: "",
     igst: "",
@@ -156,6 +156,8 @@ const OCRInvoiceView = () => {
     return pageNumbers;
   };
 
+  console.log(currentItemsMatch,"match")
+
   const handleExpand = (key: string) => {
     setExpandDropDown((prevKey) => (prevKey === key ? null : key));
   };
@@ -211,7 +213,6 @@ const OCRInvoiceView = () => {
     }
   };
 
-
   const handleSupplierMatch = () => {
     if (!invoice || invoice.length === 0) {
       console.error("No invoice data available.");
@@ -221,35 +222,41 @@ const OCRInvoiceView = () => {
       console.error("No suppliers data available.");
       return;
     }
-  
+
     const invoiceSupplierName = invoice?.invoice?.header?.supplierDisplayName;
     if (!invoiceSupplierName) {
       console.error("No supplier name found in the invoice.");
       return;
     }
-  
-    const normalizedInvoiceSupplier = invoiceSupplierName.replace(/\s+/g, "").toLowerCase();
-  
+
+    const normalizedInvoiceSupplier = invoiceSupplierName
+      .replace(/\s+/g, "")
+      .toLowerCase();
+
     const exactMatches = supplier.filter(
       (s: any) => s.supplierDisplayName === invoiceSupplierName
     );
-  
+
     const similarMatches = supplier.filter((s: any) => {
-      const normalizedSupplierName = s.supplierDisplayName.replace(/\s+/g, "").toLowerCase();
-  
+      const normalizedSupplierName = s.supplierDisplayName
+        .replace(/\s+/g, "")
+        .toLowerCase();
+
       return (
-        normalizedSupplierName.includes(normalizedInvoiceSupplier) || 
-        normalizedInvoiceSupplier.includes(normalizedSupplierName) 
+        normalizedSupplierName.includes(normalizedInvoiceSupplier) ||
+        normalizedInvoiceSupplier.includes(normalizedSupplierName)
       );
     });
-  
+
     const combinedMatches = Array.from(
-      new Map([...exactMatches, ...similarMatches].map((item) => [item._id, item])).values()
+      new Map(
+        [...exactMatches, ...similarMatches].map((item) => [item._id, item])
+      ).values()
     );
-  
+
     setSameSupplier(exactMatches.length > 0);
     setSimilarSuppliers(combinedMatches);
-  
+
     if (exactMatches.length > 0) {
       setInvoice((prevData: any) => ({
         ...prevData,
@@ -263,21 +270,28 @@ const OCRInvoiceView = () => {
       }));
     }
   };
-  
 
   const handleItemMatch = () => {
     const matches = currentItems.map((item: any) => {
       const matchingItem = allItems.find(
         (innerItem: any) => innerItem.itemName === item.itemName
       );
-  
+
       if (matchingItem) {
-        const updatedItems = invoice.invoice.items.map((invoiceItem: any) => 
+        const updatedItems = invoice.invoice.items.map((invoiceItem: any) =>
           invoiceItem.itemName === item.itemName
-            ? { ...invoiceItem, ...matchingItem }
+            ? {
+                ...invoiceItem,
+                ...matchingItem,
+                itemId: matchingItem._id,
+                sgst: matchingItem.sgst,
+                cgst: matchingItem.cgst,
+                igst: matchingItem.igst,
+                taxPreference: matchingItem.taxPreference,
+              }
             : invoiceItem
         );
-  
+
         setInvoice((prevInvoice: any) => ({
           ...prevInvoice,
           invoice: {
@@ -286,17 +300,15 @@ const OCRInvoiceView = () => {
           },
         }));
       }
-  
+
       return {
-        itemId: item._id,
+        itemId: item.itemId,
         isMatch: !!matchingItem,
       };
     });
-  
+
     setCurrentItemsMatch(matches);
   };
-  
-
 
   const handleChange = (
     section: "bankDetails" | "header" | "footer",
@@ -389,20 +401,17 @@ const OCRInvoiceView = () => {
   useEffect(() => {
     const supplierUrl = `${endponits.GET_ALL_SUPPLIER}`;
     fetchData(supplierUrl, setsupplier, getSupplier);
-
-   
   }, [supplierResponse]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getAInvoice();
-  },[])
+  }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     const allItemUrl = `${endponits.GET_ALL_ITEM}`;
 
     fetchData(allItemUrl, setAllItems, getItems);
-
-  },[ocrAddItem])
+  }, [ocrAddItem]);
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -418,9 +427,7 @@ const OCRInvoiceView = () => {
 
   const isPDF = invoice?.image?.file?.startsWith("data:application/pdf");
 
-
-
-  console.log(invoice,"INVOICE")
+  console.log(invoice.invoice, "INVOICE");
 
   return (
     <>
@@ -465,31 +472,30 @@ const OCRInvoiceView = () => {
           </div>
 
           <div className="flex items-center justify-center h-[760px] py-2 bg-[#F3F3F3] relative overflow-auto hide-scrollbar">
-          {loading ? (
-          <div className="loader"></div>
-        ) : isPDF ? (
-          <iframe
-            src={invoice?.image?.file}
-            width="100%"
-            height="100%"
-            style={{
-              border: "none",
-              transform: `scale(${zoomLevel})`,
-              transformOrigin: "top center",
-            }}
-            title="PDF Viewer"
-          ></iframe>
-        ) : (
-          <img 
-          className="min-w-[65%]"
-          src={invoice?.image?.file}
-          alt="Uploaded Content"
-            style={{
-          
-              transform: `scale(${zoomLevel})`,
-            }}
-          />
-        )}
+            {loading ? (
+              <div className="loader"></div>
+            ) : isPDF ? (
+              <iframe
+                src={invoice?.image?.file}
+                width="100%"
+                height="100%"
+                style={{
+                  border: "none",
+                  transform: `scale(${zoomLevel})`,
+                  transformOrigin: "top center",
+                }}
+                title="PDF Viewer"
+              ></iframe>
+            ) : (
+              <img
+                className="min-w-[65%]"
+                src={invoice?.image?.file}
+                alt="Uploaded Content"
+                style={{
+                  transform: `scale(${zoomLevel})`,
+                }}
+              />
+            )}
 
             {openDropdownIndex === "items" && (
               <div
@@ -715,7 +721,7 @@ const OCRInvoiceView = () => {
                         (match: any) => match.itemId === item.itemId
                       );
                       const isMatched = matchedItem?.isMatch ?? false;
-console.log(matchedItem,"matchingItem")
+                      console.log(currentItems, "matchingItem");
                       return (
                         <div
                           onClick={() => toggleDropdown("items")}
@@ -877,9 +883,9 @@ console.log(matchedItem,"matchingItem")
                   <input
                     type="text"
                     className="invoice-input "
-                    value={footer.grand_total}
+                    value={footer.grandTotal}
                     placeholder="Total Amount"
-                    name="grand_total"
+                    name="grandTotal"
                     onChange={(e) =>
                       handleChange("footer", e.target.name, e.target.value)
                     }
@@ -894,9 +900,9 @@ console.log(matchedItem,"matchingItem")
                     Additional Notes
                   </p>
                   <textarea
-                    name="additional_notes"
+                    name="termsAndConditions"
                     className="invoice-input "
-                    value={footer.additional_notes}
+                    value={footer.termsAndConditions}
                     placeholder="Additional Notes"
                     onChange={(e) =>
                       handleChange("footer", e.target.name, e.target.value)
@@ -910,10 +916,10 @@ console.log(matchedItem,"matchingItem")
                   <DotIcon color={"#32A370"} size={10} />
                   <p className="text-textColor w-[20%]">Bank Name</p>
                   <input
-                    name="bank_name"
+                    name="bankName"
                     type="text"
                     className="invoice-input"
-                    value={bankDetails?.bank_name}
+                    value={bankDetails?.bankName}
                     placeholder="Bank  Name"
                     onChange={(e) =>
                       handleChange("bankDetails", e.target.name, e.target.value)
@@ -924,10 +930,10 @@ console.log(matchedItem,"matchingItem")
                   <DotIcon color={"#32A370"} size={10} />
                   <p className="text-textColor w-[20%]">Account No.</p>
                   <input
-                    name="account_no"
+                    name="accountNo"
                     type="text"
                     className="invoice-input"
-                    value={bankDetails?.account_no}
+                    value={bankDetails?.accountNo}
                     placeholder="Bank Account No"
                     onChange={(e) =>
                       handleChange("bankDetails", e.target.name, e.target.value)
@@ -939,9 +945,9 @@ console.log(matchedItem,"matchingItem")
                   <p className="text-textColor w-[20%]">Branch Name</p>
                   <input
                     type="text"
-                    name="branch_name"
+                    name="branchName"
                     className="invoice-input"
-                    value={bankDetails?.branch_name}
+                    value={bankDetails?.branchName}
                     placeholder="Branch Name"
                     onChange={(e) =>
                       handleChange("bankDetails", e.target.name, e.target.value)
@@ -952,10 +958,10 @@ console.log(matchedItem,"matchingItem")
                   <DotIcon color={"#32A370"} size={10} />
                   <p className="text-textColor w-[20%]">IFSC Code</p>
                   <input
-                    name="ifsc_code"
+                    name="ifscCode"
                     type="text"
                     className="invoice-input"
-                    value={bankDetails.ifsc_code}
+                    value={bankDetails.ifscCode}
                     placeholder="IFSC Code"
                     onChange={(e) =>
                       handleChange("bankDetails", e.target.name, e.target.value)

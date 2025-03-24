@@ -5,7 +5,6 @@ import Modal from "../../../../../../Components/model/Modal";
 import CehvronDown from "../../../../../../assets/icons/CehvronDown";
 import { endponits } from "../../../../../../Services/apiEndpoints";
 import useApi from "../../../../../../Hooks/useApi";
-import NewUnit from "../../../../../inventory/Unit/NewUnit";
 import toast from "react-hot-toast";
 import { useOrganization } from "../../../../../../context/OrganizationContext";
 import { octAddItemContext } from "../../../../../../context/ContextShare";
@@ -34,9 +33,8 @@ const AddNewItem = ({selectedItem}:Props) => {
     null
   );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const [unitList, setUnitList] = useState<[] | any>([]);
   const [taxRate, setTaxRate] = useState<[] | any>([]);
-  const [allAccounts,setAllAccounts]=useState([])
+  const [allAccounts, setAllAccounts] = useState<{ accountSubhead: string; _id: string }[]>([]);
   const { request: getUnit } = useApi("get", 5003);
   const { request: getTaxRate } = useApi("get", 5004);
   const { request: getAccounts } = useApi("get", 5001);
@@ -57,6 +55,8 @@ const AddNewItem = ({selectedItem}:Props) => {
       setOpenDropdownIndex(null);
     }
   };
+
+  console.log(selectedItem,"selectedItem")
 
   const fetchData = async (
     url: string,
@@ -89,6 +89,9 @@ const AddNewItem = ({selectedItem}:Props) => {
 
     setOpenDropdownIndex(null);
 };
+
+
+
 
 
 
@@ -137,12 +140,10 @@ const AddNewItem = ({selectedItem}:Props) => {
   };
 
   useEffect(() => {
-    const unitURl = `${endponits.GET_ALL_UNIT}`;
     const taxUrl = `${endponits.GET_ALL_TAX}`;
     const accountsUrl=`${endponits.Get_ALL_Acounts}`
 
     fetchData(taxUrl, setTaxRate, getTaxRate);
-    fetchData(unitURl, setUnitList, getUnit);
     fetchData(accountsUrl, setAllAccounts, getAccounts);
   }, []);
 
@@ -172,6 +173,8 @@ const AddNewItem = ({selectedItem}:Props) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openDropdownIndex]);
+
+  
 
   useEffect(() => {
     if (!selectedItem) return;
@@ -209,8 +212,17 @@ const AddNewItem = ({selectedItem}:Props) => {
       purchaseAccountId: matchingAccount?._id ||  "", 
       taxPreference,
       taxRate: matchingTax?.taxName || "",
+      hsnCode:selectedItem.itemHsn
     }));
   }, [selectedItem, taxRate, allAccounts]);
+
+//   useEffect(()=>{
+//     setItemsData((prevState:any) => ({
+//    ...prevState,
+//    purchaseAccountId:
+//      allAccounts.find((item) => item.accountSubhead === "Cost of Goods Sold")?._id || "",
+//  }));
+//  },[allAccounts,itemsData.itemName])
   
   return (
     <div>
@@ -349,47 +361,7 @@ const AddNewItem = ({selectedItem}:Props) => {
               />
             </div>
 
-            <div className="relative col-span-3 mt-3">
-              <label
-                htmlFor="unit-input"
-                className="text-slate-600 flex items-center gap-2"
-              >
-                Unit
-              </label>
-              <div className="relative w-full ">
-                <input
-                  id="unit-input"
-                  type="text"
-                  value={itemsData.unit}
-                  readOnly
-                  className="cursor-pointer appearance-none mt-0.5 w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  placeholder="Select Unit"
-                  onClick={() => toggleDropdown("unit")}
-                />
-                <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <CehvronDown color="gray" />
-                </div>
-              </div>
-              {openDropdownIndex === "unit" && (
-                <div
-                  ref={dropdownRef}
-                  className="absolute w-[100%] z-10 bg-white rounded-md mt-1 p-2 space-y-1 border border-inputBorder"
-                >
-                  {unitList &&
-                    unitList.map((unit: any, index: number) => (
-                      <div
-                        key={index}
-                        onClick={() => handleDropdownSelect("unit", unit)}
-                        className="flex p-2 w-[100%]  hover:bg-gray-100 cursor-pointer border rounded-lg bg-lightPink border-slate-300 text-sm text-textColor"
-                      >
-                        {unit.unitName}
-                      </div>
-                    ))}
-                  <NewUnit page="item" />
-                </div>
-              )}
-            </div>
-
+          
 
          { itemsData.itemType=="goods" ? <div>
               <label
