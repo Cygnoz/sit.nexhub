@@ -6,7 +6,8 @@ const helmet = require('helmet');
 
 const passport = require("passport");
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",");
+// const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",");
+const allowedOrigins = "*";
 
 const server = express();
 const organizationRouter = require('./router/organizationRouter');
