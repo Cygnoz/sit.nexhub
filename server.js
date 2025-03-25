@@ -47,13 +47,13 @@ server.use((err, req, res, next) => {
     });
 });
 
-const PORT = 5003
+const PORT = 7003
 
 server.get('/',(req,res)=>{
-    res.status(200).json("Dev Bill BIZZ server started - Inventory v2.0")
+    res.status(200).json("Dev NexHub server started - Inventory v2.0")
 });
 
 server.listen(PORT,()=>{
-    console.log(`BillBIZZ server Inventory started at port : ${PORT}`);
+    console.log(`NexHub server Inventory started at port : ${PORT}`);
 });
 

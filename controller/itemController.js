@@ -669,6 +669,8 @@ function validateItemData( data, settingsExist, taxExists, organizationId, bmcr,
   validateAccountStructure( data, salesAccount, purchaseAccount, errors);
   validateItemType(data.itemType, errors);
   validateTaxPreference(data.taxPreference, errors);
+  validateProducts(data.products, errors); 
+  validateDuration(data.duration, errors);
   validateHsnSac(data.hsnCode, data.sac, settingsExist, errors);
   validateType(data.type, errors);    //sewnex variable
   validateBMCRFields( data.brand, data.manufacturer, data.categories, data.rack, bmcr, errors);
@@ -728,6 +730,18 @@ function validateItemType(itemType, errors) {
 function validateTaxPreference(taxPreference, errors) {
   validateField(taxPreference && !validTaxPreference.includes(taxPreference),
     "Invalid Tax Preference: " + taxPreference, errors);
+}
+
+function validateProducts(products, errors) {
+  validateField(
+    products && !validProducts.includes(products),
+    "Invalid products: " + products, errors );
+}
+
+function validateDuration(duration, errors) {
+  validateField(
+    duration && !validDuration.includes(duration),
+    "Invalid duration: " + duration, errors );
 }
 
 // Validate Type (sewnex variable)
@@ -880,6 +894,21 @@ function isAlphanumeric(value) {
 
 const validItemTypes = [ "goods", "service" ];
 const validTaxPreference = [ "Non-taxable", "Taxable" ]; 
+const validProducts = [ "BillBizz", "SewNex", "SaloNex", "6NexD" ];
+const validDuration = [ 
+  "1 Month", 
+  "2 Month",
+  "3 Month",
+  "4 Month",
+  "5 Month",
+  "6 Month",
+  "7 Month",
+  "8 Month",
+  "9 Month",
+  "10 Month",
+  "11 Month",
+  "12 Month",
+];
 const validType = [ "Fabric", "Raw Material", "Ready Made" ];   //sewnex variable
 
 

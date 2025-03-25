@@ -12,6 +12,8 @@ const dashboardController = require("../controller/dashboardController")
 
 const checkPermission = require('../controller/permission');
 const { verifyToken } = require('../controller/middleware');
+const { nexVerifyToken } = require('../controller/nexMiddleware');
+
 
 //item Drop Down
 router.get('/get-itemDropdown',verifyToken, itemDropdownController.getItemDropDown);
@@ -71,6 +73,14 @@ router.put('/add-item-settings',verifyToken,checkPermission('Added a new Setting
 //Item Track
 router.get('/get-all-item-track',verifyToken,checkPermission('Viewed Item Information'), itemSettingsController.getAllItemTrack);
 router.get('/get-item-transaction/:id',verifyToken,checkPermission('Viewed Item Information'), itemSettingsController.itemTransaction);
+
+
+
+
+//nexPortal
+// Item
+router.get('/get-all-item-nexportal', nexVerifyToken, itemController.getAllItem);
+router.get('/get-one-item-nexportal/:itemId', nexVerifyToken, itemController.getAItem);
 
 
 
