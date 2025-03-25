@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../../../public/billbizzlogoLanding.png";
-import logoLight from "../../../public/bill-bizz-logo.png";
+import logo from "../../assets/Images/Billbizz-Logo_White 1.png";
+// import logoLight from "../../../public/bill-bizz-logo.png";
 import ArrowrightUp from "../../assets/icons/ArrowrightUp";
 import BellDot from "../../assets/icons/BellDot";
 import Sun from "../../assets/icons/Sun";
@@ -81,15 +81,15 @@ function LandingHeader({ mode, setMode }: Props) {
         className="flex items-center space-x-2 cursor-pointer"
       >
         <img
-          src={mode ? logo : logoLight}
+          src={logo}
           alt="Bill Bizz Logo"
-          className="h-7 w-[22px]"
+          className="h-12 w-12"
         />
         <h1
           className={`text-base sm:text-lg font-medium ${mode ? "text-[#303F58]" : "text-[#F7E7CE]"
             }`}
         >
-          BILL BIZZ
+          BILLBIZZ
         </h1>
       </div>
 

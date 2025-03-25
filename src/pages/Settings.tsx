@@ -2,15 +2,15 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ArrowrightUp from "../assets/icons/ArrowrightUp";
 import taximg from "../assets/Images/Rectangle 5415 (1).png";
-import rewardImg from "../assets/Images/Rectangle 5415 (10).png";
-import usersImg from "../assets/Images/Rectangle 5415 (2).png";
+// import rewardImg from "../assets/Images/Rectangle 5415 (10).png";
+// import usersImg from "../assets/Images/Rectangle 5415 (2).png";
 import preferencesImg from "../assets/Images/Rectangle 5415 (3).png";
 import salesImg from "../assets/Images/Rectangle 5415 (4).png";
 import purchaseImg from "../assets/Images/Rectangle 5415 (5).png";
 import itemsImg from "../assets/Images/Rectangle 5415 (6).png";
-import paymentImg from "../assets/Images/Rectangle 5415 (7).png";
-import CustomizationImg from "../assets/Images/Rectangle 5415 (8).png";
-import reminderImg from "../assets/Images/Rectangle 5415 (9).png";
+// import paymentImg from "../assets/Images/Rectangle 5415 (7).png";
+// import CustomizationImg from "../assets/Images/Rectangle 5415 (8).png";
+// import reminderImg from "../assets/Images/Rectangle 5415 (9).png";
 import organizationImg from "../assets/Images/Rectangle 5415.png";
 import Button from "../Components/Button";
 import SearchBar from "../Components/SearchBar";
@@ -30,36 +30,36 @@ const settingsData: Setting[] = [
     imageUrl: organizationImg,
     route: "/settings/organization/profile",
   },
- 
+
   {
     title: "Taxes & Compliance",
     description: "Manage taxes and compliance settings",
     imageUrl: taximg,
     route: "/settings/taxes",
   },
-  {
-    title: "Users & Roles",
-    description: "Manage users and roles settings",
-    imageUrl: usersImg,
-    route: "/settings/users-roles",
-  },
+  // {
+  //   title: "Users & Roles",
+  //   description: "Manage users and roles settings",
+  //   imageUrl: usersImg,
+  //   route: "/settings/users-roles",
+  // },
   {
     title: "Preferences",
     description: "Manage system preferences",
     imageUrl: preferencesImg,
-    route: "/settings/preferences",
+    route: "/settings/preferences/CustomerAndSupplier",
   },
   {
     title: "Sales",
     description: "Manage sales settings",
     imageUrl: salesImg,
-    route: "/settings/sales",
+    route: "/settings/sales/salesOrder",
   },
   {
     title: "Purchases",
     description: "Manage purchases settings",
     imageUrl: purchaseImg,
-    route: "/settings/purchases",
+    route: "/settings/purchase/puschaseOrder",
   },
   {
     title: "Items",
@@ -67,30 +67,30 @@ const settingsData: Setting[] = [
     imageUrl: itemsImg,
     route: "/settings/items/item",
   },
-  {
-    title: "Online Payments",
-    description: "Manage online payment settings",
-    imageUrl: paymentImg,
-    route: "/settings/online-payments",
-  },
-  {
-    title: "Customization",
-    description: "Manage customization settings",
-    imageUrl: CustomizationImg,
-    route: "/settings/customization",
-  },
-  {
-    title: "Reminder & Notification",
-    description: "Manage reminder and notification settings",
-    imageUrl: reminderImg,
-    route: "/settings/reminder-notification",
-  },
-  {
-    title: "Reward Settings",
-    description: "Manage reward settings",
-    imageUrl: rewardImg,
-    route: "settings/rewards",
-  },
+  // {
+  //   title: "Online Payments",
+  //   description: "Manage online payment settings",
+  //   imageUrl: paymentImg,
+  //   route: "/settings/online-payments",
+  // },
+  // {
+  //   title: "Customization",
+  //   description: "Manage customization settings",
+  //   imageUrl: CustomizationImg,
+  //   route: "/settings/customization",
+  // },
+  // {
+  //   title: "Reminder & Notification",
+  //   description: "Manage reminder and notification settings",
+  //   imageUrl: reminderImg,
+  //   route: "/settings/reminder-notification",
+  // },
+  // {
+  //   title: "Reward Settings",
+  //   description: "Manage reward settings",
+  //   imageUrl: rewardImg,
+  //   route: "settings/rewards",
+  // },
 ];
 
 const SettingCard: React.FC<Setting> = ({
@@ -127,19 +127,19 @@ const SettingCard: React.FC<Setting> = ({
 
 const Settings: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>("");
-  const navigate=useNavigate()
-  const {previousPath}=useContext(PreviousPathContext)!
-  
+  const navigate = useNavigate()
+  const { previousPath } = useContext(PreviousPathContext)!
+
 
   const handleGoBack = () => {
-      navigate(previousPath);
-    }
+    navigate(previousPath);
+  }
 
-    console.log("prev",previousPath);
-    
-   
+  console.log("prev", previousPath);
 
-  
+
+
+
 
   const filteredSettings = settingsData.filter((setting) =>
     setting.title.toLowerCase().includes(searchValue.toLowerCase())
