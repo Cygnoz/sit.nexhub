@@ -95,7 +95,7 @@ const creditDataExist = async ( organizationId, creditId ) => {
     .populate('customerId', 'customerDisplayName')
     .lean(),
     CreditNote.findOne({ organizationId , _id: creditId })
-    .populate('items.itemId', 'itemName')
+    .populate('items.itemId', 'itemName itemImage')
     .populate('customerId', 'customerDisplayName')
     .lean(),
     TrialBalance.find({ organizationId: organizationId, operationId : creditId })
@@ -276,6 +276,7 @@ try {
       ...item,
       itemId: item.itemId?._id,
       itemName: item.itemId?.itemName,
+      itemImage: item.itemId?.itemImage,
     })),  
 };
 

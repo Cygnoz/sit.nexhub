@@ -196,11 +196,9 @@ exports.updateCreditNote = async (req, res) => {
         // Update returnQuantity after deletion
         await updateReturnQuantity( existingCreditNoteItems, invoiceId );
 
-        //Update Invoice Balance
-        if(existingCreditNote.totalAmount){      
+        //Update Invoice Balance      
         await deleteUpdateSalesInvoiceBalance( invoiceId, existingCreditNote.totalAmount ); 
-        }
-        
+
         // Fetch existing itemTrack entries
         const existingItemTracks = await ItemTrack.find({ organizationId, operationId: creditId });
         // Delete existing itemTrack entries for the operation
