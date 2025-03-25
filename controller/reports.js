@@ -79,7 +79,7 @@ async function getReportAccount(organizationExists,organizationId, startDate, en
                 $match: { 
                     "accountDetails.accountSubhead": accountSubHead,
                     "accountDetails.accountName": { 
-                        $nin: ["Sales Discount", "Purchase Discount","Sales Discount(Cash Discount)","Purchase Discount(Cash Discount)"] 
+                        $nin: ["Sales Discount", "Purchase Discount","Sales Discount(Cash Discount)","Purchase Discounts(Cash Discount)"] 
                     } 
                 } 
             },
@@ -132,7 +132,7 @@ async function getReportAccount(organizationExists,organizationId, startDate, en
                 $match: { 
                     "accountDetails.accountSubhead": accountSubHead,
                     "accountDetails.accountName": { 
-                        $nin: ["Sales Discount", "Purchase Discount","Sales Discount(Cash Discount)","Purchase Discount(Cash Discount)"] 
+                        $nin: ["Sales Discount", "Purchase Discount","Sales Discount(Cash Discount)","Purchase Discounts(Cash Discount)"] 
                     } 
                 } 
             },
