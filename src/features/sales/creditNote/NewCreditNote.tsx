@@ -15,11 +15,10 @@ import { CreditNoteBody } from "../../../Types/Creditnote";
 import toast from "react-hot-toast";
 // import toast from "react-hot-toast";
 
-
 interface Customer {
   taxType: string;
 }
-type props = { page?: string }
+type props = { page?: string };
 
 const initialCreditNoteState: CreditNoteBody = {
   organizationId: "",
@@ -56,7 +55,7 @@ const initialCreditNoteState: CreditNoteBody = {
       igstAmount: "",
       vatAmount: "",
       itemTotaltax: "",
-      salesAccountId: ""
+      salesAccountId: "",
     },
   ],
 
@@ -78,12 +77,15 @@ const NewCreditNote = ({ page }: props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [customerData, setCustomerData] = useState<[]>([]);
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
-  const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(null);
+  const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(
+    null
+  );
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [isInterState, setIsInterState] = useState<boolean>(false);
   const [countryData, setcountryData] = useState<any | any>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<any | null>(null);
-  const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(true);
+  const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] =
+    useState<boolean>(true);
   const [accounts, setAccounts] = useState<any>([]);
   const [allInvoice, setAllInvoice] = useState<any | []>([]);
   const [DBPrefix, setDBPrefix] = useState<any | []>([]);
@@ -91,7 +93,6 @@ const NewCreditNote = ({ page }: props) => {
     initialCreditNoteState
   );
   console.log(creditNoteState, "creditNoteState");
-
 
   const [errors, setErrors] = useState({
     invoiceNumber: false,
@@ -103,9 +104,7 @@ const NewCreditNote = ({ page }: props) => {
     itemTable: false,
     orderNumber: false,
     customerCreditDate: false,
-
-  })
-
+  });
 
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
 
@@ -176,17 +175,19 @@ const NewCreditNote = ({ page }: props) => {
     fetchAllInvoices();
   }, []);
 
+  console.log(selectedCustomer, "qwertyu");
+
   const handleplaceofSupply = () => {
-    if (oneOrganization.organizationCountry) {
+    if (selectedCustomer.billingCountry) {
       const country = countryData.find(
         (c: any) =>
-          c.name.toLowerCase() ===
-          oneOrganization.organizationCountry.toLowerCase()
+          c.name.toLowerCase() === selectedCustomer.billingCountry.toLowerCase()
       );
-      if (oneOrganization) {
+
+      if (selectedCustomer) {
         setCreditNoteState((preData: any) => ({
           ...preData,
-          placeOfSupply: oneOrganization.state,
+          placeOfSupply: selectedCustomer.billingState,
         }));
       }
       if (country) {
@@ -196,7 +197,23 @@ const NewCreditNote = ({ page }: props) => {
         console.log("Country not found");
       }
     } else {
-      console.log("No country selected");
+      if (oneOrganization.organizationCountry) {
+        const country = countryData.find(
+          (c: any) =>
+            c.name.toLowerCase() ===
+            oneOrganization.organizationCountry.toLowerCase()
+        );
+        if (oneOrganization) {
+          setCreditNoteState((preData: any) => ({
+            ...preData,
+            placeOfSupply: oneOrganization.state,
+          }));
+        }
+        if (country) {
+          const states = country.states;
+          setPlaceOfSupplyList(states);
+        }
+      }
     }
   };
 
@@ -218,13 +235,11 @@ const NewCreditNote = ({ page }: props) => {
     const customerUrl = `${endponits.GET_ALL_CUSTOMER}`;
     const getPrefixUrl = `${endponits.GET_CREDIT_NOTE_PREFIX}`;
 
-
     fetchData(getPrefixUrl, setDBPrefix, getPrefix);
     fetchData(customerUrl, setCustomerData, AllCustomer);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
     fetchData(allAccountsUrl, setAccounts, getAccountData);
   }, []);
-
 
   useEffect(() => {
     setCreditNoteState((preData: any) => ({
@@ -236,7 +251,7 @@ const NewCreditNote = ({ page }: props) => {
   useEffect(() => {
     handleplaceofSupply();
     fetchCountries();
-  }, [oneOrganization]);
+  }, [oneOrganization, selectedCustomer]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -311,19 +326,16 @@ const NewCreditNote = ({ page }: props) => {
         ? creditNoteState.invoiceNumber?.trim() === ""
         : false;
 
-
     if (creditNoteState.customerId?.trim() === "") {
       newErrors.customerId = true;
-      missingFields.push("Customer")
+      missingFields.push("Customer");
     } else {
       newErrors.customerId = false;
     }
 
-
-
     if (creditNoteState.placeOfSupply?.trim() === "") {
       newErrors.placeOfSupply = true;
-      missingFields.push("Place of Supply")
+      missingFields.push("Place of Supply");
     } else {
       newErrors.placeOfSupply = false;
     }
@@ -339,9 +351,12 @@ const NewCreditNote = ({ page }: props) => {
     } else {
       newErrors.paymentMode = false;
     }
-    if (creditNoteState.paidThroughAccountId?.trim() === "" && creditNoteState.paymentMode === "Cash") {
+    if (
+      creditNoteState.paidThroughAccountId?.trim() === "" &&
+      creditNoteState.paymentMode === "Cash"
+    ) {
       newErrors.paidThroughAccountId = true;
-      missingFields.push("Paid Through Account")
+      missingFields.push("Paid Through Account");
     } else {
       newErrors.paidThroughAccountId = false;
     }
@@ -398,22 +413,21 @@ const NewCreditNote = ({ page }: props) => {
   }, [selectedCustomer]);
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
       setOpenDropdownIndex(null);
     }
   };
 
   useEffect(() => {
-    if (
-      creditNoteState?.placeOfSupply !==
-      oneOrganization.state
-    ) {
+    if (creditNoteState?.placeOfSupply !== oneOrganization.state) {
       setIsInterState(true);
     } else {
       setIsInterState(false);
-
     }
-  }, [creditNoteState?.placeOfSupply,]);
+  }, [creditNoteState?.placeOfSupply]);
 
   useEffect(() => {
     if (openDropdownIndex !== null) {
@@ -430,17 +444,17 @@ const NewCreditNote = ({ page }: props) => {
   const filteredInvoices =
     selectedCustomer && Object.keys(selectedCustomer).length > 0
       ? allInvoice?.filter(
-        (invoice: any) =>
-          invoice.customerId === selectedCustomer?._id &&
-          (invoice.salesInvoice?.toLowerCase().includes(searchValue.toLowerCase()))
-      )
+          (invoice: any) =>
+            invoice.customerId === selectedCustomer?._id &&
+            invoice.salesInvoice
+              ?.toLowerCase()
+              .includes(searchValue.toLowerCase())
+        )
       : [];
-
 
   const handleGoBack = () => {
     navigate(-1); // Go back to the previous page
   };
-
 
   return (
     <div className="mx-5 my-4">
@@ -453,7 +467,6 @@ const NewCreditNote = ({ page }: props) => {
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor">Credit Note</h4>
         </div>
-
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-12 gap-4 py-5 rounded-lg">
@@ -474,9 +487,8 @@ const NewCreditNote = ({ page }: props) => {
            border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                     >
                       <p>
-                        {(
-                          selectedCustomer as { customerDisplayName?: string }
-                        )?.customerDisplayName ?? "Select Customer"}
+                        {(selectedCustomer as { customerDisplayName?: string })
+                          ?.customerDisplayName ?? "Select Customer"}
                       </p>
                     </div>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -504,7 +516,8 @@ const NewCreditNote = ({ page }: props) => {
                               setCreditNoteState((prevState: any) => ({
                                 ...prevState,
                                 customerId: customer._id,
-                                customerDisplayName: customer.customerDisplayName, // Fix this assignment
+                                customerDisplayName:
+                                  customer.customerDisplayName, // Fix this assignment
                                 orderNumber: "",
                                 invoiceNumber: "",
                                 invoiceId: "",
@@ -535,7 +548,9 @@ const NewCreditNote = ({ page }: props) => {
                         ))
                       ) : (
                         <div className="text-center border-slate-400 border rounded-lg">
-                          <p className="text-[darkRed] text-sm py-4">Customer Not Found!</p>
+                          <p className="text-[darkRed] text-sm py-4">
+                            Customer Not Found!
+                          </p>
                         </div>
                       )}
                       <div className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4">
@@ -549,7 +564,6 @@ const NewCreditNote = ({ page }: props) => {
                   <div className="col-span-6">
                     <label className="block  text-sm mb-1 text-labelColor">
                       Place Of Supply <span className="text-[#bd2e2e] ">*</span>
-
                       <div className="relative w-full">
                         <select
                           name="placeOfSupply"
@@ -561,11 +575,17 @@ const NewCreditNote = ({ page }: props) => {
                         >
                           <option value="">Select place Of Supply</option>
                           {placeOfSupplyList &&
-                            placeOfSupplyList.map((item: any, index: number) => (
-                              <option key={index} value={item} className="text-gray">
-                                {item}
-                              </option>
-                            ))}
+                            placeOfSupplyList.map(
+                              (item: any, index: number) => (
+                                <option
+                                  key={index}
+                                  value={item}
+                                  className="text-gray"
+                                >
+                                  {item}
+                                </option>
+                              )
+                            )}
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                           <CehvronDown color="gray" />
@@ -575,14 +595,11 @@ const NewCreditNote = ({ page }: props) => {
                   </div>
                 )}
 
-
-
                 <div className="col-span-6">
                   <label className="block text-sm mb-1 text-labelColor">
                     Credit Note#
                   </label>
                   <div className=" flex items-center border rounded-lg border-inputBorder">
-
                     <input
                       readOnly
                       value={creditNoteState.creditNote}
@@ -611,7 +628,6 @@ const NewCreditNote = ({ page }: props) => {
                   />
                 </div>
 
-
                 <div className="col-span-6">
                   <label
                     htmlFor=""
@@ -625,9 +641,7 @@ const NewCreditNote = ({ page }: props) => {
                     onClick={() => toggleDropdown("invoice")}
                   >
                     <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer">
-                      <p>
-                        {selectedInvoice?.salesInvoice || "Select Invoice"}
-                      </p>
+                      <p>{selectedInvoice?.salesInvoice || "Select Invoice"}</p>
                     </div>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <CehvronDown color="gray" />
@@ -662,7 +676,9 @@ const NewCreditNote = ({ page }: props) => {
                           >
                             <div className="flex cursor-pointer">
                               <div>
-                                <p className="font-bold text-sm">{invoice.salesInvoice}</p>
+                                <p className="font-bold text-sm">
+                                  {invoice.salesInvoice}
+                                </p>
                                 <p className="text-xs text-gray-500">
                                   Customer: {invoice.customerName}
                                 </p>
@@ -673,7 +689,8 @@ const NewCreditNote = ({ page }: props) => {
                       ) : (
                         <div className="text-center border-slate-400 border rounded-lg">
                           <p className="text-[red] text-sm py-4">
-                            {selectedCustomer && Object.keys(selectedCustomer).length > 0
+                            {selectedCustomer &&
+                            Object.keys(selectedCustomer).length > 0
                               ? "Invoice Not Found!"
                               : "Please select a customer to view invoices!"}
                           </p>
@@ -720,7 +737,8 @@ const NewCreditNote = ({ page }: props) => {
 
                 <div className="col-span-6 relative">
                   <label className="block text-sm mb-1 text-labelColor">
-                    Customer Credit Date <span className="text-[#bd2e2e] ">*</span>
+                    Customer Credit Date{" "}
+                    <span className="text-[#bd2e2e] ">*</span>
                   </label>
                   <div className="relative w-full">
                     <input
@@ -754,31 +772,38 @@ const NewCreditNote = ({ page }: props) => {
                   </div>
                 </div>
 
-                {creditNoteState.paymentMode === "Cash" && <div className="col-span-6">
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Paid Through Account <span className="text-[#bd2e2e] ">*</span>
-                  </label>
-                  <div className="relative w-full">
-                    <select
-                      name="paidThroughAccountId"
-                      onChange={handleChange}
-                      value={creditNoteState.paidThroughAccountId}
-                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
-                    >
-                      <option value="">Select Account</option>
-                      {accounts
-                        ?.filter((item: any) => item.accountSubhead === "Bank" || item.accountSubhead == "Cash")
-                        ?.map((item: any) => (
-                          <option key={item._id} value={item._id}>
-                            {item.accountName}
-                          </option>
-                        ))}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
+                {creditNoteState.paymentMode === "Cash" && (
+                  <div className="col-span-6">
+                    <label className="block text-sm mb-1 text-labelColor">
+                      Paid Through Account{" "}
+                      <span className="text-[#bd2e2e] ">*</span>
+                    </label>
+                    <div className="relative w-full">
+                      <select
+                        name="paidThroughAccountId"
+                        onChange={handleChange}
+                        value={creditNoteState.paidThroughAccountId}
+                        className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                      >
+                        <option value="">Select Account</option>
+                        {accounts
+                          ?.filter(
+                            (item: any) =>
+                              item.accountSubhead === "Bank" ||
+                              item.accountSubhead == "Cash"
+                          )
+                          ?.map((item: any) => (
+                            <option key={item._id} value={item._id}>
+                              {item.accountName}
+                            </option>
+                          ))}
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <CehvronDown color="gray" />
+                      </div>
                     </div>
                   </div>
-                </div>}
+                )}
 
                 <div className="col-span-6">
                   <label className="block text-sm text-labelColor">
@@ -798,18 +823,21 @@ const NewCreditNote = ({ page }: props) => {
               <p className="font-bold">Add Item</p>
               {/* table */}
               <div className="mt-9 overflow-x-auto  sm:overflow-x-hidden hide-scrollbar h-[220px]">
-
-              <CreditNoteTable
-                SalesOrderState={creditNoteState}
-                setSalesOrderState={setCreditNoteState}
-                isInterState={isInterState}
-                oneOrganization={oneOrganization}
-                selectedInvoice={selectedInvoice}
-              />{""}
+                <CreditNoteTable
+                  SalesOrderState={creditNoteState}
+                  setSalesOrderState={setCreditNoteState}
+                  isInterState={isInterState}
+                  oneOrganization={oneOrganization}
+                  selectedInvoice={selectedInvoice}
+                />
+                {""}
               </div>
               <br />
               <div className="mt-2">
-                <label htmlFor="" className="block text-sm mb-1 text-labelColor">
+                <label
+                  htmlFor=""
+                  className="block text-sm mb-1 text-labelColor"
+                >
                   Add Note
                   <input
                     name="addNotes"
@@ -821,7 +849,6 @@ const NewCreditNote = ({ page }: props) => {
                   />
                 </label>
               </div>
-
             </div>
           </div>
         </div>
@@ -854,7 +881,7 @@ const NewCreditNote = ({ page }: props) => {
                 className="hidden"
                 value=""
                 name="documents"
-              // onChange={(e)=>handleFileChange(e)}
+                // onChange={(e)=>handleFileChange(e)}
               />
             </label>
           </div>
@@ -870,7 +897,9 @@ const NewCreditNote = ({ page }: props) => {
                   {" "}
                   <p className="text-end">
                     {oneOrganization?.baseCurrency}{" "}
-                    {creditNoteState.subTotal ? creditNoteState.subTotal : "0.00"}{" "}
+                    {creditNoteState.subTotal
+                      ? creditNoteState.subTotal
+                      : "0.00"}{" "}
                   </p>
                 </div>
               </div>
@@ -883,7 +912,9 @@ const NewCreditNote = ({ page }: props) => {
                 <div className="w-full text-end">
                   {" "}
                   <p className="text-end">
-                    {creditNoteState.totalItem ? creditNoteState.totalItem : "0"}
+                    {creditNoteState.totalItem
+                      ? creditNoteState.totalItem
+                      : "0"}
                   </p>
                 </div>
               </div>
@@ -946,8 +977,7 @@ const NewCreditNote = ({ page }: props) => {
                     {" "}
                     <p className="text-end">
                       {" "}
-                      {oneOrganization.baseCurrency}{" "}
-                      {creditNoteState.totalTax}
+                      {oneOrganization.baseCurrency} {creditNoteState.totalTax}
                     </p>
                   </div>
                 </div>
@@ -985,7 +1015,6 @@ const NewCreditNote = ({ page }: props) => {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
