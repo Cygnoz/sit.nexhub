@@ -39,13 +39,14 @@ type Props = {
   setPurchaseOrderState?: (value: any) => void;
   oneOrganization?: any;
   isNonTaxable?: Boolean;
+  page?: any;
 };
 
 const NewOrderTable = ({
   purchaseOrderState,
   setPurchaseOrderState,
   isInterState,
-  oneOrganization,
+  oneOrganization
 }: Props) => {
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
@@ -355,7 +356,7 @@ const NewOrderTable = ({
         itemIgstAmount: "",
         itemVatAmount: "",
         taxPreference: "",
-        purchaseAccountId:"",
+        purchaseAccountId: "",
       };
 
       setRows([defaultRow]);
@@ -369,33 +370,39 @@ const NewOrderTable = ({
 
   const calculateTotalSGST = () => {
     return parseFloat(
-      rows?.reduce((total, row) => {
-        const sgst = !isInterState ? Number(row.itemSgstAmount) || 0 : 0;
-        return total + sgst;
-      }, 0).toFixed(2)
+      rows
+        ?.reduce((total, row) => {
+          const sgst = !isInterState ? Number(row.itemSgstAmount) || 0 : 0;
+          return total + sgst;
+        }, 0)
+        .toFixed(2)
     );
   };
-  
+
   // Function to calculate total CGST
   const calculateTotalCGST = () => {
     return parseFloat(
-      rows?.reduce((total, row) => {
-        const cgst = !isInterState ? Number(row.itemCgstAmount) || 0 : 0;
-        return total + cgst;
-      }, 0).toFixed(2)
+      rows
+        ?.reduce((total, row) => {
+          const cgst = !isInterState ? Number(row.itemCgstAmount) || 0 : 0;
+          return total + cgst;
+        }, 0)
+        .toFixed(2)
     );
   };
-  
+
   // Function to calculate total IGST
   const calculateTotalIGST = () => {
     return parseFloat(
-      rows?.reduce((total, row) => {
-        const igst = isInterState ? Number(row.itemIgstAmount) || 0 : 0;
-        return total + igst;
-      }, 0).toFixed(2)
+      rows
+        ?.reduce((total, row) => {
+          const igst = isInterState ? Number(row.itemIgstAmount) || 0 : 0;
+          return total + igst;
+        }, 0)
+        .toFixed(2)
     );
   };
-  
+
   const calculateTotalQuantity = () => {
     return rows?.reduce((total, row) => {
       const quantity = parseFloat(row.itemQuantity.toString() || "0");
@@ -530,11 +537,13 @@ const NewOrderTable = ({
       ...prevData,
       totalItem: totalQuantity,
       sgst: isInterState ? "" : Number(totalSGST).toFixed(2),
-      cgst: isInterState ? "" :Number( totalCGST).toFixed(2),
+      cgst: isInterState ? "" : Number(totalCGST).toFixed(2),
       igst: isInterState ? Number(totalIGST).toFixed(2) : "",
       subTotal: totalSellingPrice,
       itemTotalDiscount: totalDiscount <= 0 ? "" : totalDiscount,
-      totalTaxAmount: isInterState ? Number(totalIGST).toFixed(2) : Number(totalSGST + totalCGST).toFixed(2),
+      totalTaxAmount: isInterState
+        ? Number(totalIGST).toFixed(2)
+        : Number(totalSGST + totalCGST).toFixed(2),
     }));
   }, [rows]);
 
@@ -562,6 +571,18 @@ const NewOrderTable = ({
   useEffect(() => {
     getAllItems();
   }, []);
+
+  // useEffect(() => {
+  //   if (page === "newOcr" && setPurchaseOrderState) {
+  //     setPurchaseOrderState((prevState: any) => ({
+  //       ...prevState,
+  //       items: prevState.items.map((item: any) => ({
+  //         ...item,
+  //       })),
+  //     }));
+  //   }
+  // }, [page, rows]);
+  
 
   return (
     <div>
@@ -631,7 +652,7 @@ const NewOrderTable = ({
                               <div className="col-span-2 flex justify-center">
                                 <img
                                   className="rounded-full h-10"
-                                  src={item.itemImage? item.itemImage : img}
+                                  src={item.itemImage ? item.itemImage : img}
                                   alt="Img"
                                 />
                               </div>
@@ -701,15 +722,7 @@ const NewOrderTable = ({
                       placeholder="0"
                       className="w-[50px] focus:outline-none text-center"
                       value={
-                        !isInterState
-                          ? (row.itemCgstAmount || 0) +
-                              (row.itemSgstAmount || 0) ===
-                            0
-                            ? "-"
-                            : row.itemCgstAmount + row.itemSgstAmount
-                          : (row.itemIgstAmount || 0) === 0
-                          ? "-"
-                          : row.itemIgstAmount
+                       row.itemTax
                       }
                     />
                   }

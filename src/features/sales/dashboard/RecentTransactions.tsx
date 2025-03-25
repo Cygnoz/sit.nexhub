@@ -66,9 +66,9 @@ function RecentTransactions({ date }: Props) {
     // Get data for the active tab
     const activeTabData = recentTrans[tabDataMapping[activeTab].key] || { data: [] };
 
-    return (
-        <div className="bg-white w-full rounded-lg py-4 px-6">
-            <p className="text-[#303F58] font-bold text-base">Recent Transactions</p>
+  return (
+    <div className="bg-white p-5 rounded-md">
+      <h3 className="mb-6 text-[16px] font-bold">Recent Transactions</h3>
 
             {/* Tabs */}
             <div className="flex gap-3 mt-4 overflow-x-auto">

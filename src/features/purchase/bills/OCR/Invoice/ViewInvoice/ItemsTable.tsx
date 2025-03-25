@@ -9,15 +9,15 @@ import AddNewItem from "./AddNewItem";
 type Item = {
   id: string;
   itemName: string;
-  hsn_sac: string;
+  itemHsn: string;
   itemQuantity: string;
   itemCostPrice: string;
   gross: string;
   itemDiscount: string;
-  net_amount: string;
+  itemNetAmount: string;
   itemCgstAmount: string | number;
   itemAmount: string;
-  batch_no: string | null;
+  itemBatchNo: string | null;
   expiry_date?: string | null;
   itemCgst: string;
   itemSgst: string;
@@ -25,6 +25,8 @@ type Item = {
   itemSgstAmount: string | number;
   itemIgstAmount: string | number;
   itemTax: string | number;
+  taxPreference: string;
+  itemGrossAmount:string |number;
 };
 
 type Props = {
@@ -74,7 +76,7 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
   };
 
   const toggleDropdown = (index: number) => {
-    if (!items[index]) return; // Prevent accessing undefined items
+    if (!items[index]) return;
     const selectedItem = items[index]?.itemName?.toLowerCase().trim();
 
     const isProductAlreadyExists = allItems.some(
@@ -100,7 +102,7 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
     }
 
     const invoiceItemName = invoiceSelectedItem.itemName.trim().toLowerCase();
-    const invoiceWords = invoiceItemName.split(/\s+/); // Split words
+    const invoiceWords = invoiceItemName.split(/\s+/);
 
     const matches = allItems.filter((item) => {
       const normalizedItemName = item.itemName.trim().toLowerCase();
@@ -138,23 +140,30 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
       console.error("No item selected or invoice is missing.");
       return;
     }
-    console.log(finalItem, "final item");
 
-    const updatedInvoiceItems = invoice.invoice?.items?.map(
-      (item: Item, index: number) =>
-        index === selectedIndex
-          ? {
-              ...item,
-              itemName: finalItem.itemName,
-              itemId: finalItem._id,
-              itemSgst: finalItem.sgst,
-              itemCgst: finalItem.cgst,
-              itemIgst: finalItem.igst,
-              itemTax: finalItem.igst,
-              hsn_sac:finalItem.hsnCode
-            }
-          : item
+    // Create a deep copy of the current items
+    const updatedInvoiceItems = JSON.parse(
+      JSON.stringify(invoice.invoice?.items || [])
     );
+
+    // Update only the selected item with the correct data
+    if (updatedInvoiceItems[selectedIndex]) {
+      updatedInvoiceItems[selectedIndex] = {
+        ...updatedInvoiceItems[selectedIndex],
+        itemName: finalItem.itemName,
+        itemId: finalItem._id,
+        itemSgst: finalItem.sgst,
+        itemCgst: finalItem.cgst,
+        itemIgst: finalItem.igst,
+        itemTax: finalItem.igst,
+        itemHsn: finalItem.hsnCode,
+        taxPreference: finalItem.taxPreference,
+
+        purchaseAccountId: finalItem.purchaseAccountId?._id,
+      };
+    }
+
+    // Update the invoice state with the new items array
     setInvoice?.((prevInvoice: any) => ({
       ...prevInvoice,
       invoice: {
@@ -166,7 +175,6 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
     setOpenDropdownIndex(null);
     setExpandDropDown(null);
   };
-
   useEffect(() => {
     handleItemsMatch();
   }, [allItems, items, openDropdownIndex]);
@@ -186,6 +194,9 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  console.log(finalItem, "item");
+  console.log(invoice.invoice.items, "itemss");
 
   return (
     <div className="overflow-x-auto hide-scrollbar h-[300px]">
@@ -375,7 +386,7 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
                 </div>
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.hsn_sac || "-"}
+                {item.itemHsn || "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
                 {item.itemQuantity}
@@ -384,25 +395,31 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
                 {item.itemCostPrice ? item.itemCostPrice : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.gross ? item.gross : "-"}
+                {item.itemGrossAmount ? item.itemGrossAmount : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
                 {item.itemDiscount ? item.itemDiscount : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.net_amount ? item.net_amount : "-"}
+                {item.itemNetAmount ? item.itemNetAmount : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
                 {item.itemTax ? item.itemTax : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.itemCgstAmount ? item.itemCgstAmount : "-"}
+                {item.itemCgstAmount || item.itemSgstAmount
+                  ? Number(String(item.itemCgstAmount).replace(/,/g, "")) +
+                    Number(String(item.itemSgstAmount).replace(/,/g, ""))
+                  : item.itemIgstAmount
+                  ? item.itemIgstAmount
+                  : "-"}
               </td>
+
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
                 {item.itemAmount ? item.itemAmount : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.batch_no || "-"}
+                {item?.itemBatchNo || "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
                 {item.expiry_date || "-"}
@@ -414,5 +431,4 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
     </div>
   );
 }
-
 export default ItemsTable;
