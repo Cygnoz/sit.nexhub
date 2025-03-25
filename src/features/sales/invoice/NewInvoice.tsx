@@ -603,20 +603,32 @@ const NewInvoice = ({ page }: Props) => {
 
   const handleSave = async () => {
     try {
+      const invoiceStateToSave = JSON.parse(JSON.stringify(invoiceState));
+      if (invoiceStateToSave.items) {
+        invoiceStateToSave.items = invoiceStateToSave.items.map((item: any) => {
+          const { itemImage, ...itemWithoutImage } = item;
+          return itemWithoutImage;
+        });
+      }
       const url =
         page === "edit"
           ? `${endponits.EDIT_SALES_INVOICE}/${id}`
           : `${endponits.ADD_SALES_INVOICE}`;
+
       const apiRequest =
         page === "edit" ? editSalesInvoiceApi : newSalesInvoiceApi;
-      const { response, error } = await apiRequest(url, invoiceState);
+
+      const { response, error } = await apiRequest(url, invoiceStateToSave);
+
       if (!error && response) {
         toast.success(response.data.message);
         handleGoBack();
       } else {
         toast.error(error?.response.data.message);
       }
-    } catch (error) { }
+    } catch (error) {
+      toast.error("An error occurred while saving");
+    }
   };
 
   return (

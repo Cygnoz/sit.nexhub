@@ -2,10 +2,11 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import { useState } from "react";
 import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import SearchBar from "../../../Components/SearchBar";
+import { useOrganization } from "../../../context/OrganizationContext";
 
 function GroupSummary() {
   const location = useLocation();
-
+  const { organization } = useOrganization();
   const { accountSubhead } = useParams();
 
   console.log(accountSubhead, "accountSubhead");
@@ -43,7 +44,7 @@ function GroupSummary() {
             />
           </div>
           <div className="text-right">
-            <p className="font-bold text-textColor">Company Name</p>
+            <p className="font-bold text-textColor">{organization?.organizationName}</p>
             <p className="text-sm text-gray-500">01/07/2024 To 30/09/2024</p>
           </div>
         </div>

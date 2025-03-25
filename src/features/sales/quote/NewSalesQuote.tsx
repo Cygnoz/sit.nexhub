@@ -451,21 +451,32 @@ const NewSalesQuote = ({ page }: Props) => {
 
   const handleSave = async () => {
     try {
-      const url = page === "edit" ? `${endponits.EDIT_SALES_QUOTE}/${id}` : `${endponits.ADD_SALES_QUOTE}`;
+      const salesQuoteStateToSave = JSON.parse(JSON.stringify(salesQuoteState));
+      if (salesQuoteStateToSave.items) {
+        salesQuoteStateToSave.items = salesQuoteStateToSave.items.map((item: any) => {
+          const { itemImage, ...itemWithoutImage } = item;
+          return itemWithoutImage;
+        });
+      }
+      const url = page === "edit" 
+        ? `${endponits.EDIT_SALES_QUOTE}/${id}` 
+        : `${endponits.ADD_SALES_QUOTE}`;
+      
       const apiRequest = page === "edit" ? editSalesQuoteApi : newSalesQuoteApi;
       const { response, error } = await apiRequest(
         url,
-        salesQuoteState
+        salesQuoteStateToSave
       );
       if (!error && response) {
         toast.success(response.data.message);
-        handleGoBack()
+        handleGoBack();
       } else {
         toast.error(error?.response.data.message);
       }
-    } catch (error) { }
+    } catch (error) { 
+      toast.error("An error occurred while saving");
+    }
   };
-
 
   console.log(salesQuoteState)
   return (
