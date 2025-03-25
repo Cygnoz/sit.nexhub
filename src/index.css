@@ -19,6 +19,12 @@ h1 {
     display: none !important;
   }
 }
+@media print {
+  .print-container {
+    width: 100% !important;
+    height: 100vh !important;
+  }
+}
 
 
 /* Hide scrollbar for Chrome, Safari, and Opera */
