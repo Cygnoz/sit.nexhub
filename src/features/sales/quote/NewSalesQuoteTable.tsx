@@ -228,7 +228,6 @@ const NewSalesQuoteTable = ({
       ...prevData,
       items: newRows.map((row) => {
         const updatedItem = { ...row };
-        delete updatedItem.itemImage; // Remove itemImage before saving
         return updatedItem;
       }),
     }));
@@ -319,7 +318,7 @@ const NewSalesQuoteTable = ({
       ...prevData,
       items: newRows.map((row) => {
         const updatedItem = { ...row };
-        delete updatedItem.itemImage;
+
         return updatedItem;
       }),
     }));
@@ -370,7 +369,7 @@ const NewSalesQuoteTable = ({
         ...prevData,
         items: updatedRows.map((row) => {
           const updatedItem = { ...row };
-          delete updatedItem.itemImage;
+
           return updatedItem;
         }),
         totalTax: updatedRows.reduce((total, row) => {
@@ -434,7 +433,7 @@ const NewSalesQuoteTable = ({
         ...prevData,
         items: updatedRows.map((row) => {
           const updatedItem = { ...row };
-          delete updatedItem.itemImage;
+
           return updatedItem;
         }),
       }));

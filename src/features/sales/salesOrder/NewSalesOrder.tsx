@@ -496,12 +496,19 @@ const NewSalesOrder = ({ page }: Props) => {
 
   const handleSave = async () => {
     try {
+      const salesOrderStateToSave = JSON.parse(JSON.stringify(salesOrderState));
+      if (salesOrderStateToSave.items) {
+        salesOrderStateToSave.items = salesOrderStateToSave.items.map((item: any) => {
+          const { itemImage, ...itemWithoutImage } = item;
+          return itemWithoutImage;
+        });
+      }
       const url =
         page === "edit"
           ? `${endponits.EDIT_SALES_ORDER}/${id}`
           : `${endponits.ADD_SALES_ORDER}`;
       const apiRequest = page === "edit" ? editSalesOrderApi : newSalesOrderApi;
-      const { response, error } = await apiRequest(url, salesOrderState);
+      const { response, error } = await apiRequest(url, salesOrderStateToSave);
       if (!error && response) {
         toast.success(response.data.message);
         handleGoBack();
