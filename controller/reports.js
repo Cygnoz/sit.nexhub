@@ -75,7 +75,14 @@ async function getReportAccount(organizationExists,organizationId, startDate, en
                 }
             },
             { $unwind: "$accountDetails" },
-            { $match: { "accountDetails.accountSubhead": accountSubHead } },
+            { 
+                $match: { 
+                    "accountDetails.accountSubhead": accountSubHead,
+                    "accountDetails.accountName": { 
+                        $nin: ["Sales Discount", "Purchase Discount"] 
+                    } 
+                } 
+            },
             {
                 $group: {
                     _id: "$accountId",
