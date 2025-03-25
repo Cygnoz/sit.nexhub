@@ -115,6 +115,9 @@ exports.getOverviewData = async (req, res) => {
             return DNDate.isBetween(startDate, endDate, null, "[]");
         });
 
+        const paymentCount = await PaymentMade.countDocuments({ organizationId });
+        
+
         console.log("Filtered Orders:", filteredOrder);
         console.log("Filtered Bills:", filteredBills);
         console.log("Filtered Debit Notes:", filteredDebitNote);
@@ -145,7 +148,7 @@ exports.getOverviewData = async (req, res) => {
             totalRevenue,
             totalPurchaseOrder,
             totalItemPurchased,
-            totalPaymentMade,
+            totalPaymentMade:paymentCount,
             totalShipments,
         });
 
