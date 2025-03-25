@@ -8,18 +8,19 @@ import { useNavigate } from 'react-router-dom';
 import useApi from '../../Hooks/useApi';
 import { endponits } from '../../Services/apiEndpoints';
 import toast from 'react-hot-toast';
-import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 
 type Props = {}
 
 function Login({ }: Props) {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { request: login } = useApi("post", 5004);
+  const { setIsAuthenticated } = useAuth();
 
-  const { request: CheckLogin } = useApi("post", 5004);
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -29,41 +30,34 @@ function Login({ }: Props) {
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
-    setError(""); // Reset error message
+    setError("");
 
     try {
-      const response = await CheckLogin(endponits.LOGIN, { email, password });
+      const url = `${endponits.LOGIN}`;
+      const { response, error } = await login(url, { email, password });
+      if (!error && response) {
 
-      // Log the response to verify its structure
-      console.log("Login response:", response.response?.data.success);
+        toast.success(
+          response?.data.message || "OTP verified successfully!"
+        );
+        console.log(response.data.user.deviceType)
+        localStorage.setItem("authToken", response.data.token);
+        setIsAuthenticated(true); // Set authentication state
 
-      // Check if login is successful
-      if (response.response?.data.success) {
-        // Display success message and navigate to OTP
-        toast.success(response.response?.data.message || 'Login successful! Redirecting...');
-        navigate("/otp", { state: { email } }); // Pass email via navigate state
-      } else {
-        // Show an error message if login fails
-        const errorMessage = response.response?.data.message || "Invalid email or password";
-        setError(errorMessage);
-        toast.error(errorMessage);
+        navigate("/landing");
+      }
+      else {
+        toast.error(error.response.data.message);
+        setError(error.response.data.message);
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        // Handle Axios error
-        const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
-        setError(errorMessage);
-        toast.error(errorMessage);
-      } else {
-        // Handle non-Axios error
-        setError("Login failed. Please try again.");
-        toast.error("Login failed. Please try again.");
-      }
+      const errorMessage = "Login failed. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="h-screen flex flex-col-reverse md:flex-row">
       {/* Left Side */}

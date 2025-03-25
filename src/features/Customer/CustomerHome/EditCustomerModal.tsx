@@ -51,7 +51,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
     customerEmail: false,
     pan: false,
     creditDays: false,
-    creditLimit: false,
+    creditLimits: false,
     websiteURL: false,
     gstin_uin: false,
     businessLegalName: false,
@@ -87,7 +87,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
     paymentTerms: "",
     enablePortal: false,
     creditDays: "",
-    creditLimit: "",
+    creditLimits: "",
     interestPercentage: "",
     documents: "",
     department: "",
@@ -727,7 +727,7 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
                           <option value="Ms.">Ms.</option>
                           <option value="Dr.">Dr.</option>
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 left-1 flex items-center px-2 text-gray-700">
+                        <div className="pointer-events-none absolute inset-y-0 right-0 left-5 sm:left-24 flex items-center px-2 text-gray-700">
                           <CehvronDown color="gray" />
                         </div>
                       </div>
@@ -967,50 +967,50 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
               </div>
 
               <div className=" flex-row sm:flex mt-5 px-0 sm:px-5">
-              <div className="w-full sm:w-[20%] bg-gray-100 p-4">
-  <ul className="h-full flex sm:block space-x-2 sm:space-x-0 space-y-0 border-gray-300 text-slate-700 overflow-auto">
-    <li
-      className={`${getTabClassName("otherDetails")} 
-                  border-b-4 sm:border-r-4 ${getBorderClassName("otherDetails")} 
+                <div className="w-full sm:w-[20%] bg-gray-100 p-4">
+                  <ul className="h-full flex sm:block space-x-2 sm:space-x-0 space-y-0 border-gray-300 text-slate-700 overflow-auto">
+                    <li
+                      className={`${getTabClassName("otherDetails")} 
+                   sm:border-r-4 ${getBorderClassName("otherDetails")} 
                   p-2`}
-      onClick={() => setActiveTab("otherDetails")}
-    >
-      Other Details
-    </li>
-    <li
-      className={`${getTabClassName("taxes")} 
-                  border-b-4 sm:border-r-4 ${getBorderClassName("taxes")} 
+                      onClick={() => setActiveTab("otherDetails")}
+                    >
+                      Other Details
+                    </li>
+                    <li
+                      className={`${getTabClassName("taxes")} 
+                   sm:border-r-4 ${getBorderClassName("taxes")} 
                   p-2`}
-      onClick={() => setActiveTab("taxes")}
-    >
-      Taxes
-    </li>
-    <li
-      className={`${getTabClassName("address")} 
-                  border-b-4 sm:border-r-4 ${getBorderClassName("address")} 
+                      onClick={() => setActiveTab("taxes")}
+                    >
+                      Taxes
+                    </li>
+                    <li
+                      className={`${getTabClassName("address")} 
+                   sm:border-r-4 ${getBorderClassName("address")} 
                   p-2`}
-      onClick={() => setActiveTab("address")}
-    >
-      Address
-    </li>
-    <li
-      className={`${getTabClassName("contactPersons")} 
-                  border-b-4 sm:border-r-4 ${getBorderClassName("contactPersons")} 
+                      onClick={() => setActiveTab("address")}
+                    >
+                      Address
+                    </li>
+                    <li
+                      className={`${getTabClassName("contactPersons")} 
+                   sm:border-r-4 ${getBorderClassName("contactPersons")} 
                   p-2`}
-      onClick={() => setActiveTab("contactPersons")}
-    >
-      Contact Persons
-    </li>
-    <li
-      className={`${getTabClassName("remarks")} 
-                  border-b-4 sm:border-r-4 ${getBorderClassName("remarks")} 
+                      onClick={() => setActiveTab("contactPersons")}
+                    >
+                      Contact Persons
+                    </li>
+                    <li
+                      className={`${getTabClassName("remarks")} 
+                   sm:border-r-4 ${getBorderClassName("remarks")} 
                   p-2`}
-      onClick={() => setActiveTab("remarks")}
-    >
-      Remarks
-    </li>
-  </ul>
-</div>
+                      onClick={() => setActiveTab("remarks")}
+                    >
+                      Remarks
+                    </li>
+                  </ul>
+                </div>
 
                 <div className=" w-full  sm:ps-16">
                   {activeTab === "otherDetails" && (
@@ -1209,8 +1209,8 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
                             type="text"
                             className="text-sm w-full rounded-md text-start bg-white border border-slate-300 h-p p-2 text-[#818894]"
                             placeholder="Enter Credit Limit"
-                            name="creditLimit"
-                            value={customerdata.creditLimit}
+                            name="creditLimits"
+                            value={customerdata.creditLimits}
                             onChange={(e) => {
                               const value = e.target.value;
 
@@ -1218,18 +1218,18 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
                                 handleChange(e);
                                 setErrors((prevErrors) => ({
                                   ...prevErrors,
-                                  creditLimit: false,
+                                  creditLimits: false,
                                 }));
                               } else {
                                 setErrors((prevErrors) => ({
                                   ...prevErrors,
-                                  creditLimit: true,
+                                  creditLimits: true,
                                 }));
                               }
                             }}
                           />
-                          {errors.creditLimit &&
-                            customerdata.creditLimit !== "" && (
+                          {errors.creditLimits &&
+                            customerdata.creditLimits !== "" && (
                               <div className="text-red-800 text-xs mt-1">
                                 Please enter a valid number for Credit Limit.
                               </div>

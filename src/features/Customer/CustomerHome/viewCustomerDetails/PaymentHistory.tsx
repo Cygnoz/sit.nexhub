@@ -2,9 +2,6 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { endponits } from "../../../../Services/apiEndpoints";
 import { TableResponseContext } from "../../../../context/ContextShare";
 import useApi from "../../../../Hooks/useApi";
-import PencilEdit from "../../../../assets/icons/PencilEdit";
-import TrashCan from "../../../../assets/icons/TrashCan";
-import Eye from "../../../../assets/icons/Eye";
 import NoDataFoundTable from "../../../../Components/skeleton/Table/NoDataFoundTable";
 import TableSkelton from "../../../../Components/skeleton/Table/TableSkelton";
 import Calender from "../../../../assets/icons/Calender";
@@ -135,7 +132,6 @@ const PaymentHistory = ({ customerId }: Props) => {
             {columns.map((col) => (
               <th key={col.id} className="py-2.5 px-4 font-medium border-b border-tableBorder">{col.label}</th>
             ))}
-            <th className="py-3 px-4 font-medium border-b border-tableBorder">Actions</th>
           </tr>
         </thead>
         <tbody className="text-dropdownText text-center text-[13px]">
@@ -148,11 +144,6 @@ const PaymentHistory = ({ customerId }: Props) => {
                 {columns.map((col) => (
                   <td key={col.id} className="py-2.5 px-4 border-y border-tableBorder">{item[col.id] || "-"}</td>
                 ))}
-                <td className="py-3 px-4 border-b border-tableBorder flex gap-3 justify-center">
-                  <PencilEdit color="#0B9C56" className="cursor-pointer" />
-                  <Eye color="#569FBC" className="cursor-pointer" />
-                  <TrashCan color="red" />
-                </td>
               </tr>
             ))
           ) : (

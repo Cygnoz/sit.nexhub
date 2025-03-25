@@ -169,64 +169,70 @@ const NewSalesQuoteTable = ({
   };
 
   const handleItemSelect = (item: any, index: number) => {
-  setOpenDropdownId(null);
-  setOpenDropdownType(null);
-  const newRows = [...rows];
+    setOpenDropdownId(null);
+    setOpenDropdownType(null);
+    const newRows = [...rows];
 
-  // Update row data
-  newRows[index] = {
-    ...newRows[index],
-    itemName: item.itemName,
-    itemImage: item.itemImage,
-    sellingPrice: item.sellingPrice || "0",
-    quantity: "1",
-    itemId: item._id,
-    cgst: item.cgst,
-    sgst: item.sgst,
-    igst: item.igst,
-    taxPreference: item.taxPreference,
-    taxGroup: item.taxRate,
-    itemStock: item.currentStock,
-    salesAccountId: item.salesAccountId, // Properly set salesAccountId
+    // Update row data
+    newRows[index] = {
+      ...newRows[index],
+      itemName: item.itemName,
+      itemImage: item.itemImage,
+      sellingPrice: item.sellingPrice || "0",
+      quantity: "1",
+      itemId: item._id,
+      cgst: item.cgst,
+      sgst: item.sgst,
+      igst: item.igst,
+      taxPreference: item.taxPreference,
+      taxGroup: item.taxRate,
+      itemStock: item.currentStock,
+      salesAccountId: item.salesAccountId,
+      discountType: "Percentage", // Default to percentage
+      discountAmount: newRows[index].discountAmount || ""
+    };
+
+    // Calculate total selling price with quantity
+    const sellingPrice = parseFloat(newRows[index].sellingPrice);
+    const quantity = parseFloat(newRows[index].quantity) || 1;
+    const totalSellingPrice = sellingPrice * quantity;
+
+    // Apply discount
+    const discountedPrice = calculateDiscountPrice(
+      totalSellingPrice,
+      newRows[index].discountAmount,
+      newRows[index].discountType
+    );
+
+    const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
+      discountedPrice,
+      newRows[index],
+      isIntraState as boolean
+    );
+
+    newRows[index].amount = itemAmount;
+    newRows[index].cgstAmount = isPlaceOfSupplyVisible ? cgstAmount : "0.00";
+    newRows[index].sgstAmount = isPlaceOfSupplyVisible ? sgstAmount : "0.00";
+    newRows[index].igstAmount = isPlaceOfSupplyVisible ? igstAmount : "0.00";
+    newRows[index].itemAmount =
+      !isPlaceOfSupplyVisible
+        ? parseFloat(itemAmount).toFixed(2)
+        : !isIntraState
+          ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
+          : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
+
+    // Update rows and state
+    setRows(newRows);
+
+    setSalesQuoteState?.((prevData: any) => ({
+      ...prevData,
+      items: newRows.map((row) => {
+        const updatedItem = { ...row };
+        delete updatedItem.itemImage; // Remove itemImage before saving
+        return updatedItem;
+      }),
+    }));
   };
-
-  // Calculate discounted price and tax amounts
-  const sellingPrice = parseFloat(newRows[index].sellingPrice);
-  const discountedPrice = calculateDiscountPrice(
-    sellingPrice,
-    newRows[index].discountAmount,
-    newRows[index].discountType
-  );
-
-  const { itemAmount, cgstAmount, sgstAmount, igstAmount } = calculateTax(
-    discountedPrice,
-    newRows[index],
-    isIntraState as boolean
-  );
-
-  newRows[index].amount = itemAmount;
-  newRows[index].cgstAmount = isPlaceOfSupplyVisible ? cgstAmount : "0.00";
-  newRows[index].sgstAmount = isPlaceOfSupplyVisible ? sgstAmount : "0.00";
-  newRows[index].igstAmount = isPlaceOfSupplyVisible ? igstAmount : "0.00";
-  newRows[index].itemAmount =
-    !isPlaceOfSupplyVisible
-      ? parseFloat(itemAmount).toFixed(2)
-      : !isIntraState
-      ? (parseFloat(itemAmount) + parseFloat(cgstAmount) + parseFloat(sgstAmount)).toFixed(2)
-      : (parseFloat(itemAmount) + parseFloat(igstAmount)).toFixed(2);
-
-  // Update rows and state
-  setRows(newRows);
-
-  setSalesQuoteState?.((prevData: any) => ({
-    ...prevData,
-    items: newRows.map((row) => {
-      const updatedItem = { ...row };
-      delete updatedItem.itemImage; // Remove itemImage before saving
-      return updatedItem;
-    }),
-  }));
-};
 
   const calculateTax = (
     discountedPrice: number,
@@ -324,8 +330,10 @@ const NewSalesQuoteTable = ({
       return rows.map((row) => {
         const sellingPrice = parseFloat(row.sellingPrice) || 0;
         const qty = parseFloat(row.quantity) || 1;
+        const totalSellingPrice = sellingPrice * qty;
+
         const discountedPrice = calculateDiscountPrice(
-          sellingPrice * qty,
+          totalSellingPrice,
           row.discountAmount,
           row.discountType
         );
@@ -371,7 +379,6 @@ const NewSalesQuoteTable = ({
       }));
     }
   }, [isIntraState, isPlaceOfSupplyVisible, rows]);
-
 
   const getAllItems = async () => {
     try {
@@ -484,8 +491,6 @@ const NewSalesQuoteTable = ({
         return total + discount;
       }
     }, 0);
-
-    return 0;
   };
 
   // Function to calculate the total subtotal
@@ -612,20 +617,20 @@ const NewSalesQuoteTable = ({
       if (JSON.stringify(salesQuoteState.items) !== JSON.stringify(previousItemsRef.current)) {
         const updatedItems = salesQuoteState.items.map((item: any) => {
           const matchingItem = items.find((data: any) => data._id === item.itemId);
-  
+
           return {
             ...item,
             itemStock: matchingItem?.currentStock || "",
             salesAccountId: matchingItem?.salesAccountId || item.salesAccountId || "", // Ensure salesAccountId is properly set
           };
         });
-  
+
         setRows(updatedItems);
         previousItemsRef.current = salesQuoteState.items;
       }
     }
   }, [salesQuoteState?.items, items]);
-  
+
 
   useEffect(() => {
     getAllItems()

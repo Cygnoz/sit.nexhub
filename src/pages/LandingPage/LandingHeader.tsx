@@ -93,7 +93,7 @@ function LandingHeader({ mode, setMode }: Props) {
         </h1>
       </div>
 
-      <div className="hidden md:block md:w-[45%]">
+      <div className="hidden absolute right-[35%] md:block md:w-[45%]">
         <ModuleSearch mode={mode} page="landing" />
       </div>
 
@@ -113,7 +113,7 @@ function LandingHeader({ mode, setMode }: Props) {
         </button>
 
         {/* Profile dropdown */}
-        <div ref={dropdownRef} className="relative">
+        <div ref={dropdownRef} className="">
           <img
             src={organization?.organizationLogo || organizationIcon}
             className="w-[55px] sm:w-9 h-9 rounded-full object-cover cursor-pointer"
@@ -122,7 +122,7 @@ function LandingHeader({ mode, setMode }: Props) {
           />
 
           {isDropdownOpen && (
-            <div className={`absolute right-0 mt-3 rounded-xl px-7 py-4 text-sm space-y-4 shadow-lg z-9999 w-[180px]
+            <div className={`absolute right-[20%] mt-3 rounded-xl px-7 py-4 text-sm space-y-4 shadow-lg z-9999 w-48
           ${!mode ? "bg-[#3C474D] text-[#DFE1E2]" : "bg-white text-[#4B5C79]"}
           `}>
               <div className="flex items-center gap-2 cursor-pointer"
