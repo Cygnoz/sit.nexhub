@@ -95,7 +95,7 @@ const debitDataExist = async ( organizationId, debitId ) => {
     .populate('supplierId', 'supplierDisplayName')
     .lean(),
     DebitNote.findOne({ organizationId , _id: debitId })
-    .populate('items.itemId', 'itemName')
+    .populate('items.itemId', 'itemName itemImage')
     .populate('supplierId', 'supplierDisplayName')
     .lean(),
     TrialBalance.find({ organizationId: organizationId, operationId : debitId })
@@ -268,8 +268,9 @@ try {
     supplierDisplayName: debitNote.supplierId?.supplierDisplayName,
     items: debitNote.items.map(item => ({
       ...item,
-      itemId: item.itemId?._id,
-      itemName: item.itemId?.itemName,
+      itemId: item?.itemId?._id,
+      itemName: item?.itemId?.itemName,
+      itemImage: item?.itemId?.itemImage,
     })),  
 };
 

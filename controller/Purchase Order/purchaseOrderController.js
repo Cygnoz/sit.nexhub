@@ -41,7 +41,7 @@ const purchaseOrderDataExist = async ( organizationId, orderId ) => {
       .populate('supplierId', 'supplierDisplayName')    
       .lean(),
       PurchaseOrder.findOne({ organizationId , _id: orderId })
-      .populate('items.itemId', 'itemName cgst sgst igst vat purchaseAccountId')    
+      .populate('items.itemId', 'itemName cgst sgst igst vat purchaseAccountId itemImage')    
       .populate('supplierId', 'supplierDisplayName')    
       .lean(),
     ]);
@@ -182,6 +182,7 @@ exports.getOnePurchaseOrder = async (req, res) => {
           igst: item.itemId?.igst,
           vat: item.itemId?.vat,      
           purchaseAccountId: item.itemId?.purchaseAccountId,
+          itemImage: item.itemId?.itemImage,
         })),  
     };
 
