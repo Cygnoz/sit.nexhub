@@ -158,7 +158,7 @@ exports.getOverviewData = async (req, res) => {
 
     } catch (error) {
         console.log("Error fetching overview data:", error);
-        res.status(500).json({ message: "Internal server error.", error });
+        res.status(500).json({ message: "Internal server error.", error:error.message , stack: error.stack });
     }
 };
 
@@ -243,7 +243,7 @@ exports.getTotalRevenueOverTime = async (req, res) => {
 
     } catch (error) {
         console.log("Error fetching total revenue over time:", error);
-        res.status(500).json({ message: "Internal server error.", error });
+        res.status(500).json({ message: "Internal server error.", error:error.message , stack: error.stack });
     }
 };
 
@@ -327,7 +327,7 @@ exports.getAccountReceivableAging = async (req, res) => {
 
     } catch (error) {
         console.log("Error fetching account receivable aging:", error);
-        res.status(500).json({ message: "Internal server error.", error });
+        res.status(500).json({ message: "Internal server error.", error:error.message , stack: error.stack });
     }
 };
 
@@ -424,7 +424,7 @@ exports.getAccountPayableAging = async (req, res) => {
 
     } catch (error) {
         console.log("Error fetching account payable aging:", error);
-        res.status(500).json({ message: "Internal server error.", error });
+        res.status(500).json({ message: "Internal server error.", error:error.message , stack: error.stack });
     }
 };
 
@@ -502,7 +502,7 @@ exports.getInvoiceStatus = async (req, res) => {
 
     } catch (error) {
         console.log("Error fetching invoice status data:", error);
-        res.status(500).json({ message: "Internal server error.", error });
+        res.status(500).json({ message: "Internal server error.", error:error.message , stack: error.stack });
     }
 };
 
