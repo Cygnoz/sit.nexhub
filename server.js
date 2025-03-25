@@ -1,10 +1,7 @@
 require('dotenv').config();
-
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-
-const passport = require("passport");
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",");
 
@@ -44,7 +41,6 @@ server.options('*', (req, res) => {
 });
 
 server.use(helmet()); 
-server.use(express.json());
 server.use(organizationRouter);
 
 
