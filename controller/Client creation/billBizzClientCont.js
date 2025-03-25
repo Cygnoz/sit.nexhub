@@ -525,7 +525,7 @@ exports.createOrganizationAndClient = async (req, res) => {
       const lastId = parseInt(lastOrganizationId.organizationId.slice(6)); // Extract the numeric part from the customerID
       nextId = lastId + 1; // Increment the last numeric part
     }    
-    const organizationId = `BB-ORG${nextId.toString().padStart(4, '0')}`;
+    const organizationId = `NH-ORG${nextId.toString().padStart(4, '0')}`;
 
     // Create a new organization
     const newOrganization = new Organization({

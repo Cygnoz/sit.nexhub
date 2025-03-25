@@ -146,6 +146,9 @@ router.post('/create-billbizz-client',billBizzClientCont.createOrganizationAndCl
 
 router.post('/create-sewnex-client',sewnexClientCont.createOrganizationAndClient)
 
+router.post('/setup-organization',nexVerifyToken,organizationController.setupOrganization)
+
+
 
 //Login
 router.post('/login',userController.login)
