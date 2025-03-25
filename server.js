@@ -49,13 +49,13 @@ server.use((err, req, res, next) => {
     });
 });
 
-const PORT = 5008;
+const PORT = 7008;
 
 server.get('/',(req,res)=>{
-    res.status(200).json("Dev Bill BIZZ server started - Staff v1.6")
+    res.status(200).json("Dev NexHub server started - Staff v1.6")
 })
 
 server.listen(PORT,()=>{
-    console.log(`BillBIZZ server Staff started at port : ${PORT}`);
+    console.log(`NexHub server Staff started at port : ${PORT}`);
 })
 
