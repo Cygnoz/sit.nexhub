@@ -151,9 +151,9 @@ exports.getOverviewData = async (req, res) => {
         // Response JSON
         res.json({
             totalRevenue:totalRevenue.toFixed(2),
-            accountsPayable:totalRevenue.toFixed(2),
-            accountsReceivable:totalRevenue.toFixed(2),
-            pendingBills:totalRevenue.toFixed(2),
+            accountsPayable:accountsPayable.toFixed(2),
+            accountsReceivable:accountsReceivable.toFixed(2),
+            pendingBills:pendingBills.toFixed(2),
         });
 
     } catch (error) {
