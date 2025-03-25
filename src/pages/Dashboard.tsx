@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import Button from "../Components/Button"
-import bannerBg from "../assets/Images/Banner-bg.png"
-import happyWoman from "../assets/Images/Businesswoman happy about profit growth.png"
+// import Button from "../Components/Button"
+// import bannerBg from "../assets/Images/Banner-bg.png"
+// import happyWoman from "../assets/Images/Businesswoman happy about profit growth.png"
 import Cards from "../features/dashboard/Cards"
 import ExpenseByCategory from "../features/dashboard/ExpenseByCategory"
 import SalesOverTime from "../features/dashboard/SalesOverTime"
@@ -68,7 +68,7 @@ function Dashboard({ }: Props) {
   return (
     <div className="mx-4 sm:mx-6 my-4 min-h-screen">
       {/* Banner Section */}
-      <div
+      {/* <div
         className="relative rounded-lg p-6 sm:px-9 flex flex-col sm:flex-row justify-between items-center bg-cover bg-center"
         style={{ backgroundImage: `url(${bannerBg})` }}
       >
@@ -76,7 +76,6 @@ function Dashboard({ }: Props) {
           &times;
         </div>
 
-        {/* Text Section */}
         <div className="text-center sm:text-left">
           <p className="text-[#263238] font-bold text-lg sm:text-xl">
             Get Ready to Unlock Predictive Maintenance Insights!
@@ -86,14 +85,13 @@ function Dashboard({ }: Props) {
           </p>
         </div>
 
-        {/* Button & Image */}
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5">
           <Button className="h-9 px-4 w-full sm:w-auto flex justify-center">
             Explore Now
           </Button>
           <img src={happyWoman} className="w-32 sm:w-48 object-cover" alt="" />
         </div>
-      </div>
+      </div> */}
 
       {/* Overview & Dropdown */}
       <div className="flex flex-col sm:flex-row items-center sm:justify-between my-4 relative">
