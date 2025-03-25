@@ -98,7 +98,7 @@ const EditUnitMeasurement = ({ unit, onUpdate }: Props) => {
       <button onClick={openModal} className="flex items-center">
         <Pen color={"blue"} />
       </button>
-      <Modal open={isModalOpen} onClose={closeModal} style={{ width: "39%" }}>
+      <Modal open={isModalOpen} onClose={closeModal}  className="w-[90%] sm:w-[35%]">
         <div className="p-5 mt-3 text-start">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
             <div

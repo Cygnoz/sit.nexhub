@@ -92,7 +92,7 @@ function PaymentView({ }: Props) {
         </Link>
         <h1 className="text-[20px] font-bold text-[#303F58]">View Payment</h1>
       </div>
-      <div className="flex justify-between items-center">
+      <div className="flex-row sm:flex justify-between items-center">
         <div className="space-x-3 items-center flex text-[#303F58] font-bold text-[16px]">
           <h3>Payment</h3>
           <h3 className="font-normal">|</h3>
@@ -115,7 +115,7 @@ function PaymentView({ }: Props) {
         </div>
       </div>
       <hr className="mb-5 border-loremcolor" />
-      <div className="grid grid-cols-3 space-x-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 space-x-4">
         {/* Sidebar */}
         <SideBar data={paymentData} />
         {/* Main content */}

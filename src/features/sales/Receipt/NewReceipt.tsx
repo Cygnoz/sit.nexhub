@@ -293,14 +293,12 @@ const NewReceipt = ({ page }: Props) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-4 py-5 rounded-lg">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-12 gap-4 py-5 rounded-lg">
         <div className="col-span-8">
           <div className="bg-[#FFFFFF] p-5 min-h-max rounded-xl relative ">
-
-
             <div className=" mt-5 space-y-4">
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                <div className="col-span-7 sm:col-span-5">
                   <label className="text-sm mb-1 text-labelColor">
                     Customer Name <span className="text-[#bd2e2e] ">*</span>
                   </label>
@@ -395,9 +393,9 @@ const NewReceipt = ({ page }: Props) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
 
-                <div className="col-span-5">
+                <div className="col-span-7 sm:col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Date <span className="text-[#bd2e2e] ">*</span>
                   </label>
@@ -426,8 +424,8 @@ const NewReceipt = ({ page }: Props) => {
 
 
               </div>
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                <div className="col-span-7 sm:col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Mode  <span className="text-[#bd2e2e] ">*</span>
                   </label>
@@ -491,13 +489,15 @@ const NewReceipt = ({ page }: Props) => {
               </div>
               <p className="font-bold text-sm">Unpaid Invoices</p>
               {/* table */}
+              <div className="mt-9 overflow-x-auto  sm:overflow-x-hidden hide-scrollbar h-[250px]">
 
-              <NewRecieptTable
-                customerReciept={customerReciept}
-                recieptState={recieptState}
-                setRecieptState={setRecieptState}
-                page={page}
-              />
+                <NewRecieptTable
+                  customerReciept={customerReciept}
+                  recieptState={recieptState}
+                  setRecieptState={setRecieptState}
+                  page={page}
+                />
+              </div>
 
               <div className="mt-5 text-textColor">
                 <label htmlFor="note" className="text-sm">
@@ -540,7 +540,7 @@ const NewReceipt = ({ page }: Props) => {
 
 
         {/* Right side */}
-        <div className="col-span-4 ">
+        <div className="col-span-7 sm:col-span-4">
           <div className="bg-secondary_main p-5 min-h-max rounded-xl relative  mt-0  overflow-y-scroll hide-scrollbar">
             <div className=" pb-4  text-dropdownText  border-slate-200 space-y-2">
               <div className="flex w-full">

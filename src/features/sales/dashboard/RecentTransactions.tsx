@@ -1,198 +1,152 @@
-import { useEffect, useRef, useState } from "react";
-import { endponits } from "../../../Services/apiEndpoints";
+import { useEffect, useState } from "react";
 import useApi from "../../../Hooks/useApi";
+import { endponits } from "../../../Services/apiEndpoints";
+import NoData from "../../../Components/charts/Nodata";
 
-interface Customer {
-  _id: string;
-  "Invoice No"?: string;
-  date?: string;
-  supplier?: string;
-  status?: string;
-  Amount?: number;
-  "Purchase Order"?: string;
-  orderdate?: string;
-  supplierdisplyName?: string;
-  grandTotal?: number;
-}
+type Props = {
+    date: any;
+};
 
-interface Column {
-  id: string;
-  label: string;
-  visible: boolean;
-}
 
-const tabs = [
-  {
-    label: "Invoice",
-    value: "invoice",
-    endpoint: endponits.GET_ALL_SALES_INVOICE,
-  },
-  { label: "Sales Order", value: "sales-order", endpoint: endponits.GET_ALL_SALES_ORDER },
-  {
-    label: "Quotes",
-    value: "qoutes",
-    endpoint: endponits.GET_ALL_QUOTES,
-  },
-  {
-    label: "Credot Note",
-    value: "credit-note",
-    endpoint: endponits.GET_ALL_CREDIT_NOTE,
-  },
-];
 
-function RecentTransactions() {
+function RecentTransactions({ date }: Props) {
+    const [activeTab, setActiveTab] = useState("Invoices");
 
-    const [selectedTab, setSelectedTab] = useState(tabs[0]);
-  const contentRef = useRef(null);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<Customer[]>([]);
-  const { request: getData } = useApi("get", 5007);
+    const { request: recentTransaction } = useApi('get', 5007);
+    const [recentTrans, setRecentTrans] = useState<any>({
+        recentCreditNotes: { tab: 'Credit Notes', data: [] },
+        recentInvoices: { tab: 'Invoices', data: [] },
+        recentOrders: { tab: 'Sales Orders', data: [] },
+        recentQuotes: { tab: 'Quotes', data: [] },
+    });
 
-  const columns: Record<string, Column[]> = {
-    "invoice": [
-      { id: "salesInvoice", label: "Invoice", visible: true },
-      { id: "createdDate", label: "Date", visible: true },
-      { id: "supplierDisplayName", label: "Customer", visible: true },
-      { id: "paidStatus", label: "Status", visible: true },
-      { id: "totalAmount", label: "Amount", visible: true },
-    ],
-    "sales-order": [
-      { id: "salesOrder", label: "Sales Order", visible: true },
-      { id: "createdDate", label: "Date", visible: true },
-      { id: "customerDisplayName", label: "Customer", visible: true },
-      { id: "status", label: "Status", visible: true },
-      { id: "totalAmount", label: "Amount", visible: true },
-    ],
-    "qoutes": [
-      { id: "createdDate", label: "Date", visible: true },
-      { id: "salesQuotes", label: "Sales Quotes", visible: true },
+    const getRecentTrans = async () => {
+        try {
+            const { response, error } = await recentTransaction(`${endponits.SALES_DASH_RECENT_TRANSACTIONS}?date=${date}`);
+            if (response && !error) {
+                console.log('recent', response.data);
+                setRecentTrans(response.data);
+            } else {
+                console.log('Error fetching recent transactions:', error);
+            }
+        } catch (error) {
+            console.log('Error:', error);
+        }
+    };
 
-      { id: "customerDisplayName", label: "Customer", visible: true },
-      { id: "status", label: "Status", visible: true },
+    useEffect(() => {
+        if (date) {
+            getRecentTrans();
+        }
+    }, [date]);
 
-      { id: "totalAmount", label: "Amount", visible: true },
-    ],
-    "credit-note": [
-      { id: "createdDate", label: "Date", visible: true },
-      { id: "creditNote", label: "Credit Note", visible: true },
+    const tabDataMapping: any = {
+        "Invoices": {
+            key: "recentInvoices",
+            columns: ["salesInvoice", "salesInvoiceDate", "customerName", "paidStatus", "totalAmount"],
+            label: "Invoice No.",
+        },
+        "Credit Notes": {
+            key: "recentCreditNotes",
+            columns: ["creditNote", "customerCreditDate", "customerName", "totalAmount"],
+            label: "Credit Note No.",
+        },
+        "Sales Orders": {
+            key: "recentOrders",
+            columns: ["salesOrder", "salesOrderDate", "customerName", "status", "totalAmount"],
+            label: "Order No.",
+        },
+        "Quotes": {
+            key: "recentQuotes",
+            columns: ["salesQuotes", "salesQuoteDate", "customerName", "status", "totalAmount"],
+            label: "Quote No.",
+        },
+    };
 
-      { id: "customerDisplayName", label: "Customer", visible: true },
-      { id: "totalAmount", label: "Amount", visible: true },
-    ],
-  };
-
-  const getPurchaseData = async (url: string) => {
-    setLoading(true);
-    try {
-      const { response, error } = await getData(url);
-      if (!error && response) {
-        setData(
-          response.data.allPurchaseOrder ||
-          response.data.allBills ||
-          response.data.allPayments ||
-          response.data.allDebitNotes ||
-          response.data
-        );
-      } else {
-        setData([]);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getPurchaseData(selectedTab.endpoint);
-  }, [selectedTab]);
-
-  const renderColumnContent = (colId: string, item: Customer) => {
-    if (colId === "status") {
-      return (
-        <p
-          className={`py-1 text-[13px] rounded items-center ms-auto text-white h-[18px] flex justify-center ${
-            item.status === "Active" ? "bg-[#78AA86]" : "bg-zinc-400"
-          }`}
-        >
-          {item.status}
-        </p>
-      );
-    }
-    return <span>{item[colId as keyof Customer] || <span className="text-gray-500 italic">-</span>}</span>;
-  };
-
+    // Get data for the active tab
+    const activeTabData = recentTrans[tabDataMapping[activeTab].key] || { data: [] };
 
   return (
     <div className="bg-white p-5 rounded-md">
       <h3 className="mb-6 text-[16px] font-bold">Recent Transactions</h3>
 
-      {/* Tabs */}
-      <div className="flex gap-3">
-        {tabs.map((item, index) => (
-          <div
-            key={index}
-            onClick={() => setSelectedTab(item)}
-            className={`h-34 rounded-3xl text-textColor text-sm px-4 py-3 cursor-pointer font-semibold ${
-              selectedTab.value === item.value ? "bg-[#dadcce]" : "bg-[#fcffee]"
-            }`}
-          >
-            {item.label}
-          </div>
-        ))}
-      </div>
+            {/* Tabs */}
+            <div className="flex gap-3 mt-4 overflow-x-auto">
+                {Object.keys(tabDataMapping).map((tab) => (
+                    <button
+                        key={tab}
+                        className={`py-1.5 px-4 rounded-full text-[#585953] text-xs font-semibold ${
+                            activeTab === tab ? "bg-[#DADCCD]" : "bg-[#FCFFED]"
+                        }`}
+                        onClick={() => setActiveTab(tab)}
+                    >
+                        {tab}
+                    </button>
+                ))}
+            </div>
 
-      {/* Table */}
-      <div ref={contentRef} className="mt-3 overflow-y-scroll hide-scrollbar max-h-[25rem]">
-        <table className="min-w-full bg-white mb-5">
-          <thead className="text-[12px] text-center text-dropdownText">
-            <tr style={{ backgroundColor: "#F9F7F0" }}>
-              <th className="py-3 px-4 border-b border-tableBorder">Sl.No</th>
-              {columns[selectedTab.value]?.map(
-                (col) =>
-                  col.visible && (
-                    <th key={col.id} className="py-2 px-4 font-medium border-b border-tableBorder">
-                      {col.label}
-                    </th>
-                  )
-              )}
-            </tr>
-          </thead>
-
-          <tbody className="text-dropdownText text-center text-[13px]">
-            {loading ? (
-              [...Array(5)].map((_, idx) => (
-                <tr key={idx}>
-                  <td colSpan={columns[selectedTab.value]?.length + 1} className="py-3">Loading...</td>
-                </tr>
-              ))
-            ) : data.length > 0 ? (
-              data?.map((item, index) => (
-                <tr key={item._id} className="relative">
-                  <td className="py-2.5 px-4 border-y border-tableBorder">{index + 1}</td>
-                  {columns[selectedTab.value]?.map(
-                    (col) =>
-                      col.visible && (
-                        <td key={col.id} className="py-2.5 px-4 border-y border-tableBorder">
-                          {renderColumnContent(col.id, item)}
-                        </td>
-                      )
-                  )}
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={columns[selectedTab.value]?.length + 1} className="py-3 text-gray-500 italic">
-                  No transaction data found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+            {/* Table */}
+            <div className="mt-5">
+                {activeTabData?.length > 0 ? (
+                       <div className="w-full max-h-80 overflow-auto border border-tableBorder rounded-md overflow-x-auto">
+                       <table className="w-full border-collapse relative">
+                           <thead className="sticky top-0 bg-[#F9F7F0] z-10">
+                            <tr className="bg-[#F9F7F0] text-left text-xs">
+                                <th className="py-3 px-4 text-[#303F58] font-semibold border-b border-tableBorder">
+                                    {tabDataMapping[activeTab].label}
+                                </th>
+                                {tabDataMapping[activeTab].columns.slice(1).map((heading: any, index: number) => (
+                                    <th
+                                        className="py-3 px-4 font-medium border-b border-tableBorder text-start"
+                                        key={index}
+                                    >
+                                        {heading.replace(/([A-Z])/g, " $1").trim()}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {activeTabData?.map((item: any, index: number) => (
+                                <tr key={index} className="border-b border-tableBorder text-xs text-[#4B5C79]">
+                                    {tabDataMapping[activeTab].columns.map((col: any, idx: number) => (
+                                        <td key={idx} className="py-3 px-4">
+                                            {col === "paidStatus" || col === "status" ? (
+                                                <span
+                                                className={`px-2 py-1 text-xs font-semibold rounded-md ${
+                                                    item[col] === "Paid" || 
+                                                    item[col] === "Completed" || 
+                                                    item[col] === "Accepted" || 
+                                                    item[col] === "Confirmed"
+                                                        ? "bg-green-100 text-green-700"
+                                                    : item[col] === "Sent"
+                                                        ? "bg-blue-100 text-blue-700"
+                                                    : item[col] === "Overdue"
+                                                        ? "bg-red-100 text-red-700"
+                                                    : item[col] === "Pending"
+                                                        ? "bg-yellow-100 text-yellow-700"
+                                                    : "bg-gray-200 text-gray-600"
+                                                }`}
+                                            >
+                                                {item[col]}
+                                            </span>
+                                            
+                                            
+                                            ) : (
+                                                item[col]
+                                            )}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    </div>
+                ) : (
+                    <NoData parentHeight="300px"/>
+                )}
+            </div>
+        </div>
+    );
 }
 
 export default RecentTransactions;

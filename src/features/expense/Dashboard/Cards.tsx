@@ -2,29 +2,32 @@ import { useState } from "react";
 import OrderCards from "./OrderCards";
 import UserRounded from "../../../assets/icons/UserRounded";
 import DollerSign from "../../../assets/icons/DollerSign";
-
-const Cards = () => {
+type CardProps = {
+  data?:any
+}
+const Cards = ({data}:CardProps) => {
   const [activeCard, setActiveCard] = useState<number | null>(0);
   const handleCardClick = (index: number) => {
     setActiveCard(index);
   };
+  console.log("data",data);
 
   const cards = [
     {
       icon: UserRounded,
       title: "Total Expenses",
-      count: "1500",
+      count: data?.totalExpense,
     },
     {
       icon: DollerSign,
       title: "Expense Reports Submitted",
-      count: "120",
+      count: data?.expenseReportsSubmitted,
     },
   ];
 
   return (
     <div>
-      <div className="flex justify-between w-full space-x-4">
+      <div className="sm:flex justify-between w-full space-x-0 sm:space-x-4">
         {cards.map((card, index) => (
           <OrderCards
             key={index}

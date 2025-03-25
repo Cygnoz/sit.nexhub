@@ -151,9 +151,9 @@ const Overview: React.FC<OverviewProps> = ({
 
   return (
     <>
-      <div className="grid grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-5">
         <div className="col-span-8 space-y-3  h-auto">
-          <div className="bg-[#F3F3F3] rounded-lg w-full p-6 flex items-center justify-between">
+          <div className="bg-[#F3F3F3] rounded-lg w-full p-6 flex-row sm:flex items-center justify-between  overflow-x-auto">
             {/* Column 1: Avatar */}
             <div className="justify-center h-20 w-30 rounded-lg bg-gray-200 flex items-center overflow-hidden">
               <img
@@ -341,7 +341,7 @@ const Overview: React.FC<OverviewProps> = ({
             <h3 className="font-bold text-[14px] mb-4">Other Details</h3>
 
             {/* First Row: 5 Columns */}
-            <div className="grid grid-cols-5 items-center gap-4 text-[12px] mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-5 items-center gap-4 text-[12px] mb-4">
               {/* Customer Type */}
               <div className="col-span-2 flex items-center justify-start space-x-4">
                 <p>Customer Type:</p>
@@ -394,7 +394,7 @@ const Overview: React.FC<OverviewProps> = ({
           <div>{/* <ExpensesGraph /> */}</div>
         </div>
         <div
-          className="col-span-4 py-5 px-3 bg-[#F6F6F6] rounded-[8px]  max-h-[400px] overflow-y-auto"
+          className="col-span-8 sm:col-span-4 py-5 px-3 bg-[#F6F6F6] rounded-[8px]   max-h-[400px] overflow-y-auto"
           style={{
             scrollbarWidth: "none" /* Firefox */,
             msOverflowStyle: "none" /* IE and Edge */,

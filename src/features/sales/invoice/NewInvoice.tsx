@@ -613,7 +613,7 @@ const NewInvoice = ({ page }: Props) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-4 py-5 rounded-lg">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-12 gap-4 py-5 rounded-lg">
         <div className="col-span-8">
           <div className="bg-[#FFFFFF] p-5 min-h-max rounded-xl relative ">
             <p className="text-textColor text-xl font-bold">
@@ -621,8 +621,8 @@ const NewInvoice = ({ page }: Props) => {
             </p>
 
             <div className=" mt-5 space-y-4">
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                <div className="col-span-7 sm:col-span-5">
                   <label className="text-sm mb-1 text-labelColor">
                     Select Customer <span className="text-[#bd2e2e] ">*</span>
                   </label>
@@ -773,7 +773,7 @@ const NewInvoice = ({ page }: Props) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                 <div
                   className={`col-span-${isPlaceOfSupplyVisible ? "5" : "5"
                     } relative`}
@@ -806,7 +806,7 @@ const NewInvoice = ({ page }: Props) => {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-12 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                 <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Expected Shipment Date
@@ -837,7 +837,7 @@ const NewInvoice = ({ page }: Props) => {
                   </div>
                 </div>
               </div>
-              <div className="grid grid-cols-12 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                 {/* <div className="col-span-5 relative">
                   <label className="block text-sm mb-1 text-labelColor">
                     Sales Person
@@ -879,7 +879,7 @@ const NewInvoice = ({ page }: Props) => {
                   )}
                 </div> */}
 
-                <div className="col-span-5">
+                <div className="col-span-7 sm:col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Terms
                   </label>
@@ -947,7 +947,7 @@ const NewInvoice = ({ page }: Props) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                 <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Mode
@@ -980,7 +980,7 @@ const NewInvoice = ({ page }: Props) => {
                 </div>
               </div>
 
-              <div className="mt-9">
+              <div className="mt-9 overflow-x-auto  sm:overflow-x-hidden hide-scrollbar h-[250px]">
                 <p className="font-bold">Add Item</p>
                 <NewSalesQuoteTable
                   salesQuoteState={invoiceState}
@@ -1001,7 +1001,7 @@ const NewInvoice = ({ page }: Props) => {
             </div>
           </div>
         </div>
-        <div className="col-span-4">
+        <div className="col-span-7 sm:col-span-4">
           <div className="bg-secondary_main p-5 text-sm rounded-xl space-y-4 text-textColor">
             <div className="text-sm">
               <label htmlFor="" className="">

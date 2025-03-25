@@ -247,9 +247,57 @@ export const endponits = {
   // GET_BS_DATA:`balanceSheet`,
   GET_TRIAL_BALANCE: `trialBalance`,
   GET_TRADING_ACCONUT: `tradingAccount`,
+  
+ // Customer Dashboard
+CUST_DASH_OVERVIEW: 'get-customerDashboard-overview',
+CUST_DASH_TOP_CUSTOMERS: 'get-customerDashboard-topCustomers',
+CUST_DASH_RETENTION_RATE: 'get-customerDashboard-retentionRateOverTime',
+CUST_DASH_AVG_ORDER_VALUE: 'get-customerDashboard-averageOrderValue',
+
+// Sales Dashboard
+SALES_DASH_OVERVIEW: 'get-salesDashboard-overview',
+SALES_DASH_TOP_SALES_ORDER: 'get-salesDashboard-topSalesOrder',
+SALES_DASH_RECENT_TRANSACTIONS: 'get-salesDashboard-recentTransactions',
+
+// Main Dashboard
+MAIN_DASH_OVERVIEW: 'get-mainDashboard-overview',
+MAIN_DASH_SALES_OVER_TIME: 'get-mainDashboard-salesOverTime',
+MAIN_DASH_EXPENSE_BY_CATEGORY: 'get-mainDashboard-expenseByCategory',
+MAIN_DASH_TOP_PRODUCT_CUSTOMER: 'get-mainDashboard-topProductCustomer',
+
+// Inventory
+INVENTORY_DASH_OVERVIEW: "get-inventoryDashboard-overview",
+INVENTORY_DASH_TOP_SELLING_PRODUCTS: "get-inventoryDashboard-topSellingProducts",
+INVENTORY_DASH_TOP_SELLING_PRODUCTS_BY_CATEGORIES: "get-inventoryDashboard-topSellingProductsByCategories",
+INVENTORY_DASH_STOCK_LEVEL_OVER_CATEGORY: "get-inventoryDashboard-stockLevelOverCategory",
+INVENTORY_DASH_MOST_FREQUENTLY_REORDERED_ITEMS: "get-inventoryDashboard-mostFrequentlyReorderedItems",
+
+// Supplier Dashboard
+SUPPLIER_DASH_OVERVIEW: 'get-supplierDashboard-overview',
+SUPPLIER_DASH_TOP_PRODUCTS_BY_SUPPLIER: 'get-supplierDashboard-topProductsBySupplier',
+SUPPLIER_DASH_AVG_DELIVERY_TIME: 'get-supplierDashboard-averageDeliveryTime',
+SUPPLIER_DASH_TOP_SUPPLIER_BY_SPEND: 'get-supplierDashboard-topSupplierBySpend',
+SUPPLIER_DASH_TOP_ORDERS_BY_SUPPLIER: 'get-supplierDashboard-topOrdersBySupplier',
+
+// Purchase Dashboard
+PURCHASE_DASH_OVERVIEW: 'get-purchaseDashboard-overview',
+PURCHASE_DASH_PURCHASE_OVER_TIME: 'get-purchaseDashboard-purchaseOverTime',
+PURCHASE_DASH_TOP_PRODUCTS_BY_SPEND: 'get-purchaseDashboard-topProductsBySpend',
+PURCHASE_DASH_RECENT_TRANSACTIONS: 'get-purchaseDashboard-recentTransactions',
+
+// Expense Dashboard
+EXPENSE_DASH_OVERVIEW: 'get-expenseDashboard-overview',
+EXPENSE_DASH_EXPENSE_OVER_TIME: 'get-expenseDashboard-expenseOverTime',
+EXPENSE_DASH_TOP_EXPENSE_BY_CATEGORY: 'get-expenseDashboard-topExpenseByCategory',
+EXPENSE_DASH_EXPENSE_BREAKDOWN_BY_SUPPLIER: 'get-expenseDashboard-expenseBreakdownBySupplier',
+
+// Accounts Dashboard
+ACCOUNT_DASH_OVERVIEW: 'get-accountDashboard-overview',
+ACCOUNT_DASH_TOTAL_REVENUE_OVER_TIME: 'get-accountDashboard-totalRevenueOverTime',
+ACCOUNT_DASH_RECEIVABLE_AGING: 'get-accountDashboard-accountReceivableAging',
+ACCOUNT_DASH_PAYABLE_AGING: 'get-accountDashboard-accountPayableAging',
+ACCOUNT_DASH_INVOICE_STATUS: 'get-accountDashboard-invoiceStatus',
 
 
-  // Ticket Rising
-  UNASSIGNED_TICKET: 'unassigned-ticket',
-  CHAT_HISTORY: '/chat-history'
+
 };

@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom"
 import PlusCircle from "../../../assets/icons/PlusCircle"
 import Button from "../../../Components/Button"
-import DebitDropdown from "./DebitDropdown"
 import DebitTable from "./DebitTable"
 
 type Props = {}
@@ -27,7 +26,7 @@ function DebitNote({}: Props) {
           <PlusCircle color="white" /> <p className="text-sm font-medium">New Debit Note</p>
         </Button>
      </Link>
-         <DebitDropdown/>
+         {/* <DebitDropdown/> */}
         </div>
       </div>
 

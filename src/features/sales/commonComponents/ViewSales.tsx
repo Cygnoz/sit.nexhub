@@ -150,7 +150,7 @@ function ViewSales() {
         </div>
         <br />
 
-        <div className="flex justify-between">
+        <div className="flex-row sm:flex justify-between">
           <div className="flex gap-3 items-center">
             <p className="text-lg text-textColor font-bold pr-4 border-r-[1px] border-borderRight">
               {
@@ -177,7 +177,9 @@ function ViewSales() {
             )}
 
           </div>
-          <div className="flex gap-3 items-center">
+          <div className="flex-row sm:flex gap-3 mt-1 items-center">
+            <div className="flex gap-3 items-center">
+
           <Button variant="secondary" className="pl-6 pr-6" size="sm" onClick={haneleEdit}>
               <Pen color="#565148" />
               <p className="text-sm font-medium">Edit</p>
@@ -186,12 +188,16 @@ function ViewSales() {
               <TrashCan color="#565148" />
               <p className="text-sm font-medium">Delete</p>
             </Button>
+            </div>
+            <div className="mt-2">
+
             {
               isPdfView &&
-              <div onClick={() => reactToPrintFn()}>
+              <div  onClick={() => reactToPrintFn()}>
                 <Print />
               </div>
             }
+            </div>
 
 
             {/* Toggle PDF view */}

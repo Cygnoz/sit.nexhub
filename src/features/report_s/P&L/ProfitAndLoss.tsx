@@ -27,7 +27,7 @@ function getFirstDayOfMonth() {
 
 function getLastDayOfMonth() {
   const date = new Date();
-  return date.toISOString().split("T")[0]; 
+  return date.toISOString().split("T")[0];
 }
 
 
@@ -94,18 +94,23 @@ const ProfitAndLoss = ({ }: Props) => {
 
   return (
     <div className="p-5">
-      <div className="flex gap-5">
-        <Link to={"/reports"}>
-          <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
-            <CheveronLeftIcon />
+      <div className="flex-row sm:flex gap-5">
+        <div className="flex gap-5">
+
+          <Link to={"/reports"}>
+            <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
+              <CheveronLeftIcon />
+            </div>
+          </Link>
+          <div className="flex justify-center items-center">
+            <h4 className="font-bold text-xl text-textColor">Profit and Loss</h4>
           </div>
-        </Link>
-        <div className="flex justify-center items-center">
-          <h4 className="font-bold text-xl text-textColor">Profit and Loss</h4>
         </div>
 
         <div className="ml-auto gap-3 flex items-center">
-          <div className="flex text-dropdownText gap-4">
+          <div className="flex-row sm:flex text-dropdownText gap-4">
+            <div className="flex gap-2">
+
             <div
               className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer"
               onClick={handleFromDateClick}
@@ -144,6 +149,9 @@ const ProfitAndLoss = ({ }: Props) => {
                 onChange={(e) => setToDate(e.target.value)}
               />
             </div>
+            </div>
+
+            <div className="flex gap-2 mt-2 sm:mt-0">
 
             <Button className="text-xs pl-5 pr-5" size="sm" onClick={getPL}>
               Run
@@ -151,6 +159,8 @@ const ProfitAndLoss = ({ }: Props) => {
 
             <div className="ml-auto flex items-center" onClick={() => reactToPrintFn()}>
               <PrintButton />
+            </div>
+
             </div>
           </div>
         </div>
@@ -166,7 +176,7 @@ const ProfitAndLoss = ({ }: Props) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {/* Left Section (Debit) */}
           <div>
             <div className="flex w-full items-center justify-center gap-5">

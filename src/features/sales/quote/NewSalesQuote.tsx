@@ -470,11 +470,11 @@ const NewSalesQuote = ({ page }: Props) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-4 py-5 rounded-lg">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-12 gap-4 py-5 rounded-lg">
         <div className="col-span-8">
           <div className="bg-[#FFFFFF] p-5 min-h-max rounded-xl relative ">
             <div className=" mt-5 space-y-4">
-              <div className="grid grid-cols-12 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                 <div className={`col-span-${isPlaceOfSupplyVisible ? "5" : "7"}`}>
                   <label className="text-sm mb-1 text-labelColor">
                     Customer Name <span className="text-[#bd2e2e] ">*</span>
@@ -613,7 +613,7 @@ const NewSalesQuote = ({ page }: Props) => {
                 </div>
 
 
-                <div className="col-span-5">
+                <div className="col-span-7 sm:col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Quote Date
                   </label>
@@ -647,7 +647,7 @@ const NewSalesQuote = ({ page }: Props) => {
 
 
 
-                <div className="col-span-5">
+                <div className="col-span-7 sm:col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Subject
                   </label>
@@ -732,22 +732,24 @@ const NewSalesQuote = ({ page }: Props) => {
 
 
 
+              <div className="mt-9 overflow-x-auto  sm:overflow-x-hidden hide-scrollbar h-[250px]">
 
-              <p className="font-bold">Add Item</p>
-              <NewSalesQuoteTable
-                salesQuoteState={salesQuoteState}
-                setSalesQuoteState={setSalesQuoteState}
-                oneOrganization={oneOrganization}
-                isIntraState={isIntraState}
-                isPlaceOfSupplyVisible={isPlaceOfSupplyVisible}
-              />
+                <p className="font-bold">Add Item</p>
+                <NewSalesQuoteTable
+                  salesQuoteState={salesQuoteState}
+                  setSalesQuoteState={setSalesQuoteState}
+                  oneOrganization={oneOrganization}
+                  isIntraState={isIntraState}
+                  isPlaceOfSupplyVisible={isPlaceOfSupplyVisible}
+                />
+              </div>
 
               <br />
 
             </div>
           </div>
         </div>
-        <div className="col-span-4 h-[70vh] overflow-scroll hide-scrollbar">
+        <div className="col-span-8 sm:col-span-4 h-[70vh] overflow-scroll hide-scrollbar">
           <div className="bg-secondary_main p-5 text-sm rounded-xl space-y-4 text-textColor">
             <div className="text-sm">
               <label htmlFor="" className="">

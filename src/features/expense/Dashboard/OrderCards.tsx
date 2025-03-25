@@ -19,7 +19,7 @@ const OrderCards: React.FC<CardProps> = ({
 }) => {
   return (
     <div
-      className={`bg-[white] rounded-lg px-3 py-2 w-[100%] flex  items-center gap-4`}
+      className={`bg-[white] rounded-lg my-2 px-3 py-2 w-[100%] flex  items-center gap-4`}
       onClick={onClick}
     >
       <div className="rounded-full w-[55px] h-[55px] flex items-center justify-center bg-[#f8e9da]">

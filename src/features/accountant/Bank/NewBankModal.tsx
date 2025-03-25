@@ -156,7 +156,7 @@ const NewBankModal = ({page,id }: Props) => {
         <p className="text-sm font-medium">Create Account</p>
       </Button>}
 
-      <Modal open={isModalOpen} onClose={closeModal} className="w-[68%] text-start">
+      <Modal open={isModalOpen} onClose={closeModal} className="w-[90%] sm:w-[68%] text-start h-[90%] sm:h-full overflow-x-auto">
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
             <div
@@ -182,9 +182,9 @@ const NewBankModal = ({page,id }: Props) => {
             </div>
           </div>
 
-          <form className="grid grid-cols-12 gap-4" onSubmit={onSubmit}>
-            <div className="mt-12 col-span-3 justify-items-center ">
-              <img src={savings} alt="" />
+          <form className="grid grid-cols-1 sm:grid-cols-12 gap-4" onSubmit={onSubmit}>
+            <div className="mt-0 sm:mt-12  col-span-3 justify-items-center ">
+              <img src={savings} className="hidden sm:block" alt="" />
             </div>
             <div className="col-span-9">
               <div className="mb-4">
@@ -262,7 +262,7 @@ const NewBankModal = ({page,id }: Props) => {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm mb-1 text-labelColor">
                     Account Number

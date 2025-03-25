@@ -54,6 +54,8 @@ function Category({ isOpen, onClose, page }: Props) {
       const body = { type: "category" };
       const { response, error } = await fetchAllCategories(url, body);
       if (!error && response) {
+        console.log("res", response.data);
+
         setAllcategoryData(response.data);
       } else {
         console.error("Failed to fetch Category data.");
@@ -116,8 +118,8 @@ function Category({ isOpen, onClose, page }: Props) {
       const { response, error } = await deleteCategoryRequest(url);
       if (!error && response) {
         toast.success("Category deleted successfully!");
-        if(allCategoryData.length==1){
-          setAllcategoryData((prevData) => prevData.filter((m:any) => m._id !== item._id));
+        if (allCategoryData.length == 1) {
+          setAllcategoryData((prevData) => prevData.filter((m: any) => m._id !== item._id));
         }
         loadCategories();
       } else {
@@ -139,29 +141,29 @@ function Category({ isOpen, onClose, page }: Props) {
   };
 
   return (
-    <Modal open={isOpen} onClose={onClose} className="w-[65%]">
+    <Modal open={isOpen} onClose={onClose} className="w-[90%] sm:w-[65%]">
       <div className="p-5 mt-3">
-        <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden h-24">
+        <div className="mb-5 flex flex-col sm:flex-row p-4 rounded-xl bg-CreamBg relative overflow-hidden h-auto sm:h-24">
           <div
-            className="absolute top-0 right-12 h-24 w-[200px] bg-cover bg-no-repeat"
+            className="absolute top-0 right-6 sm:right-12 h-20 sm:h-24 w-[150px] sm:w-[200px] bg-cover bg-no-repeat"
             style={{ backgroundImage: `url(${bgImage})` }}
           ></div>
-          <div className="relative z-10">
-            <h3 className="text-xl font-bold text-textColor">
+          <div className="relative z-10 overflow-x-auto">
+            <h3 className="text-lg sm:text-xl font-bold text-textColor">
               Manage Category
             </h3>
-            <p className="text-dropdownText font-semibold text-sm mt-2">
-              Have an insight on the profit or loss incurred due to the change
-              in exchange rates
+            <p className="text-dropdownText font-semibold text-sm mt-2 sm:mt-0">
+              Have an insight on the profit or loss incurred due to the change in exchange rates
             </p>
           </div>
           <div
-            className="ms-auto text-3xl cursor-pointer relative z-10"
+            className="ms-auto text-2xl sm:text-3xl cursor-pointer relative z-10 mt-2 sm:mt-0"
             onClick={onClose}
           >
             &times;
           </div>
         </div>
+
 
         <div className="flex">
           {page === "expense" && (
@@ -195,7 +197,7 @@ function Category({ isOpen, onClose, page }: Props) {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {allCategoryData.length === 0 ? (
             <p className="text-center col-span-3 text-red-500 font-semibold">
               No categories found !
@@ -246,7 +248,7 @@ function Category({ isOpen, onClose, page }: Props) {
           </div>
         )}
 
-        <Modal open={isModalOpen} onClose={closeModal} style={{ width: "35%" }}>
+        <Modal open={isModalOpen} onClose={closeModal}  className="w-[90%] sm:w-[40%]"> 
           <div className="p-5">
             <div className="flex p-4 rounded-xlrelative overflow-hidden h-24">
               <div className="relative z-10">

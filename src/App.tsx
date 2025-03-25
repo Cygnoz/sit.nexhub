@@ -16,14 +16,12 @@ import ReportsRoutes from "./routes/ReportsRoutes";
 import ReportsLayout from "./layout/ReportsLayout";
 import Pos from "./features/pos/Pos";
 import PosReceipt from "./features/pos/PosReceipt";
-import AgentChat from "./pages/Chatboat/AgentChat";
 
 // Lazy imports of components
 const Login = lazy(() => import("./features/login/Login"));
 const Otp = lazy(() => import("./features/login/Otp"));
 const Layout = lazy(() => import("./layout/Layout"));
 const SettingsLayout = lazy(() => import("./layout/SettingsLayout"));
-const Chatboat = lazy(() => import("./pages/Chatboat/Chatboat"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const ErrorPage = lazy(() => import("./pages/Error"));
 const LandingHome = lazy(() => import("./pages/LandingPage/LandingHome"));
@@ -70,23 +68,7 @@ const App: React.FC = () => {
       ) : (
         <Navigate to="/login" replace />
       ),
-    },
-    {
-      path: "/chatboat",
-      element: isAuthenticated ? (
-        <Chatboat />
-      ) : (
-        <Navigate to="/login" replace />
-      ),
-    },
-    {
-      path: "/agent-chat",
-      element: isAuthenticated ? (
-        <AgentChat />
-      ) : (
-        <Navigate to="/login" replace />
-      ),
-    },  
+    }, 
     {
       path: "/login",
       element: <Login />,

@@ -295,7 +295,7 @@ const ItemTable = ({ hsnsac }: Props) => {
             <button
               key={customer.title}
               onClick={() => setSelected(customer.title)}
-              className={`flex w-[15%] items-center gap-2 p-2 justify-center rounded ${selected === customer.title ? "bg-WhiteIce" : "bg-white"
+              className={`flex w-[40%] sm:w-[15%] items-center gap-2 p-2 justify-center rounded ${selected === customer.title ? "bg-WhiteIce" : "bg-white"
                 }`}
               style={{
                 border: "1px solid #DADBDD",
@@ -396,7 +396,11 @@ const ItemTable = ({ hsnsac }: Props) => {
       </div>
 
       {/* Modal for showing item details */}
-      <Modal open={isModalOpen} onClose={closeModal} style={{ width: '80%' }}>
+      <Modal
+        open={isModalOpen}
+        onClose={closeModal}
+        className="w-[90%] sm:w-[80%] max-h-[90vh] overflow-y-auto  sm:max-h-none"
+      >
         {selectedItem ? (
           <div className='text-[#303F58]'>
             <div className="flex justify-end  me-3">
@@ -407,7 +411,7 @@ const ItemTable = ({ hsnsac }: Props) => {
             <div className="px-5 pb-3 bg-white rounded-lg">
 
               <div className="grid grid-cols-12 gap-4">
-                <div className='col-span-3 space-y-2'>
+                <div className='lg:col-span-5 md:col-span-12 sm:col-span-3 col-span-12 space-y-2'>
                   <div className=" w-full rounded-[4px] pb-2 border-[#F1F1F1] border-2 ">
                     <div className='h-16 bg-[#FFF0DA] items-center rounded-t-[2px] flex justify-between px-2'>
                       <div className='flex flex-col w-full items-start '>
@@ -519,7 +523,7 @@ const ItemTable = ({ hsnsac }: Props) => {
 
 
                 </div>
-                <div className="col-span-9 border-2 rounded-lg border-[#E9E9E9] h-[600px] flex flex-col  ">
+                <div className="lg:col-span-7 md:col-span-12 sm:col-span-3 col-span-12 border-2 rounded-lg border-[#E9E9E9] h-[600px] flex flex-col  ">
                   {/* Navigation Bar */}
                   <div className="p-3 sticky top-0 z-10 flex items-center text-sm gap-6 bg-white">
                     {/* Overview Tab */}
@@ -766,9 +770,6 @@ const ItemTable = ({ hsnsac }: Props) => {
                   </div>
 
                 </div>
-
-
-
               </div>
             </div>
           </div>

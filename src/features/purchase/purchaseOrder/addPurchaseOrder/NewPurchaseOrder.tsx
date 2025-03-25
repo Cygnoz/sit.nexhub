@@ -5,7 +5,6 @@ import NeworderTable from "./NeworderTable";
 import Button from "../../../../Components/Button";
 import { useContext, useEffect, useRef, useState } from "react";
 import SearchBar from "../../../../Components/SearchBar";
-import PrinterIcon from "../../../../assets/icons/PrinterIcon";
 import AddSupplierModal from "../../../Supplier/SupplierHome/AddSupplierModal";
 import Upload from "../../../../assets/icons/Upload";
 import ViewDetails from "./ViewDetails";
@@ -55,7 +54,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
         itemIgstAmount: 0,
         itemVatAmount: 0,
         taxPreference: "",
-        purchaseAccountId:""
+        purchaseAccountId: ""
       },
     ],
     otherExpenseAmount: "",
@@ -190,8 +189,8 @@ const NewPurchaseOrder = ({ page }: Props) => {
       const { response, error } = await fetchFunction(url);
       if (!error && response) {
 
-          setData(response.data);
-      
+        setData(response.data);
+
       } else {
         console.error("Error in response or no data received:", error);
       }
@@ -219,7 +218,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
           c.name.toLowerCase() ===
           oneOrganization.organizationCountry.toLowerCase()
       );
-      if (oneOrganization && page!=="edit") {
+      if (oneOrganization && page !== "edit") {
         setPurchaseOrderState((preData) => ({
           ...preData,
           destinationOfSupply: oneOrganization.state,
@@ -249,7 +248,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
           supplierBillingState: selectedSupplier.billingState,
         }));
       }
-      if(selectedSupplier&& page!=="edit"){
+      if (selectedSupplier && page !== "edit") {
         setPurchaseOrderState((preData) => ({
           ...preData,
           sourceOfSupply: selectedSupplier.billingState,
@@ -363,7 +362,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
 
       } else {
         url = `${endponits.ADD_PURCHASE_ORDER}`;
-        api= newPurchaseOrderApi;
+        api = newPurchaseOrderApi;
 
       }
       const { response, error } = await api(
@@ -384,7 +383,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
     }
   };
 
-  
+
 
   useEffect(() => {
     if (purchaseOrderState?.destinationOfSupply == "") {
@@ -429,7 +428,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
     fetchInitialData();
   }, [page, id]);
 
-  
+
   useEffect(() => {
     if (purchaseOrderState && supplierData) {
       const { supplierId } = purchaseOrderState;
@@ -490,14 +489,14 @@ const NewPurchaseOrder = ({ page }: Props) => {
       </div>
 
       <form>
-        <div className="grid grid-cols-12 gap-4 py-5 rounded-lg">
-          <div className="col-span-8 h-[70vh] overflow-scroll hide-scrollbar">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-12 gap-4 py-5 rounded-lg">
+          <div className="col-span-8 h-full sm:h-[70vh] overflow-scroll hide-scrollbar">
             <div className="bg-secondary_main p-5 min-h-max rounded-xl relative ">
               <p className="text-textColor text-xl font-bold">
                 Enter Purchase details
               </p>
-              <div className=" mt-5 space-y-">
-                <div className="grid grid-cols-12 gap-4">
+              <div className=" mt-5 ">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                   <div className="col-span-6">
                     <label className="block text-sm mb-1 text-labelColor">
                       Supplier Name <span className="text-[#bd2e2e] ">*</span>
@@ -509,7 +508,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
                       <div className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                         <p>
                           {selectedSupplier &&
-                          selectedSupplier.supplierDisplayName
+                            selectedSupplier.supplierDisplayName
                             ? selectedSupplier.supplierDisplayName
                             : "Select Supplier"}
                         </p>
@@ -554,11 +553,10 @@ const NewPurchaseOrder = ({ page }: Props) => {
                                 }}
                               >
                                 <div
-                                  className={` items-center space-y-1 ${
-                                    supplier.mobile
-                                      ? "justify-start"
-                                      : "flex justify-center"
-                                  }`}
+                                  className={` items-center space-y-1 ${supplier.mobile
+                                    ? "justify-start"
+                                    : "flex justify-center"
+                                    }`}
                                 >
                                   <p className="font-bold text-sm">
                                     {supplier.supplierDisplayName}
@@ -586,7 +584,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 mt-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 mt-2 gap-4">
                   {purchaseOrderState.supplierId && (
                     <>
                       <div>
@@ -654,7 +652,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
                     </>
                   )}
                 </div>
-                <div className="grid grid-cols-12 gap-4 my-3">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 my-3">
                   <div className="col-span-5 ">
                     <label
                       className="block text-sm mb-1 text-labelColor"
@@ -669,11 +667,10 @@ const NewPurchaseOrder = ({ page }: Props) => {
                             id="customer"
                             type="radio"
                             name="deliveryAddress"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border hidden ${
-                              selected === "customer"
-                                ? "border-8 border-neutral-400"
-                                : "border-1 border-neutral-400"
-                            }`}
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border hidden ${selected === "customer"
+                              ? "border-8 border-neutral-400"
+                              : "border-1 border-neutral-400"
+                              }`}
                             onChange={() => {
                               setSelected("customer");
                               setPurchaseOrderState((prevData) => ({
@@ -685,11 +682,10 @@ const NewPurchaseOrder = ({ page }: Props) => {
                           />
                           <div
                             id="customer"
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              selected === "customer"
-                                ? "bg-neutral-100"
-                                : "bg-transparent"
-                            }`}
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${selected === "customer"
+                              ? "bg-neutral-100"
+                              : "bg-transparent"
+                              }`}
                           />
                         </div>
                         <label
@@ -705,11 +701,10 @@ const NewPurchaseOrder = ({ page }: Props) => {
                             id="organization"
                             type="radio"
                             name="deliveryAddress"
-                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border  ${
-                              selected === "organization"
-                                ? "border-8 border-neutral-400"
-                                : "border-1 border-neutral-400"
-                            }`}
+                            className={`col-start-1 row-start-1 appearance-none shrink-0 w-5 h-5 rounded-full border  ${selected === "organization"
+                              ? "border-8 border-neutral-400"
+                              : "border-1 border-neutral-400"
+                              }`}
                             onChange={() => {
                               setSelected("organization");
                               setPurchaseOrderState((prevData) => ({
@@ -721,11 +716,10 @@ const NewPurchaseOrder = ({ page }: Props) => {
                           />
                           <div
                             id="organization"
-                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${
-                              selected === "organization"
-                                ? "bg-neutral-100"
-                                : "bg-transparent"
-                            }`}
+                            className={`col-start-1 row-start-1 w-2 h-2 rounded-full ${selected === "organization"
+                              ? "bg-neutral-100"
+                              : "bg-transparent"
+                              }`}
                           />
                         </div>
                         <label
@@ -740,7 +734,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
                 </div>
 
                 {selected === "customer" && (
-                  <div className="grid grid-cols-12 gap-4 pb-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 pb-2">
                     <div className="col-span-6  ">
                       <label className="text-sm mb-1 text-labelColor">
                         Customer Name
@@ -836,7 +830,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
                   </div>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* <div className="relative w-full">
                   <label className="text-sm mb-1 text-labelColor">
                     Purchase order#
@@ -985,14 +979,15 @@ const NewPurchaseOrder = ({ page }: Props) => {
                   </div>
                 </div>
               </div>
-
-              <p className="font-bold mt-3">Add Item</p>
-              <NeworderTable
-                purchaseOrderState={purchaseOrderState}
-                setPurchaseOrderState={setPurchaseOrderState}
-                isInterState={isInterState}
-                oneOrganization={oneOrganization}
-              />
+              <div className="mt-9 overflow-x-auto  sm:overflow-x-hidden hide-scrollbar h-[250px]">
+                <p className="font-bold mt-3">Add Item</p>
+                <NeworderTable
+                  purchaseOrderState={purchaseOrderState}
+                  setPurchaseOrderState={setPurchaseOrderState}
+                  isInterState={isInterState}
+                  oneOrganization={oneOrganization}
+                />
+              </div>
               <br />
               <ViewDetails
                 page="purchaseOrder"
@@ -1002,7 +997,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
             </div>
           </div>
 
-          <div className="col-span-4 h-[70vh] overflow-scroll hide-scrollbar">
+          <div className="col-span-7 sm:col-span-4 h-full sm:h-[70vh] overflow-scroll hide-scrollbar">
             <div className="bg-secondary_main p-5 text-sm rounded-xl space-y-4 text-textColor">
               <div className="text-sm">
                 <label htmlFor="" className="">
@@ -1280,15 +1275,12 @@ const NewPurchaseOrder = ({ page }: Props) => {
         <Button variant="secondary" size="sm" onClick={handleColse}>
           Cancel
         </Button>
-        <Button variant="secondary" size="sm">
-          <PrinterIcon height={18} width={18} color="currentColor" />
-          Print
-        </Button>
+
         <Button
           variant="primary"
           size="sm"
           type="submit"
-          onClick={loading ? () => {} : handleSave}
+          onClick={loading ? () => { } : handleSave}
         >
           Save & Send
         </Button>{" "}

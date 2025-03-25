@@ -74,7 +74,9 @@ const TradingAccount = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="flex justify-start items-center mb-6 ">
+      <div className="flex-row sm:flex justify-start items-center mb-6 ">
+        <div className="flex gap-4">
+
         <Link to="/reports">
           <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
             <CheveronLeftIcon />
@@ -83,8 +85,11 @@ const TradingAccount = () => {
         <div className="flex justify-start item-start ms-2">
           <h4 className="font-bold text-xl text-textColor">Trading Account</h4>
         </div>
+        </div>
         <div className="ml-auto gap-3 flex items-center">
-          <div className="flex text-dropdownText gap-4">
+          <div className="flex-row sm:flex text-dropdownText gap-4">
+            <div className="flex gap-2">
+
             <div
               className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer bg-white"
               onClick={handleFromDateClick}
@@ -124,6 +129,8 @@ const TradingAccount = () => {
                 onChange={(e) => setToDate(e.target.value)}
               />
             </div>
+            </div>
+            <div className="flex gap-2 mt-2  sm:mt-0">
 
             <Button
               className="text-xs pl-5 pr-5"
@@ -139,6 +146,8 @@ const TradingAccount = () => {
             >
               <PrintButton />
             </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -155,7 +164,7 @@ const TradingAccount = () => {
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {/* Debit Table */}
           <div>
             <div className="overflow-hidden ">

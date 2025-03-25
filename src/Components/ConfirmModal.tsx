@@ -14,7 +14,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({ open, onClose, onConfirm, m
     <Modal
       open={open}
       onClose={onClose}
-      className="rounded-lg p-8 w-[546px] h-[160px] text-[#303F58] space-y-8"
+      className="rounded-lg p-8 w-[90%] sm:w-[546px] sm:h-[160px] text-[#303F58] space-y-8"
     >
       <p className="text-sm">{message}</p>
       <div className="flex justify-end gap-2 mb-3">

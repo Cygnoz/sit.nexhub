@@ -70,7 +70,7 @@ console.log(baseCurrency);
 
   return (
     <div className=" flex justify-center">
-      <div className="bg-white drop-shadow-2xl w-[595px] p-8 pl-[24px] pr-[24px]">
+      <div className="bg-white drop-shadow-2xl w-[350px] sm:w-[595px] p-8 pl-[24px] pr-[24px]">
         <div className="flex justify-between items-center mb-8 mt-1">
           <div>
             <img

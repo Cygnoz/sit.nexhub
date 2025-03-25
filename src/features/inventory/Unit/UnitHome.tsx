@@ -16,13 +16,14 @@ const UnitHome = ({}: Props) => {
             Define precise units of measurement to ensure accurate inventory tracking and product management.
             </p>
           </div>
-          <div className="ml-auto flex items-center">
+          <div className="ml-auto  flex items-center">
             <NewUnit/>
             <div className="ms-5">
               {/* <Ellipsis /> */}
             </div>
           </div>
         </div>
+        
         <UnitTable/>
 
       </div>{" "}

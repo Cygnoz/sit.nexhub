@@ -323,8 +323,8 @@ function SalesView({ data, page }: SalesOrderViewProps) {
       }
 
       {/* Billing Address */}
-      <div className="flex justify-between gap-6 mt-6">
-        <div className="p-6 rounded-lg border border-billingBorder w-[50%]">
+      <div className="flex-row sm:flex justify-between gap-6 mt-6">
+        <div className="p-6 rounded-lg border border-billingBorder w-full sm:w-[50%]">
           <p className="text-base font-bold text-textColor">Billing Address</p>
           <div className="mt-4 text-base mb-[70px] text-dropdownText">
             {customerData ? (
@@ -345,7 +345,7 @@ function SalesView({ data, page }: SalesOrderViewProps) {
         </div>
 
         {/* Order Summary */}
-        <div className="p-6 rounded-lg border border-billingBorder w-[50%]">
+        <div className="p-6 rounded-lg border border-billingBorder w-full sm:w-[50%]">
           <p className="text-base font-bold text-textColor">Order Summary</p>
           <div className="mt-[18.5px] text-textColor">
             <div className="flex justify-between items-center">

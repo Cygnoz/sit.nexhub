@@ -27,7 +27,7 @@ const cardVariants = cva("rounded-xl px-4 cursor-pointer", {
 
 const Card: React.FC<CardProps> = ({ icon: Icon, title, iconBg, count, active = false, onClick }) => {
   return (
-    <div className={`${cardVariants({ active })} p-2.5 rounded-lg w-[100%] flex items-center gap-2`} onClick={onClick}>
+    <div className={`${cardVariants({ active })} p-2.5 rounded-lg w-[100%] flex items-center gap-2 my-2`} onClick={onClick}>
       <div className={`rounded-full w-[52px] h-[52px] flex items-center justify-center ${iconBg}`}>
       <Icon />
       </div>

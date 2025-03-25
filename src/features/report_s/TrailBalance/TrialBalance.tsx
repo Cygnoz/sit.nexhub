@@ -82,7 +82,9 @@ function TrialBalance() {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="flex justify-between items-center mb-4 gap-2">
+      <div className="flex-row sm:flex justify-between items-center mb-4 gap-2">
+        <div className="flex gap-4">
+
         <Link to={"/reports"}>
           <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
             <CheveronLeftIcon />
@@ -91,9 +93,12 @@ function TrialBalance() {
         <div className="flex justify-center items-center">
           <h4 className="font-bold text-xl text-textColor">Trial Balance</h4>
         </div>
+        </div>
 
         <div className="ml-auto gap-3 flex items-center">
-          <div className="flex text-dropdownText gap-4">
+          <div className="flex-row sm:flex text-dropdownText gap-4">
+            <div className="flex gap-2">
+
             <div
               className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer bg-white"
               onClick={handleFromDateClick}
@@ -133,6 +138,9 @@ function TrialBalance() {
                 onChange={(e) => setToDate(e.target.value)}
               />
             </div>
+            </div>
+            <div className="flex gap-2 mt-2  sm:mt-0">
+
 
             <Button className="text-xs pl-5 pr-5" size="sm" onClick={getDayBook}>
               Run
@@ -140,6 +148,7 @@ function TrialBalance() {
 
             <div className="ml-auto flex items-center" onClick={() => reactToPrintFn()}>
               <PrintButton />
+            </div>
             </div>
           </div>
         </div>

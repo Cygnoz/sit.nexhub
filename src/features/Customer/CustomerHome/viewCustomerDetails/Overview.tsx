@@ -19,8 +19,8 @@ const Overview = ({
   return (
     <div>
       <div className="rounded-md p-2 mt-2">
-        <div className="grid grid-cols-4 gap-4 text-sm text-textColor">
-          <div className="space-y-3  text-sm border-[1px] border-[#DADBDD]   bg-[#F9F9F9]  rounded-md p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-sm text-textColor">
+          <div className="space-y-3  text-sm border-[1px] border-[#DADBDD]   bg-[#F9F9F9]  rounded-md p-4 overflow-x-auto hide-scrollbar">
             <div className="flex items-center">
               <div className="flex justify-between w-full">
                 <div className="flex flex-1">

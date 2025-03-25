@@ -5,11 +5,14 @@ import IndianRupeeBadge from "../../../assets/icons/IndianRupeeBadge";
 import BoxIcon from "../../../assets/icons/BoxIcon";
 import DollerSign from "../../../assets/icons/DollerSign";
 
-type Props = {};
+type Props = {
+  data?:any
+};
 
-const PurchaseCards = ({}: Props) => {
+const PurchaseCards = ({data}: Props) => {
   const [activeCard, setActiveCard] = useState<number | null>(null);
-
+  console.log("data",data);
+  
   const handleCardClick = (index: number) => {
     setActiveCard(index);
   };
@@ -18,14 +21,14 @@ const PurchaseCards = ({}: Props) => {
     {
       icon: UserRounded,
       title: "Total Purchase Value",
-      count: "2780",
+      count: data?.totalRevenue ||0,
       rating: "12,95%",
       iconBg:"bg-[#f8e9dd]"
     },
     {
       icon: IndianRupeeBadge,
       title: "Total Purchase Orders",
-      count: "45",
+      count: data?.totalPurchaseOrder,
       rating: "8%",
       iconBg:"bg-[#f6e7cf]"
 
@@ -33,7 +36,7 @@ const PurchaseCards = ({}: Props) => {
     {
       icon: BoxIcon,
       title: "Total Items Purchased  ",
-      count: "60",
+      count: data?.totalItemPurchased,
       item: "| Asus Laptops",
       rating: "12,95%",
       iconBg:"bg-[#eadadb]"
@@ -42,7 +45,7 @@ const PurchaseCards = ({}: Props) => {
     {
       icon: DollerSign,
       title: "Total No: of Payment Made",
-      count: "₹50,0000",
+      count: data?.totalPaymentMade,
       rating: "18,95%",
       iconBg:"bg-[#eaeceb]"
 
@@ -50,7 +53,7 @@ const PurchaseCards = ({}: Props) => {
     {
       icon: DollerSign,
       title: "Total Shipments",
-      count: "20,000",
+      count: data?.totalShipments,
       item: "| Supplier A",
       rating: "10%",
       iconBg:"bg-[#eaeceb]"
@@ -60,7 +63,7 @@ const PurchaseCards = ({}: Props) => {
 
   return (
     <div>
-      <div className="flex space-x-4 justify-center">
+      <div className="flex-row sm:flex space-x-0 sm:space-x-4 justify-center overflow-x-auto">
         {cards.map((card, index) => (
           <PurchaseCardsOrder
             key={index}

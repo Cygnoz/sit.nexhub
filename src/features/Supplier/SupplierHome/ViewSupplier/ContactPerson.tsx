@@ -41,7 +41,7 @@ function ContactPerson({ }: Props) {
 
     return (
         <div>
-            <div className="text-start grid grid-cols-3 my-3">
+            <div className="text-start grid grid-cols-1 sm:grid-cols-3 my-3 overflow-y-auto">
                 {OtherDetails.map((Details: any, index: number) => (
                     <div
                         key={index}

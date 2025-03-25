@@ -49,7 +49,7 @@ const CurrencyTable = () => {
   }, [currencyResponse]);
 
   return (
-    <div className="space-y-4 pt-2">
+    <div className="space-y-4 pt-2 overflow-x-auto">
       <table className="min-w-full bg-white mb-5">
         <thead className="text-[12px] w-full text-center text-dropdownText sticky bg-red-500">
           <tr style={{ backgroundColor: "#F9F7F0", height: "44px" }}>

@@ -83,7 +83,7 @@ const PaymentHistory = ({ customerId }: Props) => {
   });
 
   return (
-    <div>
+    <div className="overflow-x-auto">
       <div className="bg-[#F6F6F6] flex px-4 py-[24px]">
        
         <div className="flex text-dropdownText gap-4 ml-auto">

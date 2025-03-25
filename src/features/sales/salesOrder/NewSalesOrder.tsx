@@ -523,16 +523,15 @@ const NewSalesOrder = ({ page }: Props) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-4 py-5 rounded-lg">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-12 gap-4 py-5 rounded-lg">
         <div className="col-span-8">
           <div className="bg-[#FFFFFF] p-5 min-h-max rounded-xl relative ">
             <p className="text-textColor text-xl font-bold">
               Enter Customer details
             </p>
-
             <div className="mt-5 space-y-4">
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                <div className="col-span-7 sm:col-span-5">
                   <label className="text-sm mb-1 text-labelColor">
                     Select Customer <span className="text-[#bd2e2e] ">*</span>
                   </label>
@@ -542,8 +541,9 @@ const NewSalesOrder = ({ page }: Props) => {
                   >
                     <div
                       className="items-center flex appearance-none w-full h-9 text-zinc-400 bg-white border
-                         border-inputBorder text-sm pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
+                         border-inputBorder text-sm pl-2 pr rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500 cursor-pointer"
                     >
+
                       <p>
                         {(selectedCustomer as { customerDisplayName?: string })
                           ?.customerDisplayName ?? "Select Customer"}
@@ -675,8 +675,8 @@ const NewSalesOrder = ({ page }: Props) => {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-5">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                <div className="col-span-7 sm:col-span-5 ">
                   <label className="block text-sm mb-1 text-labelColor">
                     Sales Order Date
                   </label>
@@ -706,7 +706,7 @@ const NewSalesOrder = ({ page }: Props) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
                 {/* <div className="col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Mode
@@ -757,7 +757,7 @@ const NewSalesOrder = ({ page }: Props) => {
                     </div>
                   )}
                 </div> */}
-                <div className="col-span-5">
+                <div className="col-span-7 sm:col-span-5">
                   <label className="block text-sm mb-1 text-labelColor">
                     Delivery Method
                   </label>
@@ -822,7 +822,7 @@ const NewSalesOrder = ({ page }: Props) => {
                 </div>
               </div>
 
-              <div className="mt-9">
+              <div className="mt-9 overflow-x-auto  sm:overflow-x-hidden hide-scrollbar h-[250px]">
                 <p className="font-bold text-base">Add Item</p>
                 <NewSalesQuoteTable
                   salesQuoteState={salesOrderState}
@@ -841,7 +841,7 @@ const NewSalesOrder = ({ page }: Props) => {
           </div>
         </div>
 
-        <div className="col-span-4">
+        <div className="col-span-7 sm:col-span-4">
           <div className="bg-secondary_main p-5 text-sm rounded-xl space-y-4 text-textColor">
             <div className="text-sm">
               <label htmlFor="" className="">

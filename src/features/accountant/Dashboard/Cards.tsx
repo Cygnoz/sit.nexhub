@@ -3,39 +3,41 @@ import CustomerRentationIcon from "../../../assets/icons/CustomerRentationIcon";
 import NewCustomerIcon from "../../../assets/icons/NewCustomerIcon";
 import TopCustomerIcon from "../../../assets/icons/TopCustomerIcon";
 import OrderCards from "./OrderCards";
-type Props = {}
+type Props = {
+  data?:any
+}
 
-const Cards = ({}: Props) => {
-
+const Cards = ({data}: Props) => {  
+  
   const cards = [
     {
       icon: <TopCustomerIcon/>,
       title: "Total Revenue",
-      count: "₹155,000",
+      count: data?.totalRevenue,
       rating: "12,95",
     },
     {
       icon: <NewCustomerIcon/>,
       title: "Accounts Payable",
-      count: "456",
+      count: data?.accountsPayable,
       rating: "18,95",
     },
     {
         icon: <ActiveCustomerIcon/>,
         title: "Accounts Receivable",
-        count: "500",
+        count: data?.accountsReceivable,
         rating: "12,95",
     },
     {
         icon:<CustomerRentationIcon/> ,
         title: "Pending Bills",
-        count: "500",
+        count: data?.pendingBills,
         rating: "18",
     },
   ];
   return (
     <div>
-        <div className="flex justify-between gap-4">
+        <div className="flex-row sm:flex justify-between gap-4 overflow-x-auto">
       {cards.map((card, index) => (
         <OrderCards
           key={index}

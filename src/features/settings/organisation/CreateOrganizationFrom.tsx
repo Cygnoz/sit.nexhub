@@ -348,7 +348,7 @@ const CreateOrganizationForm = () => {
 
       {/* FORM */}
       <form className="text-slate-800 text-sm">
-        <div className="h-56 p-3 border-dashed border-neutral-400  rounded-md mt-5 border bg-white text-textColor w-[403px]">
+        <div className="h-56 p-3 border-dashed border-neutral-400  rounded-md mt-5 border bg-white text-textColor w-full sm:w-[403px]">
           {" "}
           <label>
             <div
@@ -407,7 +407,7 @@ const CreateOrganizationForm = () => {
         </p>
 
         <div className="bg-white border-slate-200  border-2 rounded-md mt-4 p-5">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Organization Name Field */}
             <div className="relative">
               <label htmlFor="organizationName" className="text-slate-600">

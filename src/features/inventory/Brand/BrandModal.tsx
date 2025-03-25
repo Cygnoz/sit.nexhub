@@ -134,23 +134,27 @@ const BrandManager = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
 
   return (
     <div ref={ref}>
-      <Modal open={true} onClose={onClose}>
+      <Modal open={true} onClose={onClose} className="w-[90%] sm:w-[50%]">
         <div className="p-5 mt-3">
-          <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden h-24">
+          <div className="mb-5 flex flex-col sm:flex-row p-4 rounded-xl bg-CreamBg relative overflow-hidden h-auto sm:h-24">
             <div
-              className="absolute top-0 right-12 h-24 w-[200px] bg-cover bg-no-repeat"
+              className="absolute top-0 right-8 sm:right-12 h-20 sm:h-24 w-[150px] sm:w-[200px] bg-cover bg-no-repeat"
               style={{ backgroundImage: `url(${bgImage})` }}
             ></div>
-            <div className="relative z-10">
-              <h3 className="text-xl font-bold text-textColor">Manage Brand</h3>
-              <p className="text-dropdownText font-semibold text-sm mt-2">
+            <div className="relative z-10 overflow-x-auto">
+              <h3 className="text-lg sm:text-xl font-bold text-textColor">Manage Brand</h3>
+              <p className="text-dropdownText font-semibold text-sm mt-2 sm:mt-0">
                 Have an insight on the profit or loss incurred due to the change in exchange rates
               </p>
             </div>
-            <div className="ms-auto text-3xl cursor-pointer relative z-10" onClick={onClose}>
+            <div
+              className="ms-auto text-2xl sm:text-3xl cursor-pointer relative z-10 mt-2 sm:mt-0"
+              onClick={onClose}
+            >
               &times;
             </div>
           </div>
+
 
           <div className="flex justify-end me-2 my-4">
             <Button variant="primary" size="sm" onClick={() => openModal()} className="text-sm">
@@ -158,7 +162,7 @@ const BrandManager = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
               Add Brand
             </Button>
           </div>
-          <div className="grid grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {allBrandData.length === 0 ? (
               <div className="flex justify-center items-center p-2 ms-[100%] w-full">
                 <div className="border border-slate-200 text-textColor rounded-xl w-full h-auto p-3 flex justify-center items-center">
@@ -198,7 +202,7 @@ const BrandManager = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
         </div>
       </Modal>
 
-      <Modal open={isModalOpen} onClose={closeModal} style={{ width: "35%" }}>
+      <Modal open={isModalOpen} onClose={closeModal}  className="w-[90%] sm:w-[50%]">
         <div className="p-5 mt-3">
           <div className="flex p-4 rounded-xl relative overflow-hidden">
             <h3 className="text-xl font-bold text-textColor">{isEdit ? "Edit Brand" : "Add Brand"}</h3>

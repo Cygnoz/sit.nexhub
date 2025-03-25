@@ -285,8 +285,8 @@ const NewPaymentMade = ({ page }: Props) => {
   }, [selectedSupplier, allBillsData]);
 
   return (
-    <div className="px-8">
-      <div className="grid grid-cols-12 gap-4 py-5 rounded-lg">
+    <div className="px-0 sm:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-12 gap-4 py-5 rounded-lg">
         {/* scroll y */}
         <div
           className="col-span-8 h-[vh] overflow-y-scroll"
@@ -396,7 +396,7 @@ const NewPaymentMade = ({ page }: Props) => {
                 <SupplierView selectedSupplier={selectedSupplier} />
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mt-2">
+              <div className="grid sm:grid-cols-2 gap-4 mt-2">
                 {/* <div className="">
                   <label className="block text-sm mb-1 text-labelColor">
                     Payment Made
@@ -468,7 +468,7 @@ const NewPaymentMade = ({ page }: Props) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4  mt-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4  mt-5">
               <div>
                 <label className="block text-sm mb-1 text-labelColor">
                   Payment Mode <span className="text-[#bd2e2e] ">*</span>
@@ -534,8 +534,8 @@ const NewPaymentMade = ({ page }: Props) => {
               </div>
             </div>
 
-            <div className="mt-5">
-              <p className="font-bold text-base">Unpaid Bill</p>
+            <div className="mt-5 overflow-x-auto  sm:overflow-x-hidden hide-scrollbar ">
+            <p className="font-bold text-base">Unpaid Bill</p>
               <NewPaymentMadeOrderTable
                 page={page}
                 isFullAmt={isFullAmt}
@@ -583,7 +583,7 @@ const NewPaymentMade = ({ page }: Props) => {
             </div>
           </div>
         </div>
-        <div className="col-span-4 ">
+        <div className="col-span-7 sm:col-span-4 ">
           <div className="bg-secondary_main p-5 min-h-max rounded-xl relative  mt-0  overflow-y-scroll hide-scrollbar">
             <div className=" pb-4  text-dropdownText  border-slate-200 space-y-2">
               <div className="flex w-full">

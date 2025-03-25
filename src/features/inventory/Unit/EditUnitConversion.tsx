@@ -80,7 +80,7 @@ const handleInputChange = (
         Edit
       </Button>
 
-      <Modal open={isModalOpen} onClose={closeModal} className="w-[45%]">
+      <Modal open={isModalOpen} onClose={closeModal}  className="w-[90%] sm:w-[45%]">
         <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
             <div

@@ -652,8 +652,7 @@ const EditSupplier: React.FC<Props> = ({
       <Modal
         open={isModalOpen}
         onClose={closeModal}
-        className=""
-        style={{ width: "80%" }}
+        className="w-[90%] sm:w-[80%]"
       >
         <>
           <div className="p-5 mt-3">
@@ -674,8 +673,8 @@ const EditSupplier: React.FC<Props> = ({
               className="text-slate-600 text-sm overflow-scroll hide-scrollbar space-y-5 p-2"
               style={{ height: "480px" }}
             >
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-4">
+                <div className="col-span-12 sm:col-span-2">
                   <div className=" border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
                     <label htmlFor="image">
                       <div className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ">
@@ -737,13 +736,13 @@ const EditSupplier: React.FC<Props> = ({
                             Dr.
                           </option>
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <div className="pointer-events-none absolute inset-y-0 right-0 left-1 sm:left-24 md:left-16 lg:left-24  flex items-center px-2 text-gray-700">
                           <CehvronDown color="gray" />{" "}
                         </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 col-span-10 gap-4 ">
+                    <div className="ms-8 sm:ms-0 grid grid-cols-1 sm:grid-cols-2 col-span-10 gap-4 ">
                       <div>
                         <label htmlFor="firstName" className="text-slate-600">
                           First Name
@@ -776,7 +775,7 @@ const EditSupplier: React.FC<Props> = ({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4 mt-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
                     <div>
                       <label htmlFor="">Company Name </label>
                       <input
@@ -831,7 +830,7 @@ const EditSupplier: React.FC<Props> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="grid sm:grid-cols-3 gap-4 mt-4">
                 <div>
                   <label
                     className="text-slate-600 "
@@ -925,13 +924,13 @@ const EditSupplier: React.FC<Props> = ({
                 </div>
               </div>
 
-              <div className="flex mt-5 px-5">
-                <div className="w-[20%] bg-gray-100 p-4">
-                  <ul className="h-full   space-y-0 border-gray-300 text-slate-700">
+              <div className=" flex-row sm:flex mt-5 px-0 sm:px-5">
+                <div className="w-full sm:w-[20%] bg-gray-100 p-4">
+                  <ul className="h-full flex sm:block space-x-2 sm:space-x-0 space-y-0 border-gray-300 text-slate-700 overflow-auto">
                     <li
                       className={`${getTabClassName(
                         "otherDetails"
-                      )} border-r-4 ${getBorderClassName("otherDetails")} p-2 `}
+                      )} border-b-2 sm:border-b-0  sm:border-r-4  whitespace-nowrap ${getBorderClassName("otherDetails")} p-2 `}
                       onClick={() => setActiveTab("otherDetails")}
                     >
                       Other Details
@@ -939,7 +938,7 @@ const EditSupplier: React.FC<Props> = ({
                     <li
                       className={`${getTabClassName(
                         "taxes"
-                      )} border-r-4 ${getBorderClassName("taxes")} p-2 `}
+                      )}  border-b-2 sm:border-b-0  sm:border-r-4  whitespace-nowrap ${getBorderClassName("taxes")} p-2 `}
                       onClick={() => setActiveTab("taxes")}
                     >
                       Taxes
@@ -947,7 +946,7 @@ const EditSupplier: React.FC<Props> = ({
                     <li
                       className={`${getTabClassName(
                         "address"
-                      )} border-r-4 ${getBorderClassName("address")} p-2`}
+                      )}  border-b-2 sm:border-b-0  sm:border-r-4  whitespace-nowrap ${getBorderClassName("address")} p-2`}
                       onClick={() => setActiveTab("address")}
                     >
                       Address
@@ -955,7 +954,7 @@ const EditSupplier: React.FC<Props> = ({
                     <li
                       className={`${getTabClassName(
                         "contactPersons"
-                      )} border-r-4 ${getBorderClassName(
+                      )}  border-b-2 sm:border-b-0  sm:border-r-4  whitespace-nowrap ${getBorderClassName(
                         "contactPersons"
                       )} p-2`}
                       onClick={() => setActiveTab("contactPersons")}
@@ -966,7 +965,7 @@ const EditSupplier: React.FC<Props> = ({
                     <li
                       className={`${getTabClassName(
                         "bankDetails"
-                      )} border-r-4 ${getBorderClassName("bankDetails")} p-2`}
+                      )}  border-b-2 sm:border-b-0  sm:border-r-4  whitespace-nowrap ${getBorderClassName("bankDetails")} p-2`}
                       onClick={() => setActiveTab("bankDetails")}
                     >
                       Bank Details
@@ -975,18 +974,18 @@ const EditSupplier: React.FC<Props> = ({
                     <li
                       className={`${getTabClassName(
                         "remarks"
-                      )} border-r-4 ${getBorderClassName("remarks")} p-2`}
+                      )}  border-b-2 sm:border-b-0  sm:border-r-4  whitespace-nowrap ${getBorderClassName("remarks")} p-2`}
                       onClick={() => setActiveTab("remarks")}
                     >
                       Remarks
                     </li>
                   </ul>
                 </div>
-                <div className="w-full px-16 p-2">
+                <div className="w-full sm:px-16 p-2">
                   {activeTab === "otherDetails" && (
                     <div className="space-y-4  p-4 ">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
                           <label className="block mb-1">PAN</label>
                           <input
                             type="text"
@@ -1086,7 +1085,7 @@ const EditSupplier: React.FC<Props> = ({
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                           <label className="block mb-1">Credit Days</label>
                           <input
@@ -1152,7 +1151,7 @@ const EditSupplier: React.FC<Props> = ({
                           </div>
                           <input
                             type="text"
-                            className=" text-sm w-[49%] ps-9 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
+                            className=" text-sm w-full sm:w-[49%] ps-9 rounded-md text-start bg-white border border-slate-300  h-9 p-2 text-[#818894]"
                             placeholder="Value"
                             name="websiteURL"
                             value={supplierdata.websiteURL}
@@ -1164,7 +1163,7 @@ const EditSupplier: React.FC<Props> = ({
                         <label className="block mb-1">Department</label>
                         <input
                           type="text"
-                          className=" text-sm w-[48%]  rounded-md text-start bg-white border border-slate-300  h-p p-2 text-[#818894]"
+                          className=" text-sm w-full sm:w-[48%]  rounded-md text-start bg-white border border-slate-300  h-p p-2 text-[#818894]"
                           placeholder="Enter Department"
                           name="department"
                           value={supplierdata.department}
@@ -1176,7 +1175,7 @@ const EditSupplier: React.FC<Props> = ({
                         <input
                           type="text"
                           name="designation"
-                          className=" text-sm w-[48%]  rounded-md text-start bg-white border border-slate-300  h-p p-2 text-[#818894]"
+                          className=" text-sm w-full sm:w-[48%]  rounded-md text-start bg-white border border-slate-300  h-p p-2 text-[#818894]"
                           placeholder="Enter Designation"
                           value={supplierdata.designation}
                           onChange={handleChange}
@@ -1188,7 +1187,7 @@ const EditSupplier: React.FC<Props> = ({
                     <>
                       <div className="space-y-3 p-5  text-sm">
                         {gstOrVat.taxType == "GST" && (
-                          <div className="grid grid-cols-2 gap-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="">
                               <label htmlFor="" className="block mb-1">
                                 GST Treatment
@@ -1413,7 +1412,7 @@ const EditSupplier: React.FC<Props> = ({
                         <p>
                           <b>Billing Address</b>
                         </p>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {/* Attention */}
                           <div>
                             <label className="block mb-1">Attention</label>
@@ -1465,7 +1464,7 @@ const EditSupplier: React.FC<Props> = ({
                             Address
                           </label>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <input
                               className="pl-3 text-sm w-full text-[#818894] rounded-md text-start bg-white border border-inputBorder h-[39px] leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
@@ -1534,7 +1533,7 @@ const EditSupplier: React.FC<Props> = ({
                         </div>
 
                         {/* Other fields */}
-                        <div className="grid grid-cols-3 gap-4 pt-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                           <div>
                             <label
                               className="text-slate-600 "
@@ -1729,7 +1728,7 @@ const EditSupplier: React.FC<Props> = ({
                         </div>
 
                         {/* Other fields */}
-                        <div className="grid grid-cols-3 gap-4 pt-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                           <div>
                             <label
                               className="text-slate-600 "
@@ -1791,7 +1790,7 @@ const EditSupplier: React.FC<Props> = ({
                   )}
                   {activeTab === "contactPersons" && (
                     <>
-                      <div className="rounded-lg border-2 border-tableBorder mt-5">
+                      <div className="rounded-lg border-2 border-tableBorder mt-5 overflow-x-auto">
                         <table className="min-w-full bg-white rounded-lg relative mb-4 border-dropdownText ">
                           <thead className="text-[12px] text-center text-dropdownText">
                             <tr className="bg-lightPink ">
@@ -1961,7 +1960,7 @@ const EditSupplier: React.FC<Props> = ({
                             )}
                             <div
                               key={index}
-                              className="grid grid-cols-2 gap-4 border-neutral-300 border-b pb-10"
+                              className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-neutral-300 border-b pb-10"
                             >
                               <div>
                                 <label className="block mb-1">

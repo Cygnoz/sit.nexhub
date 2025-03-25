@@ -445,7 +445,7 @@ const OCRInvoiceView = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg grid grid-cols-12 gap-4 mx-5 p-5 main-div ">
+      <div className="bg-white rounded-lg grid grid-cols-1 sm:grid-cols-12 gap-4 mx-5 p-5 main-div ">
         <div
           className={`rounded-lg relative ${
             isImageExpanded ? "col-span-12" : "col-span-7"

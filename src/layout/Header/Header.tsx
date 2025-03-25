@@ -77,9 +77,13 @@ const Header = ({ }: Props) => {
       style={{ borderBottom: "1.5px solid rgba(28, 28, 28, 0.1)" }}
     >
       <Toaster reverseOrder={false} />
-      <div className="w-[55%]">
+
+      {/* Search Bar (Hidden on Mobile) */}
+      <div className="w-[55%] sm:w-auto flex-1 hidden sm:block">
         <ModuleSearch />
       </div>
+
+      {/* View Apps */}
       <div
         className="flex ms-14 justify-center items-center gap-2 cursor-pointer"
         onClick={handleNavigate}
@@ -89,6 +93,8 @@ const Header = ({ }: Props) => {
           View Apps
         </span>
       </div>
+
+      {/* Icons & Settings */}
       <div className="flex items-center gap-2 ml-auto">
         <div className="tooltip" data-tooltip="Notifications">
           <Notification />

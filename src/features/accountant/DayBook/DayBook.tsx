@@ -223,13 +223,13 @@ function DayBook({ }: Props) {
     },
   ];
 
-    const contentRef = useRef<HTMLDivElement>(null);
-    const reactToPrintFn = useReactToPrint({ contentRef });
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
   return (
     <>
-      <div className="flex items-center mx-5 my-4">
-        <div className="flex justify-center items-center">
+      <div className="flex-row sm:flex items-center mx-5 my-4">
+        <div className="flex justify-start sm:justify-center items-center">
           <Link to={"/reports"}>
             <div className="flex justify-center items-center h-11 w-11 bg-[white] rounded-full">
               <CheveronLeftIcon />
@@ -238,51 +238,55 @@ function DayBook({ }: Props) {
           <h3 className="font-bold text-2xl ms-4 text-textColor">Day Book</h3>
         </div>
         <div className="ml-auto gap-3 flex items-center">
-          <div className="flex text-dropdownText gap-4">
-            <div
-              className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer"
-              onClick={handleFromDateClick}
-            >
-              <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
-                <Calender color="currentColor" height={18} width={18} />
-              </div>
-              {formatDate(fromDate)}
-              <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <CehvronDown color="gray" />
-              </div>
-              <input
-                type="date"
-                ref={fromDateRef}
-                className="absolute inset-0 opacity-0 cursor-pointer"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-              />
-            </div>
+          <div className="flex-row sm:flex text-dropdownText gap-4">
+            <div className="flex gap-2">
 
-            <div
-              className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer"
-              onClick={handleToDateClick}
-            >
-              <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
-                <Calender color="currentColor" height={18} width={18} />
+              <div
+                className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer"
+                onClick={handleFromDateClick}
+              >
+                <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
+                  <Calender color="currentColor" height={18} width={18} />
+                </div>
+                {formatDate(fromDate)}
+                <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
+                </div>
+                <input
+                  type="date"
+                  ref={fromDateRef}
+                  className="absolute inset-0 opacity-0 cursor-pointer w-full"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
               </div>
-              {formatDate(toDate)}
-              <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <CehvronDown color="gray" />
+              <div
+                className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer"
+                onClick={handleToDateClick}
+              >
+                <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
+                  <Calender color="currentColor" height={18} width={18} />
+                </div>
+                {formatDate(toDate)}
+                <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
+                </div>
+                <input
+                  type="date"
+                  ref={toDateRef}
+                  className="absolute inset-1 opacity-0 cursor-pointer"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                />
               </div>
-              <input
-                type="date"
-                ref={toDateRef}
-                className="absolute inset-1 opacity-0 cursor-pointer"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-              />
             </div>
+            <div className="mt-2 sm:mt-0 flex gap-2"> 
+
             <div>
               <Button className="text-xs pl-5 pr-5" size="sm" onClick={handleRun}>Run</Button>
             </div>
             <div onClick={() => reactToPrintFn()}>
-              <PrintButton/>
+              <PrintButton />
             </div>
 
             <div className="relative ml-auto flex items-center">
@@ -308,6 +312,8 @@ function DayBook({ }: Props) {
                 </div>
               )}
             </div>
+            </div>
+
 
           </div>
         </div>

@@ -43,7 +43,7 @@ const ExpenseFilterCards: React.FC<ExpenseFilterCardProps> = ({ onSelectSection 
         <button
           key={supplier.title}
           onClick={() => handleClick(supplier.title, supplier.section)}
-          className={`flex gap-2 p-2 w-[20%] justify-center rounded ${selected === supplier.title ? "bg-WhiteIce" : "bg-white"}`}
+          className={`flex gap-2 p-2 w-full sm:w-[20%] justify-center rounded ${selected === supplier.title ? "bg-WhiteIce" : "bg-white"}`}
           style={{ border: "1px solid #DADBDD" }}
         >
           {supplier.icon}

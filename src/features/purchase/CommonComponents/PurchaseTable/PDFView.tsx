@@ -62,7 +62,7 @@ const PDFView = forwardRef<HTMLDivElement, Props>(({ data, page, organization },
         )}
       </div>
       <div className="flex justify-center items-center">
-        <div className="bg-white drop-shadow-2xl w-[595px]  p-8 pl-[24px] pr-[24px]">
+        <div className="bg-white drop-shadow-2xl w-[330px] sm:w-[595px]  p-8 pl-[24px] pr-[24px]">
           <div className="flex justify-between items-center mb-8 mt-1">
             <div>
               <img
@@ -152,40 +152,42 @@ const PDFView = forwardRef<HTMLDivElement, Props>(({ data, page, organization },
               </div>
             )}
           </div>
+          <div className="overflow-x-auto">
 
-          <table className="w-full mb-7 border border-dropdownBorder">
-            <thead className="border-b border-dropdownBorder ">
-              <tr className="font-bold text-[10px] text-pdftext text-center">
-                <th className="py-2 px-4 text-left w-[350px]">Description</th>
-                <th className="py-2 px-4 pl-16 ">Qty</th>
-                <th className="py-2 px-4">Price</th>
-                <th className="py-2 px-4">GST</th>
-                <th className="py-2 px-4">Amount</th>
-              </tr>
-            </thead>
-            {
-              (data?.itemTable?.length > 0 || data?.items?.length > 0) ? (
-                (data?.itemTable || data?.items).map((item: any) => (
-                  <tbody className="h-[56px]" key={item.id}>
-                    <tr className="text-[10px] text-left">
-                      <td className="py-2 px-4">{item.itemName}</td>
-                      <td className="py-2 px-4 pl-16">{item.itemQuantity}</td>
-                      <td className="py-2 px-4">{item.itemCostPrice}</td>
-                      <td className="py-2 px-4">
-                        {item.itemCgstAmount > 0 && item.itemSgstAmount > 0
-                          ? item.itemCgstAmount + item.itemSgstAmount
-                          : item.itemIgstAmount}
-                      </td>
-                      <td className="py-2 px-4">{item.itemAmount}</td>
-                    </tr>
-                  </tbody>
-                ))
-              ) : (
-                <p>No items available</p>
-              )
-            }
+            <table className="w-full mb-7 border border-dropdownBorder">
+              <thead className="border-b border-dropdownBorder ">
+                <tr className="font-bold text-[10px] text-pdftext text-center">
+                  <th className="py-2 px-4 text-left w-[350px]">Description</th>
+                  <th className="py-2 px-4 pl-16 ">Qty</th>
+                  <th className="py-2 px-4">Price</th>
+                  <th className="py-2 px-4">GST</th>
+                  <th className="py-2 px-4">Amount</th>
+                </tr>
+              </thead>
+              {
+                (data?.itemTable?.length > 0 || data?.items?.length > 0) ? (
+                  (data?.itemTable || data?.items).map((item: any) => (
+                    <tbody className="h-[56px]" key={item.id}>
+                      <tr className="text-[10px] text-left">
+                        <td className="py-2 px-4">{item.itemName}</td>
+                        <td className="py-2 px-4 pl-16">{item.itemQuantity}</td>
+                        <td className="py-2 px-4">{item.itemCostPrice}</td>
+                        <td className="py-2 px-4">
+                          {item.itemCgstAmount > 0 && item.itemSgstAmount > 0
+                            ? item.itemCgstAmount + item.itemSgstAmount
+                            : item.itemIgstAmount}
+                        </td>
+                        <td className="py-2 px-4">{item.itemAmount}</td>
+                      </tr>
+                    </tbody>
+                  ))
+                ) : (
+                  <p>No items available</p>
+                )
+              }
 
-          </table>
+            </table>
+          </div>
 
           <div className="flex justify-end ">
             <div className="w-[58.4%] border border-dropdownBorder rounded bg-pdfbg">

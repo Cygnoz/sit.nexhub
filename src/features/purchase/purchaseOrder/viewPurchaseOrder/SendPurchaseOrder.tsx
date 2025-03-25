@@ -26,7 +26,7 @@ const SendPurchaseOrder=({data}:Props)=>{
 
 
     return (
-        <div className="mt-4 bg-cuscolumnbg p-4 rounded-lg flex justify-between items-center">
+        <div className="mt-4 bg-cuscolumnbg p-4 rounded-lg flex-r sm:flex justify-between items-center">
         <div>
           <p className="text-base font-bold text-textColor">
             Send Purchase Order
@@ -42,7 +42,7 @@ const SendPurchaseOrder=({data}:Props)=>{
           </Button>
         
         </div>
-        <Modal open={isModalOpen} onClose={closeModal} style={{ width: "55%" }}>
+        <Modal open={isModalOpen} onClose={closeModal}  className="w-[90%] sm:w-[55%]">
         <div className="p-5 ">
         
         <div

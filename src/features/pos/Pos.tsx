@@ -112,9 +112,9 @@ function Pos({}: Props) {
   return (
     <>
       <PosHeader onSelectCustomer={handleSelectCustomer} />
-      <div className="flex justify-between px-5 gap-7">
+      <div className="flex-row sm:flex justify-between px-5 gap-7">
         {/* Left Section */}
-        <div className="w-[65%]">
+        <div className="w-full sm:w-[65%]">
           {/* Tabs */}
           <div className="flex justify-between items-center gap-3">
             <div
@@ -142,7 +142,7 @@ function Pos({}: Props) {
               </div>
             </div>
             <div
-              className={`w-[50%] py-2 px-3 rounded-lg flex items-center gap-3 cursor-pointer ${
+              className={`w-full sm:w-[50%] py-2 px-3 rounded-lg flex items-center gap-3 cursor-pointer ${
                 tabSwitch === "services"
                   ? "border-[1.5px] border-[#820000] bg-[#F3E6E6]"
                   : "bg-white"
@@ -209,7 +209,7 @@ function Pos({}: Props) {
               searchValue={searchValue}
               placeholder="Search"
             />
-            <div className="mt-3 grid grid-cols-4 h-full gap-4 overflow-y-scroll max-h-96 hide-scrollbar">
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-4 h-full gap-4 overflow-y-scroll max-h-96 hide-scrollbar">
               {filteredItems.map((item, index) => (
                 <div
                   key={index}
@@ -236,7 +236,7 @@ function Pos({}: Props) {
         </div>
 
         {/* Right Section */}
-        <div className="w-[35%]">
+        <div className="w-full sm:w-[35%]">
           <div className="bg-white py-1.5 px-4 rounded-lg flex gap-3">
             <img src={selectedCustomer?.customerProfile || defaultCustomerImage} className="w-10 h-10 rounded-full" alt="" />
             <p className="text-[#495160] text-xs">Customer <br />

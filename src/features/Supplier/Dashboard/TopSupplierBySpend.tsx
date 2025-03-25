@@ -1,13 +1,20 @@
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import useApi from "../../../Hooks/useApi";
+import { useEffect, useState } from "react";
+import { endponits } from "../../../Services/apiEndpoints";
+import NoData from "../../../Components/charts/Nodata";
 
-const data = [
-  { name: "Supplier A with a very long name", value: 48.8, color: "#D9B4AF" }, // Light Red
-  { name: "Supplier B", value: 24.3, color: "#F4E0C0" }, // Light Beige
-  { name: "Supplier C", value: 14.6, color: "#BDBDB5" }, // Grey
-  { name: "Supplier D with a big name", value: 12.3, color: "#FEFEEB" }, // Light Yellow
-];
+type Props = {
+  date?: any;
+};
 
-const COLORS = data.map((entry) => entry.color);
+// Function to generate a color palette
+const generateColors = (count: number) => {
+  const colors = ["#D9B4AF", "#F4E0C0", "#BDBDB5", "#FEFEEB", "#A0D995", "#84A9AC"];
+  return Array.from({ length: count }, (_, index) => colors[index % colors.length]);
+};
+
+// Wrap long text for labels
 const wrapText = (text: string, maxLength: number) => {
   if (text.length > maxLength) {
     const words = text.split(" ");
@@ -26,19 +33,19 @@ const wrapText = (text: string, maxLength: number) => {
   return [text];
 };
 
-// Custom Label Function with Wrapping
+// Custom Label Function
 const renderLabel = ({ cx, cy, midAngle, outerRadius, name, percent }: any) => {
   const RADIAN = Math.PI / 180;
-  const radius = outerRadius + 45; // Increase label distance from chart
+  const radius = outerRadius + 45;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
-  const wrappedText = wrapText(name, 12); // Split name if it's too long
+  const wrappedText = wrapText(name, 12);
 
   return (
     <>
       <text
         x={x}
-        y={y - (wrappedText.length === 2 ? 14 : 12)} // Adjust Y position for multi-line
+        y={y - (wrappedText.length === 2 ? 14 : 12)}
         fill="#585953"
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline="central"
@@ -53,7 +60,7 @@ const renderLabel = ({ cx, cy, midAngle, outerRadius, name, percent }: any) => {
       </text>
       <text
         x={x}
-        y={y + (wrappedText.length === 2 ? 12 : 6)} // Adjust position for multi-line
+        y={y + (wrappedText.length === 2 ? 12 : 6)}
         fill="#585953"
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline="central"
@@ -66,31 +73,69 @@ const renderLabel = ({ cx, cy, midAngle, outerRadius, name, percent }: any) => {
   );
 };
 
-const TopSupplierBySpend = () => {
+const TopSupplierBySpend = ({ date }: Props) => {
+  const { request: getTopSuppliers } = useApi("get", 5009);
+  const [topSupplierSpend, setTopSupplierSpend] = useState<any>([]);
+  
+  const getTopSuppliersData = async () => {
+    try {
+      const { response, error } = await getTopSuppliers(
+        `${endponits.SUPPLIER_DASH_TOP_SUPPLIER_BY_SPEND}?date=${date}`
+      );
+
+      if (response && !error) {
+        const transformedData = response?.data?.topSuppliers?.map((item: any) => ({
+          name: item.supplierName,
+          value: item.totalSpend,
+        }));
+
+        setTopSupplierSpend(transformedData);
+      } else {
+        console.error("API Error:", error);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (date) {
+      getTopSuppliersData();
+    }
+  }, [date]);
+
+  const COLORS = generateColors(topSupplierSpend.length);
+
   return (
-    <div className="bg-white rounded-lg flex justify-center items-center w-full px-8 py-6">
-      <div className="w-full max-w-xl">
+    <div className="bg-white rounded-lg flex justify-center items-center w-full px-8 py-6 overflow-x-auto">
+      <div className="w-full ">
         <h3 className="text-[18px] font-bold text-[#303F58] text-start mb-4">
           Top Suppliers by Spend
         </h3>
 
-        <PieChart width={500} height={500}> 
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            innerRadius={65}
-            outerRadius={140}
-            dataKey="value"
-            label={renderLabel} 
-            labelLine={{ stroke: "#888", strokeWidth: 1, lengthAdjust: "extend" }} 
-          >
-            {data.map((_entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index]} />
-            ))}
-          </Pie>
-          <Tooltip />
-        </PieChart>
+        {topSupplierSpend.length > 0 ? (
+           <ResponsiveContainer width="100%" height={400} minHeight={300}>
+          <PieChart width={500} height={500}>
+            <Pie
+              data={topSupplierSpend}
+              cx="50%"
+              cy="50%"
+              innerRadius={65}
+              outerRadius={140}
+              dataKey="value"
+              label={renderLabel}
+              labelLine={{ stroke: "#888", strokeWidth: 1, lengthAdjust: "extend" }}
+            >
+              {topSupplierSpend.map((_entry:any, index:number) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index]} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+          </ResponsiveContainer>
+        ) : (
+          <NoData parentHeight="400px"/>
+        )}
       </div>
     </div>
   );

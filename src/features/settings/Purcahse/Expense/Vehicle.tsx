@@ -45,15 +45,16 @@ const closeModal = () => {
 
   return (
     <div className="my-3 bg-white p-4">
-<div className="flex gap-3">
+<div className="flex gap-3 ">
 <SearchBar
         placeholder="Search"
         searchValue={searchValue}
         onSearchChange={setSearchValue}
       />
       <Button size="sm" className="text-sm min-w-fit" onClick={openModal}>New Vehicle</Button></div>
+      <div className="overflow-x-auto">
 
-      <table className="min-w-full bg-white rounded-md mt-3">
+      <table className="min-w-full bg-white rounded-md mt-3 ">
               <thead className="text-[12px] text-center text-dropdownText">
                 <tr style={{ backgroundColor: "#F9F7F0" }}>
                   {tableHeaders.map((heading, index) => (
@@ -85,11 +86,13 @@ const closeModal = () => {
                 
               </tbody>
             </table>
+      </div>
 
 
 
 
-            <Modal open={isModalOpen} onClose={closeModal} style={{ width: "45%" }}>
+
+            <Modal open={isModalOpen} onClose={closeModal} className="w-[90%] sm:w-[50%]">
           <div className="p-5 mt-3">
           <div className="mb-5 flex p-4 rounded-xl bg-CreamBg relative overflow-hidden">
             <div

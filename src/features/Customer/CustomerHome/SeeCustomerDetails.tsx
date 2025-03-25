@@ -188,7 +188,7 @@ function SeeCustomerDetails() {
   return (
     <div className="px-6">
       <div className="bg-white rounded-md p-5">
-        <div className=" items-center gap-5 flex justify-between">
+        <div className=" items-center gap-5 flex-row sm:flex justify-between">
           <div className="flex">
             <Link to={"/customer/home"}>
               <div
@@ -202,7 +202,7 @@ function SeeCustomerDetails() {
               Customer Overview
             </p>
           </div>
-          <div className="flex mx-4 gap-2">
+          <div className="flex mx-4 gap-2 mt-1">
             <EditCustomerModal customerDataPorps={customerData} />
             <Button onClick={confirmDelete}
               variant="secondary"
@@ -213,9 +213,9 @@ function SeeCustomerDetails() {
             </Button>
           </div>
         </div>
-        <div className="mt-2 flex mx-3">
+        <div className="mt-2 flex-row sm:flex mx-3 overflow-x-auto">
           <div
-            className="relative w-[27.9%] h-[146px] rounded-2xl p-4 bg-cover bg-center"
+            className="relative w-full sm:w-[27.9%] h-[146px] rounded-2xl p-4 bg-cover bg-center"
             style={{ backgroundImage: `url(${cardBg})` }}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-[#820000] to-[#2C353B] opacity-90 rounded-2xl"></div>
@@ -223,7 +223,7 @@ function SeeCustomerDetails() {
               {/* <p className="text-membershipText text-sm mt-1">
                 Privilege Membership Card
               </p> */}
-              <div className=" items-center mt-3">
+              <div className=" items-center mt-3 overflow-x-auto">
                 <img
                   src={
                     customerData.customerProfile
@@ -246,10 +246,10 @@ function SeeCustomerDetails() {
             </div>
           </div>
 
-          <div className="flex  w-full  ">
+          <div className="flex-row sm:flex  w-full  ">
             {customerDashboardData.length > 0
               ? customerDashboardData.map((card: any) => (
-                  <div className=" p-5 w-[27.9%] h-[148px] ms-14 bg-cuscolumnbg rounded-lg ">
+                  <div className=" p-5 w-full sm:w-[27.9%] h-[148px] my-2 sm:my-0 ms-0 sm:ms-14 bg-cuscolumnbg rounded-lg overflow-x-auto hide-scrollbar">
                     <img className="w-6 h-6" src={card.icon} alt="" />
                     <h1 className="text-[#4B5C79] text-sm font-semibold my-2">
                       {card.title}
@@ -270,7 +270,7 @@ function SeeCustomerDetails() {
       </div>
 
       <div className="gap-6 bg-white p-5 my-5 rounded-lg">
-        <div className="flex max-w-full">
+        <div className="flex max-w-full overflow-x-auto">
           {sideBarHead.map((item, index) => (
             <div
               key={index}
@@ -289,7 +289,7 @@ function SeeCustomerDetails() {
           ))}
         </div>
 
-        <div className="col-span-9">
+        <div className=" col-span-9">
           {selectedTab === "Overview" && (
             <Overview
               customerData={customerData}

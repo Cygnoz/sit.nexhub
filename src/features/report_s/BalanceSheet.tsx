@@ -27,7 +27,7 @@ function getFirstDayOfMonth() {
 
 function getLastDayOfMonth() {
   const date = new Date();
-  return date.toISOString().split("T")[0]; 
+  return date.toISOString().split("T")[0];
 }
 
 const BalanceSheet = ({ }: Props) => {
@@ -88,64 +88,73 @@ const BalanceSheet = ({ }: Props) => {
 
   return (
     <div className="p-5">
-      <div className="flex gap-5">
-        <Link to={"/reports"}>
-          <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
-            <CheveronLeftIcon />
+      <div className="flex-row sm:flex gap-5">
+        <div className="flex gap-4">
+
+          <Link to={"/reports"}>
+            <div className="flex justify-center items-center h-11 w-11 bg-tertiary_main rounded-full">
+              <CheveronLeftIcon />
+            </div>
+          </Link>
+          <div className="flex justify-center items-center">
+            <h4 className="font-bold text-xl text-textColor ">Balance sheet </h4>
           </div>
-        </Link>
-        <div className="flex justify-center items-center">
-          <h4 className="font-bold text-xl text-textColor ">Balance sheet </h4>
         </div>
         <div className="ml-auto gap-3 flex items-center">
-          <div className="flex text-dropdownText gap-4">
-            <div
-              className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer"
-              onClick={handleFromDateClick}
-            >
-              <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
-                <Calender color="currentColor" height={18} width={18} />
+          <div className="flex-row sm:flex text-dropdownText gap-4">
+
+            <div className="flex gap-2">
+
+              <div
+                className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer"
+                onClick={handleFromDateClick}
+              >
+                <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
+                  <Calender color="currentColor" height={18} width={18} />
+                </div>
+                {formatDate(fromDate)}
+                <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
+                </div>
+                <input
+                  type="date"
+                  ref={fromDateRef}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
               </div>
-              {formatDate(fromDate)}
-              <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <CehvronDown color="gray" />
+
+              <div
+                className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer"
+                onClick={handleToDateClick}
+              >
+                <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
+                  <Calender color="currentColor" height={18} width={18} />
+                </div>
+                {formatDate(toDate)}
+                <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <CehvronDown color="gray" />
+                </div>
+                <input
+                  type="date"
+                  ref={toDateRef}
+                  className="absolute inset-1 opacity-0 cursor-pointer"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                />
               </div>
-              <input
-                type="date"
-                ref={fromDateRef}
-                className="absolute inset-0 opacity-0 cursor-pointer"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-              />
+            </div>
+            <div className="flex gap-2 mt-2  sm:mt-0">
+              <Button className="text-xs pl-5 pr-5" size="sm" onClick={getBSData}>
+                Run
+              </Button>
+
+              <div className="ml-auto flex items-center" onClick={() => reactToPrintFn()}>
+                <PrintButton />
+              </div>
             </div>
 
-            <div
-              className="relative border-2 border-slate-200 flex rounded-md px-2 py-1 text-sm items-center cursor-pointer"
-              onClick={handleToDateClick}
-            >
-              <div className="pointer-events-none inset-y-0 flex items-center px-2 text-gray-700">
-                <Calender color="currentColor" height={18} width={18} />
-              </div>
-              {formatDate(toDate)}
-              <div className="pointer-events-none inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <CehvronDown color="gray" />
-              </div>
-              <input
-                type="date"
-                ref={toDateRef}
-                className="absolute inset-1 opacity-0 cursor-pointer"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-              />
-            </div>
-
-            <Button className="text-xs pl-5 pr-5" size="sm" onClick={getBSData}>
-              Run
-            </Button>
-
-            <div className="ml-auto flex items-center" onClick={() => reactToPrintFn()}>
-              <PrintButton />
-            </div>
           </div>
         </div>
       </div>
@@ -162,7 +171,7 @@ const BalanceSheet = ({ }: Props) => {
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {/* Debit Table */}
           <div>
             <div className="overflow-hidden ">
@@ -186,35 +195,35 @@ const BalanceSheet = ({ }: Props) => {
                     let link = "";
                     let accountSubhead = "";
 
-    if (item.equity) {
-      accountName = "Equity";
-      accountSubhead = "equity";
-      totalAmount =
-        item.equity.overallNetCredit - item.equity.overallNetDebit;
-      items = item;
-      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
-    } else if (item.currentLiabilities) {
-      accountName = "Current Liabilities";
-      accountSubhead = "currentLiabilities";
-      totalAmount =
-        item.currentLiabilities.overallNetCredit - item.currentLiabilities.overallNetDebit;
-      items = item;
-      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
-    } else if (item.nonCurrentLiabilities) {
-      accountName = "Non-Current Liabilities";
-      accountSubhead = "nonCurrentLiabilities";
-      totalAmount =
-        item.nonCurrentLiabilities.overallNetCredit - item.nonCurrentLiabilities.overallNetDebit;
-      items = item;
-      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
-    } else if (item.netProfitCd) {
-      accountName = "Profit & Loss A/C";
-      totalAmount = item?.netProfitCd;
-    }
+                    if (item.equity) {
+                      accountName = "Equity";
+                      accountSubhead = "equity";
+                      totalAmount =
+                        item.equity.overallNetCredit - item.equity.overallNetDebit;
+                      items = item;
+                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+                    } else if (item.currentLiabilities) {
+                      accountName = "Current Liabilities";
+                      accountSubhead = "currentLiabilities";
+                      totalAmount =
+                        item.currentLiabilities.overallNetCredit - item.currentLiabilities.overallNetDebit;
+                      items = item;
+                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+                    } else if (item.nonCurrentLiabilities) {
+                      accountName = "Non-Current Liabilities";
+                      accountSubhead = "nonCurrentLiabilities";
+                      totalAmount =
+                        item.nonCurrentLiabilities.overallNetCredit - item.nonCurrentLiabilities.overallNetDebit;
+                      items = item;
+                      link = `/reports/balance-sheet/accounts/${accountSubhead}`;
+                    } else if (item.netProfitCd) {
+                      accountName = "Profit & Loss A/C";
+                      totalAmount = item?.netProfitCd;
+                    }
 
-    if (!accountName) {
-      return null;
-    }
+                    if (!accountName) {
+                      return null;
+                    }
 
                     if (totalAmount === 0) {
                       link = "";
@@ -290,7 +299,7 @@ const BalanceSheet = ({ }: Props) => {
                     } else if (item.netLossCd) {
                       accountName = " Profit & Loss A/C ";
                       totalAmount = item.netLossCd;
-                      console.log(item.netLossCd,"lossss")
+                      console.log(item.netLossCd, "lossss")
                     }
                     if (!accountName) {
                       return null;

@@ -530,22 +530,22 @@ const NewCustomerModal = ({ page }: Props) => {
   //   }
   // }, [taxPreference]);
 
-  useEffect(()=>{
-    if(gstOrVat){
-      if(gstOrVat.taxType === "GST"){
-      setCustomerData((prevData: any) => ({
-        ...prevData,
-        gstTreatment: "Consumer",
-      }));
+  useEffect(() => {
+    if (gstOrVat) {
+      if (gstOrVat.taxType === "GST") {
+        setCustomerData((prevData: any) => ({
+          ...prevData,
+          gstTreatment: "Consumer",
+        }));
+      }
+      if (gstOrVat) {
+        setCustomerData((prevData: any) => ({
+          ...prevData,
+          taxType: gstOrVat.taxType,
+        }));
+      }
     }
-    if(gstOrVat){
-      setCustomerData((prevData: any) => ({
-        ...prevData,
-        taxType: gstOrVat.taxType,
-      }));
-    }
-    }
-  },[gstOrVat,isModalOpen])
+  }, [gstOrVat, isModalOpen])
 
   useEffect(() => {
     if (customerdata.billingCountry) {
@@ -574,7 +574,7 @@ const NewCustomerModal = ({ page }: Props) => {
 
   useEffect(() => {
     handleplaceofSupply();
-  }, [getOneOrganization,isModalOpen]);
+  }, [getOneOrganization, isModalOpen]);
 
   return (
     <div>
@@ -615,8 +615,8 @@ const NewCustomerModal = ({ page }: Props) => {
       <Modal
         open={isModalOpen}
         onClose={() => setModalOpen(false)}
-        className=""
-        style={{ width: "80%" }}
+        className="w-[95%] sm:w-[80%]"
+
       >
         <>
           <div className="p-5 mt-3">
@@ -637,8 +637,8 @@ const NewCustomerModal = ({ page }: Props) => {
               className="text-slate-600 text-sm overflow-scroll hide-scrollbar   p-2"
               style={{ height: "480px" }}
             >
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-2 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-4">
+                <div className="col-span-12 sm:col-span-2  border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center py-3 ">
                   <label htmlFor="image">
                     <div className="bg-lightPink flex items-center justify-center h-16 w-36 rounded-lg ">
                       {customerdata.customerProfile ? (
@@ -747,7 +747,7 @@ const NewCustomerModal = ({ page }: Props) => {
                   </div>
 
                   <div className="grid grid-cols-12 gap-4 mt-2">
-                    <div className="col-span-2">
+                    <div className="col-span-2 ">
                       <label htmlFor="salutation">Salutation</label>
                       <div className="relative w-full">
                         <select
@@ -763,12 +763,12 @@ const NewCustomerModal = ({ page }: Props) => {
                           <option value="Ms.">Ms.</option>
                           <option value="Dr.">Dr.</option>
                         </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <div className="pointer-events-none absolute inset-y-0 right-0 left-1 sm:left-0 flex items-center px-2 text-gray-700">
                           <CehvronDown color="gray" />
                         </div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 col-span-10 gap-4 ">
+                    <div className="ms-8 sm:ms-0 grid grid-cols-1 sm:grid-cols-2 col-span-10 gap-4 ">
                       <div>
                         <label htmlFor="firstName" className="text-slate-600">
                           First Name
@@ -838,7 +838,7 @@ const NewCustomerModal = ({ page }: Props) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-x-4 gap-y-2 mt-2 ">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-2 mt-2 ">
                 {customerdata.customerType === "Business" && <div>
                   <label htmlFor="companyName">Company Name </label>
                   <input
@@ -970,7 +970,7 @@ const NewCustomerModal = ({ page }: Props) => {
                 </div> */}
               </div>
 
-              <div className="grid grid-cols-3 mt-2 gap-x-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 mt-2 gap-x-4">
                 {customerdata.customerType == "Business" && <div>
                   <label htmlFor="">Work Phone</label>
                   <PhoneInput
@@ -993,7 +993,7 @@ const NewCustomerModal = ({ page }: Props) => {
                     onChange={(e) => handlePhoneChange("mobile", e)}
                   />
                 </div>
-                <div>
+                <div className="">
                   <label htmlFor="dob">Date of Birth</label>
                   <input
                     type="date"
@@ -1007,51 +1007,48 @@ const NewCustomerModal = ({ page }: Props) => {
                 </div>
               </div>
 
-              <div className="flex mt-5 px-5">
-                <div className="w-[20%] bg-gray-100 p-4">
-                  <ul className="h-full   space-y-0 border-gray-300 text-slate-700">
+              <div className=" flex-row sm:flex mt-5 px-0 sm:px-5">
+                <div className="w-full sm:w-[20%] bg-gray-100 p-4">
+                  <ul className="h-full flex sm:block space-x-2 sm:space-x-0 space-y-0 border-gray-300 text-slate-700 overflow-auto">
                     <li
                       className={`${getTabClassName(
                         "otherDetails"
-                      )} border-r-4  p-2 `}
+                      )} border-b-2 sm:border-r-4 p-2 whitespace-nowrap`}
                       onClick={() => setActiveTab("otherDetails")}
                     >
                       Other Details
                     </li>
                     <li
-                      className={`${getTabClassName("taxes")} border-r-4  p-2`}
+                      className={`${getTabClassName("taxes")} border-b-2 sm:border-r-4 p-2 whitespace-nowrap`}
                       onClick={() => setActiveTab("taxes")}
                     >
                       Taxes
                     </li>
                     <li
-                      className={`${getTabClassName(
-                        "address"
-                      )} border-r-4  p-2`}
+                      className={`${getTabClassName("address")} border-b-2 sm:border-r-4 p-2 whitespace-nowrap`}
                       onClick={() => setActiveTab("address")}
                     >
                       Address
                     </li>
                     <li
-                      className={`${getTabClassName(
-                        "contactPersons"
-                      )} border-r-4  p-2`}
+                      className={`${getTabClassName("contactPersons")} border-b-2 sm:border-r-4 p-2 whitespace-nowrap`}
                       onClick={() => setActiveTab("contactPersons")}
                     >
                       Contact Persons
                     </li>
                     <li
-                      className={`${getTabClassName("remarks")} border-r-4 p-2`}
+                      className={`${getTabClassName("remarks")} border-b-2 sm:border-r-4 p-2 whitespace-nowrap`}
                       onClick={() => setActiveTab("remarks")}
                     >
                       Remarks
                     </li>
                   </ul>
                 </div>
-                <div className=" w-full  ps-16">
+
+                <div className=" w-full  sm:ps-16">
                   {activeTab === "otherDetails" && (
                     <div className="space-y-2  p-4 ">
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
                         <div>
                           <label className="block mb-0.5">
                             Opening Balance
@@ -1210,7 +1207,7 @@ const NewCustomerModal = ({ page }: Props) => {
                           </div>
                         </div>
                       </div>
-                      <div className="grid grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                           <label className="block mb-0.5">Credit Days</label>
                           <input
@@ -1318,7 +1315,7 @@ const NewCustomerModal = ({ page }: Props) => {
                             Allow portal access to this customer
                           </label>
                         </div>
-                        <div className="relative w-[349px]">
+                        <div className="relative w-full sm:w-[349px]">
                           <label htmlFor="" className="block mb-0.5 ">
                             Select Language
                           </label>
@@ -1778,7 +1775,7 @@ const NewCustomerModal = ({ page }: Props) => {
                         <p>
                           <b>Billing Address</b>
                         </p>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block mb-0.5">Attention</label>
                             <input
@@ -2007,7 +2004,7 @@ const NewCustomerModal = ({ page }: Props) => {
                         </div>
 
                         {/* Other fields */}
-                        <div className="grid grid-cols-3 gap-4 ">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 ">
                           <div>
                             <label
                               className="text-slate-600"
@@ -2091,7 +2088,7 @@ const NewCustomerModal = ({ page }: Props) => {
                           </button>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {/* Attention */}
                           <div>
                             <label className="block mb-0.5">Attention</label>
@@ -2317,7 +2314,7 @@ const NewCustomerModal = ({ page }: Props) => {
                         </div>
 
                         {/* Other fields */}
-                        <div className="grid grid-cols-3 gap-4 pt-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                           <div>
                             <label
                               className="text-slate-600 "
@@ -2387,7 +2384,7 @@ const NewCustomerModal = ({ page }: Props) => {
 
                   {activeTab === "contactPersons" && (
                     <>
-                      <div className="rounded-lg border-2 border-tableBorder mt-5">
+                      <div className="rounded-lg border-2 border-tableBorder mt-5 overflow-x-auto">
                         <table className="min-w-full bg-white rounded-lg relative mb-4 border-dropdownText">
                           <thead className="text-[12px] text-center text-dropdownText">
                             <tr className="bg-lightPink">
