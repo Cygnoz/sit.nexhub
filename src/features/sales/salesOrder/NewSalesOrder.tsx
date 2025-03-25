@@ -310,19 +310,17 @@ const NewSalesOrder = ({ page }: Props) => {
   };
 
   const handleplaceofSupply = () => {
-    if (oneOrganization.organizationCountry) {
+    if (selectedCustomer.billingCountry) {
       const country = countryData.find(
         (c: any) =>
-          c.name.toLowerCase() ===
-          oneOrganization.organizationCountry.toLowerCase()
+          c.name.toLowerCase() === selectedCustomer.billingCountry.toLowerCase()
       );
-      if (oneOrganization) {
-        if (!salesOrderState.placeOfSupply) {
-          setSalesOrderState((preData) => ({
-            ...preData,
-            placeOfSupply: selectedCustomer.billingState,
-          }));
-        }
+
+      if (selectedCustomer) {
+        setSalesOrderState((preData: any) => ({
+          ...preData,
+          placeOfSupply: selectedCustomer.billingState,
+        }));
       }
       if (country) {
         const states = country.states;
@@ -331,7 +329,23 @@ const NewSalesOrder = ({ page }: Props) => {
         console.log("Country not found");
       }
     } else {
-      console.log("No country selected");
+      if (oneOrganization.organizationCountry) {
+        const country = countryData.find(
+          (c: any) =>
+            c.name.toLowerCase() ===
+            oneOrganization.organizationCountry.toLowerCase()
+        );
+        if (oneOrganization) {
+          setSalesOrderState((preData: any) => ({
+            ...preData,
+            placeOfSupply: oneOrganization.state,
+          }));
+        }
+        if (country) {
+          const states = country.states;
+          setPlaceOfSupplyList(states);
+        }
+      }
     }
   };
 
@@ -391,13 +405,17 @@ const NewSalesOrder = ({ page }: Props) => {
     fetchData(customerUrl, setCustomerData, AllCustomer);
     fetchData(paymentTermsUrl, setPaymentTerms, allPyamentTerms);
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
-    handleplaceofSupply();
-    fetchCountries();
     getSalesQuotePrefix();
     if (selectedCustomer) {
       checkTaxType(selectedCustomer);
     }
   }, [selectedCustomer]);
+
+  useEffect(() => {
+    handleplaceofSupply();
+    fetchCountries();
+  }, [oneOrganization, selectedCustomer])
+
 
   const filterByDisplayName = (
     data: any[],

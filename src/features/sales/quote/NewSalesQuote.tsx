@@ -223,19 +223,17 @@ const NewSalesQuote = ({ page }: Props) => {
 
 
   const handleplaceofSupply = () => {
-    if (oneOrganization.organizationCountry) {
+    if (selectedCustomer.billingCountry) {
       const country = countryData.find(
         (c: any) =>
-          c.name.toLowerCase() ===
-          oneOrganization.organizationCountry.toLowerCase()
+          c.name.toLowerCase() === selectedCustomer.billingCountry.toLowerCase()
       );
-      if (oneOrganization) {
-        if (!salesQuoteState.placeOfSupply) {
-          setSalesQuoteState((preData) => ({
-            ...preData,
-            placeOfSupply: selectedCustomer.billingState,
-          }));
-        }
+
+      if (selectedCustomer) {
+        setSalesQuoteState((preData: any) => ({
+          ...preData,
+          placeOfSupply: selectedCustomer.billingState,
+        }));
       }
       if (country) {
         const states = country.states;
@@ -244,10 +242,25 @@ const NewSalesQuote = ({ page }: Props) => {
         console.log("Country not found");
       }
     } else {
-      console.log("No country selected");
+      if (oneOrganization.organizationCountry) {
+        const country = countryData.find(
+          (c: any) =>
+            c.name.toLowerCase() ===
+            oneOrganization.organizationCountry.toLowerCase()
+        );
+        if (oneOrganization) {
+          setSalesQuoteState((preData: any) => ({
+            ...preData,
+            placeOfSupply: oneOrganization.state,
+          }));
+        }
+        if (country) {
+          const states = country.states;
+          setPlaceOfSupplyList(states);
+        }
+      }
     }
   };
-  // console.log(customerData, "cd");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -374,17 +387,17 @@ const NewSalesQuote = ({ page }: Props) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openDropdownIndex]);
+
   useEffect(() => {
     handleplaceofSupply();
     fetchCountries();
-    getSalesQuotePrefix()
-  }, [oneOrganization]);
+  }, [oneOrganization, selectedCustomer])
 
   useEffect(() => {
     const organizationUrl = `${endponits.GET_ONE_ORGANIZATION}`;
 
     fetchData(organizationUrl, setOneOrganization, getOneOrganization);
-
+    getSalesQuotePrefix()
   }, []);
 
   const [isPlaceOfSupplyVisible, setIsPlaceOfSupplyVisible] = useState<boolean>(true);

@@ -17,7 +17,7 @@ import NewspaperIcon from "../../../assets/icons/NewspaperIcon";
 import noImage from '../../../assets/Images/no-image-icon-23485.png'
 import ListTreeIcon from "../../../assets/icons/ListTreeIcon";
 import UserCheck from "../../../assets/icons/UserCheck";
-import ArrowRightLeft from "../../../assets/icons/ArrowRightLeft";
+// import ArrowRightLeft from "../../../assets/icons/ArrowRightLeft";
 import line from '../../../assets/Images/Rectangle 5557.png'
 import { useOrganization } from "../../../context/OrganizationContext";
 import PencilEdit from "../../../assets/icons/PencilEdit";
@@ -536,13 +536,13 @@ const ItemTable = ({ hsnsac }: Props) => {
                     </p>
 
                     {/* Transaction Tab */}
-                    <p
+                    {/* <p
                       className={`cursor-pointer flex items-center gap-2 ${activeTab === "transaction" ? "text-[#303F58] font-semibold" : "text-[#8F99A9]"
                         }`}
                       onClick={() => setActiveTab("transaction")}
                     >
                       <ArrowRightLeft color={activeTab === "transaction" ? "#303F58" : "#8F99A9"} size={0} /> Transaction
-                    </p>
+                    </p> */}
                   </div>
 
                   <img className="w-[95%] ml-5 h-[0.5%]" src={line} alt="" />

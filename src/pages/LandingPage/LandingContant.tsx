@@ -14,7 +14,7 @@ import manageSalesImg from "../../assets/Images/manageSalesImg.png";
 import purchaseVector from "../../assets/Images/purchaseVector.png";
 import salesVector from "../../assets/Images/salesVector.png";
 import supplierVector from "../../assets/Images/supplierVector.png";
-import droidBilly from "../../assets/Images/droidBilly.png";
+import droidBilly from "../../assets/Images/billieImage.png";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Frame from "../Cygnoboat/Frame";
@@ -72,13 +72,13 @@ const LandingContant = ({ mode, setMode }: Props) => {
                   </button>
                   <div className="hidden">
 
-                  <button
-                    className={`${mode ? "bg-[#948B7C]" : "bg-[#726e66]"
-                      } text-white space-x-2  text-sm w-[160px] h-[28px] rounded-md flex items-center justify-center `}
-                  >
-                    <TimerIcon />
-                    <p className="">Recently Opened</p>
-                  </button>
+                    <button
+                      className={`${mode ? "bg-[#948B7C]" : "bg-[#726e66]"
+                        } text-white space-x-2  text-sm w-[160px] h-[28px] rounded-md flex items-center justify-center `}
+                    >
+                      <TimerIcon />
+                      <p className="">Recently Opened</p>
+                    </button>
                   </div>
                 </div>
                 {/* Arrow Button */}
@@ -379,7 +379,7 @@ const LandingContant = ({ mode, setMode }: Props) => {
         >
           <img
             src={droidBilly}
-            className="w-[125px] -bottom-[60px] absolute "
+            className="w-[125px] absolute "
             alt=""
           />
           <img
@@ -392,12 +392,12 @@ const LandingContant = ({ mode, setMode }: Props) => {
             className="-z-10 absolute right-0 bottom-0"
             alt=""
           />
-         <p
-            className={`w-[140px] text-[16px]  absolute right-5 sm:right-14 bottom-5 ${mode ? "text-[#303F58]" : "text-white"
+          <p
+            className={`w-[140px] text-[24px]  absolute right-5 sm:right-7 bottom-5 ${mode ? "text-[#303F58]" : "text-white"
               }`}
           >
-            Chat With <br />
-            <span className="font-bold text-[24px]">Droid Billie</span>
+            Let's  <br />
+            <span className="font-bold text-[24px]">Connect!</span>
           </p>
           <button
             onClick={handleModalToggle}
@@ -434,7 +434,7 @@ const LandingContant = ({ mode, setMode }: Props) => {
         <Frame
           isOpen={isPopupOpen}
           onClose={handleModalToggle}
-          url= {`https://dev.solytics.online/main?projectName=BillBizz`}
+          url={`https://dev.solytics.online/main?projectName=BillBizz`}
         />
       }
     </div>
