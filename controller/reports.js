@@ -128,7 +128,14 @@ async function getReportAccount(organizationExists,organizationId, startDate, en
                 }
             },
             { $unwind: "$accountDetails" },
-            { $match: { "accountDetails.accountSubhead": accountSubHead } },
+            { 
+                $match: { 
+                    "accountDetails.accountSubhead": accountSubHead,
+                    "accountDetails.accountName": { 
+                        $nin: ["Sales Discount", "Purchase Discount","Sales Discount(Cash Discount)","Purchase Discount(Cash Discount)"] 
+                    } 
+                } 
+            },
             {
                 $match: {
                     $or: [{ debitAmount: { $ne: 0 } }, { creditAmount: { $ne: 0 } }]
