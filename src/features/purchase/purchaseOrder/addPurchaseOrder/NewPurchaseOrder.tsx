@@ -262,8 +262,25 @@ const NewPurchaseOrder = ({ page }: Props) => {
         console.log("Country not found");
       }
     } else {
-      console.log("No country selected");
-    }
+      if (oneOrganization.organizationCountry) {
+        const country = countryData.find(
+          (c: any) =>
+            c.name.toLowerCase() ===
+            oneOrganization.organizationCountry.toLowerCase()
+        );
+        if (oneOrganization) {
+          setPurchaseOrderState((preData) => ({
+            ...preData,
+            sourceOfSupply: oneOrganization.state,
+          }));
+        }
+        if (country) {
+          const states = country.states;
+          setDestinationList(states);
+        } else {
+          console.log("Country not found");
+        }
+    }}
   };
 
   const filterByDisplayName = (
@@ -585,7 +602,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 mt-2 gap-4">
-                  {purchaseOrderState.supplierId && (
+                 
                     <>
                       <div>
                         <label className="block text-sm mb-1 text-labelColor">
@@ -650,7 +667,7 @@ const NewPurchaseOrder = ({ page }: Props) => {
                         </div>
                       </div>
                     </>
-                  )}
+                  
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 my-3">
                   <div className="col-span-5 ">

@@ -10,6 +10,8 @@ import PlusCircle from "../../../../assets/icons/PlusCircle";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import img from "../../../../assets/images/image (7).png";
+import img1 from "../../../../assets/Images/image.png"
+
 
 type Row = {
   itemImage?: string;
@@ -545,7 +547,7 @@ const NewOrderTable = ({
         ? Number(totalIGST).toFixed(2)
         : Number(totalSGST + totalCGST).toFixed(2),
     }));
-  }, [rows]);
+  }, [rows,purchaseOrderState.items]);
 
   useEffect(() => {
     if (purchaseOrderState) {
@@ -615,8 +617,8 @@ const NewOrderTable = ({
                       <div className="cursor-pointer gap-2 grid grid-cols-12 appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
                         <div className="flex items-start col-span-4">
                           <img
-                            className="rounded-full h-10 w-10 "
-                            src={row.itemImage}
+                            className="rounded-full h-10 w-10  object-cover"
+                            src={row.itemImage?row.itemImage:img1}
                             alt=""
                           />
                         </div>
@@ -651,7 +653,7 @@ const NewOrderTable = ({
                             >
                               <div className="col-span-2 flex justify-center">
                                 <img
-                                  className="rounded-full h-10"
+                                  className="rounded-full h-10 w-10 object-cover"
                                   src={item.itemImage ? item.itemImage : img}
                                   alt="Img"
                                 />

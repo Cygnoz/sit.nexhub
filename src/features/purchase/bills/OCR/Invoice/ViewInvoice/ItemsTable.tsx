@@ -14,7 +14,6 @@ type Item = {
   itemCostPrice: string;
   gross: string;
   itemDiscount: string;
-  itemNetAmount: string;
   itemCgstAmount: string | number;
   itemAmount: string;
   itemBatchNo: string | null;
@@ -195,8 +194,7 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
     };
   }, []);
 
-  console.log(finalItem, "item");
-  console.log(invoice.invoice.items, "itemss");
+
 
   return (
     <div className="overflow-x-auto hide-scrollbar h-[300px]">
@@ -270,17 +268,18 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
                         <div className="space-y-1">
                           {matchingItem?.length > 0 ? (
                             matchingItem.map((item: any, index: number) => (
-                              <div
-                                className="px-3 py-2 text-loremcolor text-sm bg-[#f2f2f2]"
+                              <button
+                                className="px-3 py-2 text-loremcolor text-sm bg-[#f2f2f2] w-full"
                                 key={item._id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setFinalItem(item);
+                                  handleExpand("dropdown1");
+                                }}
                               >
                                 <div className="flex items-center">
                                   <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setFinalItem(item);
-                                      handleExpand("dropdown1");
-                                    }}
+                                   
                                   >
                                     {item.itemName}
                                   </button>
@@ -345,7 +344,7 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
                                     </div>
                                   </div>
                                 )}
-                              </div>
+                              </button>
                             ))
                           ) : (
                             <div className="flex items-center px-3 text-loremcolor h-9 bg-[#f2f2f2]">
@@ -401,7 +400,7 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
                 {item.itemDiscount ? item.itemDiscount : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
-                {item.itemNetAmount ? item.itemNetAmount : "-"}
+                {item.itemAmount ? item.itemAmount : "-"}
               </td>
               <td className="border border-[#F4F4F4] px-4 py-3 whitespace-nowrap">
                 {item.itemTax ? item.itemTax : "-"}

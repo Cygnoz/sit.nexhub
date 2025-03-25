@@ -175,6 +175,7 @@ const NewDebitNote = ({ page }: Props) => {
       console.log("Error in fetching Country", error);
     }
   };
+
   const handleDestination = () => {
     if (oneOrganization?.organizationCountry) {
       const country = countryData.find(
@@ -186,7 +187,7 @@ const NewDebitNote = ({ page }: Props) => {
       if (oneOrganization) {
         setDebitNoteState((preData) => ({
           ...preData,
-          destinationOfSupply: oneOrganization.state,
+          sourceOfSupply: oneOrganization.state,
         }));
       }
       if (country) {
@@ -203,6 +204,7 @@ const NewDebitNote = ({ page }: Props) => {
       console.log("No country selected");
     }
   };
+
   const handleplaceofSupply = () => {
     if (selecteSupplier.billingCountry) {
       const country = countryData.find(
@@ -212,7 +214,7 @@ const NewDebitNote = ({ page }: Props) => {
       if (selecteSupplier) {
         setDebitNoteState((preData) => ({
           ...preData,
-          sourceOfSupply: selecteSupplier.billingState,
+          destinationOfSupply: selecteSupplier.billingState,
           supplierDisplayName: selecteSupplier.supplierDisplayName,
           supplierBillingCountry: selecteSupplier.billingCountry,
           supplierBillingState: selecteSupplier.billingState,
@@ -226,8 +228,27 @@ const NewDebitNote = ({ page }: Props) => {
         console.log("Country not found");
       }
     } else {
-      console.log("No country selected");
+      
+    if (oneOrganization.organizationCountry) {
+      const country = countryData.find(
+        (c: any) =>
+          c.name.toLowerCase() ===
+          oneOrganization.organizationCountry.toLowerCase()
+      );
+      if (oneOrganization) {
+        setDebitNoteState((preData) => ({
+          ...preData,
+          destinationOfSupply: oneOrganization.state,
+        }));
+      }
+      if (country) {
+        const states = country.states;
+        setDestinationList(states);
+      } else {
+        console.log("Country not found");
+      }
     }
+  }
   };
 
   const filteredSupplier = filterByDisplayName(
@@ -538,7 +559,7 @@ const NewDebitNote = ({ page }: Props) => {
               </label>
             </div>
 
-            {debitNoteState.supplierId && (
+         
               <>
                 <div>
                   <label className="block text-sm mb-1 text-labelColor">
@@ -598,7 +619,7 @@ const NewDebitNote = ({ page }: Props) => {
                   </div>
                 </div>
               </>
-            )}
+            
             <div className=" w-full">
               <label
                 htmlFor=""

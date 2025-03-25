@@ -8,6 +8,7 @@ import CheveronDownIcon from "../../../assets/icons/CheveronDownIcon";
 import SearchBar from "../../../Components/SearchBar";
 import PlusCircle from "../../../assets/icons/PlusCircle";
 import TrashCan from "../../../assets/icons/TrashCan";
+import img from "../../../assets/Images/image.png"
 
 type Row = {
   itemImage?: string;
@@ -502,8 +503,8 @@ console.log(item,"item")
                       <div className="cursor-pointer gap-2 grid grid-cols-12 appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
                         <div className="flex items-start col-span-4">
                           <img
-                            className="rounded-full h-10 w-10 "
-                            src={row.itemImage}
+                            className="rounded-full h-10 w-10  object-cover "
+                            src={row.itemImage?row.itemImage: img }
                             alt=""
                           />
                         </div>
@@ -534,16 +535,16 @@ console.log(item,"item")
                             filterItems()?.map((item: any, idx: number) => (
                               <button
                                 key={idx}
-                                className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg w-full  bg-lightPink"
+                                className="flex items-center gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg w-full  bg-lightPink"
                                 onClick={() => handleItemSelect(item, index)}
                               >
                                 <div className="col-span-2 flex justify-center">
-                                  <img
-                                    className="rounded-full h-10"
-                                    src={item.itemImage}
-                                    alt=""
-                                  />
-                                </div>
+                                <img
+                                  className="rounded-full h-10 w-10 object-cover"
+                                  src={item.itemImage ? item.itemImage : img}
+                                  alt="Img"
+                                />
+                              </div>
                                 <div className="col-span-10 flex">
                                   <div className="text-start">
                                     <p className="font-bold text-sm text-black">

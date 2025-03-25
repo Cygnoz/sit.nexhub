@@ -103,7 +103,6 @@ function AddExpensePage({ page }: Props) {
   );
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [accountData, setAccountData] = useState<any>([]);
-  console.log("destinationList", destinationList);
 
   const handleAddExpense = async () => {
     try {
@@ -396,8 +395,25 @@ function AddExpensePage({ page }: Props) {
         console.log("Country not found");
       }
     } else {
-      console.log("No country selected");
-    }
+      if (organization.organizationCountry) {
+        const country = countryData.find(
+          (c: any) =>
+            c.name.toLowerCase() ===
+          organization.organizationCountry.toLowerCase()
+        );
+        if (organization) {
+          setExpenseData((preData) => ({
+            ...preData,
+            sourceOfSupply: organization.state,
+          }));
+        }
+        if (country) {
+          const states = country.states;
+          setDestinationList(states);
+        } else {
+          console.log("Country not found");
+        }
+    }}
   };
 
 
@@ -526,7 +542,7 @@ function AddExpensePage({ page }: Props) {
     if (expenseData?.expense?.length) {
       const { sourceOfSupply, destinationOfSupply, amountIs } = expenseData;
 
-      const updatedExpenses = expenseData.expense.map((expenseItem, index) => {
+      const updatedExpenses = expenseData.expense.map((expenseItem) => {
         const { amount, sgst, cgst, igst } = expenseItem;
 
         let sgstAmount = 0;
@@ -553,12 +569,12 @@ function AddExpensePage({ page }: Props) {
               total = tt;
             }
 
-            console.log(`Row 123..................... ${index + 1}:`);
-            console.log("tt", tt);
-            console.log("amount", amount);
-            console.log("amt", amt);
-            console.log("difference", difference);
-            console.log("total", total);
+            // console.log(`Row 123..................... ${index + 1}:`);
+            // console.log("tt", tt);
+            // console.log("amount", amount);
+            // console.log("amt", amt);
+            // console.log("difference", difference);
+            // console.log("total", total);
           } else {
             const tt = roundToTwoDecimals((amount / (100 + igst)) * 100);
             igstAmount = roundToTwoDecimals((igst / 100) * tt);

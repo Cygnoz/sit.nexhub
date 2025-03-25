@@ -157,7 +157,15 @@ const NewBills = ({ page }: Props) => {
             transactionDiscountAmount: transactionDiscountAmount,
           }));
         } else if (url.includes(endponits.GET_A_OCR_INVOICE)) {
+          
           setData(response.data[0]);
+          const matchingSupplier = supplierData.find(
+            (sup: any) => sup._id === response.data[0].supplierId
+          );
+          if (matchingSupplier) {
+            setSelecetdSupplier(matchingSupplier);
+          }
+        
 
         } else {
           setData(response.data);
@@ -203,10 +211,17 @@ const NewBills = ({ page }: Props) => {
           c.name.toLowerCase() === selecteSupplier.billingCountry.toLowerCase()
       );
       if (selecteSupplier) {
-        setBill((preData: any) => ({
+        setBill((preData) => ({
+          ...preData,
+          supplierDisplayName: selecteSupplier.supplierDisplayName,
+          supplierBillingCountry: selecteSupplier.billingCountry,
+          supplierBillingState: selecteSupplier.billingState,
+        }));
+      }
+      if (selecteSupplier && page !== "edit") {
+        setBill((preData) => ({
           ...preData,
           sourceOfSupply: selecteSupplier.billingState,
-          supplierDisplayName: selecteSupplier.supplierDisplayName,
         }));
       }
 
@@ -217,9 +232,29 @@ const NewBills = ({ page }: Props) => {
         console.log("Country not found");
       }
     } else {
-      console.log("No country selected");
-    }
+      if (oneOrganization.organizationCountry) {
+        const country = countryData.find(
+          (c: any) =>
+            c.name.toLowerCase() ===
+            oneOrganization.organizationCountry.toLowerCase()
+        );
+        if (oneOrganization) {
+          setBill((preData) => ({
+            ...preData,
+            sourceOfSupply: oneOrganization.state,
+          }));
+        }
+        if (country) {
+          const states = country.states;
+          setDestinationList(states);
+        } else {
+          console.log("Country not found");
+        }
+    }}
   };
+
+  console.log(oneOrganization,"Selected");
+  
 
   const fetchCountries = async () => {
     try {
@@ -601,7 +636,7 @@ const NewBills = ({ page }: Props) => {
     handleDestination();
     handleplaceofSupply();
     fetchCountries();
-  }, [oneOrganization, selecteSupplier]);
+  }, [oneOrganization, selecteSupplier, id ]);
 
   useEffect(() => {
     if (lastBillPrefix && page !== "edit") {
@@ -675,6 +710,10 @@ const NewBills = ({ page }: Props) => {
       }));
     }
   }, [bill.paymentTerms]);
+
+  useEffect(()=>{
+
+  })
 
   return (
     <div className="mx-5 my-4 text-sm">
@@ -809,7 +848,7 @@ const NewBills = ({ page }: Props) => {
               </div>
             </div>
 
-            {bill.supplierId && (
+         
               <>
                 <div>
                   <label className="block text-sm mb-1 text-labelColor">
@@ -869,7 +908,7 @@ const NewBills = ({ page }: Props) => {
                   </div>
                 </div>
               </>
-            )}
+            
 
             <div className=" w-full">
               <label className="block text-sm  text-labelColor">

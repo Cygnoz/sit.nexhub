@@ -202,11 +202,11 @@ const PurchaseTable: React.FC<TableProps> = ({
                       )
                   )}
                   <td className="py-3 px-4 border-b border-tableBorder flex items-center justify-center gap-2 hide-print">
-                    <button
+                  { page!=="OCR" && <button
                       onClick={() => onEditClick && onEditClick(item._id)}
                     >
                       <Pen color={"green"} size={18} />
-                    </button>
+                    </button>}
                     <button onClick={() => onRowClick && onRowClick(item._id)}>
                       <Eye color={"#569FBC"} />
                     </button>

@@ -66,7 +66,7 @@ const OCRInvoiceView = () => {
   const [similarSuppliers, setSimilarSuppliers] = useState<[] | any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedSupplier, setselectedSupplier] = useState<any>(null);
-  const [sameSupplier, setSameSupplier] = useState<boolean>(true);
+  const [sameSupplier, setSameSupplier] = useState<any>([]);
   const [allItems, setAllItems] = useState<[] | any>([]);
   const [currentItemsMatch, setCurrentItemsMatch] = useState<any>([]);
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -156,7 +156,6 @@ const OCRInvoiceView = () => {
     return pageNumbers;
   };
 
-  console.log(currentItemsMatch,"match")
 
   const handleExpand = (key: string) => {
     setExpandDropDown((prevKey) => (prevKey === key ? null : key));
@@ -254,44 +253,59 @@ const OCRInvoiceView = () => {
       ).values()
     );
 
-    setSameSupplier(exactMatches.length > 0);
+    setSameSupplier(exactMatches);
     setSimilarSuppliers(combinedMatches);
 
-    if (exactMatches.length > 0) {
+    console.log(exactMatches)
+
+    if (exactMatches) {
       setInvoice((prevData: any) => ({
         ...prevData,
         invoice: {
           ...prevData.invoice,
           header: {
-            ...prevData.invoice.header,
-            supplierId: exactMatches[0]._id,
+            ...prevData.invoice.header,       
+            supplierId: exactMatches[0]?._id, 
           },
         },
       }));
     }
+    
+
+   
+
   };
 
+
+ 
   const handleItemMatch = () => {
+    // Map through current items to find matches
     const matches = currentItems.map((item: any) => {
+      // Find a matching item in allItems based on itemName
       const matchingItem = allItems.find(
         (innerItem: any) => innerItem.itemName === item.itemName
       );
-
+      
+      // If a matching item is found
       if (matchingItem) {
+
+        console.log(matchingItem,"matching")
+        // Update invoice items with matching item details
         const updatedItems = invoice.invoice.items.map((invoiceItem: any) =>
           invoiceItem.itemName === item.itemName
             ? {
                 ...invoiceItem,
                 ...matchingItem,
                 itemId: matchingItem._id,
-                sgst: matchingItem.sgst,
-                cgst: matchingItem.cgst,
-                igst: matchingItem.igst,
+                sgst: matchingItem.itemSgst,
+                cgst: matchingItem.itemCgst,
+                igst: matchingItem.itemIgst,
                 taxPreference: matchingItem.taxPreference,
               }
             : invoiceItem
         );
-
+        
+        // Update the invoice state with new items
         setInvoice((prevInvoice: any) => ({
           ...prevInvoice,
           invoice: {
@@ -300,13 +314,15 @@ const OCRInvoiceView = () => {
           },
         }));
       }
-
+      
+      // Return match information
       return {
         itemId: item.itemId,
         isMatch: !!matchingItem,
       };
     });
-
+    
+    // Set the matches state
     setCurrentItemsMatch(matches);
   };
 
@@ -721,7 +737,6 @@ const OCRInvoiceView = () => {
                         (match: any) => match.itemId === item.itemId
                       );
                       const isMatched = matchedItem?.isMatch ?? false;
-                      console.log(currentItems, "matchingItem");
                       return (
                         <div
                           onClick={() => toggleDropdown("items")}
