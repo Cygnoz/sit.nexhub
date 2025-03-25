@@ -157,7 +157,7 @@ const NewBills = ({ page }: Props) => {
             transactionDiscountAmount: transactionDiscountAmount,
           }));
         } else if (url.includes(endponits.GET_A_OCR_INVOICE)) {
-          
+
           setData(response.data[0]);
           const matchingSupplier = supplierData.find(
             (sup: any) => sup._id === response.data[0].supplierId
@@ -165,7 +165,7 @@ const NewBills = ({ page }: Props) => {
           if (matchingSupplier) {
             setSelecetdSupplier(matchingSupplier);
           }
-        
+
 
         } else {
           setData(response.data);
@@ -250,11 +250,12 @@ const NewBills = ({ page }: Props) => {
         } else {
           console.log("Country not found");
         }
-    }}
+      }
+    }
   };
 
-  console.log(oneOrganization,"Selected");
-  
+  console.log(oneOrganization, "Selected");
+
 
   const fetchCountries = async () => {
     try {
@@ -467,18 +468,9 @@ const NewBills = ({ page }: Props) => {
   }, [bill.grandTotal, bill.paidAmount, bill.paymentTerms]);
 
   console.log(bill);
-
   const handleSave = async () => {
     const newErrors = { ...errors };
     const errorFields = [];
-
-    // if (bill.billNumber.trim() === "") {
-    //   newErrors.billNumber = true;
-    //   errorFields.push("Bill Number");
-    // } else {
-    //   newErrors.billNumber = false;
-    // }
-
     if (bill.supplierId.trim() === "") {
       newErrors.supplierId = true;
       errorFields.push("Supplier ID");
@@ -514,6 +506,17 @@ const NewBills = ({ page }: Props) => {
     }
 
     try {
+      // Create a deep copy of bill to avoid modifying the original state
+      const billToSave = JSON.parse(JSON.stringify(bill));
+
+      // Remove itemImage from each item before saving
+      if (billToSave.items) {
+        billToSave.items = billToSave.items.map((item: any) => {
+          const { itemImage, ...itemWithoutImage } = item;
+          return itemWithoutImage;
+        });
+      }
+
       let url;
       let api;
       if (page === "edit") {
@@ -523,7 +526,9 @@ const NewBills = ({ page }: Props) => {
         url = `${endponits.ADD_BILL}`;
         api = newBillApi;
       }
-      const { response, error } = await api(url, bill);
+
+      const { response, error } = await api(url, billToSave);
+
       if (!error && response) {
         toast.success(response.data.message);
         setTimeout(() => {
@@ -534,6 +539,7 @@ const NewBills = ({ page }: Props) => {
       }
     } catch (error) {
       console.error("Save error", error);
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
@@ -636,7 +642,7 @@ const NewBills = ({ page }: Props) => {
     handleDestination();
     handleplaceofSupply();
     fetchCountries();
-  }, [oneOrganization, selecteSupplier, id ]);
+  }, [oneOrganization, selecteSupplier, id]);
 
   useEffect(() => {
     if (lastBillPrefix && page !== "edit") {
@@ -711,7 +717,7 @@ const NewBills = ({ page }: Props) => {
     }
   }, [bill.paymentTerms]);
 
-  useEffect(()=>{
+  useEffect(() => {
 
   })
 
@@ -848,67 +854,67 @@ const NewBills = ({ page }: Props) => {
               </div>
             </div>
 
-         
-              <>
-                <div>
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Destination Of Supply
-                    <span className="text-[#bd2e2e] ">*</span>
-                  </label>
-                  <div className="relative w-full">
-                    <select
-                      onChange={handleChange}
-                      name="destinationOfSupply"
-                      value={bill.destinationOfSupply}
-                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    >
-                      <option value="">Select Source Of Supply</option>
-                      {placeOfSupplyList &&
-                        placeOfSupplyList.map((item: any, index: number) => (
-                          <option
-                            key={index}
-                            value={item}
-                            className="text-gray"
-                          >
-                            {item}
-                          </option>
-                        ))}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
+
+            <>
+              <div>
+                <label className="block text-sm mb-1 text-labelColor">
+                  Destination Of Supply
+                  <span className="text-[#bd2e2e] ">*</span>
+                </label>
+                <div className="relative w-full">
+                  <select
+                    onChange={handleChange}
+                    name="destinationOfSupply"
+                    value={bill.destinationOfSupply}
+                    className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  >
+                    <option value="">Select Source Of Supply</option>
+                    {placeOfSupplyList &&
+                      placeOfSupplyList.map((item: any, index: number) => (
+                        <option
+                          key={index}
+                          value={item}
+                          className="text-gray"
+                        >
+                          {item}
+                        </option>
+                      ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
                   </div>
                 </div>
-                <div>
-                  <label className="block text-sm mb-1 text-labelColor">
-                    Source of Supply<span className="text-[#bd2e2e] ">*</span>
-                  </label>
-                  <div className="relative w-full">
-                    <select
-                      onChange={handleChange}
-                      name="sourceOfSupply"
-                      value={bill.sourceOfSupply}
-                      className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    >
-                      <option value="">Select Source Of Supply</option>
-                      {destinationList &&
-                        destinationList.map((item: any, index: number) => (
-                          <option
-                            key={index}
-                            value={item}
-                            className="text-gray"
-                          >
-                            {item}
-                          </option>
-                        ))}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <CehvronDown color="gray" />
-                    </div>
+              </div>
+              <div>
+                <label className="block text-sm mb-1 text-labelColor">
+                  Source of Supply<span className="text-[#bd2e2e] ">*</span>
+                </label>
+                <div className="relative w-full">
+                  <select
+                    onChange={handleChange}
+                    name="sourceOfSupply"
+                    value={bill.sourceOfSupply}
+                    className="block appearance-none w-full h-9  text-zinc-400 bg-white border border-inputBorder text-sm  pl-2 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  >
+                    <option value="">Select Source Of Supply</option>
+                    {destinationList &&
+                      destinationList.map((item: any, index: number) => (
+                        <option
+                          key={index}
+                          value={item}
+                          className="text-gray"
+                        >
+                          {item}
+                        </option>
+                      ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <CehvronDown color="gray" />
                   </div>
                 </div>
-              </>
-            
+              </div>
+            </>
+
 
             <div className=" w-full">
               <label className="block text-sm  text-labelColor">
@@ -1315,7 +1321,7 @@ const NewBills = ({ page }: Props) => {
                         {oneOrganization.baseCurrency}
                       </option>
                     </select>
-                  
+
                   </div>
                 </div>
                 <div className="w-full text-end ">
@@ -1428,11 +1434,11 @@ const NewBills = ({ page }: Props) => {
             <div className="flex gap-4 m-5 justify-end">
               {" "}
               <Link to={"/purchase/bills"}>
-              <Button variant="secondary" size="sm">
-                Cancel
-              </Button>
+                <Button variant="secondary" size="sm">
+                  Cancel
+                </Button>
               </Link>
-            
+
               <Button variant="primary" size="sm" onClick={handleSave}>
                 Save & send
               </Button>{" "}

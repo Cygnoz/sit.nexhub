@@ -10,7 +10,7 @@ import { newCreditTableHead } from "../../../assets/constants";
 import { CreditNoteBody } from "../../../Types/Creditnote";
 
 type Row = {
-  itemImage?: string;
+  itemImage: string;
   itemId: string;
   itemName: string;
   quantity: number | string;
@@ -51,7 +51,6 @@ const CreditNoteTable = ({
   const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<any>([]);
-
   const { request: getAllItemsRequest } = useApi("get", 5003);
   const previousItemsRef = useRef([]);
 
@@ -60,6 +59,7 @@ const CreditNoteTable = ({
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<Row[]>([
     {
+      itemImage: "",
       itemId: "",
       itemName: "",
       quantity: "",
@@ -100,6 +100,7 @@ const CreditNoteTable = ({
 
   const addRow = () => {
     const newRow: Row = {
+      itemImage: "",
       itemId: "",
       itemName: "",
       quantity: "",
@@ -127,12 +128,15 @@ const CreditNoteTable = ({
     setOpenDropdownId(null);
     setOpenDropdownType(null);
 
-
+    // Find the matching item from items array to get the complete item data
+    const matchingItem = items.find((i: any) => i._id === item.itemId);
+    const itemImage = matchingItem?.itemImage || item.itemImage || "";
 
     const newRows = [...rows];
     newRows[index] = {
       ...newRows[index],
       itemName: item.itemName,
+      itemImage: itemImage, // Set the image explicitly
       sellingPrice: item.sellingPrice,
       quantity: 1,
       itemId: item.itemId,
@@ -141,11 +145,9 @@ const CreditNoteTable = ({
       igst: item.igst,
       itemAmount: item.itemAmount,
       stock: item.returnQuantity ? item.quantity - item.returnQuantity : item.quantity,
-      // stock: item.stock,
       taxPreference: item.taxPreference,
-      salesAccountId: item.salesAccountId, // Properly set salesAccountId
-
-    }
+      salesAccountId: item.salesAccountId,
+    };
     const costPrice = Number(newRows[index].sellingPrice);
     const quantity = Number(newRows[index].quantity);
     const totalCostPrice = quantity * costPrice;
@@ -172,17 +174,19 @@ const CreditNoteTable = ({
 
     setRows(newRows);
 
-
-
     setSalesOrderState?.((prevData: any) => ({
       ...prevData,
       items: newRows?.map((row) => {
-        const updatedItem = { ...row };
-        delete updatedItem.itemImage;
+        // Ensure itemImage is included in the state update
+        const updatedItem = {
+          ...row,
+          itemImage: row.itemImage || ""
+        };
         return updatedItem;
       }),
     }));
   };
+
 
   const calculateTax = (
     totalSellPrice: number,
@@ -240,8 +244,8 @@ const CreditNoteTable = ({
     );
 
     newRows[index].itemAmount = isInterState
-    ? (itemAmount + igstAmount).toFixed(2)
-    : (itemAmount + cgstAmount + sgstAmount).toFixed(2);    newRows[index].cgstAmount = cgstAmount;
+      ? (itemAmount + igstAmount).toFixed(2)
+      : (itemAmount + cgstAmount + sgstAmount).toFixed(2); newRows[index].cgstAmount = cgstAmount;
     newRows[index].sgstAmount = sgstAmount;
     newRows[index].igstAmount = igstAmount;
     if (isInterState) {
@@ -261,7 +265,7 @@ const CreditNoteTable = ({
       ...prevData,
       items: newRows?.map((row) => {
         const updatedItem = { ...row };
-        delete updatedItem.itemImage;
+
         return updatedItem;
       }),
     }));
@@ -275,6 +279,7 @@ const CreditNoteTable = ({
       const { response, error } = apiResponse;
 
       if (!error && response) {
+        console.log('API Response:', response.data);
         setItems(response.data);
       } else {
         console.log(error);
@@ -297,6 +302,7 @@ const CreditNoteTable = ({
     } else {
       const defaultRow = {
         itemId: "",
+        itemImage: "",
         itemName: "",
         quantity: "",
         sellingPrice: "",
@@ -426,7 +432,7 @@ const CreditNoteTable = ({
 
       return {
         ...row,
-        itemAmount: isInterState?taxDetails.itemAmount+taxDetails.igstAmount:taxDetails.itemAmount+taxDetails.cgstAmount+taxDetails.sgstAmount,
+        itemAmount: isInterState ? taxDetails.itemAmount + taxDetails.igstAmount : taxDetails.itemAmount + taxDetails.cgstAmount + taxDetails.sgstAmount,
         cgstAmount: taxDetails.cgstAmount > 0 ? taxDetails.cgstAmount : "",
         sgstAmount: taxDetails.sgstAmount > 0 ? taxDetails.sgstAmount : "",
         igstAmount: taxDetails.igstAmount > 0 ? taxDetails.igstAmount : "",
@@ -438,7 +444,7 @@ const CreditNoteTable = ({
       ...prevData,
       items: updatedRows?.map((row) => {
         const updatedItem = { ...row };
-        delete updatedItem.itemImage;
+
         return updatedItem;
       }),
     }));
@@ -455,7 +461,7 @@ const CreditNoteTable = ({
         quantity: "",
         sellingPrice: "",
         itemTotaltax: "",
-
+        itemImage: "",
         itemAmount: "",
         sgst: "",
         cgst: "",
@@ -483,6 +489,13 @@ const CreditNoteTable = ({
   const filterItems = () => {
     return selectedInvoice?.items?.filter((item: any) => {
       const isItemAlreadySelected = rows.some((row) => row.itemId === item.itemId);
+      const matchingItem = items.find((i: any) => i._id === item.itemId);
+      
+      if (matchingItem) {
+        // Enhance the item with the image from matching item
+        item.itemImage = matchingItem.itemImage || "";
+      }
+      
       return (
         !isItemAlreadySelected &&
         item?.itemName?.toLowerCase().includes(searchValue.toLowerCase()) &&
@@ -549,9 +562,12 @@ const CreditNoteTable = ({
                       <div className="cursor-pointer gap-2 grid grid-cols-12 appearance-none items-center justify-center h-9 text-zinc-400 bg-white text-sm">
                         <div className="flex items-start col-span-4">
                           <img
-                            className="rounded-full h-10 w-10 "
-                            src={row.itemImage}
-                            alt=""
+                            className="rounded-full h-10"
+                            src={row.itemImage || "path/to/fallback-image.png"} // Add a fallback image
+                            alt={row.itemName || "Item"}
+                            onError={(e) => {
+                              e.currentTarget.src = "path/to/fallback-image.png"; // Fallback if image fails to load
+                            }}
                           />
                         </div>
                         <div className="col-span-8  text-start">
@@ -586,8 +602,11 @@ const CreditNoteTable = ({
                               <div className="col-span-2 flex justify-center">
                                 <img
                                   className="rounded-full h-10"
-                                  src={item.itemImage}
-                                  alt=""
+                                  src={item.itemImage || "path/to/fallback-image.png"} // Add a fallback image
+                                  alt={item.itemName || "Item"}
+                                  onError={(e) => {
+                                    e.currentTarget.src = "path/to/fallback-image.png"; // Fallback if image fails to load
+                                  }}
                                 />
                               </div>
                               <div className="col-span-10 flex">
