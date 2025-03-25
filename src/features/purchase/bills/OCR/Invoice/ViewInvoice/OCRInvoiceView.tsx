@@ -1,6 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import CheveronLeftIcon from "../../../../../../assets/icons/CheveronLeftIcon";
-import OCRNewInvoice from "../UploadInvoice/OCRNewInvoice";
 // import pdf from "../../../../../../assets/Images/image.png";
 import DotIcon from "../../../../../../assets/icons/DotIcon";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -156,7 +155,6 @@ const OCRInvoiceView = () => {
     return pageNumbers;
   };
 
-
   const handleExpand = (key: string) => {
     setExpandDropDown((prevKey) => (prevKey === key ? null : key));
   };
@@ -213,7 +211,7 @@ const OCRInvoiceView = () => {
   };
 
   const handleSupplierMatch = () => {
-    if (!invoice || invoice.length === 0) {
+    if (!invoice || Object.keys(invoice).length === 0) {
       console.error("No invoice data available.");
       return;
     }
@@ -221,110 +219,88 @@ const OCRInvoiceView = () => {
       console.error("No suppliers data available.");
       return;
     }
-
+  
     const invoiceSupplierName = invoice?.invoice?.header?.supplierDisplayName;
     if (!invoiceSupplierName) {
       console.error("No supplier name found in the invoice.");
       return;
     }
-
+  
     const normalizedInvoiceSupplier = invoiceSupplierName
       .replace(/\s+/g, "")
       .toLowerCase();
-
+  
     const exactMatches = supplier.filter(
       (s: any) => s.supplierDisplayName === invoiceSupplierName
     );
-
+  
     const similarMatches = supplier.filter((s: any) => {
       const normalizedSupplierName = s.supplierDisplayName
         .replace(/\s+/g, "")
         .toLowerCase();
-
+  
       return (
         normalizedSupplierName.includes(normalizedInvoiceSupplier) ||
         normalizedInvoiceSupplier.includes(normalizedSupplierName)
       );
     });
-
+  
     const combinedMatches = Array.from(
-      new Map(
-        [...exactMatches, ...similarMatches].map((item) => [item._id, item])
-      ).values()
+      new Map([...exactMatches, ...similarMatches].map((item) => [item._id, item]))
+        .values()
     );
-
+  
     setSameSupplier(exactMatches);
     setSimilarSuppliers(combinedMatches);
-
-    console.log(exactMatches)
-
-    if (exactMatches) {
-      setInvoice((prevData: any) => ({
+  
+      setHeader((prevData) => ({
         ...prevData,
-        invoice: {
-          ...prevData.invoice,
-          header: {
-            ...prevData.invoice.header,       
-            supplierId: exactMatches[0]?._id, 
-          },
-        },
+        supplierId: exactMatches[0]?._id,
       }));
-    }
     
-
-   
-
   };
 
+  
 
- 
+
   const handleItemMatch = () => {
-    // Map through current items to find matches
-    const matches = currentItems.map((item: any) => {
-      // Find a matching item in allItems based on itemName
-      const matchingItem = allItems.find(
-        (innerItem: any) => innerItem.itemName === item.itemName
+    const updatedItems = invoice?.invoice?.items?.map((invoiceItem: any) => {
+      const matchingItem = allItems?.find(
+        (innerItem: any) => innerItem?.itemName === invoiceItem?.itemName
       );
-      
-      // If a matching item is found
-      if (matchingItem) {
-
-        console.log(matchingItem,"matching")
-        // Update invoice items with matching item details
-        const updatedItems = invoice.invoice.items.map((invoiceItem: any) =>
-          invoiceItem.itemName === item.itemName
-            ? {
-                ...invoiceItem,
-                ...matchingItem,
-                itemId: matchingItem._id,
-                sgst: matchingItem.itemSgst,
-                cgst: matchingItem.itemCgst,
-                igst: matchingItem.itemIgst,
-                taxPreference: matchingItem.taxPreference,
-              }
-            : invoiceItem
-        );
-        
-        // Update the invoice state with new items
-        setInvoice((prevInvoice: any) => ({
-          ...prevInvoice,
-          invoice: {
-            ...prevInvoice.invoice,
-            items: updatedItems,
-          },
-        }));
-      }
-      
-      // Return match information
-      return {
-        itemId: item.itemId,
-        isMatch: !!matchingItem,
-      };
+  
+      return matchingItem
+        ? {
+            ...invoiceItem,
+            ...matchingItem,
+            itemId: matchingItem._id,
+            itemSgst: matchingItem.sgst,
+            itemCgst: matchingItem.cgst,
+            itemIgst: matchingItem.igst,
+            taxPreference: matchingItem.taxPreference,
+          }
+        : invoiceItem;
     });
-    
-    // Set the matches state
+  
+    setInvoice((prevInvoice: any) => ({
+      ...prevInvoice,
+      invoice: {
+        ...prevInvoice.invoice,
+        items: updatedItems,
+      },
+    }));
+  
+    // Track which items matched
+    const matches = currentItems.map((item: any) => ({
+      itemId: item.itemId,
+      isMatch: !!allItems.find((innerItem: any) => innerItem.itemName === item.itemName),
+    }));
+  
     setCurrentItemsMatch(matches);
   };
+  
+
+
 
   const handleChange = (
     section: "bankDetails" | "header" | "footer",
@@ -403,7 +379,7 @@ const OCRInvoiceView = () => {
 
   useEffect(() => {
     handleSupplierMatch();
-  }, [supplier, invoice?.invoice?.header?.supplierDisplayName]);
+  }, [supplier,  invoice?.invoice?.header?.supplierDisplayName]);
 
   useEffect(() => {
     if (
@@ -443,7 +419,7 @@ const OCRInvoiceView = () => {
 
   const isPDF = invoice?.image?.file?.startsWith("data:application/pdf");
 
-  console.log(invoice.invoice, "INVOICE");
+  console.log(invoice, "INVOICE");
 
   return (
     <>
@@ -456,9 +432,9 @@ const OCRInvoiceView = () => {
         <div>
           <h3 className="font-bold text-2xl text-textColor">All Invoice</h3>
         </div>
-        <div className="ml-auto gap-3 flex items-center">
+        {/* <div className="ml-auto gap-3 flex items-center">
           <OCRNewInvoice />
-        </div>
+        </div> */}
       </div>
 
       <div className="bg-white rounded-lg grid grid-cols-1 sm:grid-cols-12 gap-4 mx-5 p-5 main-div ">

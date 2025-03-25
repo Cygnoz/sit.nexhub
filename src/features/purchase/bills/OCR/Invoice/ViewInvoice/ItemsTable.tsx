@@ -265,7 +265,7 @@ function ItemsTable({ items = [], invoice, setInvoice, allItems = [] }: Props) {
                         </div>
                       </div>
                       {expandDropDown === "dropdown1" && (
-                        <div className="space-y-1">
+                        <div className="space-y-1 flex flex-col">
                           {matchingItem?.length > 0 ? (
                             matchingItem.map((item: any, index: number) => (
                               <button
