@@ -81,7 +81,7 @@ exports.addCustomer = async (req, res) => {
       await saveTrialBalanceAndHistory(savedCustomer, savedAccount, debitOpeningBalance, creditOpeningBalance, userId, userName,firstDayOfMonth);
   
       console.log("Customer & Account created successfully");
-      res.status(201).json({ message: "Customer created successfully." });
+      res.status(201).json({ message: "Customer created successfully.", clientId: savedCustomer._id });
     } catch (error) {
       console.log("Error creating customer:", error);
       res.status(500).json({ message: "Internal server error.", error });
@@ -974,7 +974,7 @@ async function updateAccount(cleanedData, accountExist) {
 
     //Tax Details
     validateTaxType(data.taxType, validTaxTypes, errors);
-    validatePlaceOfSupply(data.placeOfSupply, organization, errors);
+    // validatePlaceOfSupply(data.placeOfSupply, organization, errors);
     validateGSTorVAT(data, errors);
 
     //Currency
@@ -1079,10 +1079,10 @@ function validateIntegerFields(fields, data, errors) {
   function validateTaxType(taxType, validTaxTypes, errors) {
     validateField(taxType && !validTaxTypes.includes(taxType),"Invalid Tax Type: " + taxType, errors);
   }
-// Validate Place Of Supply
-  function validatePlaceOfSupply(placeOfSupply, organization, errors) {
-    validateField(placeOfSupply && !validCountries[organization.organizationCountry]?.includes(placeOfSupply),"Invalid Place of Supply: " + placeOfSupply, errors);
-  }
+// // Validate Place Of Supply
+//   function validatePlaceOfSupply(placeOfSupply, organization, errors) {
+//     validateField(placeOfSupply && !validCountries[organization.organizationCountry]?.includes(placeOfSupply),"Invalid Place of Supply: " + placeOfSupply, errors);
+//   }
 
 // Validate GST or VAT details
 function validateGSTorVAT(data, errors) {
