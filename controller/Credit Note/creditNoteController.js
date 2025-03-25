@@ -274,9 +274,9 @@ try {
     customerDisplayName: creditNote.customerId?.customerDisplayName,
     items: creditNote.items.map(item => ({
       ...item,
-      itemId: item.itemId?._id,
-      itemName: item.itemId?.itemName,
-      itemImage: item.itemId?.itemImage,
+      itemId: item?.itemId?._id,
+      itemName: item?.itemId?.itemName,
+      itemImage: item?.itemId?.itemImage,
     })),  
 };
 
