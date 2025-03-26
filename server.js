@@ -65,11 +65,11 @@ const startServer = () => {
     const PORT = 7005;
 
     server.get('/', (req, res) => {
-        res.status(200).json("Dev NexHub server started - Purchase v1.6");
+        res.status(200).json("Sit NexHub server started - Purchase v2");
     });
 
     server.listen(PORT, () => {
-        console.log(`NexHub server Purchase started at port : ${PORT}`);
+        console.log(`NexHub Sit server Purchase started at port : ${PORT}`);
     });
 };
 
