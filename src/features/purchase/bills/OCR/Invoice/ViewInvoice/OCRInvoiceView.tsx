@@ -965,7 +965,7 @@ const OCRInvoiceView = () => {
               </div>
             </div>
             <div className="py-2 bg-[#E5E5E5] rounded-b-lg text-xs text-[#4B5C79] flex items-center justify-end px-4 gap-2">
-              <Button className="px-4 py-2 " variant="secondary" size="sm">
+              <Button className="px-4 py-2 " variant="secondary" size="sm" onClick={()=>navigate("/purchase/bills/invoice")} >
                 Cancel
               </Button>
               <Button
