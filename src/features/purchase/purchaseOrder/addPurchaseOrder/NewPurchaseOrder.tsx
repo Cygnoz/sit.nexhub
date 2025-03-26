@@ -367,24 +367,27 @@ const NewPurchaseOrder = ({ page }: Props) => {
 
   const handleSave = async () => {
     if (loading) return;
-
     setLoading(true);
-
     try {
+      const purchaseOrderStateToSave = JSON.parse(JSON.stringify(purchaseOrderState));
+      if (purchaseOrderStateToSave.items) {
+        purchaseOrderStateToSave.items = purchaseOrderStateToSave.items.map((item: any) => {
+          const { itemImage, ...itemWithoutImage } = item;
+          return itemWithoutImage;
+        });
+      }
       let url;
       let api;
       if (page === "edit") {
         url = `${endponits.EDIT_PURCHASE_ORDER}/${id}`;
         api = editPurchaseOrderApi;
-
       } else {
         url = `${endponits.ADD_PURCHASE_ORDER}`;
         api = newPurchaseOrderApi;
-
       }
       const { response, error } = await api(
         url,
-        purchaseOrderState
+        purchaseOrderStateToSave
       );
       if (!error && response) {
         toast.success(response.data.message);
@@ -395,6 +398,8 @@ const NewPurchaseOrder = ({ page }: Props) => {
         toast.error(error?.response.data.message);
       }
     } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+      console.error("Error in handleSave:", error);
     } finally {
       setLoading(false);
     }

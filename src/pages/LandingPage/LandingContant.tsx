@@ -25,6 +25,7 @@ type Props = {
 };
 
 const LandingContant = ({ mode, setMode }: Props) => {
+  const solytics = import.meta.env.VITE_SOLYTICS;
   const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const handleModalToggle = () => {
@@ -434,7 +435,7 @@ const LandingContant = ({ mode, setMode }: Props) => {
         <Frame
           isOpen={isPopupOpen}
           onClose={handleModalToggle}
-          url={`https://dev.solytics.online/main?projectName=BillBizz`}
+          url={solytics}
         />
       }
     </div>

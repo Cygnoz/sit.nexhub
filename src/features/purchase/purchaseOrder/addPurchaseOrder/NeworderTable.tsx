@@ -172,7 +172,6 @@ const NewOrderTable = ({
       ...prevData,
       items: newRows.map((row) => {
         const updatedItem = { ...row };
-        delete updatedItem.itemImage;
         return updatedItem;
       }),
     }));
@@ -306,7 +305,6 @@ const NewOrderTable = ({
       ...prevData,
       items: newRows.map((row) => {
         const updatedItem = { ...row };
-        delete updatedItem.itemImage;
         return updatedItem;
       }),
     }));
@@ -498,7 +496,6 @@ const NewOrderTable = ({
       ...prevData,
       items: updatedRows?.map((row) => {
         const updatedItem = { ...row };
-        delete updatedItem.itemImage;
         return updatedItem;
       }),
     }));
@@ -521,7 +518,6 @@ const NewOrderTable = ({
       ...prevData,
       items: updatedRows?.map((row) => {
         const updatedItem = { ...row };
-        delete updatedItem.itemImage;
         return updatedItem;
       }),
     }));

@@ -35,7 +35,6 @@ const AddNewItem = ({selectedItem}:Props) => {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [taxRate, setTaxRate] = useState<[] | any>([]);
   const [allAccounts, setAllAccounts] = useState<{ accountSubhead: string; _id: string }[]>([]);
-  const { request: getUnit } = useApi("get", 5003);
   const { request: getTaxRate } = useApi("get", 5004);
   const { request: getAccounts } = useApi("get", 5001);
 

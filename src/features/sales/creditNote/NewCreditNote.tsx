@@ -320,19 +320,19 @@ const NewCreditNote = ({ page }: props) => {
   const handleSave = async () => {
     const newErrors = { ...errors };
     const missingFields: string[] = [];
-
+  
     newErrors.invoiceNumber =
       typeof creditNoteState.invoiceNumber === "string"
         ? creditNoteState.invoiceNumber?.trim() === ""
         : false;
-
+  
     if (creditNoteState.customerId?.trim() === "") {
       newErrors.customerId = true;
       missingFields.push("Customer");
     } else {
       newErrors.customerId = false;
     }
-
+  
     if (creditNoteState.placeOfSupply?.trim() === "") {
       newErrors.placeOfSupply = true;
       missingFields.push("Place of Supply");
@@ -360,27 +360,38 @@ const NewCreditNote = ({ page }: props) => {
     } else {
       newErrors.paidThroughAccountId = false;
     }
-
+  
     if (missingFields.length > 0) {
       setErrors(newErrors);
       toast.error(`Fill the required fields: ${missingFields.join(", ")}`);
       return;
     }
+  
     try {
+      // Create a deep copy of creditNoteState to avoid modifying the original state
+      const creditNoteStateToSave = JSON.parse(JSON.stringify(creditNoteState));
+  
+      // Remove itemImage from each item before saving
+      if (creditNoteStateToSave.items) {
+        creditNoteStateToSave.items = creditNoteStateToSave.items.map((item: any) => {
+          const { itemImage, ...itemWithoutImage } = item;
+          return itemWithoutImage;
+        });
+      }
+  
       let url;
       let api;
-
+  
       if (page === "edit") {
         url = `${endponits.EDIT_CREDIT_NOTE}/${id}`;
-        api = editCreditNoteApi; // ✅ Assign correct API function (PUT)
+        api = editCreditNoteApi;
       } else {
-        console.log("working");
         url = `${endponits.ADD_CREDIT_NOTE}`;
-        api = newCreditNoteApi; // ✅ Assign correct API function (POST)
+        api = newCreditNoteApi;
       }
-
-      const { response, error } = await api(url, creditNoteState); // ✅ Uses the correct function dynamically
-
+  
+      const { response, error } = await api(url, creditNoteStateToSave);
+  
       if (!error && response) {
         toast.success(response.data.message);
         setTimeout(() => {
@@ -390,7 +401,8 @@ const NewCreditNote = ({ page }: props) => {
         toast.error(error?.response?.data?.message);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Save error", error);
+      toast.error("Something went wrong. Please try again.");
     }
   };
 

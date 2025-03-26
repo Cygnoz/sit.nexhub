@@ -14,7 +14,7 @@ interface CustomerSupplierSettings {
   duplicateCustomerEmail: boolean;
   duplicateCustomerMobile: boolean;
   customerActivityDays: string;
-  supplierActivityDays:string;
+  supplierActivityDays: string;
 }
 
 const CustomerAndSupplier = () => {
@@ -30,7 +30,7 @@ const CustomerAndSupplier = () => {
     duplicateCustomerEmail: false,
     duplicateCustomerMobile: false,
     customerActivityDays: "",
-    supplierActivityDays:""
+    supplierActivityDays: ""
   });
   useEffect(() => {
     getSettingsData();
@@ -46,29 +46,35 @@ const CustomerAndSupplier = () => {
   }, [settingsResponse]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const { name, type, checked, value } = e.target;
-    
-      setInputData((prevData) => ({
-        ...prevData,
-        [name]: type === 'checkbox' ? checked : value,
-      }));
-    };
-    
+    const { name, type, checked, value } = e.target;
+
+    setInputData((prevData) => ({
+      ...prevData,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
 
   const handleSave = async () => {
     try {
       const url = `${endponits.Customer_Supplier_prefreance}`;
       const { response, error } = await saveSettings(url, inputData);
       if (!error && response) {
-        toast.success(response?.data);
+        const successMessage =
+          typeof response.data === "string" ? response.data : "Settings saved successfully!";
+        toast.success(successMessage);
       } else {
-        toast.error(error?.response?.data?.message);
+        const errorMessage =
+          typeof error?.response?.data?.message === "string"
+            ? error.response.data.message
+            : "Something went wrong!";
+        toast.error(errorMessage);
       }
     } catch (error) {
       console.error("Something went wrong", error);
       toast.error("Something went wrong");
     }
   };
+
 
   return (
     <div className="m-4 text-[#303F58]">
