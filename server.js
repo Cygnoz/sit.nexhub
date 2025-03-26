@@ -48,10 +48,10 @@ server.use((err, req, res, next) => {
 const PORT = 7009
 
 server.get('/',(req,res)=>{
-    res.status(200).json("Dev NexHub server started - Supplier v1.6")
+    res.status(200).json("Sit NexHub server started - Supplier v2")
 })
 
 server.listen(PORT,()=>{
-    console.log(`NexHub server Supplier started at port : ${PORT}`);
+    console.log(`NexHub Sit server Supplier started at port : ${PORT}`);
 })
 
