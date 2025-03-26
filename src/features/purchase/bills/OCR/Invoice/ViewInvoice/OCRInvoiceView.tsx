@@ -249,6 +249,7 @@ const OCRInvoiceView = () => {
       new Map([...exactMatches, ...similarMatches].map((item) => [item._id, item]))
         .values()
     );
+
   
     setSameSupplier(exactMatches);
     setSimilarSuppliers(combinedMatches);
@@ -259,6 +260,8 @@ const OCRInvoiceView = () => {
       }));
     
   };
+
+  console.log(sameSupplier,"same")
 
   
 
@@ -544,14 +547,14 @@ const OCRInvoiceView = () => {
                   onClick={() => toggleDropdown("supplierName")}
                 >
                   <DotIcon
-                    color={sameSupplier ? "#32A370" : "#DD2020"}
+                    color={sameSupplier.length>0 ? "#32A370" : "#DD2020"}
                     size={10}
                   />
 
                   <p className="text-textColor w-[20%]">Supplier Name</p>
                   <p
                     className={` font-semibold ${
-                      sameSupplier ? "text-[#32A370]" : "text-[#DD2020]"
+                      sameSupplier.length>0 ? "text-[#32A370]" : "text-[#DD2020]"
                     }`}
                   >
                     <span>{header.supplierDisplayName}</span>
