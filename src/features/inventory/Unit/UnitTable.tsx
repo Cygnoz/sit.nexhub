@@ -19,9 +19,9 @@ const UnitTable = ({}: Props) => {
   const { unitResponse, } = useContext(UnitResponseContext)!;
   const { unitEditResponse, } = useContext(UnitEditResponseContext)!;
 
-  const { request: addgetunit } = useApi("get", 5003);
+  const { request: addgetunit } = useApi("get", 7003);
   
-  const { request: deleteunit } = useApi("delete", 5003);
+  const { request: deleteunit } = useApi("delete", 7003);
 
   const toggleDropdown = (index: number | null) => {
     setOpenDropdownIndex(openDropdownIndex === index ? null : index);

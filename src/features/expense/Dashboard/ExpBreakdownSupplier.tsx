@@ -8,7 +8,7 @@ type Props = {
 
 
 const ExpBreakdownSupplier = ({date}:Props) => {
-  const { request: getTopSupplier } = useApi("get", 5008);
+  const { request: getTopSupplier } = useApi("get", 7008);
   const [topSupplierData, setTopSupplierData] = useState<any>([]);
  
   const getTopSup = async () => {

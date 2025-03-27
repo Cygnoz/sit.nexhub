@@ -20,7 +20,7 @@ function Dashboard({ }: Props) {
   const [year, setYear] = useState(currentDate.getFullYear()); // Current year
   const [cardData, setCardData] = useState<any>()
   const { request: getOverView } = useApi('get', 5004)
-  const { request: getTopCustomers } = useApi("get", 5004);
+  const { request: getTopCustomers } = useApi("get", 7004);
   const [customerData, setCustomerData] = useState<any>();
   const getMainOverView = async () => {
     try {

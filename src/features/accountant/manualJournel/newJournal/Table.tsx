@@ -39,8 +39,8 @@ function Table({ }: Props) {
     setConfirmModalOpen(true);
   };
 
-  const { request: AllJournals } = useApi("get", 5001);
-  const { request: deleteJournal } = useApi("delete", 5001);
+  const { request: AllJournals } = useApi("get", 7001);
+  const { request: deleteJournal } = useApi("delete", 7001);
 
   const tableHeaders = [
     "Date",

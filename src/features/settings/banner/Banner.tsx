@@ -10,7 +10,7 @@ type Props = {
 function Banner({ seeOrgDetails }: Props) {
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
  
-  const { request: getOneOrganization } = useApi("get", 5004);
+  const { request: getOneOrganization } = useApi("get", 7004);
  
   const getOrganization = async () => {
     try {

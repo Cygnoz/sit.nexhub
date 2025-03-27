@@ -204,7 +204,7 @@ function PosPayment({ selectedItems, total, selectedCustomer, selectedMethodLabe
     navigate("/posreciept");
   };
 
-  const { request: newSalesInvoiceApi } = useApi("post", 5007);
+  const { request: newSalesInvoiceApi } = useApi("post", 7007);
   const { setPosResponse } = useContext(PosResponseContext)!;
 
   const handleSave = async () => {

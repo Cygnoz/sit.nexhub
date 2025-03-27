@@ -23,7 +23,7 @@ const Header = ({ }: Props) => {
 
 
   const [organizationData, setOrganizationData] = useState<any>(null);
-  const { request: getOneOrganization } = useApi("get", 5004);
+  const { request: getOneOrganization } = useApi("get", 7004);
 
   const handleLogout = () => {
     ['authToken', 'savedIndex', 'savedSelectedIndex'].forEach(item => localStorage.removeItem(item));

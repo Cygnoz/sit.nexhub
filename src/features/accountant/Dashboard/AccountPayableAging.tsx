@@ -8,7 +8,7 @@ type Props = {
 
 
 const AccountPayableAging = ({date}:Props) => {
-  const { request: getPayableAging } = useApi("get", 5001);
+  const { request: getPayableAging } = useApi("get", 7001);
   const [payableAging, setPayableAging] = useState<any>([]);
  
   const getPayable = async () => {

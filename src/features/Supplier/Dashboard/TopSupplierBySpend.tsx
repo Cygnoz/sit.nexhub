@@ -75,7 +75,7 @@ const renderLabel = ({ cx, cy, midAngle, outerRadius, name, percent }: any) => {
 };
 
 const TopSupplierBySpend = ({ date }: Props) => {
-  const { request: getTopSuppliers } = useApi("get", 5009);
+  const { request: getTopSuppliers } = useApi("get", 7009);
   const [topSupplierSpend, setTopSupplierSpend] = useState<any>([]);
   
   const getTopSuppliersData = async () => {

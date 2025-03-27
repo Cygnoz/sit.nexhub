@@ -134,7 +134,7 @@ const ContextShare: React.FC<ContextShareProps> = ({ children }) => {
   const [gstResponse, setGstResponse] = useState<any>({});
   const [vatResponse, setVatResponse] = useState<any>({});
   const [settingsResponse, setSettingsesponse] = useState<any>({});
-  const { request: getAllSettingsData } = useApi("get", 5004);
+  const { request: getAllSettingsData } = useApi("get", 7004);
   const [supplierResponse, setsupplierResponse] = useState<any>({});
   const [customerResponse, setcustomerResponse] = useState<any>({});
   const [customerEditResponse, setcustomereditResponse] = useState<any>({});

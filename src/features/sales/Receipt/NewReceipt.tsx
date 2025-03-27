@@ -74,12 +74,12 @@ const NewReceipt = ({ page }: Props) => {
   console.log(recieptState);
 
 
-  const { request: AllCustomer } = useApi("get", 5002);
-  const { request: getAllInvoice } = useApi("get", 5007);
-  const { request: getAccounts } = useApi("get", 5001);
-  const { request: addReciept } = useApi("post", 5007);
-  const { request: editReciept } = useApi("put", 5007);
-  const { request: getPrfix } = useApi("get", 5007);
+  const { request: AllCustomer } = useApi("get", 7002);
+  const { request: getAllInvoice } = useApi("get", 7007);
+  const { request: getAccounts } = useApi("get", 7001);
+  const { request: addReciept } = useApi("post", 7007);
+  const { request: editReciept } = useApi("put", 7007);
+  const { request: getPrfix } = useApi("get", 7007);
 
   const fetchData = async (
     url: string,
@@ -203,7 +203,7 @@ const NewReceipt = ({ page }: Props) => {
     }
   };
   const { id } = useParams();
-  const { request: getOneSalesReciept } = useApi("get", 5007);
+  const { request: getOneSalesReciept } = useApi("get", 7007);
 
   useEffect(() => {
     const fetchInitialData = async () => {

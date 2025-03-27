@@ -28,7 +28,7 @@ function AddItemsPos({ selectedItems, onRemoveItem, selectedCustomer }: Props) {
   const [allAccounts, setAllAccounts] = useState<any>([]);
   const [depositAccountId, setDepositAccountId] = useState<string>("");
 
-  const { request: getAccounts } = useApi("get", 5001);
+  const { request: getAccounts } = useApi("get", 7001);
 
   const fetchCountries = async () => {
     try {
@@ -52,7 +52,7 @@ function AddItemsPos({ selectedItems, onRemoveItem, selectedCustomer }: Props) {
         {}
       )
   );
-  const { request: getPrfix } = useApi("get", 5007);
+  const { request: getPrfix } = useApi("get", 7007);
   const getSalesInvoicePrefix = async () => {
     try {
       const prefixUrl = `${endponits.GET_INVOICE_PREFIX}`;

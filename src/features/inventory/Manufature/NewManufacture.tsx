@@ -22,10 +22,10 @@ type Props = {
 };
 
 const NewManufacture = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
-  const { request: fetchAllManufacturers } = useApi("put", 5003);
-  const { request: deleteManufacturerRequest } = useApi("delete", 5003);
-  const { request: updateManufacturerRequest } = useApi("put", 5003);
-  const { request: addManufacturerRequest } = useApi("post", 5003);
+  const { request: fetchAllManufacturers } = useApi("put", 7003);
+  const { request: deleteManufacturerRequest } = useApi("delete", 7003);
+  const { request: updateManufacturerRequest } = useApi("put", 7003);
+  const { request: addManufacturerRequest } = useApi("post", 7003);
   const [allManufactures, setAllManufatures] = useState([]);
   const [manufacturers, setManufacturers] = useState<Manufacturer>({
     name: "",

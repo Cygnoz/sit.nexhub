@@ -97,12 +97,12 @@ const NewCustomerModal = ({ page }: Props) => {
   const [activeTab, setActiveTab] = useState<string>("otherDetails");
   const [taxselected, setTaxSelected] = useState<string | null>("Taxable");
   const [openingType, setOpeningtype] = useState<any | null>("Debit");
-  const { request: getCountryData } = useApi("get", 5004);
-  const { request: getCurrencyData } = useApi("get", 5004);
-  const { request: CreateCustomer } = useApi("post", 5002);
-  const { request: getPaymentTerms } = useApi("get", 5004);
-  const { request: getOrganization } = useApi("get", 5004);
-  const { request: getTax } = useApi("get", 5002);
+  const { request: getCountryData } = useApi("get", 7004);
+  const { request: getCurrencyData } = useApi("get", 7004);
+  const { request: CreateCustomer } = useApi("post", 7002);
+  const { request: getPaymentTerms } = useApi("get", 7004);
+  const { request: getOrganization } = useApi("get", 7004);
+  const { request: getTax } = useApi("get", 7002);
   const { setcustomerResponse } = useContext(CustomerResponseContext)!;
   const [errors, setErrors] = useState({
     firstName: false,

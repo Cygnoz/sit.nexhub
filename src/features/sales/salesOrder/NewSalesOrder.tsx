@@ -110,11 +110,11 @@ const NewSalesOrder = ({ page }: Props) => {
     initialSalesQuoteState
   );
 
-  const { request: AllCustomer } = useApi("get", 5002);
-  const { request: getOneOrganization } = useApi("get", 5004);
-  const { request: getCountries } = useApi("get", 5004);
-  const { request: getPrfix } = useApi("get", 5007);
-  const { request: allPyamentTerms } = useApi("get", 5004);
+  const { request: AllCustomer } = useApi("get", 7002);
+  const { request: getOneOrganization } = useApi("get", 7004);
+  const { request: getCountries } = useApi("get", 7004);
+  const { request: getPrfix } = useApi("get", 7007);
+  const { request: allPyamentTerms } = useApi("get", 7004);
 
   const navigate = useNavigate();
   const handleGoBack = () => {
@@ -463,7 +463,7 @@ const NewSalesOrder = ({ page }: Props) => {
   }, [openDropdownIndex]);
 
   const { id } = useParams();
-  const { request: getOneSalesOrder } = useApi("get", 5007);
+  const { request: getOneSalesOrder } = useApi("get", 7007);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -491,8 +491,8 @@ const NewSalesOrder = ({ page }: Props) => {
     }
   }, [salesOrderState]);
 
-  const { request: newSalesOrderApi } = useApi("post", 5007);
-  const { request: editSalesOrderApi } = useApi("put", 5007);
+  const { request: newSalesOrderApi } = useApi("post", 7007);
+  const { request: editSalesOrderApi } = useApi("put", 7007);
 
   const handleSave = async () => {
     try {

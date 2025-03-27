@@ -56,9 +56,9 @@ const CustomBar: React.FC<CustomBarProps> = ({ x = 0, y = 0, width = 0, height =
 };
 
 function StockLevelOvertime({ date }: Props) {
-  const { request: getStockLevelOver } = useApi('get', 5003);
+  const { request: getStockLevelOver } = useApi("get", 7003);
   const [stockLevel, setStockLevel] = useState<[]>([]);
-  const { request: fetchAllCategories } = useApi("put", 5003);
+  const { request: fetchAllCategories } = useApi("put", 7003);
   const [allCategoryData, setAllcategoryData] = useState<any[]>([]);
   const [selectedOption, setSelectedOption] = useState<typeof allCategoryData[0] | null>(null);
 

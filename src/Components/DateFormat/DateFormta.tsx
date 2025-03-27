@@ -8,7 +8,7 @@ type Props = {
 
 const DateFormat = ({ date }: Props) => {
   const [organization, setOrganization] = useState<any | null>(null);
-  const { request: getOneOrganization } = useApi("get", 5004);
+  const { request: getOneOrganization } = useApi("get", 7004);
 
   const fetchOrganization = async () => {
     try {

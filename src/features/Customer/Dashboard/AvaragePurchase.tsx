@@ -15,7 +15,7 @@ const oR = 160; // Increased outer radius
 const maxValue = 100000; // Define a maximum range for visualization
 
 const AvaragePurchase: React.FC<AvaragePurchaseProps> = ({ date }) => {
-  const { request: getAvgPurchase } = useApi("get", 5002);
+  const { request: getAvgPurchase } = useApi("get", 7002);
   const [averagePurchase, setAveragePurchase] = useState<number>(0);
 
   const getAvg = async () => {

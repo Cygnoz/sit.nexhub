@@ -82,7 +82,7 @@ const CustomBar = (props: any) => {
 };
 
 const AccountReceivableAging: React.FC<Props> = ({ date }) => {
-  const { request: getAccReciAging } = useApi("get", 5001);
+  const { request: getAccReciAging } = useApi("get", 7001);
   const [accRecieveAging, setAccRecieveAging] = useState<any>([]);
 
   const getRecieve = async () => {

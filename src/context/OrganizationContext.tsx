@@ -14,7 +14,7 @@ const OrganizationContext = createContext<OrganizationContextType | undefined>(u
 export const OrganizationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [organization, setOrganization] = useState<Organization | null>(null);
   const [hasFetched, setHasFetched] = useState(false); // Flag to track if data is already fetched
-  const { request: getOneOrganization } = useApi("get", 5004);
+  const { request: getOneOrganization } = useApi("get", 7004);
 
   const fetchOrganization = async () => {
     // Only fetch if not already fetched

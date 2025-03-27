@@ -9,7 +9,7 @@ type Props = {
 };
 
 function CustomerStatusHistory({ id }: Props) {
-    const { request: GetAllHistory } = useApi("get", 5002);
+    const { request: GetAllHistory } = useApi("get", 7002);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [historyData, setHistoryData] = useState([]);

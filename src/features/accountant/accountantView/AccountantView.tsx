@@ -27,8 +27,8 @@ function AccountantView() {
   const searchParams = new URLSearchParams(location.search);
   const fromCash = searchParams.get("fromCash") === "true";
   const fromBank = searchParams.get("fromBank") === "true";
-  const { request: getOneTrialBalance } = useApi("get", 5001);
-  const { request: getOneOrganization } = useApi("get", 5004);
+  const { request: getOneTrialBalance } = useApi("get", 7001);
+  const { request: getOneOrganization } = useApi("get", 7004);
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [trialBalance, setTrialBalance] = useState<TrialBalance[]>([]);
   const [fromDate, setFromDate] = useState("");

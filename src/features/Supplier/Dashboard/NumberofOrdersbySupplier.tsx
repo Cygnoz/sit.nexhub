@@ -34,7 +34,7 @@ const renderCustomTooltip = ({ payload }: any) => {
 };
 
 const NumberOfOrdersBySupplier = ({ date }: Props) => {
-  const { request: getNoOfOrderBySupplier } = useApi("get", 5009);
+  const { request: getNoOfOrderBySupplier } = useApi("get", 7009);
   const [chartData, setChartData] = useState<any>([]);
 
   const formatApiData = (apiData: any) => {

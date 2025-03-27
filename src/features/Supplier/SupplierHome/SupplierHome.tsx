@@ -25,7 +25,7 @@ interface Supplier {
 
 const SupplierHome = () => {
   const [supplierData, setSupplierData] = useState<Supplier[]>([]);
-  const { request: AllSuppliers } = useApi("get", 5009);
+  const { request: AllSuppliers } = useApi("get", 7009);
   const { supplierResponse } = useContext(SupplierResponseContext)!;
   const [searchValue, setSearchValue] = useState<string>("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);

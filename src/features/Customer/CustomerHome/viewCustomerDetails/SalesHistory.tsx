@@ -10,7 +10,7 @@ type Props = {
 };
 
 function SalesHistory({ customerId }: Props) {
-  const { request: getCustomerTransaction } = useApi("get", 5002);
+  const { request: getCustomerTransaction } = useApi("get", 7002);
   const [history, setHistory] = useState<any>([]);
 
   const getCustomerTransactionResponse = async () => {

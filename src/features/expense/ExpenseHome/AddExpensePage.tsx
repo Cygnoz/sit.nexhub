@@ -73,16 +73,16 @@ function AddExpensePage({ page }: Props) {
   });
   console.log("input data", expenseData);
 
-  const { request: AllAccounts } = useApi("get", 5001);
-  const { request: AllSuppliers } = useApi("get", 5009);
-  const { request: AddExpenses } = useApi("post", 5008);
-  const { request: EditExpenses } = useApi("put", 5008);
-  const { request: getAllExpenseCategory } = useApi("get", 5008);
-  const { request: getTax } = useApi("get", 5004);
-  const { request: getCountries } = useApi("get", 5004);
-  const { request: getOrg } = useApi("get", 5004);
-  const { request: getPrefix } = useApi("get", 5008);
-  const { request: getOneExpense } = useApi("get", 5008);
+  const { request: AllAccounts } = useApi("get", 7001);
+  const { request: AllSuppliers } = useApi("get", 7009);
+  const { request: AddExpenses } = useApi("post", 7008);
+  const { request: EditExpenses } = useApi("put", 7008);
+  const { request: getAllExpenseCategory } = useApi("get", 7008);
+  const { request: getTax } = useApi("get", 7004);
+  const { request: getCountries } = useApi("get", 7004);
+  const { request: getOrg } = useApi("get", 7004);
+  const { request: getPrefix } = useApi("get", 7008);
+  const { request: getOneExpense } = useApi("get", 7008);
 
   const [countryData, setcountryData] = useState<any | any>([]);
   const [searchValue, setSearchValue] = useState<string>("");

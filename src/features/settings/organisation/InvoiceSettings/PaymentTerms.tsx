@@ -15,10 +15,10 @@ type PaymentTerm = {
 };
 
 function PaymentTerms({}: Props) {
-  const { request: addPaymentTerms } = useApi("post", 5004);
-  const { request: editPaymentTerms } = useApi("put", 5004);
-  // const { request: deletePaymentTerms } = useApi("delete", 5004);
-  const { request: getPaymentTerms } = useApi("get", 5004);
+  const { request: addPaymentTerms } = useApi("post", 7004);
+  const { request: editPaymentTerms } = useApi("put", 7004);
+  // const { request: deletePaymentTerms } = useApi("delete", 7004);
+  const { request: getPaymentTerms } = useApi("get", 7004);
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [paymentTerms, setPaymentTerms] = useState<PaymentTerm[]>([]);

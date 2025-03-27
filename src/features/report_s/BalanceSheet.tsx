@@ -50,7 +50,7 @@ const BalanceSheet = ({ }: Props) => {
     toDateRef.current?.showPicker();
   };
 
-  const { request: fetchOneItem } = useApi("get", 5006);
+  const { request: fetchOneItem } = useApi("get", 7006);
 
   const formattedFromDate = formatDate(fromDate);
   const formattedToDate = formatDate(toDate);

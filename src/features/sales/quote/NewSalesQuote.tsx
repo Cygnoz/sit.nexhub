@@ -88,10 +88,10 @@ const NewSalesQuote = ({ page }: Props) => {
   const [isIntraState, setIsIntraState] = useState<boolean>(false);
 
 
-  const { request: getOneOrganization } = useApi("get", 5004);
-  const { request: getCountries } = useApi("get", 5004);
-  const { request: AllCustomer } = useApi("get", 5002);
-  const { request: getPrfix } = useApi("get", 5007);
+  const { request: getOneOrganization } = useApi("get", 7004);
+  const { request: getCountries } = useApi("get", 7004);
+  const { request: AllCustomer } = useApi("get", 7002);
+  const { request: getPrfix } = useApi("get", 7007);
 
   const [salesQuoteState, setSalesQuoteState] = useState<SalesQuote>(initialSalesQuoteState);
 
@@ -417,7 +417,7 @@ const NewSalesQuote = ({ page }: Props) => {
   }, [selectedCustomer]);
 
   const { id } = useParams();
-  const { request: getOneSalesQuote } = useApi("get", 5007);
+  const { request: getOneSalesQuote } = useApi("get", 7007);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -446,8 +446,8 @@ const NewSalesQuote = ({ page }: Props) => {
   }, [salesQuoteState]);
 
 
-  const { request: newSalesQuoteApi } = useApi("post", 5007);
-  const { request: editSalesQuoteApi } = useApi("put", 5007);
+  const { request: newSalesQuoteApi } = useApi("post", 7007);
+  const { request: editSalesQuoteApi } = useApi("put", 7007);
 
   const handleSave = async () => {
     try {

@@ -13,7 +13,7 @@ type Props = {}
 function Otp({}: Props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { request: verifyOtp } = useApi("post", 5004);
+  const { request: verifyOtp } = useApi("post", 7004);
   const { setIsAuthenticated } = useAuth(); // Get the setIsAuthenticated function from context
   useEffect(() => {
     inputRefs[0].current?.focus();

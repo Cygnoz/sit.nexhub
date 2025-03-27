@@ -16,8 +16,8 @@ function PurchaseOrders({}: Props) {
 
   const [purchaseOrderData, setPurchaseOrderData] = useState(initialPurchaseOrder);
 
-  const { request: fetchPurchaseOrderSettings } = useApi("get", 5004);
-  const { request: savePurchaseOrderSettings } = useApi("put", 5005);
+  const { request: fetchPurchaseOrderSettings } = useApi("get", 7004);
+  const { request: savePurchaseOrderSettings } = useApi("put", 7005);
 
   useEffect(() => {
     const fetchAllSettings = async () => {

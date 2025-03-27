@@ -14,7 +14,7 @@ function CustomerModal({ selectedCustomer }: Props) {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [oneCustomer, setoneCustomer] = useState<any>({});
 
-  const { request: getOneCustomer } = useApi("get", 5002);
+  const { request: getOneCustomer } = useApi("get", 7002);
 
   const toggleDrawer = () => {
     setDrawerOpen(!isDrawerOpen);

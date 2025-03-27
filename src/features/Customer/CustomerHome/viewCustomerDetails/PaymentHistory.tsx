@@ -43,7 +43,7 @@ const PaymentHistory = ({ customerId }: Props) => {
   ]);
 
   const { loading, setLoading } = useContext(TableResponseContext)!;
-  const { request: getAllQuotes } = useApi("get", 5002);
+  const { request: getAllQuotes } = useApi("get", 7002);
 
   const handleFromDateClick = () => {
     fromDateRef.current?.showPicker();

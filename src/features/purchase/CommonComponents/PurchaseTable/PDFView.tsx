@@ -6,7 +6,7 @@ type Props = { data?: any; page?: string; organization?: any };
 
 const PDFView = forwardRef<HTMLDivElement, Props>(({ data, page, organization }, ref) => {
   const [supplier, setSupplier] = useState<[] | any>([]);
-  const { request: getSupplier } = useApi("get", 5009);
+  const { request: getSupplier } = useApi("get", 7009);
 
   const getSupplierAddress = async () => {
     try {

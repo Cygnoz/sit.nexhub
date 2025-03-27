@@ -173,12 +173,12 @@ const AddSupplierModal = ({ page }: Props) => {
     sourceOfSupply: false,
   });
   const [openingType, setOpeningType] = useState<string>("credit");
-  const { request: getCountryData } = useApi("get", 5004);
-  const { request: getCurrencyData } = useApi("get", 5004);
-  const { request: CreateSupplier } = useApi("post", 5009);
-  const { request: getPaymentTerms } = useApi("get", 5004);
-  const { request: getOrganization } = useApi("get", 5004);
-  const { request: getTax } = useApi("get", 5009);
+  const { request: getCountryData } = useApi("get", 7004);
+  const { request: getCurrencyData } = useApi("get", 7004);
+  const { request: CreateSupplier } = useApi("post", 7009);
+  const { request: getPaymentTerms } = useApi("get", 7004);
+  const { request: getOrganization } = useApi("get", 7004);
+  const { request: getTax } = useApi("get", 7009);
   const { setsupplierResponse } = useContext(SupplierResponseContext)!;
   const [rows, setRows] = useState([
     {

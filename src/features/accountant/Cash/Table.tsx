@@ -28,7 +28,7 @@ interface Account {
 const CashAccountsTable = () => {
   const [accountData, setAccountData] = useState<Account[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
-  const { request: AllAccounts } = useApi("get", 5001);
+  const { request: AllAccounts } = useApi("get", 7001);
   const { cashResponse } = useContext(cashResponseContext)!;
   const navigate = useNavigate();
   const { loading, setLoading } = useContext(TableResponseContext)!;
@@ -70,7 +70,7 @@ const CashAccountsTable = () => {
     );
   });
 
-  const { request: deleteAccount } = useApi("delete", 5001);
+  const { request: deleteAccount } = useApi("delete", 7001);
 
   const handleDelete = async (id: string) => {
     try {

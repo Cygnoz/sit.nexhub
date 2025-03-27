@@ -46,7 +46,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 function InvoiceStatus({ date }: Props) {
-  const { request: getInvoiceStatus } = useApi("get", 5001);
+  const { request: getInvoiceStatus } = useApi("get", 7001);
   const [invoiceStatus, setInvoiceStatus] = useState<any>([]);
 
   const getInvStatus = async () => {

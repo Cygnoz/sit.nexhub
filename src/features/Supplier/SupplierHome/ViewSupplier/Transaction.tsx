@@ -7,7 +7,7 @@ import Line from "../../../../assets/icons/Line";
 type Props = { supplierId?: string };
 
 function Transaction({ supplierId }: Props) {
-  const { request: getCustomerTransaction } = useApi("get", 5009);
+  const { request: getCustomerTransaction } = useApi("get", 7009);
   const [history, setHistory] = useState<any>([]);
 
   const getCustomerTransactionResponse = async () => {

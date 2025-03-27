@@ -16,10 +16,10 @@ type Props = { page?: string };
 function NewJournal({ page }: Props) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { request: NewJournalAdd } = useApi("post", 5001);
-  const { request: EditJournal } = useApi("put", 5001);
-  const { request: GetLastJournelPrefix } = useApi("get", 5001);
-  const { request: GetAllAcounts } = useApi("get", 5001);
+  const { request: NewJournalAdd } = useApi("post", 7001);
+  const { request: EditJournal } = useApi("put", 7001);
+  const { request: GetLastJournelPrefix } = useApi("get", 7001);
+  const { request: GetAllAcounts } = useApi("get", 7001);
   const { organization } = useOrganization()
   // Initialize with two non-deletable rows
   const initialTransactions = [
@@ -400,7 +400,7 @@ function NewJournal({ page }: Props) {
   };
 
 
-  const { request: getOneJournal } = useApi("get", 5001);
+  const { request: getOneJournal } = useApi("get", 7001);
   useEffect(() => {
     const fetchJournal = async () => {
       if (page === "edit") {

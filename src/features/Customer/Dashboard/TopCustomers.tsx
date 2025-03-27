@@ -82,7 +82,7 @@ const CustomBar = (props: any) => {
 };
 
 const TopCustomers: React.FC<TopCustomersProps> = ({ date }) => {
-  const { request: getTopCustomers } = useApi("get", 5002);
+  const { request: getTopCustomers } = useApi("get", 7002);
   const [topCustomerData, setTopCustomerData] = useState<any>([]);
 
   const getTopCus = async () => {

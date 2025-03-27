@@ -96,15 +96,15 @@ const NewDebitNote = ({ page }: Props) => {
   });
 
 
-  const { request: AllSuppliers } = useApi("get", 5009);
-  const { request: getCountries } = useApi("get", 5004);
-  const { request: getOneOrganization } = useApi("get", 5004);
-  const { request: getPrefix } = useApi("get", 5005);
-  const { request: getAllBills } = useApi("get", 5005);
-  const { request: getAccountData } = useApi("get", 5001);
-  const { request: getOneDebit } = useApi("get", 5005);
-  const { request: newDebitNoteApi } = useApi("post", 5005);
-  const { request: editDebitNoteApi } = useApi("put", 5005);
+  const { request: AllSuppliers } = useApi("get", 7009);
+  const { request: getCountries } = useApi("get", 7004);
+  const { request: getOneOrganization } = useApi("get", 7004);
+  const { request: getPrefix } = useApi("get", 7005);
+  const { request: getAllBills } = useApi("get", 7005);
+  const { request: getAccountData } = useApi("get", 7001);
+  const { request: getOneDebit } = useApi("get", 7005);
+  const { request: newDebitNoteApi } = useApi("post", 7005);
+  const { request: editDebitNoteApi } = useApi("put", 7005);
 
   const { id } = useParams();
 

@@ -7,7 +7,7 @@ import bgImage from "../../assets/Images/Group 2506.png";
 import { useNavigate } from 'react-router-dom';
 import useApi from '../../Hooks/useApi';
 import { endponits } from '../../Services/apiEndpoints';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 
 type Props = {}
@@ -18,7 +18,7 @@ function Login({ }: Props) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { request: login } = useApi("post", 5004);
+  const { request: login } = useApi("post", 7004);
   const { setIsAuthenticated } = useAuth();
 
   const navigate = useNavigate();
@@ -35,16 +35,16 @@ function Login({ }: Props) {
     try {
       const url = `${endponits.LOGIN}`;
       const { response, error } = await login(url, { email, password });
-      if (!error && response) {
-
-        toast.success(
-          response?.data.message || "OTP verified successfully!"
-        );
-        console.log(response.data.user.deviceType)
-        localStorage.setItem("authToken", response.data.token);
+      if (response?.data.success) {
+        // Display success message and navigate to OTP
+        toast.success('Login successful! Redirecting...');
+        localStorage.setItem('authToken', response?.data.token);
         setIsAuthenticated(true); // Set authentication state
-
-        navigate("/landing");
+        // Redirect to the home/dashboard
+        setTimeout(() => {
+          navigate('/landing');
+        }, 2000);
+        // navigate("/otp", { state: { email } }); // Pass email via navigate state
       }
       else {
         toast.error(error.response.data.message);
@@ -135,6 +135,7 @@ function Login({ }: Props) {
           <img src={bgImage} alt="Dashboard preview" className="w-full" />
         </div>
       </div>
+      <Toaster reverseOrder={false} />
     </div>
   )
 }

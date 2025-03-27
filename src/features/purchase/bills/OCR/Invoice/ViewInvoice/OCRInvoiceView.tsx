@@ -100,8 +100,8 @@ const OCRInvoiceView = () => {
   });
 
   const { request: getInvoice } = useApi("get", 5000);
-  const { request: getSupplier } = useApi("get", 5009);
-  const { request: getItems } = useApi("get", 5003);
+  const { request: getSupplier } = useApi("get", 7009);
+  const { request: getItems } = useApi("get", 7003);
   const { request: updateOcr } = useApi("put", 5000);
 
   const itemsPerPage = 10;

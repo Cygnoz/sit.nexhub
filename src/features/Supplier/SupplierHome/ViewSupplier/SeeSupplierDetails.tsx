@@ -30,13 +30,13 @@ interface Status {
 function SeeSupplierDetails({}: Props) {
   const { setSupplierDetails } = useContext(SupplierDetailsContext)!;
 
-  const { request: getOneSupplier } = useApi("get", 5009);
+  const { request: getOneSupplier } = useApi("get", 7009);
   const { id } = useParams<{ id: string }>();
   const [supplier, setSupplier] = useState<SupplierData | null>(null);
   const [tabSwitch,setTabSwitch] = useState<string>("overview");
   const { supplierResponse } = useContext(SupplierResponseContext)!;
   const [statusData, setStatusData] = useState<Status>({ status: "" });
-  const { request: deleteData } = useApi("delete", 5009);
+  const { request: deleteData } = useApi("delete", 7009);
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const confirmDelete = () => {
     setConfirmModalOpen(true);

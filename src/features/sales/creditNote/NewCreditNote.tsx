@@ -108,15 +108,15 @@ const NewCreditNote = ({ page }: props) => {
 
   const [selectedCustomer, setSelecetdCustomer] = useState<any>("");
 
-  const { request: AllCustomer } = useApi("get", 5002);
-  const { request: getOneOrganization } = useApi("get", 5004);
-  const { request: getCountries } = useApi("get", 5004);
-  const { request: getPrefix } = useApi("get", 5007);
-  const { request: getAllInvoice } = useApi("get", 5007);
-  const { request: getAccountData } = useApi("get", 5001);
-  const { request: newCreditNoteApi } = useApi("post", 5007);
-  const { request: getOneCreditNote } = useApi("get", 5007);
-  const { request: editCreditNoteApi } = useApi("put", 5007);
+  const { request: AllCustomer } = useApi("get", 7002);
+  const { request: getOneOrganization } = useApi("get", 7004);
+  const { request: getCountries } = useApi("get", 7004);
+  const { request: getPrefix } = useApi("get", 7007);
+  const { request: getAllInvoice } = useApi("get", 7007);
+  const { request: getAccountData } = useApi("get", 7001);
+  const { request: newCreditNoteApi } = useApi("post", 7007);
+  const { request: getOneCreditNote } = useApi("get", 7007);
+  const { request: editCreditNoteApi } = useApi("put", 7007);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 

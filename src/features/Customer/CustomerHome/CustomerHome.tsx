@@ -30,7 +30,7 @@ type Props = {};
 function CustomerHome({}: Props) {
   const [customerData, setCustomerData] = useState<Customer[]>([]);
   const { customerResponse } = useContext(CustomerResponseContext)!;
-  const { request: AllCustomers } = useApi("get", 5002);
+  const { request: AllCustomers } = useApi("get", 7002);
   const [searchValue, setSearchValue] = useState<string>("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const { loading, setLoading } = useContext(TableResponseContext)!;

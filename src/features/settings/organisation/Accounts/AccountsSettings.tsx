@@ -35,10 +35,10 @@ function AccountsSettings({}: Props) {
   const [ setTax] = useState<any>([]);
   const [accounts, setAccounts] = useState<any>([]);
 
-  const { request: getAccounts } = useApi("get", 5001);
-  const { request: addaccount } = useApi("post", 5004);
-  const { request: getAccountData } = useApi("get", 5004);
-  const { request: getTax } = useApi("get", 5004);
+  const { request: getAccounts } = useApi("get", 7001);
+  const { request: addaccount } = useApi("post", 7004);
+  const { request: getAccountData } = useApi("get", 7004);
+  const { request: getTax } = useApi("get", 7004);
 
   const [inputData, setInputData] = useState<AccountDetails>({
     salesAccount: "",

@@ -46,7 +46,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 function MostFrequentlyRec({ date }: Props) {
-  const { request:getMostFrequently } = useApi("get", 5003);
+  const { request:getMostFrequently } = useApi("get", 7003);
   const [mostFrequently, setMostFrequently] = useState<any>([]);
 
   const getExpCat = async () => {

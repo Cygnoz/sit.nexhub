@@ -42,10 +42,10 @@ const CreateOrganizationForm = () => {
   const [countryData, setcountryData] = useState<any | []>([]);
   const [currencyData, setcurrencyData] = useState<any | []>([]);
   const [stateList, setStateList] = useState<any | []>([]);
-  const { request: getAdditionalData } = useApi("get", 5004);
-  const { request: createOrganization } = useApi("post", 5004);
-  const { request: getOneOrganization } = useApi("get", 5004);
-  const { request: getCurrencyData } = useApi("get", 5004);
+  const { request: getAdditionalData } = useApi("get", 7004);
+  const { request: createOrganization } = useApi("post", 7004);
+  const { request: getOneOrganization } = useApi("get", 7004);
+  const { request: getCurrencyData } = useApi("get", 7004);
   const { setOrganization } = useOrganization();
   const [tooltipState, setTooltipState] = useState<{ [key: string]: boolean }>({
     industry: false,

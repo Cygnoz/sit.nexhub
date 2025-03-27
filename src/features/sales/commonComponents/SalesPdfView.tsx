@@ -65,7 +65,7 @@ interface Customer {
 }
 
 function SalesPdfView({ data, page }: SalesOrderViewProps) {
-  const { request: getOneCustomer } = useApi("get", 5002);
+  const { request: getOneCustomer } = useApi("get", 7002);
   const [customerData, setCustomerData] = useState<Customer | null>(null);
   const { organization } = useOrganization();
 

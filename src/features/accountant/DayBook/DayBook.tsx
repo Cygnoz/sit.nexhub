@@ -40,7 +40,7 @@ function DayBook({ }: Props) {
   const handleFromDateClick = () => fromDateRef.current?.showPicker();
   const handleToDateClick = () => toDateRef.current?.showPicker();
 
-  const { request: getDayBookUrl } = useApi("get", 5006);
+  const { request: getDayBookUrl } = useApi("get", 7006);
 
   const getDayBook = async () => {
     try {

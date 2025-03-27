@@ -46,7 +46,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 function ExpenseByCategory({ date }: Props) {
-  const { request: getExpByCategory } = useApi("get", 5004);
+  const { request: getExpByCategory } = useApi("get", 7004);
   const [expenseByCategory, setExpenseByCategory] = useState<any>([]);
 
   const getExpCat = async () => {

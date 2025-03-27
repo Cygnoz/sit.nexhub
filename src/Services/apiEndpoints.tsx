@@ -182,7 +182,7 @@ export const endponits = {
   ADD_PAYMET_MADE: `add-payment`,
   GET_PAYMENTMADE: `getAllPayments`,
   GET_PAYMENT: `getPayment`,
-  PAYMENT_LAST_PREFIX: `/get-last-payment-made-prefix`,
+  PAYMENT_LAST_PREFIX: `get-last-debit-note-prefix`,
   EDIT_PAYMENT_MADE: `update-paymentMade`,
   DELETE_PAYMENT_MADE: `delete-paymentMade`,
   GET_PAYMENT_JOURNAL: `payment-journal`,
@@ -297,7 +297,4 @@ ACCOUNT_DASH_TOTAL_REVENUE_OVER_TIME: 'get-accountDashboard-totalRevenueOverTime
 ACCOUNT_DASH_RECEIVABLE_AGING: 'get-accountDashboard-accountReceivableAging',
 ACCOUNT_DASH_PAYABLE_AGING: 'get-accountDashboard-accountPayableAging',
 ACCOUNT_DASH_INVOICE_STATUS: 'get-accountDashboard-invoiceStatus',
-
-
-
 };

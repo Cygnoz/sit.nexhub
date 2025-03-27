@@ -21,7 +21,7 @@ interface InputCurrencyData {
 
 const EditCurrencyModal = ({ selectedCurrency }: { selectedCurrency: any }) => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const { request: editCurrency } = useApi("put", 5004);
+  const { request: editCurrency } = useApi("put", 7004);
   const { setCurrencyResponse } = useContext(CurrencyResponseContext)!;
   const [errors, setErrors] = useState({
     currencyCode: false,

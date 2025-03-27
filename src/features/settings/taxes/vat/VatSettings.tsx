@@ -17,8 +17,8 @@ function VatSettings({}: Props) {
   };
  
   const [vatSettings, setVatSettings] = useState(initialVatSettings);
-  const { request: fetchVatSettings } = useApi("get", 5004);
-  const { request: createVatSettings } = useApi("post", 5004);
+  const { request: fetchVatSettings } = useApi("get", 7004);
+  const { request: createVatSettings } = useApi("post", 7004);
 
   // Fetch VAT settings
   const getVatSettings = async () => {

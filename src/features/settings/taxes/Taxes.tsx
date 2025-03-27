@@ -16,7 +16,7 @@ function Taxes({}: Props) {
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  const { request: AllTaxGst } = useApi("get", 5004);
+  const { request: AllTaxGst } = useApi("get", 7004);
 
   const fetchAllTaxGst = async () => {
     try {

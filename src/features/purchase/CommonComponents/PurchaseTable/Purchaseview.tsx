@@ -24,10 +24,10 @@ type Props = { page: string };
 
 function Purchaseview({ page }: Props) {
   const [data, setData] = useState<any>({});
-  const { request: getPurchaseOrder } = useApi("get", 5005);
-  const { request: getBills } = useApi("get", 5005);
-  const { request: getDebitN } = useApi("get", 5005);
-  const { request: deleteData } = useApi("delete", 5005);
+  const { request: getPurchaseOrder } = useApi("get", 7005);
+  const { request: getBills } = useApi("get", 7005);
+  const { request: getDebitN } = useApi("get", 7005);
+  const { request: deleteData } = useApi("delete", 7005);
   const { organization } = useOrganization();
   const [searchParams] = useSearchParams();
   const param = useParams();

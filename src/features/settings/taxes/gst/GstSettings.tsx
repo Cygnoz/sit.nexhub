@@ -22,8 +22,8 @@ function GstSettings({ }: GstSettingsProps) {
   };
 
   const [gstSettings, setGstSettings] = useState(initialGstSettings);
-  const { request: fetchGstSettings } = useApi("get", 5004);
-  const { request: createGstSettings } = useApi("post", 5004);
+  const { request: fetchGstSettings } = useApi("get", 7004);
+  const { request: createGstSettings } = useApi("post", 7004);
 
   // Fetch GST settings
   const getGstSettings = async () => {

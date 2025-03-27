@@ -26,8 +26,8 @@ interface Account {
 }
 
 const Table = () => {
-  const { request: AllAccounts } = useApi("get", 5001);
-  const { request: deleteAccount } = useApi("delete", 5001);
+  const { request: AllAccounts } = useApi("get", 7001);
+  const { request: deleteAccount } = useApi("delete", 7001);
   const [searchValue, setSearchValue] = useState<string>("");
   const [accountData, setAccountData] = useState<Account[]>([]);
   const { bankResponse } = useContext(BankResponseContext)!;

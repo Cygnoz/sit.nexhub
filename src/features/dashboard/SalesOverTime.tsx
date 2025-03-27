@@ -29,7 +29,7 @@ interface SalesOverTimeProps {
 }
 
 const SalesOverTime: React.FC<SalesOverTimeProps> = ({ date }) => {
-  const { request: getSalesOvertime } = useApi("get", 5004);
+  const { request: getSalesOvertime } = useApi("get", 7004);
   const [salesData, setSalesData] = useState<TransformedData[]>([]);
 
   const transformData = (dailySales: SalesData[]): TransformedData[] => {

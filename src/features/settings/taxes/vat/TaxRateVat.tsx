@@ -37,9 +37,9 @@ function TaxRateVat({}: Props) {
   const [selectedVatRate, setSelectedVatRate] = useState<TaxRate | null>(null);
   const [search, setSearch] = useState<string>("");
 
-  const { request: createVatRate } = useApi("post", 5004);
-  const { request: updateVatRate } = useApi("put", 5004);
-  const { request: AllTaxVat } = useApi("get", 5004);
+  const { request: createVatRate } = useApi("post", 7004);
+  const { request: updateVatRate } = useApi("put", 7004);
+  const { request: AllTaxVat } = useApi("get", 7004);
   const { vatResponse, setVatResponse } = useContext(VatResponseContext)!;
 
   const initialTaxVat = {

@@ -26,7 +26,7 @@ const DebitTable = () => {
 
   const [columns,setColumns] = useState<Column[]>(initialColumns);
   const [allDNdata, setAllDNdata] = useState<any[]>([]);
-  const { request: getDN } = useApi("get", 5005);
+  const { request: getDN } = useApi("get", 7005);
   const { loading, setLoading } = useContext(TableResponseContext)!;
     const {purchaseResponse}=useContext(PurchaseContext)!;
 

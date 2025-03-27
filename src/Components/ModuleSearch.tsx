@@ -22,12 +22,12 @@ function ModuleSearch({ page, mode }: Props) {
   const searchRef = useRef<HTMLDivElement>(null);
 
   // API Hooks
-  const { request: getCustomerRequest } = useApi("get", 5002);
-  const { request: getAllAccounts } = useApi("get", 5001);
-  const { request: getAllItems } = useApi("get", 5003);
-  const { request: getAllSales } = useApi("get", 5007);
-  const { request: getAllPurchases } = useApi("get", 5005);
-  const { request: getAllSuppliers } = useApi("get", 5009);
+  const { request: getCustomerRequest } = useApi("get", 7002);
+  const { request: getAllAccounts } = useApi("get", 7001);
+  const { request: getAllItems } = useApi("get", 7003);
+  const { request: getAllSales } = useApi("get", 7007);
+  const { request: getAllPurchases } = useApi("get", 7005);
+  const { request: getAllSuppliers } = useApi("get", 7009);
 
   const requestFunctions: any = {
     getCustomerRequest,

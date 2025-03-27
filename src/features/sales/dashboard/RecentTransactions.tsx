@@ -12,7 +12,7 @@ type Props = {
 function RecentTransactions({ date }: Props) {
     const [activeTab, setActiveTab] = useState("Invoices");
 
-    const { request: recentTransaction } = useApi('get', 5007);
+    const { request: recentTransaction } = useApi("get", 7007);
     const [recentTrans, setRecentTrans] = useState<any>({
         recentCreditNotes: { tab: 'Credit Notes', data: [] },
         recentInvoices: { tab: 'Invoices', data: [] },

@@ -26,10 +26,10 @@ type Props = {
 };
 
 function Category({ isOpen, onClose, page }: Props) {
-  const { request: fetchAllCategories } = useApi("put", 5003);
-  const { request: deleteCategoryRequest } = useApi("delete", 5003);
-  const { request: updateCategoryRequest } = useApi("put", 5003);
-  const { request: addCategoryRequest } = useApi("post", 5003);
+  const { request: fetchAllCategories } = useApi("put", 7003);
+  const { request: deleteCategoryRequest } = useApi("delete", 7003);
+  const { request: updateCategoryRequest } = useApi("put", 7003);
+  const { request: addCategoryRequest } = useApi("post", 7003);
 
   const [categories, setCategories] = useState<CategoryData>({
     name: "",

@@ -18,7 +18,7 @@ type Props = {
 };
 
 function PurchaseOverTime({ date }: Props) {
-  const { request: getPurchaseOverTime } = useApi("get", 5005);
+  const { request: getPurchaseOverTime } = useApi("get", 7005);
   const [overTime, setOverTime] = useState<any>([]);
 
   const processData = (data: any[]) => {

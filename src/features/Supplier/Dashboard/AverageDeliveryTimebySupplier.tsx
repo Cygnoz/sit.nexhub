@@ -75,7 +75,7 @@ const CustomBar = (props: any) => {
 };
 
 const AverageDeliveryTimebySupplier: React.FC<AvgDeliProps> = ({ date }) => {
-  const { request: getAvgDelivery } = useApi("get", 5009);
+  const { request: getAvgDelivery } = useApi("get", 7009);
   const [avgDelivery, setAvgDelivery] = useState<[]>([]);
 
   const getAvg = async () => {

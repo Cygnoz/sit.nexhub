@@ -34,12 +34,12 @@ const EditCustomerModal = ({ customerDataPorps, addressEdit, page }: Props) => {
   const [gstOrVat, setgstOrVat] = useState<any | []>([]);
   const [oneOrganization, setOneOrganization] = useState<any | []>([]);
   const [placeOfSupplyList, setPlaceOfSupplyList] = useState<any | []>([]);
-  const { request: editCustomerDetails } = useApi("put", 5002);
-  const { request: getCountryData } = useApi("get", 5004);
-  const { request: getCurrencyData } = useApi("get", 5004);
-  const { request: getPaymentTerms } = useApi("get", 5004);
-  const { request: getOrganization } = useApi("get", 5004);
-  const { request: getTax } = useApi("get", 5002);
+  const { request: editCustomerDetails } = useApi("put", 7002);
+  const { request: getCountryData } = useApi("get", 7004);
+  const { request: getCurrencyData } = useApi("get", 7004);
+  const { request: getPaymentTerms } = useApi("get", 7004);
+  const { request: getOrganization } = useApi("get", 7004);
+  const { request: getTax } = useApi("get", 7002);
 
 
   const { setcustomereditResponse } = useContext(CustomerEditResponseContext)!;

@@ -17,7 +17,7 @@ type Props = {
 
 function OrderView({ data, page, organization }: Props) {
   const [supplier, setSupplier] = useState<any>({});
-  const { request: getSupplier } = useApi("get", 5009);
+  const { request: getSupplier } = useApi("get", 7009);
   const [isExpanded, setIsExpanded] = useState<string | null>(null);
 
   const toggleDropdown = (key: string | null) => {

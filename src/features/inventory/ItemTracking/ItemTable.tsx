@@ -16,7 +16,7 @@ const ItemTable = ({}: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [fromDate, setFromDate] = useState<string>("");
   const [toDate, setToDate] = useState<string>("");
-  const { request: getAllItemTracking } = useApi("get", 5003);
+  const { request: getAllItemTracking } = useApi("get", 7003);
   const { loading, setLoading } = useContext(TableResponseContext)!;
 
   const toggleDropdown = (index: number | null) => {

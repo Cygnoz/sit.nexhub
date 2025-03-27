@@ -98,7 +98,7 @@ const SupplierTable = ({
 
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const { request: deleteCustomer } = useApi("delete", 5009);
+  const { request: deleteCustomer } = useApi("delete", 7009);
 
   const confirmDelete = (id: string) => {
     setDeleteId(id);

@@ -8,8 +8,8 @@ import { ToWords } from "to-words";
 type Props = { data: any , organization?:any};
 
 function PdfView({ data, organization }: Props) {
-  const { request: getSupplier } = useApi("get", 5009);
-  const { request: getCurrency } = useApi("get", 5004);
+  const { request: getSupplier } = useApi("get", 7009);
+  const { request: getCurrency } = useApi("get", 7004);
   const [supplier, setSupplier] = useState<[] | any>([]);
   const [currency, stecurrency] = useState<[] | any>([]);
 

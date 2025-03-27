@@ -61,15 +61,15 @@ interface SalesOrderViewProps {
 
 function SalesView({ data, page }: SalesOrderViewProps) {
   const [openItemId, setOpenItemId] = useState<string | null>(null);
-  const { request: getOneCustomer } = useApi("get", 5002);
+  const { request: getOneCustomer } = useApi("get", 7002);
   const [customerData, setCustomerData] = useState<Customer | null>(null);
   const [invoiceJournal, setInvoiceJournal] = useState<any>([])
   const [creditNoteJournal, setIcreditNoteJournal] = useState<any>([])
 
   const { organization } = useOrganization();
   const { id } = useParams<{ id: string }>();
-  const { request: getOneInvoiceDetails } = useApi("get", 5007);
-  const { request: getOneCreditNoteDetails } = useApi("get", 5007);
+  const { request: getOneInvoiceDetails } = useApi("get", 7007);
+  const { request: getOneCreditNoteDetails } = useApi("get", 7007);
 
 
   const toggleItemDetails = (itemId: string) => {

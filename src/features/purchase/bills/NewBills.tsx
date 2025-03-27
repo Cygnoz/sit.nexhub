@@ -39,15 +39,15 @@ const NewBills = ({ page }: Props) => {
     destinationOfSupply: false,
   });
 
-  const { request: AllSuppliers } = useApi("get", 5009);
-  const { request: getOneOrganization } = useApi("get", 5004);
-  const { request: getCountries } = useApi("get", 5004);
-  const { request: newBillApi } = useApi("post", 5005);
-  const { request: getOneBill } = useApi("get", 5005);
-  const { request: getAccounts } = useApi("get", 5001);
-  const { request: getPrefix } = useApi("get", 5005);
-  const { request: getEditBill } = useApi("get", 5005);
-  const { request: updateBill } = useApi("put", 5005);
+  const { request: AllSuppliers } = useApi("get", 7009);
+  const { request: getOneOrganization } = useApi("get", 7004);
+  const { request: getCountries } = useApi("get", 7004);
+  const { request: newBillApi } = useApi("post", 7005);
+  const { request: getOneBill } = useApi("get", 7005);
+  const { request: getAccounts } = useApi("get", 7001);
+  const { request: getPrefix } = useApi("get", 7005);
+  const { request: getEditBill } = useApi("get", 7005);
+  const { request: updateBill } = useApi("put", 7005);
   const { request: getOcr } = useApi("get", 5000);
 
   const { id } = useParams();

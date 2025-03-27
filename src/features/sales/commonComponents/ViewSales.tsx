@@ -18,9 +18,9 @@ function ViewSales() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const { page } = location.state || {};
-  const { request: getOneSalesOrder } = useApi("get", 5007);
+  const { request: getOneSalesOrder } = useApi("get", 7007);
   const [data, setData] = useState<any>(null);
-  const { request: deleteData } = useApi("delete", 5007);
+  const { request: deleteData } = useApi("delete", 7007);
 
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const confirmDelete = () => {
@@ -123,7 +123,7 @@ function ViewSales() {
     }
   }
 
-  const { request: getOneCustomer } = useApi("get", 5002);
+  const { request: getOneCustomer } = useApi("get", 7002);
   const [customerData, setCustomerData] = useState<any>(null);
   const { organization } = useOrganization();
 

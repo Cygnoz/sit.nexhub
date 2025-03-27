@@ -17,7 +17,7 @@ const Table = () => {
   ]);
 
   const [allBills, setAllBills] = useState<any[]>([]);
-  const { request: getBills } = useApi("get", 5005);
+  const { request: getBills } = useApi("get", 7005);
   const { loading, setLoading } = useContext(TableResponseContext)!;
     const {purchaseResponse}=useContext(PurchaseContext)!;
   const navigate = useNavigate();

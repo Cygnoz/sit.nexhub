@@ -59,7 +59,7 @@ const renderCustomTooltip = ({ payload }: any) => {
 };
 
 const CustomersRetentionRate: React.FC<CustomersRetentionRateProps> = ({ date }) => {
-  const { request: getRentation } = useApi("get", 5008);
+  const { request: getRentation } = useApi("get", 7008);
   const [cusRentation, setCusRentation] = useState<any>([]);
 
   const getCusRentation = async () => {

@@ -30,8 +30,8 @@ const EditUnitMeasurement = ({ unit, onUpdate }: Props) => {
     precision: "",
   });
 
-  const { request: editUnit } = useApi("put", 5003);
-  const { request: getOneUnit } = useApi("get", 5003);
+  const { request: editUnit } = useApi("put", 7003);
+  const { request: getOneUnit } = useApi("get", 7003);
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

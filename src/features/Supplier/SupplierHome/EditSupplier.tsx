@@ -39,7 +39,7 @@ const EditSupplier: React.FC<Props> = ({
   const [activeTab, setActiveTab] = useState<string>(
     addressEdit ? "address" : "otherDetails"
   );
-  const { request: editSupplier } = useApi("put", 5009);
+  const { request: editSupplier } = useApi("put", 7009);
   const [countryData, setcountryData] = useState<any | []>([]);
   const [stateList, setStateList] = useState<any | []>([]);
   const [currencyData, setcurrencyData] = useState<any | []>([]);
@@ -51,11 +51,11 @@ const EditSupplier: React.FC<Props> = ({
   const [errors, setErrors] = useState({
     supplierDisplayName: false,
   });
-  const { request: getCountryData } = useApi("get", 5004);
-  const { request: getCurrencyData } = useApi("get", 5004);
-  const { request: getPaymentTerms } = useApi("get", 5004);
-  const { request: getOrganization } = useApi("get", 5004);
-  const { request: getTax } = useApi("get", 5009);
+  const { request: getCountryData } = useApi("get", 7004);
+  const { request: getCurrencyData } = useApi("get", 7004);
+  const { request: getPaymentTerms } = useApi("get", 7004);
+  const { request: getOrganization } = useApi("get", 7004);
+  const { request: getTax } = useApi("get", 7009);
   const { setsupplierResponse } = useContext(SupplierResponseContext)!;
   const [rows, setRows] = useState([
     {

@@ -24,10 +24,10 @@ type Props = {
 };
 
 const BrandManager = forwardRef<HTMLDivElement, Props>(({ onClose }, ref) => {
-  const { request: fetchAllBrands } = useApi("put", 5003);
-  const { request: deleteBrandRequest } = useApi("delete", 5003);
-  const { request: updateBrandRequest } = useApi("put", 5003);
-  const { request: addBrandRequest } = useApi("post", 5003);
+  const { request: fetchAllBrands } = useApi("put", 7003);
+  const { request: deleteBrandRequest } = useApi("delete", 7003);
+  const { request: updateBrandRequest } = useApi("put", 7003);
+  const { request: addBrandRequest } = useApi("post", 7003);
 
   const [brandData, setBrandData] = useState<BrandData>({
     name: "",

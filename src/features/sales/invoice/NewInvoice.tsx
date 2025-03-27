@@ -165,12 +165,12 @@ const NewInvoice = ({ page }: Props) => {
   );
   console.log(invoiceState, "as");
 
-  const { request: AllCustomer } = useApi("get", 5002);
-  const { request: getOneOrganization } = useApi("get", 5004);
-  const { request: getCountries } = useApi("get", 5004);
-  const { request: getPrfix } = useApi("get", 5007);
-  const { request: getAccounts } = useApi("get", 5001);
-  const { request: getOneInvoice } = useApi("get", 5007);
+  const { request: AllCustomer } = useApi("get", 7002);
+  const { request: getOneOrganization } = useApi("get", 7004);
+  const { request: getCountries } = useApi("get", 7004);
+  const { request: getPrfix } = useApi("get", 7007);
+  const { request: getAccounts } = useApi("get", 7001);
+  const { request: getOneInvoice } = useApi("get", 7007);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -570,7 +570,7 @@ const NewInvoice = ({ page }: Props) => {
   }, [openDropdownIndex]);
 
   const { id } = useParams();
-  const { request: getOneSalesInvoice } = useApi("get", 5007);
+  const { request: getOneSalesInvoice } = useApi("get", 7007);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -598,8 +598,8 @@ const NewInvoice = ({ page }: Props) => {
     }
   }, [invoiceState]);
 
-  const { request: newSalesInvoiceApi } = useApi("post", 5007);
-  const { request: editSalesInvoiceApi } = useApi("put", 5007);
+  const { request: newSalesInvoiceApi } = useApi("post", 7007);
+  const { request: editSalesInvoiceApi } = useApi("put", 7007);
 
   const handleSave = async () => {
     try {

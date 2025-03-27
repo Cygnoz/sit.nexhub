@@ -39,8 +39,8 @@ function NewAccountModal({
   page,
 }: NewAccountModalProps) {
   const [isModalOpen, setModalOpen] = useState(false);
-  const { request: NewAccount } = useApi("post", 5001);
-  const { request: EditAccount } = useApi("put", 5001);
+  const { request: NewAccount } = useApi("post", 7001);
+  const { request: EditAccount } = useApi("put", 7001);
 
   const [openingType, setOpeningType] = useState("Debit");
   const [formValues, setFormValues] = useState(initialFormValues);
@@ -48,7 +48,7 @@ function NewAccountModal({
   // const [showValidationError, setShowValidationError] = useState(false);
   // const [AllAccountz, setAllAccountz] = useState<any>([]);
 
-  const { request: fetchAllAccountz } = useApi("get", 5001);
+  const { request: fetchAllAccountz } = useApi("get", 7001);
 
   const accountCategories = {
     Asset: {

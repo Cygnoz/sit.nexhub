@@ -13,8 +13,8 @@ import { useReactToPrint } from "react-to-print";
 type Props = {};
 
 function ManualView({ }: Props) {
-  const { request: getOneJournal } = useApi("get", 5001);
-  const { request: deleteJournal } = useApi("delete", 5001);
+  const { request: getOneJournal } = useApi("get", 7001);
+  const { request: deleteJournal } = useApi("delete", 7001);
   const { id } = useParams<{ id: string }>();
   const [oneJournal, setOneJournal] = useState<any>(null);
 

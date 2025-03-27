@@ -9,7 +9,7 @@ type Props = {
 
 
 const TotalProduct = ({date}:Props) => {
-  const { request: getTopSupplier } = useApi("get", 5009);
+  const { request: getTopSupplier } = useApi("get", 7009);
   const [topSupplierData, setTopSupplierData] = useState<any>([]);
  
   const getTopSup = async () => {

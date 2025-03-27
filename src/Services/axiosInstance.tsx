@@ -2,17 +2,16 @@ import axios from "axios";
 
 const BASE_URLS: Record<number, string> = {
   5000:import.meta.env.VITE_REACT_APP_OCR,
-  5001: import.meta.env.VITE_REACT_APP_ACCOUNTS,
-  5002: import.meta.env.VITE_REACT_APP_CUSTOMERS,
-  5003: import.meta.env.VITE_REACT_APP_INVENTORY,
-  5004: import.meta.env.VITE_REACT_APP_ORGANIZATION,
-  5005: import.meta.env.VITE_REACT_APP_PURCHASE,
-  5006: import.meta.env.VITE_REACT_APP_REPORT,
-  5007: import.meta.env.VITE_REACT_APP_SALES,
-  5008: import.meta.env.VITE_REACT_APP_STAFF,
-  5009: import.meta.env.VITE_REACT_APP_SUPPLIER,
+  7001: import.meta.env.VITE_REACT_APP_ACCOUNTS,
+  7002: import.meta.env.VITE_REACT_APP_CUSTOMERS,
+  7003: import.meta.env.VITE_REACT_APP_INVENTORY,
+  7004: import.meta.env.VITE_REACT_APP_ORGANIZATION,
+  7005: import.meta.env.VITE_REACT_APP_PURCHASE,
+  7006: import.meta.env.VITE_REACT_APP_REPORT,
+  7007: import.meta.env.VITE_REACT_APP_SALES,
+  7008: import.meta.env.VITE_REACT_APP_STAFF,
+  7009: import.meta.env.VITE_REACT_APP_SUPPLIER,
   3004: import.meta.env.VITE_REACT_APP_TICKETS,
-  
 };
 
 const createInstance = (

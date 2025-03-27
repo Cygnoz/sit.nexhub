@@ -50,7 +50,7 @@ const DebitNoteTable = ({
   const [openDropdownType, setOpenDropdownType] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<any>([]);
-  const { request: getAllItemsRequest } = useApi("get", 5003);
+  const { request: getAllItemsRequest } = useApi("get", 7003);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [rows, setRows] = useState<Row[]>([

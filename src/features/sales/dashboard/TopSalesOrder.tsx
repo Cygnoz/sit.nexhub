@@ -15,7 +15,7 @@ const tableHeaders = [
 ];
 
 function TopSalesOrder({date }: Props) {
-  const { request: getTopSalesOrder } = useApi("get", 5007);
+  const { request: getTopSalesOrder } = useApi("get", 7007);
   const [topSalesOrder, setTopSalesOrder] = useState<any>([]);
 
   const getTop= async () => {

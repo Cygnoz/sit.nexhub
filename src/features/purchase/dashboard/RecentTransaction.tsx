@@ -20,7 +20,7 @@ const RecentTransaction = ({ date }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [transactionData, setTransactionData] = useState<any[]>([]);
   const contentRef = useRef<HTMLDivElement>(null);
-  const { request: getTransaction } = useApi("get", 5005);
+  const { request: getTransaction } = useApi("get", 7005);
 
   useEffect(() => {
     fetchData();

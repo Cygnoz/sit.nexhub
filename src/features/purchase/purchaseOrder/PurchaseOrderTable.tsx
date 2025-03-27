@@ -21,7 +21,7 @@ const PurchaseOrderTable = () => {
   ]);
 
   const [allPoData, setAllPOData] = useState<any[]>([]);
-  const { request: getPO } = useApi("get", 5005);
+  const { request: getPO } = useApi("get", 7005);
   const { loading, setLoading } = useContext(TableResponseContext)!;
   const {purchaseResponse}=useContext(PurchaseContext)!;
   const navigate = useNavigate();

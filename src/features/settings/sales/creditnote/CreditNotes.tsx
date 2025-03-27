@@ -72,7 +72,7 @@ function CreditNotes({}: Props) {
 
 
 
-  const { request: addCrditNote } = useApi("put", 5007);
+  const { request: addCrditNote } = useApi("put", 7007);
   const [invoiceURLDropdown, setInvoiceURLDropdown] = useState(false);
   const [configureModal, setConfigureModal] = useState(false);
   const [placeHolderModal, setPlaceHolderModal] = useState(false);

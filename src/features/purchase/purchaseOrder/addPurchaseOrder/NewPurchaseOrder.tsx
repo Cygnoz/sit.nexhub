@@ -93,17 +93,17 @@ const NewPurchaseOrder = ({ page }: Props) => {
   const [isInterState, setIsInterState] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
-  const { request: AllSuppliers } = useApi("get", 5009);
-  const { request: AllCustomer } = useApi("get", 5002);
-  const { request: getOneOrganization } = useApi("get", 5004);
-  const { request: getCountries } = useApi("get", 5004);
-  const { request: newPurchaseOrderApi } = useApi("post", 5005);
-  const { request: getOnePurchaseOrder } = useApi("get", 5005);
-  const { request: editPurchaseOrderApi } = useApi("put", 5005);
+  const { request: AllSuppliers } = useApi("get", 7009);
+  const { request: AllCustomer } = useApi("get", 7002);
+  const { request: getOneOrganization } = useApi("get", 7004);
+  const { request: getCountries } = useApi("get", 7004);
+  const { request: newPurchaseOrderApi } = useApi("post", 7005);
+  const { request: getOnePurchaseOrder } = useApi("get", 7005);
+  const { request: editPurchaseOrderApi } = useApi("put", 7005);
 
   const { id } = useParams();
 
-  // const { request: getPrfix } = useApi("get", 5005);
+  // const { request: getPrfix } = useApi("get", 7005);
   const { supplierResponse } = useContext(SupplierResponseContext)!;
   const navigate = useNavigate();
   const [openDropdownIndex, setOpenDropdownIndex] = useState<string | null>(

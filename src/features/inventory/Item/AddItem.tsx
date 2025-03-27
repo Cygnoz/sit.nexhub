@@ -1,21 +1,22 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
-import Plus from "../../../assets/icons/Plus";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import CehvronDown from "../../../assets/icons/CehvronDown";
+import CheveronLeftIcon from "../../../assets/icons/CheveronLeftIcon";
 import CircleHelp from "../../../assets/icons/CircleHelp";
-import Button from "../../../Components/Button";
-import SearchBar from "../../../Components/SearchBar";
-import BrandModal from "../Brand/BrandModal";
+import Plus from "../../../assets/icons/Plus";
 import SettingsIcons from "../../../assets/icons/SettingsIcon";
-import RackModal from "../Rack/RackModal";
-import NewManufacture from "../Manufature/NewManufacture";
+import Button from "../../../Components/Button";
+import ProductSelection from "../../../Components/Form/ProductSelection";
+import SearchBar from "../../../Components/SearchBar";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
-import toast from "react-hot-toast";
-import CategoryModal from "../Category/CategoryModal";
-import NewUnit from "../Unit/NewUnit";
 import AddSupplierModal from "../../Supplier/SupplierHome/AddSupplierModal";
+import BrandModal from "../Brand/BrandModal";
+import CategoryModal from "../Category/CategoryModal";
+import NewManufacture from "../Manufature/NewManufacture";
+import RackModal from "../Rack/RackModal";
+import NewUnit from "../Unit/NewUnit";
 
 type Props = {};
 
@@ -93,6 +94,8 @@ const initialItemDataState = {
   reorderPoint: "",
   currentStock: "",
   status: "",
+  products:'',
+  duration:''
 };
 
 const AddItem = ({ }: Props) => {
@@ -139,7 +142,7 @@ const AddItem = ({ }: Props) => {
     organization: { baseCurrency: "" },
   });
 
-  const { request: AllItems } = useApi("get", 5003);
+  const { request: AllItems } = useApi("get", 7003);
   const fetchAllItems = async () => {
     try {
       const url = `${endponits.GET_ALL_ITEMS_Dropdown}`;
@@ -154,7 +157,7 @@ const AddItem = ({ }: Props) => {
   };
   const [suppliers, setSuppliers] = useState<any>([])
 
-  const { request: AllSuppliers } = useApi("get", 5009);
+  const { request: AllSuppliers } = useApi("get", 7009);
   const fetchAllSuppliers = async () => {
     try {
       const url = `${endponits.GET_ALL_SUPPLIER}`;
@@ -166,9 +169,14 @@ const AddItem = ({ }: Props) => {
       console.error("Error fetching items:", error);
     }
   };
-
+  const products = [
+    { value: "BillBizz", label: "BillBizz", logo: "BillBizz" },
+    { value: "SewNex", label: "SewNex", logo: "SewNex" },
+    { value: "SaloNex", label: "SaloNex", logo: "SaloNex" },
+    { value: "6NexD", label: "6NexD", logo: "6NexD" },
+];
   const [itemsDataName, setItemsDataName] = useState<string[]>([]);
-  const { request: GetAllItemsName } = useApi("get", 5003);
+  const { request: GetAllItemsName } = useApi("get", 7003);
 
   const fetchAllItemName = async () => {
     try {
@@ -202,7 +210,7 @@ const AddItem = ({ }: Props) => {
   };
 
   const [allAccounts, setAllAccounts] = useState<any>([]);
-  const { request: getAccounts } = useApi("get", 5001);
+  const { request: getAccounts } = useApi("get", 7001);
 
   useEffect(() => {
     const allAccountsUrl = `${endponits.Get_ALL_Acounts}`;
@@ -302,15 +310,15 @@ const AddItem = ({ }: Props) => {
     purchaseAccountId: false,
     salesAccountId: false,
     costPrice: false,
-    sellingPrice: false,
-
-
+    sellingPrice:false,
+    products:false,
+    duration:false
   });
 
   const navigate = useNavigate();
 
-  const { request: CreateItem } = useApi("post", 5003);
-  const { request: UpdateItem } = useApi("put", 5003); // For editing
+  const { request: CreateItem } = useApi("post", 7003);
+  const { request: UpdateItem } = useApi("put", 7003); // For editing
 
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
@@ -324,6 +332,8 @@ const AddItem = ({ }: Props) => {
       salesAccountId: Boolean(initialItemData.sellingPrice) && initialItemData.salesAccountId === "",
       costPrice: !initialItemData.costPrice,
       sellingPrice: !initialItemData.sellingPrice,
+      products: isService && !initialItemData.products,
+      duration:isService && !initialItemData.duration,
     };
     setErrors(newErrors);
     if (Object.values(newErrors).some(Boolean)) {
@@ -337,7 +347,7 @@ const AddItem = ({ }: Props) => {
         return;
       }
     }
-
+   
     try {
       const url = selectedItem
         ? `${endponits.UPDATE_ITEM}/${selectedItem._id}`
@@ -367,6 +377,8 @@ const AddItem = ({ }: Props) => {
   };
   const location = useLocation();
   const selectedItem = location.state?.item;
+  console.log("select",selectedItem);
+  
   useEffect(() => {
     if (selectedItem) {
       setInitialItemData({
@@ -414,6 +426,8 @@ const AddItem = ({ }: Props) => {
         reorderPoint: selectedItem.reorderPoint || "",
         currentStock: selectedItem.currentStock || "",
         status: selectedItem.status || "",
+        products:selectedItem.products || "",
+        duration:selectedItem.duration || "",
       });
       if (selectedItem.itemType === "service") {
         setIsService(true);
@@ -433,7 +447,16 @@ const AddItem = ({ }: Props) => {
     }
   }, [initialItemData.taxPreference])
 
-  console.log(selectedItem, "selectedItem");
+  const handleProductChange = (selectedValue: any) => {
+    setInitialItemData((prev:any)=>({
+      ...prev,
+      products:selectedValue
+    }))
+    // setErrors((prev)=>({
+    //   ...prev,
+    //   products:''
+    // }))
+  };
 
 
   return (
@@ -451,10 +474,9 @@ const AddItem = ({ }: Props) => {
                 "New Item"}</h4>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-12 gap-4 my-2">
-
+        <div className="grid grid-cols-12 gap-4 my-2">
           {/* Add Image */}
-          <div className="col-span-12 sm:col-span-2">
+          <div className="col-span-2">
             <div className="   h-36 border border-inputBorder border-dashed rounded-lg items-center justify-center flex text-center">
               <label htmlFor="image">
                 <div
@@ -497,7 +519,7 @@ const AddItem = ({ }: Props) => {
           </div>
 
           <div className="col-span-10 -mt-4">
-            <div className="flex-row sm:flex justify-start items-center">
+            <div className="flex justify-start items-center">
               <div>
                 <label
                   className="block text-sm text-labelColor"
@@ -540,7 +562,7 @@ const AddItem = ({ }: Props) => {
                       htmlFor="goods"
                       className="text-start font-medium mt-1"
                     >
-                      Goods
+                      Product
                     </label>
                   </div>
 
@@ -584,9 +606,8 @@ const AddItem = ({ }: Props) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-4 ms-0 sm:ms-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 md:col-span-6 lg:col-span-9">
-
+              <div className="grid grid-cols-12 gap-4 ms-5">
+                <div className="grid grid-cols-2 gap-4 mt-3 col-span-9">
                   <div>
                     <label
                       className="text-slate-600 text-sm"
@@ -636,7 +657,7 @@ const AddItem = ({ }: Props) => {
                     />
                   </div>
                 </div>
-                <div className="relative col-span-1 w-full sm:w-[300%] mt-3">
+                <div className="relative col-span-1 w-[300%] mt-3">
                   <label
                     htmlFor="unit-input"
                     className="text-slate-600 flex items-center gap-2"
@@ -672,7 +693,7 @@ const AddItem = ({ }: Props) => {
                               className="flex p-2 w-[100%] mb-4 hover:bg-gray-100 cursor-pointer border-b border-slate-300 text-sm  text-textColor"
                             >
                               {unit}
-
+                              
                             </div>
                           )
                         )}
@@ -683,8 +704,8 @@ const AddItem = ({ }: Props) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 ">
-              {hsnSac &&
+            <div className="grid grid-cols-3 gap-4 mt-4 ">
+              {hsnSac&&
                 (isService ? (
                   <div>
                     <label
@@ -879,14 +900,15 @@ const AddItem = ({ }: Props) => {
           </div>
         </div>
 
-        {!isService && <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 ">
+        {!isService &&
+         <div className="grid grid-cols-2 gap-x-4 ">
           <div>
             <p className="text-textColor text-base font-semibold my-2">
               Storage Information
             </p>
             <label className="block text-sm text-labelColor mb-0.5">Dimensions</label>
 
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center ">
+            <div className="grid grid-cols-4 gap-4 items-center ">
               <input
                 type="number"
                 className="text-sm rounded-md pl-3  bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
@@ -932,8 +954,8 @@ const AddItem = ({ }: Props) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
-              <div className="col-span-6 sm:col-span-4">
+            <div className="grid grid-cols-12 gap-4">
+              <div className="col-span-4">
                 <label className="text-slate-600 text-sm" htmlFor="weight">
                   Weight
                 </label>
@@ -964,7 +986,7 @@ const AddItem = ({ }: Props) => {
                 </div>
               </div>
 
-              <div className="col-span-6 sm:col-span-8">
+              <div className="col-span-8">
                 <label
                   className="text-slate-600 mt-1.5 flex text-sm items-center "
                   htmlFor="warranty"
@@ -1269,179 +1291,155 @@ const AddItem = ({ }: Props) => {
 
 
 
-        <div className="grid grid-cols-2 mt-1  gap-4">
-          {isService &&
+        
+        {isService && (
+  <div className="grid grid-cols-2 gap-x-4">
+    <div>
+      <p className="text-textColor text-base font-semibold my-2">
+        Storage Information
+      </p>
+      <div className="flex flex-col gap-2">
+        <ProductSelection
+          placeholder="Select a product"
+          options={products}
+          value={initialItemData.products}
+          label="Select a product"
+          error={(errors.products && isService)&& "Product is required"}
+          required
+          onChange={handleProductChange}
+        />
+      </div>
+    </div>
+    
+    <div>
+      <p className="text-textColor text-base font-semibold my-2">
+        Item Codes and Standards
+      </p>
+      <div className="grid grid-cols-2 gap-x-4">
+        <div>
+          <label className="text-slate-600 text-sm flex items-center gap-2" htmlFor="upc">
+            UPC
+          </label>
+          <input
+            className="pl-3 text-sm w-full rounded-md bg-white border border-inputBorder h-10 focus:outline-none focus:border-darkRed"
+            placeholder="Enter UPC"
+            name="upc"
+            value={initialItemData.upc}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div>
+          <label className="text-slate-600 text-sm flex items-center gap-2" htmlFor="mpn">
+            MPN
+          </label>
+          <input
+            className="pl-3 text-sm w-full rounded-md bg-white border border-inputBorder h-10 focus:outline-none focus:border-darkRed"
+            placeholder="Enter MPN"
+            name="mpn"
+            value={initialItemData.mpn}
+            onChange={handleInputChange}
+          />
+        </div>
+      </div>
+    </div>
+
+    {isService && (
+  <div className="relative mt-3">
+  <label
+    htmlFor="taxRate-input"
+    className="text-slate-600 text-sm flex items-center gap-2"
+  >
+    Duration <span className="text-[#bd2e2e] ">*</span>
+  </label>
+  <div className="relative w-full ">
+    <input
+      id="taxRate-input"
+      type="text"
+      value={initialItemData.duration}
+      readOnly
+      className="cursor-pointer appearance-none w-full mt-0.5 items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
+      placeholder="Select a duration"
+      onClick={() => toggleDropdown("duration")}
+    />
+    <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+      <CehvronDown color="gray" />
+    </div>
+  </div>
+
+  {openDropdownIndex ==="duration" && (
+    <div
+    ref={dropdownRef}
+    className="absolute z-10 h-52 overflow-y-scroll bg-white shadow rounded-md mt-1 p-2 w-full space-y-1"
+  >
+    {[
+      "1 Month", "2 Month", "3 Month", "4 Month", "5 Month",
+      "6 Month", "7 Month", "8 Month", "9 Month", "10 Month",
+      "11 Month", "12 Month"
+    ]
+      .map((duration, index) => (
+        <div
+          key={index}
+          onClick={() => handleDropdownSelect("duration", duration)}
+          className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-[#F5F5F5]"
+        >
+          <div className="col-span-10 flex">
             <div>
-              <p className="text-textColor text-base font-semibold my-2">
-                Storage Information
-              </p>
-              <div className="relative">
-                <label
-                  htmlFor="category-input"
-                  className="text-slate-600 text-sm flex items-center gap-2"
-                >
-                  Category
-                </label>
-                <div className="relative w-full ">
-                  <input
-                    id="category-input"
-                    type="text"
-                    value={initialItemData.categories}
-                    readOnly
-                    className="cursor-pointer appearance-none w-full items-center flex text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                    placeholder="Select or add Category"
-                    onClick={() => toggleDropdown("category")}
-                  />
-                  <div className="cursor-pointer pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <CehvronDown color="gray" />
-                  </div>
-                </div>
-                {openDropdownIndex === "category" && (
-                  <div
-                    ref={dropdownRef}
-                    className="absolute z-10 bg-white shadow rounded-md mt-1 p-2 w-[50%] space-y-1"
-                  >
-                    <div className="mb-2.5">
-                      <SearchBar
-                        searchValue={searchValueCategory}
-                        onSearchChange={setSearchValueCategory}
-                        placeholder="Select Category"
-                      />
-                    </div>
-                    {itemsData.bmcrData.categories
-                      .filter((category: string) =>
-                        category
-                          .toLowerCase()
-                          .includes(searchValueCategory.toLowerCase())
-                      )
-                      .map((category: string, index: number) => (
-                        <div
-                          key={index}
-                          onClick={() =>
-                            handleDropdownSelect("categories", category)
-                          }
-                          className="grid grid-cols-12 gap-1 p-2 hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg bg-lightPink"
-                        >
-                          <div className="col-span-10 flex">
-                            <div>
-                              <p className="font-bold text-sm">{category}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    <div
-                      onClick={() => setIsCategoryModalOpen(true)}
-                      className="hover:bg-gray-100 cursor-pointer border border-slate-400 rounded-lg py-4 px-4 text-darkRed flex text-sm gap-2 font-bold"
-                    >
-                      <SettingsIcons color="darkRed" bold={2} />
-                      <p className="mt-0.5">Manage Category</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-
-
-          }
-          <div>
-            <p className="text-textColor text-base font-semibold mt-2 mb-2">
-              Item Codes and Standards
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
-              <div>
-                <label
-                  className="text-slate-600 flex text-sm items-center gap-2"
-                  htmlFor="upc"
-                >
-                  UPC
-                </label>
-                <input
-                  className="pl-3 text-sm w-[100%]  rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  placeholder="Enter UPC"
-                  name="upc"
-                  value={initialItemData.upc}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div>
-                <label
-                  className="text-slate-600  flex text-sm items-center gap-2"
-                  htmlFor="mpn"
-                >
-                  MPN
-                </label>
-                <input
-                  className="pl-3 text-sm w-[100%]  rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                  placeholder="Enter MPN"
-                  name="mpn"
-                  value={initialItemData.mpn}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-          </div>
-          {isService && <div className="-mt-1.5">
-            <label
-              className="text-slate-600 mt-1.5 flex text-sm items-center "
-              htmlFor="warranty"
-            >
-              Warranty
-            </label>
-            <select
-              name="warranty"
-              className="block w-full text-zinc-400 bg-white border border-inputBorder text-sm h-10 pl-3 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-              value={initialItemData.warranty}
-              onChange={handleInputChange}
-            >
-              <option value="">Select Warranty</option>
-              <option value="6 months">6 months</option>
-              <option value="1 year">1 year</option>
-            </select>
-
-          </div>}
-          <div className={`grid grid-cols-1 sm:grid-cols-2  gap-4 ${isService ? 'mt-0' : 'mt-10'}`}>
-            <div>
-              <label
-                className="text-slate-600 flex text-sm items-center gap-2"
-                htmlFor="ean"
-              >
-                EAN
-              </label>
-              <input
-                className="pl-3 text-sm w-[100%]  rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                placeholder="Enter EAN"
-                name="ean"
-                value={initialItemData.ean}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="mt-">
-              <label
-                className="text-slate-600 flex text-sm items-center gap-2"
-                htmlFor="isbn"
-              >
-                ISBN
-              </label>
-              <input
-                className="pl-3 text-sm w-[100%]  rounded-md text-start bg-white border border-inputBorder h-10 leading-tight focus:outline-none focus:bg-white focus:border-darkRed"
-                placeholder="Enter ISBN"
-                name="isbn"
-                value={initialItemData.isbn}
-                onChange={handleInputChange}
-              />
+              <p className="font-bold text-sm">{duration}</p>
             </div>
           </div>
         </div>
+      ))}
+  </div>
+  
+  )}
+  {(errors.duration &&isService) &&(
+    <div className="text-red-800 text-xs  ms-1">
+      Duration is required
+    </div>
+  )}
+</div>
+)}
 
 
+
+    <div className={`grid grid-cols-2 gap-4 ${isService ? "mt-0" : "mt-10"}`}>
+      <div>
+        <label className="text-slate-600 text-sm flex items-center gap-2" htmlFor="ean">
+          EAN
+        </label>
+        <input
+          className="pl-3 text-sm w-full rounded-md bg-white border border-inputBorder h-10 focus:outline-none focus:border-darkRed"
+          placeholder="Enter EAN"
+          name="ean"
+          value={initialItemData.ean}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div>
+        <label className="text-slate-600 text-sm flex items-center gap-2" htmlFor="isbn">
+          ISBN
+        </label>
+        <input
+          className="pl-3 text-sm w-full rounded-md bg-white border border-inputBorder h-10 focus:outline-none focus:border-darkRed"
+          placeholder="Enter ISBN"
+          name="isbn"
+          value={initialItemData.isbn}
+          onChange={handleInputChange}
+        />
+      </div>
+    </div>
+  </div>
+)}
+
+         
         <div className="flex gap-4 w-full">
           <div className="w-1/2">
             <p className="text-textColor text-base font-semibold mt-2">
               Purchase Information
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {/* Cost Price Section */}
               <div className="relative mt-1.5">
                 <label className="text-slate-600 flex text-sm items-center gap-2" htmlFor="costPrice">
@@ -1615,9 +1613,9 @@ const AddItem = ({ }: Props) => {
           <div className="w-1/2">
             <p className="text-textColor text-base font-semibold mt-2">Sales Information</p>
 
-            <div className="flex-row sm:flex gap-4 my-1">
+            <div className="flex gap-4 my-1">
               {/* Selling Price Section */}
-              <div className="relative  w-full sm:w-1/2 mt-0.5">
+              <div className="relative w-1/2 mt-0.5">
                 <label className="text-slate-600 flex text-sm gap-2" htmlFor="sellingPrice">
                   Selling Price
                 </label>
@@ -1657,7 +1655,7 @@ const AddItem = ({ }: Props) => {
 
 
               {/* MRP Section */}
-              <div className="w-full sm:w-1/2">
+              <div className="w-1/2">
                 <label className="text-slate-600 flex text-sm items-center gap-2" htmlFor="saleMrp">
                   MRP
                 </label>
@@ -1679,7 +1677,7 @@ const AddItem = ({ }: Props) => {
             </div>
 
             {/* Sales Account Dropdown */}
-            <div className="relative -mt-1 sm:mt-4">
+            <div className="relative mt-4">
               <label
                 htmlFor="salesAccountDropdown"
                 className="text-slate-600 text-sm flex items-center gap-2"

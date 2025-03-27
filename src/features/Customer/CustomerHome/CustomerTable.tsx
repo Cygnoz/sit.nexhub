@@ -64,7 +64,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
 }) => {
   const [columns, setColumns] = useState<Column[]>(initialColumns);
   const [onecustomerData, setOneCustomerData] = useState<any | []>([]);
-  const { request: getOneCustomer } = useApi("get", 5002);
+  const { request: getOneCustomer } = useApi("get", 7002);
 
   const navigate = useNavigate();
 
@@ -100,7 +100,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
 
   const [isConfirmModalOpen, setConfirmModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const { request: deleteCustomer } = useApi("delete", 5002);
+  const { request: deleteCustomer } = useApi("delete", 7002);
 
   const confirmDelete = (id: string) => {
     setDeleteId(id);

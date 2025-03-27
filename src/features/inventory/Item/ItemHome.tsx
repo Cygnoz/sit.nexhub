@@ -17,7 +17,7 @@ interface ItemSettings {
 function ItemHome({}: Props) {
   const [itemsData, setItemsData] = useState<ItemsData>({
   });
-  const { request: AllItems } = useApi("get", 5003);
+  const { request: AllItems } = useApi("get", 7003);
   const fetchAllItems = async () => {
     try {
       const url = `${endponits.GET_ALL_ITEMS_Dropdown}`;
