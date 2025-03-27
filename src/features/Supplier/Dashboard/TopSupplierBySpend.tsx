@@ -10,7 +10,8 @@ type Props = {
 
 // Function to generate a color palette
 const generateColors = (count: number) => {
-  const colors = ["#D9B4AF", "#F4E0C0", "#BDBDB5", "#FEFEEB", "#A0D995", "#84A9AC"];
+  const colors = ["#0099F8", "#EDDADA", "#75CAFF", "#D1D5DB", "#E5E7EB", "#A8B5A1"];
+
   return Array.from({ length: count }, (_, index) => colors[index % colors.length]);
 };
 

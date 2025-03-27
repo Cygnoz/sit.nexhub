@@ -24,8 +24,8 @@ const renderCustomTooltip = ({ payload }: any) => {
       <Tooltips
         content={`₹${payload[0].value}`}
         textColor="#ffffff"
-        bgColor="#000000"
-        arrowColor="#000000"
+        bgColor="#0099F8"
+        arrowColor="#0099F8"
         width="60px"
       />
     );
@@ -46,7 +46,7 @@ const CustomBar = (props: any) => {
         fill={fill}
         opacity={0.3} // Transparent bars
       />
-      <circle cx={x + width / 3} cy={y} r="5" fill="#6B0000" /> {/* Solid dot on top */}
+      <circle cx={x + width / 3} cy={y} r="5" fill="#0099F8" /> {/* Solid dot on top */}
     </g>
   );
 };

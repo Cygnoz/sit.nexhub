@@ -55,21 +55,21 @@ const MonthYearDropdown: React.FC<MonthYearDropdownProps> = ({ setMonth, month, 
       {/* Month Dropdown */}
       <div className="relative" ref={monthDropdownRef}>
         <button
-          className="flex items-center px-4 py-2 border rounded-xl bg-[#FEFDFA] w-40"
+          className="flex items-center px-4 py-2 text-[#0099F8] border border-[#0099F8] rounded-xl bg-[#FEFDFA] w-40"
           onClick={() => setIsMonthOpen((prev) => !prev)}
         >
           {months[parseInt(month) - 1]}
           <div className="ms-auto">
-            <CehvronDown color="#818894"/>
+            <CehvronDown color="#0099F8"/> 
           </div>
         </button>
         {isMonthOpen && (
-          <div className="absolute mt-2 bg-white border rounded-md shadow-lg max-h-72 overflow-y-auto z-10 w-40">
+          <div className="absolute mt-2 bg-white border border-[#0099F8] rounded-md shadow-lg max-h-72 overflow-y-auto z-10 w-40">
             {availableMonths.map((m, index) => (
               <div
                 key={index}
-                className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
-                  month === (index + 1).toString().padStart(2, "0") ? "bg-gray-100 font-bold" : ""
+                className={`px-4 py-2 hover:bg-gray-100 text-[#0099F8] cursor-pointer ${
+                  month === (index + 1).toString().padStart(2, "0") ? "bg-gray-100 font-bold text-[#0099F8]" : ""
                 }`}
                 onClick={() => handleMonthChange(index)}
               >
@@ -83,16 +83,16 @@ const MonthYearDropdown: React.FC<MonthYearDropdownProps> = ({ setMonth, month, 
       {/* Year Dropdown */}
       <div className="relative" ref={yearDropdownRef}>
         <button
-          className="flex items-center px-4 py-2 border rounded-xl bg-[#FEFDFA] w-40"
+          className="flex items-center text-[#0099F8]  px-4 py-2 border rounded-xl bg-[#FEFDFA] w-40"
           onClick={() => setIsYearOpen((prev) => !prev)}
         >
           {year}
           <div className="ms-auto">
-            <CehvronDown color="#818894"/>
+            <CehvronDown color="#0099F8"/>
           </div>
         </button>
         {isYearOpen && (
-          <div className="absolute mt-2 bg-white border rounded-md shadow-lg max-h-72 overflow-y-auto z-10 w-40">
+          <div className="absolute mt-2 text-[#0099F8] bg-white border border-[#0099F8] rounded-md shadow-lg max-h-72 overflow-y-auto z-10 w-40">
             {Array.from({ length: 10 }, (_, i) => currentYear - i).map((y) => (
               <div
                 key={y}

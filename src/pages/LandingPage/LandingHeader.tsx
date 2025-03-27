@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/Images/Billbizz-Logo_White 1.png";
+import logo from "../../../public/nexHubLogo.png";
 // import logoLight from "../../../public/bill-bizz-logo.png";
 import ArrowrightUp from "../../assets/icons/ArrowrightUp";
 import BellDot from "../../assets/icons/BellDot";
@@ -76,20 +76,20 @@ function LandingHeader({ mode, setMode }: Props) {
       className={`${mode ? "bg-[#EAEBEB]" : "bg-[#2C353B]"
         } text-[#DFD1B4] flex items-center justify-between p-4 rounded-full mb-8 px-3 sm:px-6 w-full max-w-full overflow-hidden`}
     >
-      <div
+     <div
         onClick={() => navigate("/landing")}
         className="flex items-center space-x-2 cursor-pointer"
       >
         <img
           src={logo}
-          alt="Bill Bizz Logo"
-          className="h-12 w-12"
+          alt=""
+          className="w-7 h-7"
         />
         <h1
-          className={`text-base sm:text-lg font-medium ${mode ? "text-[#303F58]" : "text-[#F7E7CE]"
+          className={`text-lg font-medium ${mode ? "text-[#303F58]" : "text-[#F7E7CE]"
             }`}
         >
-          BILLBIZZ
+          NEXHUB
         </h1>
       </div>
 

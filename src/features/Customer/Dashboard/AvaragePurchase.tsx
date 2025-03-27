@@ -46,12 +46,12 @@ const AvaragePurchase: React.FC<AvaragePurchaseProps> = ({ date }) => {
 
   // Dynamically updated pie chart data
   const data = [
-    { name: "Value", value: adjustedValue, color: "#2C353B" },
+    { name: "Value", value: adjustedValue, color: "#0099F8" },
     { name: "Remaining", value: remainingValue, color: "#E6E9EE" },
   ];
 
   return (
-    <div className="bg-white rounded-lg w-full px-8  overflow-x-auto">
+    <div className="bg-white rounded-lg w-full px-8  overflow-x-auto hide-scrollbar">
               <h3 className="text-[16px] font-bold mt-5">Average Order  Value</h3>
       {averagePurchase>0?<>
     

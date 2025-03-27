@@ -49,8 +49,8 @@ const renderCustomTooltip = ({ payload }: any) => {
       <Tooltips
         content={`${payload[0].value}`}
         textColor="#ffffff"
-        bgColor="#4A5568"
-        arrowColor="#4A5568"
+        bgColor="#0099F8"
+        arrowColor="#0099F8"
         width="50px"
       />
     );
@@ -117,7 +117,7 @@ const TotalRevenue: React.FC<CustomersRetentionRateProps> = ({ date }) => {
           <Line
             type="monotone"
             dataKey="value"
-            stroke="#4A5568"
+            stroke="#0099F8"
             strokeWidth={2}
             dot={{ r: 4 }}
           />

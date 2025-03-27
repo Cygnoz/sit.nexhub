@@ -63,7 +63,7 @@ const PurchaseCards = ({data}: Props) => {
 
   return (
     <div>
-      <div className="flex-row sm:flex space-x-0 sm:space-x-4 justify-center overflow-x-auto">
+      <div className="flex-row sm:flex space-x-0 sm:space-x-4 justify-start overflow-x-auto hide-scrollbar">
         {cards.map((card, index) => (
           <PurchaseCardsOrder
             key={index}

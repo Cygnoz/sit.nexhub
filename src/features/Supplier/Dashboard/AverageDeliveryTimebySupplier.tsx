@@ -14,7 +14,8 @@ import Tooltips from "../../../Components/tooltip/Tooltip";
 import useApi from "../../../Hooks/useApi";
 import { endponits } from "../../../Services/apiEndpoints";
 
-const colors = ["#f2c6b8", "#a72522", "#fbe6c3", "#eef1d6", "#e3e7e5"];
+const colors = ["#75CAFF", "#0099F8", "#B9F0DB", "#65AEDB", "#EEEEEE"];
+
 interface AvgDeliProps {
   date?:any
 }
@@ -26,8 +27,8 @@ const renderCustomTooltip = ({ payload }: any) => {
       <Tooltips
         content={`$${payload[0].value}`}
         textColor="#ffffff"
-        bgColor="#000000"
-        arrowColor="#000000"
+        bgColor="#0099F8"
+        arrowColor="#0099F8"
         width="60px"
       />
     );

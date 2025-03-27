@@ -41,8 +41,8 @@ const renderCustomTooltip: React.FC<TooltipProps<number, string>> = ({
       <Tooltips
         content={`${payload[0].value}`}
         textColor="#ffffff"
-        bgColor="#000000"
-        arrowColor="#000000"
+        bgColor="#0099F8"
+        arrowColor="#0099F8"
         width="60px"
       />
     );

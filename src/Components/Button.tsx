@@ -8,12 +8,11 @@ type ButtonProps = React.HTMLAttributes<HTMLButtonElement> & {
   type?: "button" | "submit" | "reset";
   onSubmit?: (event: React.FormEvent<HTMLButtonElement>) => void;
 };
- 
 const buttonVariants = cva("flex text-center items-center", {
   variants: {
     variant: {
       primary:
-        "bg-primary_main text-sm hover:bg-primary_hover active:bg-primary_active disabled:bg-primary_disabled rounded-md gap-2 border border-gray-500 text-white",
+        "bg-primary_button text-sm hover:bg-primary_hover active:bg-primary_active disabled:bg-primary_disabled rounded-md gap-2 border border-gray-500 text-white",
       secondary:
         "bg-secondary_main text-sm hover:bg-secondary_hover active:bg-secondary_active disabled:bg-secondary_disabled rounded-md gap-2 border border-outlineButton text-outlineButton",
       tertiary:

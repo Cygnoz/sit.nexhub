@@ -8,7 +8,7 @@ type Props = {
   date: string;
 };
 
-const COLORS = ["#F7E7CD", "#EDDADA", "#A8B5A1", "#D1D5DB", "#E5E7EB", "#8FA3A0"];
+const COLORS = ["#0099F8", "#EDDADA", "#75CAFF", "#D1D5DB", "#E5E7EB", "#A8B5A1"];
 
 // Custom Label Styling
 const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {

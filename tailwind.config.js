@@ -9,9 +9,10 @@ export default {
     extend: {
       colors: {
 
-        primary_main: '#820000',
-        primary_hover: '#750000',
-        primary_active: '#620000',
+        primary_main: '#FFFFFF',
+        primary_button:'#0099F8',
+        primary_hover: '#0C8CDB',
+        primary_active: '#0C8CDB',
         primary_disabled: '#9EA9BB',
 
         secondary_main: '#FEFDFA',
@@ -36,7 +37,7 @@ export default {
         customColor2: "rgb(214,238,214)",
         bgColor: "rgb(243,237,217)",
         cardBg: "rgba(247, 231, 206, 1)",
-        cardBorder: "rgba(130, 0, 0, 1)",
+        cardBorder: "rgba(0, 153, 248, 1)",
         organizationBg: "rgb(243,230,230)",
         textColor: "rgb(48,63,88,1)",
         dropdownText: "rgba(75, 92, 121, 1)",
@@ -49,7 +50,7 @@ export default {
         CreamBg: "rgba(253, 248, 240, 1)",
         labelColor: "#495160",
         inputBorder: "rgba(206, 206, 206, 1)",
-        outlineButton: "rgba(86, 81, 72, 1)",
+        outlineButton: "rgba(0, 153, 248, 1)",
         tableBorder: "#EAECF0",
         hr: "rgba(204, 204, 204, 1)",
         dropdownBorder: "#DCDEE2",

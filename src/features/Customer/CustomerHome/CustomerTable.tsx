@@ -175,7 +175,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({
         </div>
         <div className="flex gap-4">
           <Button onClick={() => reactToPrintFn()} variant="secondary" className="text-sm font-medium h-9">
-            <PrinterIcon color="#565148" height={16} width={16} />
+            <PrinterIcon color="#0099F8" height={16} width={16} />
             Print
           </Button>
         </div>
